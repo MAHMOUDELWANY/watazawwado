@@ -329,14 +329,21 @@ export async function processDueReminders(): Promise<{
           continue;
         }
         const soon = item.reminder_type === 'site_2h';
+        // NX-02: the one homework reminder rides on the 12-hour notice.
+        let homeworkLine = { en: '', ar: '' };
+        if (!soon) {
+          const { count } = await supabase.from('lesson_homework').select('id', { count: 'exact', head: true })
+            .eq('student_id', b.student_id).is('review', null).is('done_at', null);
+          if (count) homeworkLine = { en: ' Your homework is waiting on your home page.', ar: ' واجبك مستنيك في الصفحة الرئيسية.' };
+        }
         await notifyUser(supabase, { userId: account.userId }, {
           kind: soon ? 'lesson_in_2h' : 'lesson_in_12h',
           title: soon
             ? { en: 'Your lesson is in 2 hours', ar: 'حصتك كمان ساعتين' }
             : { en: 'Your lesson is coming up', ar: 'حصتك قرّبت' },
           body: {
-            en: `${b.contact_name || 'Your lesson'}: ${dateStr}, ${timeStr} (${studentTz}).${soon ? ' Get your things ready and join a minute early.' : ''}`,
-            ar: `${b.contact_name || 'حصتك'}: ${dateStr}، ${timeStr} (${studentTz}).${soon ? ' جهّز حاجتك وادخل قبل الميعاد بدقيقة.' : ''}`
+            en: `${b.contact_name || 'Your lesson'}: ${dateStr}, ${timeStr} (${studentTz}).${soon ? ' Get your things ready and join a minute early.' : homeworkLine.en}`,
+            ar: `${b.contact_name || 'حصتك'}: ${dateStr}، ${timeStr} (${studentTz}).${soon ? ' جهّز حاجتك وادخل قبل الميعاد بدقيقة.' : homeworkLine.ar}`
           },
           link: '/student/lessons'
         });

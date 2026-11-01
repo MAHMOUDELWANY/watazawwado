@@ -498,7 +498,8 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   `docs/curriculum/HANDOFF-2026-10-26.md` (site work). No daily streak; it feeds the weekly rhythm only.
 
 ### NX-02 Homework set by the teacher after each lesson
-- Priority P2 · Zone 🟢 · Size M · Status todo · Pairs with NX-01
+- Priority P1 (owner's pick before launch, 2026-11-01) · Zone 🟢 · Size M · Status done · Pairs with NX-01
+- Design: `docs/superpowers/specs/2026-11-01-homework-design.md`.
 - Do: the teacher adds short tasks in the lesson window ("recite these ayat", "read this page"); the learner ticks them
   off; guardians see them; the next lesson window shows what was done.
 

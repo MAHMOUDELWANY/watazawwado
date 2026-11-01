@@ -33,6 +33,7 @@ import { PackageBalance } from '../components/PackageBalance';
 import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
+import { HomeworkCard } from '../components/HomeworkCard';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 import { PendingPaymentCard } from '../components/PendingPaymentCard';
@@ -425,6 +426,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
       {/* ST-01: on lesson day, the first thing on home is that lesson (and the next-lesson card below steps aside). */}
       {showsLessonDayCard && <LessonDayCard booking={nextBooking} isAr={isAr} />}
+
+      {/* NX-02: the teacher's homework for the next lesson. */}
+      <HomeworkCard isAr={isAr} />
 
       {/* PR-10: progress at a glance; opens the progress page. Loaded on its own so home stays light. */}
       <Suspense fallback={null}>

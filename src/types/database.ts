@@ -39,6 +39,30 @@ export type PaymentStatus = 'pending' | 'confirmed' | 'rejected' | 'refunded';
 export type ReminderType = '24h_before' | '1h_before' | 'email_3h' | 'site_12h' | 'site_2h';
 export type ReminderStatus = 'pending' | 'sent' | 'failed' | 'cancelled';
 export type BlogPostStatus = 'draft' | 'published' | 'archived';
+export type HomeworkKind = 'recite' | 'review' | 'task';
+export type HomeworkReview = 'mastered' | 'needs_review';
+
+export interface LessonHomeworkRow {
+  id: string;
+  student_id: string;
+  booking_id: string | null;
+  lesson_note_id: string | null;
+  teacher_id: string | null;
+  subject: string | null;
+  kind: HomeworkKind;
+  surah: number | null;
+  ayah_from: number | null;
+  ayah_to: number | null;
+  body: string | null;
+  done_at: string | null;
+  done_by: string | null;
+  review: HomeworkReview | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  carried_from: string | null;
+  created_at: string;
+}
+
 export type LearnerMilestoneKind =
   | 'surah_memorized'
   | 'juz_completed'
@@ -928,6 +952,11 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+      };
+      lesson_homework: {
+        Row: LessonHomeworkRow;
+        Insert: Partial<LessonHomeworkRow> & Pick<LessonHomeworkRow, 'student_id' | 'kind'>;
+        Update: Partial<LessonHomeworkRow>;
       };
     };
     Functions: {

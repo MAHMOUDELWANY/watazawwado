@@ -19,6 +19,7 @@ interface ReportData {
   milestones: Array<{ id: string; kind: string; title_en: string; title_ar: string; reached_at: string }>;
   summaries: Array<{ date: string; teacherName: string | null; text: string }>;
   nextSteps: string | null;
+  homework?: { set: number; done: number; mastered: number };
 }
 
 /**
@@ -160,6 +161,14 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                   </ul>
                 ) : (
                   <p className="text-sm text-[#6B5E55]">{t('No summaries for this month yet.', 'مفيش ملخصات للشهر ده لسه.')}</p>
+                )}
+                {data.homework && data.homework.set > 0 && (
+                  <p className="mt-3 text-sm text-[#3B322D]" data-testid="report-homework">
+                    <span className="font-bold">{t('Homework: ', 'الواجب: ')}</span>
+                    {isAr
+                      ? `${data.homework.set.toLocaleString('ar-EG')} مهام، اتعمل منها ${data.homework.done.toLocaleString('ar-EG')}، وأتقن ${data.homework.mastered.toLocaleString('ar-EG')}.`
+                      : `${data.homework.set} ${data.homework.set === 1 ? 'task' : 'tasks'} set, ${data.homework.done} done at home, ${data.homework.mastered} mastered.`}
+                  </p>
                 )}
                 {data.nextSteps && (
                   <p className="mt-3 rounded-xl border border-dashed border-[#D8C6AE] p-3 text-sm">

@@ -33,6 +33,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { JalilaBrief } from './JalilaBrief';
 import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
+import { HomeworkReviewPanel } from './HomeworkReviewPanel';
 import { confirmAction } from '../../components/ui/Feedback';
 
 interface BookingDetailModalProps {
@@ -1032,6 +1033,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Before the lesson: Jalila's prep. After it (or from "Record summary"): the family summary. */}
               {isUpcoming && booking.student_id && <JalilaBrief studentId={booking.student_id} />}
+              {booking.student_id && <HomeworkReviewPanel studentId={String(booking.student_id)} bookingId={booking.id} />}
               {(booking.status === 'completed' || isMarkingCompleted || openSummaryEditor) && booking.student_id && (
                 <PostLessonSummaryEditor
                   studentId={String(booking.student_id)}

@@ -58,6 +58,7 @@ import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
+import { registerHomeworkRoutes } from '../server/routes/homework.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
@@ -10155,6 +10156,13 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-02: homework between lessons.
+registerHomeworkRoutes(app, {
+  ...jalilaDraftDeps,
+  verifyStudentAuth,
+  getLearners: getAuthorizedLearnersForStudent
+});
 
 // Launch plan D: teacher pay (rates, bonuses/deductions, payouts and payslips, the teacher's own month).
 registerPayrollRoutes(app, {

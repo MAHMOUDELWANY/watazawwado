@@ -14,6 +14,7 @@ import { useT } from '../../lib/language';
 import { dashboardFetch } from '../lib/dashboardApi';
 import type { StudentNote, StudentMilestoneItem } from '../types';
 import { confirmAction } from '../../components/ui/Feedback';
+import { HomeworkFields, homeworkPayload, type HomeworkDraft } from './HomeworkFields';
 
 export type SubjectQuickMode = 'memorization' | 'tajweed' | 'reading' | 'general';
 
@@ -188,6 +189,7 @@ export function PostLessonSummaryEditor({
   const [privateNotes, setPrivateNotes] = useState('');
   const [familySummary, setFamilySummary] = useState('');
   const [nextSteps, setNextSteps] = useState('');
+  const [homework, setHomework] = useState<HomeworkDraft[]>([]);
   const [achievements, setAchievements] = useState<AchievementChip[]>([]);
   // TE-05: Jalila turns the private notes into a family summary draft; the teacher edits it and saves as usual.
   const [drafting, setDrafting] = useState(false);
@@ -343,8 +345,9 @@ export function PostLessonSummaryEditor({
     const hasFamily = familySummary.trim().length > 0;
     const hasAch = achievements.length > 0;
     const hasNext = nextSteps.trim().length > 0;
+    const hasHomework = homework.some((r) => r.kind === 'recite' || r.body.trim());
 
-    if (!hasPrivate && !hasFamily && !hasAch && !hasNext && !markMilestone) {
+    if (!hasPrivate && !hasFamily && !hasAch && !hasNext && !hasHomework && !markMilestone) {
       setErrorMsg(
         t(
           'Add a family summary, private note, achievement, or milestone first.',
@@ -372,6 +375,8 @@ export function PostLessonSummaryEditor({
         family_summary: familySummary.trim() || null,
         next_steps: nextSteps.trim() || null,
         achievements: achievements.length > 0 ? achievements : null,
+        homework: homeworkPayload(homework),
+        subject: subjectSlug,
       };
 
       if (markMilestone) {
@@ -403,6 +408,7 @@ export function PostLessonSummaryEditor({
       setPrivateNotes('');
       setFamilySummary('');
       setNextSteps('');
+      setHomework([]);
       setAchievements([]);
       setMarkMilestone(false);
 
@@ -820,6 +826,9 @@ export function PostLessonSummaryEditor({
           className="w-full px-3 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
+
+      {/* NX-02: homework for the next lesson, saved with the summary */}
+      <HomeworkFields value={homework} onChange={setHomework} studentId={studentId} privateNotes={privateNotes} subject={subjectSlug} />
 
       {/* 4. Private notes — explicitly labelled "only you and the admin" */}
       <div className="space-y-1.5 pt-2 border-t border-border-subtle">

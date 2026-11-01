@@ -23,6 +23,7 @@ import {
   levelsFor,
   type SubjectLevel,
 } from '../../src/components/onboarding/subjects.js';
+import { parseHomework, insertHomework } from './homework.js';
 
 type Mw = (req: any, res: any, next: any) => any;
 
@@ -1349,6 +1350,11 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           parsedMilestone = mRes.value;
         }
 
+        const homeworkCheck = parseHomework(req.body?.homework);
+        if (homeworkCheck.ok === false) {
+          return res.status(400).json({ error: homeworkCheck.error });
+        }
+
         const hasAchievements =
           Array.isArray(familyCheck.value.achievements)
             ? familyCheck.value.achievements.length > 0
@@ -1360,7 +1366,7 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           Boolean(rawNextSteps) ||
           Boolean(rawObservations);
 
-        if (!hasNotePayload && !parsedMilestone) {
+        if (!hasNotePayload && !parsedMilestone && homeworkCheck.value.length === 0) {
           return res.status(400).json({
             error: 'Please enter a private note, family summary, achievement, or milestone.',
           });
@@ -1449,10 +1455,28 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           savedMilestone = insertedMilestone;
         }
 
+        let savedHomework: any[] = [];
+        if (homeworkCheck.value.length) {
+          try {
+            savedHomework = await insertHomework(client, {
+              studentId,
+              teacherId: req.teacherUser?.id || null,
+              bookingId: rawBookingId,
+              noteId: savedNote?.id ?? null,
+              subject: typeof req.body?.subject === 'string' ? req.body.subject : parsedMilestone?.subject ?? null,
+              items: homeworkCheck.value,
+            });
+          } catch (hwErr: any) {
+            console.error('[POST /api/dashboard/students/:id/post-lesson-summary homework]', hwErr?.message);
+            return res.status(500).json({ error: 'The summary was saved, but the homework was not. Please add it again.' });
+          }
+        }
+
         return res.status(201).json({
           success: true,
           note: savedNote,
           milestone: savedMilestone,
+          homework: savedHomework,
         });
       } catch (err) {
         console.error('[POST /api/dashboard/students/:id/post-lesson-summary]', err);
@@ -1832,7 +1856,17 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
       }
       const timeline = buildLessonTimeline({ bookings, lessonSessions: sessionsRes.data || [], lessonNotes: notesRes.data || [], teacherNamesById, page: -1 });
       const report = buildMonthlyReport({ items: timeline.items, milestones: milestonesRes.data || [], month, timezone: tz });
+      // NX-02: homework set this month, and how it went.
+      const monthStart = DateTime.fromFormat(month, 'yyyy-MM', { zone: tz });
+      const { data: hwRows } = await client.from('lesson_homework').select('done_at, review').eq('student_id', entry.id)
+        .gte('created_at', monthStart.toUTC().toISO()).lt('created_at', monthStart.plus({ months: 1 }).toUTC().toISO()).is('carried_from', null);
+      const homework = {
+        set: (hwRows || []).length,
+        done: (hwRows || []).filter((h: any) => h.done_at).length,
+        mastered: (hwRows || []).filter((h: any) => h.review === 'mastered').length,
+      };
       return res.json({
+        homework,
         learner: { id: model.learner.id, name: model.learner.name, timezone: tz },
         subjects: model.subjects.map((s: any) => ({ id: s.subject, en: s.subjectMeta.en, ar: s.subjectMeta.ar, level: s.currentLevel })),
         weeklyRhythm: model.overall.weeklyRhythm,

@@ -615,3 +615,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## 2026-11-01 — Next-level ideas added to the backlog
 - New lane NX (NX-01 to NX-15) in `docs/backlog/BACKLOG.md`: daily review, homework, recitation recordings, certificates and ijazah path, real reviews, gift lessons, sponsor a learner, seasonal programs, push, weekly WhatsApp digest, blog, lesson room, summary compliance, design review, and the owner's "Watazawwado University" (teacher subject licences and training). None started; the owner picks one before launch after a discussion.
+
+## 2026-11-01 — NX-02 Homework between lessons
+- Teacher: "Homework for next lesson" in the post-lesson summary (1-3 tasks: recite a surah range, review a lesson, free task), saved with the summary; "Suggest with Jalila" from the private notes. Lesson window: "Homework from last time" with Mastered / Needs review (needs review sets the same task again).
+- Family: "This week's homework" card on the student home, one Done per task, a calm tick and "زادك الله علمًا"; ayat open on quran.com, review opens My curriculum; "Book your next lesson" when nothing is booked (after a trial). The 12-hour lesson notice adds one homework line. The monthly report shows tasks set, done and mastered.
+- Data: `lesson_homework` (server-only), migration `20261101000000_lesson_homework.sql` applied to production (RLS on, no browser grants). Full surah list with ayah counts in `src/lib/surahs.ts` (114 surahs, 6236 ayat, checked by test).
+- Checks: tsc clean; `npm run build` passes; `test/nx-02-homework.test.ts` 8/8; full suite 1799 pass, 43 fail, the same 43 fail on untouched main (they need the local .env, not present in this worktree).
+- Not checked: the teacher and family screens in a browser (sign-in pages; checked from code).
