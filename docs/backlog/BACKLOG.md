@@ -485,6 +485,90 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
 
 ---
 
+## NX: Next level (owner request 2026-11-01)
+
+Ideas approved by the owner on 2026-11-01 as strong. **Not started:** the owner picks one last development before
+launch after a discussion; the rest come after launch, top-down. Every task still follows "How to read a task" and the
+shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
+
+### NX-01 Daily review between lessons (spaced repetition)
+- Priority P2 · Zone 🟢 · Size L · Status todo
+- Do: a 5-minute "today's review" built from what the teacher really covered: memorized ayat, Fusha words, Tajweed
+  rules. Spaced-repetition scheduling per learner; cards come from approved curriculum content. Already listed in
+  `docs/curriculum/HANDOFF-2026-10-26.md` (site work). No daily streak; it feeds the weekly rhythm only.
+
+### NX-02 Homework set by the teacher after each lesson
+- Priority P2 · Zone 🟢 · Size M · Status todo · Pairs with NX-01
+- Do: the teacher adds short tasks in the lesson window ("recite these ayat", "read this page"); the learner ticks them
+  off; guardians see them; the next lesson window shows what was done.
+
+### NX-03 Recitation recordings with teacher feedback
+- Priority P2 · Zone 🟢 · Size L · Status todo
+- Do: the learner records a recitation on the phone; the assigned teacher replies with a voice or text note before the
+  next lesson. Private storage, only the learner, guardian, teacher and super admin can play it; retention period and
+  privacy policy line needed (children's audio).
+
+### NX-04 Certificates and an ijazah path
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: a branded printable certificate when a teacher-set milestone is reached (juz, level, book), with a verify link.
+  A clear ijazah-with-sanad path page for the subjects where it applies. Who may issue an ijazah is an owner decision.
+
+### NX-05 Real reviews from families
+- Priority P2 · Zone 🟢 · Size M · Status todo · Owner decision first (see below)
+- Do: a short rating after lessons; after a few lessons ask for a public review with consent. No children's photos.
+
+### NX-06 Gift lessons
+- Priority P2 · Zone 🔴 (money) · Size M · Status todo
+- Do: buy a package as a gift (Eid, Ramadan, a relative); the receiver redeems it into their wallet.
+
+### NX-07 Sponsor a learner (sadaqah)
+- Priority P3 · Zone 🔴 (money) · Size M · Status todo · Owner decision first
+- Do: a family pays lessons for a learner who cannot; who qualifies and how it is shown are owner decisions.
+
+### NX-08 Seasonal programs
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: dated programs (Ramadan challenge, summer revision, a shared khatma) with a start, an end and a sign-up.
+
+### NX-09 Push notifications
+- Priority P3 · Zone 🟢 · Size M · Status todo
+- Do: web push for lesson reminders and today's review, opt-in, respecting notification preferences (RN-07).
+
+### NX-10 Weekly WhatsApp digest for guardians
+- Priority P3 · Zone 🟢 · Size S · Status todo
+- Do: one weekly message: lessons attended, the teacher's summary, the homework.
+
+### NX-11 Blog and articles for search
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: bilingual articles for Western Muslim families (teaching Quran abroad, Fusha for kids, ...), with hreflang and
+  schema; written through `watazawwado-content` and `humanizer`.
+
+### NX-12 Lesson room inside the site
+- Priority P3 · Zone 🟢 · Size L · Status todo
+- Do: the teacher and learner see the same curriculum slides in sync during the lesson, with simple annotation; video
+  stays on Zoom at first.
+
+### NX-13 Teacher summary compliance
+- Priority P2 · Zone 🟢 · Size S · Status todo
+- Do: remind teachers who have not written a family summary; show the on-time rate (already on "My month") to the
+  admin per teacher, so the progress pages never stay empty.
+
+### NX-14 Design review of the public site and the portal
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: page by page with `impeccable`, phone and dark mode, to bring the site and portal up to the curriculum's level
+  (motion, motifs, feel). Screenshots before and after.
+
+### NX-15 Watazawwado University: teacher subject licences and growth
+- Priority P2 · Zone 🟢 · Size L · Status todo · Owner discussion first
+- Owner idea (2026-11-01): as the academy hires, each teacher teaches only the subjects they are strong in (for
+  example Quran and Tajweed only). A teacher who shows promise in another subject is trained for it inside
+  "Watazawwado University" and earns that subject.
+- Today: no teacher-to-subject link exists in the schema; any active teacher can be assigned any subject.
+- Do (after the discussion): per-teacher subject permissions enforced by the server on assignment and booking;
+  a training track per subject (our curriculum, the teacher guide, a test, an observed lesson) that unlocks the subject;
+  admin view of who may teach what.
+
+---
+
 ## Owner decisions needed (agents: do not start these)
 
 - Referral or "invite a family" reward: amount and rules are a pricing decision (RULES.md §4).

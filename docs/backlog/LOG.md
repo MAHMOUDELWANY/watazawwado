@@ -612,3 +612,6 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Welcome recitation: the mute button left the header (it truncated the name). It is now a round floating button at the screen's edge, a third of the way down, and can be dragged. RULES.md §6 updated.
 - No more blank band under the header: public pages start at the header height (pt-16 sm:pt-20).
 - About: Ustadh Mahmoud's bio keeps "more than three years" without the country list (the owner confirmed the years, not the countries). The owner confirmed PayPal and Apple Pay are on in Stripe.
+
+## 2026-11-01 — Next-level ideas added to the backlog
+- New lane NX (NX-01 to NX-15) in `docs/backlog/BACKLOG.md`: daily review, homework, recitation recordings, certificates and ijazah path, real reviews, gift lessons, sponsor a learner, seasonal programs, push, weekly WhatsApp digest, blog, lesson room, summary compliance, design review, and the owner's "Watazawwado University" (teacher subject licences and training). None started; the owner picks one before launch after a discussion.
