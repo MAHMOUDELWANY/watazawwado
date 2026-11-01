@@ -17,7 +17,8 @@ describe('PU-04b hydrate prerendered public pages', () => {
 
   it('every lazy public page can be loaded before hydration', () => {
     assert.ok(main.includes('preloadPage(pathname)'));
-    const lazyPublic = [...app.matchAll(/const (\w+) = lazyWithReload\(\(\) => import\('\.\/components\/public/g)].map((m) => m[1]);
+    // The review-link page (/review/<token>) is never prerendered, so it has nothing to hydrate.
+    const lazyPublic = [...app.matchAll(/const (\w+) = lazyWithReload\(\(\) => import\('\.\/components\/public/g)].map((m) => m[1]).filter((n) => n !== 'WriteReviewPage');
     assert.strictEqual(lazyPublic.length, 9);
     const map = app.slice(app.indexOf('const LAZY_PUBLIC_PAGES'), app.indexOf('};', app.indexOf('const LAZY_PUBLIC_PAGES')));
     for (const name of lazyPublic) assert.ok(map.includes(`: ${name}`), `${name} is missing from LAZY_PUBLIC_PAGES`);

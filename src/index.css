@@ -2020,3 +2020,67 @@ html.dark .text-brand {
   box-shadow: 0 2px 6px -2px rgba(18, 16, 14, 0.45);
 }
 
+/* Signature intro (src/components/public/SignatureIntro.tsx): write, fill, grow, reveal. About 1.9 s. */
+.sig-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483002;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  background: var(--background);
+  pointer-events: auto;
+}
+.sig-intro-overlay .sig-svg { width: min(86vw, 620px); height: auto; overflow: visible; transform-origin: 50% 55%; }
+.sig-intro-overlay .sig-word {
+  font-family: 'Aref Ruqaa', 'Amiri Quran', 'Thmanyah Display', serif;
+  font-weight: 700;
+  font-size: 230px;
+  fill: url(#sig-ribbon);
+  fill-opacity: 0;
+  stroke: url(#sig-ribbon);
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
+}
+.sig-intro-overlay.is-fallback .sig-word { font-family: 'Thmanyah Display', 'Thmanyah Serif Display', serif; font-size: 200px; }
+.sig-intro-overlay .sig-caption {
+  font-family: 'Thmanyah Serif Display', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  opacity: 0;
+}
+.sig-intro-overlay.is-playing { animation: sig-out 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.4s forwards; }
+.sig-intro-overlay.is-playing .sig-word { animation: sig-draw 1.15s cubic-bezier(0.65, 0, 0.35, 1) forwards, sig-fill 0.45s ease-out 0.85s forwards; }
+.sig-intro-overlay.is-playing .sig-svg { animation: sig-grow 0.6s cubic-bezier(0.7, 0, 0.84, 0) 1.3s forwards; }
+.sig-intro-overlay.is-playing .sig-caption { animation: sig-caption 0.4s ease-out 0.7s forwards; }
+@keyframes sig-draw { to { stroke-dashoffset: 0; } }
+@keyframes sig-fill { to { fill-opacity: 1; stroke-opacity: 0.35; } }
+@keyframes sig-grow { to { transform: scale(2.4); opacity: 0; filter: blur(2px); } }
+@keyframes sig-caption { to { opacity: 1; } }
+@keyframes sig-out { to { opacity: 0; visibility: hidden; } }
+
+/* Liquid press ("liquid button" in docs/design/INSPIRATION.md): the main call to action loosens into a soft organic
+   shape with a slow ribbon-coloured glow on hover (pointer) or while pressed (touch), and snaps back on release. */
+.liquid-cta { transition: border-radius 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .liquid-cta:hover { animation: liquid-morph 2.4s ease-in-out infinite alternate, liquid-glow 2.4s ease-in-out infinite alternate; }
+}
+.liquid-cta:active { animation: liquid-morph 1.2s ease-in-out infinite alternate, liquid-glow 1.2s ease-in-out infinite alternate; }
+@keyframes liquid-morph {
+  0% { border-radius: 18px; }
+  35% { border-radius: 42% 58% 46% 54% / 62% 48% 52% 38%; }
+  70% { border-radius: 58% 42% 55% 45% / 45% 60% 40% 55%; }
+  100% { border-radius: 46% 54% 40% 60% / 55% 42% 58% 45%; }
+}
+@keyframes liquid-glow {
+  0% { box-shadow: 0 10px 28px -10px rgba(197, 31, 36, 0.65), -14px 0 30px -14px rgba(8, 125, 145, 0.55), 14px 0 30px -14px rgba(229, 169, 60, 0.55); }
+  100% { box-shadow: 0 12px 34px -8px rgba(197, 31, 36, 0.75), 16px 2px 36px -12px rgba(8, 125, 145, 0.6), -16px -2px 36px -12px rgba(229, 169, 60, 0.6); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-cta, .liquid-cta:hover, .liquid-cta:active { animation: none !important; }
+}

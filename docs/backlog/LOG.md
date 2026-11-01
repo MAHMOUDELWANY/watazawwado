@@ -674,6 +674,21 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — Signature intro and liquid button
+- References: "Signature intro" and "Liquid button" in docs/design/INSPIRATION.md.
+- Signature intro (`src/components/public/SignatureIntro.tsx`, styles in `src/index.css`):
+  - Plays on the first visit to the public site: وتزودوا writes itself in Ruqaa calligraphy with the ribbon colours, fills, grows and fades while the page appears beneath it. About 1.9 s once it starts, and any tap or key ends it.
+  - Not shown on account pages, inside the installed app (which has its own daily intro), or with reduced motion.
+  - Decided before the first paint by the inline script in `index.html` (`html.sig-intro`, `localStorage wz_sig_seen`), so the page never flashes before the intro. A CSS cover lifts by itself after 3 s if scripts fail.
+  - If the page needed more than 2.5 s to start, the intro is skipped.
+  - The Ruqaa font is a Google Fonts subset of the 6 letters. If it has not arrived in 1.2 s, the word is drawn in our Thmanyah Display instead, so it is never invisible.
+- Liquid button: `.liquid-cta` on the two "Book your free trial lesson" buttons on the home page. On hover (mouse) or while pressed (touch), the shape slowly morphs, with a crimson, teal and gold glow; it snaps back on release. Reduced motion turns it off.
+- Fixed an earlier slip: `test/pu-04b-hydration.test.ts` counted the new review-link page as a page to hydrate; it is never prerendered, so it is now excluded.
+- Checks:
+  - tsc clean; build passes; hydration, RTL, SEO, hreflang and PWA tests 17/17.
+  - Filmed with headless Chrome on a production build (fresh profile) at 390x844 and 1440x900. No flash of the page before the intro; the outline draws, fills, grows and the page appears; afterwards `wz_sig_seen` is set and the class is gone.
+  - Hover checked in the browser: the morph and glow animations are running.
+
 ## 2026-11-01 — Install by itself, in-app browser hint, Liquid Glass tab bar
 - References: docs/design/INSPIRATION.md ("Liquid Glass bars", "Language welcome" install bar).
 - Install:

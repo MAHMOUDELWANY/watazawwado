@@ -14,6 +14,7 @@ import { BackToTop } from './BackToTop';
 import { ReferralWelcome } from './ReferralWelcome';
 import { InstallAppNudge } from '../../pwa/InstallApp';
 import { WelcomeMuteButton } from '../WelcomeRecitation';
+import { SignatureIntro } from '../SignatureIntro';
 import { Analytics } from '@vercel/analytics/react';
 
 export interface PublicLayoutContextType {
@@ -206,6 +207,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         <BackToTop isAr={lang === 'ar'} />
         <InstallAppNudge isAr={lang === 'ar'} />
         <WelcomeMuteButton isAr={lang === 'ar'} />
+        <SignatureIntro isEn={lang === 'en'} />
 
         {/* Interactive Site Tour Guide */}
         <OnboardingGuide

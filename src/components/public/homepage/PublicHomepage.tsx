@@ -136,7 +136,7 @@ export function PublicHomepage() {
                   id="hero-get-started-btn"
                   data-tour="header-get-started-cta"
                   onClick={() => onOpenTrialModal()}
-                  className="w-full sm:w-auto shadow-lg shadow-primary/25"
+                  className="liquid-cta w-full sm:w-auto shadow-lg shadow-primary/25"
                 >
                   {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
                 </PublicButton>
@@ -336,7 +336,7 @@ export function PublicHomepage() {
               : 'والأولى مجاناً: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
           </p>
           <div className="relative mt-8 flex flex-col sm:flex-row justify-center gap-3">
-            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
+            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta w-full sm:w-auto">
               {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
             </PublicButton>
             <a

@@ -67,6 +67,17 @@
           if (standalone || /^\/(student|dashboard|teacher|staff)(\/|$)/.test(p)) {
             document.documentElement.classList.add('boot-app');
           }
+          // First visit of the public site: the signature intro (src/components/public/SignatureIntro.tsx). Decided
+          // here, before the first paint, so the page never flashes before the intro covers it. Once per browser.
+          if (!standalone && !/^\/(student|dashboard|teacher|staff|review|certificate|otp|verify)/.test(p.replace(/^\/ar(?=\/|$)/, '')) &&
+              !localStorage.getItem('wz_sig_seen') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            localStorage.setItem('wz_sig_seen', '1');
+            document.documentElement.classList.add('sig-intro');
+            var f = document.createElement('link');
+            f.rel = 'stylesheet';
+            f.href = 'https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&display=swap&text=' + encodeURIComponent('\u0648\u062a\u0632\u0648\u062f\u0648\u0627');
+            document.head.appendChild(f);
+          }
           // Opening the installed app plays the short brand intro once a day; the splash stays for it.
           var day = new Date().toDateString();
           if (standalone && localStorage.getItem('wz_intro_day') !== day && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -117,6 +128,10 @@
       @keyframes bs-pop { to { opacity: 1; transform: none; } }
       @keyframes bs-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
       @media (prefers-reduced-motion: reduce) { #boot-splash .bs-tile, #boot-splash .bs-bar i { animation: none; } }
+      /* Signature intro cover until React takes over; gone by itself after 3 s if the script never runs. */
+      html.sig-intro body::after { content: ''; position: fixed; inset: 0; z-index: 2147483001; background: #FAF7F2; animation: sig-cover-off 0s linear 3s forwards; }
+      html.sig-intro.dark body::after { background: #110F0E; }
+      @keyframes sig-cover-off { to { visibility: hidden; } }
     </style>
     <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[
