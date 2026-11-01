@@ -805,13 +805,13 @@ export function PostLessonSummaryEditor({
         </div>
       </div>
 
-      {/* 3. Next steps / homework (shared) */}
+      {/* 3. Next step in the lessons (shared); home practice goes in the homework below */}
       <div>
         <label
           htmlFor="plse-next-steps"
           className="block text-[11px] font-medium text-muted-foreground mb-1"
         >
-          {t('Next step / practice at home (optional)', 'الخطوة القادمة / التدريب في البيت (اختياري)')}
+          {t('Next step in the lessons (optional)', 'الخطوة الجاية في الحصص (اختياري)')}
         </label>
         <input
           id="plse-next-steps"
@@ -820,8 +820,8 @@ export function PostLessonSummaryEditor({
           value={nextSteps}
           onChange={(e) => setNextSteps(e.target.value)}
           placeholder={t(
-            'e.g. Listen to Surah Al-Mulk 1–15 twice before next lesson',
-            'مثلاً: الاستماع إلى سورة الملك ١–١٥ مرتين قبل الحصة القادمة'
+            'e.g. Next lesson we start the rules of noon sakinah',
+            'مثلاً: الحصة الجاية نبدأ أحكام النون الساكنة'
           )}
           className="w-full px-3 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />

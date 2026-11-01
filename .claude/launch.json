@@ -26,6 +26,15 @@
         "scripts/curriculum/serve.mjs"
       ],
       "port": 3101
+    },
+    {
+      "name": "dev-test-accounts",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set ALLOW_DEV_AUTH=true&& set VITE_SUPABASE_URL=https://fmwxqyroyxgigvpahpri.supabase.co&& set VITE_SUPABASE_ANON_KEY=sb_publishable_UDlT-RtZL9GEg_nC9rUgYg_n5GbgdqL&& cd /d C:/Users/ahmed/OneDrive/Desktop/watazawwado&& npx tsx server.ts"
+      ],
+      "port": 3000
     }
   ]
 }

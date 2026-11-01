@@ -41,7 +41,7 @@ describe('NX-02 homework rules', () => {
 
   it('the family line names the surah and range and links to quran.com', () => {
     const hw: any = { kind: 'recite', surah: 67, ayah_from: 1, ayah_to: 15, body: null };
-    assert.deepStrictEqual(homeworkLine(hw, true), { title: 'سورة الملك، من آية 1 لـ 15', note: null, href: 'https://quran.com/67/1-15', external: true });
+    assert.deepStrictEqual(homeworkLine(hw, true), { title: 'سورة الملك، من آية ١ لـ ١٥', note: null, href: 'https://quran.com/67/1-15', external: true });
     assert.strictEqual(homeworkLine(hw, false).title, 'Surah Al-Mulk, ayat 1-15');
     assert.strictEqual(homeworkLine({ kind: 'review', body: 'Lesson 2' } as any, false).href, '/student/curriculum');
   });

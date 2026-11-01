@@ -22,9 +22,10 @@ export function homeworkLine(hw: HomeworkItem, isAr: boolean): { title: string; 
   if (hw.kind === 'recite' && hw.surah) {
     const s = SURAHS.find((x) => x.n === hw.surah);
     const name = s ? (isAr ? `سورة ${s.ar}` : `Surah ${s.en}`) : '';
+    const n = (v: number | null) => (isAr ? Number(v).toLocaleString('ar-EG') : String(v));
     const range = hw.ayah_from === hw.ayah_to
-      ? (isAr ? `آية ${hw.ayah_from}` : `ayah ${hw.ayah_from}`)
-      : (isAr ? `من آية ${hw.ayah_from} لـ ${hw.ayah_to}` : `ayat ${hw.ayah_from}-${hw.ayah_to}`);
+      ? (isAr ? `آية ${n(hw.ayah_from)}` : `ayah ${hw.ayah_from}`)
+      : (isAr ? `من آية ${n(hw.ayah_from)} لـ ${n(hw.ayah_to)}` : `ayat ${hw.ayah_from}-${hw.ayah_to}`);
     return { title: `${name}${isAr ? '، ' : ', '}${range}`, note: hw.body, href: quranLink(hw.surah, hw.ayah_from, hw.ayah_to), external: true };
   }
   if (hw.kind === 'review') return { title: hw.body || '', note: null, href: '/student/curriculum', external: false };

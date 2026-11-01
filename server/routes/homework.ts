@@ -229,7 +229,7 @@ export function registerHomeworkRoutes(app: express.Express, deps: {
       if (!hw || !canFamilyReadLearner(learners, hw.student_id)) return res.status(404).json({ error: 'Homework not found.' });
       if (hw.review) return res.status(409).json({ error: 'Your teacher already reviewed this task.' });
       const { data: updated, error } = await client.from('lesson_homework')
-        .update(done ? { done_at: new Date().toISOString(), done_by: req.studentUser?.auth_id || null } : { done_at: null, done_by: null })
+        .update(done ? { done_at: new Date().toISOString(), done_by: isUuid(req.studentUser?.auth_id) ? req.studentUser.auth_id : null } : { done_at: null, done_by: null })
         .eq('id', id).is('review', null).select(HOMEWORK_COLUMNS).maybeSingle();
       if (error) throw new Error(error.message);
       if (!updated) return res.status(409).json({ error: 'Your teacher already reviewed this task.' });

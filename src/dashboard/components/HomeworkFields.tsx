@@ -64,12 +64,20 @@ export function HomeworkFields({ value, onChange, studentId, privateNotes, subje
               </Button>
             </div>
             {row.kind === 'recite' && (
-              <div className="grid grid-cols-[1fr_5rem_5rem] gap-2">
-                <Select aria-label={t('Surah', 'السورة')} value={row.surah} onChange={(e) => set(i, { surah: Number(e.target.value), ayah_from: '1', ayah_to: '' })} className="h-10">
-                  {SURAHS.map((s) => <option key={s.n} value={s.n}>{s.n}. {isAr ? s.ar : s.en}</option>)}
-                </Select>
-                <Input aria-label={t('From ayah', 'من آية')} type="number" inputMode="numeric" min={1} max={surah?.ayat} value={row.ayah_from} onChange={(e) => set(i, { ayah_from: e.target.value })} className="h-10" />
-                <Input aria-label={t('To ayah', 'لآية')} type="number" inputMode="numeric" min={1} max={surah?.ayat} value={row.ayah_to} onChange={(e) => set(i, { ayah_to: e.target.value })} className="h-10" placeholder={String(surah?.ayat || '')} />
+              <div className="grid grid-cols-2 gap-2">
+                <div className="col-span-2">
+                  <Select aria-label={t('Surah', 'السورة')} value={row.surah} onChange={(e) => set(i, { surah: Number(e.target.value), ayah_from: '1', ayah_to: '' })} className="h-10">
+                    {SURAHS.map((s) => <option key={s.n} value={s.n}>{s.n}. {isAr ? s.ar : s.en}</option>)}
+                  </Select>
+                </div>
+                <label className="grid gap-1 text-[11px] text-muted-foreground">
+                  {t('From ayah', 'من آية')}
+                  <Input type="number" inputMode="numeric" min={1} max={surah?.ayat} value={row.ayah_from} onChange={(e) => set(i, { ayah_from: e.target.value })} className="h-10" />
+                </label>
+                <label className="grid gap-1 text-[11px] text-muted-foreground">
+                  {t('To ayah', 'لآية')}
+                  <Input type="number" inputMode="numeric" min={1} max={surah?.ayat} value={row.ayah_to} onChange={(e) => set(i, { ayah_to: e.target.value })} className="h-10" placeholder={String(surah?.ayat || '')} />
+                </label>
               </div>
             )}
             <Input
