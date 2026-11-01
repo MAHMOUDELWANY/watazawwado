@@ -59,6 +59,7 @@ import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerHomeworkRoutes } from '../server/routes/homework.js';
+import { registerCertificateRoutes } from '../server/routes/certificates.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
@@ -10162,6 +10163,9 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-04: milestone certificates and their public check.
+registerCertificateRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-02: homework between lessons.
 registerHomeworkRoutes(app, {

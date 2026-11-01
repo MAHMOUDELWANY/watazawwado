@@ -1,5 +1,6 @@
 import React from 'react';
 import { DateTime } from 'luxon';
+import { Link } from 'react-router-dom';
 import { Card } from '../../../components/ui/Card';
 import { AchievementEmblem } from './AchievementEmblems';
 import type { ShelfItem } from './achievements';
@@ -45,6 +46,11 @@ export function AchievementsShelf({ items, isAr, highlight }: { items: ShelfItem
                         : isAr ? 'اتحقق' : 'Earned'
                     : pick(item.earnBy)}
                 </span>
+                {item.earned && item.milestoneId && (
+                  <Link to={`/student/certificate/${item.milestoneId}`} className="text-xs font-semibold text-teal underline underline-offset-4" data-testid="shelf-certificate">
+                    {isAr ? 'الشهادة' : 'Certificate'}
+                  </Link>
+                )}
                 <span className="sr-only">{item.earned ? (isAr ? 'وسام محقَّق' : 'Earned') : (isAr ? 'لسه قدّامك' : 'Not earned yet')}</span>
               </li>
             );

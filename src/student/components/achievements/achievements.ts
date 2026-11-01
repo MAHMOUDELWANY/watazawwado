@@ -25,6 +25,8 @@ export interface ShelfItem {
   /** Teacher-recorded milestones carry their own title and date. */
   detail?: Bilingual;
   earnedAt?: string;
+  /** NX-04: the teacher milestone behind it, which has a certificate. */
+  milestoneId?: string;
 }
 
 export interface CelebrationItem {
@@ -97,11 +99,11 @@ export function buildShelf(input: AchievementInput): ShelfItem[] {
       earned: Boolean(newest),
       title: def.title,
       earnBy: def.earnBy,
-      ...(newest ? { detail: { en: newest.title_en, ar: newest.title_ar }, earnedAt: newest.reached_at } : {})
+      ...(newest ? { detail: { en: newest.title_en, ar: newest.title_ar }, earnedAt: newest.reached_at, milestoneId: newest.id } : {})
     });
   }
   for (const m of input.milestones.filter((x) => !KIND_EMBLEM[x.kind])) {
-    items.push({ emblem: 'teacher', earned: true, title: TEACHER_EMBLEM.title, earnBy: TEACHER_EMBLEM.title, detail: { en: m.title_en, ar: m.title_ar }, earnedAt: m.reached_at });
+    items.push({ emblem: 'teacher', earned: true, title: TEACHER_EMBLEM.title, earnBy: TEACHER_EMBLEM.title, detail: { en: m.title_en, ar: m.title_ar }, earnedAt: m.reached_at, milestoneId: m.id });
   }
   return items;
 }

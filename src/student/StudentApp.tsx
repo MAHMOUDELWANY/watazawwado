@@ -48,6 +48,7 @@ import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
 import StudentProgressPage from './pages/StudentProgressPage';
 import StudentProgressReportPage from './pages/StudentProgressReportPage';
+import StudentCertificatePage from './pages/StudentCertificatePage';
 import StudentCalendarPage from './pages/StudentCalendarPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
@@ -681,6 +682,7 @@ export default function StudentApp() {
               <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
               <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
               <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
+              <Route path="/certificate/:id" element={<StudentCertificatePage lang={lang} />} />
               <Route path="/calendar" element={<StudentCalendarPage lang={lang} />} />
               <Route path="/wallet" element={<StudentWalletPage lang={lang} session={session} />} />
               {/* The wallet replaced these pages (2026-10-28); payment returns keep their query (Stripe ?payment_status=...). */}

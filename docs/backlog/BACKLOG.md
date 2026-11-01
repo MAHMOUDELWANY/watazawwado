@@ -510,7 +510,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   privacy policy line needed (children's audio).
 
 ### NX-04 Certificates and an ijazah path
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done for certificates; the ijazah path page waits for the owner (who may issue an ijazah)
 - Do: a branded printable certificate when a teacher-set milestone is reached (juz, level, book), with a verify link.
   A clear ijazah-with-sanad path page for the subjects where it applies. Who may issue an ijazah is an owner decision.
 

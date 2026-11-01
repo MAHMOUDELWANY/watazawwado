@@ -628,3 +628,9 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - A teacher with no family summary 3 hours after a lesson ended gets one on-site reminder (dashboard bell, link to Today), once per lesson, up to 48 hours after; production only, from the existing reminder cron (`server/notifications/summaryReminders.ts`).
 - Admin Reports, "Teachers: load and care": new "Homework set" column (share of the last 30 days' lessons with homework). On a phone the teacher's name column now stays fixed while the table scrolls sideways.
 - Checks: tsc clean; `test/nx-13-summary-reminders.test.ts` 4/4, CRM-08 tests pass; seen on desktop and phone (Arabic) with the local test admin.
+
+## 2026-11-01 — NX-04 Certificates
+- Every milestone a teacher records has a certificate: "Certificate" link on the achievements shelf → `/student/certificate/:id` (printable, saves as PDF), in the report's paper-and-teal identity, both languages, wording that fits a boy or a girl.
+- Public check at `/certificate/:id`: "This certificate was issued by Watazawwado Academy", with the first name, milestone and date only (children's privacy). APIs: `GET /api/student/certificates/:id` (family only), `GET /api/certificates/:id` (public, rate-limited).
+- Not done: the ijazah-with-sanad path page (owner decides who may issue an ijazah).
+- Checks: tsc clean; `test/nx-04-certificates.test.ts` 4/4, PR-04 and PR-08 tests pass; seen on a phone (public check) and desktop (shelf link, certificate) with the local test student.
