@@ -61,6 +61,11 @@ export function registerTeacherLoadRoutes(app: express.Express, deps: { getClien
       const { data: notes } = (sessions || []).length
         ? await client.from('lesson_notes').select('session_id').in('session_id', sessions.map((s: any) => s.id)).not('family_summary', 'is', null)
         : { data: [] as any[] };
+      // NX-02/NX-13: lessons that ended with homework set.
+      const { data: hwRows } = completedRows.length
+        ? await client.from('lesson_homework').select('booking_id').in('booking_id', completedRows.map((b: any) => b.id))
+        : { data: [] as any[] };
+      const homeworkBookings = new Set((hwRows || []).map((h: any) => h.booking_id));
       const summarisedSessions = new Set((notes || []).map((n: any) => n.session_id));
       const summarisedBookings = new Set((sessions || []).filter((s: any) => summarisedSessions.has(s.id)).map((s: any) => s.booking_id));
 
@@ -81,7 +86,8 @@ export function registerTeacherLoadRoutes(app: express.Express, deps: { getClien
           moves30Days: teacherMoves.length,
           recentMoves: teacherMoves.slice(0, 3).map((m: any) => ({ reason: m.reason, from: m.old_start, to: m.new_start, at: m.created_at })),
           completed30Days: done.length,
-          notesRate30Days: notesRate(done.length, done.filter((b: any) => summarisedBookings.has(b.id)).length)
+          notesRate30Days: notesRate(done.length, done.filter((b: any) => summarisedBookings.has(b.id)).length),
+          homeworkRate30Days: notesRate(done.length, done.filter((b: any) => homeworkBookings.has(b.id)).length)
         };
       }).sort((a: any, b: any) => b.lessonsThisWeek - a.lessonsThisWeek);
       return res.json({ weekStart: weekStart.toISODate(), teachers: out });

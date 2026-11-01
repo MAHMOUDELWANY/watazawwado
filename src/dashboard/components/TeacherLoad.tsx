@@ -14,6 +14,7 @@ interface Row {
   recentMoves: Array<{ reason: string | null; from: string; to: string; at: string }>;
   completed30Days: number;
   notesRate30Days: number | null;
+  homeworkRate30Days?: number | null;
 }
 
 /** CRM-08: load and care per teacher (super admin only; no money). */
@@ -39,18 +40,19 @@ export function TeacherLoad() {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-xs text-muted-foreground">
-                <th scope="col" className="text-start font-medium py-2 pe-3">{t('Teacher', 'المعلم')}</th>
+                <th scope="col" className="sticky start-0 z-10 bg-surface text-start font-medium py-2 pe-3">{t('Teacher', 'المعلم')}</th>
                 <th scope="col" className="text-center font-medium py-2 px-2">{t('Active students', 'طلاب نشطين')}</th>
                 <th scope="col" className="text-center font-medium py-2 px-2">{t('Lessons this week', 'دروس الأسبوع')}</th>
                 <th scope="col" className="text-center font-medium py-2 px-2">{t('Hours booked / offered', 'ساعات محجوزة / متاحة')}</th>
                 <th scope="col" className="text-center font-medium py-2 px-2">{t('Moved (30 days)', 'اتنقلت (30 يوم)')}</th>
                 <th scope="col" className="text-center font-medium py-2 px-2">{t('Family summary written', 'ملخص الأسرة اتكتب')}</th>
+                <th scope="col" className="text-center font-medium py-2 px-2">{t('Homework set', 'اتحط واجب')}</th>
               </tr>
             </thead>
             <tbody>
               {data.teachers.map((r) => (
                 <tr key={r.teacherId} className="border-t border-border align-top">
-                  <th scope="row" className="text-start font-medium py-2 pe-3">{r.name}</th>
+                  <th scope="row" className="sticky start-0 z-10 bg-surface text-start font-medium py-2 pe-3 min-w-[7rem]">{r.name}</th>
                   <td className="text-center py-2 px-2">{r.activeStudents}</td>
                   <td className="text-center py-2 px-2">{r.lessonsThisWeek}</td>
                   <td className="text-center py-2 px-2 whitespace-nowrap">{r.hoursBookedThisWeek} / {r.hoursOfferedPerWeek}</td>
@@ -68,6 +70,7 @@ export function TeacherLoad() {
                     )}
                   </td>
                   <td className="text-center py-2 px-2">{r.notesRate30Days == null ? '—' : `${r.notesRate30Days}% (${r.completed30Days})`}</td>
+                  <td className="text-center py-2 px-2">{r.homeworkRate30Days == null ? '—' : `${r.homeworkRate30Days}%`}</td>
                 </tr>
               ))}
             </tbody>

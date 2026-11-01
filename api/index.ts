@@ -83,6 +83,7 @@ import { notifyLowBalance } from '../server/notifications/lowBalance.js';
 import { studentRescheduleBlock, studentCancelBlock } from '../server/booking/studentWindows.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
 import { processQuietLearners, quietEmailsEnabled, isQuietRunHour } from '../server/notifications/quietLearners.js';
+import { processSummaryReminders } from '../server/notifications/summaryReminders.js';
 import { processMonthlyProgressEmails, monthlyEmailsEnabled, isSendWindow, reportMonthFor, monthLabel } from '../server/notifications/monthlyProgress.js';
 import {
   resolveOfferPurchasability,
@@ -7619,7 +7620,12 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && quietEmailsEnabled() && isQuietRunHour(DateTime.utc())) {
       try { quietLearners = (await processQuietLearners(cronClient)).sent; } catch (err) { console.warn('[Cron] quiet learners failed:', err); }
     }
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners });
+    // NX-13: on-site reminder to a teacher whose family summary is missing 3h after the lesson (production only, like trial follow-ups).
+    let summaryReminders = 0;
+    if (cronClient && process.env.VERCEL_ENV === 'production') {
+      try { summaryReminders = (await processSummaryReminders(cronClient)).sent; } catch (err) { console.warn('[Cron] summary reminders failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),

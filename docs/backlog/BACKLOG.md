@@ -549,7 +549,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   stays on Zoom at first.
 
 ### NX-13 Teacher summary compliance
-- Priority P2 · Zone 🟢 · Size S · Status todo
+- Priority P2 · Zone 🟢 · Size S · Status done
 - Do: remind teachers who have not written a family summary; show the on-time rate (already on "My month") to the
   admin per teacher, so the progress pages never stay empty.
 

@@ -623,3 +623,8 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc clean; `npm run build` passes; `test/nx-02-homework.test.ts` 8/8; full suite 1799 pass, 43 fail, the same 43 fail on untouched main (they need the local .env, not present in this worktree).
 - Not checked: the teacher and family screens in a browser (sign-in pages; checked from code).
 - 2026-11-01, checked in the browser: local site (`dev-test-accounts` in `.claude/launch.json`: production database, `ALLOW_DEV_AUTH`, the public browser keys) with the test accounts, no passwords. Student home on a phone in Arabic: card, tick, "زادك الله علمًا", Arabic digits. Teacher form: the three fields did not fit the narrow column, so the surah now has its own row with labelled ayah boxes; the old "practice at home" field is now "Next step in the lessons" so it does not repeat the homework. A test-account id that is not a real account id no longer breaks "Done". Test learner "Student A (Claude test)" (11111111-2222-3333-4444-555555555555) stays in the database for these checks.
+
+## 2026-11-01 — NX-13 Teacher summary compliance
+- A teacher with no family summary 3 hours after a lesson ended gets one on-site reminder (dashboard bell, link to Today), once per lesson, up to 48 hours after; production only, from the existing reminder cron (`server/notifications/summaryReminders.ts`).
+- Admin Reports, "Teachers: load and care": new "Homework set" column (share of the last 30 days' lessons with homework). On a phone the teacher's name column now stays fixed while the table scrolls sideways.
+- Checks: tsc clean; `test/nx-13-summary-reminders.test.ts` 4/4, CRM-08 tests pass; seen on desktop and phone (Arabic) with the local test admin.
