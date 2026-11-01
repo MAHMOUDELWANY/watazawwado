@@ -44,7 +44,10 @@ export function HomeProgressCard({ isAr }: { isAr: boolean }) {
         </p>
         {subject && (
           <p className="text-xs text-muted-foreground truncate">
-            {isAr ? `${subject.subjectMeta.ar}: ${subject.currentLevel.ar}` : `${subject.subjectMeta.en}: ${subject.currentLevel.en}`}
+            {/* A learner with no recognised level yet shows the subject alone, never "undefined". */}
+            {isAr
+              ? (subject.currentLevel?.ar ? `${subject.subjectMeta.ar}: ${subject.currentLevel.ar}` : subject.subjectMeta.ar)
+              : (subject.currentLevel?.en ? `${subject.subjectMeta.en}: ${subject.currentLevel.en}` : subject.subjectMeta.en)}
           </p>
         )}
         {newest && (

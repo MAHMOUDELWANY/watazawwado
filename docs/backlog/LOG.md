@@ -642,3 +642,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Review (`/code-review` high): fixed: a parent with one child could not redeem; the gift payment was missing from the giver's payment history; redeeming moved purchaser rights to the receiver; no unique index on codes; ledger move failure was silent; learner choice could default silently; Arabic plural. Skipped: the gift checkbox follows the page's existing raw checkboxes.
 - Checks: tsc clean; build passes; `test/nx-06-gifts.test.ts` 8/8; full suite 1830 pass, the 29 failures are the files that already fail without the local .env. Seen on desktop and phone with the local season preview (`GIFT_SEASON_PREVIEW=on`, never on production). Not tested: a real card payment of a gift (Stripe), because the test accounts are not real accounts.
 - 2026-11-01, security review follow-up: redeeming now moves the package to the receiver (purchaser and learner). Before, the giver stayed the purchaser and so kept seeing the receiver's credit history (with the learner's name) and would get their low-balance notices. The giver stays in `metadata.gift.bought_by`, and the payment row keeps the giver's record, so the receipt stays in the giver's payment history.
+
+## 2026-11-01 — NX-08 Seasonal programs
+- Admin → Academy → "Programs" (`/dashboard/programs`, super admin only): create and edit dated programs (title and description in both languages, start, end, "Show to families"), see who joined (name, email).
+- Student home: "Season programs" card for published programs that have not ended; one tap signs a learner up or leaves (each child on a family account has its own button). Sign-up closes on the last day.
+- Data: `seasonal_programs`, `program_signups` (server-only), migration `20261101000002_seasonal_programs.sql` applied.
+- Also fixed: the home progress card printed "undefined" next to the subject for a learner with no recognised level.
+- Checks: tsc clean; build passes; `test/nx-08-programs.test.ts` 5/5, PR-10 and QA-02 tests pass. Seen on desktop (admin created a test program through the form) and on a phone (student joined); the test program is now hidden.

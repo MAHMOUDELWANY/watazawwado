@@ -527,7 +527,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: a family pays lessons for a learner who cannot; who qualifies and how it is shown are owner decisions.
 
 ### NX-08 Seasonal programs
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: dated programs (Ramadan challenge, summer revision, a shared khatma) with a start, an end and a sign-up.
 
 ### NX-09 Push notifications
