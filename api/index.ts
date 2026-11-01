@@ -62,6 +62,7 @@ import { registerHomeworkRoutes } from '../server/routes/homework.js';
 import { registerCertificateRoutes } from '../server/routes/certificates.js';
 import { registerGiftRoutes } from '../server/routes/gifts.js';
 import { registerProgramRoutes } from '../server/routes/programs.js';
+import { registerPushRoutes } from '../server/routes/push.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
@@ -10220,6 +10221,9 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-09: phone notifications (web push), opt-in per device.
+registerPushRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit });
 
 // NX-08: seasonal programs (admin creates, families sign a learner up).
 registerProgramRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent });

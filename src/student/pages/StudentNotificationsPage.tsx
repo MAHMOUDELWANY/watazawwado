@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { InboxList } from '../../components/InboxList';
+import { PushToggle } from '../components/PushToggle';
 import { DateTime } from 'luxon';
 import {
   Bell,
@@ -187,6 +188,8 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
 
   return (
     <div className="space-y-6 animate-fade-in text-start">
+      {/* NX-09: phone notifications for this device (opt-in). */}
+      <PushToggle isAr={isAr} />
       <InboxList lang={isAr ? 'ar' : 'en'} />
 
       {/* 1. Page Header & Actions */}

@@ -35,3 +35,25 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request).catch(() => new Response(OFFLINE_HTML, { headers: { 'Content-Type': 'text/html; charset=utf-8' } }))
   );
 });
+
+// NX-09: phone notifications. The server sends {title, body, url, tag}; a tap opens (or focuses) that page.
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  event.waitUntil(self.registration.showNotification(data.title || 'وتزودوا · Watazawwado', {
+    body: data.body || '',
+    icon: '/android-chrome-192x192.png',
+    badge: '/favicon-48x48.png',
+    tag: data.tag || undefined,
+    data: { url: data.url || '/student' },
+  }));
+});
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = new URL((event.notification.data && event.notification.data.url) || '/student', self.location.origin).href;
+  event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+    const same = wins.find((w) => w.url.startsWith(self.location.origin));
+    if (same) { same.navigate(url); return same.focus(); }
+    return self.clients.openWindow(url);
+  }));
+});

@@ -649,3 +649,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Data: `seasonal_programs`, `program_signups` (server-only), migration `20261101000002_seasonal_programs.sql` applied.
 - Also fixed: the home progress card printed "undefined" next to the subject for a learner with no recognised level.
 - Checks: tsc clean; build passes; `test/nx-08-programs.test.ts` 5/5, PR-10 and QA-02 tests pass. Seen on desktop (admin created a test program through the form) and on a phone (student joined); the test program is now hidden.
+
+## 2026-11-01 — NX-09 Phone notifications (web push)
+- Student → Notifications: "Phone notifications" switch for this device (opt-in). It pushes only the lesson reminders (12 hours and 2 hours before; the 12-hour one carries the homework line) and "your gift was received". On iPhone outside the installed app it explains how to add the app to the Home Screen instead.
+- Standard Web Push with VAPID keys (free, `web-push` 3.6.7). `push_subscriptions` (server-only), migration `20261101000003_push_subscriptions.sql` applied; a device the push service reports gone is deleted. `public/sw.js` shows the notification and opens the page on tap.
+- Waiting for the owner: `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` in Vercel (Production); until then the switch stays hidden. The Vercel connection could not write project settings.
+- Checks: tsc clean; build passes; `test/nx-09-push.test.ts` 5/5 (sending, removal of a gone device, kinds). Seen on desktop and phone; the built-in browser blocks permission, so the "blocked" message showed; a real phone was not tested.
+
+## 2026-11-01 — NX-10 blocked
+- The site's WhatsApp is click-to-chat links only. A weekly message sent automatically to each family needs the WhatsApp Business API (paid per conversation). Owner decides: pay for it, or use the weekly email / on-site notice instead.

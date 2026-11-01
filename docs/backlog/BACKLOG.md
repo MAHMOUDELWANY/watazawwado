@@ -531,11 +531,11 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: dated programs (Ramadan challenge, summer revision, a shared khatma) with a start, an end and a sign-up.
 
 ### NX-09 Push notifications
-- Priority P3 · Zone 🟢 · Size M · Status todo
+- Priority P3 · Zone 🟢 · Size M · Status done (waits for the VAPID keys in Vercel)
 - Do: web push for lesson reminders and today's review, opt-in, respecting notification preferences (RN-07).
 
 ### NX-10 Weekly WhatsApp digest for guardians
-- Priority P3 · Zone 🟢 · Size S · Status todo
+- Priority P3 · Zone 🟢 · Size S · Status blocked (owner decision: sending WhatsApp messages automatically needs the paid WhatsApp Business API; the site only has wa.me links)
 - Do: one weekly message: lessons attended, the teacher's summary, the homework.
 
 ### NX-11 Blog and articles for search

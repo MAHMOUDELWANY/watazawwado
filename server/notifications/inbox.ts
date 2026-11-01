@@ -7,6 +7,7 @@ import { emailAllowed, type EmailPreference } from './preferences.js';
 import { sendEmail, OFFICIAL_ADMIN_EMAIL } from './emailService.js';
 import { renderSimpleNotice, type EmailLang } from './emailTemplates.js';
 import { resolveEmailLanguage } from './dispatcher.js';
+import { PUSH_KINDS, sendPushToUser } from './push.js';
 
 type L = { en: string; ar: string };
 
@@ -62,6 +63,15 @@ export async function notifyUser(
         link: notice.link || null
       });
       if (error) console.warn('[Inbox] insert failed:', error.message);
+      // NX-09: the few kinds worth a phone notification also go to the account's opted-in devices.
+      if (PUSH_KINDS.has(notice.kind)) {
+        let email = recipient.email || null;
+        if (!email) {
+          const { data: p } = await client.from('profiles').select('email').eq('id', recipient.userId).maybeSingle();
+          email = p?.email || null;
+        }
+        await sendPushToUser(client, recipient.userId, notice, email ? await resolveEmailLanguage(email) : 'ar');
+      }
     }
     // RN-07: an optional email the account switched off is not sent; the on-site notice above still is.
     const emailWanted = !options.preference || (await emailAllowed(client, recipient.userId, options.preference));
