@@ -674,6 +674,21 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — Design pass, round 1: audit (impeccable) and the fixes it found
+- Audited public pages (English and Arabic, phone 390px and desktop 1440px, rendered with the impeccable detector), the student portal (12 pages) and the teacher dashboard (overview, bookings, students) at phone size with a probe for sideways overflow, tap targets, unnamed buttons and headings.
+- Score (impeccable audit, 0-4 each): accessibility 3, performance 3, theming 2, responsive 3, implementation integrity 3 = 14/20 (Good).
+- Fixed:
+  - [P1] Crimson text in the dark theme was 3.8-4.4:1 on dark cards (WCAG AA needs 4.5:1), on every public page (footer headings, links, subject "Book a trial" buttons) and in the portal. New `--primary-ink` (#F26468, 5.3:1 on the darkest card) for crimson text in dark mode only; red fills and white-on-red buttons are unchanged. Rescan: 0 contrast findings (was 19).
+  - [P2] Curriculum page: three "Book" buttons were buttons inside links (two controls in one for screen readers); now one button each.
+  - [P2] Lines of 105-123 characters on FAQ answers, the terms lists and a pricing note; capped near 70.
+  - [P3] Achievement "Certificate" link was 16px tall; now 36px. Terms "Contact" section label matches the other "Section N" labels.
+- Kept on purpose (the site's approved identity, not slop): ribbon gradient text, the coloured glows on the main buttons, the teal portals, side borders that mean something (the calendar's colour per child).
+- Not changed, noted:
+  - About 550 hard-coded brand hex colours instead of tokens (CLAUDE.md: no mass rewrite; fix per page when a page is touched).
+  - Dashboard controls are 32-36px (they pass WCAG 2.5.8's 24px minimum, but are below the 44px comfort size on phones).
+  - Light-theme teal text on beige panels is 4.29:1 (brand teal, left as is).
+  - Note for testing: the dev server's file watcher can miss files copied into the OneDrive folder, so restart it after copying.
+
 ## 2026-11-01 — NX-01 Today's review (memorized ayat)
 - Every ayat range the teacher marks "mastered" in homework (NX-02, kind recite) becomes a review card. "Today's review" on the student home shows up to 5 due cards (about five minutes): the learner recites from memory, can open the ayat on quran.com, and taps Smooth / A few slips / Needed the mushaf. Smooth moves the card to the next gap (1, 3, 7, 14, 30, 60 days), slips keep the gap, the mushaf starts it again tomorrow. No streaks and no red; a missed day leaves the cards waiting. When nothing is due it says when the next review is.
 - Table `review_cards` (migration 20261101000005, applied to production; server only). Cards are made when the family opens the home page; the first review is the day after "mastered". A double tap cannot move a card twice (update only from the state read). Family access as homework (`canFamilyReadLearner`, active-learner filter).

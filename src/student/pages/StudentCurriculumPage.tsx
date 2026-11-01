@@ -61,9 +61,7 @@ function Samples({ lang }: { lang: 'ar' | 'en' }) {
           <h3 dir="ltr" className="font-display text-lg font-bold text-foreground text-start">{current.lesson.number}. {current.lesson.title}</h3>
           <LessonPlayer key={current.track.id} lesson={current.lesson} lang={lang}
             sample={{ totalPages: current.totalPages, teaser: ar ? current.teaserAr : current.teaser, onBook: () => navigate('/student/book') }} />
-          <Link to="/student/book" className="block">
-            <Button className="w-full"><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial to unlock the full lesson', 'احجز حصة تجريبية مجانية وافتح الدرس كله')}</Button>
-          </Link>
+          <Button className="w-full" onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial to unlock the full lesson', 'احجز حصة تجريبية مجانية وافتح الدرس كله')}</Button>
         </div>
       ) : (
         <ul className={DOORS}>
@@ -82,6 +80,7 @@ function Samples({ lang }: { lang: 'ar' | 'en' }) {
 export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
+  const navigate = useNavigate();
   const { data, error, retry } = useCurriculum();
 
   if (error) return <ErrorState isAr={ar} message={L("Couldn't load your curriculum.", 'تعذر تحميل منهجك.')} onRetry={retry} />;
@@ -100,9 +99,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
               'احجز حصة تجريبية مجانية، والمعلم هيكمل معاك القصة وتلعبوا لعبة آخر الدرس.'
             )}
           </p>
-          <Link to="/student/book">
-            <Button><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial', 'احجز حصة تجريبية مجانية')}</Button>
-          </Link>
+          <Button onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial', 'احجز حصة تجريبية مجانية')}</Button>
         </div>
         <section className="relative overflow-hidden glass-2 rounded-[var(--r-4,28px)] p-6 sm:p-8 text-center space-y-4">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-teal/15 text-teal flex items-center justify-center">
@@ -120,9 +117,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
               <li key={t} className="aspect-square rounded-xl bg-surface-subtle border border-border flex items-center justify-center text-xs font-bold text-muted-foreground">{i + 1}</li>
             ))}
           </ol>
-          <Link to="/student/book">
-            <Button><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a lesson', 'احجز حصة')}</Button>
-          </Link>
+          <Button onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a lesson', 'احجز حصة')}</Button>
         </section>
       </div>
     );

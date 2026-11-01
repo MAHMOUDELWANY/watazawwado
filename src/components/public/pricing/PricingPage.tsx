@@ -174,7 +174,7 @@ export function PricingPage() {
             })}
           </div>}
 
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center">
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center">
             {isEn
               ? 'Quran, Tajweed, Memorization and the Zad Path are $9 an hour; Fusha, Egyptian Arabic and English start from $13 an hour. Package prices are for 60-minute lessons; shorter lessons cost the same per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
               : 'القرآن والتجويد والحفظ ومسار الأثر بـ 9$ للساعة، والفصحى والعامية المصرية والإنجليزية من 13$ للساعة. أسعار الباقات لحصص ٦٠ دقيقة، والحصص الأقصر بنفس السعر للدقيقة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوفها قبل ما تدفع.'}

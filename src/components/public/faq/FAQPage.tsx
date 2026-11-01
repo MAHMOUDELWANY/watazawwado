@@ -28,7 +28,7 @@ export function FAQPage() {
               <h2 className="font-editorial text-xl sm:text-2xl text-foreground font-bold">
                 {isEn ? 'How do you keep my child safe?' : 'إزاي بتحافظوا على أمان ابني؟'}
               </h2>
-              <p className="text-muted-foreground leading-relaxed text-base">
+              <p className="text-muted-foreground leading-relaxed text-base max-w-[70ch]">
                 {isEn
                   ? 'You can sit in on any lesson, the teacher hosts the Zoom room with a waiting room, lessons are not recorded, and teachers talk to students only on our platform. '
                   : 'تقدر تحضر أي حصة، والمعلم هو مضيف غرفة Zoom ومعاها غرفة انتظار، والحصص مش بتتسجّل، والمعلم بيكلّم الطالب على منصتنا بس. '}
@@ -40,7 +40,7 @@ export function FAQPage() {
                 <h2 className="font-editorial text-xl sm:text-2xl text-foreground font-bold">
                   {isEn ? faq.question : (faq.arabicQuestion || faq.question)}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed text-base">
+                <p className="text-muted-foreground leading-relaxed text-base max-w-[70ch]">
                   {isEn ? faq.answer : (faq.arabicAnswer || faq.answer)}
                 </p>
               </div>

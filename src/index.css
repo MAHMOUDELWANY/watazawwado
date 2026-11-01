@@ -370,6 +370,8 @@ html.dark {
   --primary: #E82C32;
   --primary-foreground: #FFFFFF;
   --primary-hover: #F74046;
+  /* Crimson as text on dark surfaces: #E82C32 reads 3.8:1 on the dark cards; this reaches 5.3:1 (WCAG AA). */
+  --primary-ink: #F26468;
   
   /* Secondary & Interactive - Luminous Sacred Teal */
   --secondary: #12A4BC;
@@ -816,7 +818,7 @@ h3, .text-heading-lg {
 .learning-area-egyptian { --area-accent: #C26300; }
 .learning-area-english { --area-accent: #087D91; }
 
-.dark .learning-area-quran { --area-accent: #E82C32; }
+.dark .learning-area-quran { --area-accent: #F26468; }
 .dark .learning-area-islamic { --area-accent: #12A4BC; }
 .dark .learning-area-msa { --area-accent: #DA7960; }
 .dark .learning-area-egyptian { --area-accent: #F59E0B; }
@@ -1750,7 +1752,7 @@ html.dark {
 .subject-details-btn { color: var(--foreground); border: 1px solid var(--border); background: transparent; }
 .subject-details-btn:hover { border-color: var(--teal); color: var(--teal); }
 .subject-trial-btn {
-  margin-inline-start: auto; color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  margin-inline-start: auto; color: var(--primary-ink, var(--primary)); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
   background-color: color-mix(in srgb, var(--primary) 9%, transparent);
 }
 .subject-trial-btn:hover { background-color: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
@@ -1993,3 +1995,10 @@ html.dark .bg-primary.text-primary-foreground, html.dark .bg-primary.text-white 
 .emblem-locked * { fill: none !important; stroke: currentColor !important; stroke-width: 1.4px !important; animation: none !important; }
 .emblem-locked .emblem-glow { display: none; }
 .emblem-locked text { fill: currentColor !important; stroke: none !important; }
+
+/* Crimson text on the dark theme uses the lighter ink (see --primary-ink); fills and borders keep the brand crimson. */
+html.dark .text-primary,
+html.dark .text-crimson,
+html.dark .text-brand {
+  color: var(--primary-ink);
+}

@@ -310,7 +310,7 @@ export function TermsPage() {
                   <EditorialHeading eyebrow={isEn ? `Section ${i + 1}` : `القسم ${i + 1}`} noAccent>
                     {`${i + 1}. ${content.title}`}
                   </EditorialHeading>
-                  <ul className="list-disc ps-6 space-y-2 text-sm sm:text-base text-muted-foreground">
+                  <ul className="list-disc ps-6 space-y-2 text-sm sm:text-base text-muted-foreground max-w-[72ch]">
                     {content.items.map(item => <li key={item}>{item}</li>)}
                   </ul>
                 </section>
@@ -318,7 +318,7 @@ export function TermsPage() {
             })}
 
             <section id="contact" className="space-y-4 scroll-mt-28">
-              <EditorialHeading eyebrow={isEn ? 'Contact' : 'التواصل'} noAccent>
+              <EditorialHeading eyebrow={isEn ? `Section ${SECTIONS.length + 1}` : `القسم ${SECTIONS.length + 1}`} noAccent>
                 {isEn ? `${SECTIONS.length + 1}. Contact us` : `${SECTIONS.length + 1}. تواصل معنا`}
               </EditorialHeading>
               <div className="glass-card p-6 rounded-2xl border border-border/80 text-sm sm:text-base space-y-2 text-muted-foreground">

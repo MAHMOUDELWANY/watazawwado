@@ -37,8 +37,8 @@ const FAMILY_CONFIGS: Record<string, FamilyStyle & { icon: React.ComponentType<{
     window: 'from-[#C51F24] via-[#A3271F] to-[#8B4935]',
     portal: ['#A3201F', '#4E2219'],
     tint: '#C51F24',
-    chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#E82C32] border-[#C51F24]/25',
-    text: 'text-[#C51F24] dark:text-[#E82C32]'
+    chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#F26468] border-[#C51F24]/25',
+    text: 'text-[#C51F24] dark:text-[#F26468]'
   },
   islamic_studies: {
     icon: Library,

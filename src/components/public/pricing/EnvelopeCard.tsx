@@ -31,8 +31,8 @@ const TONES = {
     back: 'from-[#C51F24]/30 to-[#C51F24]/10 dark:from-[#E82C32]/30 dark:to-[#E82C32]/10',
     pocket: '[--env-a:#F8E4E3] [--env-b:#FDF7F6] dark:[--env-a:#3A1C1C] dark:[--env-b:#261B1A]',
     edge: '#C51F24',
-    text: 'text-[#C51F24] dark:text-[#E82C32]',
-    chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#E82C32]'
+    text: 'text-[#C51F24] dark:text-[#F26468]',
+    chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#F26468]'
   },
   copper: {
     back: 'from-[#8B4935]/30 to-[#E5A93C]/15 dark:from-[#DA7960]/30 dark:to-[#E5A93C]/10',

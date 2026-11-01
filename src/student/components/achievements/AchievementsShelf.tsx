@@ -47,7 +47,7 @@ export function AchievementsShelf({ items, isAr, highlight }: { items: ShelfItem
                     : pick(item.earnBy)}
                 </span>
                 {item.earned && item.milestoneId && (
-                  <Link to={`/student/certificate/${item.milestoneId}`} className="text-xs font-semibold text-teal underline underline-offset-4" data-testid="shelf-certificate">
+                  <Link to={`/student/certificate/${item.milestoneId}`} className="inline-flex items-center min-h-9 text-xs font-semibold text-teal underline underline-offset-4" data-testid="shelf-certificate">
                     {isAr ? 'الشهادة' : 'Certificate'}
                   </Link>
                 )}

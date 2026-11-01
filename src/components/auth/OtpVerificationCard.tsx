@@ -542,7 +542,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
         role={error ? 'alert' : 'status'}
         aria-live={error ? 'assertive' : 'polite'}
         className={`relative mt-4 min-h-5 text-center text-sm ${
-          error ? 'text-[#C51F24] dark:text-[#E82C32] font-medium' : success ? 'sr-only' : 'text-muted-foreground'
+          error ? 'text-[#C51F24] dark:text-[#F26468] font-medium' : success ? 'sr-only' : 'text-muted-foreground'
         }`}
       >
         {status}
