@@ -52,11 +52,11 @@ describe('NX-06 gift rules', () => {
   it('the server keeps gifts out of the usable packages and blocks booking with them', () => {
     const api = fs.readFileSync('api/index.ts', 'utf8');
     assert.match(api, /if \(giftLocked\(entitlement\.metadata\)\) \{\s*return res\.status\(403\)/);
-    assert.match(api, /!ent\.metadata\?\.gift \|\| \(!giftLocked\(ent\.metadata\) && learnerIdSet\.has\(ent\.learner_student_id\)\)/);
-    assert.match(api, /\(entitlement\.purchaser_account_id === authUserId && !entitlement\.metadata\?\.gift\)/, 'the giver cannot book with a gift');
+    assert.match(api, /\.filter\(\(ent: any\) => !giftLocked\(ent\.metadata\)\)/);
     assert.match(api, /const familyDiscount = !asGift &&/);
     const routes = fs.readFileSync('server/routes/gifts.ts', 'utf8');
     assert.match(routes, /\.is\('metadata->gift->>redeemed_at', null\)/, 'one redemption per code');
+    assert.match(routes, /purchaser_account_id: accountId,/, 'the receiver becomes the purchaser, so the giver sees nothing after redemption');
   });
 });
 

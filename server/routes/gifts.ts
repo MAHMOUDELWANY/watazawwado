@@ -4,8 +4,8 @@ import { canFamilyReadLearner, isUuid } from './progress.js';
 import { notifyUser } from '../notifications/inbox.js';
 
 /**
- * NX-06: redeem a gift code. The paid gift package goes to the receiver's learner (the giver stays the purchaser of
- * record, for the payment and any refund), its credit history
+ * NX-06: redeem a gift code. The paid gift package moves to the receiver (purchaser and learner; the giver stays in
+ * metadata.gift.bought_by and on the payment row), its credit history
  * follows, and the person who gave it gets a short note. One redemption per code (the update only matches an
  * unredeemed gift, so two people racing for the same code cannot both win).
  */
@@ -41,7 +41,9 @@ export function registerGiftRoutes(app: express.Express, deps: {
       const redeemedAt = new Date().toISOString();
       const { data: moved, error } = await client.from('package_entitlements')
         .update({
-          // The giver stays the purchaser (payment, refunds); the receiver's learner uses the lessons.
+          // The package becomes the receiver's in every purchaser-keyed place (balance, ledger, low-balance notices,
+          // renewals); the giver stays in metadata.gift.bought_by, and the payment row keeps the giver's record.
+          purchaser_account_id: accountId,
           learner_student_id: learnerId,
           metadata: { ...ent.metadata, gift: { ...ent.metadata.gift, redeemed_at: redeemedAt, redeemed_by: accountId } },
           updated_at: redeemedAt,

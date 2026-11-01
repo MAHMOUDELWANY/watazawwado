@@ -942,8 +942,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       }
 
       const ownsEntitlement =
-        // NX-06: a redeemed gift belongs to its learner; the giver stays the purchaser but cannot use it.
-        (entitlement.purchaser_account_id === authUserId && !entitlement.metadata?.gift) ||
+        entitlement.purchaser_account_id === authUserId ||
         (entitlement.learner_student_id && authorizedLearnerIds.includes(entitlement.learner_student_id));
       if (!ownsEntitlement) {
         return res.status(403).json({ error: 'This package does not belong to your account.' });
@@ -9144,10 +9143,9 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
         };
       });
 
-    // A gift shows in the receiver's wallet (by learner), never as the giver's balance.
-    const learnerIdSet = new Set(authorizedStudentIds);
+    // An unredeemed gift is never balance; once redeemed it is the receiver's (purchaser moves to them).
     const formattedEntitlements = (entitlementsData || [])
-      .filter((ent: any) => !ent.metadata?.gift || (!giftLocked(ent.metadata) && learnerIdSet.has(ent.learner_student_id)))
+      .filter((ent: any) => !giftLocked(ent.metadata))
       .map((ent: any) => {
       const cat = catalogMap.get(ent.package_catalog_id);
       const isCredit = ent.metadata?.source === 'cancellation_credit';
