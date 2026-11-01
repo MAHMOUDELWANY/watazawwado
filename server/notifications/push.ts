@@ -17,12 +17,18 @@ export function pushConfigured(env: Record<string, string | undefined> = process
 
 export interface PushSubscriptionInput { endpoint: string; keys: { p256dh: string; auth: string } }
 
-/** A browser subscription as the client sends it; only https push services. */
+/** The browsers' push services. The server posts to the endpoint, so anything else would let a client aim it anywhere. */
+const PUSH_HOSTS = [/^fcm\.googleapis\.com$/, /^updates\.push\.services\.mozilla\.com$/, /^web\.push\.apple\.com$/, /\.notify\.windows\.com$/, /\.push\.apple\.com$/];
+
+/** A browser subscription as the client sends it; only https on a known push service. */
 export function parseSubscription(raw: any): PushSubscriptionInput | null {
   const endpoint = typeof raw?.endpoint === 'string' ? raw.endpoint : '';
   const p256dh = typeof raw?.keys?.p256dh === 'string' ? raw.keys.p256dh : '';
   const auth = typeof raw?.keys?.auth === 'string' ? raw.keys.auth : '';
-  if (!/^https:\/\/[^\s]+$/.test(endpoint) || endpoint.length > 1000) return null;
+  if (endpoint.length > 1000) return null;
+  let url: URL;
+  try { url = new URL(endpoint); } catch { return null; }
+  if (url.protocol !== 'https:' || url.port || !PUSH_HOSTS.some((re) => re.test(url.hostname))) return null;
   if (!p256dh || p256dh.length > 200 || !auth || auth.length > 100) return null;
   return { endpoint, keys: { p256dh, auth } };
 }

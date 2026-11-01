@@ -22,7 +22,11 @@ function fakeClient(subs: any[]) {
 describe('NX-09 web push', () => {
   it('accepts only https push services with both keys', () => {
     assert.deepStrictEqual(parseSubscription(goodSub), goodSub);
-    for (const bad of [null, {}, { ...goodSub, endpoint: 'http://x' }, { ...goodSub, endpoint: 'javascript:alert(1)' }, { endpoint: goodSub.endpoint, keys: { p256dh: 'a' } }]) {
+    assert.ok(parseSubscription({ ...goodSub, endpoint: 'https://web.push.apple.com/QGuQyavXut' }));
+    assert.ok(parseSubscription({ ...goodSub, endpoint: 'https://wns2-db5p.notify.windows.com/w/?token=x' }));
+    for (const bad of [null, {}, { ...goodSub, endpoint: 'http://x' }, { ...goodSub, endpoint: 'javascript:alert(1)' }, { endpoint: goodSub.endpoint, keys: { p256dh: 'a' } },
+      { ...goodSub, endpoint: 'https://169.254.169.254/latest' }, { ...goodSub, endpoint: 'https://evil.example/fcm.googleapis.com' },
+      { ...goodSub, endpoint: 'https://fcm.googleapis.com.evil.example/x' }, { ...goodSub, endpoint: 'https://fcm.googleapis.com:8443/x' }]) {
       assert.strictEqual(parseSubscription(bad), null, JSON.stringify(bad));
     }
   });
