@@ -50,7 +50,7 @@
           var m = document.cookie.match(/(?:^|; )watazawwado_lang_chosen=(ar|en)/);
           var chosen = m ? m[1] : null;
           var isAr = p === '/ar' || p.indexOf('/ar/') === 0;
-          var PUBLIC = ['/', '/about', '/how-it-works', '/learning', '/pricing', '/faq', '/privacy', '/terms', '/safety', '/get-started'];
+          var PUBLIC = ['/', '/about', '/how-it-works', '/learning', '/pricing', '/faq', '/privacy', '/terms', '/safety', '/get-started', '/articles', '/community'];
           if (!isAr && chosen === 'ar' && PUBLIC.indexOf(p) !== -1) {
             location.replace((p === '/' ? '/ar' : '/ar' + p) + location.search + location.hash);
           }
@@ -67,9 +67,16 @@
           if (standalone || /^\/(student|dashboard|teacher|staff)(\/|$)/.test(p)) {
             document.documentElement.classList.add('boot-app');
           }
+          // First visit with no language chosen yet: the language welcome (src/components/public/LanguageWelcome.tsx).
+          // The suggestion is the page's own language for /ar addresses, else the phone's language.
+          var onPublic = !standalone && !/^\/(student|dashboard|teacher|staff|review|certificate|otp|verify)/.test(p.replace(/^\/ar(?=\/|$)/, ''));
+          if (onPublic && !chosen) {
+            document.documentElement.classList.add('lang-welcome');
+            document.documentElement.setAttribute('data-lang-suggest', isAr || /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en');
+          }
           // First visit of the public site: the signature intro (src/components/public/SignatureIntro.tsx). Decided
           // here, before the first paint, so the page never flashes before the intro covers it. Once per browser.
-          if (!standalone && !/^\/(student|dashboard|teacher|staff|review|certificate|otp|verify)/.test(p.replace(/^\/ar(?=\/|$)/, '')) &&
+          if (onPublic &&
               !localStorage.getItem('wz_sig_seen') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             localStorage.setItem('wz_sig_seen', '1');
             document.documentElement.classList.add('sig-intro');
@@ -132,8 +139,10 @@
       /* Signature intro: Mrs Saint Delafield (SIL Open Font License), subset to the letters of "Watazawwado". */
       @font-face { font-family: 'Mrs Saint Delafield'; font-style: normal; font-weight: 400; font-display: block; src: url(/fonts/mrs-saint-delafield-sig.woff2) format('woff2'); unicode-range: U+57, U+61, U+64, U+6F, U+74, U+77, U+7A; }
       /* Signature intro cover until React takes over; gone by itself after 3 s if the script never runs. */
-      html.sig-intro body::after { content: ''; position: fixed; inset: 0; z-index: 2147483001; background: #FAF7F2; animation: sig-cover-off 0s linear 3s forwards; }
+      html.lang-welcome:not(.lw-open) body::after, html.sig-intro:not(.sig-playing) body::after { content: ''; position: fixed; inset: 0; z-index: 2147483001; background: #FAF7F2; animation: sig-cover-off 0s linear 3s forwards; }
       html.sig-intro.dark body::after { background: #110F0E; }
+      html.lang-welcome:not(.sig-intro) body::after { background: #110F0E; }
+      /* The intro overlay (sig-playing) and the language welcome (lw-open) each take over from the cover once on screen. */
       @keyframes sig-cover-off { to { visibility: hidden; } }
     </style>
     <script type="application/ld+json">

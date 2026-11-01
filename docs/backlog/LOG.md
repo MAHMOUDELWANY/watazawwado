@@ -674,6 +674,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-02 — Language welcome
+- Reference: "Language welcome" in docs/design/INSPIRATION.md. First visit with no language chosen yet: a full-screen choice between English and العربية on the espresso night with film grain and a gold lamp, title "Choose your *language.*", the suggested choice lit (gold line, "Suggested" badge) and listed first.
+- Suggestion: the page's own language for /ar addresses, else the phone's language (`navigator.language`). Decided before the first paint in `index.html` (`html.lang-welcome`, `data-lang-suggest`); public pages only, never in the installed app or the account areas.
+- With the signature intro: the welcome waits paused under it, the intro's curtain lifts onto it, and the hero photos unveil only after the choice. The cover now hands over as soon as the intro (`sig-playing`) or the welcome (`lw-open`) is on screen, instead of after its 3-second timer.
+- Choosing saves like the header toggle (`chooseLanguage`: cookie, storage, account) and moves to the /ar or English twin of the same page. Keyboard: shared FocusTrap, Esc takes the suggestion. Reduced motion: no animation.
+- Also: `/articles` and `/community` added to the Arabic redirect list in `index.html`.
+- Files: `src/components/public/LanguageWelcome.tsx`, `PublicLayout.tsx`, `SignatureIntro.tsx`, `src/index.css`, `index.html`.
+- Checks: tsc clean; build passes; full suite 1893/1899 in the main checkout (the one failure is that checkout's stale `dist/`; it passes in the worktree build). Filmed on the production build: phone 390x844 (English and Arabic phone locales) and desktop 1440x900 (Arabic chosen: lands on /ar, cookie set, overlay gone).
+
 ## 2026-11-02 — Signature intro, second version (owner's notes)
 - Owner, 2026-11-02: the intro should be in English, written properly like the reference, with better motion, in our own colours only, with no multi-colour gradient (the rainbow read like a pride flag).
 - Now:

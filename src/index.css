@@ -2100,3 +2100,123 @@ html.sig-revealing main h1 { animation: sig-rise 0.9s cubic-bezier(0.22, 1, 0.36
 @media (prefers-reduced-motion: reduce) {
   .liquid-cta, .liquid-cta:hover, .liquid-cta:active { animation: none !important; }
 }
+
+/* Language welcome (src/components/public/LanguageWelcome.tsx): espresso night, film grain, a soft lamp of gold,
+   big editorial type, two choices on glass, the suggested one lit. Our palette only (cream, gold, espresso). */
+.lang-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(1.25rem, env(safe-area-inset-bottom));
+  color: #FAF7F2;
+  background:
+    radial-gradient(60% 45% at 50% 18%, rgba(229, 169, 60, 0.22), transparent 70%),
+    radial-gradient(80% 60% at 50% 110%, rgba(139, 73, 53, 0.35), transparent 70%),
+    #110F0E;
+  overflow-y: auto;
+  animation: lw-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.lang-welcome-overlay::before {
+  /* Film grain: a fixed noise layer, very faint. */
+  content: '';
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.lang-welcome-overlay.is-behind, .lang-welcome-overlay.is-behind * { animation-play-state: paused; }
+.lang-welcome-overlay.is-leaving { animation: lw-out 0.52s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
+.lang-welcome-overlay .lw-inner { position: relative; width: min(100%, 30rem); text-align: center; }
+.lang-welcome-overlay .lw-title {
+  font-family: 'Thmanyah Serif Display', serif;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 11vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  animation: lw-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+.lang-welcome-overlay .lw-title em { font-style: italic; color: #E5A93C; }
+.lang-welcome-overlay .lw-title-ar {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: 'Thmanyah Sans', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(250, 247, 242, 0.7);
+}
+.lang-welcome-overlay .lw-panel {
+  margin-top: 2rem;
+  padding: 0.5rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(250, 247, 242, 0.12);
+  background: rgba(250, 247, 242, 0.04);
+  backdrop-filter: blur(14px);
+  display: grid;
+  gap: 0.25rem;
+}
+.lang-welcome-overlay .lw-option {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 1.1rem 1.4rem;
+  border-radius: 1.6rem;
+  text-align: start;
+  color: rgba(250, 247, 242, 0.62);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.lang-welcome-overlay .lw-option:hover { color: #FAF7F2; background: rgba(250, 247, 242, 0.06); }
+.lang-welcome-overlay .lw-option:active { transform: scale(0.985); }
+.lang-welcome-overlay .lw-option:focus-visible { outline: 2px solid #E5A93C; outline-offset: 3px; }
+.lang-welcome-overlay .lw-option.is-suggested {
+  color: #FAF7F2;
+  background: linear-gradient(180deg, rgba(250, 247, 242, 0.1), rgba(250, 247, 242, 0.05));
+  box-shadow: inset 0 1px 0 rgba(250, 247, 242, 0.12), 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+}
+.lang-welcome-overlay .lw-option.is-suggested::after {
+  /* The lit line under the suggested choice. */
+  content: '';
+  position: absolute;
+  inset-inline: 12%;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #E5A93C, transparent);
+  box-shadow: 0 0 14px 2px rgba(229, 169, 60, 0.45);
+}
+.lang-welcome-overlay .lw-option.is-chosen { color: #FAF7F2; background: rgba(229, 169, 60, 0.14); }
+.lang-welcome-overlay .lw-name { font-family: 'Thmanyah Serif Display', serif; font-size: clamp(2.1rem, 9vw, 2.8rem); line-height: 1; }
+.lang-welcome-overlay .lw-option[lang='ar'] .lw-name { font-family: 'Thmanyah Display', 'Thmanyah Sans', sans-serif; font-weight: 700; }
+.lang-welcome-overlay .lw-line { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(229, 169, 60, 0.85); }
+.lang-welcome-overlay .lw-option[lang='ar'] .lw-line { font-size: 0.9rem; letter-spacing: 0; text-transform: none; }
+.lang-welcome-overlay .lw-badge {
+  position: absolute;
+  inset-inline-end: 1.1rem;
+  top: 50%;
+  translate: 0 -50%;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 169, 60, 0.55);
+  background: rgba(17, 15, 14, 0.6);
+  color: #E5A93C;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.lang-welcome-overlay .lw-option[lang='ar'] .lw-badge { letter-spacing: 0; font-size: 0.8rem; }
+.lang-welcome-overlay .lw-note { margin-top: 1.6rem; font-size: 0.9rem; color: rgba(250, 247, 242, 0.55); animation: lw-rise 0.6s ease 0.7s both; }
+@keyframes lw-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lw-out { to { opacity: 0; transform: scale(1.04); filter: blur(4px); } }
+@keyframes lw-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .lang-welcome-overlay, .lang-welcome-overlay *, .lang-welcome-overlay.is-leaving { animation: none !important; }
+}

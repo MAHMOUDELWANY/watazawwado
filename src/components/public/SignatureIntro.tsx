@@ -22,7 +22,7 @@ export function SignatureIntro() {
 
   // The cover lifts only here, when the intro ends or is skipped, never before it starts.
   const finish = useCallback(() => {
-    document.documentElement.classList.remove('sig-intro');
+    document.documentElement.classList.remove('sig-intro', 'sig-playing');
     setPhase('off');
   }, []);
 
@@ -31,6 +31,8 @@ export function SignatureIntro() {
   useEffect(() => {
     if (phase !== 'playing') return;
     const root = document.documentElement;
+    // With the language welcome next, the photos wait for the visitor's choice (LanguageWelcome unveils them).
+    if (root.classList.contains('lang-welcome')) return;
     const start = window.setTimeout(() => {
       root.classList.add('sig-revealing');
       // Not cleared with the intro: the class must go, or the photos keep the animation's end state (no hover zoom).
@@ -52,6 +54,7 @@ export function SignatureIntro() {
     Promise.race([font, wait]).then(() => {
       if (gone) return;
       if (!document.fonts?.check?.(spec, WORD)) setFallback(true);
+      document.documentElement.classList.add('sig-playing');
       setPhase('playing');
     });
     return () => { gone = true; };
