@@ -63,6 +63,7 @@ import { registerCertificateRoutes } from '../server/routes/certificates.js';
 import { registerGiftRoutes } from '../server/routes/gifts.js';
 import { registerProgramRoutes } from '../server/routes/programs.js';
 import { registerPushRoutes } from '../server/routes/push.js';
+import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
@@ -7645,7 +7646,12 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && weeklyDigestEnabled() && isDigestDay(DateTime.utc())) {
       try { weeklyDigest = (await processWeeklyDigest(cronClient)).sent; } catch (err) { console.warn('[Cron] weekly digest failed:', err); }
     }
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest });
+    // NX-03: recordings older than 90 days are deleted (children's audio).
+    let recitationsPurged = 0;
+    if (cronClient && process.env.VERCEL_ENV === 'production') {
+      try { recitationsPurged = await purgeOldRecitations(cronClient); } catch (err) { console.warn('[Cron] recitation purge failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest, recitationsPurged });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),
@@ -10227,6 +10233,9 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-03: recitation recordings and the teacher's reply.
+registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-09: phone notifications (web push), opt-in per device.
 registerPushRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit });

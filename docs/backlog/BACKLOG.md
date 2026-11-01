@@ -504,7 +504,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   off; guardians see them; the next lesson window shows what was done.
 
 ### NX-03 Recitation recordings with teacher feedback
-- Priority P2 · Zone 🟢 · Size L · Status todo
+- Priority P2 · Zone 🟢 · Size L · Status done (written replies; the privacy-policy line waits for the owner)
 - Do: the learner records a recitation on the phone; the assigned teacher replies with a voice or text note before the
   next lesson. Private storage, only the learner, guardian, teacher and super admin can play it; retention period and
   privacy policy line needed (children's audio).

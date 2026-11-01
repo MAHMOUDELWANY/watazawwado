@@ -33,8 +33,8 @@ describe('NX-09 web push', () => {
     }
   });
 
-  it('only lesson reminders and gift notes buzz a phone', () => {
-    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_in_12h', 'lesson_in_2h']);
+  it('only lesson reminders, gift notes and recitation replies buzz a phone', () => {
+    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_in_12h', 'lesson_in_2h', 'recitation_reply']);
   });
 
   it('sends nothing without keys, and removes a device the push service says is gone', async () => {

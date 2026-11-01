@@ -35,6 +35,7 @@ import { JourneyLog } from '../components/JourneyLog';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
+import { RecitationInbox } from '../components/RecitationInbox';
 import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
 import { useT } from '../../lib/language';
@@ -906,6 +907,8 @@ export default function StudentDetailPage() {
           )}
 
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+            {/* NX-03: the student's recitations to listen to and answer (the notice links here). */}
+            <RecitationInbox studentId={student.id} />
             {/* Post-lesson Summary, Achievements, Milestones & Private Notes Editor (PR-06) */}
             <PostLessonSummaryEditor
               studentId={student.id}

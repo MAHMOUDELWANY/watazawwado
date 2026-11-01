@@ -5,6 +5,7 @@ import { BookOpen, Check, ExternalLink, Sparkles } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { homeworkLine, type HomeworkItem } from '../../lib/homework';
 import { useActiveLearner } from '../activeLearner';
+import { RecitationRecorder } from './RecitationRecorder';
 
 /**
  * NX-02: "This week's homework" on the student home. The teacher's tasks for the next lesson, one Done per task.
@@ -17,6 +18,7 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [cheer, setCheer] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [repliesKey, setRepliesKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,6 +83,8 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
                   {line.href && (line.external
                     ? <a href={line.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-teal underline underline-offset-4 inline-flex items-center gap-1 w-fit">{isAr ? 'افتح الآيات' : 'Open the ayat'}<ExternalLink className="w-3 h-3" aria-hidden="true" /></a>
                     : <Link to={line.href} className="text-xs font-semibold text-teal underline underline-offset-4 w-fit">{isAr ? 'افتح منهجي' : 'Open my curriculum'}</Link>)}
+                  {/* NX-03: a recite task can be recorded and sent to the teacher. */}
+                  {hw.kind === 'recite' && <RecitationRecorder learnerId={hw.student_id} homeworkId={hw.id} isAr={isAr} onSent={() => setRepliesKey((k) => k + 1)} />}
                   <AnimatePresence>
                     {cheer === hw.id && done && (
                       <motion.span
@@ -110,6 +114,8 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
         </p>
       )}
 
+      <RecitationReplies isAr={isAr} learnerId={activeId} refreshKey={repliesKey} />
+
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
 
       {!data.hasNextLesson && data.open.length > 0 && (
@@ -118,5 +124,31 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
         </Link>
       )}
     </section>
+  );
+}
+
+/** NX-03: the teacher's written replies to recent recitations (with the recording to listen again). */
+function RecitationReplies({ isAr, learnerId, refreshKey }: { isAr: boolean; learnerId: string | null; refreshKey: number }) {
+  const [items, setItems] = useState<Array<{ id: string; teacher_reply: string | null; playUrl: string | null; created_at: string }>>([]);
+  useEffect(() => {
+    let cancelled = false;
+    const q = learnerId ? `?learnerId=${encodeURIComponent(learnerId)}` : '';
+    authedJson<{ recordings: any[] }>(`/api/student/recitations${q}`).then((d) => { if (!cancelled) setItems(d.recordings || []); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [learnerId, refreshKey]);
+  const replied = items.filter((r) => r.teacher_reply).slice(0, 3);
+  const waiting = items.filter((r) => !r.teacher_reply).length;
+  if (!replied.length && !waiting) return null;
+  return (
+    <div className="grid gap-2" data-testid="recitation-replies">
+      {waiting > 0 && <p className="text-xs text-muted-foreground">{isAr ? `${waiting.toLocaleString('ar-EG')} تسجيل مستني رد المعلم.` : `${waiting} recording${waiting === 1 ? '' : 's'} waiting for your teacher.`}</p>}
+      {replied.map((r) => (
+        <div key={r.id} className="rounded-xl border border-border p-3 grid gap-1.5">
+          <p className="text-xs font-semibold text-muted-foreground">{isAr ? 'رد المعلم على تلاوتك' : "Your teacher's reply"}</p>
+          <p className="text-sm text-foreground whitespace-pre-line">{r.teacher_reply}</p>
+          {r.playUrl && <audio controls preload="none" src={r.playUrl} className="w-full h-10" />}
+        </div>
+      ))}
+    </div>
   );
 }
