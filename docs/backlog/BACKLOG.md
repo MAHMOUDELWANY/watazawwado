@@ -534,8 +534,8 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Priority P3 · Zone 🟢 · Size M · Status done (waits for the VAPID keys in Vercel)
 - Do: web push for lesson reminders and today's review, opt-in, respecting notification preferences (RN-07).
 
-### NX-10 Weekly WhatsApp digest for guardians
-- Priority P3 · Zone 🟢 · Size S · Status blocked (owner decision: sending WhatsApp messages automatically needs the paid WhatsApp Business API; the site only has wa.me links)
+### NX-10 Weekly digest for guardians
+- Priority P3 · Zone 🟢 · Size S · Status done by email (owner 2026-11-01: "بالإيميل ببلاش"; WhatsApp would need the paid Business API)
 - Do: one weekly message: lessons attended, the teacher's summary, the homework.
 
 ### NX-11 Blog and articles for search

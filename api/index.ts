@@ -89,6 +89,7 @@ import { studentRescheduleBlock, studentCancelBlock } from '../server/booking/st
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
 import { processQuietLearners, quietEmailsEnabled, isQuietRunHour } from '../server/notifications/quietLearners.js';
 import { processSummaryReminders } from '../server/notifications/summaryReminders.js';
+import { processWeeklyDigest, weeklyDigestEnabled, isDigestDay } from '../server/notifications/weeklyDigest.js';
 import { processMonthlyProgressEmails, monthlyEmailsEnabled, isSendWindow, reportMonthFor, monthLabel } from '../server/notifications/monthlyProgress.js';
 import {
   resolveOfferPurchasability,
@@ -7639,7 +7640,12 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && process.env.VERCEL_ENV === 'production') {
       try { summaryReminders = (await processSummaryReminders(cronClient)).sent; } catch (err) { console.warn('[Cron] summary reminders failed:', err); }
     }
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders });
+    // NX-10: the weekly email to families (production, Sunday afternoon UTC).
+    let weeklyDigest = 0;
+    if (cronClient && weeklyDigestEnabled() && isDigestDay(DateTime.utc())) {
+      try { weeklyDigest = (await processWeeklyDigest(cronClient)).sent; } catch (err) { console.warn('[Cron] weekly digest failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),

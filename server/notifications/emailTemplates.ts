@@ -651,6 +651,28 @@ export function renderMonthlyProgressEmail(params: {
   }, title, params.lang);
 }
 
+/** NX-10: the weekly note to the family: lessons, the teacher's words, homework. Same unsubscribe as progress emails. */
+export function renderWeeklyDigestEmail(params: {
+  name?: string | null;
+  paragraphs: L[];
+  lang?: EmailLang;
+}): EmailRenderResult {
+  const name = escapeHtml(params.name || '');
+  const settings = `${SITE_URL}/student/account?tab=preferences`;
+  const title: L = { en: 'Your week with us', ar: 'أسبوعك معانا' };
+  return render({
+    preheader: title,
+    title,
+    greeting: name ? { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` } : { en: 'Assalamu alaikum,', ar: 'السلام عليكم،' },
+    paragraphs: params.paragraphs.map((l) => ({ en: escapeHtml(l.en), ar: escapeHtml(l.ar) })),
+    button: { url: `${SITE_URL}/student`, label: { en: 'Open your home page', ar: 'افتح صفحتك الرئيسية' } },
+    reason: {
+      en: `You get this weekly note because progress emails are on in your account. <a href="${settings}" style="color:${TEAL};">Turn them off</a> any time.`,
+      ar: `وصلتك الرسالة دي لأن إيميلات التقدّم شغّالة في حسابك. تقدر <a href="${settings}" style="color:${TEAL};">توقفها</a> في أي وقت.`
+    }
+  }, title, params.lang);
+}
+
 export function renderSimpleNotice(params: {
   name?: string | null;
   title: L;

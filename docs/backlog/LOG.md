@@ -658,3 +658,8 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## 2026-11-01 — NX-10 blocked
 - The site's WhatsApp is click-to-chat links only. A weekly message sent automatically to each family needs the WhatsApp Business API (paid per conversation). Owner decides: pay for it, or use the weekly email / on-site notice instead.
+
+## 2026-11-01 — NX-10 Weekly digest by email (owner: free, by email)
+- Every Sunday afternoon (UTC), one email per account (the guardian for children) about the week: lessons per learner, the teacher's latest family summary, homework still open. Same text as an on-site notice. Accounts that switched progress emails off get nothing; never twice for a week; 100 per cron run (Brevo free plan). On by default on production; `WEEKLY_DIGEST_EMAILS=off` stops it.
+- `server/notifications/weeklyDigest.ts`, template `renderWeeklyDigestEmail`. Arabic wording fits a boy or a girl ("حصص أمينة الأسبوع ده: درسين"); the monthly email used "حضر" for everyone and now uses the same neutral line.
+- Checks: tsc clean; `test/nx-10-weekly-digest.test.ts` 3/3 and PR-09 tests pass; Arabic sample email checked on a phone size.
