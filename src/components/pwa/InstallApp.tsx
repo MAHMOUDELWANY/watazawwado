@@ -34,6 +34,12 @@ function Key({ children }: { children: React.ReactNode }) {
 function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
   const t = (en: React.ReactNode, ar: React.ReactNode) => (isAr ? ar : en);
   switch (platform) {
+    case 'in-app':
+      return [
+        t(<>This page is open inside another app, which cannot install it.</>, <>الصفحة دي مفتوحة جوه تطبيق تاني، ومينفعش يثبّتها.</>),
+        t(<>Tap the menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key> or <Key>•••</Key> and choose <Key>Open in browser</Key> (Safari on iPhone, Chrome on Android).</>, <>اضغط القائمة <Key><MoreVertical className="w-3.5 h-3.5" /></Key> أو <Key>•••</Key> واختار <Key>افتح في المتصفح</Key> (Safari على الآيفون، Chrome على أندرويد).</>),
+        t(<>Then add Watazawwado to your home screen from there.</>, <>ومن هناك ضيف وتزودوا على شاشتك.</>),
+      ];
     case 'ios-other':
       return [
         t(<>Tap <Key><Share className="w-3.5 h-3.5" /> Share</Key> next to the address bar.</>, <>اضغط زرار <Key><Share className="w-3.5 h-3.5" /> المشاركة</Key> جنب شريط العنوان.</>),
@@ -264,7 +270,9 @@ export function InstallAppNudge({ isAr }: Lang) {
 
   // Phones and tablets get the bar; desktop visitors use the menu entry or the address-bar icon.
   const touch = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
-  const show = ready && touch && canOfferInstall(s) && !s.dismissed;
+  // Where the browser offers its own install bar (Chrome, Edge, Samsung on Android) it shows that bar by itself, so our
+  // card would only repeat it; the card is for iPhone, iPad and the rest, where nothing appears on its own.
+  const show = ready && touch && canOfferInstall(s) && !s.dismissed && !s.canPrompt;
 
   return (
     <>
@@ -284,7 +292,11 @@ export function InstallAppNudge({ isAr }: Lang) {
               <AppTile size={40} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold leading-tight">{isAr ? 'وتزودوا على شاشتك' : 'Watazawwado on your phone'}</p>
-                <p className="text-xs text-muted-foreground truncate">{isAr ? 'ثبّته كتطبيق، ببلاش ومن غير متجر' : 'Install it as an app, free, no store'}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {s.platform === 'in-app'
+                    ? (isAr ? 'افتح الصفحة في المتصفح عشان تثبّته' : 'Open this page in your browser to install it')
+                    : (isAr ? 'ثبّته كتطبيق، ببلاش ومن غير متجر' : 'Install it as an app, free, no store')}
+                </p>
               </div>
               <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring">
                 {isAr ? 'ثبّت' : 'Install'}

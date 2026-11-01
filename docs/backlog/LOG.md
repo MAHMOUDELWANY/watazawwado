@@ -674,6 +674,22 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — Install by itself, in-app browser hint, Liquid Glass tab bar
+- References: docs/design/INSPIRATION.md ("Liquid Glass bars", "Language welcome" install bar).
+- Install:
+  - `src/lib/pwaInstall.ts` no longer calls `preventDefault()` on `beforeinstallprompt`. Chrome, Edge and Samsung on Android show their own install bar by itself, and the event is still kept for our "Get the app" buttons.
+  - Our install card (`InstallAppNudge`) now appears only where the browser shows nothing by itself: iPhone, iPad and the others.
+- Manifest: `public/site.webmanifest` has a description and three phone screenshots (`public/screenshots/home|week|subjects.webp`, 780x1688, dark, taken with headless Chrome), so Android shows the richer install sheet with pictures.
+- In-app browsers: links opened inside Instagram, Facebook, TikTok, Snapchat or LINE are detected (`in-app` platform). The card and sheet tell people to open the page in Safari or Chrome first, since those apps cannot add a site to the Home Screen.
+- Tab bar (portal and dashboard, phones):
+  - It keeps the approved design (dark pill, raised crimson circle) and is now translucent with a blur.
+  - While reading down a page it shrinks to icons (68px to 54px, labels fade, the pill narrows). Scrolling up, reaching the top or tapping it brings it back.
+  - The scroll listener works in the capture phase, so it follows the window or the scrolling `<main>`. Reduced motion makes the change instant.
+- Checks:
+  - tsc clean; build passes (screenshots copied to dist); 22/22 tests in `pwa-install`, `shell-tabbar`, `st-07-pwa` and `retired-subject-copy`, including new in-app detection tests and a test that keeps `preventDefault` out.
+  - Headless Chrome at 390x844 with touch: the bar measured 68px at rest, 54px after scrolling down and 68px after scrolling up.
+- Not checked: Chrome's own install bar on a real Android phone. It depends on Chrome's engagement rules, and it shows only on the live https site, not locally.
+
 ## 2026-11-01 — Design pass, round 2: critique of home and pricing, NX-05 reviews, new home sections
 - Critique (impeccable, two separate reviewers: design review and detector): 19/32 on the 8 heuristics that apply. The look is the academy's own; the weak part was structure: home was a hub of 6 doors, and pricing shows no prices until a subject is picked. Snapshot in `.impeccable/critique/`.
 - Owner decisions (2026-11-01):

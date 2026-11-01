@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react';
  *
  * Chrome and Edge fire `beforeinstallprompt` once, early, often before React mounts. `capturePwaInstall()` runs in
  * main.tsx so the event is kept for whichever button asks for it later (site menu, portal home, teacher dashboard).
+ * We do not call preventDefault(): the browser then shows its own install bar by itself (owner, 2026-11-01), and our
+ * own suggestion stays out of the way on those browsers (`InstallAppNudge`).
  */
 
 type DeferredPrompt = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
 
-export type InstallPlatform = 'ios-safari' | 'ios-other' | 'android' | 'samsung' | 'mac-safari' | 'desktop' | 'firefox-android' | 'firefox' | 'unknown';
+export type InstallPlatform = 'in-app' | 'ios-safari' | 'ios-other' | 'android' | 'samsung' | 'mac-safari' | 'desktop' | 'firefox-android' | 'firefox' | 'unknown';
 
 let deferred: DeferredPrompt | null = null;
 let installedNow = false;
@@ -27,7 +29,6 @@ export function capturePwaInstall(): void {
     window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }, { once: true });
   }
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
     deferred = e as DeferredPrompt;
     notify();
   });
@@ -50,6 +51,9 @@ export function isStandalone(): boolean {
 
 /** Which install steps to show (pure, so it is testable). */
 export function detectPlatform(ua: string): InstallPlatform {
+  // Links opened inside Instagram, Facebook, TikTok, Snapchat or LINE stay in that app's own browser, which cannot
+  // install a site (no Share > Add to Home Screen on iPhone, no install on Android): first open it in the real browser.
+  if (/Instagram|FBAN|FBAV|FB_IAB|FBIOS|TikTok|musical_ly|BytedanceWebview|Snapchat|\bLine\//i.test(ua)) return 'in-app';
   if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && /Mobile/i.test(ua))) {
     return /CriOS|FxiOS|EdgiOS/i.test(ua) ? 'ios-other' : 'ios-safari';
   }

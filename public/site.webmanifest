@@ -87,5 +87,28 @@
         }
       ]
     }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home.webp",
+      "sizes": "780x1688",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Watazawwado Academy: one-on-one lessons for you and your family"
+    },
+    {
+      "src": "/screenshots/week.webp",
+      "sizes": "780x1688",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "A week with Watazawwado: lesson, homework, daily review, recitation"
+    },
+    {
+      "src": "/screenshots/subjects.webp",
+      "sizes": "780x1688",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Subjects: Quran, Tajweed, the Zad Path, Arabic and English"
+    }
   ]
 }

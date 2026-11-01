@@ -11,6 +11,9 @@ const UA = {
   firefoxDesktop: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0',
   macSafari: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15',
   windowsEdge: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 Edg/130.0',
+  instagramIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 350.0.0.0 (iPhone15,3; iOS 18_0; en_GB)',
+  facebookAndroid: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/480.0.0.0;]',
+  tiktokIos: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 musical_ly_37.0.0 BytedanceWebview/d8a21c6',
 };
 
 test('detectPlatform names each browser family', () => {
@@ -22,6 +25,14 @@ test('detectPlatform names each browser family', () => {
   assert.equal(detectPlatform(UA.firefoxDesktop), 'firefox');
   assert.equal(detectPlatform(UA.macSafari), 'mac-safari');
   assert.equal(detectPlatform(UA.windowsEdge), 'desktop');
+  assert.equal(detectPlatform(UA.instagramIos), 'in-app');
+  assert.equal(detectPlatform(UA.facebookAndroid), 'in-app');
+  assert.equal(detectPlatform(UA.tiktokIos), 'in-app');
+});
+
+test('the browser keeps its own install bar (no preventDefault)', async () => {
+  const src = (await import('node:fs')).readFileSync('src/lib/pwaInstall.ts', 'utf8');
+  assert.doesNotMatch(src, /e\.preventDefault\(\)/);
 });
 
 test('canOfferInstall: one-tap prompt always, the gesture where a browser allows it, nothing on desktop Firefox or once installed', () => {
