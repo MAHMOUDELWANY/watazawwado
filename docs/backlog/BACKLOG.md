@@ -568,6 +568,29 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   a training track per subject (our curriculum, the teacher guide, a test, an observed lesson) that unlocks the subject;
   admin view of who may teach what.
 
+### NX-16 A child's own phone, linked to the parent's account
+- Priority P2 · Zone 🔴 (children's data and access) · Size L · Status todo · Owner approval of the design first
+- Owner idea (2026-11-01): a child with their own phone, without the parent's phone nearby, should still have the
+  app on their phone through a safe system.
+- Proposed design (from ClassDojo, Waterford, RoosterMoney):
+  - The parent stays the account holder. The child has no email and no password of their own.
+  - In the portal Family tab the parent taps "Set up a phone for <child>" and gets a one-time 6-digit code and QR,
+    valid for 15 minutes.
+  - On the child's phone, watazawwado.academy/kid (or the installed app) takes the code or scans the QR, and that phone
+    becomes a "child device" for that one learner. An optional 4-digit PIN guards it.
+  - The child device sees only that child's lessons and join button, homework, today's review, recitations and the
+    lesson room.
+  - The child device has no payments, booking, settings or other children.
+  - Messages to the teacher are on or off, as the parent chooses. The academy can read them, as today.
+  - The parent sees a list of linked phones (name, last used) and can remove one at once, and is notified when a
+    phone is linked.
+- Technical:
+  - New table `child_devices`: learner, hashed token, name, last seen, revoked.
+  - A `verifyChildDevice` check on a small set of child routes.
+  - The token is stored on the device. It lasts long and can be revoked.
+  - No Supabase user for the child.
+- Teens (13+) might later get their own email login instead. Privacy policy needs a line on child devices.
+
 ---
 
 ## Owner decisions needed (agents: do not start these)
