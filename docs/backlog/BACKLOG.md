@@ -519,7 +519,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: a short rating after lessons; after a few lessons ask for a public review with consent. No children's photos.
 
 ### NX-06 Gift lessons
-- Priority P2 · Zone 🔴 (money) · Size M · Status todo
+- Priority P2 · Zone 🔴 (money) · Size M · Status done (seasonal, owner 2026-11-01)
 - Do: buy a package as a gift (Eid, Ramadan, a relative); the receiver redeems it into their wallet.
 
 ### NX-07 Sponsor a learner (sadaqah)

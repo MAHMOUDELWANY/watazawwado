@@ -31,6 +31,8 @@ import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal
 import { StudentPageBack } from '../components/StudentPageBack';
 import { PackageBalance } from '../components/PackageBalance';
 import { useActiveLearner } from '../activeLearner';
+import { GiftsPanel, seasonGiftLabel } from '../components/GiftsPanel';
+import { Input } from '../../components/ui/Input';
 
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
@@ -66,6 +68,10 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
   const [activeClaimEntitlement, setActiveClaimEntitlement] = useState<any | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedEarlyStart, setAcceptedEarlyStart] = useState(false);
+  // NX-06: buy as a gift (only while the gift season is open).
+  const [asGift, setAsGift] = useState(false);
+  const [giftToName, setGiftToName] = useState('');
+  const [giftMessage, setGiftMessage] = useState('');
   const [packageMinutes, setPackageMinutes] = useState(60);
   // RN-03: the catalogue package being renewed (highlighted; the family still ticks the boxes and confirms).
   const [renewCatalogId, setRenewCatalogId] = useState<string | null>(null);
@@ -208,7 +214,9 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
       const token = session?.access_token;
 
       const payload: any = { packageCatalogId: catalogItem.id, acceptedTerms, acceptedEarlyStart };
-      if (selectedLearnerId) {
+      if (asGift && data.giftSeason) {
+        Object.assign(payload, { asGift: true, giftToName, giftMessage });
+      } else if (selectedLearnerId) {
         payload.learnerStudentId = selectedLearnerId;
       }
 
@@ -695,7 +703,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
         </div>
 
         {/* Multi-Child Learner Selector (Only shown if account has multiple learners) */}
-        {hasMultipleLearners && (
+        {hasMultipleLearners && !asGift && (
           <div className="p-4 rounded-2xl glass-card border-none space-y-2">
             <label className="text-sm font-semibold text-foreground flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-accent" />
@@ -771,6 +779,23 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
               ? 'رعاية الأسرة: لو اشتريت باقة لابن أو بنت تانية في نفس الحساب، بتاخد خصم 5% زيادة تلقائياً.'
               : 'Family care: buying a package for a second (or third) child on the same account takes an extra 5% off, automatically.'}
           </p>
+          {data.giftSeason && (
+            <div className="rounded-xl border border-accent/40 p-3 space-y-2" data-testid="buy-as-gift">
+              <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
+                <input type="checkbox" checked={asGift} onChange={(e) => setAsGift(e.target.checked)} className="mt-1 w-4 h-4 accent-teal-600" />
+                <span>
+                  <span className="font-semibold">{isAr ? `اشتريها ${seasonGiftLabel(data.giftSeason, true)}` : `Buy it as a ${seasonGiftLabel(data.giftSeason, false)}`}</span>
+                  <span className="block text-muted-foreground">{isAr ? 'هتاخد كود تبعته لحد عزيز، والحصص بتتفعّل عنده هو.' : 'You get a code to send to someone you love; the lessons go to their account.'}</span>
+                </span>
+              </label>
+              {asGift && (
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Input value={giftToName} onChange={(e) => setGiftToName(e.target.value)} maxLength={60} placeholder={isAr ? 'اسم صاحب الهدية (اختياري)' : 'Their name (optional)'} aria-label={isAr ? 'اسم صاحب الهدية' : 'Their name'} />
+                  <Input value={giftMessage} onChange={(e) => setGiftMessage(e.target.value)} maxLength={300} placeholder={isAr ? 'رسالة قصيرة (اختياري)' : 'A short message (optional)'} aria-label={isAr ? 'رسالة' : 'Message'} />
+                </div>
+              )}
+            </div>
+          )}
           <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
             <input
               type="checkbox"
@@ -841,6 +866,15 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
           </div>
         )}
       </div>
+
+      {/* NX-06: gifts: redeem a code, and the gifts this account bought */}
+      <GiftsPanel
+        gifts={Array.isArray(data.gifts) ? data.gifts : []}
+        learners={Array.isArray(data.learners) ? data.learners : []}
+        isAr={isAr}
+        onRedeemed={() => { fetchPackages(); fetchLedger(); }}
+        onPay={(g) => setActiveClaimEntitlement({ id: g.id, packageName: g.packageName, pricePaid: g.pricePaid, currency: g.currency })}
+      />
 
       {/* 6. Credit Activity / Ledger History Section */}
       <div className="space-y-4 pt-4">

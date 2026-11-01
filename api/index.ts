@@ -60,6 +60,8 @@ import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerHomeworkRoutes } from '../server/routes/homework.js';
 import { registerCertificateRoutes } from '../server/routes/certificates.js';
+import { registerGiftRoutes } from '../server/routes/gifts.js';
+import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
@@ -940,10 +942,15 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       }
 
       const ownsEntitlement =
-        entitlement.purchaser_account_id === authUserId ||
+        // NX-06: a redeemed gift belongs to its learner; the giver stays the purchaser but cannot use it.
+        (entitlement.purchaser_account_id === authUserId && !entitlement.metadata?.gift) ||
         (entitlement.learner_student_id && authorizedLearnerIds.includes(entitlement.learner_student_id));
       if (!ownsEntitlement) {
         return res.status(403).json({ error: 'This package does not belong to your account.' });
+      }
+      // NX-06: a gift package is usable only after its code was redeemed (then it belongs to the receiver).
+      if (giftLocked(entitlement.metadata)) {
+        return res.status(403).json({ error: 'This package is a gift. It can be used after the code is redeemed.' });
       }
 
       // RULES.md §4: credits are for the same price band and lesson length they were bought for.
@@ -5171,7 +5178,7 @@ async function fulfillAutomatedPayment(params: {
   } else if (params.targetType === 'package') {
     const { data: entitlement } = await supabaseAdmin
       .from('package_entitlements')
-      .select('id, learner_student_id, price_paid, currency, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
+      .select('id, learner_student_id, purchaser_account_id, metadata, price_paid, currency, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
       .eq('id', params.targetId)
       .maybeSingle();
 
@@ -5181,6 +5188,11 @@ async function fulfillAutomatedPayment(params: {
 
     entitlementId = entitlement.id;
     studentId = entitlement.learner_student_id;
+    // NX-06: a gift has no learner when it is paid; the payment belongs to the giver's own record (their history).
+    if (!studentId && (entitlement as any).metadata?.gift && (entitlement as any).purchaser_account_id) {
+      const { data: giver } = await supabaseAdmin.from('students').select('id').eq('auth_user_id', (entitlement as any).purchaser_account_id).maybeSingle();
+      studentId = giver?.id || null;
+    }
     const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
     expectedAmount = Number(entitlement.price_paid || cat?.price_amount || 0);
     expectedCurrency = entitlement.currency || cat?.currency || 'USD';
@@ -9109,7 +9121,34 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
       }
     }
 
-    const formattedEntitlements = (entitlementsData || []).map((ent: any) => {
+    // NX-06: gifts this account bought and nobody redeemed yet: shown with their code, never counted as balance.
+    const gifts = (entitlementsData || [])
+      .filter((ent: any) => giftLocked(ent.metadata) && ent.metadata.gift.bought_by === authUserId)
+      .map((ent: any) => {
+        const cat = catalogMap.get(ent.package_catalog_id);
+        return {
+          id: ent.id,
+          packageName: cat?.name || 'Lesson Package',
+          packageNameAr: cat?.eligibility_rules?.name_ar || null,
+          status: ent.status,
+          purchasedQuantity: ent.purchased_quantity || 0,
+          durationMinutes: ent.metadata?.duration_minutes ?? cat?.eligibility_rules?.duration_minutes ?? null,
+          pricePaid: ent.price_paid,
+          currency: ent.currency || 'USD',
+          // The code is the gift itself: show it only once it is paid for.
+          code: ent.status === 'active' ? ent.metadata.gift.code : null,
+          season: ent.metadata.gift.season || null,
+          toName: ent.metadata.gift.to_name || null,
+          message: ent.metadata.gift.message || null,
+          createdAt: ent.created_at
+        };
+      });
+
+    // A gift shows in the receiver's wallet (by learner), never as the giver's balance.
+    const learnerIdSet = new Set(authorizedStudentIds);
+    const formattedEntitlements = (entitlementsData || [])
+      .filter((ent: any) => !ent.metadata?.gift || (!giftLocked(ent.metadata) && learnerIdSet.has(ent.learner_student_id)))
+      .map((ent: any) => {
       const cat = catalogMap.get(ent.package_catalog_id);
       const isCredit = ent.metadata?.source === 'cancellation_credit';
       return {
@@ -9156,6 +9195,8 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
 
     return res.json({
       entitlements: formattedEntitlements,
+      gifts,
+      giftSeason: currentGiftSeason(),
       catalog: catalogData || [],
       creditSummary: {
         totalRemaining,
@@ -9191,12 +9232,19 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       return res.status(400).json({ error: 'Please confirm that you want lessons to start before the 14-day withdrawal period ends.', code: 'EARLY_START_REQUIRED' });
     }
 
+    // NX-06: a gift (seasonal) has no learner yet; the receiver's learner is set when the code is redeemed.
+    const asGift = req.body?.asGift === true;
+    const giftSeasonNow = asGift ? currentGiftSeason() : null;
+    if (asGift && !giftSeasonNow) {
+      return res.status(400).json({ error: 'Gift lessons open in Ramadan and the Eid seasons.', code: 'GIFT_SEASON_CLOSED' });
+    }
+
     const supabaseAdmin = getSupabaseAdminClient();
     const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
 
     // Validate learner ownership / authorization
-    let targetLearnerId: string | null = studentId || null;
-    if (learnerStudentId) {
+    let targetLearnerId: string | null = asGift ? null : (studentId || null);
+    if (learnerStudentId && !asGift) {
       const isAuthorized = authorizedLearners.some(l => l.id === learnerStudentId);
       if (!isAuthorized) {
         return res.status(403).json({
@@ -9243,8 +9291,8 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       .eq('purchaser_account_id', authUserId)
       .eq('status', 'active')
       .gt('price_paid', 0);
-    const familyDiscount = (siblingPackages || []).some((e: any) =>
-      e.learner_student_id && e.learner_student_id !== targetLearnerId && e.metadata?.source !== 'cancellation_credit');
+    const familyDiscount = !asGift && (siblingPackages || []).some((e: any) =>
+      e.learner_student_id && e.learner_student_id !== targetLearnerId && e.metadata?.source !== 'cancellation_credit' && !e.metadata?.gift);
     const pricePaid = familyDiscount
       ? Math.round(Number(catalogItem.price_amount) * 0.95 * 100) / 100
       : Number(catalogItem.price_amount);
@@ -9267,7 +9315,17 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
           family_discount: familyDiscount,
           terms_version: TERMS_VERSION,
           terms_accepted_at: new Date().toISOString(),
-          early_start_accepted_at: new Date().toISOString()
+          early_start_accepted_at: new Date().toISOString(),
+          ...(asGift ? {
+            gift: {
+              code: makeGiftCode(),
+              season: giftSeasonNow,
+              bought_by: authUserId,
+              to_name: cleanGiftText(req.body?.giftToName, 60),
+              message: cleanGiftText(req.body?.giftMessage, 300),
+              redeemed_at: null
+            }
+          } : {})
         }
       })
       .select('id, package_catalog_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')
@@ -10163,6 +10221,9 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-06: redeem a gift code (seasonal gift lessons).
+registerGiftRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-04: milestone certificates and their public check.
 registerCertificateRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
