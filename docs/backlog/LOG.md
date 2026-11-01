@@ -674,9 +674,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — NX-12 follow-up: the teacher's ink on the learner's screen
+- The teacher's pen, highlighter, laser and "clear" now show on the learner's screen, in the same place on the slide at any screen size. The learner's own study pen stays theirs and is not sent. Ink belongs to one page: when the teacher turns the page the learner's copy goes too. A learner who joins late or reloads gets the current ink.
+- How: the teacher's player reports its ink; `useLessonRoom` sends the latest picture on the same channel as an `ink` event, at most every 80 ms, points rounded to whole canvas units. The learner checks each message (`isRoomInk`: pen/marker only, hex colours, bounded point counts) before drawing it in a read-only layer.
+- Checks: tsc clean; build passes; `test/nx-12-lesson-room.test.ts` 5/5 (new validator test). Seen in two tabs: pen and highlighter strokes arrived, the laser trail appeared and faded, a reload got the strokes back, "clear" removed them; learner checked at phone and desktop size. The test lesson was removed.
+
 ## 2026-11-01 — NX-12 Lesson room
 - Teacher: "Open the lesson room (slides)" in the lesson window → `/dashboard/room/:lessonId`: pick the curriculum and lesson, teach with the usual player; a "Live" badge shows the connection.
 - Learner: "Lesson slides" next to "Join the lesson" on lesson day → `/student/room/:lessonId`: waits for the teacher, then follows every page and build step live. Video stays on Zoom.
 - Sync: Supabase Realtime broadcast (free) on a channel named by a per-lesson key the server derives (HMAC of the lesson id); only that lesson's teacher (or the admin) and that learner's family get it (checked: another family 404, another teacher 403). Only the lesson and slide position travel; the room uses its own public-key client, so it never depends on a user token.
-- Not yet: the teacher's pen, marker and laser are drawn only on the teacher's screen.
 - Checks: tsc clean; build passes; `test/nx-12-lesson-room.test.ts` 4/4, lesson player tests pass. Seen with the teacher and learner in two tabs: the learner followed the teacher to page 3 ("Jiddo's story"); phone size checked (no sideways scroll). The test lesson was removed.

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
-import { InkLayer, type InkTool } from './slides/Ink';
+import { InkLayer, RemoteInk, type InkTool, type Stroke } from './slides/Ink';
 import { Opening } from './slides/Opening';
 import { LessonEnd } from './slides/motion/LessonEnd';
 import { P, asset } from './slides/Art';
@@ -30,6 +30,9 @@ interface Props {
   onPosition?: (page: number, step: number) => void;
   /** ...and the learner's player follows that position. */
   follow?: { page: number; step: number } | null;
+  /** The teacher's pen, marker and laser: reported by the teacher's player, drawn on the learner's. */
+  onInk?: (ink: { strokes: Stroke[]; laser: [number, number][] }) => void;
+  remoteInk?: { strokes: Stroke[]; laser: [number, number][] } | null;
 }
 
 const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
@@ -38,7 +41,7 @@ const TIMER_MINUTES = Array.from({ length: 12 }, (_, i) => (i + 1) * 5);
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
-export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange, sample, onPosition, follow }: Props) {
+export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange, sample, onPosition, follow, onInk, remoteInk }: Props) {
   // The player follows the language the user picked for the site (owner, 2026-10-22: no switch inside the player).
   const { lang: appLang } = useAppLanguage();
   const lang = appLang || initialLang;
@@ -458,7 +461,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                   </div>
                 </motion.div>
               </AnimatePresence>
-              <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
+              {remoteInk && <RemoteInk strokes={remoteInk.strokes} laser={remoteInk.laser} width={CANVAS_W} height={CANVAS_H} />}
+              <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} onInk={onInk} />
               <AnimatePresence>
                 {opening && lesson.opening && <Opening lesson={lesson} data={lesson.opening} ar={ar} onDone={() => { setOpening(false); goPage(0); }} />}
               </AnimatePresence>

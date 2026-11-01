@@ -12,8 +12,10 @@ export default function StudentLessonRoomPage({ lang = 'ar' }: { lang?: 'en' | '
   const { id = '' } = useParams();
   const [roomKey, setRoomKey] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
-  const { connected, state } = useLessonRoom(roomKey, 'learner');
+  const { connected, state, ink } = useLessonRoom(roomKey, 'learner');
   const lesson = state ? findLesson(state.track, state.number) : undefined;
+  // Ink belongs to one page; drop it the moment the teacher's position moves elsewhere.
+  const remoteInk = ink && state && ink.track === state.track && ink.number === state.number && ink.page === state.page ? ink : null;
 
   useEffect(() => {
     authedJson<{ roomKey: string }>(`/api/student/lesson-room/${encodeURIComponent(id)}`).then((d) => setRoomKey(d.roomKey)).catch(() => setFailed(true));
@@ -31,7 +33,7 @@ export default function StudentLessonRoomPage({ lang = 'ar' }: { lang?: 'en' | '
         </span>
       </div>
       {lesson && state ? (
-        <LessonPlayer key={`${state.track}-${state.number}`} lesson={lesson} lang={lang} follow={{ page: state.page, step: state.step }} />
+        <LessonPlayer key={`${state.track}-${state.number}`} lesson={lesson} lang={lang} follow={{ page: state.page, step: state.step }} remoteInk={remoteInk} />
       ) : (
         <div className="py-16 grid justify-items-center gap-3 text-center">
           <BrandLoader size="md" />

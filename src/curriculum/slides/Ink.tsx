@@ -5,7 +5,7 @@ export type InkTool = 'none' | 'pen' | 'marker' | 'laser' | 'eraser';
 /** Eraser reach in canvas units: a stroke is removed when any of its points passes this close (owner, 2026-10-22). */
 const ERASE_R = 30;
 
-interface Stroke {
+export interface Stroke {
   tool: 'pen' | 'marker';
   color: string;
   points: [number, number][];
@@ -32,10 +32,12 @@ interface Props {
   clearSignal: number;
   width: number;
   height: number;
+  /** NX-12 lesson room: the teacher's ink, reported on every change so the learner's screen can draw it too. */
+  onInk?: (ink: { strokes: Stroke[]; laser: [number, number][] }) => void;
 }
 
 /** Teacher drawing layer on top of the slide, in canvas coordinates. The laser leaves a fading trail. */
-export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: Props) {
+export function InkLayer({ tool, color, pageKey, clearSignal, width, height, onInk }: Props) {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [laser, setLaser] = useState<{ x: number; y: number; t: number }[]>([]);
   const [eraserAt, setEraserAt] = useState<[number, number] | null>(null);
@@ -47,6 +49,7 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => setStrokes([]), [pageKey, clearSignal]);
+  useEffect(() => onInk?.({ strokes, laser: laser.map((p) => [p.x, p.y]) }), [strokes, laser, onInk]);
 
   useEffect(() => {
     if (!laser.length) return;
@@ -121,6 +124,21 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
       )}
       {laser.map((p, i) => (
         <circle key={p.t + '-' + i} cx={p.x} cy={p.y} r={4 + i * 0.9} fill="#FF2D2D" opacity={(i + 1) / laser.length * 0.8} />
+      ))}
+    </svg>
+  );
+}
+
+/** NX-12, learner: the teacher's ink as it arrives from the lesson room. Read-only, under the learner's own pen. */
+export function RemoteInk({ strokes, laser, width, height }: { strokes: Stroke[]; laser: [number, number][]; width: number; height: number }) {
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} className="absolute inset-0 h-full w-full pointer-events-none" aria-hidden="true" data-testid="remote-ink">
+      {strokes.map((s, i) => (
+        <path key={i} d={pathOf(s.points)} fill="none" stroke={s.color} strokeWidth={s.tool === 'marker' ? 34 : 7}
+          strokeOpacity={s.tool === 'marker' ? 0.32 : 1} strokeLinecap="round" strokeLinejoin="round" />
+      ))}
+      {laser.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={4 + i * 0.9} fill="#FF2D2D" opacity={(i + 1) / laser.length * 0.8} />
       ))}
     </svg>
   );

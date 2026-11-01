@@ -4,7 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import app from '../api/index.js';
 import { roomKey } from '../server/routes/lessonRoom.js';
-import { isRoomState } from '../src/lib/lessonRoom.js';
+import { isRoomState, isRoomInk } from '../src/lib/lessonRoom.js';
 
 describe('NX-12 lesson room', () => {
   it('each lesson gets its own unguessable key, stable for that lesson', () => {
@@ -19,6 +19,16 @@ describe('NX-12 lesson room', () => {
     assert.strictEqual(isRoomState({ track: 'zad-kids', number: 1, page: 2, step: 3 }), true);
     for (const bad of [null, {}, { track: 'x', number: 1, page: -1, step: 0 }, { track: 'x', number: 1.5, page: 0, step: 0 }, { track: 'x'.repeat(80), number: 1, page: 0, step: 0 }, { track: 1, number: 1, page: 0, step: 0 }]) {
       assert.strictEqual(isRoomState(bad), false, JSON.stringify(bad));
+    }
+  });
+
+  it('teacher ink from the channel is checked before it is drawn', () => {
+    const ok = { track: 'zad-kids', number: 1, page: 2, strokes: [{ tool: 'pen', color: '#C0392B', points: [[1, 2], [3, 4]] }], laser: [[5, 6]] };
+    assert.strictEqual(isRoomInk(ok), true);
+    for (const bad of [null, { ...ok, laser: 'x' }, { ...ok, strokes: [{ ...ok.strokes[0], tool: 'eraser' }] },
+      { ...ok, strokes: [{ ...ok.strokes[0], color: 'url(javascript:1)' }] }, { ...ok, strokes: [{ ...ok.strokes[0], points: [[1, NaN]] }] },
+      { ...ok, laser: Array(31).fill([0, 0]) }, { ...ok, page: -1 }]) {
+      assert.strictEqual(isRoomInk(bad), false, JSON.stringify(bad));
     }
   });
 

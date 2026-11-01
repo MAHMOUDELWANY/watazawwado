@@ -20,14 +20,16 @@ export default function LessonRoomPage() {
   const numbers = useMemo(() => Object.keys(SUBJECTS.find((s) => s.id === track)?.lessons || {}).map(Number).sort((a, b) => a - b), [track]);
   const [number, setNumber] = useState(1);
   const lesson = findLesson(track, number);
-  const { connected, publish } = useLessonRoom(room?.roomKey || null, 'teacher');
+  const { connected, publish, publishInk } = useLessonRoom(room?.roomKey || null, 'teacher');
 
   useEffect(() => {
     dashboardFetch<{ roomKey: string; learnerName: string | null }>(`/api/dashboard/lesson-room/${id}`).then(setRoom).catch((e) => setFailed(e?.message || 'error'));
   }, [id]);
   useEffect(() => { if (!numbers.includes(number)) setNumber(numbers[0] || 1); }, [numbers, number]);
 
-  const onPosition = useCallback((page: number, step: number) => publish({ track, number, page, step }), [publish, track, number]);
+  const [page, setPage] = useState(0);
+  const onPosition = useCallback((p: number, step: number) => { setPage(p); publish({ track, number, page: p, step }); }, [publish, track, number]);
+  const onInk = useCallback((ink: { strokes: any[]; laser: [number, number][] }) => publishInk({ track, number, page, ...ink }), [publishInk, track, number, page]);
 
   if (failed) return <p role="alert" className="text-sm text-destructive">{t('This lesson room is not available.', 'غرفة الحصة دي مش متاحة.')} {failed}</p>;
 
@@ -48,7 +50,7 @@ export default function LessonRoomPage() {
           {numbers.map((n) => <option key={n} value={n}>{t(`Lesson ${n}`, `الدرس ${n}`)}{SUBJECTS.find((s) => s.id === track)?.lessons[n]?.title ? ` · ${isAr ? SUBJECTS.find((s) => s.id === track)!.lessons[n].titleAr : SUBJECTS.find((s) => s.id === track)!.lessons[n].title}` : ''}</option>)}
         </Select>
       </div>
-      {lesson && <LessonPlayer key={`${track}-${number}`} lesson={lesson} lang={isAr ? 'ar' : 'en'} teacher onPosition={onPosition} />}
+      {lesson && <LessonPlayer key={`${track}-${number}`} lesson={lesson} lang={isAr ? 'ar' : 'en'} teacher onPosition={onPosition} onInk={onInk} />}
       <Link to="/dashboard" className="text-sm text-teal underline underline-offset-4">{t('Back', 'رجوع')}</Link>
     </div>
   );
