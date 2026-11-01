@@ -1,22 +1,43 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 /**
- * First visit of the public site (owner, 2026-11-01; "signature intro" in docs/design/INSPIRATION.md): the name
- * وتزودوا writes itself in Ruqaa calligraphy with the ribbon colours, grows, and the page appears beneath it.
+ * First visit of the public site ("signature intro" in docs/design/INSPIRATION.md; owner, 2026-11-02: in English,
+ * written like a hand signature, one brand ink colour, no multi-colour gradient).
+ *
+ * 1. "Watazawwado" is written by hand: a slanted pen edge moves left to right over a signature script.
+ * 2. "ACADEMY" settles in under it.
+ * 3. The signature grows past the screen while the cream curtain lifts, and the hero photos unveil beneath.
  *
  * The decision is made before the first paint by the inline script in index.html: it marks <html class="sig-intro">
  * (first visit only, public pages only, not in the installed app, not with reduced motion), and a CSS cover hides the
- * page until this component takes over. If JavaScript never arrives, the cover removes itself after 3 seconds.
- * About 1.9 seconds; any tap or key ends it at once.
+ * page until this component takes over; if scripts never arrive, the cover lifts by itself after 3 seconds.
+ * About 2.6 seconds once it starts; any tap or key ends it at once.
  */
-export function SignatureIntro({ isEn }: { isEn: boolean }) {
+const SCRIPT_FONT = '"Mrs Saint Delafield"';
+const WORD = 'Watazawwado';
+
+export function SignatureIntro() {
   const [phase, setPhase] = useState<'off' | 'waiting' | 'playing'>('off');
   const [fallback, setFallback] = useState(false);
-  // The cover in index.html lifts only here, when the intro ends or is skipped, never before it starts.
+
+  // The cover lifts only here, when the intro ends or is skipped, never before it starts.
   const finish = useCallback(() => {
     document.documentElement.classList.remove('sig-intro');
     setPhase('off');
   }, []);
+
+  // The hero photos start to unveil as the curtain starts to lift (1.95 s into the intro), so they are never seen
+  // whole and then hidden again.
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    const root = document.documentElement;
+    const start = window.setTimeout(() => {
+      root.classList.add('sig-revealing');
+      // Not cleared with the intro: the class must go, or the photos keep the animation's end state (no hover zoom).
+      window.setTimeout(() => root.classList.remove('sig-revealing'), 1700);
+    }, 1900);
+    return () => window.clearTimeout(start);
+  }, [phase]);
 
   useEffect(() => {
     if (!document.documentElement.classList.contains('sig-intro')) return;
@@ -24,14 +45,13 @@ export function SignatureIntro({ isEn }: { isEn: boolean }) {
     if (performance.now() > 2500) { document.documentElement.classList.remove('sig-intro'); return; }
     setPhase('waiting');
     let gone = false;
-    // Wait (briefly) for the calligraphy font; if it is not here in time, draw with our own display face instead,
-    // which is already on the page, so the word is never invisible.
-    const spec = '700 120px "Aref Ruqaa"';
-    const font = document.fonts?.load?.(spec, 'وتزودوا') ?? Promise.resolve();
+    // Wait (briefly) for the signature font; if it is late, write with our own serif instead, never an empty screen.
+    const spec = `400 120px ${SCRIPT_FONT}`;
+    const font = document.fonts?.load?.(spec, WORD) ?? Promise.resolve();
     const wait = new Promise((r) => setTimeout(r, 1200));
     Promise.race([font, wait]).then(() => {
       if (gone) return;
-      if (!document.fonts?.check?.(spec, 'وتزودوا')) setFallback(true);
+      if (!document.fonts?.check?.(spec, WORD)) setFallback(true);
       setPhase('playing');
     });
     return () => { gone = true; };
@@ -39,7 +59,7 @@ export function SignatureIntro({ isEn }: { isEn: boolean }) {
 
   useEffect(() => {
     if (phase === 'off') return;
-    const skip = () => finish();
+    const skip = () => { document.documentElement.classList.remove('sig-revealing'); finish(); };
     window.addEventListener('pointerdown', skip, { once: true });
     window.addEventListener('keydown', skip, { once: true });
     return () => {
@@ -54,19 +74,13 @@ export function SignatureIntro({ isEn }: { isEn: boolean }) {
       className={`sig-intro-overlay ${phase === 'playing' ? 'is-playing' : ''} ${fallback ? 'is-fallback' : ''}`}
       aria-hidden="true"
       data-testid="signature-intro"
+      dir="ltr"
       onAnimationEnd={(e) => { if (e.target === e.currentTarget) finish(); }}
     >
-      <svg viewBox="0 0 520 240" className="sig-svg">
-        <defs>
-          <linearGradient id="sig-ribbon" x1="0" y1="0" x2="1" y2="0.3">
-            <stop offset="0%" stopColor="#087D91" />
-            <stop offset="50%" stopColor="#E5A93C" />
-            <stop offset="100%" stopColor="#C51F24" />
-          </linearGradient>
-        </defs>
-        <text x="260" y="170" textAnchor="middle" direction="rtl" className="sig-word">وتزودوا</text>
-      </svg>
-      {isEn && <p className="sig-caption">Watazawwado Academy</p>}
+      <div className="sig-lockup">
+        <span className="sig-word">{WORD}</span>
+        <span className="sig-caption">Academy</span>
+      </div>
     </div>
   );
 }

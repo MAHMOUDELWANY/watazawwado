@@ -207,7 +207,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         <BackToTop isAr={lang === 'ar'} />
         <InstallAppNudge isAr={lang === 'ar'} />
         <WelcomeMuteButton isAr={lang === 'ar'} />
-        <SignatureIntro isEn={lang === 'en'} />
+        <SignatureIntro />
 
         {/* Interactive Site Tour Guide */}
         <OnboardingGuide

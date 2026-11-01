@@ -2020,49 +2020,65 @@ html.dark .text-brand {
   box-shadow: 0 2px 6px -2px rgba(18, 16, 14, 0.45);
 }
 
-/* Signature intro (src/components/public/SignatureIntro.tsx): write, fill, grow, reveal. About 1.9 s. */
+/* Signature intro (src/components/public/SignatureIntro.tsx): write by hand, settle, grow, lift the curtain. ~2.6 s.
+   One ink colour from the palette (owner, 2026-11-02): deep crimson on cream, gold on espresso. */
 .sig-intro-overlay {
+  --sig-ink: #9E2420;
   position: fixed;
   inset: 0;
   z-index: 2147483002;
   display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 0.5rem;
+  place-items: center;
   background: var(--background);
   pointer-events: auto;
+  clip-path: inset(0 0 0 0);
 }
-.sig-intro-overlay .sig-svg { width: min(86vw, 620px); height: auto; overflow: visible; transform-origin: 50% 55%; }
+.dark .sig-intro-overlay { --sig-ink: #E5A93C; }
+.sig-intro-overlay .sig-lockup { display: grid; justify-items: center; transform-origin: 46% 52%; }
 .sig-intro-overlay .sig-word {
-  font-family: 'Aref Ruqaa', 'Amiri Quran', 'Thmanyah Display', serif;
-  font-weight: 700;
-  font-size: 230px;
-  fill: url(#sig-ribbon);
-  fill-opacity: 0;
-  stroke: url(#sig-ribbon);
-  stroke-width: 2.2;
-  stroke-linejoin: round;
-  stroke-dasharray: 2600;
-  stroke-dashoffset: 2600;
+  font-family: 'Mrs Saint Delafield', 'Thmanyah Serif Display', cursive;
+  font-weight: 400;
+  font-size: clamp(5.2rem, 22vw, 12rem);
+  line-height: 1.05;
+  padding: 0 0.35em;
+  color: var(--sig-ink);
+  /* The pen: a slanted, softly feathered edge that moves left to right, revealing the ink behind it. */
+  -webkit-mask-image: linear-gradient(105deg, #000 0 42%, rgba(0, 0, 0, 0.35) 47%, transparent 52%);
+  mask-image: linear-gradient(105deg, #000 0 42%, rgba(0, 0, 0, 0.35) 47%, transparent 52%);
+  -webkit-mask-size: 260% 100%;
+  mask-size: 260% 100%;
+  -webkit-mask-position: 100% 0;
+  mask-position: 100% 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
-.sig-intro-overlay.is-fallback .sig-word { font-family: 'Thmanyah Display', 'Thmanyah Serif Display', serif; font-size: 200px; }
+.sig-intro-overlay.is-fallback .sig-word { font-family: 'Thmanyah Serif Display', serif; font-style: italic; font-size: clamp(2.6rem, 11vw, 6.5rem); }
 .sig-intro-overlay .sig-caption {
+  margin-top: -0.2rem;
   font-family: 'Thmanyah Serif Display', serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.32em;
+  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.7em;
+  text-indent: 0.7em;
   text-transform: uppercase;
-  color: var(--muted-foreground);
+  color: var(--sig-ink);
   opacity: 0;
 }
-.sig-intro-overlay.is-playing { animation: sig-out 0.5s cubic-bezier(0.4, 0, 0.2, 1) 1.4s forwards; }
-.sig-intro-overlay.is-playing .sig-word { animation: sig-draw 1.15s cubic-bezier(0.65, 0, 0.35, 1) forwards, sig-fill 0.45s ease-out 0.85s forwards; }
-.sig-intro-overlay.is-playing .sig-svg { animation: sig-grow 0.6s cubic-bezier(0.7, 0, 0.84, 0) 1.3s forwards; }
-.sig-intro-overlay.is-playing .sig-caption { animation: sig-caption 0.4s ease-out 0.7s forwards; }
-@keyframes sig-draw { to { stroke-dashoffset: 0; } }
-@keyframes sig-fill { to { fill-opacity: 1; stroke-opacity: 0.35; } }
-@keyframes sig-grow { to { transform: scale(2.4); opacity: 0; filter: blur(2px); } }
-@keyframes sig-caption { to { opacity: 1; } }
-@keyframes sig-out { to { opacity: 0; visibility: hidden; } }
+.sig-intro-overlay.is-playing { animation: sig-curtain 0.65s cubic-bezier(0.77, 0, 0.18, 1) 1.95s forwards; }
+.sig-intro-overlay.is-playing .sig-word { animation: sig-write 1.45s cubic-bezier(0.45, 0.05, 0.3, 1) forwards; }
+.sig-intro-overlay.is-playing .sig-caption { animation: sig-caption 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.15s forwards; }
+.sig-intro-overlay.is-playing .sig-lockup { animation: sig-grow 0.75s cubic-bezier(0.7, 0, 0.84, 0) 1.8s forwards; }
+@keyframes sig-write { to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+@keyframes sig-caption { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.7em; } }
+@keyframes sig-grow { to { transform: scale(3.4) translateX(-6%); opacity: 0; } }
+@keyframes sig-curtain { to { clip-path: inset(0 0 100% 0); } }
+
+/* After the intro: the hero photos unveil from the bottom of their arches, the headline rises. */
+html.sig-revealing [data-sig-reveal] img { animation: sig-unveil 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0.25s both; }
+html.sig-revealing [data-sig-reveal-late] img { animation-delay: 0.4s; }
+html.sig-revealing main h1 { animation: sig-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
+@keyframes sig-unveil { from { clip-path: inset(100% 0 0 0); transform: scale(1.12); } to { clip-path: inset(0 0 0 0); transform: none; } }
+@keyframes sig-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 
 /* Liquid press ("liquid button" in docs/design/INSPIRATION.md): the main call to action loosens into a soft organic
    shape with a slow ribbon-coloured glow on hover (pointer) or while pressed (touch), and snaps back on release. */

@@ -73,9 +73,10 @@
               !localStorage.getItem('wz_sig_seen') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             localStorage.setItem('wz_sig_seen', '1');
             document.documentElement.classList.add('sig-intro');
+            // The signature face is ours (public/fonts, the 7 letters of "Watazawwado", 1.5 KB): fetched at once.
             var f = document.createElement('link');
-            f.rel = 'stylesheet';
-            f.href = 'https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&display=swap&text=' + encodeURIComponent('\u0648\u062a\u0632\u0648\u062f\u0648\u0627');
+            f.rel = 'preload'; f.as = 'font'; f.type = 'font/woff2'; f.crossOrigin = 'anonymous';
+            f.href = '/fonts/mrs-saint-delafield-sig.woff2';
             document.head.appendChild(f);
           }
           // Opening the installed app plays the short brand intro once a day; the splash stays for it.
@@ -128,6 +129,8 @@
       @keyframes bs-pop { to { opacity: 1; transform: none; } }
       @keyframes bs-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
       @media (prefers-reduced-motion: reduce) { #boot-splash .bs-tile, #boot-splash .bs-bar i { animation: none; } }
+      /* Signature intro: Mrs Saint Delafield (SIL Open Font License), subset to the letters of "Watazawwado". */
+      @font-face { font-family: 'Mrs Saint Delafield'; font-style: normal; font-weight: 400; font-display: block; src: url(/fonts/mrs-saint-delafield-sig.woff2) format('woff2'); unicode-range: U+57, U+61, U+64, U+6F, U+74, U+77, U+7A; }
       /* Signature intro cover until React takes over; gone by itself after 3 s if the script never runs. */
       html.sig-intro body::after { content: ''; position: fixed; inset: 0; z-index: 2147483001; background: #FAF7F2; animation: sig-cover-off 0s linear 3s forwards; }
       html.sig-intro.dark body::after { background: #110F0E; }

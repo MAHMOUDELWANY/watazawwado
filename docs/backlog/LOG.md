@@ -674,6 +674,18 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-02 — Signature intro, second version (owner's notes)
+- Owner, 2026-11-02: the intro should be in English, written properly like the reference, with better motion, in our own colours only, with no multi-colour gradient (the rainbow read like a pride flag).
+- Now:
+  - "Watazawwado" is written by a slanted, feathered pen edge moving left to right over a signature script (Mrs Saint Delafield, SIL OFL), in one ink colour: deep crimson #9E2420 on cream, gold #E5A93C in dark mode.
+  - "ACADEMY" settles in under it. Then the signature grows past the screen while the cream curtain lifts, and the two teacher photos unveil from the bottom of their arches (the headline rises with them).
+  - About 2.6 s, once per visitor, and any tap skips it.
+- The font is self-hosted: `public/fonts/mrs-saint-delafield-sig.woff2`, 1.5 KB, the 7 letters of the word. It is preloaded from the head only on a first visit. With Google Fonts it arrived late on phones and the word started in the fallback face.
+- Fixes found by filming:
+  - The photos flashed, went blank, then unveiled. The unveil now starts as the curtain lifts.
+  - The reveal class stayed on the page and would have blocked the photos' hover zoom. It now always clears.
+- Checks: tsc clean; build; 17/17 hydration, RTL, SEO, hreflang and PWA tests. Filmed on a production build at 390x844 and 1440x900; frames confirm the pen writing left to right, then the curtain and the unveil. Dark mode not filmed.
+
 ## 2026-11-01 — Signature intro and liquid button
 - References: "Signature intro" and "Liquid button" in docs/design/INSPIRATION.md.
 - Signature intro (`src/components/public/SignatureIntro.tsx`, styles in `src/index.css`):

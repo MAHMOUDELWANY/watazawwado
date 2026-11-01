@@ -105,7 +105,7 @@ export function TeacherDuo({ isEn }: { isEn: boolean }) {
                 />
                 {/* Gradient ring, then the photo */}
                 <span className="relative block p-[3px] shadow-2xl" style={{ ...ARCH, background: t.ring }}>
-                  <span className="block overflow-hidden bg-surface" style={ARCH}>
+                  <span className="block overflow-hidden bg-surface" style={ARCH} data-sig-reveal="" {...(i === 1 ? { 'data-sig-reveal-late': '' } : {})}>
                     <img
                       src={t.src}
                       alt={isEn ? t.name.en : t.name.ar}
