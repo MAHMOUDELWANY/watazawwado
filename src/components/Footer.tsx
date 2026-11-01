@@ -109,6 +109,11 @@ export const Footer: React.FC<FooterProps> = ({
                   </Link>
                 </li>
                 <li>
+                  <Link to="/articles" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
+                    {isEn ? 'Articles' : 'مقالات'}
+                  </Link>
+                </li>
+                <li>
                   <Link to="/faq" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
                   </Link>

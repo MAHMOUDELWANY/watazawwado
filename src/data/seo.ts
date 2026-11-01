@@ -5,6 +5,7 @@
  * Brand name everywhere: "Watazawwado Academy" + "وتزودوا" + the domain, so search engines stop
  * confusing us with similarly named sites.
  */
+import { ARTICLES } from './articles';
 
 export const SITE_URL = 'https://watazawwado.academy';
 export const BRAND_EN = 'Watazawwado Academy';
@@ -102,6 +103,27 @@ export const PUBLIC_PAGES: PageSeo[] = [
     h1En: 'Terms of service'
   }
 ];
+
+// NX-11: the articles index and one page per article.
+export const ARTICLES_PATH = '/articles';
+PUBLIC_PAGES.push(
+  {
+    path: ARTICLES_PATH,
+    titleEn: 'Articles for Muslim families | Watazawwado Academy',
+    titleAr: 'مقالات للأسرة المسلمة | وتزودوا Watazawwado',
+    descEn: 'Practical articles for Muslim families in the West: Quran at home, choosing Arabic for your child, and finding the right teacher.',
+    descAr: 'مقالات عملية للأسرة المسلمة برّه: القرآن في البيت، وأنهي عربي يتعلّمه ابنك، وإزاي تختار المعلم المناسب.',
+    h1En: 'Articles'
+  },
+  ...ARTICLES.map((a) => ({
+    path: `${ARTICLES_PATH}/${a.slug}`,
+    titleEn: `${a.titleEn} | Watazawwado Academy`,
+    titleAr: `${a.titleAr} | وتزودوا Watazawwado`,
+    descEn: a.descEn,
+    descAr: a.descAr,
+    h1En: a.titleEn
+  }))
+);
 
 export const findPageSeo = (path: string) => PUBLIC_PAGES.find((p) => p.path === path) || null;
 

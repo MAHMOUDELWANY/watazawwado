@@ -39,7 +39,9 @@ describe('QA-05b language URLs and hreflang', () => {
   });
 
   it('the router has an /ar route for every public page', () => {
-    for (const p of PUBLIC_PAGES) assert.ok(app.includes(`<Route path="${pagePath(p.path, 'ar')}"`), pagePath(p.path, 'ar'));
+    // Articles share one route per language (/ar/articles/:slug).
+    const routeOf = (path: string) => (path.startsWith('/articles/') ? '/articles/:slug' : path);
+    for (const p of PUBLIC_PAGES) assert.ok(app.includes(`<Route path="${pagePath(routeOf(p.path), 'ar')}"`), pagePath(p.path, 'ar'));
   });
 
   it('built files carry the right language, canonical and alternates when a build is present', (t) => {

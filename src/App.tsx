@@ -47,10 +47,13 @@ const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/priva
 const SafetyPage = lazyWithReload(() => import('./components/public/safety/SafetyPage').then((m) => ({ default: m.SafetyPage })));
 const CommunityPage = lazyWithReload(() => import('./components/public/community/CommunityPage').then((m) => ({ default: m.CommunityPage })));
 const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
+const articlesModule = () => import('./components/public/articles/ArticlesPages');
+const ArticlesIndexPage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlesIndexPage })));
+const ArticlePage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlePage })));
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
   '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
-  '/community': CommunityPage,
+  '/community': CommunityPage, '/articles': ArticlesIndexPage,
 };
 
 /**
@@ -58,7 +61,9 @@ const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
  * update arrives (theme, sign-in) is thrown away and drawn again, with a loader in between.
  */
 export function preloadPage(pathname: string): Promise<unknown> {
-  return LAZY_PUBLIC_PAGES[stripLangPrefix(pathname)]?.preload() ?? Promise.resolve();
+  const base = stripLangPrefix(pathname);
+  if (base.startsWith('/articles/')) return ArticlePage.preload();
+  return LAZY_PUBLIC_PAGES[base]?.preload() ?? Promise.resolve();
 }
 
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
@@ -101,6 +106,8 @@ export function AppRoutes() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/safety" element={<SafetyPage />} />
             <Route path="/community" element={<CommunityPage />} />
+            <Route path="/articles" element={<ArticlesIndexPage />} />
+            <Route path="/articles/:slug" element={<ArticlePage />} />
             {/* The same public pages in Arabic under /ar (English, the default, keeps the plain paths). */}
             <Route path="/ar" element={<PublicHomepage />} />
             <Route path="/ar/get-started" element={<PublicHomepage />} />
@@ -113,6 +120,8 @@ export function AppRoutes() {
             <Route path="/ar/terms" element={<TermsPage />} />
             <Route path="/ar/safety" element={<SafetyPage />} />
             <Route path="/ar/community" element={<CommunityPage />} />
+            <Route path="/ar/articles" element={<ArticlesIndexPage />} />
+            <Route path="/ar/articles/:slug" element={<ArticlePage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}

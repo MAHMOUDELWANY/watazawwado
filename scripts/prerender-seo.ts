@@ -12,6 +12,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { PUBLIC_PAGES, SITE_URL, pagePath, pageUrl } from '../src/data/seo';
 import { BOOKABLE_SERVICES } from '../src/booking/mockData';
+import { ARTICLES } from '../src/data/articles';
 
 const dist = path.resolve('dist');
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
@@ -52,6 +53,28 @@ export function courseListJsonLd(lang: Lang = 'ar'): string {
     }))
   };
   // No raw "<" inside a script tag.
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
+/** NX-11: each article page describes itself as a BlogPosting by the academy, in that page's language. */
+export function articleJsonLd(slug: string, lang: Lang): string | null {
+  const a = ARTICLES.find((x) => x.slug === slug);
+  if (!a) return null;
+  const url = pageUrl(`/articles/${a.slug}`, lang);
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: lang === 'en' ? a.titleEn : a.titleAr,
+    description: lang === 'en' ? a.descEn : a.descAr,
+    inLanguage: lang,
+    datePublished: a.date,
+    dateModified: a.date,
+    url,
+    mainEntityOfPage: url,
+    image: `${SITE_URL}/og-image.jpg`,
+    author: { '@id': `${SITE_URL}/#org` },
+    publisher: { '@id': `${SITE_URL}/#org` }
+  };
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
@@ -98,6 +121,8 @@ function render(page: (typeof PUBLIC_PAGES)[number], lang: Lang, body: string | 
   if (page.path === '/learning') {
     html = html.replace('</head>', () => `<script type="application/ld+json">${courseListJsonLd(lang)}</script></head>`);
   }
+  const articleLd = page.path.startsWith('/articles/') ? articleJsonLd(page.path.slice('/articles/'.length), lang) : null;
+  if (articleLd) html = html.replace('</head>', () => `<script type="application/ld+json">${articleLd}</script></head>`);
   // On wide screens the teacher photo is the largest element above the fold: fetch it first.
   // On phones it sits below the fold, so preloading it would only compete with the page itself.
   if (page.path === '/' || page.path === '/about') {
@@ -125,6 +150,7 @@ for (const page of PUBLIC_PAGES) {
     } catch (err) {
       console.warn(`prerender-seo: could not render ${urlPath}, using the summary`, err);
     }
+    fs.mkdirSync(path.dirname(path.join(dist, file)), { recursive: true });
     fs.writeFileSync(path.join(dist, file), render(page, lang, body));
   }
 }

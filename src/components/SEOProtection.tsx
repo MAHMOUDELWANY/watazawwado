@@ -30,11 +30,11 @@ function setCanonical(href: string) {
   el.href = href;
 }
 
-/** hreflang links (QA-05b): each public page names its Arabic and English address; x-default is Arabic. */
+/** hreflang links (QA-05b): each public page names its Arabic and English address; x-default is the English (root) address, as in the prerendered HTML and sitemap. */
 function setAlternates(path: string | null) {
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
   if (!path) return;
-  for (const [hreflang, href] of [['ar', pageUrl(path, 'ar')], ['en', pageUrl(path, 'en')], ['x-default', pageUrl(path, 'ar')]]) {
+  for (const [hreflang, href] of [['ar', pageUrl(path, 'ar')], ['en', pageUrl(path, 'en')], ['x-default', pageUrl(path, 'en')]]) {
     const el = document.createElement('link');
     el.rel = 'alternate';
     el.hreflang = hreflang;

@@ -674,6 +674,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — NX-11 Articles
+- `/articles` and `/ar/articles` list the articles; each article has its own English and Arabic address (`/articles/<slug>`, `/ar/articles/<slug>`), prerendered with its title, description, self canonical, hreflang pair and BlogPosting schema, and listed in the sitemap. "Articles" link in the footer. Each article ends with one call to action: the free trial window.
+- First three, each language written on its own (docs/marketing/RULES.md: no prices, no invented claims, no rulings, no Quran or hadith quoted): keeping your child close to the Quran in the West; Fusha or a dialect first; what to look for in an online Quran teacher. Facts used only from the live site (one-on-one on Zoom, male and female teachers, free trial, the safety page).
+- Articles live in code (`src/data/articles.ts`), not in the unused `blog_posts` table, so every article is a static, prerendered page for search engines. Adding one = one entry in that file.
+- Also fixed: in the browser, the x-default hreflang pointed to Arabic while the prerendered HTML and sitemap say English; now English everywhere.
+- Checks: tsc clean; build writes 14 pages x 2 languages; `test/nx-11-articles.test.ts` 2/2 and the SEO/hreflang tests pass (route test now accepts the `:slug` route). Seen on desktop (Arabic) and phone (English): list, article, language switch keeps the article, trial window opens, a wrong address goes back to the list, no sideways scroll.
+- For the owner: read the three articles once (they speak for the academy).
+
 ## 2026-11-01 — NX-12 follow-up: the teacher's ink on the learner's screen
 - The teacher's pen, highlighter, laser and "clear" now show on the learner's screen, in the same place on the slide at any screen size. The learner's own study pen stays theirs and is not sent. Ink belongs to one page: when the teacher turns the page the learner's copy goes too. A learner who joins late or reloads gets the current ink.
 - How: the teacher's player reports its ink; `useLessonRoom` sends the latest picture on the same channel as an `ink` event, at most every 80 ms, points rounded to whole canvas units. The learner checks each message (`isRoomInk`: pen/marker only, hex colours, bounded point counts) before drawing it in a read-only layer.

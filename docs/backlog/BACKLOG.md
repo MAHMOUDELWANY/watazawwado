@@ -539,7 +539,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: one weekly message: lessons attended, the teacher's summary, the homework.
 
 ### NX-11 Blog and articles for search
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done (3 articles; more are added in `src/data/articles.ts`)
 - Do: bilingual articles for Western Muslim families (teaching Quran abroad, Fusha for kids, ...), with hreflang and
   schema; written through `watazawwado-content` and `humanizer`.
 
