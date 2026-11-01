@@ -544,7 +544,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   schema; written through `watazawwado-content` and `humanizer`.
 
 ### NX-12 Lesson room inside the site
-- Priority P3 · Zone 🟢 · Size L · Status todo
+- Priority P3 · Zone 🟢 · Size L · Status done (slides in sync; the teacher's pen and laser are not mirrored yet)
 - Do: the teacher and learner see the same curriculum slides in sync during the lesson, with simple annotation; video
   stays on Zoom at first.
 

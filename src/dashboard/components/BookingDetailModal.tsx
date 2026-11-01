@@ -1034,6 +1034,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Before the lesson: Jalila's prep. After it (or from "Record summary"): the family summary. */}
               {isUpcoming && booking.student_id && <JalilaBrief studentId={booking.student_id} />}
+              {/* NX-12: teach the curriculum slides; the learner's screen follows. */}
+              {(isUpcoming || booking.status === 'confirmed') && (
+                <a href={`/dashboard/room/${booking.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal underline underline-offset-4">
+                  {t('Open the lesson room (slides)', 'افتح غرفة الحصة (الشرائح)')}
+                </a>
+              )}
               {booking.student_id && <HomeworkReviewPanel studentId={String(booking.student_id)} bookingId={booking.id} />}
               {booking.student_id && <RecitationInbox studentId={String(booking.student_id)} />}
               {(booking.status === 'completed' || isMarkingCompleted || openSummaryEditor) && booking.student_id && (

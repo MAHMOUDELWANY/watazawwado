@@ -673,3 +673,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Recordings older than 90 days are deleted by the cron (production). Migration `20261101000004_recitation_recordings.sql` applied.
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
+
+## 2026-11-01 — NX-12 Lesson room
+- Teacher: "Open the lesson room (slides)" in the lesson window → `/dashboard/room/:lessonId`: pick the curriculum and lesson, teach with the usual player; a "Live" badge shows the connection.
+- Learner: "Lesson slides" next to "Join the lesson" on lesson day → `/student/room/:lessonId`: waits for the teacher, then follows every page and build step live. Video stays on Zoom.
+- Sync: Supabase Realtime broadcast (free) on a channel named by a per-lesson key the server derives (HMAC of the lesson id); only that lesson's teacher (or the admin) and that learner's family get it (checked: another family 404, another teacher 403). Only the lesson and slide position travel; the room uses its own public-key client, so it never depends on a user token.
+- Not yet: the teacher's pen, marker and laser are drawn only on the teacher's screen.
+- Checks: tsc clean; build passes; `test/nx-12-lesson-room.test.ts` 4/4, lesson player tests pass. Seen with the teacher and learner in two tabs: the learner followed the teacher to page 3 ("Jiddo's story"); phone size checked (no sideways scroll). The test lesson was removed.

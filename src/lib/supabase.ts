@@ -126,3 +126,19 @@ export async function testDatabaseConnection(): Promise<{
     };
   }
 }
+
+/**
+ * NX-12: a separate client for the lesson room's live channel, with the public key only (no user session), so the
+ * channel never depends on a user token or its refresh. The room's privacy comes from its server-issued key.
+ */
+let roomClient: SupabaseClient | null = null;
+export function lessonRoomClient(): SupabaseClient {
+  if (!roomClient) {
+    roomClient = createClient(
+      isSupabaseConfigured() ? supabaseUrl! : 'https://placeholder.supabase.co',
+      isSupabaseConfigured() ? supabaseAnonKey! : 'placeholder-anon-key',
+      { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'wz-lesson-room' } }
+    );
+  }
+  return roomClient;
+}

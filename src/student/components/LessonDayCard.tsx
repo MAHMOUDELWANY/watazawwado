@@ -108,6 +108,12 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
               : (isAr ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا' : 'The Zoom link is on its way by email and will show here')}
           </span>
         )}
+        {state === 'open' && (
+          /* NX-12: the slides the teacher is showing, beside the Zoom call. */
+          <a href={`/student/room/${booking.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-surface-subtle min-h-[44px]">
+            {isAr ? 'شرائح الدرس' : 'Lesson slides'}
+          </a>
+        )}
         <a
           href={buildWhatsAppUrl(runningLateMessage(booking.referenceCode, booking.learnerName, isAr))}
           target="_blank"

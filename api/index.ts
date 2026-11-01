@@ -64,6 +64,7 @@ import { registerGiftRoutes } from '../server/routes/gifts.js';
 import { registerProgramRoutes } from '../server/routes/programs.js';
 import { registerPushRoutes } from '../server/routes/push.js';
 import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
+import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
@@ -10233,6 +10234,9 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// NX-12: the lesson room (teacher shows slides, the learner follows live).
+registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-03: recitation recordings and the teacher's reply.
 registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });

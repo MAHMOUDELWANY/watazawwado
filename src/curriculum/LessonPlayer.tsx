@@ -26,6 +26,10 @@ interface Props {
   onPageChange?: (pageIndex: number) => void;
   /** A free sample: the lesson stops after these pages behind a lock, with a call to book (owner, 2026-10-23). */
   sample?: { totalPages: number; teaser: string; onBook: () => void };
+  /** NX-12 lesson room: the teacher's player reports every page and build step... */
+  onPosition?: (page: number, step: number) => void;
+  /** ...and the learner's player follows that position. */
+  follow?: { page: number; step: number } | null;
 }
 
 const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
@@ -34,7 +38,7 @@ const TIMER_MINUTES = Array.from({ length: 12 }, (_, i) => (i + 1) * 5);
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
-export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange, sample }: Props) {
+export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange, sample, onPosition, follow }: Props) {
   // The player follows the language the user picked for the site (owner, 2026-10-22: no switch inside the player).
   const { lang: appLang } = useAppLanguage();
   const lang = appLang || initialLang;
@@ -76,6 +80,14 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const last = lesson.pages.length - 1;
 
   useEffect(() => onPageChange?.(page), [page, onPageChange]);
+  useEffect(() => onPosition?.(page, step), [page, step, onPosition]);
+  useEffect(() => {
+    if (!follow) return;
+    const p = Math.min(lesson.pages.length - 1, Math.max(0, follow.page));
+    setPage((cur) => { if (cur !== p) { setDir(p > cur ? 1 : -1); play('page'); } return p; });
+    setStep(Math.max(0, follow.step));
+    setOpening(false);
+  }, [follow?.page, follow?.step, lesson.pages.length]);
   // Decode every painting of the lesson up front (nearest pages first), so no page freezes while its image loads.
   useEffect(() => {
     const order = lesson.pages.map((_, i) => i).sort((a, b) => Math.abs(a - page) - Math.abs(b - page));

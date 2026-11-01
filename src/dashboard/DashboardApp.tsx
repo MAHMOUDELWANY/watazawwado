@@ -64,6 +64,7 @@ import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
 import HonorPage from './pages/HonorPage';
 import ProgramsPage from './pages/ProgramsPage';
+import LessonRoomPage from './pages/LessonRoomPage';
 import ClassBoardPage from './pages/ClassBoardPage';
 import MyMonthPage from './pages/MyMonthPage';
 import HealthPage from './pages/HealthPage';
@@ -623,6 +624,7 @@ export function DashboardApp() {
                 <Route path="/month" element={<MyMonthPage />} />
                 <Route path="/honor" element={isSuperAdmin ? <HonorPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/programs" element={isSuperAdmin ? <ProgramsPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/room/:id" element={<LessonRoomPage />} />
                 <Route path="/class-board" element={<ClassBoardPage />} />
                 <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />
                 <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
