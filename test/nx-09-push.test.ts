@@ -26,7 +26,9 @@ describe('NX-09 web push', () => {
     assert.ok(parseSubscription({ ...goodSub, endpoint: 'https://wns2-db5p.notify.windows.com/w/?token=x' }));
     for (const bad of [null, {}, { ...goodSub, endpoint: 'http://x' }, { ...goodSub, endpoint: 'javascript:alert(1)' }, { endpoint: goodSub.endpoint, keys: { p256dh: 'a' } },
       { ...goodSub, endpoint: 'https://169.254.169.254/latest' }, { ...goodSub, endpoint: 'https://evil.example/fcm.googleapis.com' },
-      { ...goodSub, endpoint: 'https://fcm.googleapis.com.evil.example/x' }, { ...goodSub, endpoint: 'https://fcm.googleapis.com:8443/x' }]) {
+      { ...goodSub, endpoint: 'https://fcm.googleapis.com.evil.example/x' }, { ...goodSub, endpoint: 'https://fcm.googleapis.com:8443/x' },
+      { ...goodSub, endpoint: 'https://evil.example\@fcm.googleapis.com/x' }, { ...goodSub, endpoint: 'https://user@fcm.googleapis.com/x' },
+      { ...goodSub, endpoint: 'https://FCM.googleapis.com/x' }, { ...goodSub, endpoint: 'https://fcm.googleapis.com/a b' }]) {
       assert.strictEqual(parseSubscription(bad), null, JSON.stringify(bad));
     }
   });
@@ -40,15 +42,15 @@ describe('NX-09 web push', () => {
     assert.strictEqual(pushConfigured({}), false);
     process.env.VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
     process.env.VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'UUxI4O8-FbRouAevSmBQ6o18hgE4nSG3qwvJTfKc-ls';
-    const client = fakeClient([{ id: 's1', endpoint: 'https://a', p256dh: 'k', auth: 'a' }, { id: 's2', endpoint: 'https://b', p256dh: 'k', auth: 'a' }]);
+    const client = fakeClient([{ id: 's1', endpoint: 'https://fcm.googleapis.com/a', p256dh: 'k', auth: 'a' }, { id: 's2', endpoint: 'https://fcm.googleapis.com/b', p256dh: 'k', auth: 'a' }, { id: 's3', endpoint: 'https://169.254.169.254/x', p256dh: 'k', auth: 'a' }]);
     const sentPayloads: any[] = [];
     const n = await sendPushToUser(client, 'u1', notice, 'ar', (async (sub: any, payload: any) => {
-      if (sub.endpoint === 'https://b') throw Object.assign(new Error('gone'), { statusCode: 410 });
+      if (sub.endpoint === 'https://fcm.googleapis.com/b') throw Object.assign(new Error('gone'), { statusCode: 410 });
       sentPayloads.push(JSON.parse(payload));
     }) as any);
     assert.strictEqual(n, 1);
     assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h' });
-    assert.deepStrictEqual(client.deleted, ['s2']);
+    assert.deepStrictEqual(client.deleted.sort(), ['s2', 's3'], 'gone device removed; a stored non-push address is dropped, never called');
     assert.strictEqual(await sendPushToUser(client, 'u1', { ...notice, kind: 'quiet_learner' }, 'ar', (async () => { throw new Error('no'); }) as any), 0);
   });
 

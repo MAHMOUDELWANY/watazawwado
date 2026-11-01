@@ -1,4 +1,5 @@
 import webpush from 'web-push';
+import { parse as legacyParse } from 'node:url';
 
 /**
  * NX-09: web push (free, standard Web Push with VAPID keys VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY). Opt-in per device;
@@ -20,15 +21,25 @@ export interface PushSubscriptionInput { endpoint: string; keys: { p256dh: strin
 /** The browsers' push services. The server posts to the endpoint, so anything else would let a client aim it anywhere. */
 const PUSH_HOSTS = [/^fcm\.googleapis\.com$/, /^updates\.push\.services\.mozilla\.com$/, /^web\.push\.apple\.com$/, /\.notify\.windows\.com$/, /\.push\.apple\.com$/];
 
+/**
+ * True only when the endpoint is already canonical and both URL parsers (WHATWG, and the legacy one web-push uses to
+ * send) see https on an allowed push host with a plain hostname, so validation and sending cannot disagree.
+ */
+export function isAllowedPushEndpoint(endpoint: string): boolean {
+  let url: URL;
+  try { url = new URL(endpoint); } catch { return false; }
+  if (url.href !== endpoint || url.protocol !== 'https:' || url.port || url.username || url.password) return false;
+  if (!/^[a-z0-9.-]+$/.test(url.hostname) || !PUSH_HOSTS.some((re) => re.test(url.hostname))) return false;
+  const legacy = legacyParse(endpoint);
+  return legacy.protocol === 'https:' && legacy.hostname === url.hostname && !legacy.port;
+}
+
 /** A browser subscription as the client sends it; only https on a known push service. */
 export function parseSubscription(raw: any): PushSubscriptionInput | null {
   const endpoint = typeof raw?.endpoint === 'string' ? raw.endpoint : '';
   const p256dh = typeof raw?.keys?.p256dh === 'string' ? raw.keys.p256dh : '';
   const auth = typeof raw?.keys?.auth === 'string' ? raw.keys.auth : '';
-  if (endpoint.length > 1000) return null;
-  let url: URL;
-  try { url = new URL(endpoint); } catch { return null; }
-  if (url.protocol !== 'https:' || url.port || !PUSH_HOSTS.some((re) => re.test(url.hostname))) return null;
+  if (endpoint.length > 1000 || !isAllowedPushEndpoint(endpoint)) return null;
   if (!p256dh || p256dh.length > 200 || !auth || auth.length > 100) return null;
   return { endpoint, keys: { p256dh, auth } };
 }
@@ -47,6 +58,7 @@ export async function sendPushToUser(
     let sent = 0;
     const payload = JSON.stringify({ title: notice.title[lang], body: notice.body[lang], url: notice.link || '/student', tag: notice.kind });
     for (const s of subs || []) {
+      if (!isAllowedPushEndpoint(s.endpoint)) { await client.from('push_subscriptions').delete().eq('id', s.id); continue; }
       try {
         await send({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 3600 });
         sent++;
