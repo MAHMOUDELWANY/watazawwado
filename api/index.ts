@@ -59,6 +59,7 @@ import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerHomeworkRoutes } from '../server/routes/homework.js';
+import { registerReviewRoutes } from '../server/routes/review.js';
 import { registerCertificateRoutes } from '../server/routes/certificates.js';
 import { registerGiftRoutes } from '../server/routes/gifts.js';
 import { registerProgramRoutes } from '../server/routes/programs.js';
@@ -10259,6 +10260,9 @@ registerHomeworkRoutes(app, {
   verifyStudentAuth,
   getLearners: getAuthorizedLearnersForStudent
 });
+
+// NX-01: today's review (spaced repetition of mastered ayat).
+registerReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // Launch plan D: teacher pay (rates, bonuses/deductions, payouts and payslips, the teacher's own month).
 registerPayrollRoutes(app, {

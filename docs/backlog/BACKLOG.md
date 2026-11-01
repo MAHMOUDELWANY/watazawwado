@@ -492,7 +492,7 @@ launch after a discussion; the rest come after launch, top-down. Every task stil
 shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 
 ### NX-01 Daily review between lessons (spaced repetition)
-- Priority P2 · Zone 🟢 · Size L · Status todo
+- Priority P2 · Zone 🟢 · Size L · Status done for memorized ayat (Fusha words and Tajweed rules wait for approved curriculum)
 - Do: a 5-minute "today's review" built from what the teacher really covered: memorized ayat, Fusha words, Tajweed
   rules. Spaced-repetition scheduling per learner; cards come from approved curriculum content. Already listed in
   `docs/curriculum/HANDOFF-2026-10-26.md` (site work). No daily streak; it feeds the weekly rhythm only.

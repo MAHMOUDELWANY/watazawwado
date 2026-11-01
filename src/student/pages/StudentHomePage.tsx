@@ -34,6 +34,7 @@ import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
 import { HomeworkCard } from '../components/HomeworkCard';
+import { ReviewCard } from '../components/ReviewCard';
 import { ProgramsCard } from '../components/ProgramsCard';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
@@ -430,6 +431,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
       {/* NX-02: the teacher's homework for the next lesson. */}
       <HomeworkCard isAr={isAr} />
+      <ReviewCard isAr={isAr} />
 
       {/* NX-08: open seasonal programs. */}
       <ProgramsCard isAr={isAr} />

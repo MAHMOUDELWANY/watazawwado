@@ -958,6 +958,11 @@ export interface Database {
         Insert: Partial<LessonHomeworkRow> & Pick<LessonHomeworkRow, 'student_id' | 'kind'>;
         Update: Partial<LessonHomeworkRow>;
       };
+      review_cards: {
+        Row: ReviewCardRow;
+        Insert: Partial<ReviewCardRow> & Pick<ReviewCardRow, 'student_id' | 'homework_id' | 'surah' | 'ayah_from' | 'ayah_to' | 'due_on'>;
+        Update: Partial<ReviewCardRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -969,6 +974,22 @@ export interface Database {
       };
     };
   };
+}
+
+// NX-01 daily review (migration 20261101000005): server only, via server/routes/review.ts.
+export interface ReviewCardRow {
+  id: string;
+  student_id: string;
+  homework_id: string;
+  surah: number;
+  ayah_from: number;
+  ayah_to: number;
+  box: number;
+  due_on: string;
+  last_grade: 'smooth' | 'slips' | 'mushaf' | null;
+  last_reviewed_at: string | null;
+  reviews: number;
+  created_at: string;
 }
 
 // Discount codes, account balance and referrals (migration 20261022000000, RULES.md §4).
