@@ -60,6 +60,8 @@ describe('NX-02 homework rules', () => {
     const progress = fs.readFileSync('server/routes/progress.ts', 'utf8');
     assert.match(progress, /parseHomework\(req\.body\?\.homework\)/);
     assert.match(progress, /insertHomework\(client/);
+    const routes = fs.readFileSync('server/routes/homework.ts', 'utf8');
+    assert.doesNotMatch(routes, /hw\.teacher_id !== req\.teacherUser/, 'a reassigned teacher cannot review');
     const reminders = fs.readFileSync('server/notifications/reminderEngine.ts', 'utf8');
     assert.match(reminders, /from\('lesson_homework'\)/);
   });

@@ -143,7 +143,8 @@ export function registerHomeworkRoutes(app: express.Express, deps: {
       const { data: hw } = await client.from('lesson_homework').select('*').eq('id', id).maybeSingle();
       if (!hw) return res.status(404).json({ error: 'Homework not found.' });
       const access = await canTeacherAccessStudent(client, req.teacherUser, hw.student_id);
-      if (!access.allowed && hw.teacher_id !== req.teacherUser?.id) return res.status(403).json({ error: 'This is not your student.' });
+      // Only the student's current teacher (or the super admin); a teacher who set it and was later moved off cannot.
+      if (!access.allowed) return res.status(403).json({ error: 'This is not your student.' });
       if (hw.review) return res.status(409).json({ error: 'This task was already reviewed.' });
       const { data: updated, error } = await client.from('lesson_homework')
         .update({ review, reviewed_at: new Date().toISOString(), reviewed_by: req.teacherUser?.id || null })
