@@ -313,7 +313,7 @@ export default function StudentsPage() {
                       student.status === 'active'
                         ? 'bg-success/15 text-success border border-success/30'
                         : student.status === 'paused'
-                        ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                        ? 'bg-warning/15 text-warning-ink border border-warning/30'
                         : 'glass-surface text-muted-foreground border border-border-subtle'
                     }`}>
                       {({ active: t('Active', 'نشط'), paused: t('Paused', 'متوقف مؤقتاً'), inactive: t('Inactive', 'غير نشط') } as Record<string, string>)[student.status || 'active'] || student.status}

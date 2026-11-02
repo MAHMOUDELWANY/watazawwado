@@ -304,7 +304,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded bg-secondary/40 text-accent">
                 {trial.reference_code}
               </span>
-              <span className="text-sm font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
+              <span className="text-sm font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-ink border border-warning/30">
                 {t('Free trial', 'تجربة مجانية')}
               </span>
               {trial.status ? (
@@ -699,7 +699,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'potential_student')}
-              className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 text-sm font-medium transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-ink border border-warning/30 text-sm font-medium transition-colors cursor-pointer"
             >
               {t('Might continue', 'ممكن يكمل')}
             </button>

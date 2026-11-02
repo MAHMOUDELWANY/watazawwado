@@ -336,7 +336,7 @@ export default function StudentDetailPage() {
                 student.status === 'active'
                   ? 'bg-success/15 text-success border border-success/30'
                   : student.status === 'paused'
-                  ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                  ? 'bg-warning/15 text-warning-ink border border-warning/30'
                   : 'glass-surface text-muted-foreground border border-border-subtle'
               }`}>
                 {({ active: t('Active', 'نشط'), paused: t('Paused', 'متوقف مؤقتاً'), inactive: t('Inactive', 'غير نشط') } as Record<string, string>)[student.status || 'active'] || student.status}
@@ -764,7 +764,7 @@ export default function StudentDetailPage() {
                             : b.status === 'cancelled'
                             ? 'bg-destructive/15 text-destructive border border-destructive/30'
                             : b.status === 'rescheduled'
-                            ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                            ? 'bg-warning/15 text-warning-ink border border-warning/30'
                             : 'bg-secondary/30 text-primary border border-secondary/50'
                         }`}>
                           {({ completed: t('Done', 'تمت'), cancelled: t('Cancelled', 'ملغاة'), rescheduled: t('Moved', 'اتغيّر ميعادها'), confirmed: t('Confirmed', 'مؤكدة'), pending: t('Waiting', 'في الانتظار'), no_show: t('No-show', 'غياب') } as Record<string, string>)[b.status || ''] || t('Booked', 'محجوزة')}
@@ -975,7 +975,7 @@ export default function StudentDetailPage() {
                     {t('Notes & family summaries history', 'سجل الملاحظات وملخصات الأسرة')}
                   </h2>
                 </div>
-                <span className="text-[11px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
+                <span className="text-[11px] px-2 py-0.5 rounded bg-warning/15 text-warning-ink border border-warning/25 font-medium">
                   {t('Private notes: only you and the admin', 'الملاحظات الخاصة: لك وللمدير فقط')}
                 </span>
               </div>
@@ -1112,7 +1112,7 @@ export default function StudentDetailPage() {
 
                           {note.content && (
                             <div className="p-2.5 rounded-lg glass-surface border border-border-subtle space-y-1">
-                              <span className="text-[10px] font-semibold uppercase tracking-wider text-warning-foreground flex items-center gap-1">
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-warning-ink flex items-center gap-1">
                                 <Lock className="w-3 h-3 text-warning" />
                                 {t('Only you and the admin', 'لك وللمدير فقط')}
                               </span>
@@ -1130,7 +1130,7 @@ export default function StudentDetailPage() {
 
                           {note.next_steps && (
                             <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
-                              <strong className="font-semibold text-warning-foreground">{t('Next steps', 'الخطوة الجاية')}:</strong> {note.next_steps}
+                              <strong className="font-semibold text-warning-ink">{t('Next steps', 'الخطوة الجاية')}:</strong> {note.next_steps}
                             </p>
                           )}
                         </>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { LEVEL_LABELS } from '../../components/booking/StepServiceSelect';
 import { NotificationPreferences } from '../components/NotificationPreferences';
 import { subjectLabel as subjectName } from '../../components/onboarding/subjects';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -380,7 +381,7 @@ export default function StudentProfilePage({
                   : (isAr ? 'طالب' : 'Student')}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mt-0.5 truncate font-mono">
+            <p className="text-sm text-muted-foreground mt-0.5 truncate">
               {profile?.email || user?.email}
             </p>
             {formattedMemberSince && (
@@ -394,7 +395,7 @@ export default function StudentProfilePage({
 
         <div className="flex items-center gap-2 self-start md:self-center flex-wrap">
           <Badge variant="outline" className="text-sm py-1.5 px-3 border-border glass-surface">
-            {profile?.learnerType === 'child' ? (isAr ? 'ناشئ' : 'Child') : (isAr ? 'بالغ' : 'Adult')} • {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
+            {profile?.learnerType === 'child' ? (isAr ? 'ناشئ' : 'Child') : (isAr ? 'بالغ' : 'Adult')} • {(() => { const l = LEVEL_LABELS[profile?.currentLevel || 'beginner']; return l ? (isAr ? l.ar : l.en) : profile?.currentLevel; })()}
           </Badge>
         </div>
       </div>

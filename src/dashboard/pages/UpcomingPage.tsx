@@ -14,6 +14,7 @@ import { DashboardLesson } from '../types';
 import { BookingDetailModal } from '../components/BookingDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { serviceLabel, zoneCity } from '../lib/labels';
 import { useT } from '../../lib/language';
 
 type T = (en: string, ar: string) => string;
@@ -92,7 +93,7 @@ export default function UpcomingPage() {
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
               <Clock className="w-3 h-3 text-secondary-foreground" />
-              <span>{activeTz}</span>
+              <span>{zoneCity(activeTz, isAr)}</span>
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -288,8 +289,8 @@ function UpcomingLessonRow({
         </div>
 
         <p className="text-sm text-muted-foreground truncate">
-          {lesson.service_name}
-          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${lesson.student_timezone}` : ''}
+          {serviceLabel(lesson, locale.startsWith('ar'))}
+          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${zoneCity(lesson.student_timezone, locale.startsWith('ar'))}` : ''}
         </p>
       </div>
 

@@ -17,7 +17,7 @@ interface StepServiceSelectProps {
   hideNav?: boolean;
 }
 
-const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
+export const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
   beginner: { en: 'Beginner', ar: 'مبتدئ' },
   elementary: { en: 'Elementary', ar: 'أساسي' },
   intermediate: { en: 'Intermediate', ar: 'متوسط' },

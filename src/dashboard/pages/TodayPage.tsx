@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { serviceLabel, zoneCity } from '../lib/labels';
 import { useT } from '../../lib/language';
 import { DASH_CARD } from '../components/DashboardCards';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
@@ -171,7 +172,7 @@ export default function TodayPage() {
             <span aria-hidden="true">·</span>
             <span className="tabular-nums">{nowActive.toFormat('h:mm a')}</span>
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-teal/10 text-teal" dir="ltr">
-              <Globe className="w-3 h-3" aria-hidden="true" />{activeTz}
+              <Globe className="w-3 h-3" aria-hidden="true" />{zoneCity(activeTz, isAr)}
             </span>
           </p>
         </div>
@@ -257,7 +258,7 @@ export default function TodayPage() {
                       <div className="mt-1 space-y-1">
                         {attentionLessons.map(l => (
                           <p key={l.id} className="text-sm text-muted-foreground">
-                            • <span className="font-medium text-foreground">{l.learner_name || t('Student', 'طالب')}</span> ({l.service_name} · {DateTime.fromISO(l.scheduled_start).setZone(activeTz).setLocale(locale).toFormat('hh:mm a')}): {t('the Zoom link is missing, or the lesson ended and needs an outcome.', 'رابط Zoom ناقص، أو الحصة خلصت ومحتاجة تسجيل نتيجة.')}
+                            • <span className="font-medium text-foreground">{l.learner_name || t('Student', 'طالب')}</span> ({serviceLabel(l, isAr)} · {DateTime.fromISO(l.scheduled_start).setZone(activeTz).setLocale(locale).toFormat('hh:mm a')}): {t('the Zoom link is missing, or the lesson ended and needs an outcome.', 'رابط Zoom ناقص، أو الحصة خلصت ومحتاجة تسجيل نتيجة.')}
                           </p>
                         ))}
                       </div>
@@ -356,7 +357,7 @@ export default function TodayPage() {
                             </span>
                             <span className="flex-1 min-w-0">
                               <span className="block text-sm font-semibold text-foreground truncate">{l.learner_name || t('Student', 'طالب')}</span>
-                              <span className="block text-xs text-muted-foreground truncate">{l.service_name} · {l.duration_minutes} {t('min', 'دقيقة')}</span>
+                              <span className="block text-xs text-muted-foreground truncate">{serviceLabel(l, isAr)} · {l.duration_minutes} {t('min', 'دقيقة')}</span>
                             </span>
                             {l.is_free_trial && (
                               <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#E5A93C]/15 text-[#8B4935] dark:text-[#E5A93C]">{t('Trial', 'تجريبية')}</span>
@@ -505,7 +506,7 @@ function NextLessonSpotlight({
                 {t('In progress', 'شغالة دلوقتي')}
               </span>
             ) : diffMinutes <= 45 && diffMinutes > 0 ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-warning/15 text-warning-ink border border-warning/30">
                 {t(`Starts in ${diffMinutes} min`, `تبدأ بعد ${diffMinutes} دقيقة`)}
               </span>
             ) : (
@@ -531,7 +532,7 @@ function NextLessonSpotlight({
               </p>
             )}
             <p className="text-sm text-muted-foreground mt-0.5">
-              {lesson.service_name} • {lesson.duration_minutes} {t('minutes', 'دقيقة')}
+              {serviceLabel(lesson, locale.startsWith('ar'))} • {lesson.duration_minutes} {t('minutes', 'دقيقة')}
               {context?.age != null && <> • {t(`${context.age} years old`, `${context.age} سنة`)}</>}
               {context?.level && <> • <span className="capitalize">{context.level}</span></>}
             </p>
@@ -676,7 +677,7 @@ function TodayLessonRow({
           )}
 
           {isStartingSoon && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-warning/15 text-warning-foreground border border-warning/30">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-warning/15 text-warning-ink border border-warning/30">
               {timeContext.label}
             </span>
           )}
@@ -688,13 +689,13 @@ function TodayLessonRow({
           )}
 
           {isNoShow && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/10 text-warning-foreground border border-warning/30">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/10 text-warning-ink border border-warning/30">
               {t('No-show', 'غياب')}
             </span>
           )}
 
           {isNeedsOutcome && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/15 text-warning-foreground border border-warning/40">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/15 text-warning-ink border border-warning/40">
               {t('Needs outcome', 'محتاجة تسجيل نتيجة')}
             </span>
           )}
@@ -717,8 +718,8 @@ function TodayLessonRow({
         </div>
 
         <p className="text-sm text-muted-foreground truncate">
-          {lesson.service_name}
-          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${lesson.student_timezone}` : ''}
+          {serviceLabel(lesson, locale.startsWith('ar'))}
+          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${zoneCity(lesson.student_timezone, locale.startsWith('ar'))}` : ''}
         </p>
       </div>
 

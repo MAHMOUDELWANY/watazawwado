@@ -195,7 +195,19 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
           </div>
         )}
         {shown.length === 0 && (
-          <p className="p-4 text-sm text-muted-foreground">{isAr ? 'لا توجد محادثات بعد.' : 'No conversations yet.'}</p>
+          <div className="flex flex-col items-center text-center gap-3 px-6 py-14">
+            <span className="w-14 h-14 rounded-full bg-secondary/40 text-primary flex items-center justify-center" aria-hidden="true">
+              <MessageCircle className="w-6 h-6" />
+            </span>
+            <p className="font-bold text-foreground">{isAr ? 'لسه مفيش محادثات' : 'No conversations yet'}</p>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              {role === 'student'
+                ? (isAr
+                  ? 'لما تحجز حصة، هتلاقي هنا محادثة مع معلمك، ومحادثة مع فريقنا لأي سؤال.'
+                  : 'Once you book a lesson, your chat with your teacher shows here, along with one with our team for any question.')
+                : (isAr ? 'أول ما حد يبعت رسالة، هتظهر هنا.' : 'Messages show here as soon as someone writes.')}
+            </p>
+          </div>
         )}
         {shown.map((t) => (
           <button

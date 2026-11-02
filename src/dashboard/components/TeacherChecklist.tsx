@@ -34,8 +34,12 @@ export function TeacherChecklist() {
         <ListChecks className="w-5 h-5 text-accent" />
         {t(`Your first week (${done}/${items.length})`, `أسبوعك الأول (${done}/${items.length})`)}
       </h2>
-      <ul className="space-y-2">
-        {items.map((i) => (
+      <div className="h-1.5 rounded-full bg-surface-subtle overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={items.length} aria-valuenow={done} aria-label={t('Steps done', 'الخطوات اللي خلصت')}>
+        <div className="h-full rounded-full bg-[var(--teal)] transition-[width] duration-700 ease-out" style={{ width: `${(done / Math.max(items.length, 1)) * 100}%` }} />
+      </div>
+      {/* What is left comes first; on wide screens the steps sit in two columns instead of one long thin list. */}
+      <ul className="grid gap-1.5 md:grid-cols-2">
+        {[...items].sort((a, b) => Number(a.done) - Number(b.done)).map((i) => (
           <li key={i.key}>
             <Link to={i.link} className="flex items-start gap-2.5 p-2 rounded-xl hover:bg-surface-subtle">
               {i.done

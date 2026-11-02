@@ -256,7 +256,7 @@ export default function TrialsPage() {
                     <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
                       {trial.reference_code}
                     </span>
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-ink border border-warning/30">
                       {t('Free trial', 'تجربة مجانية')}
                     </span>
                     {trial.status ? (

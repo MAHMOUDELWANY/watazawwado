@@ -112,9 +112,10 @@ export function MobileTabBar({ tabs, label, hidden }: { tabs: MobileTab[]; label
                 </motion.span>
                 <motion.span
                   initial={false}
-                  animate={{ opacity: compact ? 0 : 1, height: compact ? 0 : 11, marginTop: compact ? 0 : 4 }}
+                  animate={{ opacity: compact ? 0 : 1, height: compact ? 0 : 15, marginTop: compact ? 0 : 3 }}
                   transition={ease}
-                  className={`relative max-w-full truncate px-0.5 text-[11px] leading-none ${tab.active ? 'font-bold text-white' : 'font-medium text-white/55'}`}
+                  // No overflow clip: Arabic glyphs are taller than the 11px line and were cut in half.
+                  className={`relative max-w-full whitespace-nowrap px-0.5 text-[11px] leading-[15px] ${tab.active ? 'font-bold text-white' : 'font-medium text-white/55'}`}
                 >
                   {tab.label}
                 </motion.span>

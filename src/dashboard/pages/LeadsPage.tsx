@@ -45,7 +45,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: 
   trial_booked: {
     label: 'Trial Booked',
     labelAr: 'حجز تجربة',
-    color: 'bg-warning/15 text-warning-foreground border border-warning/30'
+    color: 'bg-warning/15 text-warning-ink border border-warning/30'
   },
   trial_completed: {
     label: 'Trial Completed',
@@ -270,7 +270,7 @@ export default function LeadsPage() {
               className={`px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                 filterCategory === 'followup'
                   ? 'bg-warning text-warning-foreground shadow-2xs'
-                  : 'bg-warning/15 text-warning-foreground hover:bg-warning/25'
+                  : 'bg-warning/15 text-warning-ink hover:bg-warning/25'
               }`}
             >
               <Clock className="w-3 h-3" />
@@ -416,14 +416,14 @@ export default function LeadsPage() {
                     </span>
 
                     {lead.needs_followup && (
-                      <span className="text-[13px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 flex items-center gap-1">
+                      <span className="text-[13px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning-ink border border-warning/30 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         <span>{t('Follow up', 'متابعة')}: {lead.followup_reason}</span>
                       </span>
                     )}
 
                     {lead.learner_type === 'child' && (
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-warning/10 text-warning-foreground border border-warning/20">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-warning/10 text-warning-ink border border-warning/20">
                         {t('Child', 'طفل')}
                       </span>
                     )}

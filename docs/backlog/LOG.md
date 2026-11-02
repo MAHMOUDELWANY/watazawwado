@@ -674,6 +674,18 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-02 — NX-14 second pass: portal, teacher dashboard, homepage scroll story
+- Owner, 2026-11-02: carry on with the ideas and the design across the dashboards, the homepage and its pages, using our inspiration library.
+- Homepage "A week with Watazawwado" is now a scroll story (Sparkle scroll story in docs/design/INSPIRATION.md, inspiration only, our colours). On desktop a phone stays beside the six steps, its screen changes as each step reaches the middle (live lesson, homework ticking, the 5-minute review ring, a recitation with the teacher's reply, the weekly email, progress and a certificate) and a small counter of ayat reviewed rises. On phones each step carries its own small screen. Every screen is labelled "Example"; reduced motion turns the motion off.
+- Sticky never worked on the public site: `html`, `body` and `#root` had `overflow-x: hidden`, which makes them scroll containers. `body` and `#root` now use `overflow-x: clip` (same clipping, no scroll container).
+- Phone tab bar (portal and dashboard): the Arabic labels were cut in half (11 px box for taller glyphs); fixed.
+- Time zones: in Arabic, "(UTC+1 / UTC+2)" scrambled (brackets and slash flipped, and broken across lines); the offset is now isolated as left-to-right and kept on one line. The teacher's Today and Upcoming pages showed IANA ids ("Europe/Warsaw", "Africa/Cairo"); they show the city now.
+- Teacher lessons showed the subject in English on Arabic pages ("Tajweed"); they show the subject's Arabic name from the catalogue (`src/dashboard/lib/labels.ts`).
+- Warning badges ("Needs outcome" and 21 others) used the solid-button text colour on a pale tint: white on cream in light mode, near-black on brown in dark mode. New `warning-ink` token for text on tints.
+- Student account: the level badge read "intermediate" on the Arabic page; now "متوسط". Messages: the empty list was one grey line in a large empty box; it now explains what will appear there (wording differs for teachers).
+- Teacher "first week" checklist: progress bar, steps still to do first, two columns on desktop instead of one thin list with half the card empty.
+- Checked with the local test accounts: portal and dashboard pages at 390 px and 1440 px, light and dark, Arabic.
+
 ## 2026-11-02 — NX-14 design review, first pass (public pages, phone, light and dark)
 - Looked at About, How it works, Learning, Pricing, FAQ, Articles, Community and Safety full-length at 390 px in dark and light mode (production build).
 - Fixed: the WhatsApp buttons on About, FAQ, How it works and Safety were bright WhatsApp green, out of our palette; they now match the homepage (paper-glass on the deep band, a surface button elsewhere, only the icon green). The footer's "•" separators dangled at line ends on phones; they now show only on wider screens.

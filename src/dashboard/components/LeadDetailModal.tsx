@@ -72,7 +72,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: 
     label: 'Trial Booked',
     labelAr: 'حجز تجربة',
     descriptionAr: 'عنده تجربة مجانية جاية',
-    color: 'bg-warning/15 text-warning-foreground border border-warning/30',
+    color: 'bg-warning/15 text-warning-ink border border-warning/30',
     description: 'Scheduled for an upcoming 30-minute free trial session'
   },
   trial_completed: {
@@ -351,11 +351,11 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           {lead.trial_booking ? (
             <div className="p-4 rounded-xl bg-warning/10 border border-warning/30 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-warning-foreground font-semibold text-sm uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-warning-ink font-semibold text-sm uppercase tracking-wider">
                   <Sparkles className="w-4 h-4" />
                   <span>{t('Free trial', 'التجربة المجانية')}</span>
                 </div>
-                <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-foreground border border-warning/30">
+                <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-ink border border-warning/30">
                   {lead.trial_booking.reference_code}
                 </span>
               </div>
