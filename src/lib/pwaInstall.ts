@@ -30,6 +30,9 @@ export function capturePwaInstall(): void {
   }
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
+    // Samsung Internet builds its own app package for an old Android version, which Play Protect blocks as unsafe
+    // (owner, 2026-11-02); there the sheet sends people to Chrome instead.
+    if (detectPlatform(navigator.userAgent) === 'samsung') return;
     deferred = e as DeferredPrompt;
     notify();
   });
@@ -64,6 +67,12 @@ export function detectPlatform(ua: string): InstallPlatform {
   if (/Macintosh/i.test(ua) && /Safari\//i.test(ua) && !/Chrome|Chromium|Edg\//i.test(ua)) return 'mac-safari';
   if (/Windows|Macintosh|Linux|CrOS/i.test(ua)) return 'desktop';
   return 'unknown';
+}
+
+/** Android link that opens this page in Chrome (or Chrome's Play Store page when it is missing). */
+export function chromeIntentUrl(href: string): string {
+  const u = new URL(href);
+  return `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=${u.protocol.replace(':', '')};package=com.android.chrome;end`;
 }
 
 export function wasDismissedRecently(now = Date.now()): boolean {
@@ -137,8 +146,9 @@ export function canOfferInstall(s: Pick<PwaInstallState, 'installed' | 'canPromp
 
 /**
  * What every "Get the app" button does: the browser's own install dialog straight away where it offers one
- * (Chrome, Edge, Samsung Internet, Opera on Android, Windows, Mac, Linux, ChromeOS); elsewhere (iPhone and iPad,
- * Safari on Mac, Firefox on Android) browsers do not let a site install itself, so the sheet shows the one gesture.
+ * (Chrome, Edge, Opera on Android, Windows, Mac, Linux, ChromeOS); elsewhere (iPhone and iPad, Safari on Mac,
+ * Firefox on Android) browsers do not let a site install itself, so the sheet shows the one gesture. Samsung Internet
+ * gets a button that reopens the page in Chrome.
  */
 export async function getTheApp(): Promise<void> {
   if (deferred) { await promptInstall(); return; }

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { detectPlatform, canOfferInstall } from '../src/lib/pwaInstall';
+import { detectPlatform, canOfferInstall, chromeIntentUrl } from '../src/lib/pwaInstall';
 
 const UA = {
   iphoneSafari: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
@@ -36,6 +36,13 @@ test('one install card: the browser mini bar is held back, our top card waits fo
   const card = fs.readFileSync('src/components/pwa/InstallApp.tsx', 'utf8');
   assert.match(card, /classList\.contains\('sig-intro'\) \|\| root\.classList\.contains\('lang-welcome'\)/);
   assert.match(card, /data-testid="install-card"/);
+});
+
+test('Samsung Internet: no one-tap install (Play Protect blocks its app package), a Chrome link instead', async () => {
+  const fs = await import('node:fs');
+  assert.match(fs.readFileSync('src/lib/pwaInstall.ts', 'utf8'), /=== 'samsung'\) return;/);
+  assert.equal(chromeIntentUrl('https://watazawwado.academy/portal?x=1'), 'intent://watazawwado.academy/portal?x=1#Intent;scheme=https;package=com.android.chrome;end');
+  assert.equal(canOfferInstall({ installed: false, canPrompt: false, platform: 'samsung' }), true);
 });
 
 test('canOfferInstall: one-tap prompt always, the gesture where a browser allows it, nothing on desktop Firefox or once installed', () => {

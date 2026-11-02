@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { Download, X, Share, PlusSquare, MoreVertical, Menu, Zap, Bell, MonitorSmartphone, Check, ArrowRight } from 'lucide-react';
+import { Download, X, Share, PlusSquare, MoreVertical, Zap, Bell, MonitorSmartphone, Check, ArrowRight } from 'lucide-react';
 import FocusTrap from '../FocusTrap';
 import {
-  usePwaInstall, promptInstall, dismissInstallSuggestion, canOfferInstall, getTheApp, closeInstallSheet, useInstallSheetOpen, type InstallPlatform,
+  usePwaInstall, promptInstall, dismissInstallSuggestion, canOfferInstall, getTheApp, closeInstallSheet, useInstallSheetOpen, chromeIntentUrl, type InstallPlatform,
 } from '../../lib/pwaInstall';
 
 type Lang = { isAr: boolean };
@@ -58,9 +58,9 @@ function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
       ];
     case 'samsung':
       return [
-        t(<>Open the menu <Key><Menu className="w-3.5 h-3.5" /></Key> at the bottom.</>, <>افتح القائمة <Key><Menu className="w-3.5 h-3.5" /></Key> تحت.</>),
-        t(<>Choose <Key>Add page to</Key> then <Key>Home screen</Key>.</>, <>اختار <Key>إضافة صفحة إلى</Key> وبعدها <Key>الشاشة الرئيسية</Key>.</>),
-        t(<>Confirm, and the app icon appears on your phone.</>, <>أكّد، وهتلاقي أيقونة التطبيق على موبايلك.</>),
+        t(<>Installing from Samsung Internet makes Android show a warning, so install from Chrome instead.</>, <>التثبيت من Samsung Internet بيطلّع تحذير من أندرويد، فثبّته من Chrome أحسن.</>),
+        t(<>Tap <Key>Open in Chrome</Key> below.</>, <>اضغط <Key>افتح في Chrome</Key> تحت.</>),
+        t(<>In Chrome, tap <Key>Install the app</Key> on our card, or choose <Key>Install app</Key> from Chrome’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>, <>في Chrome اضغط <Key>ثبّت التطبيق</Key> في الكارت بتاعنا، أو اختار <Key>تثبيت التطبيق</Key> من قائمة Chrome <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>),
       ];
     case 'mac-safari':
       return [
@@ -170,6 +170,11 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
                             </li>
                           ))}
                         </ol>
+                        {s.platform === 'samsung' && (
+                          <a href={chromeIntentUrl(window.location.href)} className="mt-5 w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--teal)] hover:bg-[var(--teal-hover)] text-white font-bold transition-colors cursor-pointer focus-ring">
+                            {isAr ? 'افتح في Chrome' : 'Open in Chrome'}
+                          </a>
+                        )}
                       </>
                     )}
                   </div>

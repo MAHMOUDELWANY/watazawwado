@@ -844,3 +844,9 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Shared helpers in `src/dashboard/lib/labels.ts` (subject by id or English name, level, booking status, lead source).
 - Seen but not changed: the health page lists a React #418 hydration error on "/" in production (3 times); worth a look.
 - Checks: tsc clean; build passes; full `npm test` in the main checkout 1893/1899 (only QA-05b, stale build there; 6/6 here).
+## 2026-11-02 — Samsung Internet install: send people to Chrome
+
+- Owner report: installing from Samsung Internet showed Google Play Protect's "Unsafe app blocked" (Samsung builds its own app package for an old Android version; Chrome's comes from Google and passes). Nothing in our manifest can change that.
+- Samsung Internet no longer gets the one-tap install. Its install sheet explains the warning and has an "Open in Chrome" button (Android intent link; opens Chrome's Play Store page if Chrome is missing), where our install card works as usual.
+- Later, once the owner has budget for a Google Play developer account ($25 one-time), the real fix is a Play Store app (TWA) linked from the manifest.
+- Checks: tsc clean; build passes; `test/pwa-install.test.ts` and `test/st-07-pwa.test.ts` 7/7. Not seen on a real Samsung phone.
