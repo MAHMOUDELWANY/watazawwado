@@ -132,7 +132,7 @@ export default function UniversityPage() {
                       <Step done={!!row.observed_passed_at} label={t('4. An observed lesson (recorded by the admin)', '٤. حصة بيحضرها حد من الإدارة')} />
                     </ol>
                   )}
-                  {row?.note && <p className="text-xs text-muted-foreground">{row.note}</p>}
+                  {row?.status === 'training' && row.note && <p className="text-xs text-muted-foreground">{row.note}</p>}
                 </Card>
               );
             })}
@@ -192,7 +192,11 @@ function AdminMatrix({ name }: { name: (s: string) => string }) {
           <tbody>
             {data.teachers.filter((tc) => tc.is_active).map((tc) => (
               <tr key={tc.email} className="border-t border-border">
-                <th scope="row" className="text-start p-3 font-medium whitespace-nowrap sticky start-0 bg-background">{teacherName(tc)}</th>
+                <th scope="row" className="text-start p-3 font-medium whitespace-nowrap sticky start-0 bg-background">
+                  <span className="block">{teacherName(tc)}</span>
+                  {/* Two teachers can share a display name; the email tells them apart. */}
+                  <span className="block text-[11px] font-normal text-muted-foreground" dir="ltr">{tc.email}</span>
+                </th>
                 {data.subjects.map((s) => {
                   const r = rowOf(tc.email, s);
                   return (
