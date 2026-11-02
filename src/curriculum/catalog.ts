@@ -23,6 +23,7 @@ import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonC01 } from './content/literacy-c/l01-numbers-that-talk.js';
 import { francoLesson } from './franco.js';
 import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
+import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -229,7 +230,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'I Went, You Went', 'We Went', 'From and To', 'What Did You Eat?', 'Days of the Week', 'These and Those', 'Many Books',
       'Level 1 Story',
     ],
-    lessons: { 1: lessonF01 },
+    lessons: { 1: lessonF01, 2: lessonF02 },
   },
   {
     id: 'seerah-teens',

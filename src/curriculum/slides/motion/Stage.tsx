@@ -91,7 +91,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
               <motion.p key={i} layout="position" className="m-0 font-sans"
                 initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }} animate={{ opacity: now ? 1 : 0.55, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, transition: { duration: 0.25 } }} transition={{ duration: 0.6 * quick, ease }}
                 style={{ fontSize: now ? (kids ? 34 : 30) : v.interaction ? 18 : kids ? 22 : 20, lineHeight: 1.3, fontWeight: now ? (look === 'teens' ? 750 : 650) : 500, color: ink(tone), transition: 'font-size 0.5s cubic-bezier(0.22,1,0.36,1)' }}>
-                {l}
+                <Bidi text={l} />
               </motion.p>
             );
           })}
@@ -107,6 +107,14 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
       </AnimatePresence>
     </div>
   );
+}
+
+/** English lines with Arabic inside: each Arabic run is isolated so its words keep their order next to the English. */
+const AR_RUN = /([\u0600-\u06FF][\u0600-\u06FF\s.!]*[\u0600-\u06FF])/;
+export function Bidi({ text }: { text: string }) {
+  const parts = text.split(AR_RUN);
+  if (parts.length === 1) return <>{text}</>;
+  return <>{parts.map((p, i) => (i % 2 ? <bdi key={i} dir="rtl">{p}</bdi> : <React.Fragment key={i}>{p}</React.Fragment>))}</>;
 }
 
 /** The khatam star tiled as a lattice (the site's geometric motif): two squares at 45° per tile, in outline. */

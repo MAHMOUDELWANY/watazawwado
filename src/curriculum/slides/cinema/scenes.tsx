@@ -21,6 +21,7 @@ import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1Ba
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { Lc1CoverGraphic, Lc1MessageGraphic, Lc1WhyGraphic, Lc1WhatGraphic, Lc1PlainGraphic, Lc1AynGraphic, Lc1HaGraphic, Lc1PairsGraphic, Lc1ReadGraphic, Lc1ReplyGraphic, Lc1MissionGraphic, Lc1NextGraphic } from '../motion/g-lc1';
 import { Ea2CoverGraphic, Ea2StairsGraphic, Ea2ListenGraphic, Ea2MinenGraphic, Ea2CountriesGraphic, Ea2MasriGraphic, Ea2EndingsGraphic, Ea2GimGraphic, Ea2PoliteGraphic, Ea2TalkGraphic, Ea2MissionGraphic, Ea2NextGraphic } from '../motion/g-ea2';
+import { Fk2CoverGraphic, Fk2RecallGraphic, Fk2BoxGraphic, Fk2StoryGraphic, Fk2HamzaGraphic, Fk2YesGraphic, Fk2AnimalsGraphic, Fk2ShadowGraphic, Fk2TalkGraphic, Fk2MissionGraphic, Fk2NextGraphic } from '../motion/g-fk2';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
 import { Lt1CoverGraphic, Lt1SignGraphic, Lt1GuessGraphic, Lt1AlifGraphic, Lt1BaaGraphic, Lt1TaaGraphic, Lt1ThaaGraphic, Lt1SystemGraphic, Lt1FindGraphic, Lt1WordGraphic, Lt1MissionGraphic, Lt1NextGraphic } from '../motion/g-lt1';
 import { Tj1CoverGraphic, Tj1QalbGraphic, Tj1TarteelGraphic, Tj1RightGraphic, Tj1StumbleGraphic, Tj1MistakesGraphic, Tj1LayersGraphic, Tj1IstiadhaGraphic, Tj1BasmalahGraphic, Tj1ReciteGraphic, Tj1MissionGraphic, Tj1NextGraphic } from '../motion/g-tj1';
@@ -262,6 +263,12 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   ea2Endings: onStage({ tone: 'light', Graphic: Ea2EndingsGraphic }), ea2Gim: onStage({ tone: 'light', Graphic: Ea2GimGraphic }),
   ea2Polite: onStage({ tone: 'light', Graphic: Ea2PoliteGraphic }), ea2Talk: onStage({ tone: 'light', Graphic: Ea2TalkGraphic, keepOnAsk: true }),
   ea2Mission: onStage({ tone: 'light', Graphic: Ea2MissionGraphic }), ea2Next: onStage({ tone: 'light', Graphic: Ea2NextGraphic }),
+  fk2Cover: onStage({ tone: 'light', Graphic: Fk2CoverGraphic }), fk2Recall: onStage({ tone: 'light', Graphic: Fk2RecallGraphic }),
+  fk2Box: onStage({ tone: 'light', Graphic: Fk2BoxGraphic }), fk2Story: onStage({ tone: 'light', Graphic: Fk2StoryGraphic }),
+  fk2Hamza: onStage({ tone: 'light', Graphic: Fk2HamzaGraphic }), fk2Yes: onStage({ tone: 'light', Graphic: Fk2YesGraphic }),
+  fk2Animals: onStage({ tone: 'light', Graphic: Fk2AnimalsGraphic }), fk2Shadow: onStage({ tone: 'light', Graphic: Fk2ShadowGraphic }),
+  fk2Talk: onStage({ tone: 'light', Graphic: Fk2TalkGraphic, keepOnAsk: true }), fk2Mission: onStage({ tone: 'light', Graphic: Fk2MissionGraphic }),
+  fk2Next: onStage({ tone: 'light', Graphic: Fk2NextGraphic }),
   ea1Cover: onStage({ tone: 'light', Graphic: Ea1CoverGraphic }), ea1Book: onStage({ tone: 'light', Graphic: Ea1BookGraphic }),
   ea1Door: onStage({ tone: 'light', Graphic: Ea1DoorGraphic }), ea1Pairs: onStage({ tone: 'light', Graphic: Ea1PairsGraphic }),
   ea1Eh: onStage({ tone: 'light', Graphic: Ea1EhGraphic }), ea1Mona: onStage({ tone: 'light', Graphic: Ea1MonaGraphic }),

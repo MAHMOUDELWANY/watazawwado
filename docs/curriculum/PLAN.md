@@ -780,3 +780,11 @@ B3–B5 → continue lesson by lesson.
   as the teacher dashboard (every subject and version, with its landmarks). Stations light up by the pages the teacher
   reported (Done / %), the latest one is marked, the rest say "Still ahead", and covered approved lessons link to review.
   Strengths and teacher notes stay under the map; the puzzle grid remains only in the teacher's report panel.
+- 2026-11-02/03 — Launch push (`LAUNCH-PLAN-2026-11.md`): every voice clip deleted for the owner's re-recording;
+  `voice/RECORDING-SCRIPTS.md` lists every clip of every lesson as one-take scripts per voice (regenerate with
+  `clips.ts --all`). Franco: Claude's spelling rules and Literacy C map (`franco/`), Literacy C Lesson 1 "Numbers That
+  Talk" (13 pages, the family-group phone), and the Egyptian · Franco version, which shows each Egyptian Adults lesson
+  with every Arabic line in Franco (`src/curriculum/franco.ts`; graphics mirror their rows). Egyptian Adults Lesson 2
+  "Where Are You From?" and Fusha Kids Lesson 2 "Is This a Cat?" (Zad Kids cast, mystery box); Fusha Kids Lesson 1 now
+  names the Zad Kids cast (Maryam and Yusuf). English lines with Arabic now isolate each Arabic run (word order fixed
+  in every lesson). Drafts, `reviewed: false`.

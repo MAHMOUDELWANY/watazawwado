@@ -124,7 +124,7 @@ Folder: `public/curriculum/fusha-kids/audio/`.
 | 3 | l01-story-3.mp3 | 3 |  | وَمَا هَذَا؟ |
 | 4 | l01-story-4.mp3 | 3 |  | هَذَا كِتَابٌ. |
 | 5 | l01-story-5.mp3 | 3 |  | وَمَنْ هَذَا؟ |
-| 6 | l01-story-6.mp3 | 3 |  | هَذَا قِطٌّ! لَا، لَا... هَذَا سَامٌ! |
+| 6 | l01-story-6.mp3 | 3 |  | هَذَا قِطٌّ! لَا، لَا... هَذَا يُوسُفُ! |
 | 7 | l01-haadha.mp3 | 4 |  | هَذَا |
 | 8 | l01-haadha-qalam.mp3 | 4 |  | هَذَا قَلَمٌ. |
 | 9 | l01-haadha-kitab.mp3 | 4 |  | هَذَا كِتَابٌ. |
@@ -153,7 +153,49 @@ Folder: `public/curriculum/fusha-kids/audio/`.
 One take: paste this whole block as one generation; I cut it into the files above, in this order.
 
 ```text
-مَا هَذَا؟ <break time="1.2s" /> هَذَا قَلَمٌ. <break time="1.2s" /> وَمَا هَذَا؟ <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> وَمَنْ هَذَا؟ <break time="1.2s" /> هَذَا قِطٌّ! لَا، لَا... هَذَا سَامٌ! <break time="1.2s" /> هَذَا <break time="1.2s" /> هَذَا قَلَمٌ. <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> هَذَا بَابٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> هَذَا بَيْتٌ. <break time="1.2s" /> هَذَا كُرْسِيٌّ. <break time="1.2s" /> مَنْ هَذَا؟ <break time="1.2s" /> هَذَا وَلَدٌ. <break time="1.2s" /> هَذَا طَالِبٌ. <break time="1.2s" /> هَذَا مُعَلِّمٌ. <break time="1.2s" /> قِطٌّ <break time="1.2s" /> مِفْتَاحٌ <break time="1.2s" /> سَرِيرٌ <break time="1.2s" /> قَلَمٌ <break time="1.2s" /> كِتَابٌ <break time="1.2s" /> بَابٌ <break time="1.2s" /> بَيْتٌ <break time="1.2s" /> كُرْسِيٌّ <break time="1.2s" /> وَلَدٌ <break time="1.2s" /> طَالِبٌ <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> هَذَا سَرِيرٌ! <break time="1.2s" /> أَهَذَا قِطٌّ؟
+مَا هَذَا؟ <break time="1.2s" /> هَذَا قَلَمٌ. <break time="1.2s" /> وَمَا هَذَا؟ <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> وَمَنْ هَذَا؟ <break time="1.2s" /> هَذَا قِطٌّ! لَا، لَا... هَذَا يُوسُفُ! <break time="1.2s" /> هَذَا <break time="1.2s" /> هَذَا قَلَمٌ. <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> هَذَا بَابٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> هَذَا بَيْتٌ. <break time="1.2s" /> هَذَا كُرْسِيٌّ. <break time="1.2s" /> مَنْ هَذَا؟ <break time="1.2s" /> هَذَا وَلَدٌ. <break time="1.2s" /> هَذَا طَالِبٌ. <break time="1.2s" /> هَذَا مُعَلِّمٌ. <break time="1.2s" /> قِطٌّ <break time="1.2s" /> مِفْتَاحٌ <break time="1.2s" /> سَرِيرٌ <break time="1.2s" /> قَلَمٌ <break time="1.2s" /> كِتَابٌ <break time="1.2s" /> بَابٌ <break time="1.2s" /> بَيْتٌ <break time="1.2s" /> كُرْسِيٌّ <break time="1.2s" /> وَلَدٌ <break time="1.2s" /> طَالِبٌ <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> هَذَا سَرِيرٌ! <break time="1.2s" /> أَهَذَا قِطٌّ؟
+```
+
+## Fusha Arabic · Kids · Lesson 2: Is This a Cat?
+
+Folder: `public/curriculum/fusha-kids/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (27)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-maa-haadha.mp3 | 2 | curious | مَا هَذَا؟ |
+| 2 | l02-haadha-kitab.mp3 | 2 |  | هَذَا كِتَابٌ. |
+| 3 | l02-haadha-miftah.mp3 | 2 |  | هَذَا مِفْتَاحٌ. |
+| 4 | l02-haadha-kursi.mp3 | 2 |  | هَذَا كُرْسِيٌّ. |
+| 5 | l02-story-1.mp3 | 4 | curious, unsure | أَهَذَا كَلْبٌ؟ |
+| 6 | l02-story-2.mp3 | 4 | playful | لَا. |
+| 7 | l02-story-3.mp3 | 4 | curious | أَهَذَا أَرْنَبٌ؟ |
+| 8 | l02-story-4.mp3 | 4 | happy | نَعَمْ، هَذَا أَرْنَبٌ! |
+| 9 | l02-story-5.mp3 | 4 | unsure, a little scared | أَهَذَا دُبٌّ؟ |
+| 10 | l02-story-6.mp3 | 4 | laughing | لَا، لَا! هَذَا قِطٌّ! |
+| 11 | l02-haadha-qitt.mp3 | 5 |  | هَذَا قِطٌّ. |
+| 12 | l02-a-haadha-qitt.mp3 | 5 | asking, voice going up | أَهَذَا قِطٌّ؟ |
+| 13 | l02-naam.mp3 | 6 | happy | نَعَمْ |
+| 14 | l02-la.mp3 | 6 | firm, friendly | لَا |
+| 15 | l02-naam-qitt.mp3 | 6 | happy | نَعَمْ، هَذَا قِطٌّ. |
+| 16 | l02-la-kalb.mp3 | 6 | friendly | لَا، هَذَا كَلْبٌ. |
+| 17 | l02-qitt.mp3 | 7 |  | قِطٌّ |
+| 18 | l02-kalb.mp3 | 7 |  | كَلْبٌ |
+| 19 | l02-arnab.mp3 | 7 |  | أَرْنَبٌ |
+| 20 | l02-hisan.mp3 | 7 |  | حِصَانٌ |
+| 21 | l02-dubb.mp3 | 7 |  | دُبٌّ |
+| 22 | l02-dik.mp3 | 7 |  | دِيكٌ |
+| 23 | l02-a-haadha-kalb.mp3 | 8 | curious | أَهَذَا كَلْبٌ؟ |
+| 24 | l02-a-haadha-dubb.mp3 | 10 | curious | أَهَذَا دُبٌّ؟ |
+| 25 | l02-naam-dubb.mp3 | 10 | happy | نَعَمْ، هَذَا دُبٌّ. |
+| 26 | l02-a-haadha-qalam.mp3 | 11 | grandfatherly, playful | أَهَذَا قَلَمٌ؟ |
+| 27 | l02-dhalika.mp3 | 12 | pointing far, slow | ذَلِكَ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَا هَذَا؟ <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> هَذَا كُرْسِيٌّ. <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> لَا. <break time="1.2s" /> أَهَذَا أَرْنَبٌ؟ <break time="1.2s" /> نَعَمْ، هَذَا أَرْنَبٌ! <break time="1.2s" /> أَهَذَا دُبٌّ؟ <break time="1.2s" /> لَا، لَا! هَذَا قِطٌّ! <break time="1.2s" /> هَذَا قِطٌّ. <break time="1.2s" /> أَهَذَا قِطٌّ؟ <break time="1.2s" /> نَعَمْ <break time="1.2s" /> لَا <break time="1.2s" /> نَعَمْ، هَذَا قِطٌّ. <break time="1.2s" /> لَا، هَذَا كَلْبٌ. <break time="1.2s" /> قِطٌّ <break time="1.2s" /> كَلْبٌ <break time="1.2s" /> أَرْنَبٌ <break time="1.2s" /> حِصَانٌ <break time="1.2s" /> دُبٌّ <break time="1.2s" /> دِيكٌ <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> أَهَذَا دُبٌّ؟ <break time="1.2s" /> نَعَمْ، هَذَا دُبٌّ. <break time="1.2s" /> أَهَذَا قَلَمٌ؟ <break time="1.2s" /> ذَلِكَ
 ```
 
 ## English · Kids · Lesson 1: The Snake Sound
@@ -259,6 +301,203 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 مَا اسْمُكَ؟ <break time="1.2s" /> السلام عليكم! <break time="1.2s" /> وعليكم السلام. <break time="1.2s" /> أهلاً وسهلاً! اسمَك إيه؟ <break time="1.2s" /> اسمي آدم. وحضرتك؟ <break time="1.2s" /> أنا سيّد، البوّاب. تشرّفنا! <break time="1.2s" /> الشرف ليّا. <break time="1.2s" /> السلام عليكم <break time="1.2s" /> وعليكم السلام <break time="1.2s" /> صباح الخير <break time="1.2s" /> صباح النور <break time="1.2s" /> أهلاً وسهلاً <break time="1.2s" /> أهلاً بيك <break time="1.2s" /> أهلاً بيكي <break time="1.2s" /> اسمَك إيه؟ <break time="1.2s" /> اسمي آدم. <break time="1.2s" /> اسمِك، اسمِك! <break time="1.2s" /> اسمي منى. أهلاً بيك! <break time="1.2s" /> اسم <break time="1.2s" /> اسمي <break time="1.2s" /> اسمَك <break time="1.2s" /> اسمِك <break time="1.2s" /> اسمِك إيه؟ <break time="1.2s" /> حضرتَك <break time="1.2s" /> حضرتِك <break time="1.2s" /> إنت <break time="1.2s" /> إنتي <break time="1.2s" /> أنا <break time="1.2s" /> آسف! <break time="1.2s" /> ولا يهمّك. <break time="1.2s" /> شكراً. <break time="1.2s" /> العفو. <break time="1.2s" /> آسفة. <break time="1.2s" /> ولا يهمِّك. <break time="1.2s" /> مع السلامة. <break time="1.2s" /> الله يسلّمَك. <break time="1.2s" /> الله يسلّمِك. <break time="1.2s" /> إنت منين؟
+```
+
+## Egyptian Arabic · Adults · Lesson 2: Where Are You From?
+
+Folder: `public/curriculum/egyptian-adults/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (35)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-inta-minen.mp3 | 2 | curious, friendly | إنت منين؟ |
+| 2 | l02-l-minen.mp3 | 3 | friendly, curious | إنت منين يا آدم؟ |
+| 3 | l02-l-ana-min.mp3 | 3 | proud, a little shy | أنا من إنجلترا. وإنتي؟ |
+| 4 | l02-l-mona.mp3 | 3 | warm, proud | أنا من هنا، من القاهرة. |
+| 5 | l02-l-sayed.mp3 | 3 | loud, proud, joking | وأنا من أسوان! |
+| 6 | l02-min.mp3 | 4 |  | من |
+| 7 | l02-fen.mp3 | 4 |  | فين |
+| 8 | l02-minen.mp3 | 4 | curious | منين؟ |
+| 9 | l02-ana-min-hina.mp3 | 4 | proud | أنا من هنا. |
+| 10 | l02-masr.mp3 | 5 |  | مصر |
+| 11 | l02-ingiltira.mp3 | 5 |  | إنجلترا |
+| 12 | l02-amrika.mp3 | 5 |  | أمريكا |
+| 13 | l02-kanada.mp3 | 5 |  | كندا |
+| 14 | l02-almanya.mp3 | 5 |  | ألمانيا |
+| 15 | l02-saudiyya.mp3 | 5 |  | السعودية |
+| 16 | l02-inta-ingilizi.mp3 | 6 | pleased, pointing | إنت إنجليزي! |
+| 17 | l02-hiyya-masriyya.mp3 | 6 | proud | وهي مصرية. |
+| 18 | l02-masri.mp3 | 6 |  | مصري |
+| 19 | l02-masriyya.mp3 | 6 |  | مصرية |
+| 20 | l02-kanadi.mp3 | 7 |  | كندي |
+| 21 | l02-kanadiyya.mp3 | 7 |  | كندية |
+| 22 | l02-almani.mp3 | 7 |  | ألماني |
+| 23 | l02-almaniyya.mp3 | 7 |  | ألمانية |
+| 24 | l02-amrikani.mp3 | 7 | amused | أمريكاني |
+| 25 | l02-amrikaniyya.mp3 | 7 |  | أمريكانية |
+| 26 | l02-aywa.mp3 | 7 |  | أيوه |
+| 27 | l02-la.mp3 | 7 |  | لأ |
+| 28 | l02-inta-gidid.mp3 | 8 | kind, curious | إنت جديد هنا؟ |
+| 29 | l02-gidid.mp3 | 8 |  | جديد |
+| 30 | l02-gamil.mp3 | 8 | admiring | جميل |
+| 31 | l02-gama.mp3 | 8 |  | جامعة |
+| 32 | l02-inti-minen.mp3 | 9 | curious, friendly | إنتي منين؟ |
+| 33 | l02-hadritik-minen.mp3 | 9 | polite, gentle | حضرتِك منين؟ |
+| 34 | l02-ana-min-tanta.mp3 | 9 | warm, proud | أنا من طنطا. |
+| 35 | l02-eh-da.mp3 | 13 | surprised, delighted | إيه ده؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إنت منين؟ <break time="1.2s" /> إنت منين يا آدم؟ <break time="1.2s" /> أنا من إنجلترا. وإنتي؟ <break time="1.2s" /> أنا من هنا، من القاهرة. <break time="1.2s" /> وأنا من أسوان! <break time="1.2s" /> من <break time="1.2s" /> فين <break time="1.2s" /> منين؟ <break time="1.2s" /> أنا من هنا. <break time="1.2s" /> مصر <break time="1.2s" /> إنجلترا <break time="1.2s" /> أمريكا <break time="1.2s" /> كندا <break time="1.2s" /> ألمانيا <break time="1.2s" /> السعودية <break time="1.2s" /> إنت إنجليزي! <break time="1.2s" /> وهي مصرية. <break time="1.2s" /> مصري <break time="1.2s" /> مصرية <break time="1.2s" /> كندي <break time="1.2s" /> كندية <break time="1.2s" /> ألماني <break time="1.2s" /> ألمانية <break time="1.2s" /> أمريكاني <break time="1.2s" /> أمريكانية <break time="1.2s" /> أيوه <break time="1.2s" /> لأ <break time="1.2s" /> إنت جديد هنا؟ <break time="1.2s" /> جديد <break time="1.2s" /> جميل <break time="1.2s" /> جامعة <break time="1.2s" /> إنتي منين؟ <break time="1.2s" /> حضرتِك منين؟ <break time="1.2s" /> أنا من طنطا. <break time="1.2s" /> إيه ده؟
+```
+
+## Reading Franco · Lesson 1: Numbers That Talk
+
+Folder: `public/curriculum/literacy-c/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (22)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-msg-1.mp3 | 2 | warm, happy, an aunt greeting her nephew | أهلاً يا حبيبي! عامل إيه؟ |
+| 2 | l01-ana.mp3 | 5 |  | أنا |
+| 3 | l01-enta.mp3 | 5 |  | إنت |
+| 4 | l01-baba.mp3 | 5 |  | بابا |
+| 5 | l01-mama.mp3 | 5 |  | ماما |
+| 6 | l01-masr.mp3 | 5 |  | مصر |
+| 7 | l01-tamam.mp3 | 5 | relaxed, smiling | تمام |
+| 8 | l01-ma3a.mp3 | 6 |  | مع |
+| 9 | l01-3ala.mp3 | 6 |  | على |
+| 10 | l01-3arabi.mp3 | 6 |  | عربي |
+| 11 | l01-3eesh.mp3 | 6 |  | عيش |
+| 12 | l01-7abibi.mp3 | 7 | warm | حبيبي |
+| 13 | l01-saba7.mp3 | 7 |  | صباح |
+| 14 | l01-7elw.mp3 | 7 | pleased | حلو |
+| 15 | l01-7aga.mp3 | 7 |  | حاجة |
+| 16 | l01-amal.mp3 | 8 |  | أمل |
+| 17 | l01-3amal.mp3 | 8 |  | عمل |
+| 18 | l01-hena.mp3 | 8 |  | هنا |
+| 19 | l01-7enna.mp3 | 8 |  | حنّة |
+| 20 | l01-3amel-eh.mp3 | 9 | curious, warm | عامل إيه؟ |
+| 21 | l01-reply.mp3 | 11 | cheerful, polite | الحمد لله، تمام. وإنتي؟ |
+| 22 | l01-ne2ablak.mp3 | 13 | hopeful, asking | نقابلك؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أهلاً يا حبيبي! عامل إيه؟ <break time="1.2s" /> أنا <break time="1.2s" /> إنت <break time="1.2s" /> بابا <break time="1.2s" /> ماما <break time="1.2s" /> مصر <break time="1.2s" /> تمام <break time="1.2s" /> مع <break time="1.2s" /> على <break time="1.2s" /> عربي <break time="1.2s" /> عيش <break time="1.2s" /> حبيبي <break time="1.2s" /> صباح <break time="1.2s" /> حلو <break time="1.2s" /> حاجة <break time="1.2s" /> أمل <break time="1.2s" /> عمل <break time="1.2s" /> هنا <break time="1.2s" /> حنّة <break time="1.2s" /> عامل إيه؟ <break time="1.2s" /> الحمد لله، تمام. وإنتي؟ <break time="1.2s" /> نقابلك؟
+```
+
+### Recorded by the owner himself (not ElevenLabs) (2)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-sound-3.mp3 | 6 | clear, slow, twice | ع |
+| 2 | l01-sound-7.mp3 | 7 | clear, slow, twice | ح |
+
+## Egyptian Arabic · Franco · Lesson 1: Ahlan! What's Your Name?
+
+Folder: `public/curriculum/egyptian-franco/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (38)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-maa-ismuka.mp3 | 2 | stiff, careful, like reading from a book | ma ismuka? |
+| 2 | l01-d-salam.mp3 | 3 | warm, loud, welcoming | el salamo 3alaykom! |
+| 3 | l01-d-wa-alaykum.mp3 | 3 | a little shy | w 3alaykom el salam. |
+| 4 | l01-d-ahlan-ismak.mp3 | 3 | friendly, curious | ahlan w sahlan! esmak eh? |
+| 5 | l01-d-ismi-adam.mp3 | 3 | polite, pleased | esmi Adam. w 7adretak? |
+| 6 | l01-d-ana-sayed.mp3 | 3 | proud, warm | ana Sayed, el bawwab. etsharrafna! |
+| 7 | l01-d-sharaf.mp3 | 3 | smiling | el sharaf leyya. |
+| 8 | l01-salam.mp3 | 4 |  | el salamo 3alaykom |
+| 9 | l01-wa-alaykum.mp3 | 4 |  | w 3alaykom el salam |
+| 10 | l01-sabah-kheer.mp3 | 4 | bright, morning | saba7 el 5eer |
+| 11 | l01-sabah-noor.mp3 | 4 | bright, smiling | saba7 el noor |
+| 12 | l01-ahlan.mp3 | 4 |  | ahlan w sahlan |
+| 13 | l01-ahlan-bik.mp3 | 4 |  | ahlan beek |
+| 14 | l01-ahlan-biki.mp3 | 4 |  | ahlan beeki |
+| 15 | l01-ismak-eh.mp3 | 5 | friendly, curious | esmak eh? |
+| 16 | l01-ismi-adam.mp3 | 5 | pleased | esmi Adam. |
+| 17 | l01-m-whisper.mp3 | 6 | a kind whisper, amused | esmek, esmek! |
+| 18 | l01-m-mona.mp3 | 6 | amused, kind | esmi Mona. ahlan beek! |
+| 19 | l01-ism.mp3 | 7 |  | esm |
+| 20 | l01-ismi.mp3 | 7 |  | esmi |
+| 21 | l01-ismak.mp3 | 7 |  | esmak |
+| 22 | l01-ismik.mp3 | 7 |  | esmek |
+| 23 | l01-ismik-eh.mp3 | 7 | friendly, curious | esmek eh? |
+| 24 | l01-hadritak.mp3 | 8 |  | 7adretak |
+| 25 | l01-hadritik.mp3 | 8 |  | 7adretek |
+| 26 | l01-inta.mp3 | 8 |  | enta |
+| 27 | l01-inti.mp3 | 8 |  | enti |
+| 28 | l01-ana.mp3 | 8 |  | ana |
+| 29 | l01-asif.mp3 | 9 | embarrassed, quick | asef! |
+| 30 | l01-wala-yhimmak.mp3 | 9 | kind, relaxed | wala yhemmak. |
+| 31 | l01-shukran.mp3 | 9 | grateful | shokran. |
+| 32 | l01-afw.mp3 | 9 | warm | el 3afw. |
+| 33 | l01-asfa.mp3 | 9 | embarrassed | asfa. |
+| 34 | l01-wala-yhimmik.mp3 | 9 | kind, relaxed | wala yhemmek. |
+| 35 | l01-maa-salama.mp3 | 10 | warm goodbye | ma3a el salama. |
+| 36 | l01-allah-ysallimak.mp3 | 10 | warm | Allah ysallemak. |
+| 37 | l01-allah-ysallimik.mp3 | 10 | warm | Allah ysallemek. |
+| 38 | l01-inta-minen.mp3 | 14 | curious, friendly | enta meneen? |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+ma ismuka? <break time="1.2s" /> el salamo 3alaykom! <break time="1.2s" /> w 3alaykom el salam. <break time="1.2s" /> ahlan w sahlan! esmak eh? <break time="1.2s" /> esmi Adam. w 7adretak? <break time="1.2s" /> ana Sayed, el bawwab. etsharrafna! <break time="1.2s" /> el sharaf leyya. <break time="1.2s" /> el salamo 3alaykom <break time="1.2s" /> w 3alaykom el salam <break time="1.2s" /> saba7 el 5eer <break time="1.2s" /> saba7 el noor <break time="1.2s" /> ahlan w sahlan <break time="1.2s" /> ahlan beek <break time="1.2s" /> ahlan beeki <break time="1.2s" /> esmak eh? <break time="1.2s" /> esmi Adam. <break time="1.2s" /> esmek, esmek! <break time="1.2s" /> esmi Mona. ahlan beek! <break time="1.2s" /> esm <break time="1.2s" /> esmi <break time="1.2s" /> esmak <break time="1.2s" /> esmek <break time="1.2s" /> esmek eh? <break time="1.2s" /> 7adretak <break time="1.2s" /> 7adretek <break time="1.2s" /> enta <break time="1.2s" /> enti <break time="1.2s" /> ana <break time="1.2s" /> asef! <break time="1.2s" /> wala yhemmak. <break time="1.2s" /> shokran. <break time="1.2s" /> el 3afw. <break time="1.2s" /> asfa. <break time="1.2s" /> wala yhemmek. <break time="1.2s" /> ma3a el salama. <break time="1.2s" /> Allah ysallemak. <break time="1.2s" /> Allah ysallemek. <break time="1.2s" /> enta meneen?
+```
+
+## Egyptian Arabic · Franco · Lesson 2: Where Are You From?
+
+Folder: `public/curriculum/egyptian-franco/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (35)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-inta-minen.mp3 | 2 | curious, friendly | enta meneen? |
+| 2 | l02-l-minen.mp3 | 3 | friendly, curious | enta meneen ya Adam? |
+| 3 | l02-l-ana-min.mp3 | 3 | proud, a little shy | ana men Engeltera. w enti? |
+| 4 | l02-l-mona.mp3 | 3 | warm, proud | ana men hena, men el 2ahera. |
+| 5 | l02-l-sayed.mp3 | 3 | loud, proud, joking | w ana men Aswan! |
+| 6 | l02-min.mp3 | 4 |  | men |
+| 7 | l02-fen.mp3 | 4 |  | feen |
+| 8 | l02-minen.mp3 | 4 | curious | meneen? |
+| 9 | l02-ana-min-hina.mp3 | 4 | proud | ana men hena. |
+| 10 | l02-masr.mp3 | 5 |  | Masr |
+| 11 | l02-ingiltira.mp3 | 5 |  | Engeltera |
+| 12 | l02-amrika.mp3 | 5 |  | Amreeka |
+| 13 | l02-kanada.mp3 | 5 |  | Kanada |
+| 14 | l02-almanya.mp3 | 5 |  | Almanya |
+| 15 | l02-saudiyya.mp3 | 5 |  | el Sa3odeyya |
+| 16 | l02-inta-ingilizi.mp3 | 6 | pleased, pointing | enta engeleezi! |
+| 17 | l02-hiyya-masriyya.mp3 | 6 | proud | w heyya Masreyya. |
+| 18 | l02-masri.mp3 | 6 |  | Masri |
+| 19 | l02-masriyya.mp3 | 6 |  | Masreyya |
+| 20 | l02-kanadi.mp3 | 7 |  | kanadi |
+| 21 | l02-kanadiyya.mp3 | 7 |  | kanadeyya |
+| 22 | l02-almani.mp3 | 7 |  | almani |
+| 23 | l02-almaniyya.mp3 | 7 |  | almaneyya |
+| 24 | l02-amrikani.mp3 | 7 | amused | amreekani |
+| 25 | l02-amrikaniyya.mp3 | 7 |  | amreekaneyya |
+| 26 | l02-aywa.mp3 | 7 |  | aywa |
+| 27 | l02-la.mp3 | 7 |  | la2 |
+| 28 | l02-inta-gidid.mp3 | 8 | kind, curious | enta gedeed hena? |
+| 29 | l02-gidid.mp3 | 8 |  | gedeed |
+| 30 | l02-gamil.mp3 | 8 | admiring | gameel |
+| 31 | l02-gama.mp3 | 8 |  | gam3a |
+| 32 | l02-inti-minen.mp3 | 9 | curious, friendly | enti meneen? |
+| 33 | l02-hadritik-minen.mp3 | 9 | polite, gentle | 7adretek meneen? |
+| 34 | l02-ana-min-tanta.mp3 | 9 | warm, proud | ana men Tanta. |
+| 35 | l02-eh-da.mp3 | 13 | surprised, delighted | eh da? |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+enta meneen? <break time="1.2s" /> enta meneen ya Adam? <break time="1.2s" /> ana men Engeltera. w enti? <break time="1.2s" /> ana men hena, men el 2ahera. <break time="1.2s" /> w ana men Aswan! <break time="1.2s" /> men <break time="1.2s" /> feen <break time="1.2s" /> meneen? <break time="1.2s" /> ana men hena. <break time="1.2s" /> Masr <break time="1.2s" /> Engeltera <break time="1.2s" /> Amreeka <break time="1.2s" /> Kanada <break time="1.2s" /> Almanya <break time="1.2s" /> el Sa3odeyya <break time="1.2s" /> enta engeleezi! <break time="1.2s" /> w heyya Masreyya. <break time="1.2s" /> Masri <break time="1.2s" /> Masreyya <break time="1.2s" /> kanadi <break time="1.2s" /> kanadeyya <break time="1.2s" /> almani <break time="1.2s" /> almaneyya <break time="1.2s" /> amreekani <break time="1.2s" /> amreekaneyya <break time="1.2s" /> aywa <break time="1.2s" /> la2 <break time="1.2s" /> enta gedeed hena? <break time="1.2s" /> gedeed <break time="1.2s" /> gameel <break time="1.2s" /> gam3a <break time="1.2s" /> enti meneen? <break time="1.2s" /> 7adretek meneen? <break time="1.2s" /> ana men Tanta. <break time="1.2s" /> eh da?
 ```
 
 ## Fusha Arabic · 12+ · Lesson 1: First Day at the Institute

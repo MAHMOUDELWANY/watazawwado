@@ -13,10 +13,10 @@ import { Hear } from '../Say';
 
 const AR: React.CSSProperties = { fontFamily: 'var(--font-display-ar)', fontWeight: 800, direction: 'rtl' };
 
-type Thing = 'pen' | 'book' | 'door' | 'house' | 'chair' | 'cat' | 'key' | 'bed' | 'boy' | 'student';
+export type Thing = 'pen' | 'book' | 'door' | 'house' | 'chair' | 'cat' | 'key' | 'bed' | 'boy' | 'student';
 
 /** Simple flat drawings of the lesson's things, in a 100 × 100 box. */
-function ThingArt({ t }: { t: Thing }) {
+export function ThingArt({ t }: { t: Thing }) {
   switch (t) {
     case 'pen': return <g><rect x={46} y={12} width={10} height={64} rx={4} fill={TEAL} transform="rotate(30 50 50)" /><path d="M 46 76 L 51 90 L 56 76 Z" fill={INK_TEXT} transform="rotate(30 50 50)" /></g>;
     case 'book': return <g><rect x={18} y={22} width={64} height={56} rx={6} fill={CRIMSON} /><rect x={24} y={28} width={52} height={44} rx={3} fill="#FFF3D6" /><rect x={48} y={22} width={4} height={56} fill="#8B1A1E" /></g>;
@@ -31,7 +31,7 @@ function ThingArt({ t }: { t: Thing }) {
 }
 
 /** A thing on the stage, centred at (x, y), `s` pixels wide, with an optional Arabic label that plays on tap. */
-function ThingCard({ t, x, y, s = 140, label, clip, delay = 0, color = INK_TEXT }: { t: Thing; x: number; y: number; s?: number; label?: string; clip?: string; delay?: number; color?: string }) {
+export function ThingCard({ t, x, y, s = 140, label, clip, delay = 0, color = INK_TEXT }: { t: Thing; x: number; y: number; s?: number; label?: string; clip?: string; delay?: number; color?: string }) {
   return (
     <motion.div className="absolute flex flex-col items-center" style={{ left: x - s / 2, top: y - s / 2, width: s }}
       initial={{ opacity: 0, y: 24, scale: 0.85 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.35, duration: 0.8, delay }}>
@@ -41,12 +41,12 @@ function ThingCard({ t, x, y, s = 140, label, clip, delay = 0, color = INK_TEXT 
   );
 }
 
-function ArText({ children, size, color = INK_TEXT }: { children: React.ReactNode; size: number; color?: string }) {
+export function ArText({ children, size, color = INK_TEXT }: { children: React.ReactNode; size: number; color?: string }) {
   return <span lang="ar" style={{ ...AR, fontSize: size, lineHeight: 1.3, color, whiteSpace: 'nowrap' }}>{children}</span>;
 }
 
 /** An Arabic speech bubble that plays its line on tap. */
-function Say({ x, y, id, text, align = 'left', delay = 0, width = 240, accent = false }: { x: number; y: number; id?: string; text: string; align?: 'left' | 'right'; delay?: number; width?: number; accent?: boolean }) {
+export function Say({ x, y, id, text, align = 'left', delay = 0, width = 240, accent = false }: { x: number; y: number; id?: string; text: string; align?: 'left' | 'right'; delay?: number; width?: number; accent?: boolean }) {
   const t = <ArText size={36} color={accent ? '#fff' : INK_TEXT}>{text}</ArText>;
   return <Bubble x={x} y={y} width={width} align={align} delay={delay} accent={accent} text={<div style={{ textAlign: 'center' }}>{id ? <Hear id={id}>{t}</Hear> : t}</div>} />;
 }

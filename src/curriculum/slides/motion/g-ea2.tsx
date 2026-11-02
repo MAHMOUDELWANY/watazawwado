@@ -29,8 +29,8 @@ export function Ea2CoverGraphic(_: GraphicProps) {
       <Skyline opacity={0.4} />
       <Building x={1150} w={330} delay={0.3} />
       <Street />
-      <Badge x={850} y={300} name="globe" size={110} color={TEAL} delay={0.6} />
-      <Svg><Draw d="M 900 300 Q 1060 150 1230 330" color={GOLD} width={3} dash="3 10" delay={1} dur={1.4} /></Svg>
+      <Badge x={1450} y={560} name="globe" size={100} color={TEAL} delay={0.6} />
+      <Svg><Draw d="M 1430 500 Q 1440 330 1330 300" color={GOLD} width={3} dash="3 10" delay={1} dur={1.4} /></Svg>
       <Say x={1300} y={420} id="inta-minen" text="إنت منين؟" align="right" delay={2} width={220} accent />
     </>
   );
@@ -49,7 +49,7 @@ export function Ea2StairsGraphic({ lines }: GraphicProps) {
       {lines >= 2 && lines < 3 && <Chip x={1020} y={520} color={TEAL} delay={0.2}>this time, in Egyptian</Chip>}
       {lines >= 3 && (
         <Tile x={1150} y={300} size={90} hot={lines >= 4}>
-          <Hear id="inta-minen">مـ<span style={{ color: lines >= 4 ? TEAL : INK_TEXT, transition: 'color 0.6s' }}>ين</span></Hear>
+          <Hear id="inta-minen">من<span style={{ color: lines >= 4 ? TEAL : INK_TEXT, transition: 'color 0.6s' }}>ين</span></Hear>
         </Tile>
       )}
       {lines >= 4 && <Chip x={1150} y={400} color={TEAL} delay={0.4}>فين · where?</Chip>}
@@ -76,7 +76,7 @@ export function Ea2ListenGraphic({ lines }: GraphicProps) {
       {k === 2 && (
         <React.Fragment key="b">
           <Say x={1420} y={560} id="l-mona" text="أنا من هنا، من القاهرة." align="right" width={300} />
-          <Say x={1000} y={540} id="l-sayed" text="وأنا من أسوان!" delay={1.4} width={230} accent />
+          <Say x={1000} y={400} id="l-sayed" text="وأنا من أسوان!" delay={1.4} width={230} accent />
         </React.Fragment>
       )}
       {k === 3 && (
@@ -184,7 +184,7 @@ export function Ea2MasriGraphic({ lines }: GraphicProps) {
       <Tile x={X(1090)} y={300} color={TEAL} delay={0.2}>ـي</Tile>
       <span className="pointer-events-none absolute font-sans font-black" style={{ left: X(910) - 20, top: 270, fontSize: 44, color: soft('light') }}>=</span>
       <Tile x={X(840)} y={300} hot delay={0.5}><Hear id="masri">مصري</Hear></Tile>
-      <Person x={X(840)} y={560} scale={0.6} color={SAYED} delay={0.7} />
+      <Chip x={X(840)} y={360} color={TEAL} delay={0.7}>a man</Chip>
       {lines >= 3 && (
         <>
           <Tile x={X(1370)} y={520}><Hear id="masr">مصر</Hear></Tile>
@@ -192,7 +192,7 @@ export function Ea2MasriGraphic({ lines }: GraphicProps) {
           <Tile x={X(1090)} y={520} color={GOLD} delay={0.2}>ـية</Tile>
           <span className="pointer-events-none absolute font-sans font-black" style={{ left: X(910) - 20, top: 490, fontSize: 44, color: soft('light') }}>=</span>
           <Tile x={X(840)} y={520} hot delay={0.5}><Hear id="masriyya">مصرية</Hear></Tile>
-          <Person x={X(840)} y={780} scale={0.6} color={MONA} hijab delay={0.7} />
+          <Chip x={X(840)} y={580} color="#B07A1E" delay={0.7}>a woman</Chip>
         </>
       )}
       {lines >= 4 && <Chip x={1230} y={700} color={TEAL} delay={0.3}>any country + ـي / ـية</Chip>}
@@ -226,11 +226,11 @@ export function Ea2EndingsGraphic({ lines, items }: GraphicProps) {
           </React.Fragment>
         );
       })}
-      {lines >= 2 && n >= 4 && <Chip x={1000} y={680} color={CRIMSON} delay={0.3}>America: ـاني</Chip>}
+      {lines >= 2 && n >= 4 && <Chip x={1140} y={662} color={CRIMSON} delay={0.3}>America: ـاني</Chip>}
       {lines >= 3 && (
         <>
-          <Tile x={X(1250)} y={760} size={44} color={TEAL} delay={0.2}><Hear id="aywa">أيوه</Hear></Tile>
-          <Tile x={X(1050)} y={760} size={44} color={CRIMSON} delay={0.4}><Hear id="la">لأ</Hear></Tile>
+          <Tile x={X(1250)} y={770} size={40} color={TEAL} delay={0.2}><Hear id="aywa">أيوه</Hear></Tile>
+          <Tile x={X(1050)} y={770} size={40} color={CRIMSON} delay={0.4}><Hear id="la">لأ</Hear></Tile>
         </>
       )}
     </>
@@ -260,12 +260,12 @@ export function Ea2GimGraphic({ lines }: GraphicProps) {
         <Draw d="M 1080 400 Q 960 450 900 520" color={soft('light')} width={3} delay={0.4} dur={0.7} />
         {lines >= 3 && <Draw d="M 1200 400 Q 1320 450 1380 520" color={CRIMSON} width={4} delay={0.2} dur={0.7} />}
       </Svg>
-      <motion.div className="absolute flex flex-col items-center" style={{ left: 820, top: 520, width: 160 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: lines >= 3 ? 0.5 : 1, y: 0 }} transition={{ delay: 0.8 }}>
+      <motion.div className="absolute flex flex-col items-center" style={{ left: 790, top: 520, width: 220 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: lines >= 3 ? 0.5 : 1, y: 0 }} transition={{ delay: 0.8 }}>
         <span className="font-sans font-black" style={{ fontSize: 64, color: INK_TEXT }}>j</span>
         <span className="font-sans font-bold uppercase" style={{ fontSize: 14, letterSpacing: '0.16em', color: soft('light') }}>the book · jadiid</span>
       </motion.div>
       {lines >= 3 && (
-        <motion.div className="absolute flex flex-col items-center" style={{ left: 1300, top: 520, width: 160 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
+        <motion.div className="absolute flex flex-col items-center" style={{ left: 1270, top: 520, width: 220 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
           <span className="font-sans font-black" style={{ fontSize: 64, color: CRIMSON }}>g</span>
           <span className="font-sans font-bold uppercase" style={{ fontSize: 14, letterSpacing: '0.16em', color: CRIMSON }}>Cairo · gidiid</span>
         </motion.div>
@@ -303,12 +303,12 @@ export function Ea2PoliteGraphic({ lines, items }: GraphicProps) {
             <motion.div className="absolute" style={{ left: 0, top: 0 }} initial={false} animate={{ y: p.lift && asked ? -46 : 0 }} transition={{ duration: 0.7, ease }}>
               <Person x={p.x} y={GROUND} scale={p.lift ? 1.05 : 1} color={p.color} hijab={p.hijab} dim={!asked} glow={p.lift && asked} />
             </motion.div>
-            {asked && <Say x={p.x} y={p.lift ? 500 : 545} id={p.id} text={p.q} width={220} delay={0.3} accent={p.lift} />}
+            {asked && <Say x={p.x} y={p.lift ? 410 : 545} id={p.id} text={p.q} width={220} delay={0.3} accent={p.lift} align={p.lift ? 'right' : 'left'} />}
           </React.Fragment>
         );
       })}
-      {lines >= 3 && <Chip x={1360} y={220} color={CRIMSON} delay={0.3}>حضرتك: every new question</Chip>}
-      {items >= 3 && <Say x={1360} y={330} id="ana-min-tanta" text="أنا من طنطا." align="right" width={200} delay={1} />}
+      {lines >= 3 && <Chip x={1000} y={220} color={CRIMSON} delay={0.3}>حضرتك works with every question</Chip>}
+      {items >= 3 && <Say x={1360} y={300} id="ana-min-tanta" text="أنا من طنطا." align="right" width={200} delay={1} />}
     </>
   );
 }
@@ -397,8 +397,8 @@ export function Ea2NextGraphic({ lines }: GraphicProps) {
       {open && <Say x={1180} y={540} id="eh-da" text="إيه ده؟" width={180} delay={0.6} accent />}
       {lines >= 3 && (
         <>
-          <Chip x={950} y={260} color={CRIMSON} delay={0.2}>ده · this (masculine)</Chip>
-          <Chip x={950} y={310} color={DEEP} delay={0.4}>دي · this (feminine)</Chip>
+          <Chip x={1330} y={230} color={CRIMSON} delay={0.2}>ده · this (masculine)</Chip>
+          <Chip x={1330} y={280} color={DEEP} delay={0.4}>دي · this (feminine)</Chip>
         </>
       )}
     </>
