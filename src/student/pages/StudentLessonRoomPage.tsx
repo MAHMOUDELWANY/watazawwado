@@ -7,7 +7,7 @@ import { useLessonRoom } from '../../lib/lessonRoom';
 import { BrandLoader } from '../../components/ui/BrandLoader';
 
 /** NX-12, learner: the slides the teacher is showing, following each page live. */
-export default function StudentLessonRoomPage({ lang = 'ar' }: { lang?: 'en' | 'ar' }) {
+export default function StudentLessonRoomPage({ lang = 'ar', backTo = '/student/lessons' }: { lang?: 'en' | 'ar'; backTo?: string }) {
   const isAr = lang === 'ar';
   const { id = '' } = useParams();
   const [roomKey, setRoomKey] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export default function StudentLessonRoomPage({ lang = 'ar' }: { lang?: 'en' | '
           <p className="text-sm text-muted-foreground">{isAr ? 'أول ما المعلم يفتح الدرس هيظهر هنا. الفيديو زي ما هو على زووم.' : 'The lesson shows here as soon as your teacher opens it. Video stays on Zoom.'}</p>
         </div>
       )}
-      <Link to="/student/lessons" className="text-sm text-teal underline underline-offset-4">{isAr ? 'حصصي' : 'My lessons'}</Link>
+      <Link to={backTo} className="text-sm text-teal underline underline-offset-4">{isAr ? 'حصصي' : 'My lessons'}</Link>
     </div>
   );
 }

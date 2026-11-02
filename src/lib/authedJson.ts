@@ -1,8 +1,10 @@
 import { getFreshAccessToken } from './auth';
+import { kidToken } from './kidDevice';
 
 /** JSON request with the signed-in user's token (students and staff). Throws the server's error message, with `status` set. */
 export async function authedJson<T = any>(path: string, init: RequestInit = {}): Promise<T> {
-  const token = await getFreshAccessToken();
+  // NX-16: pages under /kid use the linked child phone's token, never a grown-up session.
+  const token = kidToken() ?? await getFreshAccessToken();
   const res = await fetch(path, {
     ...init,
     headers: {

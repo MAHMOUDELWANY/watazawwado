@@ -84,6 +84,7 @@ import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooking, reverseCheckoutDiscount, settleCheckoutRedemptions } from '../server/routes/growth.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { registerHonorRoutes } from '../server/routes/honor.js';
+import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
@@ -1492,6 +1493,9 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
     if (!token) {
       return res.status(401).json({ error: 'Authentication required. Expected Bearer token format.' });
     }
+
+    // NX-16: a linked child phone (no Supabase user), limited to that child's few routes.
+    if (token.startsWith(KID_TOKEN_PREFIX)) return authenticateChildDevice(getSupabaseAdminClient(), req, res, next, token);
 
     // Strict production security
     if (isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-teacher-token' || token === 'dev-super-admin-token')) {
@@ -9027,7 +9031,8 @@ async function getAuthorizedLearnersForStudent(supabaseAdmin: any, req: any) {
     }
   }
 
-  return learners;
+  // NX-16: a child phone sees only its own child.
+  return req.childDevice ? learners.filter(l => l.id === req.childDevice.learnerId) : learners;
 }
 
 // GET /api/student/packages - Retrieve authenticated student's package entitlements & active catalog & eligible learners
@@ -10264,6 +10269,9 @@ registerHomeworkRoutes(app, {
 
 // NX-01: today's review (spaced repetition of mastered ayat).
 registerReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
+
+// NX-16: a child's own phone, linked with a one-time code from the parent.
+registerChildDeviceRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-05: real reviews from families (one-time links, portal reviews, screenshots; the admin publishes).
 registerFamilyReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent });

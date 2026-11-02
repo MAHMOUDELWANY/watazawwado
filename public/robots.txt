@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /student
+Disallow: /kid
 Disallow: /dashboard
 Disallow: /teacher
 Disallow: /staff

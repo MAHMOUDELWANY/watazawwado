@@ -34,6 +34,7 @@ import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { AddChildForm } from '../components/AddChildForm';
+import { ChildPhones } from '../components/ChildPhones';
 import { PrivacyRequests } from '../components/PrivacyRequests';
 import { ErrorState } from '../../components/ErrorState';
 
@@ -840,6 +841,9 @@ export default function StudentProfilePage({
                   </div>
                 </div>
               )}
+
+              {/* NX-16: a child's own phone, linked with a one-time code. */}
+              <ChildPhones isAr={isAr} children={linkedChildren.filter((c: any) => c?.id && c?.name)} />
 
               {/* Parent / Guardian (if child learner) */}
               {profile?.guardian && (

@@ -11,7 +11,8 @@ import { RecitationRecorder } from './RecitationRecorder';
  * NX-02: "This week's homework" on the student home. The teacher's tasks for the next lesson, one Done per task.
  * Calm by design: no red and no due dates; an open task simply waits for the next lesson.
  */
-export function HomeworkCard({ isAr }: { isAr: boolean }) {
+/** `kid`: on a linked child phone (NX-16) there is no booking or curriculum page to link to. */
+export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boolean }) {
   const { learners, activeId } = useActiveLearner();
   const reduce = useReducedMotion();
   const [data, setData] = useState<{ open: HomeworkItem[]; recent: HomeworkItem[]; hasNextLesson: boolean } | null>(null);
@@ -82,7 +83,7 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
                   {line.note && <span className="text-xs text-muted-foreground">{line.note}</span>}
                   {line.href && (line.external
                     ? <a href={line.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-teal underline underline-offset-4 inline-flex items-center gap-1 w-fit">{isAr ? 'افتح الآيات' : 'Open the ayat'}<ExternalLink className="w-3 h-3" aria-hidden="true" /></a>
-                    : <Link to={line.href} className="text-xs font-semibold text-teal underline underline-offset-4 w-fit">{isAr ? 'افتح منهجي' : 'Open my curriculum'}</Link>)}
+                    : !kid && <Link to={line.href} className="text-xs font-semibold text-teal underline underline-offset-4 w-fit">{isAr ? 'افتح منهجي' : 'Open my curriculum'}</Link>)}
                   {/* NX-03: a recite task can be recorded and sent to the teacher. */}
                   {hw.kind === 'recite' && <RecitationRecorder learnerId={hw.student_id} homeworkId={hw.id} isAr={isAr} onSent={() => setRepliesKey((k) => k + 1)} />}
                   <AnimatePresence>
@@ -118,7 +119,7 @@ export function HomeworkCard({ isAr }: { isAr: boolean }) {
 
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
 
-      {!data.hasNextLesson && data.open.length > 0 && (
+      {!kid && !data.hasNextLesson && data.open.length > 0 && (
         <Link to="/student/book" className="block text-center rounded-xl bg-primary text-primary-foreground text-sm font-semibold py-2.5 min-h-11 focus-ring">
           {isAr ? 'احجز حصتك الجاية' : 'Book your next lesson'}
         </Link>

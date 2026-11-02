@@ -569,7 +569,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   admin view of who may teach what.
 
 ### NX-16 A child's own phone, linked to the parent's account
-- Priority P2 · Zone 🔴 (children's data and access) · Size L · Status todo · Owner approved the design below (2026-11-02)
+- Priority P2 · Zone 🔴 (children's data and access) · Size L · Status done (2026-11-02; v1 without QR, PIN or child messages, see LOG)
 - Owner idea (2026-11-01): a child with their own phone, without the parent's phone nearby, should still have the
   app on their phone through a safe system.
 - Proposed design (from ClassDojo, Waterford, RoosterMoney):

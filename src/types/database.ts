@@ -963,6 +963,11 @@ export interface Database {
         Insert: Partial<ReviewCardRow> & Pick<ReviewCardRow, 'student_id' | 'homework_id' | 'surah' | 'ayah_from' | 'ayah_to' | 'due_on'>;
         Update: Partial<ReviewCardRow>;
       };
+      child_devices: {
+        Row: ChildDeviceRow;
+        Insert: Partial<ChildDeviceRow> & Pick<ChildDeviceRow, 'owner_user_id' | 'learner_id' | 'name'>;
+        Update: Partial<ChildDeviceRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -977,6 +982,21 @@ export interface Database {
 }
 
 // NX-01 daily review (migration 20261101000005): server only, via server/routes/review.ts.
+/** NX-16: a phone linked to one learner with a one-time code; hashes only. */
+export interface ChildDeviceRow {
+  id: string;
+  owner_user_id: string;
+  learner_id: string;
+  name: string;
+  code_hash: string | null;
+  code_expires_at: string | null;
+  token_hash: string | null;
+  paired_at: string | null;
+  last_seen_at: string | null;
+  revoked_at: string | null;
+  created_at: string;
+}
+
 export interface ReviewCardRow {
   id: string;
   student_id: string;

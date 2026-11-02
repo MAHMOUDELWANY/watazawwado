@@ -874,3 +874,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Recitation recordings (NX-03) now kept 30 days instead of 90 (`RETENTION_DAYS` in `server/routes/recitations.ts`): about 0.5 MB each, so storage stays inside the free plan as families grow. Playback never loads other recordings, so site speed is unaffected either way. Privacy policy has the line (retention section, "Last updated: November 2026").
 - Push (NX-09): new VAPID keys set on Vercel production (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, the private one sensitive); live from this deploy.
 - hr@watazawwado.academy exists on Zoho Mail and works (the owner); the note at the careers entry above is settled.
+
+## 2026-11-02 — NX-16 A child's own phone
+- Family tab: "Set up a phone for <child>" gives a one-time 6-digit code (15 minutes) and the address watazawwado.academy/kid; linked phones are listed (name, last used) with Remove, which works at the phone's next request. The parent gets a site notice when a phone is linked.
+- `/kid`: the child types the code; the phone keeps a long token (only its hash is stored). The page shows the next lessons (Join and Lesson room from 15 minutes before), today's review and the homework with recording. Arabic/English switch.
+- Server: `server/routes/childDevices.ts`. A `kid_` token goes through `verifyStudentAuth` as the parent's account, narrowed by `getAuthorizedLearnersForStudent` to the one child, and only for nine routes (`CHILD_ROUTES`); every other route answers 403. Chat and notifications use their own sign-in and reject the token. Migration `20261102000001_child_devices.sql` (server only).
+- Fixed on the way: `vercel.json` had `microphone=()` site-wide, which blocks recording a recitation (NX-03) on production; now `microphone=(self)`.
+- Privacy policy: a line on child phones. `/kid` is in robots.txt Disallow.
+- Not in v1: a QR code (no QR library installed; the code plus the short address does the job), the optional 4-digit PIN, and child messages to the teacher (chat uses a separate sign-in; it stays off). Installing /kid as an app opens /student (the manifest start_url).

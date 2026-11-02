@@ -74,6 +74,7 @@ export function preloadPage(pathname: string): Promise<unknown> {
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
 const DashboardApp = lazyWithReload(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));
 const StudentApp = lazyWithReload(() => import('./student/StudentApp'));
+const KidApp = lazyWithReload(() => import('./kid/KidApp'));
 const StaffLoginPage = lazyWithReload(() => import('./pages/StaffLoginPage'));
 const OtpVerificationPage = lazyWithReload(() => import('./pages/OtpVerificationPage'));
 const StaffSetPasswordPage = lazyWithReload(() => import('./pages/StaffSetPasswordPage'));
@@ -150,6 +151,7 @@ export function AppRoutes() {
           <Route path="/verify-otp" element={<OtpVerificationPage />} />
           <Route path="/verify" element={<OtpVerificationPage />} />
           <Route path="/student/*" element={<StudentApp />} />
+          <Route path="/kid/*" element={<KidApp />} />
           <Route path="/ar/*" element={<Navigate to="/ar" replace />} />
           {/* Old English addresses (before 2026-10-28) now live at the plain path. */}
           <Route path="/en/*" element={<OldEnglishAddress />} />
