@@ -27,6 +27,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { EmptyState } from '../../components/EmptyState';
 import { useT } from '../../lib/language';
+import { serviceLabel, zoneCity, levelLabel } from '../lib/labels';
 
 export default function StudentsPage() {
   const { teacherRole } = useTeacherAuth();
@@ -304,7 +305,7 @@ export default function StudentsPage() {
 
                       {student.primary_service_name && (
                         <p className="text-sm text-primary font-medium mt-0.5">
-                          {student.primary_service_name}
+                          {serviceLabel({ service_name: student.primary_service_name }, isAr)}
                         </p>
                       )}
                     </div>
@@ -324,7 +325,7 @@ export default function StudentsPage() {
                   <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                     {student.current_level ? (
                       <span className="capitalize px-2 py-0.5 rounded-md glass-surface border border-border-subtle text-foreground">
-                        {student.current_level}
+                        {levelLabel(student.current_level, isAr)}
                       </span>
                     ) : (
                       <span className="italic opacity-60">{t('Level not assessed', 'المستوى لسه ما اتحددش')}</span>
@@ -339,7 +340,7 @@ export default function StudentsPage() {
 
                     {student.timezone && (
                       <span className="text-[11px] opacity-60">
-                        {student.timezone}
+                        {zoneCity(student.timezone, isAr)}
                       </span>
                     )}
 

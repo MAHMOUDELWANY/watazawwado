@@ -10,6 +10,7 @@ import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { useNavigate } from 'react-router-dom';
 import { RequestCard } from '../components/RequestCard';
 import { adminChatLink } from '../../lib/authedJson';
+import { serviceLabel, levelLabel } from '../lib/labels';
 
 /**
  * Super admin: placement tests sent by new learners. The admin reads the answers, writes a reply and
@@ -125,10 +126,11 @@ export default function PlacementTestsPage() {
             subtitle={test.submittedAt ? new Date(test.submittedAt).toLocaleString(isAr ? 'ar-EG' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }) : undefined}
             badge={`${test.score}/${test.maxScore}`}
             rows={[
-              [t('Subject', 'المادة'), test.serviceId],
-              [t('Level they chose', 'المستوى اللي اختاره'), test.statedLevel || '—'],
-              [t('Level the result suggests', 'المستوى حسب النتيجة'), test.suggestedLevel || '—'],
-              [t('Summary', 'الملخص'), test.aiSummary || '—']
+              [t('Subject', 'المادة'), serviceLabel({ service_id: test.serviceId }, isAr)],
+              [t('Level they chose', 'المستوى اللي اختاره'), levelLabel(test.statedLevel, isAr) || '—'],
+              [t('Level the result suggests', 'المستوى حسب النتيجة'), levelLabel(test.suggestedLevel, isAr) || '—'],
+              // The summary is written in English on the server; keep it left-to-right so its punctuation stays put.
+              [t('Summary', 'الملخص'), test.aiSummary ? <span dir="ltr" className="block text-start">{test.aiSummary}</span> : '—']
             ]}
             actions={
               <>

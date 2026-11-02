@@ -37,6 +37,7 @@ export default function ReviewsPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [proof, setProof] = useState({ captionEn: '', captionAr: '', consentNote: '' });
+  const [fileName, setFileName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(() => {
@@ -74,6 +75,7 @@ export default function ReviewsPage() {
       await dashboardFetch('/api/dashboard/review-proofs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: up.path, ...proof }) });
       setProof({ captionEn: '', captionAr: '', consentNote: '' });
       if (fileRef.current) fileRef.current.value = '';
+      setFileName('');
       notify(t('Screenshot added.', 'الصورة اتضافت.'));
       load();
     } catch (e: any) { notify(e.message, 'error'); } finally { setBusy(null); }
@@ -97,7 +99,7 @@ export default function ReviewsPage() {
         <p className="text-sm text-muted-foreground">
           {t('The home page shows reviews once 3 are published. Publish every genuine review, good or bad; decline only spam, abuse or personal data. Never offer anything for a review.',
             'الصفحة الرئيسية بتعرض الآراء لما يبقى فيه ٣ منشورين. انشر كل رأي حقيقي حلو أو وحش، وارفض بس السبام أو الإساءة أو البيانات الشخصية. وماتدّيش أي مقابل لأي رأي.')}
-          {' '}{t(`Published now: ${published}.`, `المنشور دلوقتي: ${published.toLocaleString('ar-EG')}.`)}
+          {' '}{t(`Published now: ${published}.`, `المنشور دلوقتي: ${published}.`)}
         </p>
       </div>
 
@@ -161,7 +163,12 @@ export default function ReviewsPage() {
       <Card className="p-5 space-y-3">
         <h2 className="font-bold text-foreground flex items-center gap-2"><Upload className="w-4 h-4 text-teal" aria-hidden="true" />{t('Screenshots of messages', 'سكرين شوت من رسايل الأهالي')}</h2>
         <p className="text-sm text-muted-foreground">{t('Only with the family’s permission. Hide names, phone numbers and photos before uploading. JPG, PNG or WebP, up to 3 MB.', 'بإذن العيلة بس. خبّي الأسماء والأرقام والصور قبل الرفع. JPG أو PNG أو WebP، لحد ٣ ميجا.')}</p>
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="block text-sm" aria-label={t('Screenshot image', 'صورة السكرين شوت')} />
+        {/* Our own button: the browser's file picker printed "No file chosen" in English on Arabic pages. */}
+        <label className="flex items-center gap-3 cursor-pointer rounded-xl border border-dashed border-border p-3 hover:bg-surface-subtle focus-within:ring-2 focus-within:ring-focus">
+          <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-label={t('Screenshot image', 'صورة السكرين شوت')} onChange={(e) => setFileName(e.target.files?.[0]?.name || '')} />
+          <span className="inline-flex items-center gap-1.5 h-10 px-4 rounded-lg bg-surface-subtle text-sm font-semibold text-foreground"><Upload className="w-4 h-4" aria-hidden="true" />{t('Choose an image', 'اختار صورة')}</span>
+          <span className="text-sm text-muted-foreground truncate" dir="auto">{fileName || t('No image yet', 'لسه مفيش صورة')}</span>
+        </label>
         <div className="grid gap-2 sm:grid-cols-2">
           <Input value={proof.captionEn} maxLength={160} onChange={(e) => setProof((p) => ({ ...p, captionEn: e.target.value }))} placeholder={t('Caption in English (optional)', 'تعليق بالإنجليزي (اختياري)')} aria-label={t('English caption', 'تعليق إنجليزي')} />
           <Input value={proof.captionAr} maxLength={160} onChange={(e) => setProof((p) => ({ ...p, captionAr: e.target.value }))} placeholder={t('Caption in Arabic (optional)', 'تعليق بالعربي (اختياري)')} aria-label={t('Arabic caption', 'تعليق عربي')} />

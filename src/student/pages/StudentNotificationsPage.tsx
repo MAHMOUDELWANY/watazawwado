@@ -310,12 +310,12 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             <Bell className="w-6 h-6" />
           </div>
           <h3 className="font-display font-bold text-lg text-foreground">
-            {isAr ? 'لا توجد تنبيهات حالياً' : 'All caught up!'}
+            {isAr ? 'مفيش تنبيهات دلوقتي' : 'All caught up!'}
           </h3>
           <p className="text-sm sm:text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
             {filter === 'unread'
               ? (isAr ? 'لا توجد تنبيهات غير مقروءة في الوقت الحالي.' : 'You have no unread notifications right now.')
-              : (isAr ? 'ستظهر هنا إشعارات الدروس القادمة، تأكيدات الحوالات، وتحديثات الباقات.' : 'Upcoming lesson reminders, payment receipts, and schedule updates will appear here.')}
+              : (isAr ? 'هنا هتلاقي تذكير الحصص الجاية، وتأكيد الدفع، وأي تغيير في مواعيدك.' : 'Upcoming lesson reminders, payment receipts, and schedule updates will appear here.')}
           </p>
         </div>
       ) : (

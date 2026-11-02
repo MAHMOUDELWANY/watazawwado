@@ -121,6 +121,10 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
 
   return (
     <div className="max-w-xl mx-auto space-y-4">
+      <div>
+        <h1 className="text-2xl font-display font-bold text-foreground">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{isAr ? 'أسئلة قصيرة بتساعد معلمك يجهّزلك الحصة على قد مستواك.' : 'Short questions that help your teacher prepare lessons for your level.'}</p>
+      </div>
       {learners.length > 1 && (
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={isAr ? 'الطالب' : 'Learner'}>
           {learners.map((l) => (

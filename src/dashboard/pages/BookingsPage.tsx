@@ -22,6 +22,7 @@ import { BulkCancelBar, bulkCancelable } from '../components/BulkCancelBar';
 import { EmptyState } from '../../components/EmptyState';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
+import { serviceLabel, zoneCity } from '../lib/labels';
 import { notify } from '../../components/ui/Feedback';
 
 /**
@@ -382,7 +383,7 @@ export default function BookingsPage() {
                         <h3 className="text-sm font-semibold text-foreground">{b.contact_name}</h3>
                         {b.parent_name && <span className="text-sm text-muted-foreground">({t('Parent', 'ولي الأمر')}: {b.parent_name})</span>}
                         <span className="text-border">•</span>
-                        <span className="text-sm font-medium text-muted-foreground">{b.service_name} ({b.duration_minutes} {t('min', 'دقيقة')})</span>
+                        <span className="text-sm font-medium text-muted-foreground">{serviceLabel(b as any, isAr)} ({b.duration_minutes} {t('min', 'دقيقة')})</span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
@@ -393,7 +394,7 @@ export default function BookingsPage() {
                         {startStudent && (
                           <span className="flex items-center gap-1">
                             <Globe className="w-3.5 h-3.5 text-muted-foreground" />
-                            {t("Student's time", 'توقيت الطالب')}: {startStudent.toFormat('hh:mm a')} (<span dir="ltr">{b.student_timezone}</span>)
+                            {t("Student's time", 'توقيت الطالب')}: {startStudent.toFormat('hh:mm a')} ({zoneCity(b.student_timezone, isAr)})
                           </span>
                         )}
                       </div>

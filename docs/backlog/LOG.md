@@ -835,3 +835,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Homepage: the two ways to learn carry small moving examples (your account; a family account moving from child to child). The week story got more motion: the ribbon fills to the lit step, the active dot pulses, the phone tilts and glows in the step's colour, screens animate on phones too. The recitation step now says recording happens in recitation homework (chat has no voice notes).
 - Arabic time zone offsets keep "UTC-5" on one line.
 - Checks: tsc clean; build passes; full `npm test` in the main checkout 1893/1899 (only QA-05b, stale build there; 6/6 here). Seen in the browser: homepage sections desktop and phone, light and dark; careers page; wallet; gift box answer for a real discount code. Not seen: the "Booking details" button (the dev account has no lessons) and the envelope step inside booking.
+
+## 2026-11-02 — NX-14 third pass: every remaining teacher, admin and student page
+- Shot every remaining page on a phone (Arabic, light), the fixed ones again in dark and on desktop.
+- Teacher: Students, Bookings and Notifications show the subject in Arabic, the time zone as a city and the level in Arabic (were "Tajweed Rules & Application", "Africa/Cairo", "Advanced", "quran-reading"). "My month" and the class board show 0-9: the Arabic-Indic zero read as a dot.
+- Admin: Teachers cards no longer push the role, status and agreement date past the card edge on phones (long emails truncate). Leads show where they came from and the trial status in words ("Website booking", "confirmed" → "مؤكدة"). Placement reviews show the subject and levels in Arabic; the English summary stays left-to-right. Reviews: our own "Choose an image" button instead of the browser's English file picker.
+- Student: the calendar names the city and folds empty days into one short line on phones; the placement page and the invite page have headings; notifications speak like the rest of the site.
+- Shared helpers in `src/dashboard/lib/labels.ts` (subject by id or English name, level, booking status, lead source).
+- Seen but not changed: the health page lists a React #418 hydration error on "/" in production (3 times); worth a look.
+- Checks: tsc clean; build passes; full `npm test` in the main checkout 1893/1899 (only QA-05b, stale build there; 6/6 here).

@@ -23,7 +23,8 @@ export default function ClassBoardPage() {
   useEffect(() => {
     dashboardFetch<{ groups: Group[] }>('/api/dashboard/class-board').then((d) => setGroups(d.groups)).catch((e) => setError(e.message));
   }, []);
-  const n = (v: number) => (isAr ? v.toLocaleString('ar-EG') : String(v));
+  // 0-9 like the rest of the dashboard: the Arabic-Indic zero reads as a dot beside the · separators.
+  const n = (v: number) => String(v);
   const label = (g: Group) => {
     const age = isAr ? AGE[g.ageGroup].ar : AGE[g.ageGroup].en;
     if (!g.gender) return age;

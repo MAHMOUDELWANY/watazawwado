@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import { Bell, CalendarPlus, CalendarX, CalendarClock, Sparkles, Loader2 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
+import { serviceLabel } from '../lib/labels';
 
 interface DashboardNotification {
   id: string;
@@ -120,7 +121,7 @@ export default function NotificationsPage() {
                     {isNew && <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-destructive/10 text-destructive">{t('New', 'جديد')}</span>}
                   </div>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    {item.learnerName} · {item.serviceId} · {when}
+                    {item.learnerName} · {serviceLabel({ service_id: item.serviceId }, isAr)} · {when}
                   </p>
                   <p className="text-[12px] text-muted-foreground mt-0.5">
                     {item.referenceCode} · {DateTime.fromISO(item.at).setLocale(isAr ? 'ar' : 'en').toRelative()}

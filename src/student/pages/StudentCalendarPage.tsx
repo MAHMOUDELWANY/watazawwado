@@ -7,6 +7,7 @@ import { useActiveLearner } from '../activeLearner';
 import { joinState } from '../components/LessonDayCard';
 import { ErrorState } from '../../components/ErrorState';
 import { BrandLoader } from '../../components/ui/BrandLoader';
+import { zoneCity } from '../../dashboard/lib/labels';
 
 interface Lesson {
   id: string;
@@ -112,7 +113,7 @@ export default function StudentCalendarPage({ lang = 'ar' }: { lang?: 'en' | 'ar
 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-xs text-muted-foreground">{t(`Times in your time zone (${zone})`, `المواعيد بتوقيتك (${zone})`)}</p>
+        <p className="text-xs text-muted-foreground">{t(`Times in your time zone (${zoneCity(zone, false)})`, `المواعيد بتوقيتك (${zoneCity(zone, true)})`)}</p>
       </div>
 
       {learners.length > 1 && (
@@ -133,8 +134,11 @@ export default function StudentCalendarPage({ lang = 'ar' }: { lang?: 'en' | 'ar
             const key = d.toISODate()!;
             const items: Lesson[] = byDay.get(key) || [];
             return (
-              <li key={key} className={`rounded-2xl border p-2.5 min-h-[7rem] ${key === today ? 'border-[var(--teal)] bg-[var(--teal)]/5' : 'border-border'}`}>
-                <p className="text-xs font-semibold text-muted-foreground mb-2">{d.setLocale(loc).toFormat('ccc d')}</p>
+              <li key={key} className={`rounded-2xl border p-2.5 ${items.length ? 'min-h-[7rem]' : 'md:min-h-[7rem]'} ${key === today ? 'border-[var(--teal)] bg-[var(--teal)]/5' : 'border-border'}`}>
+                <p className={`text-xs font-semibold text-muted-foreground ${items.length ? 'mb-2' : 'md:mb-2'} flex items-center justify-between gap-2`}>
+                  <span>{d.setLocale(loc).toFormat('ccc d')}</span>
+                  {!items.length && <span className="font-normal opacity-70 md:hidden">{t('No lessons', 'مفيش حصص')}</span>}
+                </p>
                 <ul className="space-y-2">
                   {items.map((l) => {
                     const state = joinState(l.scheduledStart, l.scheduledEnd, now);

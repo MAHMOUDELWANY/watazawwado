@@ -253,18 +253,18 @@ export default function TeachersPage() {
             }`}
           >
             <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent font-display font-bold text-base flex items-center justify-center">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-10 h-10 shrink-0 rounded-full bg-secondary/30 text-accent font-display font-bold text-base flex items-center justify-center">
                   {tc.display_name.charAt(0)}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="text-sm font-display font-semibold text-foreground">
                     {tc.display_name}
                   </h3>
-                  <p className="text-sm text-muted-foreground" dir="ltr">{tc.email}</p>
+                  <p className="text-sm text-muted-foreground truncate" dir="ltr">{tc.email}</p>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-1">
+              <div className="flex flex-col items-end gap-1 shrink-0 max-w-[8.5rem] text-end">
                 <span className={`px-2 py-0.5 rounded text-[13px] font-semibold uppercase tracking-wider ${
                   tc.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
                 }`}>
@@ -278,7 +278,7 @@ export default function TeachersPage() {
                 {tc.role !== 'super_admin' && (
                   <span className="text-[12px] text-muted-foreground">
                     {tc.agreement_accepted_at
-                      ? t(`Agreement accepted ${String(tc.agreement_accepted_at).slice(0, 10)}`, `وافق على العقد ${String(tc.agreement_accepted_at).slice(0, 10)}`)
+                      ? <>{t('Agreement accepted', 'وافق على العقد')} <span dir="ltr" className="whitespace-nowrap">{String(tc.agreement_accepted_at).slice(0, 10)}</span></>
                       : t('Agreement not accepted yet', 'لم يوافق على العقد بعد')}
                   </span>
                 )}

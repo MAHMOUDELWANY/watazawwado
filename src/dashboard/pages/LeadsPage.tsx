@@ -23,6 +23,7 @@ import { LeadsBoard } from '../components/LeadsBoard';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { useT } from '../../lib/language';
+import { serviceLabel, bookingStatusLabel, leadSourceLabel } from '../lib/labels';
 import { sourceLabel } from '../../lib/leadSource';
 import { Select } from '../../components/ui/Select';
 
@@ -435,8 +436,8 @@ export default function LeadsPage() {
                     )}
 
                     {lead.source && (
-                      <span className="text-[13px] font-mono text-muted-foreground px-1.5 py-0.5 rounded glass-surface border border-border-subtle">
-                        {lead.source}
+                      <span className="text-[13px] text-muted-foreground px-1.5 py-0.5 rounded glass-surface border border-border-subtle">
+                        {leadSourceLabel(lead.source, isAr)}
                       </span>
                     )}
                   </div>
@@ -451,7 +452,7 @@ export default function LeadsPage() {
                       )}
                     </h4>
                     <p className="text-sm text-muted-foreground truncate">
-                      {t('Interested in', 'مهتم بـ')}: <span className="font-medium text-foreground">{lead.service_interest_name || t('General question', 'سؤال عام')}</span>
+                      {t('Interested in', 'مهتم بـ')}: <span className="font-medium text-foreground">{lead.service_interest_name || lead.service_interest_id ? serviceLabel({ service_id: lead.service_interest_id, service_name: lead.service_interest_name }, isAr) : t('General question', 'سؤال عام')}</span>
                       {lead.email && <span> • {lead.email}</span>}
                     </p>
                   </div>
@@ -464,7 +465,7 @@ export default function LeadsPage() {
                     {lead.trial_booking ? (
                       <span className="text-primary font-medium flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
-                        <span>{t('Trial', 'تجربة')}: {lead.trial_booking.status || t('booked', 'محجوزة')} ({lead.trial_booking.reference_code})</span>
+                        <span>{t('Trial', 'تجربة')}: {bookingStatusLabel(lead.trial_booking.status, isAr) || t('booked', 'محجوزة')} (<bdi>{lead.trial_booking.reference_code}</bdi>)</span>
                       </span>
                     ) : (
                       <span className="opacity-60">{t('No trial yet', 'لسه ما حجزش تجربة')}</span>

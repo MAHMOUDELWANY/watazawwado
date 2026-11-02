@@ -21,7 +21,7 @@ export default function MyMonthPage() {
     dashboardFetch<any>(`/api/dashboard/my-month?month=${month}`).then(setM).catch((e) => setError(e.message));
   }, [month]);
 
-  const n = (v: number) => (isAr ? v.toLocaleString('ar-EG') : String(v));
+  const n = (v: number) => String(v);
   const tiles = m ? [
     { value: n(m.lessonsHeld), label: isAr ? 'حصص اتعملت' : 'Lessons held' },
     { value: n(m.hours), label: isAr ? 'ساعات' : 'Hours' },

@@ -85,6 +85,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
     return (
       <div className="max-w-2xl mx-auto p-6 text-center glass-card border border-border rounded-3xl" dir={isAr ? 'rtl' : 'ltr'}>
         <Gift className="w-8 h-8 mx-auto text-muted-foreground" />
+        <h1 className="mt-3 text-lg font-display font-bold text-foreground">{isAr ? 'ادعُ صاحبك' : 'Invite a friend'}</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           {isAr ? 'برنامج الدعوات مش شغال دلوقتي.' : 'The invite program is paused right now.'}
         </p>
