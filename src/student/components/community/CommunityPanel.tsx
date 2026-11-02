@@ -6,6 +6,7 @@ import { authedJson } from '../../../lib/authedJson';
 import { AchievementEmblem } from '../achievements/AchievementEmblems';
 import { emblemForKind } from '../achievements/achievements';
 import { effortLine } from './effortText';
+import { HonorPhoto } from './CommunityExtras';
 
 /**
  * One learner's choices on the community page (plan: docs/superpowers/plans/2026-10-29-community-honor.md).
@@ -17,6 +18,7 @@ interface HonorItem {
   id: string;
   status: 'awaiting_consent' | 'published' | 'declined' | 'withdrawn';
   displayName: string | null;
+  photoStatus?: 'pending' | 'approved' | 'rejected' | null;
   milestone: { titleEn: string; titleAr: string; kind: string; reachedAt: string } | null;
 }
 interface BoardRow { name: string; lessonsThisMonth: number; rhythm: number; isYou: boolean }
@@ -170,6 +172,8 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
           <div><Button size="sm" variant="ghost" onClick={() => setConfirm(true)}>{isAr ? 'شيله من اللوحة' : 'Take it down'}</Button></div>
         )
       )}
+      {/* CM-04: an optional photo with a second consent, for the person who decides. */}
+      {item.status === 'published' && data.canDecide && <HonorPhoto entryId={item.id} status={item.photoStatus || null} isAr={isAr} onChanged={reload} />}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </li>
   );

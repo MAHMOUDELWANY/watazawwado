@@ -84,6 +84,7 @@ import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooking, reverseCheckoutDiscount, settleCheckoutRedemptions } from '../server/routes/growth.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { registerHonorRoutes } from '../server/routes/honor.js';
+import { registerCommunityLaterRoutes } from '../server/routes/communityLater.js';
 import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
 import { registerUniversityRoutes, canTeach, subjectFor, NOT_LICENSED } from '../server/routes/university.js';
 import { registerSponsorshipRoutes, confirmDonationSession } from '../server/routes/sponsorship.js';
@@ -10299,6 +10300,9 @@ registerReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth
 
 // NX-15: Watazawwado University (teacher subject licences and training).
 registerUniversityRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin });
+
+// CM-04: automatic suggestions and family achievements (photos live in the honor routes).
+registerCommunityLaterRoutes(app, { getClient: getSupabaseAdminClient, rateLimit, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin });
 
 // NX-07: sponsor a learner (one general sadaqah fund).
 registerSponsorshipRoutes(app, {

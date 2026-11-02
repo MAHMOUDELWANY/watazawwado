@@ -90,6 +90,8 @@ export interface HallEntry {
   kind: string;
   subject: { id: string; en: string; ar: string; color: string } | null;
   month: string;
+  /** CM-04: a photo the family chose to show and the admin approved (short-lived private link), else the emblem. */
+  photoUrl?: string | null;
 }
 
 /** Only what the Hall of Honor shows signed-in families; anything else on the rows never leaves the server. */

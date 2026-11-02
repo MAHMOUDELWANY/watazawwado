@@ -69,7 +69,7 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
   members; ordered by lessons this month then weekly rhythm, no rank numbers. Teacher page `/dashboard/class-board`.
 
 ### CM-04 Later
-- Priority P3 · Status todo (owner 2026-11-02: build all three; photos need a second guardian consent)
+- Priority P3 · Status done (2026-11-02, see LOG)
 - Photos (with a second consent and storage), family achievements, Tier 1 suggestions from lesson counts and rhythm.
 
 ---

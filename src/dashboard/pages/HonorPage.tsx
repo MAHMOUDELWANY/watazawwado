@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/ui/Input';
 import { Textarea } from '../../components/ui/Textarea';
 import { notify, confirmAction } from '../../components/ui/Feedback';
+import { HonorExtras } from '../components/HonorExtras';
 
 /**
  * Super admin: Hall of Honor (plan: docs/superpowers/plans/2026-10-29-community-honor.md).
@@ -168,6 +169,9 @@ export default function HonorPage() {
           ))}
         </section>
       )}
+
+      {/* CM-04: photos to review, system suggestions and family achievements. */}
+      <HonorExtras isAr={isAr} onNominated={load} />
 
       {data && (
         <section className="space-y-3" aria-labelledby="honor-candidates">

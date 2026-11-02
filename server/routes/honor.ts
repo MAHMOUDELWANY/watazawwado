@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import express from 'express';
 import {
   boardGroupFor, buildClassBoard, chooseDisplayName, consentKindFor, firstNameOf, honorPostText, nextHonorStatus,
@@ -24,6 +25,23 @@ type Learner = { id: string; name: string; learnerType: string; isPrimary: boole
 const SITE_URL = 'https://watazawwado.academy';
 const STUDENT_COLUMNS = 'id, name, age, learner_type, gender, assigned_teacher_id, timezone, learning_interest, status';
 const MILESTONE_COLUMNS = 'id, student_id, subject, kind, title_en, title_ar, reached_at';
+
+// CM-04 photos: a private bucket, images only; links last an hour (the hall is behind sign-in).
+const PHOTO_BUCKET = 'honor-photos';
+const PHOTO_LINK_SECONDS = 3600;
+const PHOTO_EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+export const newPhotoPath = (entryId: string, contentType: unknown) => {
+  const ext = PHOTO_EXT[String(contentType || '').split(';')[0].trim().toLowerCase()];
+  return ext && isUuid(entryId) ? `${entryId}/${crypto.randomUUID()}.${ext}` : null;
+};
+export const photoPathBelongsTo = (path: string, entryId: string) => /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(path) && path.startsWith(`${entryId}/`);
+
+/** Deletes an entry's photo file and clears its photo fields (the family took it down, or the entry left the hall). */
+export async function dropHonorPhoto(client: any, entryId: string) {
+  const { data } = await client.from('honor_entries').select('photo_path').eq('id', entryId).maybeSingle();
+  if (data?.photo_path) await client.storage.from(PHOTO_BUCKET).remove([data.photo_path]);
+  await client.from('honor_entries').update({ photo_path: null, photo_status: null, photo_consent_at: null, photo_consent_by: null }).eq('id', entryId);
+}
 
 function subjectOf(slug: string | null | undefined) {
   const norm = normalizeSubjectSlug(slug);
@@ -98,7 +116,7 @@ export function registerHonorRoutes(app: express.Express, deps: {
     const client = db(res); if (!client) return;
     try {
       const { data: entries, error } = await client.from('honor_entries')
-        .select('id, milestone_id, display_name, published_at, status')
+        .select('id, milestone_id, display_name, published_at, status, photo_path, photo_status')
         .eq('status', 'published').order('published_at', { ascending: false }).limit(120);
       if (error) throw error;
       const ids = (entries || []).map((e: any) => e.milestone_id);
@@ -111,7 +129,24 @@ export function registerHonorRoutes(app: express.Express, deps: {
           const m: any = byId.get(e.milestone_id) || null;
           return toHallEntry(e, m, m ? subjectOf(m.subject) : null);
         })
-        .filter(Boolean);
+        .filter(Boolean) as any[];
+      // CM-04: approved photos get a short private link; everything else keeps the emblem.
+      const withPhoto = (entries || []).filter((e: any) => e.photo_status === 'approved' && e.photo_path);
+      if (withPhoto.length) {
+        const { data: links } = await client.storage.from(PHOTO_BUCKET).createSignedUrls(withPhoto.map((e: any) => e.photo_path), PHOTO_LINK_SECONDS);
+        const urlByPath = new Map((links || []).map((l: any) => [l.path, l.signedUrl]));
+        for (const item of list) {
+          const e: any = withPhoto.find((x: any) => x.id === item.id);
+          if (e) item.photoUrl = urlByPath.get(e.photo_path) || null;
+        }
+      }
+      // CM-04: family achievements the account holder chose to show.
+      const { data: families } = await client.from('family_achievements').select('id, display_name, title_en, title_ar, published_at')
+        .eq('status', 'published').order('published_at', { ascending: false }).limit(60);
+      for (const fa of families || []) {
+        list.push({ id: fa.id, name: fa.display_name, titleEn: fa.title_en, titleAr: fa.title_ar, kind: 'family', subject: null, month: String(fa.published_at).slice(0, 7), photoUrl: null });
+      }
+      list.sort((a: any, b: any) => String(b.month).localeCompare(String(a.month)));
       res.setHeader('Cache-Control', 'private, no-store');
       res.json({ entries: list });
     } catch (err) {
@@ -130,7 +165,7 @@ export function registerHonorRoutes(app: express.Express, deps: {
       const ctx = await familyLearner(client, req, res, learnerId); if (!ctx) return;
       const { student, consentKind } = ctx;
       const [{ data: entries }, { data: member }] = await Promise.all([
-        client.from('honor_entries').select('id, milestone_id, status, display_name, published_at')
+        client.from('honor_entries').select('id, milestone_id, status, display_name, published_at, photo_status')
           .eq('student_id', student.id).neq('status', 'removed').order('nominated_at', { ascending: false }),
         client.from('class_board_members').select('display_name, joined_at').eq('student_id', student.id).maybeSingle()
       ]);
@@ -142,7 +177,7 @@ export function registerHonorRoutes(app: express.Express, deps: {
       const honor = (entries || []).map((e: any) => {
         const m: any = mById.get(e.milestone_id);
         return {
-          id: e.id, status: e.status, displayName: e.display_name, publishedAt: e.published_at,
+          id: e.id, status: e.status, displayName: e.display_name, publishedAt: e.published_at, photoStatus: e.photo_status || null,
           milestone: m ? { titleEn: m.title_en, titleAr: m.title_ar, kind: m.kind, reachedAt: m.reached_at } : null
         };
       });
@@ -201,7 +236,10 @@ export function registerHonorRoutes(app: express.Express, deps: {
     if (next === 'published') row.published_at = now;
     const { data, error } = await client.from('honor_entries').update(row).eq('id', entry.id).eq('status', entry.status).select('id');
     if (error) throw error;
-    return { ok: Boolean(data && data.length), next };
+    const ok = Boolean(data && data.length);
+    // A photo never outlives its place on the hall.
+    if (ok && (next === 'withdrawn' || next === 'removed')) await dropHonorPhoto(client, entry.id);
+    return { ok, next };
   }
 
   // Family: yes (with the name to show) or no.
@@ -397,6 +435,117 @@ export function registerHonorRoutes(app: express.Express, deps: {
     } catch (err) {
       console.error('[POST /api/dashboard/honor/:id/remove]', err);
       res.status(500).json({ error: 'Could not take it down.' });
+    }
+  });
+
+  // CM-04 photos. Family: a one-time upload link for a published entry's photo.
+  app.post('/api/student/community/honor/:id/photo-url', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    try {
+      const entry = await loadEntry(client, req.params.id);
+      if (!entry || entry.status !== 'published') return res.status(404).json({ error: 'A photo can be added once the achievement is on the Hall of Honor.' });
+      const ctx = await familyLearner(client, req, res, entry.student_id); if (!ctx) return;
+      if (!ctx.consentKind || req.childDevice) return res.status(403).json({ error: 'Only the person who decides for this learner can add a photo.' });
+      const path = newPhotoPath(entry.id, req.body?.contentType);
+      if (!path) return res.status(400).json({ error: 'Use a JPG, PNG or WebP photo.' });
+      const { data, error } = await client.storage.from(PHOTO_BUCKET).createSignedUploadUrl(path);
+      if (error || !data) throw new Error(error?.message || 'no upload url');
+      res.json({ path, token: data.token });
+    } catch (err) {
+      console.error('[POST honor photo-url]', err);
+      res.status(500).json({ error: 'Could not start the upload.' });
+    }
+  });
+
+  // Family: the upload finished; record it with the second consent. It shows only after our review.
+  app.post('/api/student/community/honor/:id/photo', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    try {
+      const entry = await loadEntry(client, req.params.id);
+      if (!entry || entry.status !== 'published') return res.status(404).json({ error: 'Not found.' });
+      const ctx = await familyLearner(client, req, res, entry.student_id); if (!ctx) return;
+      if (!ctx.consentKind || req.childDevice) return res.status(403).json({ error: 'Only the person who decides for this learner can add a photo.' });
+      if (req.body?.consent !== true) return res.status(400).json({ error: 'Please confirm you agree to show this photo.' });
+      const path = String(req.body?.path || '');
+      if (!photoPathBelongsTo(path, entry.id)) return res.status(403).json({ error: 'This photo is not for this achievement.' });
+      const [folder, file] = path.split('/');
+      const { data: found } = await client.storage.from(PHOTO_BUCKET).list(folder, { search: file, limit: 1 });
+      if (!found?.some((x: any) => x.name === file)) return res.status(400).json({ error: 'The photo did not arrive. Please try again.' });
+      const { data: old } = await client.from('honor_entries').select('photo_path').eq('id', entry.id).maybeSingle();
+      if (old?.photo_path && old.photo_path !== path) await client.storage.from(PHOTO_BUCKET).remove([old.photo_path]);
+      await client.from('honor_entries').update({
+        photo_path: path, photo_status: 'pending', photo_consent_at: new Date().toISOString(),
+        photo_consent_by: isUuid(req.studentUser?.auth_id) ? req.studentUser.auth_id : null, updated_at: new Date().toISOString()
+      }).eq('id', entry.id);
+      await notifySuperAdmins(client, {
+        kind: 'honor_photo',
+        title: { en: 'A Hall of Honor photo to review', ar: 'صورة للوحة الشرف مستنية مراجعة' },
+        body: { en: 'A family added a photo to their achievement. It shows after you approve it.', ar: 'أسرة ضافت صورة لإنجازها، وهتظهر بعد ما توافق عليها.' },
+        link: '/dashboard/honor'
+      });
+      res.json({ photoStatus: 'pending' });
+    } catch (err) {
+      console.error('[POST honor photo]', err);
+      res.status(500).json({ error: 'Could not save the photo.' });
+    }
+  });
+
+  // Family: take the photo off (the emblem shows again).
+  app.post('/api/student/community/honor/:id/photo/remove', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    try {
+      const entry = await loadEntry(client, req.params.id);
+      if (!entry) return res.status(404).json({ error: 'Not found.' });
+      const ctx = await familyLearner(client, req, res, entry.student_id); if (!ctx) return;
+      if (req.childDevice) return res.status(403).json({ error: 'Only the family account can do this.' });
+      await dropHonorPhoto(client, entry.id);
+      res.json({ photoStatus: null });
+    } catch (err) {
+      console.error('[POST honor photo remove]', err);
+      res.status(500).json({ error: 'Could not remove the photo.' });
+    }
+  });
+
+  // Super admin: photos waiting for review.
+  app.get('/api/dashboard/honor/photos', deps.verifyTeacherAuth, deps.requireSuperAdmin, async (_req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    try {
+      const { data: rows, error } = await client.from('honor_entries').select('id, display_name, photo_path, photo_consent_at')
+        .eq('status', 'published').eq('photo_status', 'pending').not('photo_path', 'is', null).limit(50);
+      if (error) throw error;
+      const { data: links } = rows?.length ? await client.storage.from(PHOTO_BUCKET).createSignedUrls(rows.map((r: any) => r.photo_path), 600) : { data: [] };
+      const urlByPath = new Map((links || []).map((l: any) => [l.path, l.signedUrl]));
+      res.json({ photos: (rows || []).map((r: any) => ({ id: r.id, displayName: r.display_name, consentAt: r.photo_consent_at, url: urlByPath.get(r.photo_path) || null })) });
+    } catch (err) {
+      console.error('[GET honor photos]', err);
+      res.status(500).json({ error: 'Could not load the photos.' });
+    }
+  });
+
+  // Super admin: approve a photo, or reject it (the file is deleted and the family is told kindly).
+  app.post('/api/dashboard/honor/:id/photo', deps.rateLimit, deps.verifyTeacherAuth, deps.requireSuperAdmin, async (req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    try {
+      const entry = await loadEntry(client, req.params.id);
+      if (!entry) return res.status(404).json({ error: 'Not found.' });
+      const approve = req.body?.decision === 'approve';
+      if (approve) {
+        const { data } = await client.from('honor_entries').update({ photo_status: 'approved', updated_at: new Date().toISOString() })
+          .eq('id', entry.id).eq('photo_status', 'pending').select('id').maybeSingle();
+        if (!data) return res.status(409).json({ error: 'This photo is not waiting for review.' });
+      } else {
+        await dropHonorPhoto(client, entry.id);
+      }
+      const account = await resolveLearnerAccount(client, entry.student_id);
+      if (account.userId) {
+        await notifyUser(client, { userId: account.userId }, approve
+          ? { kind: 'honor_photo_ok', title: { en: 'Your photo is on the Hall of Honor', ar: 'صورتكم ظهرت في لوحة الشرف' }, body: { en: 'You can take it off any time from Our community.', ar: 'تقدروا تشيلوها في أي وقت من صفحة مجتمعنا.' }, link: '/student/community' }
+          : { kind: 'honor_photo_no', title: { en: 'About your Hall of Honor photo', ar: 'بخصوص صورة لوحة الشرف' }, body: { en: 'We could not use this photo, so the emblem stays. You can try another one.', ar: 'معرفناش نستخدم الصورة دي، فالشعار هيفضل. تقدروا تجربوا صورة تانية.' }, link: '/student/community' });
+      }
+      res.json({ photoStatus: approve ? 'approved' : null });
+    } catch (err) {
+      console.error('[POST honor photo review]', err);
+      res.status(500).json({ error: 'Could not save.' });
     }
   });
 

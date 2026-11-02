@@ -6,6 +6,7 @@ import { useActiveLearner } from '../activeLearner';
 import { AchievementEmblem } from '../components/achievements/AchievementEmblems';
 import { emblemForKind } from '../components/achievements/achievements';
 import { CommunityPanel } from '../components/community/CommunityPanel';
+import { FamilyAchievements } from '../components/community/CommunityExtras';
 
 /**
  * Our community (owner 2026-10-29: a closed community, only for signed-in families and students).
@@ -21,6 +22,7 @@ interface HallEntry {
   kind: string;
   subject: { en: string; ar: string; color: string } | null;
   month: string;
+  photoUrl?: string | null;
 }
 
 export default function StudentCommunityPage({ lang }: { lang: 'ar' | 'en' }) {
@@ -61,6 +63,7 @@ export default function StudentCommunityPage({ lang }: { lang: 'ar' | 'en' }) {
         </p>
       </header>
 
+      <FamilyAchievements isAr={isAr} onChanged={loadHall} />
       {panelIds.map((id) => <CommunityPanel key={id || 'self'} learnerId={id} isAr={isAr} onChanged={loadHall} />)}
 
       <section id="hall" aria-labelledby="hall-title" className="grid gap-4 scroll-mt-24">
@@ -96,7 +99,9 @@ export default function StudentCommunityPage({ lang }: { lang: 'ar' | 'en' }) {
             {entries.map((e) => (
               <li key={e.id}>
                 <Card className="h-full p-4 flex gap-3 items-start">
-                  <AchievementEmblem id={emblemForKind(e.kind)} className="w-12 h-12 shrink-0" />
+                  {e.photoUrl
+                    ? <img src={e.photoUrl} alt="" width={48} height={48} loading="lazy" className="w-12 h-12 shrink-0 rounded-full object-cover border border-[#E5A93C]/50" />
+                    : <AchievementEmblem id={e.kind === 'family' ? 'lessons-100' : emblemForKind(e.kind)} className="w-12 h-12 shrink-0" />}
                   <div className="min-w-0 grid gap-0.5">
                     <p className="font-display text-lg font-bold text-foreground break-words">{e.name}</p>
                     <p className="text-foreground leading-snug">{isAr ? e.titleAr : e.titleEn}</p>
