@@ -34,6 +34,17 @@ const CHILD_ROUTES: Array<[string, RegExp]> = [
   ['POST', /^\/api\/student\/recitations$/],
   ['POST', /^\/api\/student\/recitations\/upload-url$/],
   ['GET', /^\/api\/student\/lesson-room\/[^/]+$/],
+  // The learning pages of the portal (owner 2026-11-02: the device is the child's whole learning space).
+  ['GET', /^\/api\/student\/curriculum$/],
+  ['GET', /^\/api\/student\/progress$/],
+  ['GET', /^\/api\/student\/progress\/report$/],
+  ['GET', /^\/api\/student\/progress\/timeline$/],
+  ['GET', /^\/api\/student\/certificates\/[^/]+$/],
+  ['GET', /^\/api\/student\/community\/hall$/],
+  ['GET', /^\/api\/placement\/mine$/],
+  ['POST', /^\/api\/placement\/start$/],
+  ['POST', /^\/api\/placement\/[^/]+\/submit$/],
+  ['GET', /^\/api\/placement\/[^/]+\/report$/],
 ];
 
 export function isChildRoute(method: string, path: string): boolean {

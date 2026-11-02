@@ -421,7 +421,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
       const { data: test } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
-      if (!test || test.auth_user_id !== req.studentUser.auth_id) return res.status(404).json({ error: 'Test not found.' });
+      if (!test || test.auth_user_id !== req.studentUser.auth_id || (req.childDevice && test.learner_student_id !== req.childDevice.learnerId)) return res.status(404).json({ error: 'Test not found.' });
       if (test.status !== 'in_progress') return res.status(409).json({ error: 'This test was already sent.', testId: test.id });
       const questions: TestQuestion[] = normalizeQuestions(test.questions, test.stated_level);
       const answers: any[] = Array.isArray(req.body?.answers) ? req.body.answers : [];
@@ -457,7 +457,8 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
       const { data: t } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
-      if (!t || t.auth_user_id !== req.studentUser.auth_id || t.status === 'in_progress') return res.status(404).json({ error: 'Report not found.' });
+      // NX-16: a child device sees only its own child's report.
+      if (!t || t.auth_user_id !== req.studentUser.auth_id || t.status === 'in_progress' || (req.childDevice && t.learner_student_id !== req.childDevice.learnerId)) return res.status(404).json({ error: 'Report not found.' });
       const skills = skillSummary(normalizeQuestions(t.questions, t.stated_level), t.answers || []);
       res.json({
         report: {

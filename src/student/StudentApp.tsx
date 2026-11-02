@@ -321,7 +321,8 @@ export default function StudentApp() {
   if (!isDevProgressPreview && (otpCelebrating || !user || userRole !== 'student')) {
     // NX-16: a linked child device (the installed app opens /student) goes straight to its lessons;
     // an explicit sign-in (?auth=login/signup) still reaches the form, so a grown-up can always sign in here.
-    if (!user && !shouldAutoOpenAuth && isLinkedKidDevice()) return <Navigate to="/kid" replace />;
+    // Shared pages link to /student/...; on the child device the same page lives at /kid/....
+    if (!user && !shouldAutoOpenAuth && isLinkedKidDevice()) return <Navigate to={`/kid${location.pathname.replace(/^\/student/, '')}${location.search}`} replace />;
     return (
       <AuthPage isAr={isAr} onToggleLang={toggleLang}>
         <AuthCard>

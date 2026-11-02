@@ -45,6 +45,15 @@ describe('NX-16 child phone', () => {
     assert.strictEqual(isChildRoute('GET', '/api/student/homework'), true);
     assert.strictEqual(isChildRoute('POST', '/api/student/review/abc'), true);
     assert.strictEqual(isChildRoute('GET', '/api/student/lesson-room/abc'), true);
+    // The learning pages of the portal (curriculum, progress, certificates, honour board, placement test).
+    for (const [m, p] of [['GET', '/api/student/curriculum'], ['GET', '/api/student/progress'], ['GET', '/api/student/progress/report'],
+      ['GET', '/api/student/certificates/abc'], ['GET', '/api/student/community/hall'], ['GET', '/api/placement/mine'],
+      ['POST', '/api/placement/start'], ['POST', '/api/placement/abc/submit'], ['GET', '/api/placement/abc/report']]) {
+      assert.strictEqual(isChildRoute(m, p), true, `${m} ${p}`);
+    }
+    // Consent decisions on the community pages stay with the parent.
+    assert.strictEqual(isChildRoute('POST', '/api/student/community/class-board'), false);
+    assert.strictEqual(isChildRoute('POST', '/api/student/community/honor/x/decision'), false);
     for (const [m, p] of [['GET', '/api/student/packages'], ['GET', '/api/student/bookings'], ['POST', '/api/checkout'], ['GET', '/api/student/profile'],
       ['POST', '/api/student/child-devices'], ['DELETE', '/api/student/child-devices/x'], ['GET', '/api/student/homework/../packages'], ['DELETE', '/api/student/homework']]) {
       assert.strictEqual(isChildRoute(m, p), false, `${m} ${p}`);
