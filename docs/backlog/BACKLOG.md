@@ -69,7 +69,7 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
   members; ordered by lessons this month then weekly rhythm, no rank numbers. Teacher page `/dashboard/class-board`.
 
 ### CM-04 Later
-- Priority P3 · Status todo (waits for the owner)
+- Priority P3 · Status todo (owner 2026-11-02: build all three; photos need a second guardian consent)
 - Photos (with a second consent and storage), family achievements, Tier 1 suggestions from lesson counts and rhythm.
 
 ---
@@ -504,7 +504,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   off; guardians see them; the next lesson window shows what was done.
 
 ### NX-03 Recitation recordings with teacher feedback
-- Priority P2 · Zone 🟢 · Size L · Status done (written replies; the privacy-policy line waits for the owner)
+- Priority P2 · Zone 🟢 · Size L · Status done (written replies; owner 2026-11-02: kept 30 days, privacy policy line added)
 - Do: the learner records a recitation on the phone; the assigned teacher replies with a voice or text note before the
   next lesson. Private storage, only the learner, guardian, teacher and super admin can play it; retention period and
   privacy policy line needed (children's audio).
@@ -523,7 +523,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: buy a package as a gift (Eid, Ramadan, a relative); the receiver redeems it into their wallet.
 
 ### NX-07 Sponsor a learner (sadaqah)
-- Priority P3 · Zone 🔴 (money) · Size M · Status todo · Owner decision first
+- Priority P3 · Zone 🔴 (money) · Size M · Status todo · Owner decided 2026-11-02: one general fund; the academy chooses who receives after a request; no names shown
 - Do: a family pays lessons for a learner who cannot; who qualifies and how it is shown are owner decisions.
 
 ### NX-08 Seasonal programs
@@ -531,7 +531,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: dated programs (Ramadan challenge, summer revision, a shared khatma) with a start, an end and a sign-up.
 
 ### NX-09 Push notifications
-- Priority P3 · Zone 🟢 · Size M · Status done (waits for the VAPID keys in Vercel)
+- Priority P3 · Zone 🟢 · Size M · Status done (VAPID keys set on Vercel 2026-11-02)
 - Do: web push for lesson reminders and today's review, opt-in, respecting notification preferences (RN-07).
 
 ### NX-10 Weekly digest for guardians
@@ -559,7 +559,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   (motion, motifs, feel). Screenshots before and after.
 
 ### NX-15 Watazawwado University: teacher subject licences and growth
-- Priority P2 · Zone 🟢 · Size L · Status todo · Owner discussion first
+- Priority P2 · Zone 🟢 · Size L · Status todo · Owner decided 2026-11-02: subject licences and the training track together
 - Owner idea (2026-11-01): as the academy hires, each teacher teaches only the subjects they are strong in (for
   example Quran and Tajweed only). A teacher who shows promise in another subject is trained for it inside
   "Watazawwado University" and earns that subject.
@@ -569,7 +569,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   admin view of who may teach what.
 
 ### NX-16 A child's own phone, linked to the parent's account
-- Priority P2 · Zone 🔴 (children's data and access) · Size L · Status todo · Owner approval of the design first
+- Priority P2 · Zone 🔴 (children's data and access) · Size L · Status todo · Owner approved the design below (2026-11-02)
 - Owner idea (2026-11-01): a child with their own phone, without the parent's phone nearby, should still have the
   app on their phone through a safe system.
 - Proposed design (from ClassDojo, Waterford, RoosterMoney):

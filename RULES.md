@@ -21,6 +21,8 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Teacher time zones:** each teacher enters weekly hours in their own time zone on "My hours"; students always see times in theirs.
 - **[Decided 2026-10-15] Teacher agreement.** Every teacher reads and accepts the teacher agreement (/staff/agreement) after setting a password and again whenever its version changes; the dashboard is blocked until then. Pay is agreed separately in writing.
 - **[Decided 2026-10-22] Deleting a teacher.** Besides Stop (deactivate), the super admin can delete a teacher for good from the Teachers page after typing their email: the account, login, profile, hours and calendar link are removed and their students become unassigned. Refused while they have upcoming lessons (move them first) and for super admins or yourself. Past lessons, payments and reports stay as records with no teacher.
+- **[Decided 2026-11-02] Teacher leave.** Only the super admin grants a teacher leave: the teacher asks, the admin approves or refuses. A teacher never closes days on their own.
+- **[Decided 2026-11-02] Teacher subject licences (NX-15, "Watazawwado University").** Each teacher teaches only the subjects the super admin has opened for them; the server refuses any other assignment or booking. A teacher earns a new subject through a training track (our curriculum, the teacher guide, a test, an observed lesson). Both parts are built together.
 - Roles: `student` (adult learner), `parent` (guardian account managing children), `teacher`, `super_admin`.
 
 ## 2. Accounts & booking
@@ -158,6 +160,14 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 ## 8. Open items
 
 Owner decisions: none open right now.
+
+Decided 2026-11-02 (build when their turn comes):
+- **Child phone (NX-16):** approved as designed in BACKLOG.md NX-16 (parent's one-time code or QR, no child login, the parent removes a phone at once).
+- **Sponsor a learner (NX-07):** sponsors give to one general fund; the academy chooses who receives lessons after a request; no names are shown to anyone.
+- **Community later (CM-04):** all three: family achievements, automatic suggestions for the teacher to approve, and learner photos with a second guardian consent.
+- **Recitation recordings (NX-03):** kept 30 days, then deleted (storage stays inside the free plan as families grow); the privacy policy says so.
+- **Push notifications (NX-09):** VAPID keys set on Vercel production.
+- **hr@watazawwado.academy:** exists on Zoho Mail and works.
 
 Engineering backlog (no owner decision needed, do when there is time):
 - Design system: pages move to `src/components/ui/*` gradually, when they are changed (rule in CLAUDE.md).

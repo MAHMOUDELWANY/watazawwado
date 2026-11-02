@@ -868,3 +868,9 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Fix: the example shows the finished state only after mounting. Checked every public page in Arabic and English, phone and desktop, dark and reduced motion: no hydration errors.
 - Hydration errors now carry React's component stack into the error list (`onRecoverableError` in `src/main.tsx`), so the next one names its component.
 - Checks: tsc clean; build passes; full `npm test` in the main checkout 1893/1899 (only QA-05b, stale build there; passes here).
+
+## 2026-11-02 — Owner decisions on the open items
+- Child phone (NX-16) approved as designed; sponsor a learner (NX-07): one general fund, the academy chooses who receives, no names shown; Watazawwado University (NX-15): subject licences and the training track together; CM-04: family achievements, automatic suggestions and learner photos (second guardian consent); teacher leave: only the super admin grants it. Recorded in RULES.md.
+- Recitation recordings (NX-03) now kept 30 days instead of 90 (`RETENTION_DAYS` in `server/routes/recitations.ts`): about 0.5 MB each, so storage stays inside the free plan as families grow. Playback never loads other recordings, so site speed is unaffected either way. Privacy policy has the line (retention section, "Last updated: November 2026").
+- Push (NX-09): new VAPID keys set on Vercel production (`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, the private one sensitive); live from this deploy.
+- hr@watazawwado.academy exists on Zoho Mail and works (the owner); the note at the careers entry above is settled.

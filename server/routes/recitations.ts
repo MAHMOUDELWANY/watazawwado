@@ -10,7 +10,7 @@ import { notifyUser, resolveLearnerAccount } from '../notifications/inbox.js';
  * short-lived signed URL the server issues after its own checks. Recordings are deleted after RETENTION_DAYS.
  */
 export const BUCKET = 'recitations';
-export const RETENTION_DAYS = 90;
+export const RETENTION_DAYS = 30; // owner 2026-11-02: about 0.5 MB each, keeps storage inside the free plan as families grow
 export const PLAY_LINK_SECONDS = 60 * 30;
 const EXT: Record<string, string> = { 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a', 'audio/x-m4a': 'm4a', 'audio/mpeg': 'mp3', 'audio/aac': 'aac' };
 

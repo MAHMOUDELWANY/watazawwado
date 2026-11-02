@@ -27,8 +27,8 @@ describe('NX-03 recitation recordings', () => {
     assert.strictEqual(pickMime(() => false), null);
   });
 
-  it('recordings older than 90 days are deleted, audio first', async () => {
-    assert.strictEqual(RETENTION_DAYS, 90);
+  it('recordings older than 30 days are deleted, audio first', async () => {
+    assert.strictEqual(RETENTION_DAYS, 30);
     const removed: string[][] = []; const deleted: string[][] = [];
     const q: any = { select: () => q, lt: () => q, limit: async () => ({ data: [{ id: 'r1', storage_path: `${L}/a.webm` }] }), delete: () => ({ in: async (_c: string, ids: string[]) => { deleted.push(ids); return {}; } }) };
     const client = { from: () => q, storage: { from: () => ({ remove: async (paths: string[]) => { removed.push(paths); return { error: null }; } }) } };

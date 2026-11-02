@@ -7649,7 +7649,7 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && weeklyDigestEnabled() && isDigestDay(DateTime.utc())) {
       try { weeklyDigest = (await processWeeklyDigest(cronClient)).sent; } catch (err) { console.warn('[Cron] weekly digest failed:', err); }
     }
-    // NX-03: recordings older than 90 days are deleted (children's audio).
+    // NX-03: recordings older than RETENTION_DAYS (30) are deleted (children's audio).
     let recitationsPurged = 0;
     if (cronClient && process.env.VERCEL_ENV === 'production') {
       try { recitationsPurged = await purgeOldRecitations(cronClient); } catch (err) { console.warn('[Cron] recitation purge failed:', err); }

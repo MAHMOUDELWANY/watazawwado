@@ -19,7 +19,7 @@ export function PrivacyPolicyPage() {
             intro={isEn
               ? 'What we collect, why, how long we keep it, and the rights you have over your data and your children’s.'
               : 'إيه البيانات اللي بنجمعها، وليه، وبنحتفظ بيها قد إيه، وإيه حقوقك على بياناتك وبيانات أولادك.'}
-            meta={isEn ? 'Last updated: October 2026' : 'آخر تحديث: أكتوبر 2026'}
+            meta={isEn ? 'Last updated: November 2026' : 'آخر تحديث: نوفمبر 2026'}
           />
 
           {/* Quick Summary Highlights */}
@@ -200,6 +200,7 @@ export function PrivacyPolicyPage() {
                 </h3>
                 <ul className="list-disc ps-6 space-y-1.5">
                   <li>{isEn ? 'Account, learning records, bookings, chat and AI chats: while your account is open. After you delete it, we delete or anonymise them from our live systems within 30 days.' : 'الحساب والسجلات التعليمية والحجوزات والمحادثات ومحادثات الذكاء الاصطناعي: طوال فترة فتح حسابك. وبعد حذفه نحذفها أو نجعلها مجهولة الهوية في أنظمتنا خلال 30 يوماً.'}</li>
+                  <li>{isEn ? 'Recitation recordings a learner sends to their teacher: 30 days, then the audio is deleted automatically. Only the learner, their guardian, their teacher and our admin can play them.' : 'تسجيلات التلاوة التي يرسلها المتعلم لمعلمه: 30 يوماً، ثم يُحذف الصوت تلقائياً. ولا يسمعها إلا المتعلم وولي أمره ومعلمه والإدارة.'}</li>
                   <li>{isEn ? 'Payment and invoice records: 5 years from the end of the year of the payment, as Polish tax law requires.' : 'سجلات الدفع والفواتير: 5 سنوات من نهاية سنة الدفع، كما يتطلب قانون الضرائب البولندي.'}</li>
                   <li>{isEn ? 'Complaints and refund requests: up to 3 years after they are closed, in case of a later claim.' : 'الشكاوى وطلبات الاسترداد: حتى 3 سنوات بعد إغلاقها، تحسباً لأي مطالبة لاحقة.'}</li>
                   <li>{isEn ? 'Technical logs and backups: removed in the normal cycle of our providers, usually within 30 days.' : 'السجلات التقنية والنسخ الاحتياطية: تُحذف ضمن الدورة العادية لدى مزودي الخدمة، وعادةً خلال 30 يوماً.'}</li>
