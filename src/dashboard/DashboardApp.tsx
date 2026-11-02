@@ -36,6 +36,7 @@ import {
   MessageCircle,
   GraduationCap,
   School,
+  HeartHandshake,
   Search,
   MoreHorizontal,
   Library,
@@ -70,6 +71,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import LessonRoomPage from './pages/LessonRoomPage';
 import ClassBoardPage from './pages/ClassBoardPage';
 import UniversityPage from './pages/UniversityPage';
+import SponsorshipPage from './pages/SponsorshipPage';
 import MyMonthPage from './pages/MyMonthPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
@@ -248,6 +250,7 @@ export function DashboardApp() {
     { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet, group: G.money },
     { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag, group: G.money },
     { name: L('Teacher pay', 'مرتبات المعلمين'), path: '/dashboard/payroll', icon: Banknote, group: G.money },
+    { name: L('Sponsorship', 'صندوق الكفالة'), path: '/dashboard/sponsorship', icon: HeartHandshake, group: G.money },
     { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield, group: G.academy },
     { name: L('University', 'جامعة وتزودوا'), path: '/dashboard/university', icon: School, group: G.academy },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library, group: G.academy },
@@ -635,6 +638,7 @@ export function DashboardApp() {
                 <Route path="/room/:id" element={<LessonRoomPage />} />
                 <Route path="/class-board" element={<ClassBoardPage />} />
                 <Route path="/university" element={<UniversityPage />} />
+                <Route path="/sponsorship" element={isSuperAdmin ? <SponsorshipPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />
                 <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />

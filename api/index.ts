@@ -86,6 +86,7 @@ import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLes
 import { registerHonorRoutes } from '../server/routes/honor.js';
 import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
 import { registerUniversityRoutes, canTeach, subjectFor, NOT_LICENSED } from '../server/routes/university.js';
+import { registerSponsorshipRoutes, confirmDonationSession } from '../server/routes/sponsorship.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
@@ -5507,6 +5508,13 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
 /** Confirms a paid Checkout Session; shared by the return-page verify route and the Stripe webhook. */
 async function confirmStripeSession(session: StripeSessionVerification) {
   // The target comes only from the metadata the server wrote when it created the session.
+  // NX-07: sadaqah for the sponsorship fund is not a booking or a package; it confirms its own row.
+  if (session.metadata?.targetType === 'donation') {
+    const client = getSupabaseAdminClient();
+    if (!client) throw new Error('Database integration is not configured.');
+    const done = await confirmDonationSession(client, session).catch((err: any) => { throw new PublicError(err?.message || 'Unknown donation.'); });
+    return { ...done, targetType: 'donation' as const, targetId: session.metadata.targetId };
+  }
   const targetType = session.metadata?.targetType as 'booking' | 'package' | undefined;
   const targetId = session.metadata?.targetId;
   if ((targetType !== 'booking' && targetType !== 'package') || !targetId) {
@@ -10291,6 +10299,13 @@ registerReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth
 
 // NX-15: Watazawwado University (teacher subject licences and training).
 registerUniversityRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin });
+
+// NX-07: sponsor a learner (one general sadaqah fund).
+registerSponsorshipRoutes(app, {
+  getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin, rateLimit,
+  getLearners: getAuthorizedLearnersForStudent,
+  appOrigin: (req: any) => resolveTrustedAppOrigin(req.headers.origin as string | undefined),
+});
 
 // NX-16: a child's own phone, linked with a one-time code from the parent.
 registerChildDeviceRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });

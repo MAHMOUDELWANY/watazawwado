@@ -523,7 +523,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 - Do: buy a package as a gift (Eid, Ramadan, a relative); the receiver redeems it into their wallet.
 
 ### NX-07 Sponsor a learner (sadaqah)
-- Priority P3 · Zone 🔴 (money) · Size M · Status todo · Owner decided 2026-11-02: one general fund; the academy chooses who receives after a request; no names shown
+- Priority P3 · Zone 🔴 (money) · Size M · Status done (2026-11-02, see LOG)
 - Do: a family pays lessons for a learner who cannot; who qualifies and how it is shown are owner decisions.
 
 ### NX-08 Seasonal programs

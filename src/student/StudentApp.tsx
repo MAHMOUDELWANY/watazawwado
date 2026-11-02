@@ -28,6 +28,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Wallet,
   Users,
   MonitorSmartphone,
+  HeartHandshake,
 } from 'lucide-react';
 import { isLinkedKidDevice } from '../lib/kidDevice';
 import { useTeacherAuth } from '../lib/auth';
@@ -44,6 +45,7 @@ import StudentLessonsPage from './pages/StudentLessonsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import StudentInvitePage from './pages/StudentInvitePage';
+import StudentSponsorPage from './pages/StudentSponsorPage';
 import StudentCommunityPage from './pages/StudentCommunityPage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
@@ -409,8 +411,9 @@ export default function StudentApp() {
   const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
 
   const topTabs = [home, lessons, book, curriculum];
-  const railItems = [messages, wallet, calendar, progress, community, guide, invite];
-  const moreItems = [curriculum, wallet, calendar, progress, community, guide, invite];
+  const sponsor: NavItem = { name: isAr ? 'اكفل طالب' : 'Sponsor a learner', path: '/student/sponsor', icon: HeartHandshake, tour: 'student-sponsor' };
+  const railItems = [messages, wallet, calendar, progress, community, guide, invite, sponsor];
+  const moreItems = [curriculum, wallet, calendar, progress, community, guide, invite, sponsor];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
@@ -705,6 +708,7 @@ export default function StudentApp() {
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
               <Route path="/invite" element={<StudentInvitePage lang={lang} />} />
+              <Route path="/sponsor" element={<StudentSponsorPage lang={lang} />} />
               <Route path="/community" element={<StudentCommunityPage lang={lang} />} />
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
