@@ -24,6 +24,7 @@ import { lessonC01 } from './content/literacy-c/l01-numbers-that-talk.js';
 import { francoLesson } from './franco.js';
 import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
 import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
+import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -399,7 +400,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Review: My First Week', 'Where Did You Go?', 'We Went Together', 'From and To', 'What Did You Eat?', 'My Week',
       'Classmates', 'Many Books', 'Level 1 Story',
     ],
-    lessons: { 1: lessonFT01 },
+    lessons: { 1: lessonFT01, 2: lessonFT02 },
   },
   {
     id: 'literacy-a-teens',

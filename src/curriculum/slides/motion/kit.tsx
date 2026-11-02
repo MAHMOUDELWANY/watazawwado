@@ -157,6 +157,12 @@ const ICONS: Record<string, string> = {
   bread: 'M4 12a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v6H4zM8 12v2M12 12v2M16 12v2',
   plane: 'M2 13l20-8-6 16-4-6zM12 15l4-6',
   ticket: 'M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14 7v10',
+  bed: 'M3 19v-8h18v8M3 15h18M5 11V8.5A1.5 1.5 0 0 1 6.5 7h3A1.5 1.5 0 0 1 11 8.5V11',
+  lamp: 'M8 3h8l3 7H5zM12 10v9M8 21h8',
+  pillow: 'M4 9a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z',
+  mirror: 'M6 10a6 7 0 1 0 12 0a6 7 0 1 0-12 0M12 17v3M9 21h6',
+  wardrobe: 'M5 3h14v18H5zM12 3v18M10 11v2M14 11v2',
+  chair: 'M7 3v18M7 13h10v8M7 9h9',
 };
 
 export function Icon({ name, size = 40, color = INK_TEXT, width = 1.8 }: { name: keyof typeof ICONS | string; size?: number; color?: string; width?: number }) {

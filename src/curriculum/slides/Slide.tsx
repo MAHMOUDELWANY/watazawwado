@@ -909,7 +909,7 @@ function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Intera
           <motion.span key={i} className="h-4 w-4 rounded-full border-[3px]" animate={{ backgroundColor: i < found ? P.teal : 'rgba(255,255,255,0)', scale: i < found ? [1, 1.4, 1] : 1 }} style={{ borderColor: P.teal }} />
         ))}
         <span className="font-sans text-[22px] font-bold" style={{ color: found === needed ? P.teal : P.inkSoft }}>
-          {found === needed ? 'You found both clues. Great detective work!' : `Clues found: ${found} of ${needed}`}
+          {found === needed ? (needed === 1 ? 'You found it. Well done!' : 'You found both clues. Great detective work!') : `Clues found: ${found} of ${needed}`}
         </span>
       </div>
     </motion.div>

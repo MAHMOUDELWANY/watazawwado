@@ -540,6 +540,47 @@ One take: paste this whole block as one generation; I cut it into the files abov
 هَذَا مَكْتَبٌ. <break time="1.2s" /> وَهَذِهِ غُرْفَةٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> وَمَنْ هَذِهِ؟ <break time="1.2s" /> هَذِهِ سَارَةُ. هِيَ طَالِبَةٌ. <break time="1.2s" /> هَذَا مَكْتَبٌ. <break time="1.2s" /> هَذِهِ غُرْفَةٌ. <break time="1.2s" /> هَذِهِ طَالِبَةٌ. <break time="1.2s" /> مَنْ هَذَا؟ <break time="1.2s" /> هَذَا مُدَرِّسٌ. <break time="1.2s" /> هَذِهِ مُدَرِّسَةٌ. <break time="1.2s" /> كِتَابٌ <break time="1.2s" /> قَلَمٌ <break time="1.2s" /> بَابٌ <break time="1.2s" /> مَكْتَبٌ <break time="1.2s" /> مِفْتَاحٌ <break time="1.2s" /> طَالِبٌ <break time="1.2s" /> حَقِيبَةٌ <break time="1.2s" /> سَيَّارَةٌ <break time="1.2s" /> نَافِذَةٌ <break time="1.2s" /> غُرْفَةٌ <break time="1.2s" /> طَالِبَةٌ <break time="1.2s" /> مُدَرِّسَةٌ <break time="1.2s" /> أَهَذَا هَاتِفُكَ؟
 ```
 
+## Fusha Arabic · 12+ · Lesson 2: Is This Your Room?
+
+Folder: `public/curriculum/fusha-12/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-a-haadha-haatifuka.mp3 | 2 | friendly, holding something up | أَهَذَا هَاتِفُكَ؟ |
+| 2 | l02-naam.mp3 | 2 | relieved | نَعَمْ! |
+| 3 | l02-shukran.mp3 | 2 | grateful | شُكْرًا. |
+| 4 | l02-d-1.mp3 | 3 | unsure, in the dark | أَهَذَا سَرِيرٌ؟ |
+| 5 | l02-d-2.mp3 | 3 | calm, amused | لَا، هَذَا مَكْتَبٌ. |
+| 6 | l02-d-3.mp3 | 3 | unsure | أَهَذِهِ نَافِذَةٌ؟ |
+| 7 | l02-d-4.mp3 | 3 | kind | نَعَمْ، هَذِهِ نَافِذَةٌ. |
+| 8 | l02-d-5.mp3 | 3 | hopeful | أَهَذَا بَابٌ؟ |
+| 9 | l02-d-6.mp3 | 3 | happy, the lights come back | نَعَمْ! وَهَذَا نُورٌ! |
+| 10 | l02-haadha-sarir.mp3 | 4 |  | هَذَا سَرِيرٌ. |
+| 11 | l02-a-haadha-sarir.mp3 | 4 | asking, voice rising | أَهَذَا سَرِيرٌ؟ |
+| 12 | l02-naam-hiya.mp3 | 5 |  | نَعَمْ، هَذِهِ نَافِذَةٌ. |
+| 13 | l02-la-maktab.mp3 | 5 |  | لَا، هَذَا مَكْتَبٌ. |
+| 14 | l02-maa-haadha.mp3 | 5 | curious | مَا هَذَا؟ |
+| 15 | l02-sarir.mp3 | 6 |  | سَرِيرٌ |
+| 16 | l02-misbah.mp3 | 6 |  | مِصْبَاحٌ |
+| 17 | l02-kursi.mp3 | 6 |  | كُرْسِيٌّ |
+| 18 | l02-khizana.mp3 | 6 |  | خِزَانَةٌ |
+| 19 | l02-wisada.mp3 | 6 |  | وِسَادَةٌ |
+| 20 | l02-mirah.mp3 | 6 |  | مِرْآةٌ |
+| 21 | l02-c-1.mp3 | 9 | guessing | أَهَذَا قَلَمٌ؟ |
+| 22 | l02-c-2.mp3 | 9 |  | لَا. |
+| 23 | l02-c-3.mp3 | 9 | curious | مَا هَذَا؟ |
+| 24 | l02-c-4.mp3 | 9 |  | هَذَا مِفْتَاحٌ. |
+| 25 | l02-c-5.mp3 | 9 | pleased, learning | مِفْتَاحٌ! شُكْرًا. |
+| 26 | l02-dhalika.mp3 | 12 | pointing far | ذَلِكَ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أَهَذَا هَاتِفُكَ؟ <break time="1.2s" /> نَعَمْ! <break time="1.2s" /> شُكْرًا. <break time="1.2s" /> أَهَذَا سَرِيرٌ؟ <break time="1.2s" /> لَا، هَذَا مَكْتَبٌ. <break time="1.2s" /> أَهَذِهِ نَافِذَةٌ؟ <break time="1.2s" /> نَعَمْ، هَذِهِ نَافِذَةٌ. <break time="1.2s" /> أَهَذَا بَابٌ؟ <break time="1.2s" /> نَعَمْ! وَهَذَا نُورٌ! <break time="1.2s" /> هَذَا سَرِيرٌ. <break time="1.2s" /> أَهَذَا سَرِيرٌ؟ <break time="1.2s" /> نَعَمْ، هَذِهِ نَافِذَةٌ. <break time="1.2s" /> لَا، هَذَا مَكْتَبٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> سَرِيرٌ <break time="1.2s" /> مِصْبَاحٌ <break time="1.2s" /> كُرْسِيٌّ <break time="1.2s" /> خِزَانَةٌ <break time="1.2s" /> وِسَادَةٌ <break time="1.2s" /> مِرْآةٌ <break time="1.2s" /> أَهَذَا قَلَمٌ؟ <break time="1.2s" /> لَا. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> مِفْتَاحٌ! شُكْرًا. <break time="1.2s" /> ذَلِكَ
+```
+
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic
 
 Folder: `public/curriculum/literacy-a-teens/audio/`.

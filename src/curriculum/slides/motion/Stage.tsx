@@ -100,7 +100,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
       </div>
       <AnimatePresence>
         {interaction && big && (
-          <motion.div className="absolute" style={{ right: 110, bottom: 104, width: 760 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
+          <motion.div className="absolute" style={{ right: 110, bottom: 104, width: 760, ...(tone === 'dark' ? { background: 'rgba(246,241,232,0.97)', color: INK_TEXT, borderRadius: 28, padding: '22px 26px' } : {}) }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
             {interaction}
           </motion.div>
         )}
