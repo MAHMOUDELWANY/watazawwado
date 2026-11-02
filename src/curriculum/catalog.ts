@@ -20,6 +20,7 @@ import { lessonAA02 } from './content/literacy-a-adults/l02-fewer-shapes-than-yo
 import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
+import { francoLesson } from './franco.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -348,6 +349,23 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonE01 },
   },
   {
+    // The Egyptian Adults lessons with every Arabic line in Franco (docs/curriculum/franco/RULES.md, src/curriculum/franco.ts).
+    id: 'egyptian-franco',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Franco',
+    titleAr: 'العامية المصرية · فرانكو',
+    version: 'Franco',
+    versionAr: 'فرانكو',
+    audience: '18+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [
+      { title: 'Beginner · Meeting People', titleAr: 'المبتدئ · التعارف', from: 1 },
+      { title: 'Beginner · Around Cairo', titleAr: 'المبتدئ · في القاهرة', from: 12 },
+    ],
+    plan: [] as string[],
+    lessons: {},
+  },
+  {
     id: 'fusha-12',
     group: 'fusha',
     title: 'Fusha Arabic · 12+',
@@ -487,6 +505,14 @@ export const SUBJECTS: SubjectEntry[] = [
   },
 ];
 
+// Egyptian · Franco mirrors Egyptian Adults: the same plan, every built lesson converted to Franco.
+{
+  const eg = SUBJECTS.find((s) => s.id === 'egyptian-adults')!;
+  const fr = SUBJECTS.find((s) => s.id === 'egyptian-franco')!;
+  fr.plan = eg.plan;
+  fr.lessons = Object.fromEntries(Object.entries(eg.lessons).map(([n, l]) => [n, francoLesson(l)]));
+}
+
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
  *  `planned` versions and subjects show as "coming soon" doors, so the teacher sees where the path is going. */
 export interface GroupEntry {
@@ -549,9 +575,7 @@ export const GROUPS: GroupEntry[] = [
     taglineAr: 'عربي شوارع القاهرة وبيوتها: تسلّم وتسأل وتفاصل وتزور العيلة زي المصريين.',
     art: '/curriculum/banners/egyptian.webp',
     // Arabic script in three versions (Adults first) and one Franco version (design §4.6).
-    planned: [
-      { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
-    ],
+    planned: [],
   },
   {
     id: 'english',

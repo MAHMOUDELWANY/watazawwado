@@ -1,3 +1,4 @@
+import { Fr } from '../Fr';
 import React from 'react';
 import { motion, useSpring, useTransform } from 'motion/react';
 import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
@@ -74,7 +75,7 @@ export function Chip({ x, y, children, strong = false, color, delay = 0, tone = 
   return (
     <motion.span className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-full font-sans font-bold" style={{ left: x, top: y, padding: '8px 16px', fontSize: 18, background: bg, color: strong || color ? '#fff' : INK_TEXT, boxShadow: strong ? `0 0 30px 6px ${CRIMSON}55` : '0 10px 24px -14px rgba(0,0,0,0.45)' }}
       initial={{ opacity: 0, y: 12, scale: 0.85 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, delay, ease }}>
-      {children}
+      <Fr>{children}</Fr>
     </motion.span>
   );
 }

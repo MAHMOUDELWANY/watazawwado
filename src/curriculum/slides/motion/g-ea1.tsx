@@ -4,6 +4,7 @@ import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { INK_TEXT, soft, useReduce, type GraphicProps } from './Stage';
 import { Svg, Draw, Person, Bubble, Chip, Badge, CLAY, DEEP } from './kit';
 import { Hear } from '../Say';
+import { Fr, useFranco } from '../Fr';
 
 /**
  * Egyptian Arabic · Adults · Lesson 1 · Ahlan! What's Your Name? The academy's paper stage with a Cairo accent: a
@@ -19,7 +20,9 @@ const ADAM = TEAL;
 const SAYED = CLAY;
 const MONA = GOLD;
 
-function ArText({ children, size, color = INK_TEXT }: { children: React.ReactNode; size: number; color?: string }) {
+export function ArText({ children, size, color = INK_TEXT }: { children: React.ReactNode; size: number; color?: string }) {
+  // The Franco track shows the same words in Latin letters, a little smaller (Latin runs wider than Arabic).
+  if (useFranco()) return <span style={{ fontSize: size * 0.72, lineHeight: 1.35, color, whiteSpace: 'nowrap' }}><Fr>{children}</Fr></span>;
   return <span lang="ar" style={{ ...AR, fontSize: size, lineHeight: 1.35, color, whiteSpace: 'nowrap' }}>{children}</span>;
 }
 
@@ -82,6 +85,12 @@ function Building({ x = 780, w = 330, delay = 0, door = true }: { x?: number; w?
       </svg>
     </motion.div>
   );
+}
+
+/** Franco reads left to right: rows laid out right to left for Arabic swap sides around the graphic's centre. */
+function useMirror() {
+  const fr = useFranco();
+  return (x: number) => (fr ? 2280 - x : x);
 }
 
 /** The ground line of the street. */
@@ -190,6 +199,7 @@ export function Ea1DoorGraphic({ lines }: GraphicProps) {
 
 /** Greetings as a volley: each greeting crosses to the right, and its reply comes back a little bigger and warmer. */
 export function Ea1PairsGraphic({ lines, items }: GraphicProps) {
+  const X = useMirror();
   const pairs = [
     { a: 'السلام عليكم', b: 'وعليكم السلام', ia: 'salam', ib: 'wa-alaykum' },
     { a: 'صباح الخير', b: 'صباح النور', ia: 'sabah-kheer', ib: 'sabah-noor' },
@@ -199,20 +209,20 @@ export function Ea1PairsGraphic({ lines, items }: GraphicProps) {
   if (rows === 0) return null;
   return (
     <>
-      <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: 1300, top: 180, fontSize: 15, letterSpacing: '0.16em', color: soft('light') }}>You say</span>
-      <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: 860, top: 180, fontSize: 15, letterSpacing: '0.16em', color: CRIMSON }}>They answer</span>
+      <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: X(1300) - (X(1300) === 1300 ? 0 : 80), top: 180, fontSize: 15, letterSpacing: '0.16em', color: soft('light') }}>You say</span>
+      <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: X(860) - (X(860) === 860 ? 0 : 80), top: 180, fontSize: 15, letterSpacing: '0.16em', color: CRIMSON }}>They answer</span>
       {pairs.slice(0, rows).map((p, i) => {
         const y = 270 + i * 170;
         const warm = i > 0 || lines >= 2;
         return (
           <React.Fragment key={p.ia}>
-            <Tile x={1370} y={y} size={40}><Hear id={p.ia}>{p.a}</Hear></Tile>
-            <Svg>
+            <Tile x={X(1370)} y={y} size={40}><Hear id={p.ia}>{p.a}</Hear></Tile>
+            <Svg><g transform={X(0) ? 'translate(2280 0) scale(-1 1)' : undefined}>
               <Draw d={`M 1250 ${y - 18} Q 1110 ${y - 70} 990 ${y - 18}`} color={GOLD} width={3} delay={0.4} dur={0.7} dash="2 10" />
               <Draw d={`M 990 ${y + 22} Q 1110 ${y + 70} 1250 ${y + 22}`} color={CRIMSON} width={3} delay={1.2} dur={0.7} />
-            </Svg>
+            </g></Svg>
             <motion.div className="absolute" style={{ left: 0, top: 0 }} initial={false} animate={{ scale: warm ? 1 : 0.92 }}>
-              <Tile x={890} y={y} size={warm ? 46 : 40} hot={warm} delay={0.9}><Hear id={p.ib}>{p.b}</Hear></Tile>
+              <Tile x={X(890)} y={y} size={warm ? 46 : 40} hot={warm} delay={0.9}><Hear id={p.ib}>{p.b}</Hear></Tile>
             </motion.div>
           </React.Fragment>
         );
@@ -231,6 +241,7 @@ export function Ea1PairsGraphic({ lines, items }: GraphicProps) {
 
 /** The wow: the question word travels from the front of the sentence to its end; then the answer drops into its slot. */
 export function Ea1EhGraphic({ lines }: GraphicProps) {
+  const X = useMirror();
   if (lines === 0) return null;
   const egyptian = lines >= 2;
   return (
@@ -238,24 +249,24 @@ export function Ea1EhGraphic({ lines }: GraphicProps) {
       {/* The phrasebook row: question word first (on the right, Arabic reads right to left). */}
       <motion.div className="absolute" style={{ left: 0, top: 0, transformOrigin: '1140px 230px' }} initial={false} animate={{ opacity: egyptian ? 0.4 : 1, scale: egyptian ? 0.7 : 1 }} transition={{ duration: 0.8, ease }}>
         <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: 800, top: 200, fontSize: 15, letterSpacing: '0.16em', color: soft('light') }}>Book</span>
-        <Tile x={1360} y={250} hot={!egyptian}>مَا</Tile>
-        <Tile x={1120} y={250} delay={0.2}><Hear id="maa-ismuka">اسْمُكَ؟</Hear></Tile>
+        <Tile x={X(1360)} y={250} hot={!egyptian}>مَا</Tile>
+        <Tile x={X(1120)} y={250} delay={0.2}><Hear id="maa-ismuka">اسْمُكَ؟</Hear></Tile>
       </motion.div>
       {egyptian && (
         <>
           <span className="pointer-events-none absolute font-sans font-bold uppercase" style={{ left: 800, top: 400, fontSize: 15, letterSpacing: '0.16em', color: CRIMSON }}>Cairo</span>
-          <Tile x={1330} y={440} delay={0.1}><Hear id="ismak-eh">اسمَك</Hear></Tile>
-          <Tile x={1060} y={440} hot from={{ x: 300, y: -190 }} delay={0.3}>إيه؟</Tile>
+          <Tile x={X(1330)} y={440} delay={0.1}><Hear id="ismak-eh">اسمَك</Hear></Tile>
+          <Tile x={X(1060)} y={440} hot from={{ x: X(0) ? -300 : 300, y: -190 }} delay={0.3}>إيه؟</Tile>
         </>
       )}
       {lines >= 3 && (
         <>
           <Svg>
-            <Draw d="M 1060 486 L 1060 580" color={GOLD} width={3} dash="4 8" delay={0.2} dur={0.5} />
-            <Draw d="M 1330 486 L 1330 580" color={GOLD} width={3} dash="4 8" delay={0.2} dur={0.5} />
+            <Draw d={`M ${X(1060)} 486 L ${X(1060)} 580`} color={GOLD} width={3} dash="4 8" delay={0.2} dur={0.5} />
+            <Draw d={`M ${X(1330)} 486 L ${X(1330)} 580`} color={GOLD} width={3} dash="4 8" delay={0.2} dur={0.5} />
           </Svg>
-          <Tile x={1330} y={630} color={TEAL} from={{ x: 0, y: -190 }} delay={0.5}><Hear id="ismi-adam">اسمي</Hear></Tile>
-          <Tile x={1060} y={630} color={CRIMSON} from={{ x: 0, y: -260 }} delay={0.9}>آدم</Tile>
+          <Tile x={X(1330)} y={630} color={TEAL} from={{ x: 0, y: -190 }} delay={0.5}><Hear id="ismi-adam">اسمي</Hear></Tile>
+          <Tile x={X(1060)} y={630} color={CRIMSON} from={{ x: 0, y: -260 }} delay={0.9}>آدم</Tile>
         </>
       )}
       {lines >= 4 && (
@@ -303,10 +314,11 @@ export function Ea1MonaGraphic({ lines }: GraphicProps) {
 
 /** One word, three owners: the endings snap on to اسم and fly to the person each one points to. */
 export function Ea1SuffixGraphic({ lines, items }: GraphicProps) {
+  const X = useMirror();
   const people = [
-    { x: 1360, color: ADAM, hijab: false, word: 'اسمي', id: 'ismi', who: 'me' },
-    { x: 1110, color: SAYED, hijab: false, word: 'اسمَك', id: 'ismak', who: 'you, a man' },
-    { x: 860, color: MONA, hijab: true, word: 'اسمِك', id: 'ismik', who: 'you, a woman' },
+    { x: X(1360), color: ADAM, hijab: false, word: 'اسمي', id: 'ismi', who: 'me' },
+    { x: X(1110), color: SAYED, hijab: false, word: 'اسمَك', id: 'ismak', who: 'you, a man' },
+    { x: X(860), color: MONA, hijab: true, word: 'اسمِك', id: 'ismik', who: 'you, a woman' },
   ];
   return (
     <>
@@ -318,7 +330,7 @@ export function Ea1SuffixGraphic({ lines, items }: GraphicProps) {
         </motion.div>
       )}
       {lines >= 2 && items === 0 && people.map((p, i) => (
-        <motion.div key={p.id} className="absolute" style={{ left: 1250 - i * 150, top: 320 }} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.25, type: 'spring', bounce: 0.4 }}>
+        <motion.div key={p.id} className="absolute" style={{ left: X(1250 - i * 150) - (X(0) ? 120 : 0), top: 320 }} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.25, type: 'spring', bounce: 0.4 }}>
           <span className="block rounded-full text-center" style={{ width: 120, padding: '2px 0', background: '#FFFDF8', boxShadow: `0 0 0 3px ${p.color}` }}><ArText size={58} color={p.color === GOLD ? DEEP : p.color}>{['ـي', 'ـَك', 'ـِك'][i]}</ArText></span>
         </motion.div>
       ))}
