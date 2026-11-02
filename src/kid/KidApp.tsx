@@ -16,11 +16,11 @@ import StudentLessonRoomPage from '../student/pages/StudentLessonRoomPage';
 
 /**
  * NX-16: a child's own device (a phone, tablet or computer other than the parent's). The parent makes a one-time
- * 10-digit code in the Family tab; this page trades it for the device's token, on the same code screen and motion as
+ * 6-digit code in the Family tab; this page trades it for the device's token, on the same code screen and motion as
  * the email code. Then the child sees only their lessons (join link), the lesson room, homework, today's review and
  * recitations. No payments, booking, settings or other children: the server refuses every other route.
  */
-const CODE_LENGTH = 10;
+const CODE_LENGTH = 6;
 const GOLD_TEXT = 'text-[#A06E14] dark:text-[#E5A93C]';
 
 interface KidLesson { id: string; start: string; end: string; minutes: number; title: string; titleAr: string; zoomUrl: string | null }
@@ -95,10 +95,10 @@ function PairCard({ lang, removed, onToggleLang, onLinked }: { lang: 'ar' | 'en'
         title: isAr ? <>افتح <span className={GOLD_TEXT}>حصصك</span> هنا</> : <>Open your <span className={GOLD_TEXT}>lessons</span> here</>,
         subtitle: removed
           ? (isAr ? 'الجهاز ده اتشال من حساب العيلة. اطلب من بابا أو ماما كود جديد واكتبه هنا.' : 'This device was removed from the family account. Ask your parent for a new code and type it here.')
-          : (isAr ? 'بابا أو ماما هيطلّعوا كود من 10 أرقام من تبويب العيلة في حسابهم. ينفع على موبايل أو تابلت أو كمبيوتر.' : 'Your parent makes a 10-digit code in the Family tab of their account. It works on a phone, tablet or computer.'),
+          : (isAr ? 'بابا أو ماما هيطلّعوا كود من 6 أرقام من تبويب العيلة في حسابهم. ينفع على موبايل أو تابلت أو كمبيوتر.' : 'Your parent makes a 6-digit code in the Family tab of their account. It works on a phone, tablet or computer.'),
         doneSubtitle: isAr ? 'الجهاز ده اتربط. يلا بينا على حصصك.' : 'This device is linked. On to your lessons.',
         error: isAr ? 'الكود ده غلط أو خلص وقته. اطلب من بابا أو ماما كود جديد.' : 'This code is wrong or has expired. Ask your parent for a new one.',
-        groupLabel: isAr ? 'كود الربط من 10 أرقام' : '10-digit link code',
+        groupLabel: isAr ? 'كود الربط من 6 أرقام' : '6-digit link code',
       }}
     />
   );

@@ -6,7 +6,7 @@ import { isUuid } from './progress.js';
 /**
  * NX-16: a child's own phone, linked to the parent's account (owner approved the design 2026-11-02).
  * The parent stays the account holder; the child has no email and no password. The parent creates a one-time
- * 10-digit code (15 minutes) in the Family tab; the child's phone trades it for a long-lived device token
+ * 6-digit code (15 minutes) in the Family tab; the child's phone trades it for a long-lived device token
  * ("kid_..."). verifyStudentAuth accepts that token only for CHILD_ROUTES and narrows the account's learners to
  * that one child, so the phone sees only that child's lessons, homework, review, recitations and lesson room:
  * no payments, booking, settings or other children. The parent removes a phone at once.
@@ -18,9 +18,9 @@ export const CODE_MINUTES = 15;
 const MAX_DEVICES = 10;
 
 export const hashSecret = (s: string) => crypto.createHash('sha256').update(s).digest('hex');
-export const CODE_DIGITS = 10;
-// Ten digits (10^10): guessing any family's live code in its 15 minutes is out of reach even past the per-IP limit.
-export const newLinkCode = () => String(crypto.randomInt(0, 100_000)).padStart(5, '0') + String(crypto.randomInt(0, 100_000)).padStart(5, '0');
+export const CODE_DIGITS = 6;
+// shortcut: 6 digits (owner 2026-11-02, enough for now); the per-IP limit only slows guessing. Upgrade: 10 digits or a per-code attempt cap.
+export const newLinkCode = () => String(crypto.randomInt(0, 1_000_000)).padStart(CODE_DIGITS, '0');
 export const newDeviceToken = () => KID_TOKEN_PREFIX + crypto.randomBytes(32).toString('base64url');
 
 /** The only API routes a child phone may call (method + path, no query). */
@@ -136,7 +136,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
   // Child phone: trade the parent's code for this phone's token.
   app.post('/api/kid/pair', deps.rateLimit, async (req: any, res: any) => {
     const code = typeof req.body?.code === 'string' ? req.body.code.replace(/\D/g, '') : '';
-    if (code.length !== CODE_DIGITS) return res.status(400).json({ error: 'Type the 10-digit code from your parent.' });
+    if (code.length !== CODE_DIGITS) return res.status(400).json({ error: 'Type the 6-digit code from your parent.' });
     const client = db(res); if (!client) return;
     const { data: row } = await client.from('child_devices').select('id, owner_user_id, learner_id, name')
       .eq('code_hash', hashSecret(code)).is('paired_at', null).is('revoked_at', null).gt('code_expires_at', new Date().toISOString()).maybeSingle();

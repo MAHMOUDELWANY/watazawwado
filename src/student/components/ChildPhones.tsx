@@ -67,7 +67,7 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
           <span>{isAr ? `على جهاز ${code.learnerName} (موبايل أو تابلت أو كمبيوتر) افتح:` : `On ${code.learnerName}'s phone, tablet or computer, open:`}</span>
           <span className="font-semibold text-teal" dir="ltr">watazawwado.academy/kid</span>
           <span>{isAr ? 'واكتب الكود ده:' : 'and type this code:'}</span>
-          <span className="text-3xl font-bold tracking-[0.15em] tabular-nums text-foreground" dir="ltr">{code.code.slice(0, 5)} {code.code.slice(5)}</span>
+          <span className="text-3xl font-bold tracking-[0.3em] tabular-nums text-foreground" dir="ltr">{code.code}</span>
           {/* A copy, not a link: tapping it here would link this (the parent's) browser instead of the child's phone. */}
           <Button
             type="button" size="sm" variant="ghost" className="w-fit"

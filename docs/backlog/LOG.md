@@ -884,3 +884,5 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Not in v1: a QR code (no QR library installed; the code plus the short address does the job), the optional 4-digit PIN, and child messages to the teacher (chat uses a separate sign-in; it stays off). Installing /kid as an app opens /student (the manifest start_url).
 
 - 2026-11-02 (later): the /kid code screen now uses the email code card itself (`OtpVerificationCard` with `length`, `initialCode` and `copy`), so it has the same mihrab page, boxes and lift/orbit/converge motion; the 10 digits sit in two rows of 5. Wording is "device" (phone, tablet or computer), since any browser other than the parent's can be linked.
+
+- 2026-11-02 (owner): the link code is back to 6 digits ("enough security for us for now; we can raise it later"). Marked as a shortcut in `newLinkCode`; the upgrade is 10 digits or a per-code attempt cap.
