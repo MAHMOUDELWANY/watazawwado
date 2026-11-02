@@ -168,15 +168,15 @@ export const Footer: React.FC<FooterProps> = ({
                         <Link to="/privacy" className="inline-flex items-center min-h-11 hover:text-foreground hover:underline transition-colors">
               {isEn ? 'Privacy' : 'الخصوصية'}
             </Link>
-            <span>•</span>
+            <span className="hidden sm:inline" aria-hidden="true">•</span>
             <Link to="/terms" className="inline-flex items-center min-h-11 hover:text-foreground hover:underline transition-colors">
               {isEn ? 'Terms' : 'الشروط'}
             </Link>
-            <span>•</span>
+            <span className="hidden sm:inline" aria-hidden="true">•</span>
 <span>{isEn ? 'Reschedule up to 1 hour before' : 'تغيير الموعد حتى ساعة قبل الدرس'}</span>
-            <span>•</span>
+            <span className="hidden sm:inline" aria-hidden="true">•</span>
             <span>{isEn ? 'Cancel up to 3 hours before' : 'إلغاء لحد ٣ ساعات قبل الحصة'}</span>
-            <span>•</span>
+            <span className="hidden sm:inline" aria-hidden="true">•</span>
             <Link
               to="/staff/login"
               className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1 min-h-11"

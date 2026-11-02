@@ -674,6 +674,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-02 — NX-14 design review, first pass (public pages, phone, light and dark)
+- Looked at About, How it works, Learning, Pricing, FAQ, Articles, Community and Safety full-length at 390 px in dark and light mode (production build).
+- Fixed: the WhatsApp buttons on About, FAQ, How it works and Safety were bright WhatsApp green, out of our palette; they now match the homepage (paper-glass on the deep band, a surface button elsewhere, only the icon green). The footer's "•" separators dangled at line ends on phones; they now show only on wider screens.
+- Not covered yet: the student portal and teacher dashboard (they need the dev server with the real env, which this worktree does not have), and the remaining NX-14 pages. NX-14 stays open.
+
 ## 2026-11-02 — Owner's notes: language screen in our identity, install bar, new signature, centre transition
 - Language screen rebuilt in our identity (paper, khatam field, gold light, Thmanyah type; teal marks the choice, crimson continues). Nothing is pre-chosen: the device's language carries "Suggested · your device's language"; the first tap selects, a second tap (or Continue) goes on. Shown once; the choice is saved to the account for emails and notifications.
 - Install pop-up (the levigav reference was for this): `InstallAppNudge` is now a card that comes down from the top by itself, 2.5 s after the intro and the language screen, on every visit until installed or closed (then two weeks). Chrome's own mini bar is held back (`preventDefault`) so there is one card; Install opens the browser's dialog, or the step-by-step sheet on iPhone/iPad.

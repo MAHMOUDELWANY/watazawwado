@@ -64,9 +64,9 @@ export function FAQPage() {
                 href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read the FAQ on Watazawwado and still have a question.' : 'السلام عليكم، قريت الأسئلة الشائعة على وتزودوا ولسه عندي سؤال.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#25D366]"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-[#FAF7F2]/35 bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#F6D58E]"
               >
-                <WhatsAppIcon className="w-4 h-4 shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#25D366]" />
                 <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
               </a>
             </div>

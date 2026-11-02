@@ -75,9 +75,9 @@ export function SafetyPage() {
               href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum Watazawwado team, I have a question about my child’s safety in lessons.' : 'السلام عليكم فريق وتزودوا، عندي سؤال عن أمان ابني في الحصص.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold border border-border bg-surface text-foreground hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--teal)]"
             >
-              <WhatsAppIcon className="w-4 h-4 shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#25D366]" />
               <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
             </a>
             <Link to="/terms#children" className="underline text-primary font-semibold py-3">
