@@ -30,9 +30,12 @@ test('detectPlatform names each browser family', () => {
   assert.equal(detectPlatform(UA.tiktokIos), 'in-app');
 });
 
-test('the browser keeps its own install bar (no preventDefault)', async () => {
-  const src = (await import('node:fs')).readFileSync('src/lib/pwaInstall.ts', 'utf8');
-  assert.doesNotMatch(src, /e\.preventDefault\(\)/);
+test('one install card: the browser mini bar is held back, our top card waits for the intro and language screen', async () => {
+  const fs = await import('node:fs');
+  assert.match(fs.readFileSync('src/lib/pwaInstall.ts', 'utf8'), /e\.preventDefault\(\)/);
+  const card = fs.readFileSync('src/components/pwa/InstallApp.tsx', 'utf8');
+  assert.match(card, /classList\.contains\('sig-intro'\) \|\| root\.classList\.contains\('lang-welcome'\)/);
+  assert.match(card, /data-testid="install-card"/);
 });
 
 test('canOfferInstall: one-tap prompt always, the gesture where a browser allows it, nothing on desktop Firefox or once installed', () => {

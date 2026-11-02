@@ -67,31 +67,20 @@
           if (standalone || /^\/(student|dashboard|teacher|staff)(\/|$)/.test(p)) {
             document.documentElement.classList.add('boot-app');
           }
-          // First visit with no language chosen yet: the language welcome (src/components/public/LanguageWelcome.tsx).
-          // The suggestion is the page's own language for /ar addresses, else the phone's language.
+          // First visit with no language chosen yet: the language welcome (src/components/public/LanguageWelcome.tsx),
+          // with the device's language marked as the suggestion.
           var onPublic = !standalone && !/^\/(student|dashboard|teacher|staff|review|certificate|otp|verify)/.test(p.replace(/^\/ar(?=\/|$)/, ''));
           if (onPublic && !chosen) {
             document.documentElement.classList.add('lang-welcome');
-            document.documentElement.setAttribute('data-lang-suggest', isAr || /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en');
+            document.documentElement.setAttribute('data-lang-suggest', /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en');
           }
-          // First visit of the public site: the signature intro (src/components/public/SignatureIntro.tsx). Decided
-          // here, before the first paint, so the page never flashes before the intro covers it. Once per browser.
-          if (onPublic &&
-              !localStorage.getItem('wz_sig_seen') && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            localStorage.setItem('wz_sig_seen', '1');
+          // The signature intro (src/components/public/SignatureIntro.tsx) every time the site or the installed app is
+          // opened: once per browser session, on the public pages and anywhere in the app. Decided here, before the
+          // first paint, so the page never flashes before the intro covers it.
+          if ((onPublic || standalone) && !sessionStorage.getItem('wz_sig_session') &&
+              !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            sessionStorage.setItem('wz_sig_session', '1');
             document.documentElement.classList.add('sig-intro');
-            // The signature face is ours (public/fonts, the 7 letters of "Watazawwado", 1.5 KB): fetched at once.
-            var f = document.createElement('link');
-            f.rel = 'preload'; f.as = 'font'; f.type = 'font/woff2'; f.crossOrigin = 'anonymous';
-            f.href = '/fonts/mrs-saint-delafield-sig.woff2';
-            document.head.appendChild(f);
-          }
-          // Opening the installed app plays the short brand intro once a day; the splash stays for it.
-          var day = new Date().toDateString();
-          if (standalone && localStorage.getItem('wz_intro_day') !== day && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            localStorage.setItem('wz_intro_day', day);
-            document.documentElement.classList.add('boot-intro');
-            window.__bootIntroUntil = Date.now() + 1500;
           }
         } catch(e) {}
       })();
@@ -136,8 +125,6 @@
       @keyframes bs-pop { to { opacity: 1; transform: none; } }
       @keyframes bs-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
       @media (prefers-reduced-motion: reduce) { #boot-splash .bs-tile, #boot-splash .bs-bar i { animation: none; } }
-      /* Signature intro: Mrs Saint Delafield (SIL Open Font License), subset to the letters of "Watazawwado". */
-      @font-face { font-family: 'Mrs Saint Delafield'; font-style: normal; font-weight: 400; font-display: block; src: url(/fonts/mrs-saint-delafield-sig.woff2) format('woff2'); unicode-range: U+57, U+61, U+64, U+6F, U+74, U+77, U+7A; }
       /* Signature intro cover until React takes over; gone by itself after 3 s if the script never runs. */
       html.lang-welcome:not(.lw-open) body::after, html.sig-intro:not(.sig-playing) body::after { content: ''; position: fixed; inset: 0; z-index: 2147483001; background: #FAF7F2; animation: sig-cover-off 0s linear 3s forwards; }
       html.sig-intro.dark body::after { background: #110F0E; }

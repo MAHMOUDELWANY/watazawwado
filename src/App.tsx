@@ -11,6 +11,7 @@ import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
 import { stripLangPrefix } from './lib/language';
 import { BrandLoader } from './components/ui/BrandLoader';
 import { InstallAppSheetHost } from './components/pwa/InstallApp';
+import { SignatureIntro } from './components/public/SignatureIntro';
 
 /**
  * After a new deployment the old page's lazy files no longer exist, so the next page change failed
@@ -170,6 +171,7 @@ export default function App() {
       <BrowserRouter>
         <AppRoutes />
         <InstallAppSheetHost />
+        <SignatureIntro />
       </BrowserRouter>
     </AppProviders>
   );

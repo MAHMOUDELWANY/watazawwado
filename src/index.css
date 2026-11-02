@@ -2020,65 +2020,92 @@ html.dark .text-brand {
   box-shadow: 0 2px 6px -2px rgba(18, 16, 14, 0.45);
 }
 
-/* Signature intro (src/components/public/SignatureIntro.tsx): write by hand, settle, grow, lift the curtain. ~2.6 s.
-   One ink colour from the palette (owner, 2026-11-02): deep crimson on cream, gold on espresso. */
+/* Signature intro (src/components/public/SignatureIntro.tsx): the name written letter by letter in crimson, a gold
+   swash and khatam seal, then (as in the owner's reference) the signature grows from the middle while the paper opens
+   from the centre onto the page. ~2.9 s. Our palette only: crimson ink, gold seal, paper. */
+@property --sig-hole { syntax: '<percentage>'; inherits: false; initial-value: -30%; }
 .sig-intro-overlay {
-  --sig-ink: #9E2420;
   position: fixed;
   inset: 0;
   z-index: 2147483002;
   display: grid;
   place-items: center;
-  background: var(--background);
   pointer-events: auto;
-  clip-path: inset(0 0 0 0);
 }
-.dark .sig-intro-overlay { --sig-ink: #E5A93C; }
-.sig-intro-overlay .sig-lockup { display: grid; justify-items: center; transform-origin: 46% 52%; }
-.sig-intro-overlay .sig-word {
-  font-family: 'Mrs Saint Delafield', 'Thmanyah Serif Display', cursive;
-  font-weight: 400;
-  font-size: clamp(5.2rem, 22vw, 12rem);
-  line-height: 1.05;
-  padding: 0 0.35em;
-  color: var(--sig-ink);
-  /* The pen: a slanted, softly feathered edge that moves left to right, revealing the ink behind it. */
-  -webkit-mask-image: linear-gradient(105deg, #000 0 42%, rgba(0, 0, 0, 0.35) 47%, transparent 52%);
-  mask-image: linear-gradient(105deg, #000 0 42%, rgba(0, 0, 0, 0.35) 47%, transparent 52%);
-  -webkit-mask-size: 260% 100%;
-  mask-size: 260% 100%;
-  -webkit-mask-position: 100% 0;
-  mask-position: 100% 0;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+.sig-intro-overlay .sig-paper {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 45% at 50% 46%, rgba(246, 213, 142, 0.22), transparent 70%),
+    var(--background);
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, transparent var(--sig-hole), #000 calc(var(--sig-hole) + 22%));
+  mask-image: radial-gradient(circle at 50% 48%, transparent var(--sig-hole), #000 calc(var(--sig-hole) + 22%));
+  animation: sig-open 0.78s cubic-bezier(0.65, 0, 0.35, 1) 2.08s forwards;
 }
-.sig-intro-overlay.is-fallback .sig-word { font-family: 'Thmanyah Serif Display', serif; font-style: italic; font-size: clamp(2.6rem, 11vw, 6.5rem); }
-.sig-intro-overlay .sig-caption {
-  margin-top: -0.2rem;
-  font-family: 'Thmanyah Serif Display', serif;
-  font-size: clamp(0.85rem, 2.6vw, 1.05rem);
-  font-weight: 600;
-  letter-spacing: 0.7em;
-  text-indent: 0.7em;
-  text-transform: uppercase;
-  color: var(--sig-ink);
+.sig-intro-overlay .sig-lockup {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(84vw, 36rem);
+  animation: sig-grow 0.86s cubic-bezier(0.55, 0, 0.75, 0.2) 1.98s forwards;
+}
+.sig-intro-overlay .sig-svg { width: 100%; height: auto; overflow: visible; }
+.sig-intro-overlay .sig-ink { fill: var(--primary); }
+.sig-intro-overlay .sig-pen {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
   opacity: 0;
+  animation-name: sig-pen;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.4, 1);
+  animation-fill-mode: forwards;
 }
-.sig-intro-overlay.is-playing { animation: sig-curtain 0.65s cubic-bezier(0.77, 0, 0.18, 1) 1.95s forwards; }
-.sig-intro-overlay.is-playing .sig-word { animation: sig-write 1.45s cubic-bezier(0.45, 0.05, 0.3, 1) forwards; }
-.sig-intro-overlay.is-playing .sig-caption { animation: sig-caption 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.15s forwards; }
-.sig-intro-overlay.is-playing .sig-lockup { animation: sig-grow 0.75s cubic-bezier(0.7, 0, 0.84, 0) 1.8s forwards; }
-@keyframes sig-write { to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
-@keyframes sig-caption { from { opacity: 0; letter-spacing: 1.2em; } to { opacity: 1; letter-spacing: 0.7em; } }
-@keyframes sig-grow { to { transform: scale(3.4) translateX(-6%); opacity: 0; } }
-@keyframes sig-curtain { to { clip-path: inset(0 0 100% 0); } }
+.sig-intro-overlay .sig-swash {
+  fill: none;
+  stroke: var(--gold-deep, #B9782A);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  animation: sig-pen 0.5s cubic-bezier(0.6, 0, 0.3, 1) 1.28s forwards;
+}
+.sig-intro-overlay .sig-seal { opacity: 0; transform: scale(0.2) rotate(-60deg); animation: sig-seal 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.66s forwards; }
+.sig-intro-overlay .sig-seal rect { fill: var(--gold, #E5A93C); stroke: var(--gold-deep, #B9782A); stroke-width: 0.8; }
+.sig-intro-overlay .sig-seal-ring { fill: none; stroke: var(--gold, #E5A93C); stroke-width: 0.8; opacity: 0; transform-box: fill-box; transform-origin: center; animation: sig-ring 0.7s ease-out 1.8s forwards; }
+.sig-intro-overlay .sig-caption {
+  margin-top: 0.4rem;
+  font-family: 'Thmanyah Sans', sans-serif;
+  font-size: clamp(0.66rem, 2.6vw, 0.82rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1em;
+  padding-inline-start: 0.7em;
+  color: var(--muted-foreground);
+  opacity: 0;
+  animation: sig-caption 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.45s forwards;
+}
+/* Hidden until its turn: a round pen tip would otherwise leave a dot where each letter starts. */
+@keyframes sig-pen { 0% { opacity: 1; } 100% { opacity: 1; stroke-dashoffset: 0; } }
+@keyframes sig-seal { to { opacity: 1; transform: none; } }
+@keyframes sig-ring { 0% { opacity: 0.9; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.4); } }
+@keyframes sig-caption { from { opacity: 0; letter-spacing: 1.1em; } to { opacity: 1; letter-spacing: 0.7em; } }
+@keyframes sig-grow { 0% { transform: none; opacity: 1; } 55% { opacity: 0.8; } 100% { transform: scale(5.2); opacity: 0; } }
+@keyframes sig-open { 0% { --sig-hole: -30%; opacity: 1; } 75% { opacity: 1; } 100% { --sig-hole: 130%; opacity: 0; } }
 
-/* After the intro: the hero photos unveil from the bottom of their arches, the headline rises. */
-html.sig-revealing [data-sig-reveal] img { animation: sig-unveil 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0.25s both; }
-html.sig-revealing [data-sig-reveal-late] img { animation-delay: 0.4s; }
-html.sig-revealing main h1 { animation: sig-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both; }
-@keyframes sig-unveil { from { clip-path: inset(100% 0 0 0); transform: scale(1.12); } to { clip-path: inset(0 0 0 0); transform: none; } }
-@keyframes sig-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+/* After the intro (or the language choice), as in the reference: the hero photos unveil on a diagonal from the
+   lower corner, and the headline is wiped in along its reading direction. */
+html.sig-revealing [data-sig-reveal] img { animation: sig-unveil 1s cubic-bezier(0.65, 0, 0.35, 1) 0.2s both; }
+html.sig-revealing [data-sig-reveal-late] img { animation-delay: 0.36s; }
+html.sig-revealing main h1 { animation: sig-wipe 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.15s both; }
+html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
+@keyframes sig-unveil { from { clip-path: polygon(0 100%, 0 100%, 0 100%); transform: scale(1.08); } to { clip-path: polygon(0 -100%, 200% 100%, 0 100%); transform: none; } }
+@keyframes sig-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes sig-wipe-rtl { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
 
 /* Liquid press ("liquid button" in docs/design/INSPIRATION.md): the main call to action loosens into a soft organic
    shape with a slow ribbon-coloured glow on hover (pointer) or while pressed (touch), and snaps back on release. */
@@ -2101,8 +2128,8 @@ html.sig-revealing main h1 { animation: sig-rise 0.9s cubic-bezier(0.22, 1, 0.36
   .liquid-cta, .liquid-cta:hover, .liquid-cta:active { animation: none !important; }
 }
 
-/* Language welcome (src/components/public/LanguageWelcome.tsx): espresso night, film grain, a soft lamp of gold,
-   big editorial type, two choices on glass, the suggested one lit. Our palette only (cream, gold, espresso). */
+/* Language welcome (src/components/public/LanguageWelcome.tsx): our paper, the khatam field and a soft gold light,
+   editorial type; two cards, nothing chosen until the visitor taps; teal marks the choice, crimson continues. */
 .lang-welcome-overlay {
   position: fixed;
   inset: 0;
@@ -2110,113 +2137,85 @@ html.sig-revealing main h1 { animation: sig-rise 0.9s cubic-bezier(0.22, 1, 0.36
   display: grid;
   place-items: center;
   padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(1.25rem, env(safe-area-inset-bottom));
-  color: #FAF7F2;
+  color: var(--foreground);
   background:
-    radial-gradient(60% 45% at 50% 18%, rgba(229, 169, 60, 0.22), transparent 70%),
-    radial-gradient(80% 60% at 50% 110%, rgba(139, 73, 53, 0.35), transparent 70%),
-    #110F0E;
+    radial-gradient(60% 40% at 50% 0%, rgba(246, 213, 142, 0.38), transparent 70%),
+    radial-gradient(60% 40% at 50% 105%, rgba(8, 125, 145, 0.1), transparent 70%),
+    var(--background);
   overflow-y: auto;
-  animation: lw-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: lw-in 0.45s ease both;
 }
-.lang-welcome-overlay::before {
-  /* Film grain: a fixed noise layer, very faint. */
-  content: '';
-  position: absolute;
-  inset: -50%;
-  pointer-events: none;
-  opacity: 0.09;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.lang-welcome-overlay.is-behind * { animation-play-state: paused; }
+/* Arriving from under the intro, the screen is already there: no fade-in that would let the page show through. */
+.lang-welcome-overlay.from-intro:not(.is-leaving) { animation: none; }
+.lang-welcome-overlay.is-leaving { animation: lw-out 0.5s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
+.lang-welcome-overlay .lw-inner { position: relative; width: min(100vw - 2rem, 28rem); text-align: center; }
+.lang-welcome-overlay .lw-mark { display: block; width: 2.5rem; height: 2.5rem; margin: 0 auto 1rem; animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lang-welcome-overlay .lw-eyebrow {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--teal);
+  animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
-.lang-welcome-overlay.is-behind, .lang-welcome-overlay.is-behind * { animation-play-state: paused; }
-.lang-welcome-overlay.is-leaving { animation: lw-out 0.52s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.lang-welcome-overlay .lw-inner { position: relative; width: min(100%, 30rem); text-align: center; }
 .lang-welcome-overlay .lw-title {
+  margin-top: 0.6rem;
   font-family: 'Thmanyah Serif Display', serif;
   font-weight: 500;
-  font-size: clamp(2.6rem, 11vw, 4.2rem);
-  line-height: 1.02;
+  font-size: clamp(2.4rem, 10vw, 3.6rem);
+  line-height: 1.04;
   letter-spacing: -0.02em;
   animation: lw-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
-.lang-welcome-overlay .lw-title em { font-style: italic; color: #E5A93C; }
-.lang-welcome-overlay .lw-title-ar {
-  display: block;
-  margin-top: 0.7rem;
-  font-family: 'Thmanyah Sans', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: rgba(250, 247, 242, 0.7);
-}
-.lang-welcome-overlay .lw-panel {
-  margin-top: 2rem;
-  padding: 0.5rem;
-  border-radius: 2rem;
-  border: 1px solid rgba(250, 247, 242, 0.12);
-  background: rgba(250, 247, 242, 0.04);
-  backdrop-filter: blur(14px);
-  display: grid;
-  gap: 0.25rem;
-}
+.lang-welcome-overlay .lw-title em { font-style: italic; color: var(--primary); }
+.lang-welcome-overlay .lw-title-ar { display: block; margin-top: 0.55rem; font-family: 'Thmanyah Sans', sans-serif; font-size: 1.05rem; font-weight: 700; letter-spacing: 0; color: var(--muted-foreground); }
+.lang-welcome-overlay .lw-options { margin-top: 1.75rem; display: grid; gap: 0.75rem; }
 .lang-welcome-overlay .lw-option {
   position: relative;
-  display: grid;
-  justify-items: start;
-  gap: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   width: 100%;
   min-height: 5.5rem;
-  padding: 1.1rem 1.4rem;
-  border-radius: 1.6rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1.5rem;
   text-align: start;
-  color: rgba(250, 247, 242, 0.62);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
   cursor: pointer;
-  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.lang-welcome-overlay .lw-option:hover { color: #FAF7F2; background: rgba(250, 247, 242, 0.06); }
+.lang-welcome-overlay .lw-option:hover { border-color: color-mix(in srgb, var(--teal) 45%, var(--border)); }
 .lang-welcome-overlay .lw-option:active { transform: scale(0.985); }
-.lang-welcome-overlay .lw-option:focus-visible { outline: 2px solid #E5A93C; outline-offset: 3px; }
-.lang-welcome-overlay .lw-option.is-suggested {
-  color: #FAF7F2;
-  background: linear-gradient(180deg, rgba(250, 247, 242, 0.1), rgba(250, 247, 242, 0.05));
-  box-shadow: inset 0 1px 0 rgba(250, 247, 242, 0.12), 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+.lang-welcome-overlay .lw-option:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+.lang-welcome-overlay .lw-option[aria-checked='true'] {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px var(--teal), 0 14px 30px -18px color-mix(in srgb, var(--teal) 60%, transparent);
 }
-.lang-welcome-overlay .lw-option.is-suggested::after {
-  /* The lit line under the suggested choice. */
-  content: '';
-  position: absolute;
-  inset-inline: 12%;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #E5A93C, transparent);
-  box-shadow: 0 0 14px 2px rgba(229, 169, 60, 0.45);
-}
-.lang-welcome-overlay .lw-option.is-chosen { color: #FAF7F2; background: rgba(229, 169, 60, 0.14); }
-.lang-welcome-overlay .lw-name { font-family: 'Thmanyah Serif Display', serif; font-size: clamp(2.1rem, 9vw, 2.8rem); line-height: 1; }
+.lang-welcome-overlay .lw-text { flex: 1; min-width: 0; display: grid; gap: 0.3rem; justify-items: start; }
+.lang-welcome-overlay .lw-name { font-family: 'Thmanyah Serif Display', serif; font-size: clamp(1.8rem, 7.5vw, 2.3rem); line-height: 1; }
 .lang-welcome-overlay .lw-option[lang='ar'] .lw-name { font-family: 'Thmanyah Display', 'Thmanyah Sans', sans-serif; font-weight: 700; }
-.lang-welcome-overlay .lw-line { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(229, 169, 60, 0.85); }
-.lang-welcome-overlay .lw-option[lang='ar'] .lw-line { font-size: 0.9rem; letter-spacing: 0; text-transform: none; }
+.lang-welcome-overlay .lw-line { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-foreground); }
+.lang-welcome-overlay .lw-option[lang='ar'] .lw-line { font-size: 0.88rem; letter-spacing: 0; text-transform: none; }
 .lang-welcome-overlay .lw-badge {
-  position: absolute;
-  inset-inline-end: 1.1rem;
-  top: 50%;
-  translate: 0 -50%;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid rgba(229, 169, 60, 0.55);
-  background: rgba(17, 15, 14, 0.6);
-  color: #E5A93C;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  margin-top: 0.15rem; padding: 0.2rem 0.6rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--gold-soft, #F6D58E) 55%, transparent);
+  color: var(--copper); font-size: 0.72rem; font-weight: 700;
 }
-.lang-welcome-overlay .lw-option[lang='ar'] .lw-badge { letter-spacing: 0; font-size: 0.8rem; }
-.lang-welcome-overlay .lw-note { margin-top: 1.6rem; font-size: 0.9rem; color: rgba(250, 247, 242, 0.55); animation: lw-rise 0.6s ease 0.7s both; }
+.lang-welcome-overlay .lw-radio {
+  flex: none; width: 1.6rem; height: 1.6rem; border-radius: 999px; display: grid; place-items: center;
+  border: 1.5px solid var(--border); color: #fff; transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.lang-welcome-overlay .lw-option[aria-checked='true'] .lw-radio { background: var(--teal); border-color: var(--teal); }
+.lang-welcome-overlay .lw-radio svg { width: 0.95rem; height: 0.95rem; stroke-dasharray: 24; stroke-dashoffset: 24; }
+.lang-welcome-overlay .lw-option[aria-checked='true'] .lw-radio svg { animation: lw-check 0.3s ease-out 0.05s forwards; }
+.lang-welcome-overlay .lw-continue { margin-top: 1.25rem; width: 100%; border-radius: 999px; animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both; }
+.lang-welcome-overlay .lw-note { margin-top: 1rem; font-size: 0.85rem; color: var(--muted-foreground); animation: lw-rise 0.6s ease 0.6s both; }
 @keyframes lw-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes lw-out { to { opacity: 0; transform: scale(1.04); filter: blur(4px); } }
+@keyframes lw-out { to { opacity: 0; transform: scale(1.03); } }
 @keyframes lw-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes lw-check { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .lang-welcome-overlay, .lang-welcome-overlay *, .lang-welcome-overlay.is-leaving { animation: none !important; }
+  .lang-welcome-overlay .lw-radio svg { stroke-dashoffset: 0; }
 }

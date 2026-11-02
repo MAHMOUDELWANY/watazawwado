@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
  *
  * Chrome and Edge fire `beforeinstallprompt` once, early, often before React mounts. `capturePwaInstall()` runs in
  * main.tsx so the event is kept for whichever button asks for it later (site menu, portal home, teacher dashboard).
- * We do not call preventDefault(): the browser then shows its own install bar by itself (owner, 2026-11-01), and our
- * own suggestion stays out of the way on those browsers (`InstallAppNudge`).
+ * We call preventDefault() so Chrome's own mini bar (shown only when Chrome decides to) does not double our install card
+ * (`InstallAppNudge`), which appears on every browser by itself and opens this same dialog (owner, 2026-11-02).
  */
 
 type DeferredPrompt = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
@@ -29,6 +29,7 @@ export function capturePwaInstall(): void {
     window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }, { once: true });
   }
   window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
     deferred = e as DeferredPrompt;
     notify();
   });

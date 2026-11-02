@@ -240,12 +240,13 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
   );
 }
 
-const VISITS_KEY = 'wz.install.visits';
 
 /**
- * Public site: a small card stacked just above the learning-guide button (same edge, so the corner buttons stay
- * clear), only after the visitor has spent a little time (second visit, or 25 s on this one), never inside the
- * app, and gone for two weeks once closed.
+ * Public site: the install card that comes down from the top by itself (owner's reference, the install bar over the
+ * levigav.com welcome, 2026-11-02), in our colours. It waits until the page is really in front of the visitor (after
+ * the signature intro and the language choice), then appears after a short pause on every visit until the app is
+ * installed or the card is closed (then gone for two weeks). "Install" opens the browser's own install dialog where
+ * there is one (Chrome, Edge, Samsung) and the step-by-step sheet elsewhere (iPhone, iPad, Firefox).
  */
 export function InstallAppNudge({ isAr }: Lang) {
   const s = usePwaInstall();
@@ -253,62 +254,61 @@ export function InstallAppNudge({ isAr }: Lang) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let visits = 0;
-    try {
-      if (!sessionStorage.getItem(VISITS_KEY)) {
-        visits = Number(localStorage.getItem(VISITS_KEY) || 0) + 1;
-        localStorage.setItem(VISITS_KEY, String(visits));
-        sessionStorage.setItem(VISITS_KEY, '1');
-      } else {
-        visits = Number(localStorage.getItem(VISITS_KEY) || 1);
-      }
-    } catch { /* storage blocked */ }
-    if (visits >= 2) { const id = window.setTimeout(() => setReady(true), 6000); return () => window.clearTimeout(id); }
-    const id = window.setTimeout(() => setReady(true), 25000);
-    return () => window.clearTimeout(id);
+    const root = document.documentElement;
+    let timer = 0;
+    const busy = () => root.classList.contains('sig-intro') || root.classList.contains('lang-welcome');
+    const arm = () => {
+      if (busy() || timer) return;
+      timer = window.setTimeout(() => setReady(true), 2500);
+      watch.disconnect();
+    };
+    const watch = new MutationObserver(arm);
+    watch.observe(root, { attributes: true, attributeFilter: ['class'] });
+    arm();
+    return () => { watch.disconnect(); window.clearTimeout(timer); };
   }, []);
 
-  // Phones and tablets get the bar; desktop visitors use the menu entry or the address-bar icon.
-  const touch = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
-  // Where the browser offers its own install bar (Chrome, Edge, Samsung on Android) it shows that bar by itself, so our
-  // card would only repeat it; the card is for iPhone, iPad and the rest, where nothing appears on its own.
-  const show = ready && touch && canOfferInstall(s) && !s.dismissed && !s.canPrompt;
+  const show = ready && canOfferInstall(s) && !s.dismissed;
 
   return (
-    <>
-      <AnimatePresence>
-        {show && (
-          <motion.div
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            dir={isAr ? 'rtl' : 'ltr'}
-            className="fixed z-[45] end-3 sm:end-6 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] w-[min(22rem,calc(100vw-1.5rem))]"
-            role="region"
-            aria-label={isAr ? 'تثبيت التطبيق' : 'Install the app'}
-          >
-            <div className="flex items-center gap-3 p-2.5 ps-3 rounded-[22px] bg-surface/95 dark:bg-surface/95 backdrop-blur-xl border border-border/70 shadow-[var(--shadow-3)]">
-              <AppTile size={40} />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold leading-tight">{isAr ? 'وتزودوا على شاشتك' : 'Watazawwado on your phone'}</p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {s.platform === 'in-app'
-                    ? (isAr ? 'افتح الصفحة في المتصفح عشان تثبّته' : 'Open this page in your browser to install it')
-                    : (isAr ? 'ثبّته كتطبيق، ببلاش ومن غير متجر' : 'Install it as an app, free, no store')}
-                </p>
-              </div>
-              <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring">
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: -28, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -28, scale: 0.97 }}
+          transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+          dir={isAr ? 'rtl' : 'ltr'}
+          className="fixed z-[60] inset-x-2.5 sm:inset-x-auto sm:end-6 top-[calc(0.6rem+env(safe-area-inset-top))] sm:w-[25rem]"
+          role="region"
+          aria-label={isAr ? 'تثبيت التطبيق' : 'Install the app'}
+          data-testid="install-card"
+        >
+          <div className="flex items-center gap-3 p-3 ps-3.5 rounded-[1.4rem] glass-3 border border-border/70 shadow-[var(--shadow-3)]">
+            <AppTile size={46} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[0.95rem] font-bold leading-snug">
+                {isAr ? 'ثبّت تطبيق وتزودوا' : 'Install Watazawwado'}
+              </p>
+              <p className="text-xs text-muted-foreground leading-snug">
+                {s.platform === 'in-app'
+                  ? (isAr ? 'افتح الصفحة في المتصفح الأول عشان تثبّته' : 'Open this page in your browser first to install it')
+                  : (isAr ? 'حصصك وواجباتك ومراجعتك في تطبيق واحد' : 'Lessons, homework and review in one app')}
+              </p>
+              <p className="text-[0.7rem] text-muted-foreground/80 mt-0.5" dir="ltr">watazawwado.academy</p>
+            </div>
+            {s.platform !== 'in-app' && (
+              <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring active:scale-[0.97] transition-transform">
                 {isAr ? 'ثبّت' : 'Install'}
               </button>
-              <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 relative shrink-0 w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer">
-                <X className="w-4 h-4" aria-hidden="true" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+            )}
+            <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 relative shrink-0 w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer">
+              <X className="w-4 h-4" aria-hidden="true" />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
