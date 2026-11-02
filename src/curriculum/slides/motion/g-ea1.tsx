@@ -15,10 +15,10 @@ import { Fr, useFranco } from '../Fr';
  */
 
 const AR: React.CSSProperties = { fontFamily: 'var(--font-display-ar)', fontWeight: 800, direction: 'rtl' };
-const GROUND = 800;
-const ADAM = TEAL;
-const SAYED = CLAY;
-const MONA = GOLD;
+export const GROUND = 800;
+export const ADAM = TEAL;
+export const SAYED = CLAY;
+export const MONA = GOLD;
 
 export function ArText({ children, size, color = INK_TEXT }: { children: React.ReactNode; size: number; color?: string }) {
   // The Franco track shows the same words in Latin letters, a little smaller (Latin runs wider than Arabic).
@@ -27,7 +27,7 @@ export function ArText({ children, size, color = INK_TEXT }: { children: React.R
 }
 
 /** An Egyptian line in a speech bubble pointing down to (x, y); plays on tap. */
-function Say({ x, y, id, text, align = 'left', delay = 0, width = 260, accent = false, thought = false, size = 34 }: {
+export function Say({ x, y, id, text, align = 'left', delay = 0, width = 260, accent = false, thought = false, size = 34 }: {
   x: number; y: number; id?: string; text: React.ReactNode; align?: 'left' | 'right'; delay?: number; width?: number; accent?: boolean; thought?: boolean; size?: number;
 }) {
   const t = <ArText size={size} color={accent ? '#fff' : INK_TEXT}>{text}</ArText>;
@@ -35,7 +35,7 @@ function Say({ x, y, id, text, align = 'left', delay = 0, width = 260, accent = 
 }
 
 /** A word tile (Arabic, big) centred at (x, y); `hot` frames it in crimson. */
-function Tile({ x, y, children, size = 64, hot = false, color = INK_TEXT, delay = 0, from }: {
+export function Tile({ x, y, children, size = 64, hot = false, color = INK_TEXT, delay = 0, from }: {
   x: number; y: number; children: React.ReactNode; size?: number; hot?: boolean; color?: string; delay?: number; from?: { x: number; y: number };
 }) {
   return (
@@ -50,13 +50,13 @@ function Tile({ x, y, children, size = 64, hot = false, color = INK_TEXT, delay 
 }
 
 /** Domes and minarets on the horizon, drawn as one line (the Cairo accent of this curriculum). */
-function Skyline({ delay = 0, opacity = 0.35 }: { delay?: number; opacity?: number }) {
+export function Skyline({ delay = 0, opacity = 0.35 }: { delay?: number; opacity?: number }) {
   const d = 'M 760 560 L 820 560 L 820 470 Q 826 452 832 470 L 832 560 L 880 560 Q 880 500 930 500 Q 980 500 980 560 L 1010 560 L 1010 420 L 1016 400 L 1022 420 L 1022 560 L 1100 560 Q 1104 520 1140 520 Q 1176 520 1180 560 L 1300 560 L 1300 450 Q 1306 430 1312 450 L 1312 560 L 1380 560 Q 1384 510 1420 510 Q 1456 510 1460 560 L 1520 560';
   return <Svg><g opacity={opacity}><Draw d={d} color={DEEP} width={2.5} delay={delay} dur={2.2} /></g></Svg>;
 }
 
 /** The building: four floors with balconies and a wooden door at street level. Left edge x, width w. */
-function Building({ x = 780, w = 330, delay = 0, door = true }: { x?: number; w?: number; delay?: number; door?: boolean }) {
+export function Building({ x = 780, w = 330, delay = 0, door = true }: { x?: number; w?: number; delay?: number; door?: boolean }) {
   const top = 230;
   const floors = [0, 1, 2, 3];
   return (
@@ -88,18 +88,18 @@ function Building({ x = 780, w = 330, delay = 0, door = true }: { x?: number; w?
 }
 
 /** Franco reads left to right: rows laid out right to left for Arabic swap sides around the graphic's centre. */
-function useMirror() {
+export function useMirror() {
   const fr = useFranco();
   return (x: number) => (fr ? 2280 - x : x);
 }
 
 /** The ground line of the street. */
-function Street() {
+export function Street() {
   return <Svg><line x1={760} y1={GROUND} x2={1520} y2={GROUND} stroke="rgba(31,22,18,0.18)" strokeWidth={3} /></Svg>;
 }
 
 /** Stairs from the upper right down to the street, for Mona's scenes. */
-function Stairs() {
+export function Stairs() {
   const steps = Array.from({ length: 6 }, (_, i) => i);
   return (
     <motion.svg className="pointer-events-none absolute" style={{ left: 1180, top: 500, overflow: 'visible' }} width={340} height={300} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>

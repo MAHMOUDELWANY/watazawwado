@@ -25,6 +25,14 @@ export const FRANCO: Record<string, string> = {
   'الله': 'Allah', 'يسلّمك': 'ysallemak', 'يسلّمَك': 'ysallemak', 'يسلّمِك': 'ysallemek', 'يسلّمَ': 'ysallema',
   'يسلّمِ': 'ysalleme', 'ـَك': '-ak', 'ـِك': '-ek', 'ـي': '-i', 'تمام': 'tamam', 'ع': '3', 'ح': '7', 'منين': 'meneen',
   'فصحى': 'Fus7a', 'مصري': 'Masri',
+  // Lesson 2
+  'من': 'men', 'يا': 'ya', 'هنا': 'hena', 'وأنا': 'w ana', 'وإنتي': 'w enti', 'هي': 'heyya', 'وهي': 'w heyya',
+  'هو': 'howwa', 'ـية': '-eyya', 'ـاني': '-ani', 'ج': 'g', 'إزيّك': 'ezzayak', 'القاهرة': 'el 2ahera', 'أسوان': 'Aswan',
+  'إسكندرية': 'Eskendereyya', 'طنطا': 'Tanta', 'مصر': 'Masr', 'إنجلترا': 'Engeltera', 'أمريكا': 'Amreeka', 'كندا': 'Kanada',
+  'ألمانيا': 'Almanya', 'السعودية': 'el Sa3odeyya', 'مصرية': 'Masreyya', 'إنجليزي': 'engeleezi', 'إنجليزية': 'engeleezeyya',
+  'كندي': 'kanadi', 'كندية': 'kanadeyya', 'ألماني': 'almani', 'ألمانية': 'almaneyya', 'أمريكاني': 'amreekani',
+  'أمريكانية': 'amreekaneyya', 'أيوه': 'aywa', 'لأ': 'la2', 'نعم': 'na3am', 'لا': 'la', 'جديد': 'gedeed', 'جديدة': 'gedeeda',
+  'جميل': 'gameel', 'جميلة': 'gameela', 'جامعة': 'gam3a', 'ممتاز': 'momtaz', 'ده': 'da', 'دي': 'di',
 };
 
 const MARKS = /[ً-ْٰ]/g;

@@ -20,7 +20,9 @@ import { lessonAA02 } from './content/literacy-a-adults/l02-fewer-shapes-than-yo
 import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
+import { lessonC01 } from './content/literacy-c/l01-numbers-that-talk.js';
 import { francoLesson } from './franco.js';
+import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -346,7 +348,21 @@ export const SUBJECTS: SubjectEntry[] = [
       'Come In, Have Tea!', 'Are You Free Tonight?', 'A Gift for Mona', 'Taxi, Train, Ticket', 'What Will You Have?',
       'Review: Ready for Cairo',
     ],
-    lessons: { 1: lessonE01 },
+    lessons: { 1: lessonE01, 2: lessonE02 },
+  },
+  {
+    // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).
+    id: 'literacy-c',
+    group: 'literacy',
+    title: 'Reading Franco',
+    titleAr: 'القرائية · فرانكو',
+    version: 'Franco',
+    versionAr: 'فرانكو',
+    audience: '18+',
+    art: '/curriculum/banners/literacy-a-adults.webp',
+    parts: [{ title: 'Reading Franco', titleAr: 'قراءة الفرانكو', from: 1 }],
+    plan: ['Numbers That Talk', 'The Cairo Hamza', 'Scrape and Gargle', 'Long and Short', 'Heavy Letters', 'Little Words', "Tant Hoda's Voice Note"],
+    lessons: { 1: lessonC01 },
   },
   {
     // The Egyptian Adults lessons with every Arabic line in Franco (docs/curriculum/franco/RULES.md, src/curriculum/franco.ts).
@@ -553,9 +569,7 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'From the first letter to reading on your own. The door to the Quran, Fusha and Egyptian.',
     taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
     art: '/curriculum/banners/literacy.webp',
-    planned: [
-      { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
-    ],
+    planned: [],
   },
   {
     id: 'quran',

@@ -6,7 +6,7 @@ import { Person, Bubble, Chip } from './kit';
 import { Hear } from '../Say';
 
 /**
- * Fusha · Kids · Lesson 1 · What Is This? Look A (the literacy cast): Lina (teal) and Sam (gold), faceless children; the
+ * Fusha · Kids · Lesson 1 · What Is This? Look A (the literacy cast): Maryam (teal) and Yusuf (gold), faceless children; the
  * objects are drawn in code. Every Arabic line on the stage plays on tap (Mahmoud Fusha). Input first: the story page is
  * understood from the pictures before any rule.
  */
@@ -71,7 +71,7 @@ export function Fk1CoverGraphic(_: GraphicProps) {
   );
 }
 
-/** Lina hides something behind her back; Sam must guess; the rule: Arabic only. */
+/** Maryam hides something behind her back; Yusuf must guess; the rule: Arabic only. */
 export function Fk1GameGraphic({ lines }: GraphicProps) {
   return (
     <>
@@ -90,7 +90,7 @@ export function Fk1GameGraphic({ lines }: GraphicProps) {
 
 /* ---------- zad ---------- */
 
-/** The scene in Arabic, panel by panel: a pen, a book, and the joke (Sam is not a cat!). Every line plays on tap. */
+/** The scene in Arabic, panel by panel: a pen, a book, and the joke (Yusuf is not a cat!). Every line plays on tap. */
 export function Fk1StoryGraphic({ lines }: GraphicProps) {
   const shown: Thing | null = lines >= 3 ? null : lines >= 2 ? 'book' : lines >= 1 ? 'pen' : null;
   return (
@@ -107,7 +107,7 @@ export function Fk1StoryGraphic({ lines }: GraphicProps) {
             <path d="M 0 40 L 300 40" stroke={TEAL} strokeWidth={6} strokeDasharray="4 12" strokeLinecap="round" />
             <path d="M 284 26 L 304 40 L 284 54" fill="none" stroke={TEAL} strokeWidth={6} strokeLinecap="round" />
           </motion.svg>
-          <Say x={1420} y={420} id="story-6" text="هَذَا قِطٌّ! لَا، لَا... هَذَا سَامٌ!" align="right" width={440} delay={1} accent />
+          <Say x={1420} y={420} id="story-6" text="هَذَا قِطٌّ! لَا، لَا... هَذَا يُوسُفُ!" align="right" width={440} delay={1} accent />
         </>
       )}
     </>
@@ -225,7 +225,7 @@ export function Fk1SpotGraphic({ lines }: GraphicProps) {
     <>
       <Person x={900} y={800} scale={1.1} color={TEAL} />
       <Person x={1350} y={800} scale={1.45} color={CRIMSON} delay={0.15} />
-      {lines >= 1 && <Chip x={1350} y={420} delay={0.3}>Sam's teacher</Chip>}
+      {lines >= 1 && <Chip x={1350} y={420} delay={0.3}>Yusuf's teacher</Chip>}
       {lines >= 1 && <Say x={980} y={470} text="؟" delay={0.6} width={90} />}
     </>
   );
@@ -256,7 +256,7 @@ export function Fk1MissionGraphic({ lines }: GraphicProps) {
   );
 }
 
-/** A toy cat held up; Sam's new question starts with أَ. */
+/** A toy cat held up; Yusuf's new question starts with أَ. */
 export function Fk1NextGraphic({ lines }: GraphicProps) {
   return (
     <>

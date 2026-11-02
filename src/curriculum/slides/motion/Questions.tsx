@@ -218,7 +218,7 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
       </svg>
       {bins.map((b, bi) => (
         <span key={b.id} className="pointer-events-none absolute -translate-x-1/2 text-center font-sans font-bold text-white" style={{ left: T[bi].x, top: row ? T[bi].y - T[bi].r + 34 : C.y - RADII[bi] + (bi === 2 ? 30 : 18), fontSize: row ? 22 : bi === 2 ? 20 : 19, width: row ? T[bi].r * 1.7 : undefined }}>
-          <span className="me-1 opacity-70">{bi + 1}</span>{b.label}
+          <span className="me-2 opacity-60">{bi + 1} ·</span>{b.label}
           <span className="block font-semibold opacity-80" style={{ fontSize: 13 }}>{b.hint}</span>
         </span>
       ))}
