@@ -2195,13 +2195,14 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
 .lang-welcome-overlay .lw-name { font-family: 'Thmanyah Serif Display', serif; font-size: clamp(1.8rem, 7.5vw, 2.3rem); line-height: 1; }
 .lang-welcome-overlay .lw-option[lang='ar'] .lw-name { font-family: 'Thmanyah Display', 'Thmanyah Sans', sans-serif; font-weight: 700; }
 .lang-welcome-overlay .lw-line { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-foreground); }
-.lang-welcome-overlay .lw-option[lang='ar'] .lw-line { font-size: 0.88rem; letter-spacing: 0; text-transform: none; }
+.lang-welcome-overlay .lw-line[lang='ar'] { font-size: 0.88rem; letter-spacing: 0; text-transform: none; }
 .lang-welcome-overlay .lw-badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
   margin-top: 0.15rem; padding: 0.2rem 0.6rem; border-radius: 999px;
   background: color-mix(in srgb, var(--gold-soft, #F6D58E) 55%, transparent);
   color: var(--copper); font-size: 0.72rem; font-weight: 700;
 }
+.dark .lang-welcome-overlay .lw-badge { background: rgba(240, 181, 74, 0.16); color: var(--gold, #F0B54A); }
 .lang-welcome-overlay .lw-radio {
   flex: none; width: 1.6rem; height: 1.6rem; border-radius: 999px; display: grid; place-items: center;
   border: 1.5px solid var(--border); color: #fff; transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -2210,6 +2211,11 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
 .lang-welcome-overlay .lw-radio svg { width: 0.95rem; height: 0.95rem; stroke-dasharray: 24; stroke-dashoffset: 24; }
 .lang-welcome-overlay .lw-option[aria-checked='true'] .lw-radio svg { animation: lw-check 0.3s ease-out 0.05s forwards; }
 .lang-welcome-overlay .lw-continue { margin-top: 1.25rem; width: 100%; border-radius: 999px; animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both; }
+/* Until a language is picked the button is quiet (the entrance animation would otherwise undo the usual dimming). */
+.lang-welcome-overlay .lw-continue:disabled {
+  background: var(--surface-subtle); background-image: none; color: var(--muted-foreground);
+  box-shadow: inset 0 0 0 1px var(--border); opacity: 1;
+}
 .lang-welcome-overlay .lw-note { margin-top: 1rem; font-size: 0.85rem; color: var(--muted-foreground); animation: lw-rise 0.6s ease 0.6s both; }
 @keyframes lw-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes lw-out { to { opacity: 0; transform: scale(1.03); } }

@@ -15,8 +15,8 @@ import { PublicButton } from './PublicDesignSystem';
  * Under the signature intro it waits, so its title rises once the paper has opened onto it.
  */
 const OPTIONS: Array<{ lang: Language; name: string; line: string; suggested: string; go: string }> = [
-  { lang: 'en', name: 'English', line: 'English', suggested: "Suggested · your device's language", go: 'Continue in English' },
-  { lang: 'ar', name: 'العربية', line: 'عربي', suggested: 'مقترح · لغة جهازك', go: 'كمّل بالعربي' },
+  { lang: 'en', name: 'English', line: 'الإنجليزية', suggested: "Suggested · your device's language", go: 'Continue in English' },
+  { lang: 'ar', name: 'العربية', line: 'Arabic', suggested: 'مقترح · لغة جهازك', go: 'كمّل بالعربي' },
 ];
 
 export function LanguageWelcome() {
@@ -111,7 +111,7 @@ export function LanguageWelcome() {
               >
                 <span className="lw-text">
                   <span className="lw-name">{o.name}</span>
-                  <span className="lw-line">{o.line}</span>
+                  <span className="lw-line" lang={o.lang === 'ar' ? 'en' : 'ar'}>{o.line}</span>
                   {o.lang === suggested && <span className="lw-badge">{o.suggested}</span>}
                 </span>
                 <span className="lw-radio" aria-hidden="true">
