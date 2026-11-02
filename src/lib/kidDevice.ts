@@ -8,6 +8,11 @@ export function kidToken(): string | null {
   try { return window.localStorage.getItem(KEY); } catch { return null; }
 }
 
+/** This browser is a linked child device (any page), e.g. the installed app opening /student. */
+export function isLinkedKidDevice(): boolean {
+  try { return typeof window !== 'undefined' && Boolean(window.localStorage.getItem(KEY)); } catch { return false; }
+}
+
 export function setKidToken(token: string | null) {
   try {
     if (token) window.localStorage.setItem(KEY, token);

@@ -27,7 +27,9 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Gift,
   Wallet,
   Users,
+  MonitorSmartphone,
 } from 'lucide-react';
+import { isLinkedKidDevice } from '../lib/kidDevice';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
 
@@ -317,6 +319,9 @@ export default function StudentApp() {
 
   // If not authenticated, provide choices: Sign In, Create Account
   if (!isDevProgressPreview && (otpCelebrating || !user || userRole !== 'student')) {
+    // NX-16: a linked child device (the installed app opens /student) goes straight to its lessons;
+    // an explicit sign-in (?auth=login/signup) still reaches the form, so a grown-up can always sign in here.
+    if (!user && !shouldAutoOpenAuth && isLinkedKidDevice()) return <Navigate to="/kid" replace />;
     return (
       <AuthPage isAr={isAr} onToggleLang={toggleLang}>
         <AuthCard>
@@ -334,6 +339,11 @@ export default function StudentApp() {
             <button type="button" onClick={() => { setAuthInitialView('signup'); setAuthModalOpen(true); }} className="btn-glass is-pill w-full">
               {isAr ? 'افتح حساب جديد' : 'Create an account'}
             </button>
+            {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
+            <Link to="/kid" className="btn-glass is-pill w-full gap-2" data-testid="kid-link-entry">
+              <MonitorSmartphone className="w-4 h-4" aria-hidden="true" />
+              <span>{isAr ? 'معايا كود من بابا أو ماما' : 'I have a code from my parent'}</span>
+            </Link>
             <InstallAppEntry isAr={isAr} className="!mt-5" />
             <p className="pt-3 text-center text-sm text-muted-foreground">
               {isAr ? 'معلم أو من الإدارة؟ ' : 'Teacher or admin? '}

@@ -64,9 +64,12 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
 
       {code && (
         <div className="p-4 rounded-xl border border-border glass-surface grid gap-2 text-sm" role="status">
-          <span>{isAr ? `على جهاز ${code.learnerName} (موبايل أو تابلت أو كمبيوتر) افتح:` : `On ${code.learnerName}'s phone, tablet or computer, open:`}</span>
-          <span className="font-semibold text-teal" dir="ltr">watazawwado.academy/kid</span>
-          <span>{isAr ? 'واكتب الكود ده:' : 'and type this code:'}</span>
+          <span>{isAr ? `على جهاز ${code.learnerName} (موبايل أو تابلت أو كمبيوتر):` : `On ${code.learnerName}'s phone, tablet or computer:`}</span>
+          <ol className="list-decimal ps-5 grid gap-1">
+            <li>{isAr ? 'افتح موقعنا أو تطبيقنا وروح لصفحة الدخول.' : 'Open our website or app and go to sign in.'}</li>
+            <li>{isAr ? 'اضغط «معايا كود من بابا أو ماما».' : 'Tap "I have a code from my parent".'}</li>
+            <li>{isAr ? 'اكتب الكود ده:' : 'Type this code:'}</li>
+          </ol>
           <span className="text-3xl font-bold tracking-[0.3em] tabular-nums text-foreground" dir="ltr">{code.code}</span>
           {/* A copy, not a link: tapping it here would link this (the parent's) browser instead of the child's phone. */}
           <Button

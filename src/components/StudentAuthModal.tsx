@@ -593,6 +593,16 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       </p>
                     )}
 
+                    {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
+                    {view === 'login' && (
+                      <p className="mt-2 text-center text-sm text-muted-foreground">
+                        {isAr ? 'معاك كود من بابا أو ماما؟ ' : 'Have a code from your parent? '}
+                        <button type="button" onClick={() => { onClose(); navigate('/kid'); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
+                          {isAr ? 'اربط الجهاز ده' : 'Link this device'}
+                        </button>
+                      </p>
+                    )}
+
                     {(view === 'forgot' || view === 'update-password') && (
                       <p className="mt-5 text-center text-sm">
                         <button type="button" onClick={() => setView('login')} className="text-[var(--teal)] font-semibold hover:underline cursor-pointer">
