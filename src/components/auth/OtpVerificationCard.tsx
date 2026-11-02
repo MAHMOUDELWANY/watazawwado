@@ -28,6 +28,10 @@ export interface OtpVerificationCardProps {
   lang?: 'ar' | 'en';
   onToggleLang?: () => void;
   variant?: 'modal' | 'page';
+  /** A code that is not an email code (NX-16 device linking): its own length and words, no email field. */
+  length?: number;
+  initialCode?: string;
+  copy?: { title: React.ReactNode; subtitle: React.ReactNode; doneSubtitle: string; error: string; groupLabel: string };
 }
 
 const RESEND_COOLDOWN = 60;
@@ -75,13 +79,16 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
   lang: initialLang = 'ar',
   onToggleLang,
   variant = 'page',
+  length = OTP_LENGTH,
+  initialCode = '',
+  copy,
 }) => {
   const [lang, setLang] = useState<'ar' | 'en'>(initialLang);
   const isAr = lang === 'ar';
   const t = (ar: string, en: string) => (isAr ? ar : en);
 
   const [email, setEmail] = useState(initialEmail);
-  const [digits, setDigits] = useState<string[]>(emptyDigits);
+  const [digits, setDigits] = useState<string[]>(() => applyInput(emptyDigits(length), 0, initialCode).digits);
   const [phase, setPhaseState] = useState<OtpPhase>('idle');
   const phaseRef = useRef<OtpPhase>('idle');
   const [focused, setFocused] = useState<number | null>(null);
@@ -103,11 +110,14 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
   const [stageW, setStageW] = useState(360);
   const stageRef = useRef<HTMLDivElement>(null);
   const gap = compact ? 8 : 10;
-  // Boxes shrink to fit narrow phones; the orbit radius follows.
-  const boxW = Math.min(compact ? 44 : 50, Math.floor((stageW + gap) / OTP_LENGTH) - gap);
+  // Long codes sit in two rows (10 digits: 5 + 5, as the parent sees them).
+  const perRow = length > OTP_LENGTH ? Math.ceil(length / 2) : length;
+  const rows = Math.ceil(length / perRow);
+  // Boxes shrink to fit narrow phones; the orbit radius follows (and grows so more boxes still fit the circle).
+  const boxW = Math.min(compact ? 44 : 50, Math.floor((stageW + gap) / perRow) - gap);
   const boxH = Math.round(boxW * 1.2);
   const step = boxW + gap;
-  const radius = Math.round(boxW * 1.6);
+  const radius = Math.round(Math.max(boxW * 1.6, (length * (boxW + 4)) / (2 * Math.PI)));
 
   const dispatch = (ev: OtpEvent) => {
     phaseRef.current = otpTransition(phaseRef.current, ev);
@@ -155,7 +165,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
 
   const verify = async (code: string) => {
     if (isBusy(phaseRef.current)) return;
-    if (!email.includes('@')) {
+    if (!copy && !email.includes('@')) {
       setError(t('اكتب بريدك الإلكتروني أولاً.', 'Enter your email first.'));
       return;
     }
@@ -198,9 +208,9 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     dispatch('rejected');
     setShakeKey((k) => k + 1);
     setError(
-      t('الكود غير صحيح أو انتهت صلاحيته. اكتبه مرة أخرى.', 'That code is wrong or has expired. Enter it again.')
+      copy?.error ?? t('الكود غير صحيح أو انتهت صلاحيته. اكتبه مرة أخرى.', 'That code is wrong or has expired. Enter it again.')
     );
-    setDigits(emptyDigits());
+    setDigits(emptyDigits(length));
     focusBox(0);
   };
 
@@ -208,7 +218,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     setDigits(next);
     if (phaseRef.current === 'error') dispatch('edit');
     setError(null);
-    if (isComplete(next)) verify(next.join(''));
+    if (isComplete(next, length)) verify(next.join(''));
     else focusBox(focus);
   };
 
@@ -226,8 +236,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       // Boxes are always laid out left-to-right (digits stay LTR), so arrows map directly.
       e.preventDefault();
       const target = i + (e.key === 'ArrowLeft' ? -1 : 1);
-      if (target >= 0 && target < OTP_LENGTH) focusBox(target);
-    } else if (e.key === 'Enter' && isComplete(digits)) {
+      if (target >= 0 && target < length) focusBox(target);
+    } else if (e.key === 'Enter' && isComplete(digits, length)) {
       verify(digits.join(''));
     }
   };
@@ -252,7 +262,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     if (res.success) {
       setCountdown(RESEND_COOLDOWN);
       setNotice(t('أرسلنا كوداً جديداً إلى بريدك.', 'We sent a new code to your email.'));
-      setDigits(emptyDigits());
+      setDigits(emptyDigits(length));
       if (phaseRef.current === 'error') dispatch('edit');
       focusBox(0);
     } else {
@@ -267,20 +277,21 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
 
   // Where each box sits in every phase.
   const boxTarget = (i: number) => {
-    const rowX = (i - (OTP_LENGTH - 1) / 2) * step;
+    const rowX = ((i % perRow) - (perRow - 1) / 2) * step;
+    const rowY = (Math.floor(i / perRow) - (rows - 1) / 2) * (boxH + gap);
     if (reduced) {
-      return { x: rowX, y: 0, rotate: 0, scale: 1, opacity: phase === 'converge' || success ? 0 : 1 };
+      return { x: rowX, y: rowY, rotate: 0, scale: 1, opacity: phase === 'converge' || success ? 0 : 1 };
     }
     switch (phase) {
       case 'lift':
-        return { x: rowX, y: -14, rotate: i % 2 ? 9 : -9, scale: 1.06, opacity: 1 };
+        return { x: rowX, y: rowY - 14, rotate: i % 2 ? 9 : -9, scale: 1.06, opacity: 1 };
       case 'orbit': {
-        const a = ((i * 360) / OTP_LENGTH - 90) * (Math.PI / 180);
+        const a = ((i * 360) / length - 90) * (Math.PI / 180);
         return { x: Math.cos(a) * radius, y: Math.sin(a) * radius, rotate: 0, scale: 0.9, opacity: 1 };
       }
       case 'converge': {
         // Gather into a tight cluster (as in the reference), then fold into the single centre box.
-        const a = ((i * 360) / OTP_LENGTH - 90) * (Math.PI / 180);
+        const a = ((i * 360) / length - 90) * (Math.PI / 180);
         const r = boxW * 0.62;
         return {
           x: [Math.cos(a) * r, Math.cos(a) * r, 0],
@@ -293,11 +304,12 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       case 'success':
         return { x: 0, y: 0, rotate: 0, scale: 0.7, opacity: 0 };
       default:
-        return { x: rowX, y: 0, rotate: 0, scale: 1, opacity: 1 };
+        return { x: rowX, y: rowY, rotate: 0, scale: 1, opacity: 1 };
     }
   };
 
-  const stageH = !reduced && (phase === 'orbit' || phase === 'converge' || success) ? radius * 2 + boxH + 8 : boxH + 24;
+  const rowsH = rows * boxH + (rows - 1) * gap;
+  const stageH = !reduced && (phase === 'orbit' || phase === 'converge' || success) ? Math.max(radius * 2 + boxH + 8, rowsH + 24) : rowsH + 24;
   const status = busy && !success && phase !== 'converge'
     ? t('نتحقق من الكود…', 'Checking your code…')
     : success
@@ -360,7 +372,9 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
             transition={{ duration: 0.3 }}
             className="mt-4 text-2xl sm:text-3xl font-editorial font-bold text-foreground"
           >
-            {success ? (
+            {!success && copy ? (
+              copy.title
+            ) : success ? (
               isAr ? (
                 <>
                   تم التأكيد <span className="text-emerald-600 dark:text-emerald-400">بنجاح</span>
@@ -382,8 +396,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
           </motion.h2>
         </AnimatePresence>
         <p className="mt-2 text-sm text-muted-foreground">
-          {success ? t('تأكّد بريدك، أهلاً بك في بيتك.', 'Your email is confirmed. Welcome home.') : t('أرسلناه إلى', 'We sent it to')}
-          {!success && email && (
+          {copy ? (success ? copy.doneSubtitle : copy.subtitle) : success ? t('تأكّد بريدك، أهلاً بك في بيتك.', 'Your email is confirmed. Welcome home.') : t('أرسلناه إلى', 'We sent it to')}
+          {!copy && !success && email && (
             <>
               {' '}
               <bdi dir="ltr" className="font-medium text-foreground">
@@ -394,7 +408,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
         </p>
       </div>
 
-      {!initialEmail && !success && (
+      {!copy && !initialEmail && !success && (
         <div className="relative mt-4">
           <label htmlFor="otp-email" className="sr-only">
             {t('البريد الإلكتروني', 'Email')}
@@ -417,7 +431,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
         ref={stageRef}
         dir="ltr"
         role="group"
-        aria-label={t('الكود المكوّن من 6 أرقام', '6-digit code')}
+        aria-label={copy?.groupLabel ?? t('الكود المكوّن من 6 أرقام', '6-digit code')}
         className="relative mx-auto mt-6"
         initial={false}
         animate={{ height: stageH }}
@@ -457,10 +471,10 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                       inputMode="numeric"
                       autoComplete={i === 0 ? 'one-time-code' : 'off'}
                       pattern="[0-9]*"
-                      maxLength={OTP_LENGTH}
+                      maxLength={length}
                       value={d}
                       disabled={busy}
-                      aria-label={t(`الرقم ${i + 1} من 6`, `Digit ${i + 1} of 6`)}
+                      aria-label={t(`الرقم ${i + 1} من ${length}`, `Digit ${i + 1} of ${length}`)}
                       aria-invalid={!!error}
                       onFocus={(e) => {
                         setFocused(i);
@@ -555,7 +569,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
             size="lg"
             className="w-full"
             isLoading={busy}
-            disabled={!isComplete(digits)}
+            disabled={!isComplete(digits, length)}
             onClick={() => verify(digits.join(''))}
           >
             {busy ? t('نتحقق…', 'Checking…') : t('تأكيد', 'Verify')}

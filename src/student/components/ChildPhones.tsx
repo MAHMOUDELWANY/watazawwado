@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Smartphone } from 'lucide-react';
+import { MonitorSmartphone } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { Button } from '../../components/ui/Button';
 import { confirmAction, notify } from '../../components/ui/Feedback';
@@ -22,10 +22,10 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
   const makeCode = async (child: { id: string; name: string }) => {
     setBusy(child.id);
     try {
-      const name = isAr ? `موبايل ${child.name}` : `${child.name}'s phone`;
+      const name = isAr ? `جهاز ${child.name}` : `${child.name}'s device`;
       setCode(await authedJson<Code>('/api/student/child-devices', { method: 'POST', body: JSON.stringify({ learnerId: child.id, name }) }));
     } catch (err: any) {
-      notify(err?.status === 409 ? (isAr ? 'شيل موبايل مش مستخدم الأول.' : 'Remove a phone you no longer use first.') : (isAr ? 'معرفناش نطلّع كود، جرّب تاني.' : 'Could not make a code. Please try again.'), 'error');
+      notify(err?.status === 409 ? (isAr ? 'شيل جهاز مش مستخدم الأول.' : 'Remove a device you no longer use first.') : (isAr ? 'معرفناش نطلّع كود، جرّب تاني.' : 'Could not make a code. Please try again.'), 'error');
     } finally { setBusy(null); }
   };
 
@@ -34,7 +34,7 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
     if (!ok) return;
     setBusy(d.id);
     try { await authedJson(`/api/student/child-devices/${d.id}`, { method: 'DELETE' }); await load(); }
-    catch { notify(isAr ? 'معرفناش نشيل الموبايل، جرّب تاني.' : 'Could not remove the phone. Please try again.', 'error'); }
+    catch { notify(isAr ? 'معرفناش نشيل الجهاز، جرّب تاني.' : 'Could not remove the device. Please try again.', 'error'); }
     finally { setBusy(null); }
   };
 
@@ -45,26 +45,26 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
   return (
     <div className="pt-4 border-t border-border space-y-3" data-testid="child-phones">
       <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-        <Smartphone className="w-4 h-4 text-accent" aria-hidden="true" />
-        <span>{isAr ? 'موبايل خاص بابنك' : "Your child's own phone"}</span>
+        <MonitorSmartphone className="w-4 h-4 text-accent" aria-hidden="true" />
+        <span>{isAr ? 'جهاز خاص بابنك' : "Your child's own device"}</span>
       </h3>
       <p className="text-xs text-muted-foreground">
         {isAr
-          ? 'لو ابنك عنده موبايل، يقدر يشوف حصصه وواجبه ومراجعته عليه من غير إيميل ولا باسورد. الموبايل ده مفيهوش دفع ولا حجز ولا إعدادات ولا إخواته.'
-          : 'If your child has a phone, they can see their lessons, homework and review on it with no email or password. That phone has no payments, booking, settings or brothers and sisters.'}
+          ? 'لو ابنك عنده موبايل أو تابلت أو كمبيوتر غير جهازك، يقدر يشوف عليه حصصه وواجبه ومراجعته من غير إيميل ولا باسورد. الجهاز ده مفيهوش دفع ولا حجز ولا إعدادات ولا إخواته.'
+          : 'If your child has a phone, tablet or computer other than yours, they can see their lessons, homework and review on it with no email or password. That device has no payments, booking, settings or brothers and sisters.'}
       </p>
 
       <div className="flex flex-wrap gap-2">
         {children.map((c) => (
           <Button key={c.id} type="button" size="sm" variant="outline" isLoading={busy === c.id} onClick={() => makeCode(c)}>
-            {isAr ? `جهّز موبايل ${c.name}` : `Set up a phone for ${c.name}`}
+            {isAr ? `اربط جهاز لـ ${c.name}` : `Link a device for ${c.name}`}
           </Button>
         ))}
       </div>
 
       {code && (
         <div className="p-4 rounded-xl border border-border glass-surface grid gap-2 text-sm" role="status">
-          <span>{isAr ? `على موبايل ${code.learnerName} افتح:` : `On ${code.learnerName}'s phone, open:`}</span>
+          <span>{isAr ? `على جهاز ${code.learnerName} (موبايل أو تابلت أو كمبيوتر) افتح:` : `On ${code.learnerName}'s phone, tablet or computer, open:`}</span>
           <span className="font-semibold text-teal" dir="ltr">watazawwado.academy/kid</span>
           <span>{isAr ? 'واكتب الكود ده:' : 'and type this code:'}</span>
           <span className="text-3xl font-bold tracking-[0.15em] tabular-nums text-foreground" dir="ltr">{code.code.slice(0, 5)} {code.code.slice(5)}</span>
@@ -72,10 +72,10 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
           <Button
             type="button" size="sm" variant="ghost" className="w-fit"
             onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/kid?code=${code.code}`)
-              .then(() => notify(isAr ? 'اتنسخ اللينك، ابعته لموبايله.' : 'Link copied. Send it to their phone.'))
-              .catch(() => notify(isAr ? 'معرفناش ننسخ، اكتب الكود على موبايله.' : 'Could not copy. Type the code on their phone.', 'error'))}
+              .then(() => notify(isAr ? 'اتنسخ اللينك، ابعته لجهازه.' : 'Link copied. Send it to their device.'))
+              .catch(() => notify(isAr ? 'معرفناش ننسخ، اكتب الكود على جهازه.' : 'Could not copy. Type the code on their device.', 'error'))}
           >
-            {isAr ? 'أو انسخ لينك فيه الكود وابعته لموبايله' : 'or copy a link with the code to send to their phone'}
+            {isAr ? 'أو انسخ لينك فيه الكود وابعته لجهازه' : 'or copy a link with the code to send to their device'}
           </Button>
           <span className="text-xs text-muted-foreground">
             {isAr ? `الكود بيشتغل مرة واحدة لحد ${when(code.expiresAt)}.` : `The code works once, until ${when(code.expiresAt)}.`}

@@ -2,7 +2,7 @@
 
 export const OTP_LENGTH = 6;
 
-export const emptyDigits = (): string[] => Array(OTP_LENGTH).fill('');
+export const emptyDigits = (length = OTP_LENGTH): string[] => Array(length).fill('');
 
 /** Arabic-Indic (٠-٩) and Persian (۰-۹) digits become ASCII; everything else is dropped. */
 export function normalizeDigits(text: string): string {
@@ -18,15 +18,16 @@ export function normalizeDigits(text: string): string {
  */
 export function applyInput(digits: string[], index: number, raw: string): { digits: string[]; focus: number } {
   const clean = normalizeDigits(raw);
+  const len = digits.length;
   const next = [...digits];
   if (!clean) {
     next[index] = '';
     return { digits: next, focus: index };
   }
-  const start = clean.length >= OTP_LENGTH ? 0 : index;
-  const chars = clean.slice(0, OTP_LENGTH - start);
+  const start = clean.length >= len ? 0 : index;
+  const chars = clean.slice(0, len - start);
   for (let k = 0; k < chars.length; k++) next[start + k] = chars[k];
-  return { digits: next, focus: Math.min(start + chars.length, OTP_LENGTH - 1) };
+  return { digits: next, focus: Math.min(start + chars.length, len - 1) };
 }
 
 /** Backspace clears the current box, or moves back and clears the previous one when empty. */
@@ -41,8 +42,8 @@ export function applyBackspace(digits: string[], index: number): { digits: strin
   return { digits: next, focus: prev };
 }
 
-export const isComplete = (digits: string[]): boolean =>
-  digits.length === OTP_LENGTH && digits.every((d) => /^\d$/.test(d));
+export const isComplete = (digits: string[], length = OTP_LENGTH): boolean =>
+  digits.length === length && digits.every((d) => /^\d$/.test(d));
 
 /**
  * idle -> lift -> orbit -> (verified) converge -> success

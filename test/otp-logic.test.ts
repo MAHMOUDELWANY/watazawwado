@@ -95,3 +95,14 @@ test('OTP celebration flag holds page swaps until the sequence ends', async () =
   endOtpCelebration();
   assert.strictEqual(isOtpCelebrating(), false);
 });
+
+test('a 10-digit code (NX-16 device link) uses the same helpers', () => {
+  const ten = emptyDigits(10);
+  assert.equal(ten.length, 10);
+  const pasted = applyInput(ten, 3, '12345 67890');
+  assert.deepEqual(pasted.digits.join(''), '1234567890');
+  assert.equal(pasted.focus, 9);
+  assert.ok(isComplete(pasted.digits, 10));
+  assert.equal(isComplete(pasted.digits), false, 'the email code stays six digits');
+  assert.deepEqual(applyInput(ten, 0, '12345').digits.join(''), '12345');
+});

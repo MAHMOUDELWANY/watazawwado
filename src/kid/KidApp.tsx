@@ -1,109 +1,106 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Routes, Route, Link, Navigate, useSearchParams } from 'react-router-dom';
-import { Video, Presentation } from 'lucide-react';
+import { Routes, Route, Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Globe, Video, Presentation } from 'lucide-react';
 import { authedJson } from '../lib/authedJson';
 import { kidToken, setKidToken } from '../lib/kidDevice';
-import { getStoredLanguage, setStoredLanguage } from '../lib/language';
-
-type Language = 'ar' | 'en';
+import { useAppLanguage } from '../lib/language';
+import { AuthPage } from '../components/auth/AuthFrame';
+import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { BrandLoader } from '../components/ui/BrandLoader';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
+import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { HomeworkCard } from '../student/components/HomeworkCard';
 import { ReviewCard } from '../student/components/ReviewCard';
 import StudentLessonRoomPage from '../student/pages/StudentLessonRoomPage';
 
 /**
- * NX-16: a child's own phone. The parent makes a one-time code in the Family tab; this page trades it for the
- * phone's token. Then the child sees only their lessons (join link), the lesson room, homework, today's review and
+ * NX-16: a child's own device (a phone, tablet or computer other than the parent's). The parent makes a one-time
+ * 10-digit code in the Family tab; this page trades it for the device's token, on the same code screen and motion as
+ * the email code. Then the child sees only their lessons (join link), the lesson room, homework, today's review and
  * recitations. No payments, booking, settings or other children: the server refuses every other route.
  */
+const CODE_LENGTH = 10;
+const GOLD_TEXT = 'text-[#A06E14] dark:text-[#E5A93C]';
+
 interface KidLesson { id: string; start: string; end: string; minutes: number; title: string; titleAr: string; zoomUrl: string | null }
 interface KidMe { learner: { id: string; name: string }; lessons: KidLesson[] }
 
 export default function KidApp() {
-  const [lang, setLang] = useState<Language>(() => getStoredLanguage());
-  const isAr = lang === 'ar';
+  const { lang, isAr, toggleLanguage } = useAppLanguage();
   const [linked, setLinked] = useState(() => Boolean(kidToken()));
-  const [notice, setNotice] = useState('');
-  const toggleLang = () => { const next = isAr ? 'en' : 'ar'; setStoredLanguage(next); setLang(next); };
+  const [removed, setRemoved] = useState(false);
 
-  const unlinked = useCallback(() => {
-    setKidToken(null);
-    setLinked(false);
-    setNotice(isAr ? 'الموبايل ده اتشال من حساب العيلة. اطلب من بابا أو ماما كود جديد.' : 'This phone was removed from the family account. Ask your parent for a new code.');
-  }, [isAr]);
+  const unlinked = useCallback(() => { setKidToken(null); setRemoved(true); setLinked(false); }, []);
+
+  if (!linked) {
+    return (
+      <AuthPage isAr={isAr}>
+        <PairCard lang={lang} removed={removed} onToggleLang={toggleLanguage} onLinked={() => { setRemoved(false); setLinked(true); }} />
+      </AuthPage>
+    );
+  }
 
   return (
-    <div dir={isAr ? 'rtl' : 'ltr'} lang={lang} className="min-h-dvh bg-background text-foreground">
-      <header className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border">
-        <BrandLogo className="h-8 w-auto" />
-        <button type="button" onClick={toggleLang} className="text-sm font-semibold text-teal min-h-11 px-2 focus-ring rounded-lg">
-          {isAr ? 'English' : 'عربي'}
-        </button>
+    <div dir={isAr ? 'rtl' : 'ltr'} lang={lang} className="khatam-field brand-lights min-h-dvh bg-background text-foreground">
+      <header className="mx-auto max-w-3xl flex items-center justify-between gap-3 px-4 sm:px-6 py-3">
+        <BrandLogo className="h-9 w-auto" />
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={toggleLanguage} className="btn-glass is-pill !min-h-10 !px-3.5 text-sm">
+            <Globe className="w-4 h-4" aria-hidden="true" />
+            <span>{isAr ? 'EN' : 'عربي'}</span>
+          </button>
+          <ThemeToggle compact className="!w-11 !h-11 !rounded-full" />
+        </div>
       </header>
-      <main className="mx-auto max-w-xl px-4 py-6">
-        {!linked ? (
-          <PairScreen isAr={isAr} notice={notice} onLinked={() => { setNotice(''); setLinked(true); }} />
-        ) : (
-          <Routes>
-            <Route path="/" element={<KidHome isAr={isAr} onUnlinked={unlinked} />} />
-            <Route path="/room/:id" element={<StudentLessonRoomPage lang={lang} backTo="/kid" />} />
-            <Route path="*" element={<Navigate to="/kid" replace />} />
-          </Routes>
-        )}
+      <main className="mx-auto max-w-3xl px-4 sm:px-6 py-6">
+        <Routes>
+          <Route path="/" element={<KidHome isAr={isAr} onUnlinked={unlinked} />} />
+          <Route path="/room/:id" element={<StudentLessonRoomPage lang={lang} backTo="/kid" />} />
+          <Route path="*" element={<Navigate to="/kid" replace />} />
+        </Routes>
       </main>
     </div>
   );
 }
 
-function PairScreen({ isAr, notice, onLinked }: { isAr: boolean; notice: string; onLinked: () => void }) {
+function PairCard({ lang, removed, onToggleLang, onLinked }: { lang: 'ar' | 'en'; removed: boolean; onToggleLang: () => void; onLinked: () => void }) {
+  const isAr = lang === 'ar';
   const [params] = useSearchParams();
-  const [code, setCode] = useState(() => (params.get('code') || '').replace(/\D/g, '').slice(0, 10));
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const initialCode = (params.get('code') || '').replace(/\D/g, '').slice(0, CODE_LENGTH);
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true); setError('');
+  const pair = async (code: string) => {
     try {
       const { token } = await authedJson<{ token: string }>('/api/kid/pair', { method: 'POST', body: JSON.stringify({ code }) });
       setKidToken(token);
-      onLinked();
-    } catch (err: any) {
-      setError(err?.status === 404 || err?.status === 409
-        ? (isAr ? 'الكود ده غلط أو خلص وقته. اطلب من بابا أو ماما كود جديد.' : 'This code is wrong or has expired. Ask your parent for a new one.')
-        : (isAr ? 'معرفناش نربط الموبايل، جرّب تاني بعد شوية.' : 'Could not link this phone. Please try again in a moment.'));
-    } finally { setBusy(false); }
+      return { success: true };
+    } catch {
+      return { success: false };
+    }
   };
 
   return (
-    <Card className="p-6 grid gap-4" data-testid="kid-pair">
-      <h1 className="text-xl font-display font-bold">{isAr ? 'افتح حصصك على موبايلك' : 'Open your lessons on your phone'}</h1>
-      <p className="text-sm text-muted-foreground">
-        {isAr
-          ? 'بابا أو ماما هيطلّعوا كود من 10 أرقام من صفحة العيلة في حسابهم. اكتبه هنا.'
-          : 'Your parent makes a 10-digit code in the Family tab of their account. Type it here.'}
-      </p>
-      {notice && <p role="status" className="text-sm text-foreground">{notice}</p>}
-      <form onSubmit={submit} className="grid gap-3">
-        <label htmlFor="kid-code" className="text-sm font-semibold">{isAr ? 'الكود' : 'Code'}</label>
-        <Input
-          id="kid-code"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          maxLength={10}
-          value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 10))}
-          className="text-center text-2xl tracking-[0.2em] tabular-nums"
-          dir="ltr"
-        />
-        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" isLoading={busy} disabled={code.length !== 10 || busy}>{isAr ? 'اربط الموبايل' : 'Link this phone'}</Button>
-      </form>
-    </Card>
+    <OtpVerificationCard
+      key={lang}
+      lang={lang}
+      onToggleLang={onToggleLang}
+      variant="page"
+      length={CODE_LENGTH}
+      initialCode={initialCode}
+      onVerify={pair}
+      // Drop ?code= so a reload never tries the used code again.
+      onSuccess={() => { navigate('/kid', { replace: true }); onLinked(); }}
+      copy={{
+        title: isAr ? <>افتح <span className={GOLD_TEXT}>حصصك</span> هنا</> : <>Open your <span className={GOLD_TEXT}>lessons</span> here</>,
+        subtitle: removed
+          ? (isAr ? 'الجهاز ده اتشال من حساب العيلة. اطلب من بابا أو ماما كود جديد واكتبه هنا.' : 'This device was removed from the family account. Ask your parent for a new code and type it here.')
+          : (isAr ? 'بابا أو ماما هيطلّعوا كود من 10 أرقام من تبويب العيلة في حسابهم. ينفع على موبايل أو تابلت أو كمبيوتر.' : 'Your parent makes a 10-digit code in the Family tab of their account. It works on a phone, tablet or computer.'),
+        doneSubtitle: isAr ? 'الجهاز ده اتربط. يلا بينا على حصصك.' : 'This device is linked. On to your lessons.',
+        error: isAr ? 'الكود ده غلط أو خلص وقته. اطلب من بابا أو ماما كود جديد.' : 'This code is wrong or has expired. Ask your parent for a new one.',
+        groupLabel: isAr ? 'كود الربط من 10 أرقام' : '10-digit link code',
+      }}
+    />
   );
 }
 

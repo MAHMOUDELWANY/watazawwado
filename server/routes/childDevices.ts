@@ -46,14 +46,14 @@ export function isChildRoute(method: string, path: string): boolean {
  */
 export async function authenticateChildDevice(client: any, req: any, res: any, next: any, token: string) {
   const path = String(req.originalUrl || req.url || '').split('?')[0];
-  if (!isChildRoute(req.method, path)) return res.status(403).json({ error: 'This page is not available on a child phone.' });
+  if (!isChildRoute(req.method, path)) return res.status(403).json({ error: 'This page is not available on a child device.' });
   if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
   const { data: device } = await client.from('child_devices')
     .select('id, owner_user_id, learner_id, last_seen_at').eq('token_hash', hashSecret(token)).is('revoked_at', null).maybeSingle();
-  if (!device) return res.status(401).json({ error: 'This phone is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
+  if (!device) return res.status(401).json({ error: 'This device is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
   const { data: owner } = await client.from('students')
     .select('id, name, email, timezone, learner_type, current_level, status, assigned_teacher_id').eq('auth_user_id', device.owner_user_id).maybeSingle();
-  if (!owner) return res.status(401).json({ error: 'This phone is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
+  if (!owner) return res.status(401).json({ error: 'This device is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
   // "Last used" for the parent's list, written at most every 10 minutes.
   if (!device.last_seen_at || Date.now() - Date.parse(device.last_seen_at) > 10 * 60 * 1000) {
     await client.from('child_devices').update({ last_seen_at: new Date().toISOString() }).eq('id', device.id);
@@ -93,7 +93,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
         .eq('owner_user_id', owner).is('revoked_at', null).not('paired_at', 'is', null).order('paired_at', { ascending: false }),
       deps.getLearners(client, req),
     ]);
-    if (error) { console.error('[child-devices list]', error.message); return res.status(500).json({ error: 'Could not load the phones.' }); }
+    if (error) { console.error('[child-devices list]', error.message); return res.status(500).json({ error: 'Could not load the devices.' }); }
     const names = new Map(learners.map((l) => [l.id, l.name]));
     return res.json({ devices: (data || []).map((d: any) => ({ id: d.id, learnerId: d.learner_id, learnerName: names.get(d.learner_id) || null, name: d.name, pairedAt: d.paired_at, lastSeenAt: d.last_seen_at })) });
   });
@@ -112,7 +112,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
     // Old codes that were never used go; a code is only good once and for 15 minutes.
     await client.from('child_devices').delete().eq('owner_user_id', owner).is('paired_at', null);
     const { count } = await client.from('child_devices').select('id', { count: 'exact', head: true }).eq('owner_user_id', owner).is('revoked_at', null);
-    if ((count || 0) >= MAX_DEVICES) return res.status(409).json({ error: 'Remove a phone you no longer use first.' });
+    if ((count || 0) >= MAX_DEVICES) return res.status(409).json({ error: 'Remove a device you no longer use first.' });
     const code = newLinkCode();
     const expiresAt = new Date(now.getTime() + CODE_MINUTES * 60 * 1000).toISOString();
     const { data, error } = await client.from('child_devices')
@@ -125,11 +125,11 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
   app.delete('/api/student/child-devices/:id', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
     const client = db(res); if (!client) return;
     const owner = ownerOf(req);
-    if (!owner || !isUuid(req.params.id)) return res.status(404).json({ error: 'Phone not found.' });
+    if (!owner || !isUuid(req.params.id)) return res.status(404).json({ error: 'Device not found.' });
     const { data, error } = await client.from('child_devices').update({ revoked_at: new Date().toISOString(), code_hash: null })
       .eq('id', req.params.id).eq('owner_user_id', owner).is('revoked_at', null).select('id').maybeSingle();
-    if (error) { console.error('[child-devices revoke]', error.message); return res.status(500).json({ error: 'Could not remove the phone.' }); }
-    if (!data) return res.status(404).json({ error: 'Phone not found.' });
+    if (error) { console.error('[child-devices revoke]', error.message); return res.status(500).json({ error: 'Could not remove the device.' }); }
+    if (!data) return res.status(404).json({ error: 'Device not found.' });
     return res.json({ removed: true });
   });
 
@@ -149,7 +149,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
     const { data: learner } = await client.from('students').select('name').eq('id', row.learner_id).maybeSingle();
     await notifyUser(client, { userId: row.owner_user_id }, {
       kind: 'child_device_linked',
-      title: { en: 'A phone was linked', ar: 'تم ربط موبايل' },
+      title: { en: 'A device was linked', ar: 'تم ربط جهاز' },
       body: {
         en: `"${row.name}" now opens ${learner?.name || 'your child'}'s lessons. You can remove it from the Family tab.`,
         ar: `"${row.name}" بقى بيفتح حصص ${learner?.name || 'ابنك'}. تقدر تشيله من تبويب العيلة.`,
@@ -163,9 +163,9 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
   app.get('/api/kid/me', deps.verifyStudentAuth, async (req: any, res: any) => {
     const client = db(res); if (!client) return;
     const learnerId = req.childDevice?.learnerId;
-    if (!learnerId) return res.status(403).json({ error: 'This page is for a linked child phone.' });
+    if (!learnerId) return res.status(403).json({ error: 'This page is for a linked child device.' });
     const learner = (await deps.getLearners(client, req)).find((l) => l.id === learnerId);
-    if (!learner) return res.status(401).json({ error: 'This phone is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
+    if (!learner) return res.status(401).json({ error: 'This device is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
     const { data, error } = await client.from('bookings')
       .select('id, scheduled_start, scheduled_end, duration_minutes, status, zoom_meeting_link, services:service_id(title, arabic_title)')
       .eq('student_id', learnerId).in('status', ['confirmed', 'rescheduled']).gt('scheduled_end', new Date().toISOString())
