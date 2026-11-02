@@ -35,6 +35,7 @@ import {
   Wallet,
   MessageCircle,
   GraduationCap,
+  School,
   Search,
   MoreHorizontal,
   Library,
@@ -68,6 +69,7 @@ import ProgramsPage from './pages/ProgramsPage';
 import ReviewsPage from './pages/ReviewsPage';
 import LessonRoomPage from './pages/LessonRoomPage';
 import ClassBoardPage from './pages/ClassBoardPage';
+import UniversityPage from './pages/UniversityPage';
 import MyMonthPage from './pages/MyMonthPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
@@ -247,6 +249,7 @@ export function DashboardApp() {
     { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag, group: G.money },
     { name: L('Teacher pay', 'مرتبات المعلمين'), path: '/dashboard/payroll', icon: Banknote, group: G.money },
     { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield, group: G.academy },
+    { name: L('University', 'جامعة وتزودوا'), path: '/dashboard/university', icon: School, group: G.academy },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library, group: G.academy },
     { name: L('Hall of Honor', 'لوحة الشرف'), path: '/dashboard/honor', icon: Award, group: G.academy },
     { name: L('Programs', 'البرامج الموسمية'), path: '/dashboard/programs', icon: CalendarHeart, group: G.academy },
@@ -271,6 +274,7 @@ export function DashboardApp() {
     { name: L('My month', 'شهري'), path: '/dashboard/month', icon: Banknote },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
     { name: L('Class board', 'لوحة الحلقة'), path: '/dashboard/class-board', icon: Trophy },
+    { name: L('University', 'جامعة وتزودوا'), path: '/dashboard/university', icon: School },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -630,6 +634,7 @@ export function DashboardApp() {
                 <Route path="/reviews" element={isSuperAdmin ? <ReviewsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/room/:id" element={<LessonRoomPage />} />
                 <Route path="/class-board" element={<ClassBoardPage />} />
+                <Route path="/university" element={<UniversityPage />} />
                 <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />
                 <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />

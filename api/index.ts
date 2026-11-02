@@ -85,6 +85,7 @@ import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooki
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { registerHonorRoutes } from '../server/routes/honor.js';
 import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
+import { registerUniversityRoutes, canTeach, subjectFor, NOT_LICENSED } from '../server/routes/university.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
@@ -904,6 +905,11 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       }
     } else {
       resolvedTeacherId = learnerTeacherId || await resolveAuthoritativeTeacherForAvailability(undefined);
+    }
+
+    // NX-15: the lesson's teacher must hold this subject's licence.
+    if (resolvedTeacherId && !(await canTeach(supabaseAdmin, resolvedTeacherId, cleanServiceId))) {
+      return res.status(409).json(NOT_LICENSED);
     }
 
     await releaseExpiredPaymentHolds(supabaseAdmin);
@@ -3420,7 +3426,7 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
 
     const { data: student, error: sErr } = await supabase
       .from('students')
-      .select('id, name')
+      .select('id, name, learning_interest')
       .eq('id', id)
       .maybeSingle();
 
@@ -3445,6 +3451,11 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
 
       if (!['teacher', 'super_admin'].includes(targetTeacher.role)) {
         return res.status(400).json({ error: 'Invalid teacher role.' });
+      }
+
+      // NX-15: only a teacher licensed for the learner's subject (grant it in Watazawwado University first).
+      if (!(await canTeach(supabase, targetTeacher.email, student.learning_interest))) {
+        return res.status(409).json({ code: NOT_LICENSED.code, error: "This teacher does not hold this learner's subject yet. Grant it in Watazawwado University first." });
       }
     }
 
@@ -8062,7 +8073,15 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const supabaseAdmin = getSupabaseAdminClient();
 
     // Routing: the teacher the learner picked (must be an active teacher), else by preferred gender.
-    const publicTeachers = await listPublicTeachers(supabaseAdmin);
+    let publicTeachers = await listPublicTeachers(supabaseAdmin);
+    // NX-15: route only to teachers licensed for the chosen subject (when at least one is).
+    const routingSubject = subjectFor(learningInterest);
+    if (routingSubject && supabaseAdmin && publicTeachers.length) {
+      const { data: licensed } = await supabaseAdmin.from('teacher_subjects').select('teacher_email').eq('subject', routingSubject).eq('status', 'licensed');
+      const allowed = new Set((licensed || []).map((r: any) => String(r.teacher_email).toLowerCase()));
+      const fit = publicTeachers.filter(t => allowed.has(t.email));
+      if (fit.length) publicTeachers = fit;
+    }
     const pickTeacher = (id: unknown) => (typeof id === 'string' ? publicTeachers.find(t => t.id === id) : undefined) || null;
     const routeTeacher = async (chosenId: unknown, targetGender: 'male' | 'female') => {
       const chosen = pickTeacher(chosenId) || publicTeachers.find(t => t.gender === targetGender);
@@ -10269,6 +10288,9 @@ registerHomeworkRoutes(app, {
 
 // NX-01: today's review (spaced repetition of mastered ayat).
 registerReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
+
+// NX-15: Watazawwado University (teacher subject licences and training).
+registerUniversityRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin });
 
 // NX-16: a child's own phone, linked with a one-time code from the parent.
 registerChildDeviceRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });

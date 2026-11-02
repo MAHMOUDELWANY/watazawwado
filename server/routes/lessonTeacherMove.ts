@@ -9,6 +9,7 @@ import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../notific
 import { resolveEmailLanguage } from '../notifications/dispatcher.js';
 import { renderTeacherNotification } from '../notifications/emailTemplates.js';
 import { sendEmail } from '../notifications/emailService.js';
+import { canTeach, NOT_LICENSED } from './university.js';
 
 /**
  * AD-02b: the super admin moves an upcoming lesson to another teacher (RULES.md §1: booked lessons stay with their
@@ -70,7 +71,7 @@ export function moveErrorResponse(err: any): { status: number; error: string } {
   return { status: 500, error: 'The lesson could not be moved. Please try again.' };
 }
 
-const BOOKING_COLUMNS = 'id, reference_code, status, scheduled_start, scheduled_end, duration_minutes, teacher_id, student_id, student_name, contact_name, service_name, student_timezone, booking_type';
+const BOOKING_COLUMNS = 'id, reference_code, status, scheduled_start, scheduled_end, duration_minutes, teacher_id, student_id, student_name, contact_name, service_id, service_name, student_timezone, booking_type';
 
 export function registerLessonTeacherMoveRoutes(app: express.Express, deps: LessonTeacherMoveDeps) {
   const { getClient, verifyTeacherAuth, requireSuperAdmin, resolveTeacher } = deps;
@@ -98,6 +99,8 @@ export function registerLessonTeacherMoveRoutes(app: express.Express, deps: Less
       if (!target.is_active) return res.status(400).json({ error: 'That teacher account is not active.' });
       if (!['teacher', 'super_admin'].includes(target.role)) return res.status(400).json({ error: 'That account is not a teacher.' });
       if (target.id === booking.teacher_id) return res.status(409).json({ error: 'This lesson is already with that teacher.' });
+      // NX-15: the new teacher must hold the lesson's subject.
+      if (!(await canTeach(client, target.email || target.id, booking.service_id))) return res.status(409).json({ code: NOT_LICENSED.code, error: "That teacher does not hold this lesson's subject yet. Grant it in Watazawwado University first." });
 
       // The new teacher's own hours, Google Calendar and lessons (RULES.md §1). The database constraint
       // still refuses an overlap if two moves race.

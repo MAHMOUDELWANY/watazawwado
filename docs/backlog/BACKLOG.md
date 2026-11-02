@@ -559,7 +559,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   (motion, motifs, feel). Screenshots before and after.
 
 ### NX-15 Watazawwado University: teacher subject licences and growth
-- Priority P2 · Zone 🟢 · Size L · Status todo · Owner decided 2026-11-02: subject licences and the training track together
+- Priority P2 · Zone 🟢 · Size L · Status done (2026-11-02; test and observed lesson recorded by the admin, teacher guide still to write, see LOG)
 - Owner idea (2026-11-01): as the academy hires, each teacher teaches only the subjects they are strong in (for
   example Quran and Tajweed only). A teacher who shows promise in another subject is trained for it inside
   "Watazawwado University" and earns that subject.
