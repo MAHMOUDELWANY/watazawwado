@@ -166,7 +166,7 @@ export function PricingPage() {
                   onTap={envelopes.onTap(plan.id)}
                   isAr={!isEn}
                   primaryLabel={isEn ? 'Choose this package' : 'اختار الباقة دي'}
-                  onPrimary={() => navigate('/student/packages')}
+                  onPrimary={() => navigate('/student/book')}
                   secondaryLabel={isEn ? 'Try a free lesson first' : 'جرّب حصة مجانية الأول'}
                   onSecondary={() => onOpenTrialModal()}
                 />

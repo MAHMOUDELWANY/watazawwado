@@ -62,7 +62,10 @@ export function GiftsPanel({ gifts, learners, isAr, onRedeemed, onPay }: {
       setCode('');
       onRedeemed();
     } catch (err: any) {
-      setMsg({ ok: false, text: isAr ? 'الكود ده مش شغال. اتأكد منه، أو كلمنا على واتساب.' : err?.message || 'This code did not work.' });
+      const text = err?.code === 'DISCOUNT_CODE'
+        ? (isAr ? 'ده كود خصم، مش كود هدية. اكتبه في خطوة الدفع وإنت بتحجز.' : 'This is a discount code, not a gift code. Type it on the payment step when you book.')
+        : (isAr ? 'الكود ده مش شغال. اتأكد منه، أو كلمنا على واتساب.' : err?.message || 'This code did not work.');
+      setMsg({ ok: false, text });
     } finally {
       setBusy(false);
     }

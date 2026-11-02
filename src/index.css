@@ -2025,33 +2025,81 @@ html.dark .text-brand {
   box-shadow: 0 2px 6px -2px rgba(18, 16, 14, 0.45);
 }
 
-/* Homepage week as a scroll story (WeekWithUs): on wide screens the step in the middle of the view is lit and the
-   phone beside it shows that step's screen; the others rest quieter. */
+/* Homepage week as a scroll story (WeekWithUs): the step in the middle of the view is lit, the ribbon line fills
+   down to it, and its screen plays (the phone beside the steps on wide screens, the small screen under each step on
+   phones). Only transform and opacity move. */
+.week-line::after {
+  content: '';
+  position: absolute;
+  inset-block: 0.6rem 0.6rem;
+  inset-inline-start: 0.6rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #087D91, #E5A93C 55%, #C51F24);
+  transform-origin: top;
+  transform: scaleY(var(--week-fill, 0));
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.week-line::before { opacity: 0.2; }
+.week-step .week-dot { transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.week-step.is-active .week-dot { transform: scale(1.35); animation: week-pulse 2.4s ease-out infinite; }
 @media (min-width: 1024px) {
   .week-step { opacity: 0.38; transition: opacity 0.5s ease; }
   .week-step.is-active { opacity: 1; }
-  .week-step .week-dot { transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .week-step.is-active .week-dot { transform: scale(1.35); }
+  .week-step h3 { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .week-step.is-active h3 { transform: translateX(calc(var(--week-dir, 1) * 6px)); }
 }
+[dir='rtl'] .week-step { --week-dir: -1; }
 .week-screen {
   opacity: 0;
-  transform: translateY(14px) scale(0.98);
-  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: translateY(18px) scale(0.97);
+  transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   pointer-events: none;
 }
 .week-screen.is-on { opacity: 1; transform: none; }
-.week-screen.is-on .week-tick { animation: week-pop 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
-.week-screen.is-on .week-ring { animation: week-ring 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.week-screen.is-on .week-bar { animation: week-bar 0.9s ease-in-out infinite alternate; transform-origin: bottom; }
-.week-screen.is-on .week-seal { animation: week-pop 0.6s 0.25s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+.week-mini {
+  opacity: 0.5;
+  transform: translateY(16px) scale(0.96);
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.week-mini.is-on { opacity: 1; transform: none; }
+.week-phone {
+  transform: rotate(var(--week-tilt, 0deg)) translateY(var(--week-lift, 0px));
+  transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.25, 1.1);
+}
+.week-glow {
+  background: radial-gradient(closest-side, var(--week-glow, #087D91), transparent);
+  opacity: 0.28;
+  transition: background 0.6s ease;
+  filter: blur(28px);
+}
+:is(.week-screen, .week-mini).is-on .week-tick { animation: week-pop 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+:is(.week-screen, .week-mini).is-on .week-ring { animation: week-ring 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+:is(.week-screen, .week-mini).is-on .week-bar { animation: week-bar 0.9s ease-in-out infinite alternate; transform-origin: bottom; }
+:is(.week-screen, .week-mini).is-on .week-seal { animation: week-pop 0.6s 0.25s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
+:is(.week-screen, .week-mini).is-on .week-grow { animation: week-grow 1.6s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+:is(.week-screen, .week-mini).is-on .week-drop { animation: week-drop 0.6s 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.15) both; }
+:is(.week-screen, .week-mini).is-on .week-rise { animation: week-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.week-grow { transform-origin: left; }
+[dir='rtl'] .week-grow { transform-origin: right; }
+.week-live { animation: week-live 1.4s ease-in-out infinite; }
 .week-count { display: inline-block; animation: week-count 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
 @keyframes week-pop { from { transform: scale(0.4); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes week-ring { from { stroke-dashoffset: 1; } }
 @keyframes week-bar { from { transform: scaleY(0.45); } to { transform: scaleY(1); } }
 @keyframes week-count { from { transform: translateY(70%); opacity: 0; } }
+@keyframes week-grow { from { transform: scaleX(0.2); } }
+@keyframes week-drop { from { transform: translateY(-22px); opacity: 0; } }
+@keyframes week-rise { from { transform: translateY(10px); opacity: 0; } }
+@keyframes week-live { 50% { opacity: 0.35; } }
+@keyframes week-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(229, 169, 60, 0.55); }
+  70%, 100% { box-shadow: 0 0 0 10px rgba(229, 169, 60, 0); }
+}
 @media (prefers-reduced-motion: reduce) {
-  .week-step, .week-screen { transition: none; }
-  .week-screen.is-on *, .week-count { animation: none !important; }
+  .week-step, .week-step h3, .week-screen, .week-mini, .week-phone, .week-line::after { transition: none; }
+  .week-step.is-active h3, .week-phone, .week-mini { transform: none; }
+  :is(.week-screen, .week-mini).is-on *, .week-count, .week-live, .week-step.is-active .week-dot { animation: none !important; }
 }
 
 /* Signature intro (src/components/public/SignatureIntro.tsx): the name written letter by letter in crimson, a gold

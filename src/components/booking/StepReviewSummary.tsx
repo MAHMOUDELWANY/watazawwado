@@ -39,6 +39,8 @@ interface StepReviewSummaryProps {
   payLaterBusy?: boolean;
   onAcceptTerms?: (accepted: boolean) => void;
   onAcceptEarlyStart?: (accepted: boolean) => void;
+  /** The flow's error, shown right above the buttons so nobody has to scroll up to find it. */
+  errorSlot?: React.ReactNode;
 }
 
 export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
@@ -56,8 +58,10 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   onPayLater,
   payLaterBusy,
   onAcceptTerms,
-  onAcceptEarlyStart
+  onAcceptEarlyStart,
+  errorSlot
 }) => {
+  const [termsHint, setTermsHint] = React.useState(false);
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
   const isChild = formData.audience === 'child';
@@ -371,6 +375,13 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         </label>
       )}
 
+      {errorSlot}
+      {termsHint && !pendingBookingReference && (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true)) && (
+        <p role="alert" className="text-sm font-medium text-warning-ink">
+          {isEn ? 'Tick the box(es) above first, then confirm.' : 'علّم على الموافقة اللي فوق الأول، وبعدين أكّد.'}
+        </p>
+      )}
+
       {/* Controls */}
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
@@ -388,8 +399,14 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         <motion.button
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
-          onClick={pendingBookingReference && onOpenCheckout ? onOpenCheckout : onSubmit}
-          disabled={isSubmitting || (!pendingBookingReference && (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true)))}
+          onClick={() => {
+            if (pendingBookingReference && onOpenCheckout) return onOpenCheckout();
+            // An unticked box used to leave the button greyed out with no reason; say it next to the button instead.
+            if (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true)) return setTermsHint(true);
+            onSubmit();
+          }}
+          disabled={isSubmitting}
+          aria-disabled={!pendingBookingReference && (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true))}
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (

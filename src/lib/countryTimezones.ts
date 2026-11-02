@@ -1120,8 +1120,8 @@ export function getTimezoneDisplayLabel(tz: string, isAr: boolean): string {
   const item = ALL_TIMEZONES.find((t) => t.value === tz);
   if (item) {
     // In Arabic the offset ("UTC+1 / UTC+2") is isolated as left-to-right text and kept on one line, or the brackets
-    // and slash scramble.
-    return isAr ? `${item.labelAr} (⁦${item.offset.replace(/ /g, ' ')}⁩)` : `${item.label} (${item.offset})`;
+    // and slash scramble; a non-breaking hyphen keeps "UTC-5" whole.
+    return isAr ? `${item.labelAr} (⁦${item.offset.replace(/ /g, ' ').replace(/-/g, '‑')}⁩)` : `${item.label} (${item.offset})`;
   }
   try {
     const zoned = DateTime.now().setZone(tz);

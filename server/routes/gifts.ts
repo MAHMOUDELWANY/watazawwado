@@ -1,5 +1,6 @@
 import express from 'express';
 import { normalizeGiftCode } from '../gifts.js';
+import { normalizeCode, CODE_PATTERN } from '../pricing/discounts.js';
 import { canFamilyReadLearner, isUuid } from './progress.js';
 import { notifyUser } from '../notifications/inbox.js';
 
@@ -19,10 +20,16 @@ export function registerGiftRoutes(app: express.Express, deps: {
 }) {
   app.post('/api/student/gifts/redeem', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
     const code = normalizeGiftCode(req.body?.code);
+    const client = deps.getClient();
+    // Families (and the owner, 2026-11-02) type checkout discount codes here too: say where that code works instead.
+    const discountText = normalizeCode(req.body?.code);
+    if (client && CODE_PATTERN.test(discountText)) {
+      const { data: discount } = await client.from('discount_codes').select('id').eq('code', discountText).maybeSingle();
+      if (discount) return res.status(409).json({ error: 'This is a discount code: type it on the payment step when you book.', code: 'DISCOUNT_CODE' });
+    }
     if (!code) return res.status(400).json({ error: 'Check the code: it looks like WZ-ABCD-EFGH.' });
     const accountId = req.studentUser?.auth_id;
     if (!isUuid(accountId)) return res.status(403).json({ error: 'Please sign in with your own account to redeem a gift.' });
-    const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
     try {
       const learners = await deps.getLearners(client, req);

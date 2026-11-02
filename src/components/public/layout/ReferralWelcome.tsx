@@ -21,7 +21,8 @@ export function ReferralWelcome({ lang }: { lang: 'ar' | 'en' }) {
     const code = readReferral();
     if (!code) return;
     try {
-      if (sessionStorage.getItem(DISMISS_KEY) === code) return;
+      // Once per invite code, ever (owner, 2026-11-02): it used to come back on every visit.
+      if (localStorage.getItem(DISMISS_KEY) === code) return;
     } catch { /* storage blocked */ }
     let cancelled = false;
     // A short pause so the page is seen first and the card arrives as a welcome, not a wall.
@@ -29,7 +30,10 @@ export function ReferralWelcome({ lang }: { lang: 'ar' | 'en' }) {
       fetch(`/api/public/referral/${encodeURIComponent(code)}`)
         .then((r) => (r.ok ? r.json() : null))
         .then((d) => {
-          if (!cancelled && d?.valid && Number(d.friendCredit) > 0) setInfo({ firstName: d.firstName, friendCredit: Number(d.friendCredit) });
+          if (!cancelled && d?.valid && Number(d.friendCredit) > 0) {
+            setInfo({ firstName: d.firstName, friendCredit: Number(d.friendCredit) });
+            try { localStorage.setItem(DISMISS_KEY, code); } catch { /* storage blocked */ }
+          }
         })
         .catch(() => {});
     }, 1200);
@@ -41,7 +45,7 @@ export function ReferralWelcome({ lang }: { lang: 'ar' | 'en' }) {
 
   const close = () => {
     try {
-      sessionStorage.setItem(DISMISS_KEY, readReferral() || '');
+      localStorage.setItem(DISMISS_KEY, readReferral() || '');
     } catch { /* storage blocked */ }
     setInfo(null);
   };
@@ -55,7 +59,7 @@ export function ReferralWelcome({ lang }: { lang: 'ar' | 'en' }) {
         <motion.aside
           dir={isAr ? 'rtl' : 'ltr'}
           aria-label={isAr ? 'دعوة من صاحبك' : 'An invite from your friend'}
-          className="fixed bottom-4 start-4 end-4 z-40 sm:end-auto sm:w-[360px]"
+          className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom))] start-4 end-4 z-40 sm:end-auto sm:w-[360px]"
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}

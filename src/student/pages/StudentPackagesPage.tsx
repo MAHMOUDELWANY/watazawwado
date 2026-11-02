@@ -77,6 +77,9 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
   const [renewCatalogId, setRenewCatalogId] = useState<string | null>(null);
   const [renewMissing, setRenewMissing] = useState(false);
   const [searchParams] = useSearchParams();
+  // The catalogue is for buying, which now happens in booking (owner, 2026-11-02): the wallet opens it only to renew,
+  // to buy a gift, or when a link asks for it (?buy=1, ?renew=).
+  const [showCatalog, setShowCatalog] = useState(() => searchParams.get('buy') === '1' || Boolean(searchParams.get('renew')));
   const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
 
   const isAr = lang === 'ar';
@@ -185,6 +188,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
     setPackageMinutes(Number(cat.eligibility_rules?.duration_minutes ?? ent.durationMinutes ?? 60));
     // Only a learner the account still lists; otherwise keep the current choice.
     if (ent.learnerStudentId && learners.some((l: any) => l.id === ent.learnerStudentId)) setSelectedLearnerId(ent.learnerStudentId);
+    setShowCatalog(true);
     renewScrollPending.current = true;
   }, []);
 
@@ -690,6 +694,19 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
       </div>
 
       {/* 5. Packages Catalog Section */}
+      {!showCatalog ? (
+        <div className="flex flex-wrap items-center gap-3 pt-2">
+          <Link to="/student/book" className="inline-flex items-center gap-2 h-11 px-5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+            <Plus className="w-4 h-4" aria-hidden="true" />
+            {isAr ? 'احجز بباقة جديدة' : 'Book with a new package'}
+          </Link>
+          {data.giftSeason && (
+            <button type="button" onClick={() => { setAsGift(true); setShowCatalog(true); }} className="inline-flex items-center h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle">
+              {isAr ? `اشتري باقة ${seasonGiftLabel(data.giftSeason, true)}` : `Buy a package as a ${seasonGiftLabel(data.giftSeason, false)}`}
+            </button>
+          )}
+        </div>
+      ) : (
       <div className="space-y-4 pt-4">
         <div>
           <h2 className="text-lg font-display font-bold text-foreground">
@@ -866,6 +883,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
           </div>
         )}
       </div>
+      )}
 
       {/* NX-06: gifts: redeem a code, and the gifts this account bought */}
       <GiftsPanel

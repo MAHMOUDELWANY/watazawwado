@@ -22,9 +22,10 @@ const STEPS: Array<{ when: L; title: L; body: L }> = [
     body: { en: 'What you memorized comes back on a growing gap, so it stays with you.', ar: 'اللي حفظته بيرجعلك على مسافات بتكبر، عشان يفضل معاك.' },
   },
   {
-    when: { en: 'Any time', ar: 'في أي وقت' },
+    when: { en: 'Between lessons', ar: 'بين الحصص' },
     title: { en: 'Recite, and hear back', ar: 'سمّع، وخد الرد' },
-    body: { en: 'Record a recitation on your phone. Your teacher listens and replies.', ar: 'سجّل تلاوتك من الموبايل، والمعلم بيسمعها ويرد عليك.' },
+    // Recording lives in recitation homework (RecitationRecorder in HomeworkCard), not in the chat.
+    body: { en: 'When the homework is a recitation, record it on your phone. Your teacher listens and replies.', ar: 'لما يكون الواجب تسميع، سجّل تلاوتك من الموبايل، والمعلم بيسمعها ويرد عليك.' },
   },
   {
     when: { en: 'Every week', ar: 'كل أسبوع' },
@@ -71,7 +72,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
           </p>
         </div>
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-20 mt-10">
-          <ol className="week-line relative space-y-10 lg:space-y-0 ps-10">
+          <ol className="week-line relative space-y-10 lg:space-y-0 ps-10" style={{ '--week-fill': active / (STEPS.length - 1) } as React.CSSProperties}>
             {STEPS.map((s, i) => (
               <li
                 key={s.title.en}
@@ -87,7 +88,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
                   <span aria-hidden="true"> · </span>
                   {t(s.body)}
                 </p>
-                <div className="lg:hidden mt-5 max-w-[19rem]" aria-hidden="true">
+                <div className={`week-mini lg:hidden mt-5 max-w-[19rem] ${i === active ? 'is-on' : ''}`} aria-hidden="true">
                   <div className="rounded-[1.6rem] border border-border bg-surface p-4 shadow-[0_18px_40px_-28px_rgba(18,16,14,0.45)]">
                     <Screen step={i} isEn={isEn} />
                   </div>
@@ -96,8 +97,12 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
             ))}
           </ol>
           <div className="hidden lg:block" aria-hidden="true">
-            <div className="sticky top-[18vh]">
-              <div className="relative mx-auto w-[270px] aspect-[9/16.5] rounded-[2.6rem] p-[9px] bg-[#101B22] ring-1 ring-black/5 dark:ring-white/15 shadow-[0_40px_80px_-40px_rgba(16,27,34,0.7)]">
+            <div className="sticky top-[18vh] isolate">
+              <span className="week-glow pointer-events-none absolute -inset-10 -z-10 rounded-full" style={{ '--week-glow': GLOW[active] } as React.CSSProperties} />
+              <div
+                className="week-phone relative mx-auto w-[270px] aspect-[9/16.5] rounded-[2.6rem] p-[9px] bg-[#101B22] ring-1 ring-black/5 dark:ring-white/15 shadow-[0_40px_80px_-40px_rgba(16,27,34,0.7)]"
+                style={{ '--week-tilt': `${active % 2 ? 1.6 : -1.6}deg`, '--week-lift': `${active % 2 ? -6 : 0}px` } as React.CSSProperties}
+              >
                 <div className="relative h-full w-full overflow-hidden rounded-[2.1rem] bg-background">
                   <div className="flex items-center justify-between px-5 pt-4 text-[11px] font-semibold text-muted-foreground" dir="ltr">
                     <span className="tabular-nums">9:41</span>
@@ -125,6 +130,8 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
 
 // The phone's counter: ayat reviewed so far this week, rising as the week goes (an example, like the screens).
 const COUNT = [0, 0, 12, 12, 20, 27];
+// The light behind the phone follows the ribbon: teal, gold, crimson.
+const GLOW = ['#087D91', '#087D91', '#E5A93C', '#E5A93C', '#C51F24', '#E5A93C'];
 
 function Khatam({ className = '' }: { className?: string }) {
   return (
@@ -158,14 +165,17 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
   if (step === 0) return (
     <div>
       {title(tr('Live lesson', 'الحصة المباشرة'))}
-      <div className="rounded-2xl bg-[#101B22] p-4 text-center text-white">
+      <div className="relative rounded-2xl bg-[#101B22] p-4 text-center text-white">
+        <span className="absolute top-2.5 start-2.5 inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-bold tracking-wider">
+          <span className="week-live w-1.5 h-1.5 rounded-full bg-[#E82C32]" />{tr('LIVE', 'مباشر')}
+        </span>
         <p className="text-3xl leading-loose" lang="ar" dir="rtl">بِسْمِ ٱللَّهِ</p>
         <p className="text-[11px] text-white/60 mt-1">{tr('Slide 3 of 12', 'شريحة ٣ من ١٢')}</p>
-        <div className="mt-3 h-1 rounded-full bg-white/15 overflow-hidden"><div className="h-full w-1/4 rounded-full bg-[var(--gold)]" /></div>
+        <div className="mt-3 h-1 rounded-full bg-white/15 overflow-hidden"><div className="week-grow h-full w-1/4 rounded-full bg-[var(--gold)]" /></div>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="aspect-video rounded-xl bg-[var(--teal)]/15 grid place-items-center text-[11px] font-semibold text-[var(--teal)]">{tr('Teacher', 'المعلم')}</div>
-        <div className="aspect-video rounded-xl bg-primary/10 grid place-items-center text-[11px] font-semibold text-primary">{tr('You', 'إنت')}</div>
+        <div className="week-rise aspect-video rounded-xl bg-[var(--teal)]/15 grid place-items-center text-[11px] font-semibold text-[var(--teal)]">{tr('Teacher', 'المعلم')}</div>
+        <div className="week-rise aspect-video rounded-xl bg-primary/10 grid place-items-center text-[11px] font-semibold text-primary">{tr('You', 'إنت')}</div>
       </div>
     </div>
   );
@@ -219,7 +229,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
           ))}
         </span>
       </div>
-      <div className="mt-3 rounded-2xl rounded-ss-sm bg-[var(--teal)]/12 p-3">
+      <div className="week-rise mt-3 rounded-2xl rounded-ss-sm bg-[var(--teal)]/12 p-3" style={{ animationDelay: '0.5s' }}>
         <p className="text-[11px] font-bold text-[var(--teal)]">{tr("Teacher's reply", 'رد المعلم')}</p>
         <p className="text-[13px] text-foreground mt-1">{tr('Lovely. Hold the madd in ayah 3 a little longer.', 'تلاوة جميلة. خلّي بالك من المد في آية ٣.')}</p>
         <div className="mt-2 flex items-center gap-2 text-muted-foreground" dir="ltr">
@@ -232,7 +242,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
   if (step === 4) return (
     <div>
       {title(tr('Weekly email', 'إيميل الأسبوع'))}
-      <div className="rounded-2xl border border-border overflow-hidden">
+      <div className="week-drop rounded-2xl border border-border overflow-hidden">
         <div className="flex items-center gap-2 bg-surface-subtle px-3 py-2">
           <Mail className="w-4 h-4 text-primary" />
           <span className="text-[12px] font-semibold text-foreground">{tr('Your week at Watazawwado', 'أسبوعكم في وتزودوا')}</span>
@@ -255,7 +265,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
       {title(tr('Progress', 'التقدّم'))}
       <ol className="space-y-2">
         {[tr('Letters and sounds', 'الحروف ومخارجها'), tr('Noon and meem rules', 'أحكام النون والميم'), tr('The madd', 'المدود')].map((x, i) => (
-          <li key={x} className={`flex items-center gap-2.5 rounded-xl p-2.5 text-[13px] ${i === 1 ? 'bg-[var(--teal)]/12 font-semibold text-foreground' : 'bg-surface-subtle text-muted-foreground'}`}>
+          <li key={x} style={{ animationDelay: `${i * 0.12}s` }} className={`week-rise flex items-center gap-2.5 rounded-xl p-2.5 text-[13px] ${i === 1 ? 'bg-[var(--teal)]/12 font-semibold text-foreground' : 'bg-surface-subtle text-muted-foreground'}`}>
             <span className={`grid place-items-center w-5 h-5 rounded-full text-[10px] font-bold shrink-0 ${i === 0 ? 'bg-[var(--teal)] text-white' : 'border-2 border-border'}`}>
               {i === 0 ? <Check className="w-3 h-3" strokeWidth={3} /> : i + 1}
             </span>

@@ -12,7 +12,7 @@ export async function authedJson<T = any>(path: string, init: RequestInit = {}):
     }
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw Object.assign(new Error((data as any)?.error || `Request failed (${res.status})`), { status: res.status });
+  if (!res.ok) throw Object.assign(new Error((data as any)?.error || `Request failed (${res.status})`), { status: res.status, code: (data as any)?.code });
   return data as T;
 }
 

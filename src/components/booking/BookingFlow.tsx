@@ -290,12 +290,23 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       setIsVerifyingPayment(true);
       setValidationError(null);
 
-      fetch('/api/payments/stripe/verify', {
+      // Stripe can take a few seconds to settle after the redirect (a friend's package, 2026-11-02, needed several
+      // refreshes): ask again for about 15 seconds before calling it a failure.
+      const verifyOnce = () => fetch('/api/payments/stripe/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sessionId })
-      })
-        .then(res => res.json())
+      }).then(res => res.json());
+      const verifyWithRetry = async () => {
+        let last: any = null;
+        for (let i = 0; i < 6; i++) {
+          last = await verifyOnce().catch(() => last);
+          if (last?.success && last.status === 'confirmed') return last;
+          if (i < 5) await new Promise((r) => setTimeout(r, 2500));
+        }
+        return last || {};
+      };
+      verifyWithRetry()
         .then(async (data) => {
           if (data.success && data.status === 'confirmed' && params.get('target_type') === 'package') {
             const cleanUrl = new URL(window.location.href);
@@ -680,8 +691,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             serviceName={isEn ? currentService?.name : currentService?.arabicName}
           />
 
-          {/* On the review screen the error shows at the top (that screen has its own buttons). */}
-          {screenIndex === screens.length - 1 && errorBox}
 
           {/* Steps Presentation */}
           <AnimatePresence initial={false}>
@@ -872,6 +881,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     onChooseAnotherTime={handleChooseAnotherTime}
                     onPayLater={payLaterEligible ? handlePayLater : undefined}
                     payLaterBusy={payLaterBusy}
+                    errorSlot={errorBox}
                   />
               </motion.div>
             )}
@@ -933,6 +943,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onChooseAnotherTime={handleChooseAnotherTime}
                   onPayLater={payLaterEligible ? handlePayLater : undefined}
                   payLaterBusy={payLaterBusy}
+                  errorSlot={errorBox}
                 />
               </motion.div>
             )}

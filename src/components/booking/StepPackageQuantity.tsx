@@ -6,10 +6,10 @@
  */
 
 import React from 'react';
-import { Check, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { Language, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
-import type { EnvelopePlan } from '../public/pricing/EnvelopeCard';
+import { EnvelopeCard, EnvelopePlan } from '../public/pricing/EnvelopeCard';
 
 interface StepPackageQuantityProps {
   serviceId: string;
@@ -103,51 +103,26 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
         </p>
       </div>
 
-      {/* Plans as small envelope cards: one column on phones, side by side from tablets. Tap anywhere to choose. */}
-      <div role="radiogroup" aria-label={isAr ? 'اختار الخطة' : 'Choose a plan'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {/* The same envelopes as the public pricing page (owner, 2026-11-02, after the compact cards):
+          phones swipe a row, larger screens show a grid. The chosen one stands out of its envelope. */}
+      <div
+        role="radiogroup"
+        aria-label={isAr ? 'اختار الخطة' : 'Choose a plan'}
+        className="-mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 sm:mx-0 sm:px-0 sm:grid sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3"
+      >
         {plans.map((plan) => {
           const chosen = plan.id === chosenId;
-          const edge = { teal: '#087D91', crimson: '#C51F24', copper: '#8B4935' }[plan.tone];
           return (
-            <button
-              key={plan.id}
-              type="button"
-              role="radio"
-              aria-checked={chosen}
-              data-plan-id={plan.id}
-              onClick={() => onSelect?.(plan.catalogId)}
-              className={`relative overflow-hidden text-start rounded-2xl border bg-surface p-4 ps-5 cursor-pointer focus-ring transition-[border-color,box-shadow] ${
-                chosen ? 'border-[#0A2E35] shadow-[0_0_0_2px_#0A2E35] dark:border-teal dark:shadow-[0_0_0_2px_var(--color-teal)]' : 'border-border hover:border-foreground/40'
-              }`}
-            >
-              {/* Envelope edge in the plan's colour */}
-              <span aria-hidden="true" className="absolute inset-y-0 start-0 w-1.5" style={{ background: edge }} />
-              <span className="flex items-start justify-between gap-3">
-                <span className="min-w-0">
-                  <span className="block font-display text-lg font-bold text-foreground">{plan.title}</span>
-                  <span className="block text-sm text-muted-foreground">{plan.meta}</span>
-                </span>
-                <span aria-hidden="true" className={`mt-1 w-6 h-6 shrink-0 rounded-full border-2 flex items-center justify-center ${chosen ? 'border-[#0A2E35] bg-[#0A2E35] text-white dark:border-teal dark:bg-teal' : 'border-border'}`}>
-                  {chosen && <Check className="w-4 h-4" />}
-                </span>
-              </span>
-              <span className="mt-3 flex items-baseline flex-wrap gap-x-2 gap-y-1">
-                <span className="font-editorial text-2xl font-bold text-foreground" dir="ltr">{plan.perLesson}</span>
-                <span className="text-sm text-muted-foreground">{isAr ? 'للحصة' : 'a lesson'}</span>
-                {plan.badge && <span className="ms-auto text-xs font-bold px-2 py-0.5 rounded-full" style={{ color: edge, background: `${edge}1A` }}>{plan.badge}</span>}
-              </span>
-              <span className="block text-sm text-muted-foreground mt-0.5">{plan.total}</span>
-              {chosen && (
-                <span className="mt-3 block space-y-1">
-                  {plan.features.map((f) => (
-                    <span key={f} className="flex items-start gap-2 text-sm text-foreground/85">
-                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: edge }} aria-hidden="true" />
-                      <span>{f}</span>
-                    </span>
-                  ))}
-                </span>
-              )}
-            </button>
+            <div key={plan.id} role="radio" aria-checked={chosen} className="snap-center shrink-0 w-[17rem] sm:w-auto" data-plan-id={plan.id}>
+              <EnvelopeCard
+                plan={plan}
+                open={chosen}
+                onTap={() => onSelect?.(plan.catalogId)}
+                primaryLabel={chosen ? (isAr ? 'مختارة ✓' : 'Chosen ✓') : (isAr ? 'اختار دي' : 'Choose this')}
+                onPrimary={() => onSelect?.(plan.catalogId)}
+                isAr={isAr}
+              />
+            </div>
           );
         })}
       </div>

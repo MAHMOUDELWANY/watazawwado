@@ -99,8 +99,8 @@ export const Footer: React.FC<FooterProps> = ({
                   </Link>
                 </li>
                 <li>
-                  <Link to="/#careers" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
-                    {isEn ? 'Teach with us' : 'اشتغل معانا'}
+                  <Link to="/careers" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
+                    {isEn ? 'Careers' : 'التوظيف'}
                   </Link>
                 </li>
                 <li>

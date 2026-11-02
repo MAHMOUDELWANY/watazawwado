@@ -46,6 +46,7 @@ const PricingPage = lazyWithReload(() => import('./components/public/pricing/Pri
 const FAQPage = lazyWithReload(() => import('./components/public/faq/FAQPage').then((m) => ({ default: m.FAQPage })));
 const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/privacy/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
 const SafetyPage = lazyWithReload(() => import('./components/public/safety/SafetyPage').then((m) => ({ default: m.SafetyPage })));
+const CareersPage = lazyWithReload(() => import('./components/public/careers/CareersPage').then((m) => ({ default: m.CareersPage })));
 const CommunityPage = lazyWithReload(() => import('./components/public/community/CommunityPage').then((m) => ({ default: m.CommunityPage })));
 const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
 const articlesModule = () => import('./components/public/articles/ArticlesPages');
@@ -55,7 +56,7 @@ const WriteReviewPage = lazyWithReload(() => import('./components/public/reviews
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
   '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
-  '/community': CommunityPage, '/articles': ArticlesIndexPage,
+  '/community': CommunityPage, '/careers': CareersPage, '/articles': ArticlesIndexPage,
 };
 
 /**
@@ -108,6 +109,7 @@ export function AppRoutes() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/safety" element={<SafetyPage />} />
             <Route path="/community" element={<CommunityPage />} />
+            <Route path="/careers" element={<CareersPage />} />
             <Route path="/articles" element={<ArticlesIndexPage />} />
             <Route path="/articles/:slug" element={<ArticlePage />} />
             <Route path="/review/:token" element={<WriteReviewPage />} />
@@ -123,6 +125,7 @@ export function AppRoutes() {
             <Route path="/ar/terms" element={<TermsPage />} />
             <Route path="/ar/safety" element={<SafetyPage />} />
             <Route path="/ar/community" element={<CommunityPage />} />
+            <Route path="/ar/careers" element={<CareersPage />} />
             <Route path="/ar/articles" element={<ArticlesIndexPage />} />
             <Route path="/ar/articles/:slug" element={<ArticlePage />} />
             <Route path="/ar/review/:token" element={<WriteReviewPage />} />

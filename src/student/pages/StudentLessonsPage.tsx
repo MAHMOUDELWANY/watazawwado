@@ -28,6 +28,8 @@ import { Modal } from '../../components/ui/Modal';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { LessonSelfServicePanel } from '../components/LessonSelfServicePanel';
+import { BookingConfirmation } from '../../components/booking/BookingConfirmation';
+import type { BookingConfirmationData } from '../../booking/types';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 import {
@@ -57,6 +59,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   // Modals state
   const [paymentModalBooking, setPaymentModalBooking] = useState<any | null>(null);
   const [rescheduleModalBooking, setRescheduleModalBooking] = useState<any | null>(null);
+  // The page shown right after booking, again on demand (owner, 2026-11-02: it used to show only once).
+  const [detailsBooking, setDetailsBooking] = useState<BookingConfirmationData | null>(null);
   // ?manage=<bookingId> (from the home page) opens the reschedule/cancel window for that lesson.
   const [searchParams, setSearchParams] = useSearchParams();
   const manageId = searchParams.get('manage');
@@ -493,6 +497,34 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         </button>
                       )}
 
+                      {!isCancelled && dateObj?.isValid && (
+                        <button
+                          type="button"
+                          onClick={() => setDetailsBooking({
+                            bookingReference: b.referenceCode,
+                            createdAt: b.createdAt || '',
+                            mode: b.bookingType === 'trial' ? 'trial' : 'regular',
+                            serviceName: (isAr && b.serviceArabicTitle) || b.serviceTitle || '',
+                            learnerName: b.learnerName || '',
+                            contactEmail: '',
+                            contactWhatsapp: '',
+                            date: dateObj.toISODate() || '',
+                            timeDisplay: dateObj.toFormat('h:mm a'),
+                            timezone: studentTz,
+                            durationMinutes: Number(b.durationMinutes || b.duration || 0),
+                            cairoTimeDisplay: '',
+                            feeAmountUsd: Number(b.feeAmountUsd || 0),
+                            isFreeTrial: b.bookingType === 'trial',
+                            packageEntitlementId: b.packageEntitlementId || undefined,
+                            zoomDetails: { platform: 'Zoom', meetingLinkPlaceholder: hasValidZoomUrl ? rawZoom : '', instructions: [] },
+                          })}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                        >
+                          <Tag className="w-3.5 h-3.5 shrink-0" />
+                          <span>{isAr ? 'تفاصيل الحجز' : 'Booking details'}</span>
+                        </button>
+                      )}
+
                       {/* Reschedule / cancel on the site (LessonSelfServicePanel) */}
                       {canCoordinate && (
                         <button
@@ -541,6 +573,12 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             fetchData();
           }}
         />
+      )}
+
+      {detailsBooking && (
+        <Modal isOpen onClose={() => setDetailsBooking(null)} title={isAr ? 'تفاصيل الحجز' : 'Booking details'} maxWidth="2xl">
+          <BookingConfirmation confirmation={detailsBooking} lang={isAr ? 'ar' : 'en'} onDone={() => setDetailsBooking(null)} doneLabel={isAr ? 'تمام' : 'Done'} />
+        </Modal>
       )}
 
       {/* 6. Reschedule / Cancellation Coordinator Modal */}

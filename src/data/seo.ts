@@ -79,6 +79,14 @@ export const PUBLIC_PAGES: PageSeo[] = [
     h1En: 'Your child’s safety'
   },
   {
+    path: '/careers',
+    titleEn: 'Teach with us: careers | Watazawwado Academy',
+    titleAr: 'درّس معانا: التوظيف | وتزودوا Watazawwado',
+    descEn: 'Join our team of male and female teachers giving one-on-one Quran, Zad Path, Arabic and English lessons online: your own hours, a fixed hourly rate and a ready curriculum.',
+    descAr: 'انضم لفريق معلمينا ومعلماتنا في الحصص الفردية أونلاين: قرآن ومسار الأثر وعربي وإنجليزي. مواعيدك إنت، وأجر ثابت للساعة، ومنهج جاهز.',
+    h1En: 'Teach with us'
+  },
+  {
     path: '/community',
     titleEn: 'Our community for families and students | Watazawwado Academy',
     titleAr: 'مجتمع وتزودوا لأسرنا وطلابنا | وتزودوا Watazawwado',

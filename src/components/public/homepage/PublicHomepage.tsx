@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton } from '../PublicDesignSystem';
-import { Check, User, Users, Volume2, VolumeX, ShieldCheck, Mail } from 'lucide-react';
+import { Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
 import { TeacherDuo } from './TeacherDuo';
@@ -11,6 +11,7 @@ import { HeroSubjects } from './HeroSubjects';
 import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem, DoorAjarEmblem } from '../emblems/DoorEmblems';
 import { WeekWithUs } from './WeekWithUs';
 import { FamilyVoices } from './FamilyVoices';
+import { TwoWays } from './TwoWays';
 import { FAQS } from '../../../data/content';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { useWelcomeAudio } from '../../../lib/welcomeAudio';
@@ -30,29 +31,6 @@ function useVerseFont() {
     document.head.appendChild(link);
   }, []);
 }
-
-const PATHS: Array<{ icon: typeof User; tone: string; title: L; body: L; note: L }> = [
-  {
-    icon: User,
-    tone: 'from-[#087D91]/14 to-transparent border-[#087D91]/30 text-[#087D91] dark:text-[#12A4BC]',
-    title: { en: 'Learn for yourself', ar: 'تعلّم لنفسك' },
-    body: {
-      en: 'Your own account: book lessons at times that suit you, follow your progress, and talk to your teacher in the on-site chat.',
-      ar: 'حسابك الخاص: احجز دروسك في المواعيد اللي تناسبك، وتابع تقدمك، وكلّم معلمك في المحادثة داخل الموقع.'
-    },
-    note: { en: 'Direct feedback from your teacher', ar: 'متابعة مباشرة من معلمك' }
-  },
-  {
-    icon: Users,
-    tone: 'from-[#8B4935]/14 to-transparent border-[#8B4935]/30 text-[#8B4935] dark:text-[#DA7960]',
-    title: { en: 'Learn for your family', ar: 'تعلّم لعائلتك' },
-    body: {
-      en: 'One parent account for every child. Each child has their own teacher and plan, and you see every lesson and note.',
-      ar: 'حساب واحد لولي الأمر لكل الأولاد. لكل طفل معلمه وخطته، وإنت شايف كل حصة وكل ملاحظة.'
-    },
-    note: { en: '5% off a second child’s package', ar: 'خصم 5% على باقة الطفل التاني' }
-  }
-];
 
 // Each door's portal: [top, bottom] of its deep gradient. Teal, copper and crimson take turns.
 type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L; cta: L };
@@ -213,21 +191,7 @@ export function PublicHomepage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-            {PATHS.map(({ icon: Icon, tone, title, body, note }) => (
-              <article key={title.en} className={`arch-top relative overflow-hidden border bg-gradient-to-b ${tone} bg-surface shadow-[var(--shadow-2)] px-7 pt-14 pb-8 sm:px-10 text-center`}>
-                <div className="arch-tile mx-auto mb-6 w-14 h-16 flex items-center justify-center bg-current/10 border border-current/25">
-                  <Icon className="w-7 h-7" aria-hidden="true" />
-                </div>
-                <h3 className="font-editorial text-2xl font-bold text-foreground mb-3">{t(title)}</h3>
-                <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">{t(body)}</p>
-                <p className="mt-6 inline-flex items-center gap-1.5 text-sm font-bold">
-                  <Check className="w-4 h-4" aria-hidden="true" />
-                  <span>{t(note)}</span>
-                </p>
-              </article>
-            ))}
-          </div>
+          <TwoWays isEn={isEn} />
         </div>
       </PublicSection>
 
@@ -352,23 +316,6 @@ export function PublicHomepage() {
         </div>
       </section>
 
-      {/* ─── 6. TEACH WITH US ─── */}
-      <section id="careers" className="public-container pb-16 lg:pb-24 scroll-mt-28" aria-labelledby="careers-title">
-        <div className="max-w-3xl mx-auto rounded-[1.75rem] border border-border bg-surface px-6 py-8 sm:px-10 sm:py-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
-          <div className="flex-1">
-            <h2 id="careers-title" className="font-editorial text-2xl font-bold text-foreground">{isEn ? 'Teach with us' : 'اشتغل معانا'}</h2>
-            <p className="mt-2 text-muted-foreground leading-relaxed">
-              {isEn
-                ? 'Do you teach Quran, Tajweed, Arabic or English, and love one-on-one teaching? Write to us about your experience and what you teach best.'
-                : 'بتعلّم قرآن أو تجويد أو عربي أو إنجليزي، وبتحب التعليم الفردي؟ اكتبلنا عن خبرتك وأكتر حاجة بتعرف تعلّمها.'}
-            </p>
-          </div>
-          <a href="mailto:hr@watazawwado.academy" className="btn-glass shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold">
-            <Mail className="w-4 h-4" aria-hidden="true" />
-            <span dir="ltr">hr@watazawwado.academy</span>
-          </a>
-        </div>
-      </section>
     </main>
   );
 }

@@ -182,9 +182,15 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   // Placement test reminder (taken after booking; never blocks anything).
   const [placementTodo, setPlacementTodo] = useState<string[]>([]);
+  // Finished tests keep a way back to their report (owner, 2026-11-02: leaving the result page lost it).
+  const [placementReports, setPlacementReports] = useState<Array<{ name: string; testId: string }>>([]);
   useEffect(() => {
-    authedJson<{ learners: Array<{ status: string; name: string }> }>('/api/placement/mine')
-      .then((d) => setPlacementTodo((d.learners || []).filter((l: any) => l.status === 'take_now' || l.status === 'in_progress').map((l: any) => l.name)))
+    authedJson<{ learners: Array<{ status: string; name: string; testId?: string }> }>('/api/placement/mine')
+      .then((d) => {
+        const ls = d.learners || [];
+        setPlacementTodo(ls.filter((l) => l.status === 'take_now' || l.status === 'in_progress').map((l) => l.name));
+        setPlacementReports(ls.filter((l) => (l.status === 'submitted' || l.status === 'reviewed') && l.testId).map((l) => ({ name: l.name, testId: l.testId! })));
+      })
       .catch(() => {});
   }, []);
 
@@ -378,6 +384,17 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             {isAr ? 'ابدأ' : 'Start'}
           </span>
         </Link>
+      )}
+
+      {placementReports.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          <span className="text-muted-foreground">{isAr ? 'تقرير تحديد المستوى:' : 'Placement report:'}</span>
+          {placementReports.map((r) => (
+            <Link key={r.testId} to={`/student/placement/report/${r.testId}`} className="inline-flex items-center min-h-11 font-semibold text-primary hover:underline">
+              {placementReports.length > 1 ? r.name : (isAr ? 'اعرض التقرير' : 'View the report')}
+            </Link>
+          ))}
+        </div>
       )}
 
       {/* ========================================================================= */}

@@ -252,7 +252,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                       : 'Accepting records your intent only. To activate lessons and credits, complete the package purchase and payment verification in the Packages page.'}
                   </p>
                   <Link
-                    to="/student/packages"
+                    to="/student/packages?buy=1"
                     className="inline-flex items-center gap-1 mt-2 text-primary hover:underline font-medium"
                   >
                     <ArrowRight className="w-4 h-4 rtl:rotate-180" />
