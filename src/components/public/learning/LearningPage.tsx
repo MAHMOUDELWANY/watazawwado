@@ -5,6 +5,7 @@ import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { SERVICES_DATA as ALL_PILLARS } from '../../../data/content';
 import { BOOKABLE_SERVICES } from '../../../booking/mockData';
+import { SUBJECT_PAGES, SUBJECT_PAGES_PATH } from '../../../data/subjectPages';
 
 // Only subjects on offer today (RULES.md "Subjects"); retired ones keep their copy in content.ts but are not shown.
 const SERVICES_DATA = ALL_PILLARS.map((p) => ({ ...p, services: p.services.filter((s) => BOOKABLE_SERVICES.some((b) => b.id === s.id)) }));
@@ -451,6 +452,22 @@ export function LearningPage() {
           )}
 
         </div>
+      </PublicSection>
+
+      {/* Landing pages for each subject and audience: one link each, so families and search engines find them. */}
+      <PublicSection className="pt-10 pb-0">
+        <nav aria-label={isEn ? 'Classes by subject' : 'الحصص حسب المادة'} className="max-w-4xl mx-auto">
+          <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-foreground text-center">{isEn ? 'Find your class' : 'اختار حصتك'}</h2>
+          <ul className="mt-6 flex flex-wrap justify-center gap-2">
+            {SUBJECT_PAGES.map((p) => (
+              <li key={p.slug}>
+                <Link to={`${SUBJECT_PAGES_PATH}/${p.slug}`} className="btn-glass inline-flex items-center min-h-11 px-4 py-2 rounded-xl text-sm font-semibold">
+                  {isEn ? p.h1En : p.h1Ar}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </PublicSection>
 
       {/* ─── 4. CLOSING ─── */}

@@ -6,6 +6,7 @@
  * confusing us with similarly named sites.
  */
 import { ARTICLES } from './articles';
+import { SUBJECT_PAGES, SUBJECT_PAGES_PATH } from './subjectPages';
 
 export const SITE_URL = 'https://watazawwado.academy';
 export const BRAND_EN = 'Watazawwado Academy';
@@ -130,6 +131,18 @@ PUBLIC_PAGES.push(
     descEn: a.descEn,
     descAr: a.descAr,
     h1En: a.titleEn
+  }))
+);
+
+// One landing page per subject and audience (/learning/<slug>).
+PUBLIC_PAGES.push(
+  ...SUBJECT_PAGES.map((s) => ({
+    path: `${SUBJECT_PAGES_PATH}/${s.slug}`,
+    titleEn: s.titleEn,
+    titleAr: s.titleAr,
+    descEn: s.descEn,
+    descAr: s.descAr,
+    h1En: s.h1En
   }))
 );
 

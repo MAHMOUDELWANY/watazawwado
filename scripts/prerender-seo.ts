@@ -13,6 +13,7 @@ import { pathToFileURL } from 'url';
 import { PUBLIC_PAGES, SITE_URL, pagePath, pageUrl } from '../src/data/seo';
 import { BOOKABLE_SERVICES } from '../src/booking/mockData';
 import { ARTICLES } from '../src/data/articles';
+import { SUBJECT_PAGES, SUBJECT_PAGES_PATH } from '../src/data/subjectPages';
 
 const dist = path.resolve('dist');
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
@@ -78,6 +79,26 @@ export function articleJsonLd(slug: string, lang: Lang): string | null {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
+/** Each subject landing page describes itself as a Course by the academy, with its "from" hourly price. */
+export function subjectCourseJsonLd(slug: string, lang: Lang): string | null {
+  const s = SUBJECT_PAGES.find((x) => x.slug === slug);
+  if (!s) return null;
+  const isEn = lang === 'en';
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: isEn ? s.h1En : s.h1Ar,
+    description: isEn ? s.descEn : s.descAr,
+    url: pageUrl(`${SUBJECT_PAGES_PATH}/${s.slug}`, lang),
+    inLanguage: lang,
+    provider: { '@type': 'EducationalOrganization', '@id': `${SITE_URL}/#org`, name: 'Watazawwado Academy', url: `${SITE_URL}/` },
+    // RULES.md §3: "from" prices for standard lessons; the server sets the charged fee.
+    offers: { '@type': 'Offer', category: 'Paid', price: s.rateUsd, priceCurrency: 'USD', url: pageUrl('/pricing', lang) },
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'Online', courseWorkload: 'PT1H' }
+  };
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
+
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** hreflang alternates, the same on both language versions; x-default is the English (root) address. */
@@ -123,6 +144,8 @@ function render(page: (typeof PUBLIC_PAGES)[number], lang: Lang, body: string | 
   }
   const articleLd = page.path.startsWith('/articles/') ? articleJsonLd(page.path.slice('/articles/'.length), lang) : null;
   if (articleLd) html = html.replace('</head>', () => `<script type="application/ld+json">${articleLd}</script></head>`);
+  const courseLd = page.path.startsWith(`${SUBJECT_PAGES_PATH}/`) ? subjectCourseJsonLd(page.path.slice(SUBJECT_PAGES_PATH.length + 1), lang) : null;
+  if (courseLd) html = html.replace('</head>', () => `<script type="application/ld+json">${courseLd}</script></head>`);
   // On wide screens the teacher photo is the largest element above the fold: fetch it first.
   // On phones it sits below the fold, so preloading it would only compete with the page itself.
   if (page.path === '/' || page.path === '/about') {
@@ -167,4 +190,28 @@ ${PUBLIC_PAGES.flatMap((p) => LANGS.map((lang) => `  <url><loc>${pageUrl(p.path,
 </urlset>
 `;
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), sitemap);
+
+// llms.txt (llmstxt.org): a plain summary and page list for AI assistants, built from the same page data.
+const llmsLink = (p: (typeof PUBLIC_PAGES)[number]) => `- [${p.h1En}](${pageUrl(p.path, 'en')}): ${p.descEn}`;
+const isSubject = (p: (typeof PUBLIC_PAGES)[number]) => p.path.startsWith(`${SUBJECT_PAGES_PATH}/`);
+const isArticle = (p: (typeof PUBLIC_PAGES)[number]) => p.path.startsWith('/articles/');
+const llms = `# Watazawwado Academy (أكاديمية وتزودوا)
+
+> Watazawwado Academy (watazawwado.academy) is an online academy with male and female teachers giving live one-on-one lessons on Zoom to children (6 to 17, through a family account) and adults: Quran reading, Tajweed, Quran memorization and revision (Hifz), the Zad Path (our own curriculum of Islamic knowledge: Zad Essentials and Seerah), Fusha Arabic, Egyptian Arabic and English. It serves Muslim families worldwide, mostly in the West. Quran and Zad Path lessons are from $9 an hour; Arabic and English from $13 an hour; lessons are 30, 45 or 60 minutes and priced by length. The first lesson is a free 30-minute trial. The site is in English, with Arabic under /ar.
+
+Not to be confused with other sites using a similar name: our only address is https://watazawwado.academy.
+
+## Classes
+${PUBLIC_PAGES.filter(isSubject).map(llmsLink).join('\n')}
+
+## About the academy
+${PUBLIC_PAGES.filter((p) => !isSubject(p) && !isArticle(p) && !['/privacy', '/terms'].includes(p.path)).map(llmsLink).join('\n')}
+
+## Articles
+${PUBLIC_PAGES.filter(isArticle).map(llmsLink).join('\n')}
+
+## Optional
+${PUBLIC_PAGES.filter((p) => ['/privacy', '/terms'].includes(p.path)).map(llmsLink).join('\n')}
+`;
+fs.writeFileSync(path.join(dist, 'llms.txt'), llms);
 console.log(`prerender-seo: ${PUBLIC_PAGES.length} pages x ${LANGS.length} languages (${rendered} fully rendered) + sitemap.xml`);

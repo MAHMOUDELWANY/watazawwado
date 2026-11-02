@@ -93,6 +93,10 @@ export function PublicHomepage() {
             <h1
               className={`[grid-area:title] self-end font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-[4rem] text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}
             >
+              {/* Plain words families search for, above the brand line (SEO: the headline said no subject). */}
+              <span className="block mb-4 font-sans text-sm sm:text-base font-semibold tracking-normal text-[#087D91] dark:text-[#12A4BC]">
+                {isEn ? 'Online 1-on-1 classes: Quran, Tajweed, the Zad Path, Arabic & English' : 'حصص فردية أونلاين: قرآن، وتجويد، ومسار الأثر، وعربي، وإنجليزي'}
+              </span>
               {isEn ? (
                 <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
               ) : (

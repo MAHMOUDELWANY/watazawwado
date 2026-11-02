@@ -52,6 +52,7 @@ const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPa
 const articlesModule = () => import('./components/public/articles/ArticlesPages');
 const ArticlesIndexPage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlesIndexPage })));
 const ArticlePage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlePage })));
+const SubjectLandingPage = lazyWithReload(() => import('./components/public/learning/SubjectLandingPage').then((m) => ({ default: m.SubjectLandingPage })));
 const WriteReviewPage = lazyWithReload(() => import('./components/public/reviews/WriteReviewPage').then((m) => ({ default: m.WriteReviewPage })));
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
@@ -66,6 +67,7 @@ const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
 export function preloadPage(pathname: string): Promise<unknown> {
   const base = stripLangPrefix(pathname);
   if (base.startsWith('/articles/')) return ArticlePage.preload();
+  if (base.startsWith('/learning/')) return SubjectLandingPage.preload();
   return LAZY_PUBLIC_PAGES[base]?.preload() ?? Promise.resolve();
 }
 
@@ -103,6 +105,7 @@ export function AppRoutes() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/learning" element={<LearningPage />} />
+            <Route path="/learning/:slug" element={<SubjectLandingPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
@@ -119,6 +122,7 @@ export function AppRoutes() {
             <Route path="/ar/about" element={<AboutPage />} />
             <Route path="/ar/how-it-works" element={<HowItWorksPage />} />
             <Route path="/ar/learning" element={<LearningPage />} />
+            <Route path="/ar/learning/:slug" element={<SubjectLandingPage />} />
             <Route path="/ar/pricing" element={<PricingPage />} />
             <Route path="/ar/faq" element={<FAQPage />} />
             <Route path="/ar/privacy" element={<PrivacyPolicyPage />} />

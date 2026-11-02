@@ -4,6 +4,17 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### SEO-01 Subject landing pages, llms.txt and IndexNow (2026-11-02)
+- Why: the site ranked for its brand name but not for "online Quran classes", and AI assistants did not recommend it. Every subject sat on one `/learning` page and the homepage headline named no subject.
+- Eight landing pages under `/learning/<slug>`, English and `/ar` (16 addresses): Quran classes for kids, Quran classes for adults, Tajweed, memorization (Hifz), Islamic classes for kids (the Zad Path), Fusha Arabic, Egyptian Arabic, English. Data in `src/data/subjectPages.ts` (facts only from RULES.md §2b, §3, the trial and safety rules), page `src/components/public/learning/SubjectLandingPage.tsx`. Each has its own title, description, hreflang pair, prerendered HTML and Course JSON-LD with the "from" hourly price. The Zad Path page avoids the retired wording "Islamic studies" (retired-subject test).
+- `/learning` links all eight ("Find your class"); each page links three related pages.
+- Homepage: a small line above the brand headline, inside the H1, names the subjects ("Online 1-on-1 classes: Quran, Tajweed, the Zad Path, Arabic & English").
+- `dist/llms.txt` is built from the same page data by `scripts/prerender-seo.ts` (before, `/llms.txt` returned the app shell).
+- IndexNow: key file `public/ebc4869792a1f293e75cb116f33c30a8.txt` (public by design) and `npm run indexnow` (`scripts/indexnow.ts`) to submit every public URL to Bing/Yandex after a deploy that changes public pages.
+- Tests: `test/seo-subject-pages.test.ts` (new); `qa-05b-hreflang` and `pu-04b-hydration` updated for the `/learning/:slug` route.
+- Checks: tsc pass; build pass (23 pages x 2 languages, all rendered); `npm test` 1889 pass / 8 fail before the wording fix; the retired-subject failure was fixed, the other 7 read migration SQL files only and are not touched by this change. Browser (local prod build): English desktop and Arabic 375 px subject pages, Arabic homepage headline.
+- Not done here (needs the owner): reviews on Google/Trustpilot, directory listings, mentions on "best online Quran academy" lists, Reddit/Quora answers, Bing Webmaster Tools import from Search Console.
+
 ### CM-01 to CM-03 Community layer: consent, Hall of Honor, class board (2026-10-29)
 - Result: done (PR #39, merged to main with the migration applied to production). Plan: `docs/superpowers/plans/2026-10-29-community-honor.md`.
 - Consent: the guardian decides for a linked child, the adult learner for themself; a minor on their own account (or a child record with no guardian tied to this account) gets no choice in the portal, only the admin can record a consent given elsewhere, with a required note. Anyone who manages the learner can withdraw or leave at any time. An entry the admin removed stays off; the admin cannot overrule a family "no".
