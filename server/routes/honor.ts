@@ -515,7 +515,7 @@ export function registerHonorRoutes(app: express.Express, deps: {
       if (error) throw error;
       const { data: links } = rows?.length ? await client.storage.from(PHOTO_BUCKET).createSignedUrls(rows.map((r: any) => r.photo_path), 600) : { data: [] };
       const urlByPath = new Map((links || []).map((l: any) => [l.path, l.signedUrl]));
-      res.json({ photos: (rows || []).map((r: any) => ({ id: r.id, displayName: r.display_name, consentAt: r.photo_consent_at, url: urlByPath.get(r.photo_path) || null })) });
+      res.json({ photos: (rows || []).map((r: any) => ({ id: r.id, displayName: r.display_name, consentAt: r.photo_consent_at, path: r.photo_path, url: urlByPath.get(r.photo_path) || null })) });
     } catch (err) {
       console.error('[GET honor photos]', err);
       res.status(500).json({ error: 'Could not load the photos.' });
@@ -529,11 +529,15 @@ export function registerHonorRoutes(app: express.Express, deps: {
       const entry = await loadEntry(client, req.params.id);
       if (!entry) return res.status(404).json({ error: 'Not found.' });
       const approve = req.body?.decision === 'approve';
+      // Only the photo the admin actually looked at: if the family swapped it meanwhile, nothing changes.
+      const reviewedPath = String(req.body?.path || '');
       if (approve) {
         const { data } = await client.from('honor_entries').update({ photo_status: 'approved', updated_at: new Date().toISOString() })
-          .eq('id', entry.id).eq('photo_status', 'pending').select('id').maybeSingle();
-        if (!data) return res.status(409).json({ error: 'This photo is not waiting for review.' });
+          .eq('id', entry.id).eq('photo_status', 'pending').eq('photo_path', reviewedPath).select('id').maybeSingle();
+        if (!data) return res.status(409).json({ error: 'This photo changed or is not waiting for review. Reload the page.' });
       } else {
+        const { data: cur } = await client.from('honor_entries').select('photo_path').eq('id', entry.id).maybeSingle();
+        if (!reviewedPath || cur?.photo_path !== reviewedPath) return res.status(409).json({ error: 'This photo changed. Reload the page.' });
         await dropHonorPhoto(client, entry.id);
       }
       const account = await resolveLearnerAccount(client, entry.student_id);

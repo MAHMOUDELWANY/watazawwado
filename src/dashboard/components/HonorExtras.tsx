@@ -13,7 +13,7 @@ import { notify, confirmAction } from '../../components/ui/Feedback';
 type LearnerSuggestion = { studentId: string; name: string; key: string; lessons: number; weeks: number; titleEn: string; titleAr: string };
 type FamilySuggestion = { accountUserId: string; holderName: string | null; key: string; lessons: number; totalLessons: number; learners: string[] };
 type FamilyEntry = { id: string; holder_name: string | null; title_en: string; title_ar: string; status: string; display_name: string | null };
-type Photo = { id: string; displayName: string | null; url: string | null };
+type Photo = { id: string; displayName: string | null; path: string; url: string | null };
 
 const json = { 'Content-Type': 'application/json' };
 
@@ -47,7 +47,7 @@ export function HonorExtras({ isAr, onNominated }: { isAr: boolean; onNominated:
     run(f.id, () => dashboardFetch(`/api/dashboard/honor/family/${f.id}/remove`, { method: 'POST' }), isAr ? 'اتشال.' : 'Taken down.');
   };
   const review = (p: Photo, decision: 'approve' | 'reject') => run(p.id, () =>
-    dashboardFetch(`/api/dashboard/honor/${p.id}/photo`, { method: 'POST', headers: json, body: JSON.stringify({ decision }) }),
+    dashboardFetch(`/api/dashboard/honor/${p.id}/photo`, { method: 'POST', headers: json, body: JSON.stringify({ decision, path: p.path }) }),
     decision === 'approve' ? (isAr ? 'الصورة ظهرت.' : 'The photo is shown.') : (isAr ? 'الصورة اتشالت والأسرة اتبلغت.' : 'The photo was removed and the family told.'));
 
   const familyStatus = (s: string) => ({

@@ -1,6 +1,7 @@
 import express from 'express';
 import { collectAttendedLessons, computeLessonsAttended, computeWeeklyRhythm, isUuid, normalizeSubjectSlug } from './progress.js';
 import { notifyUser } from '../notifications/inbox.js';
+import { chooseDisplayName } from '../community/community.js';
 
 /**
  * CM-04, the later part of the community (owner 2026-11-02: all three; design
@@ -219,8 +220,11 @@ export function registerCommunityLaterRoutes(app: express.Express, deps: {
     let patch: Record<string, unknown>;
     let from: string[];
     if (decision === 'yes') {
-      const name = String(req.body?.name || '').trim().replace(/\s+/g, ' ').slice(0, 40) || defaultFamilyName(req.studentUser?.name, req.body?.lang === 'ar');
-      patch = { status: 'published', display_name: name, decided_at: now, published_at: now, updated_at: now };
+      // Same name rules as a learner's Hall of Honor name (no contact details, no markup, 40 characters).
+      const typed = String(req.body?.name || '').trim();
+      const chosen = chooseDisplayName('custom', typed || defaultFamilyName(req.studentUser?.name, req.body?.lang === 'ar'), null);
+      if (!chosen.ok) return res.status(400).json({ error: chosen.error });
+      patch = { status: 'published', display_name: chosen.name, decided_at: now, published_at: now, updated_at: now };
       from = ['awaiting_consent', 'declined', 'withdrawn'];
     } else if (decision === 'no') {
       patch = { status: 'declined', decided_at: now, updated_at: now };
