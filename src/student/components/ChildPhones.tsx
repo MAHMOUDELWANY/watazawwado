@@ -67,7 +67,16 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
           <span>{isAr ? `على موبايل ${code.learnerName} افتح:` : `On ${code.learnerName}'s phone, open:`}</span>
           <span className="font-semibold text-teal" dir="ltr">watazawwado.academy/kid</span>
           <span>{isAr ? 'واكتب الكود ده:' : 'and type this code:'}</span>
-          <span className="text-3xl font-bold tracking-[0.3em] tabular-nums text-foreground" dir="ltr">{code.code}</span>
+          <span className="text-3xl font-bold tracking-[0.15em] tabular-nums text-foreground" dir="ltr">{code.code.slice(0, 5)} {code.code.slice(5)}</span>
+          {/* A copy, not a link: tapping it here would link this (the parent's) browser instead of the child's phone. */}
+          <Button
+            type="button" size="sm" variant="ghost" className="w-fit"
+            onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/kid?code=${code.code}`)
+              .then(() => notify(isAr ? 'اتنسخ اللينك، ابعته لموبايله.' : 'Link copied. Send it to their phone.'))
+              .catch(() => notify(isAr ? 'معرفناش ننسخ، اكتب الكود على موبايله.' : 'Could not copy. Type the code on their phone.', 'error'))}
+          >
+            {isAr ? 'أو انسخ لينك فيه الكود وابعته لموبايله' : 'or copy a link with the code to send to their phone'}
+          </Button>
           <span className="text-xs text-muted-foreground">
             {isAr ? `الكود بيشتغل مرة واحدة لحد ${when(code.expiresAt)}.` : `The code works once, until ${when(code.expiresAt)}.`}
           </span>

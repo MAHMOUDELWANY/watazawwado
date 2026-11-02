@@ -876,7 +876,7 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - hr@watazawwado.academy exists on Zoho Mail and works (the owner); the note at the careers entry above is settled.
 
 ## 2026-11-02 — NX-16 A child's own phone
-- Family tab: "Set up a phone for <child>" gives a one-time 6-digit code (15 minutes) and the address watazawwado.academy/kid; linked phones are listed (name, last used) with Remove, which works at the phone's next request. The parent gets a site notice when a phone is linked.
+- Family tab: "Set up a phone for <child>" gives a one-time 10-digit code (15 minutes; ten digits so it cannot be guessed) and the address watazawwado.academy/kid, or a link with the code inside; linked phones are listed (name, last used) with Remove, which works at the phone's next request. The parent gets a site notice when a phone is linked.
 - `/kid`: the child types the code; the phone keeps a long token (only its hash is stored). The page shows the next lessons (Join and Lesson room from 15 minutes before), today's review and the homework with recording. Arabic/English switch.
 - Server: `server/routes/childDevices.ts`. A `kid_` token goes through `verifyStudentAuth` as the parent's account, narrowed by `getAuthorizedLearnersForStudent` to the one child, and only for nine routes (`CHILD_ROUTES`); every other route answers 403. Chat and notifications use their own sign-in and reject the token. Migration `20261102000001_child_devices.sql` (server only).
 - Fixed on the way: `vercel.json` had `microphone=()` site-wide, which blocks recording a recitation (NX-03) on production; now `microphone=(self)`.

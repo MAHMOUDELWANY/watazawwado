@@ -61,7 +61,7 @@ export default function KidApp() {
 
 function PairScreen({ isAr, notice, onLinked }: { isAr: boolean; notice: string; onLinked: () => void }) {
   const [params] = useSearchParams();
-  const [code, setCode] = useState(() => (params.get('code') || '').replace(/\D/g, '').slice(0, 6));
+  const [code, setCode] = useState(() => (params.get('code') || '').replace(/\D/g, '').slice(0, 10));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -84,8 +84,8 @@ function PairScreen({ isAr, notice, onLinked }: { isAr: boolean; notice: string;
       <h1 className="text-xl font-display font-bold">{isAr ? 'افتح حصصك على موبايلك' : 'Open your lessons on your phone'}</h1>
       <p className="text-sm text-muted-foreground">
         {isAr
-          ? 'بابا أو ماما هيطلّعوا كود من 6 أرقام من صفحة العيلة في حسابهم. اكتبه هنا.'
-          : 'Your parent makes a 6-digit code in the Family tab of their account. Type it here.'}
+          ? 'بابا أو ماما هيطلّعوا كود من 10 أرقام من صفحة العيلة في حسابهم. اكتبه هنا.'
+          : 'Your parent makes a 10-digit code in the Family tab of their account. Type it here.'}
       </p>
       {notice && <p role="status" className="text-sm text-foreground">{notice}</p>}
       <form onSubmit={submit} className="grid gap-3">
@@ -94,14 +94,14 @@ function PairScreen({ isAr, notice, onLinked }: { isAr: boolean; notice: string;
           id="kid-code"
           inputMode="numeric"
           autoComplete="one-time-code"
-          maxLength={6}
+          maxLength={10}
           value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          className="text-center text-2xl tracking-[0.4em] tabular-nums"
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 10))}
+          className="text-center text-2xl tracking-[0.2em] tabular-nums"
           dir="ltr"
         />
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" isLoading={busy} disabled={code.length !== 6 || busy}>{isAr ? 'اربط الموبايل' : 'Link this phone'}</Button>
+        <Button type="submit" isLoading={busy} disabled={code.length !== 10 || busy}>{isAr ? 'اربط الموبايل' : 'Link this phone'}</Button>
       </form>
     </Card>
   );

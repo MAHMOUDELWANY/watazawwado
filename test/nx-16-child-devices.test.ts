@@ -33,8 +33,8 @@ function run(token: string, method: string, url: string, linked = token) {
 }
 
 describe('NX-16 child phone', () => {
-  it('codes are 6 digits and tokens are long and prefixed', () => {
-    for (let i = 0; i < 50; i++) assert.match(newLinkCode(), /^\d{6}$/);
+  it('codes are 10 digits and tokens are long and prefixed', () => {
+    for (let i = 0; i < 50; i++) assert.match(newLinkCode(), /^\d{10}$/);
     const t = newDeviceToken();
     assert.ok(t.startsWith(KID_TOKEN_PREFIX) && t.length > 40);
     assert.notStrictEqual(newDeviceToken(), t);
@@ -92,7 +92,7 @@ describe('NX-16 endpoints', () => {
     assert.strictEqual(r.status, 403);
   });
 
-  it('pairing needs a 6-digit code', async () => {
+  it('pairing needs a 10-digit code', async () => {
     const r = await fetch(`${base}/api/kid/pair`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: '12' }) });
     assert.strictEqual(r.status, 400);
   });
