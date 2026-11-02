@@ -851,3 +851,9 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Samsung Internet no longer gets the one-tap install. Its install sheet explains the warning and has an "Open in Chrome" button (Android intent link; opens Chrome's Play Store page if Chrome is missing), where our install card works as usual.
 - Later, once the owner has budget for a Google Play developer account ($25 one-time), the real fix is a Play Store app (TWA) linked from the manifest.
 - Checks: tsc clean; build passes; `test/pwa-install.test.ts` and `test/st-07-pwa.test.ts` 7/7. Not seen on a real Samsung phone.
+
+## 2026-11-02 — Homepage hydration error (React #418) fixed
+- The health page showed React #418 on "/" 8 times from 10:24 UTC, the minute the "two ways to learn" examples went live. Reproduced on a local production build: only visitors with "reduce motion" turned on. `TwoWays` showed the finished example (the teacher's note) on the very first render for them, which the prerendered HTML never has, so React threw the page away and drew it again.
+- Fix: the example shows the finished state only after mounting. Checked every public page in Arabic and English, phone and desktop, dark and reduced motion: no hydration errors.
+- Hydration errors now carry React's component stack into the error list (`onRecoverableError` in `src/main.tsx`), so the next one names its component.
+- Checks: tsc clean; build passes; full `npm test` in the main checkout 1893/1899 (only QA-05b, stale build there; passes here).

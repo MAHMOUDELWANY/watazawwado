@@ -8,7 +8,8 @@ describe('PU-04b hydrate prerendered public pages', () => {
 
   it('hydrates only a prerendered page built in the visitor language; account areas still render from scratch', () => {
     assert.ok(main.includes("root.hasAttribute('data-prerendered') && getStoredLanguage() === pathLanguage(pathname)"));
-    assert.ok(main.includes('hydrateRoot(root, app)'));
+    assert.ok(main.includes('hydrateRoot(root, app, {'));
+    assert.ok(main.includes('onRecoverableError'), 'hydration errors report where they happened');
     assert.ok(main.includes('createRoot(root).render(app)'));
     const prerender = fs.readFileSync('scripts/prerender-seo.ts', 'utf8');
     // The fallback summary is not the React tree, so only a real render gets the marker.

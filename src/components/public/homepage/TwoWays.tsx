@@ -145,7 +145,11 @@ export function TwoWays({ isEn }: { isEn: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.35 });
   const reduce = useReducedMotion();
-  const play = inView || Boolean(reduce);
+  // The prerendered HTML knows nothing of the visitor's motion setting: show the finished example only after mounting,
+  // or reduced-motion visitors get a page that differs from the server's and React throws it away (error #418).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const play = inView || (mounted && Boolean(reduce));
 
   return (
     <div ref={ref} className="grid md:grid-cols-2 gap-6 lg:gap-8">

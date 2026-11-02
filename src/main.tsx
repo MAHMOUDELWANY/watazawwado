@@ -2,7 +2,7 @@ import {StrictMode} from 'react';
 import {createRoot, hydrateRoot} from 'react-dom/client';
 import App, {preloadPage} from './App.tsx';
 import './index.css';
-import {installErrorReporter} from './lib/errorReporter';
+import {installErrorReporter, reportClientError} from './lib/errorReporter';
 import {captureFirstTouch, captureReferral} from './lib/leadSource';
 import {applyUrlLanguage, getStoredLanguage, pathLanguage} from './lib/language';
 import {capturePwaInstall} from './lib/pwaInstall';
@@ -27,7 +27,13 @@ const app = (
 const {pathname} = window.location;
 if (root.hasAttribute('data-prerendered') && getStoredLanguage() === pathLanguage(pathname)) {
   // If the page's code fails to load, hydrating still works: the route's own loader retries or reloads.
-  preloadPage(pathname).catch(() => {}).then(() => hydrateRoot(root, app));
+  preloadPage(pathname).catch(() => {}).then(() => hydrateRoot(root, app, {
+    // A hydration mismatch only says "#418" in production; the component stack says where.
+    onRecoverableError: (error, info) => {
+      console.error(error, info?.componentStack);
+      reportClientError(error, info?.componentStack);
+    },
+  }));
 } else {
   createRoot(root).render(app);
 }

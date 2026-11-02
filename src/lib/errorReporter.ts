@@ -2,13 +2,15 @@
 const sent = new Set<string>();
 const MAX_PER_PAGE = 5;
 
-export function reportClientError(error: unknown): void {
+export function reportClientError(error: unknown, componentStack?: string): void {
   try {
     const err = error instanceof Error ? error : new Error(typeof error === 'string' ? error : 'Non-error thrown');
     const message = err.message || 'Unknown error';
     if (sent.has(message) || sent.size >= MAX_PER_PAGE) return;
     sent.add(message);
-    const body = JSON.stringify({ message, stack: err.stack?.slice(0, 4000) || null, path: window.location.pathname });
+    const body = JSON.stringify({ message, stack: ((componentStack ? `${componentStack.trim()}
+--
+` : '') + (err.stack || '')).slice(0, 4000) || null, path: window.location.pathname });
     // keepalive lets the report finish when the error is followed by a navigation.
     void fetch('/api/client-errors', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
   } catch {
