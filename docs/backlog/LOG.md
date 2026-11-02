@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Messages: visual pass in the site's look (2026-11-02)
+- Owner asked for a richer messaging screen and chose "the site's identity". `src/components/chat/ChatPanel.tsx` (student, teacher and admin share it): coloured initial avatars (the academy mark on the team conversation), last-message preview with "You:", relative times (today's time, yesterday, weekday, date), unread dot and count, selected-row teal rail.
+- Conversation: khatam pattern background, day separators, messages from the same person within 5 minutes grouped, bubbles with a tail corner on the logical side, time inside the bubble, one tick when sent and two when the other side has opened the conversation, new messages slide in (off with reduced motion), pill composer that grows with the text, Enter sends and Shift+Enter adds a line.
+- Server: `describeThreads` in `server/routes/community.ts` now returns each thread's `lastMessage` (90 chars, mine or not) and `otherReadAt`.
+- Admin filters, quick replies and the family-timeline link unchanged. Checks: tsc, full suite (29 pre-existing failures, none in chat), build, impeccable detector clean.
+
 ### SEO-01 Subject landing pages, llms.txt and IndexNow (2026-11-02)
 - Why: the site ranked for its brand name but not for "online Quran classes", and AI assistants did not recommend it. Every subject sat on one `/learning` page and the homepage headline named no subject.
 - Eight landing pages under `/learning/<slug>`, English and `/ar` (16 addresses): Quran classes for kids, Quran classes for adults, Tajweed, memorization (Hifz), Islamic classes for kids (the Zad Path), Fusha Arabic, Egyptian Arabic, English. Data in `src/data/subjectPages.ts` (facts only from RULES.md §2b, §3, the trial and safety rules), page `src/components/public/learning/SubjectLandingPage.tsx`. Each has its own title, description, hreflang pair, prerendered HTML and Course JSON-LD with the "from" hourly price. The Zad Path page avoids the retired wording "Islamic studies" (retired-subject test).

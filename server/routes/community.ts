@@ -141,11 +141,21 @@ function isUnreadFor(thread: any, actor: Actor): boolean {
 async function describeThreads(client: any, threads: any[], actor: Actor) {
   const teacherIds = [...new Set(threads.map(t => t.teacher_id).filter(Boolean))];
   const ownerIds = [...new Set(threads.map(t => t.owner_user_id))];
-  const [{ data: teachers }, { data: owners }, { data: staffOwners }] = await Promise.all([
+  // The last message of each conversation, for the list preview (matched by thread and its last_message_at).
+  const lastTimes = [...new Set(threads.map(t => t.last_message_at).filter(Boolean))];
+  const [{ data: teachers }, { data: owners }, { data: staffOwners }, { data: lastMessages }] = await Promise.all([
     teacherIds.length ? client.from('profiles').select('id, display_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
     ownerIds.length ? client.from('students').select('id, auth_user_id, name').in('auth_user_id', ownerIds) : Promise.resolve({ data: [] }),
-    ownerIds.length ? client.from('profiles').select('id, display_name').in('id', ownerIds) : Promise.resolve({ data: [] })
+    ownerIds.length ? client.from('profiles').select('id, display_name').in('id', ownerIds) : Promise.resolve({ data: [] }),
+    lastTimes.length
+      ? client.from('chat_messages').select('thread_id, body, sender_user_id, created_at').in('thread_id', threads.map(t => t.id)).in('created_at', lastTimes)
+      : Promise.resolve({ data: [] })
   ]);
+  const lastByThread = new Map<string, any>();
+  for (const m of lastMessages || []) {
+    const cur = lastByThread.get(m.thread_id);
+    if (!cur || cur.created_at < m.created_at) lastByThread.set(m.thread_id, m);
+  }
   const teacherName = new Map((teachers || []).map((t: any) => [t.id, t.display_name]));
   // AD-03: the admin can jump from a conversation to the family timeline.
   const ownerStudentId = new Map((owners || []).map((s: any) => [s.auth_user_id, s.id]));
@@ -161,6 +171,11 @@ async function describeThreads(client: any, threads: any[], actor: Actor) {
     teacherName: t.teacher_id ? teacherName.get(t.teacher_id) || null : null,
     isMine: t.owner_user_id === actor.userId,
     lastMessageAt: t.last_message_at,
+    lastMessage: lastByThread.has(t.id)
+      ? { text: String(lastByThread.get(t.id).body || '').replace(/\s+/g, ' ').slice(0, 90), mine: lastByThread.get(t.id).sender_user_id === actor.userId }
+      : null,
+    // When the other side last opened this conversation: the sender's own messages up to then show as seen.
+    otherReadAt: t.owner_user_id === actor.userId ? t.staff_last_read_at || null : t.owner_last_read_at || null,
     unread: isUnreadFor(t, actor),
     ...(actor.role === 'admin' ? { ownerStudentId: ownerStudentId.get(t.owner_user_id) || null } : {})
   }));
