@@ -28,6 +28,7 @@ import { Fk3CoverGraphic, Fk3RecallGraphic, Fk3ParkGraphic, Fk3StoryGraphic, Fk3
 import { Ft2CoverGraphic, Ft2PhoneGraphic, Ft2DarkGraphic, Ft2HamzaGraphic, Ft2AnswersGraphic, Ft2WordsGraphic, Ft2TorchGraphic, Ft2ChainGraphic, Ft2TalkGraphic, Ft2MissionGraphic, Ft2NextGraphic } from '../motion/g-ft2';
 import { Ft3CoverGraphic, Ft3RoofGraphic, Ft3ListenGraphic, Ft3FarGraphic, Ft3TilkaGraphic, Ft3GridGraphic, Ft3WordsGraphic, Ft3TalkGraphic, Ft3MissionGraphic, Ft3NextGraphic } from '../motion/g-ft3';
 import { Lb2CoverGraphic, Lb2RecallGraphic, Lb2FastGraphic, Lb2StandGraphic, Lb2ClapsGraphic, Lb2HadhaGraphic, Lb2WawGraphic, Lb2YaaGraphic, Lb2SpotGraphic, Lb2AlongGraphic, Lb2MissionGraphic, Lb2NextGraphic } from '../motion/g-lb2';
+import { Lb3CoverGraphic, Lb3RecallGraphic, Lb3MysteryGraphic, Lb3ZeroGraphic, Lb3GroupGraphic, Lb3AsrGraphic, Lb3AnaGraphic, Lb3SpotGraphic, Lb3AlongGraphic, Lb3MissionGraphic, Lb3NextGraphic } from '../motion/g-lb3';
 import { Qr2CoverGraphic, Qr2WarmGraphic, Qr2ShaddaGraphic, Qr2Nas1Graphic, Qr2Nas4Graphic, Qr2RhymeGraphic, Qr2Falaq1Graphic, Qr2Falaq4Graphic, Qr2ReadGraphic, Qr2MissionGraphic, Qr2NextGraphic } from '../motion/g-qr2';
 import { Qr3CoverGraphic, Qr3WarmGraphic, Qr3TanweenGraphic, Qr3Ikhlas1Graphic, Qr3Ikhlas3Graphic, Qr3StopGraphic, Qr3Masad1Graphic, Qr3Masad4Graphic, Qr3ReadGraphic, Qr3MissionGraphic, Qr3NextGraphic } from '../motion/g-qr3';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
@@ -334,6 +335,17 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   lb2Waw: onStage({ tone: 'light', Graphic: Lb2WawGraphic }), lb2Yaa: onStage({ tone: 'light', Graphic: Lb2YaaGraphic, marks: ['food'] }),
   lb2Spot: onStage({ tone: 'light', Graphic: Lb2SpotGraphic }), lb2Along: onStage({ tone: 'light', Graphic: Lb2AlongGraphic, keepOnAsk: true }),
   lb2Mission: onStage({ tone: 'light', Graphic: Lb2MissionGraphic }), lb2Next: onStage({ tone: 'light', Graphic: Lb2NextGraphic }),
+  lb3Cover: onStage({ tone: 'light', Graphic: Lb3CoverGraphic }),
+  lb3Recall: onStage({ tone: 'light', Graphic: Lb3RecallGraphic }),
+  lb3Mystery: onStage({ tone: 'light', Graphic: Lb3MysteryGraphic }),
+  lb3Zero: onStage({ tone: 'light', Graphic: Lb3ZeroGraphic }),
+  lb3Group: onStage({ tone: 'light', Graphic: Lb3GroupGraphic }),
+  lb3Asr: onStage({ tone: 'light', Graphic: Lb3AsrGraphic }),
+  lb3Ana: onStage({ tone: 'light', Graphic: Lb3AnaGraphic }),
+  lb3Spot: onStage({ tone: 'light', Graphic: Lb3SpotGraphic }),
+  lb3Along: onStage({ tone: 'light', Graphic: Lb3AlongGraphic, keepOnAsk: true }),
+  lb3Mission: onStage({ tone: 'light', Graphic: Lb3MissionGraphic }),
+  lb3Next: onStage({ tone: 'light', Graphic: Lb3NextGraphic }),
   qr2Cover: onStage({ tone: 'light', Graphic: Qr2CoverGraphic }), qr2Warm: onStage({ tone: 'light', Graphic: Qr2WarmGraphic }),
   qr2Shadda: onStage({ tone: 'light', Graphic: Qr2ShaddaGraphic }), qr2Nas1: onStage({ tone: 'light', Graphic: Qr2Nas1Graphic }),
   qr2Nas4: onStage({ tone: 'light', Graphic: Qr2Nas4Graphic }), qr2Rhyme: onStage({ tone: 'light', Graphic: Qr2RhymeGraphic }),

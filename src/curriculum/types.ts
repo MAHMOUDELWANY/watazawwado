@@ -36,6 +36,8 @@ export type SceneId =
   | 'ft3Cover' | 'ft3Roof' | 'ft3Listen' | 'ft3Far' | 'ft3Tilka' | 'ft3Grid' | 'ft3Words' | 'ft3Sort' | 'ft3Talk' | 'ft3Mission' | 'ft3Next'
   // Literacy B · Lesson 2 (slides/motion/g-lb2.tsx)
   | 'lb2Cover' | 'lb2Recall' | 'lb2Fast' | 'lb2Stand' | 'lb2Claps' | 'lb2Hadha' | 'lb2Waw' | 'lb2Yaa' | 'lb2Spot' | 'lb2Sort' | 'lb2Along' | 'lb2Mission' | 'lb2Next'
+  // Literacy B · Lesson 3 (slides/motion/g-lb3.tsx)
+  | 'lb3Cover' | 'lb3Recall' | 'lb3Mystery' | 'lb3Zero' | 'lb3Group' | 'lb3Asr' | 'lb3Ana' | 'lb3Spot' | 'lb3Sort' | 'lb3Along' | 'lb3Mission' | 'lb3Next'
   // Quran Reading · Lesson 2 (slides/motion/g-qr2.tsx)
   | 'qr2Cover' | 'qr2Warm' | 'qr2Shadda' | 'qr2Nas1' | 'qr2Nas4' | 'qr2Rhyme' | 'qr2Falaq1' | 'qr2Falaq4' | 'qr2Review' | 'qr2Read' | 'qr2Mission' | 'qr2Next'
   // Quran Reading · Lesson 3 (slides/motion/g-qr3.tsx)

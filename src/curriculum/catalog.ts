@@ -30,6 +30,7 @@ import { lessonF03 } from './content/fusha-kids/l03-this-one-that-one.js';
 import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonFT03 } from './content/fusha-12/l03-near-and-far.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
+import { lessonB03 } from './content/literacy-b/l03-written-not-read.js';
 import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
 import { lessonQ03 } from './content/quran-reading/l03-one-and-many.js';
 import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
@@ -285,7 +286,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'The Name of Allah', 'The Wavy Line', 'Tanween, the Mushaf Way', 'Where to Stop', 'Stopping on a Word',
       'Letters With Names', 'Reading a Whole Surah',
     ],
-    lessons: { 1: lessonB01, 2: lessonB02 },
+    lessons: { 1: lessonB01, 2: lessonB02, 3: lessonB03 },
   },
   {
     id: 'english-kids',
