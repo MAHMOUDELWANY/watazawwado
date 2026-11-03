@@ -9,6 +9,7 @@ import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
+import { AuthCard, AuthPortal, EntranceBackdrop } from './auth/AuthFrame';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
@@ -19,17 +20,6 @@ interface StudentAuthModalProps {
 }
 
 type View = 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
-
-const VERSE_TEXT = '﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾';
-// Thmanyah has no ornate Quranic brackets: the verse uses Amiri Quran, loaded for these letters only (as on the homepage).
-function loadVerseFont() {
-  if (typeof document === 'undefined' || document.getElementById('verse-font-auth') || document.getElementById('verse-font')) return;
-  const link = document.createElement('link');
-  link.id = 'verse-font-auth';
-  link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE_TEXT)).join(''));
-  document.head.appendChild(link);
-}
 
 export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login' }: StudentAuthModalProps) {
   const [view, setView] = useState<View>(initialView);
@@ -89,7 +79,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
 
   useEffect(() => {
     if (isOpen) {
-      loadVerseFont();
       if (typeof window !== 'undefined') {
         const hash = window.location.hash.toLowerCase();
         if (hash.includes('type=recovery') || hash === '#reset-password') {
@@ -220,8 +209,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   };
   const isSignup = view === 'signup';
   const showTabs = view === 'login' || isSignup;
-  const isWide = view !== 'verify';
-  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[68rem]';
 
   const googleButton = (
     <button
@@ -244,39 +231,39 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+          className="fixed inset-0 z-50"
           role="dialog"
           aria-modal="true"
           aria-labelledby="auth-modal-title"
           dir={isAr ? 'rtl' : 'ltr'}
         >
           <FocusTrap onEscape={onClose}>
+          {/* The whole screen is the sign-in page (AuthFrame "paper and ink"): the paper, a slim bar, one column. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#05363F]/50 dark:bg-black/65 backdrop-blur-sm"
-            onClick={onClose}
-          />
-
-          {/* Phones: a bottom sheet; tablets: one card; desktop: the brand pane beside the form. */}
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 32 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 320 }}
-            className={`auth-sheet relative w-full ${width} ${isWide ? 'is-wide' : ''}`}
+            transition={{ duration: 0.3 }}
+            className="entrance entrance-overlay text-foreground"
           >
-            {view === 'verify' ? (
-              <div className="relative p-6 sm:p-8">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label={isAr ? 'إغلاق' : 'Close'}
-                  className="absolute top-4 end-4 z-20 w-11 h-11 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
-                >
+            <EntranceBackdrop />
+            <div className="entrance-bar">
+              <span className="entrance-brand" aria-hidden="true">
+                <img src="/logo-256.png" alt="" className="w-9 h-auto" />
+                <span className="font-editorial text-lg font-bold leading-none">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
+              </span>
+              <div className="flex items-center gap-1">
+                <ThemeToggle compact className="!w-11 !h-11 !rounded-full !bg-transparent !border-0 !shadow-none" />
+                <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
                   <X className="w-4 h-4" />
                 </button>
+              </div>
+            </div>
+
+            <main className="relative flex-1 w-full px-6 pt-6 pb-12 flex items-center justify-center">
+              <AuthCard wide={view === 'verify'} className={isSignup ? 'sm:max-w-[30rem]' : ''}>
+            {view === 'verify' ? (
+              <div>
                 <OtpVerificationCard
                   initialEmail={email}
                   onVerify={async (code, targetEmail) => {
@@ -303,78 +290,12 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 />
               </div>
             ) : (
-              <div className={isWide ? 'auth-split' : ''}>
-                {/* Brand pane (desktop): a mihrab drawn in gold line, the khatam turning in its crown, the verse inside. */}
-                <aside className="auth-art hidden lg:flex" aria-hidden="true">
-                  <svg className="auth-art-frame" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid meet" fill="none">
-                    <path pathLength={1} className="auth-art-line" d="M34 600V262C34 158 112 92 200 30c88 62 166 128 166 232v338" />
-                    <path pathLength={1} className="auth-art-line is-inner" d="M56 600V268C56 176 124 116 200 62c76 54 144 114 144 206v332" />
-                    <g className="auth-art-khatam" transform="translate(200 182)">
-                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" />
-                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" transform="rotate(45)" />
-                      <circle pathLength={1} className="auth-art-line is-star" r="20" />
-                    </g>
-                    <path className="auth-art-ribbon" d="M80 548c40-14 80-14 120 0s80 14 120 0" pathLength={1} />
-                  </svg>
+                <>
+                  <AuthPortal heading="h2" titleId="auth-modal-title" title={titles[view][0]} subtitle={titles[view][1]} />
 
-                  <div className="auth-art-mark">
-                    <span className="grid place-items-center w-10 h-10 rounded-[14px] bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60">
-                      <img src="/logo-256.png" alt="" className="w-7 h-auto" />
-                    </span>
-                    <span className="leading-tight">
-                      <span className="block font-editorial text-base font-bold text-[#FAF7F2]">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
-                      <span className="block text-[11px] tracking-wide text-[#E9DCC6]/70">{isAr ? 'أكاديمية حصص فردية أونلاين' : 'One-to-one online academy'}</span>
-                    </span>
-                  </div>
-
-                  <div className="auth-art-body">
-                    <p className="auth-art-verse" dir="rtl" lang="ar">{VERSE_TEXT}</p>
-                    <p className="auth-art-line-text font-editorial">
-                      {isAr ? <>زادٌ يبقى،<br />لك ولأهل بيتك.</> : <>Provision that lasts,<br />for you and your family.</>}
-                    </p>
-                  </div>
-
-                  <p className="auth-art-promises">
-                    {(isAr
-                      ? ['معلم واحد يعرفك باسمك', 'حصة تجريبية مجانية', 'حساب واحد لكل العيلة']
-                      : ['One teacher who knows you', 'A free trial first', 'One account for the family']
-                    ).map((line, i) => (
-                      <React.Fragment key={line}>
-                        {i > 0 && <span className="auth-art-dot" />}
-                        <span>{line}</span>
-                      </React.Fragment>
-                    ))}
-                  </p>
-                </aside>
-
-                <div className="auth-form-col">
-                  {/* Top bar: the mark on phones and tablets, day/night and close everywhere. */}
-                  <div className="auth-topbar flex items-center justify-between gap-2 px-5 sm:px-7 pt-3 sm:pt-5">
-                    <span className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 h-1.5 w-10 rounded-full bg-border" aria-hidden="true" />
-                    <span className="lg:invisible grid place-items-center w-11 h-11 mt-2 sm:mt-0 rounded-2xl bg-[#FAF7F2] ring-1 ring-[#E5A93C]/50 shadow-[var(--shadow-1)]" aria-hidden="true">
-                      <img src="/logo-256.png" alt="" className="w-8 h-auto" />
-                    </span>
-                    <div className="flex items-center gap-1.5 mt-2 sm:mt-0">
-                      <ThemeToggle compact className="!w-10 !h-10 !rounded-full" />
-                      <button
-                        type="button"
-                        onClick={onClose}
-                        aria-label={isAr ? 'إغلاق' : 'Close'}
-                        className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground bg-surface-subtle hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer focus-ring"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="auth-head px-5 sm:px-7 pt-3">
-                    <h2 id="auth-modal-title" className="font-editorial text-[1.7rem] sm:text-[1.9rem] font-bold text-foreground leading-tight">{titles[view][0]}</h2>
-                    <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{titles[view][1]}</p>
-                  </div>
-
-                  <div className="px-5 sm:px-7 pt-5 pb-[max(1.75rem,env(safe-area-inset-bottom))]">
+                  <div className="pt-7 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                     {showTabs && (
-                      <div className="auth-tabs mb-5" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
+                      <div className="auth-tabs mb-7" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
                         {(['login', 'signup'] as const).map((v) => (
                           <button
                             key={v}
@@ -382,9 +303,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                             role="tab"
                             aria-selected={view === v}
                             onClick={() => { setView(v); setError(''); setSuccess(''); }}
-                            className="relative z-10 min-h-10 rounded-full text-sm font-bold transition-colors cursor-pointer focus-ring aria-selected:text-foreground text-muted-foreground hover:text-foreground"
+                            className="relative min-h-11 text-[0.95rem] font-semibold transition-colors cursor-pointer focus-ring aria-selected:text-foreground text-muted-foreground hover:text-foreground"
                           >
-                            {view === v && <motion.span layoutId="auth-tab" className="absolute inset-0 -z-10 rounded-full bg-surface shadow-[var(--shadow-1)] ring-1 ring-border/60" transition={{ type: 'spring', stiffness: 460, damping: 36 }} />}
+                            {view === v && <motion.span layoutId="auth-tab" className="auth-tab-mark" transition={{ type: 'spring', stiffness: 460, damping: 36 }} />}
                             {v === 'login' ? (isAr ? 'دخول' : 'Sign in') : (isAr ? 'حساب جديد' : 'New account')}
                           </button>
                         ))}
@@ -470,12 +391,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                         </fieldset>
                       )}
 
-                      {showTabs && (
-                        <>
-                          {googleButton}
-                          <div className="auth-divider">{isAr ? 'أو بالإيميل' : 'or with email'}</div>
-                        </>
-                      )}
 
                       {isSignup && (
                         <div className="auth-half">
@@ -582,6 +497,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       <Button type="submit" isLoading={isSubmitting} className="w-full !h-12 !rounded-full !text-base !font-bold">
                         {submitLabel[view]}
                       </Button>
+
+                      {showTabs && (
+                        <>
+                          <div className="auth-divider">{isAr ? 'أو' : 'or'}</div>
+                          {googleButton}
+                        </>
+                      )}
                     </form>
 
                     {view === 'login' && (
@@ -611,9 +533,10 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       </p>
                     )}
                   </div>
-                </div>
-              </div>
+                </>
             )}
+              </AuthCard>
+            </main>
           </motion.div>
           </FocusTrap>
         </div>

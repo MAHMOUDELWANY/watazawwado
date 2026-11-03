@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, animate, useMotionValue, useReducedMotion } from 'motion/react';
 import type { AnimationPlaybackControls } from 'motion/react';
-import { ArrowLeft, ArrowRight, Check, Globe, KeyRound, RefreshCw, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, KeyRound, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { ThemeToggle } from '../ui/ThemeToggle';
 import {
   OTP_LENGTH,
   applyBackspace,
@@ -270,11 +269,6 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     }
   };
 
-  const toggleLang = () => {
-    onToggleLang?.();
-    setLang((l) => (l === 'ar' ? 'en' : 'ar'));
-  };
-
   // Where each box sits in every phase.
   const boxTarget = (i: number) => {
     const rowX = ((i % perRow) - (perRow - 1) / 2) * step;
@@ -316,10 +310,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     ? t('تم التأكيد بنجاح', 'Verified successfully')
     : error || notice || '';
 
-  const card =
-    variant === 'page'
-      ? 'rounded-[2rem] border p-6 sm:p-10 backdrop-blur-2xl bg-white/60 border-white/80 shadow-[0_30px_80px_-30px_rgba(5,54,63,0.35),inset_0_1px_0_rgba(255,255,255,0.9)] dark:bg-[#06343C]/55 dark:border-[#E5A93C]/20 dark:shadow-[0_30px_90px_-30px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(229,169,60,0.15)]'
-      : '';
+  // 'page' sits inside the sign-in door (AuthCard), which draws the frame; this only pads the content.
+  const card = '';
 
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} className={`relative w-full max-w-md mx-auto overflow-hidden ${card}`}>
@@ -333,7 +325,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
         transition={{ duration: 0.6 }}
       />
 
-      <div className="relative flex items-center justify-between mb-6">
+      <div className={`relative flex items-center justify-between ${onBack ? 'mb-6' : ''}`}>
         {onBack ? (
           <button
             type="button"
@@ -345,19 +337,6 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
           </button>
         ) : (
           <span />
-        )}
-        {variant === 'page' && (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={toggleLang}
-              className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1.5 rounded-lg text-foreground/80 hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-            >
-              <Globe className="w-4 h-4" />
-              {isAr ? 'English' : 'عربي'}
-            </button>
-            <ThemeToggle compact />
-          </div>
         )}
       </div>
 
@@ -485,7 +464,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                       onKeyDown={(e) => onKeyDown(i, e)}
                       onPaste={(e) => onPaste(i, e)}
                       className={`w-full h-full text-center text-2xl font-bold tabular-nums rounded-2xl outline-none caret-transparent backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-200 disabled:opacity-100
-                        bg-white/70 dark:bg-white/[0.06] text-foreground border
+                        bg-surface dark:bg-white/[0.06] text-foreground border
                         ${
                           busy
                             ? 'border-[#C99130]/60 dark:border-[#E5A93C]/50 border-t-[#C51F24] dark:border-t-[#E82C32] shadow-[0_-3px_14px_-2px_rgba(197,31,36,0.55)]'
@@ -494,8 +473,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                             : active
                             ? 'border-[#C99130] dark:border-[#E5A93C] shadow-[0_0_0_4px_rgba(229,169,60,0.18),0_0_24px_rgba(229,169,60,0.35)]'
                             : d
-                            ? 'border-[#087D91]/50 dark:border-[#12A4BC]/50'
-                            : 'border-[#05363F]/12 dark:border-white/12'
+                            ? 'border-foreground/50'
+                            : 'border-foreground/20 dark:border-white/20'
                         }`}
                     />
                     {active && !d && (
@@ -567,7 +546,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
           <Button
             type="button"
             size="lg"
-            className="w-full"
+            className="otp-verify w-full !rounded-full"
             isLoading={busy}
             disabled={!isComplete(digits, length)}
             onClick={() => verify(digits.join(''))}
@@ -582,7 +561,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                 type="button"
                 onClick={resend}
                 disabled={countdown > 0 || isResending || busy}
-                className={`inline-flex items-center gap-1 font-semibold rounded px-1 text-[#087D91] dark:text-[#12A4BC] hover:underline disabled:no-underline disabled:text-muted-foreground disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}
+                className={`inline-flex items-center gap-1 font-semibold rounded px-1 text-[var(--crimson)] dark:text-[#F0B54A] hover:underline disabled:no-underline disabled:text-muted-foreground disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}
               >
                 {isResending && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 {t('أعد الإرسال', 'Resend')}

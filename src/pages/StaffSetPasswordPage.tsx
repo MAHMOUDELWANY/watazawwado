@@ -52,7 +52,7 @@ export default function StaffSetPasswordPage() {
           title={t('Choose your password', 'اختار كلمة السر بتاعتك')}
           subtitle={t('You will use it with your email to sign in from any device.', 'هتستخدمها مع إيميلك عشان تدخل من أي جهاز.')}
         />
-        <div className="px-6 sm:px-8 pt-6 pb-7">
+        <div className="pt-8">
 
         {!loading && !user ? (
           <div className="space-y-4 text-center">
