@@ -51,7 +51,7 @@ export function AuthPortal({ title, subtitle, titleId, heading: Heading = 'h1' }
 /** Full-page sign-in backdrop: khatam field and brand lights, a slim top bar, the card in the middle. */
 export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onToggleLang?: () => void; children: React.ReactNode }) {
   return (
-    <div dir={isAr ? 'rtl' : 'ltr'} className="khatam-field brand-lights min-h-dvh bg-background text-foreground flex flex-col">
+    <div dir={isAr ? 'rtl' : 'ltr'} className="auth-page khatam-field brand-lights min-h-dvh bg-background text-foreground flex flex-col">
       <header className="w-full max-w-5xl mx-auto px-4 sm:px-6 pt-5 flex items-center justify-between gap-3">
         <Link to="/" className="btn-glass is-pill !min-h-10 !px-4 text-sm">
           <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />

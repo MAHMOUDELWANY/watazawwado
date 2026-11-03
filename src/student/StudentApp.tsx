@@ -335,17 +335,22 @@ export default function StudentApp() {
               : 'Sign in to see your lessons, your Zoom link and your teacher’s notes, or open a new account in a minute.'}
           />
           <div className="px-6 sm:px-8 pt-6 pb-7 space-y-3">
-            <Button onClick={() => { setAuthInitialView('login'); setAuthModalOpen(true); }} className="w-full !rounded-full gap-2">
+            <Button onClick={() => { setAuthInitialView('login'); setAuthModalOpen(true); }} className="w-full !h-12 !rounded-full !text-base !font-bold gap-2">
               <span>{isAr ? 'ادخل حسابك' : 'Sign in'}</span>
               <ArrowRight className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
             </Button>
-            <button type="button" onClick={() => { setAuthInitialView('signup'); setAuthModalOpen(true); }} className="btn-glass is-pill w-full">
+            <button type="button" onClick={() => { setAuthInitialView('signup'); setAuthModalOpen(true); }} className="auth-google">
               {isAr ? 'افتح حساب جديد' : 'Create an account'}
             </button>
+            <div className="auth-divider !my-4">{isAr ? 'أو' : 'or'}</div>
             {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
-            <Link to="/kid" className="btn-glass is-pill w-full gap-2" data-testid="kid-link-entry">
-              <MonitorSmartphone className="w-4 h-4" aria-hidden="true" />
-              <span>{isAr ? 'معايا كود من بابا أو ماما' : 'I have a code from my parent'}</span>
+            <Link to="/kid" className="auth-kid-entry" data-testid="kid-link-entry">
+              <span className="auth-choice-icon"><MonitorSmartphone className="w-[18px] h-[18px]" aria-hidden="true" /></span>
+              <span className="min-w-0 flex-1 text-start">
+                <span className="block text-sm font-bold text-foreground">{isAr ? 'معايا كود من بابا أو ماما' : 'I have a code from my parent'}</span>
+                <span className="block text-xs text-muted-foreground">{isAr ? 'اربط الجهاز ده بحساب العيلة' : 'Link this device to the family account'}</span>
+              </span>
+              <ArrowRight className="w-4 h-4 shrink-0 text-muted-foreground rtl:-scale-x-100" aria-hidden="true" />
             </Link>
             <InstallAppEntry isAr={isAr} className="!mt-5" />
             <p className="pt-3 text-center text-sm text-muted-foreground">

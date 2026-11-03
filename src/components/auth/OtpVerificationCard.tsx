@@ -4,7 +4,6 @@ import type { AnimationPlaybackControls } from 'motion/react';
 import { ArrowLeft, ArrowRight, Check, Globe, KeyRound, RefreshCw, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import { ThemeToggle } from '../ui/ThemeToggle';
 import {
   OTP_LENGTH,
   applyBackspace,
@@ -356,7 +355,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
               <Globe className="w-4 h-4" />
               {isAr ? 'English' : 'عربي'}
             </button>
-            <ThemeToggle compact />
+            {/* Day/night lives in the page header (AuthPage), so the card keeps only the language switch. */}
           </div>
         )}
       </div>
@@ -567,7 +566,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
           <Button
             type="button"
             size="lg"
-            className="w-full"
+            className="otp-verify w-full !rounded-full"
             isLoading={busy}
             disabled={!isComplete(digits, length)}
             onClick={() => verify(digits.join(''))}

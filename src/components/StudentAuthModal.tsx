@@ -221,7 +221,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   const isSignup = view === 'signup';
   const showTabs = view === 'login' || isSignup;
   const isWide = view !== 'verify';
-  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[68rem]';
+  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[62rem]';
 
   const googleButton = (
     <button
@@ -255,7 +255,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#05363F]/50 dark:bg-black/65 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#021C22]/60 dark:bg-black/70 backdrop-blur-md"
             onClick={onClose}
           />
 
@@ -304,19 +304,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
               </div>
             ) : (
               <div className={isWide ? 'auth-split' : ''}>
-                {/* Brand pane (desktop): a mihrab drawn in gold line, the khatam turning in its crown, the verse inside. */}
+                {/* Brand pane (desktop): the mark, a mihrab window holding the khatam and the verse, then three promises. */}
                 <aside className="auth-art hidden lg:flex" aria-hidden="true">
-                  <svg className="auth-art-frame" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid meet" fill="none">
-                    <path pathLength={1} className="auth-art-line" d="M34 600V262C34 158 112 92 200 30c88 62 166 128 166 232v338" />
-                    <path pathLength={1} className="auth-art-line is-inner" d="M56 600V268C56 176 124 116 200 62c76 54 144 114 144 206v332" />
-                    <g className="auth-art-khatam" transform="translate(200 182)">
-                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" />
-                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" transform="rotate(45)" />
-                      <circle pathLength={1} className="auth-art-line is-star" r="20" />
-                    </g>
-                    <path className="auth-art-ribbon" d="M80 548c40-14 80-14 120 0s80 14 120 0" pathLength={1} />
-                  </svg>
-
                   <div className="auth-art-mark">
                     <span className="grid place-items-center w-10 h-10 rounded-[14px] bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60">
                       <img src="/logo-256.png" alt="" className="w-7 h-auto" />
@@ -327,24 +316,30 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     </span>
                   </div>
 
-                  <div className="auth-art-body">
+                  <div className="auth-art-window">
+                    <svg className="auth-art-khatam" viewBox="-40 -40 80 80" fill="none">
+                      <rect pathLength={1} className="auth-art-line" x="-26" y="-26" width="52" height="52" />
+                      <rect pathLength={1} className="auth-art-line" x="-26" y="-26" width="52" height="52" transform="rotate(45)" />
+                      <circle pathLength={1} className="auth-art-line" r="14" />
+                    </svg>
                     <p className="auth-art-verse" dir="rtl" lang="ar">{VERSE_TEXT}</p>
+                    <span className="auth-art-rule" />
                     <p className="auth-art-line-text font-editorial">
                       {isAr ? <>زادٌ يبقى،<br />لك ولأهل بيتك.</> : <>Provision that lasts,<br />for you and your family.</>}
                     </p>
                   </div>
 
-                  <p className="auth-art-promises">
+                  <ul className="auth-art-promises">
                     {(isAr
                       ? ['معلم واحد يعرفك باسمك', 'حصة تجريبية مجانية', 'حساب واحد لكل العيلة']
-                      : ['One teacher who knows you', 'A free trial first', 'One account for the family']
-                    ).map((line, i) => (
-                      <React.Fragment key={line}>
-                        {i > 0 && <span className="auth-art-dot" />}
-                        <span>{line}</span>
-                      </React.Fragment>
+                      : ['One teacher who knows you by name', 'A free trial lesson first', 'One account for the whole family']
+                    ).map((line) => (
+                      <li key={line}>
+                        <span className="auth-art-check"><Check className="w-3 h-3" strokeWidth={3} /></span>
+                        {line}
+                      </li>
                     ))}
-                  </p>
+                  </ul>
                 </aside>
 
                 <div className="auth-form-col">
@@ -368,11 +363,12 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                   </div>
 
                   <div className="auth-head px-5 sm:px-7 pt-3">
+                    {showTabs && <p className="auth-head-verse lg:hidden" dir="rtl" lang="ar" aria-hidden="true">{VERSE_TEXT}</p>}
                     <h2 id="auth-modal-title" className="font-editorial text-[1.7rem] sm:text-[1.9rem] font-bold text-foreground leading-tight">{titles[view][0]}</h2>
                     <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{titles[view][1]}</p>
                   </div>
 
-                  <div className="px-5 sm:px-7 pt-5 pb-[max(1.75rem,env(safe-area-inset-bottom))]">
+                  <div className="auth-body px-5 sm:px-7 pt-5 pb-[max(1.75rem,env(safe-area-inset-bottom))]">
                     {showTabs && (
                       <div className="auth-tabs mb-5" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
                         {(['login', 'signup'] as const).map((v) => (
