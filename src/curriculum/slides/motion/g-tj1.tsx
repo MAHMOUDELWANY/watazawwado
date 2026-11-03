@@ -11,18 +11,18 @@ import { Hear, QURAN_FONT, useQuranFont } from '../Say';
  * layers on the real text. The Prophet ﷺ, Jibril and the companions are never drawn: they are names on points of light.
  */
 
-const MUSHAF = '#0E5A4B';
+export const MUSHAF = '#0E5A4B';
 const AR: React.CSSProperties = { fontFamily: 'var(--font-display-ar)', fontWeight: 800, direction: 'rtl' };
 
 /** Uthmani text in the Mushaf font; playable when `clip` names one of the page's clips. */
-function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
+export function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
   useQuranFont();
   const text = <span lang="ar" dir="rtl" style={{ fontFamily: QURAN_FONT, fontSize: size, lineHeight: 1.9, color, whiteSpace: 'nowrap', ...style }}>{children}</span>;
   return clip ? <Hear id={clip}>{text}</Hear> : text;
 }
 
 /** A Mushaf panel: deep green with a gold frame. */
-function Panel({ x, y, w, h, children, delay = 0 }: { x: number; y: number; w: number; h: number; children?: React.ReactNode; delay?: number }) {
+export function Panel({ x, y, w, h, children, delay = 0 }: { x: number; y: number; w: number; h: number; children?: React.ReactNode; delay?: number }) {
   return (
     <motion.div className="absolute flex flex-col items-center justify-center rounded-[18px]" style={{ left: x, top: y, width: w, height: h, background: MUSHAF, boxShadow: `inset 0 0 0 6px ${GOLD}, inset 0 0 0 10px ${MUSHAF}, inset 0 0 0 12px ${GOLD}88, 0 30px 60px -30px rgba(10,40,30,0.7)` }}
       initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay, ease }}>

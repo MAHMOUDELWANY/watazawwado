@@ -27,6 +27,7 @@ import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
 import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
 import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
+import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -329,7 +330,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Lips Together', 'The Hum', 'Sun and Moon', 'The Name Allah', 'Two Counts', 'When Hamza Follows', 'More Stretches',
       'The Longest Stretch', 'Heavy and Light', 'Raa', 'Where to Stop', 'Level 1 Recital',
     ],
-    lessons: { 1: lessonT01 },
+    lessons: { 1: lessonT01, 2: lessonT02 },
   },
   {
     id: 'egyptian-adults',
