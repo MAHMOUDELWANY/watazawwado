@@ -799,3 +799,9 @@ B3–B5 → continue lesson by lesson.
   the three ages (ج ح خ, and د ذ for teens and adults; `g-la3.tsx`; stroke paths added to `letters.tsx`). Every version
   now has at least 3 lessons. Drafts,
   `reviewed: false`.
+- **2026-11-03 · Voice takes placed.** The owner's ElevenLabs takes are cut on their silences in the frozen order of
+  `voice/by-voice.json` and copied to every lesson that uses each line: Fusha parts 1–10, English parts 1–3, both
+  letter-sound takes, Egyptian parts 1–2 (288 files, every one checked with speech-to-text). Fusha part 1 had a faint
+  stray sound after line 1 and دَجَاج/ذُبَاب in one segment; cut by hand. **Egyptian parts 3–16 (lines 25–192, 215
+  files) are not recorded:** the owner found the ElevenLabs Egyptian voice weak and a fix is being decided. Do not
+  regenerate `by-voice.json` before those are cut.
