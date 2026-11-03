@@ -852,4 +852,8 @@ B3–B5 → continue lesson by lesson.
   `g-fv2.tsx` (front tags on the right edge of whole-word tiles; back tags where the form also has an ending). New
   Fusha clips wait for a new Fusha part. Every step screenshotted. Next: Lesson 3 "My Father, Your Brother" (the five
   nouns), both versions.
+- **2026-11-03 · Fusha Level 2, Lesson 3 built for Kids and 12+** (drafts, overnight run): Kids "My Father, Your
+  Brother" (13 pages, Jiddo's photo album, kunya أَبُو أَحْمَدَ, ذُو) and 12+ "The Video Call" (13 pages, the five nouns
+  in three positions, linked to the case vowels). Brief `fusha/L2-03-five-nouns.md`, graphics `g-fv3.tsx`. Fusha
+  Level 2 now has its first 3 lessons in both versions. Next: Fusha Level 3 map, then its Lessons 1-3 (Kids, 12+).
 

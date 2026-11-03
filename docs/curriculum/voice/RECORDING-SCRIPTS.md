@@ -365,6 +365,44 @@ One take: paste this whole block as one generation; I cut it into the files abov
 ذَهَبْتُ إِلَى ٱلْحَدِيقَةِ. <break time="1.2s" /> مَتَى تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ يَا يُوسُفُ؟ <break time="1.2s" /> أَذْهَبُ فِي ٱلصَّبَاحِ. <break time="1.2s" /> وَمَاذَا تَفْعَلُ هُنَاكَ؟ <break time="1.2s" /> أَكْتُبُ، وَأَقْرَأُ، وَأَلْعَبُ! <break time="1.2s" /> وَجِدِّي يَذْهَبُ إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> وَفِي ٱلْمَسَاءِ نَأْكُلُ مَعًا. <break time="1.2s" /> أَذْهَبُ <break time="1.2s" /> أَذْهَبُ إِلَى ٱلْمَدْرَسَةِ كُلَّ يَوْمٍ. <break time="1.2s" /> يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> تَذْهَبُ مَرْيَمُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> أَنْتَ تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ. <break time="1.2s" /> نَذْهَبُ <break time="1.2s" /> نَذْهَبُ إِلَى ٱلْمَسْجِدِ مَعًا. <break time="1.2s" /> يَكْتُبُ <break time="1.2s" /> أَكْتُبُ <break time="1.2s" /> يَلْعَبُ <break time="1.2s" /> تَلْعَبُ <break time="1.2s" /> يَشْرَبُ <break time="1.2s" /> نَشْرَبُ <break time="1.2s" /> مَتَى تَذْهَبُ إِلَى ٱلْعَمَلِ؟ <break time="1.2s" /> هَذَا أَبِي، وَهَذَا أَخِي.
 ```
 
+## Fusha Arabic · Kids · Level 2 · Lesson 3: My Father, Your Brother
+
+Folder: `public/curriculum/fusha-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (23)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-yadhhabu-jiddi.mp3 | 2 | friendly | يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. |
+| 2 | l03-story-1.mp3 | 4 | curious boy | مَنْ هَذَا ٱلْوَلَدُ يَا جِدِّي؟ |
+| 3 | l03-story-2.mp3 | 4 | warm grandfather, smiling | هَذَا أَحْمَدُ، أَبُو يُوسُفَ وَمَرْيَمَ! |
+| 4 | l03-story-3.mp3 | 4 | girl, laughing | أَبِي صَغِيرٌ! |
+| 5 | l03-story-4.mp3 | 4 | curious boy | وَمَنْ هَذَا؟ |
+| 6 | l03-story-5.mp3 | 4 | warm grandfather, remembering | هَذَا أَخِي سَعِيدٌ. |
+| 7 | l03-story-6.mp3 | 4 | grandfather, playful | وَهَذَا قِطٌّ ذُو ذَيْلٍ طَوِيلٍ! |
+| 8 | l03-ab.mp3 | 5 |  | أَبٌ |
+| 9 | l03-abi.mp3 | 5 | warm | أَبِي |
+| 10 | l03-abu-yusuf.mp3 | 5 |  | أَبُو يُوسُفَ |
+| 11 | l03-akh.mp3 | 6 |  | أَخٌ |
+| 12 | l03-akhi.mp3 | 6 | warm | أَخِي |
+| 13 | l03-akhu-maryam.mp3 | 6 |  | أَخُو مَرْيَمَ |
+| 14 | l03-ila-abi-ahmad.mp3 | 7 |  | يَذْهَبُ يُوسُفُ إِلَى أَبِي أَحْمَدَ. |
+| 15 | l03-maa-akhi-maryam.mp3 | 7 |  | يَلْعَبُ سَامِي مَعَ أَخِي مَرْيَمَ. |
+| 16 | l03-abu-ahmad.mp3 | 8 | respectful | أَبُو أَحْمَدَ |
+| 17 | l03-umm-ahmad.mp3 | 8 | respectful | أُمُّ أَحْمَدَ |
+| 18 | l03-dhu.mp3 | 9 |  | ذُو |
+| 19 | l03-qitt-dhu-dhayl.mp3 | 9 | playful | قِطٌّ ذُو ذَيْلٍ طَوِيلٍ. |
+| 20 | l03-rajul-dhu-lihya.mp3 | 9 | warm | رَجُلٌ ذُو لِحْيَةٍ بَيْضَاءَ. |
+| 21 | l03-haadha-abi.mp3 | 11 | proud | هَذَا أَبِي. |
+| 22 | l03-haadha-akhi.mp3 | 11 | proud | هَذَا أَخِي. |
+| 23 | l03-ma-rattabtuha.mp3 | 13 | guilty boy | لَا، مَا رَتَّبْتُهَا… بَعْدُ! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> مَنْ هَذَا ٱلْوَلَدُ يَا جِدِّي؟ <break time="1.2s" /> هَذَا أَحْمَدُ، أَبُو يُوسُفَ وَمَرْيَمَ! <break time="1.2s" /> أَبِي صَغِيرٌ! <break time="1.2s" /> وَمَنْ هَذَا؟ <break time="1.2s" /> هَذَا أَخِي سَعِيدٌ. <break time="1.2s" /> وَهَذَا قِطٌّ ذُو ذَيْلٍ طَوِيلٍ! <break time="1.2s" /> أَبٌ <break time="1.2s" /> أَبِي <break time="1.2s" /> أَبُو يُوسُفَ <break time="1.2s" /> أَخٌ <break time="1.2s" /> أَخِي <break time="1.2s" /> أَخُو مَرْيَمَ <break time="1.2s" /> يَذْهَبُ يُوسُفُ إِلَى أَبِي أَحْمَدَ. <break time="1.2s" /> يَلْعَبُ سَامِي مَعَ أَخِي مَرْيَمَ. <break time="1.2s" /> أَبُو أَحْمَدَ <break time="1.2s" /> أُمُّ أَحْمَدَ <break time="1.2s" /> ذُو <break time="1.2s" /> قِطٌّ ذُو ذَيْلٍ طَوِيلٍ. <break time="1.2s" /> رَجُلٌ ذُو لِحْيَةٍ بَيْضَاءَ. <break time="1.2s" /> هَذَا أَبِي. <break time="1.2s" /> هَذَا أَخِي. <break time="1.2s" /> لَا، مَا رَتَّبْتُهَا… بَعْدُ!
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -1046,6 +1084,46 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 مَتَى تَدْرُسِينَ يَا سَارَةُ؟ <break time="1.2s" /> أَدْرُسُ فِي ٱلصَّبَاحِ، وَأَعْمَلُ فِي ٱلْمَسَاءِ. <break time="1.2s" /> وَأَنْتَ يَا يُوسُفُ؟ <break time="1.2s" /> أَلْعَبُ كُرَةَ ٱلْقَدَمِ فِي ٱلصَّبَاحِ. <break time="1.2s" /> إِذَنْ نَدْرُسُ مَعًا يَوْمَ ٱلْأَحَدِ. <break time="1.2s" /> وَبَعْدَ ٱلدَّرْسِ يَذْهَبُ ٱلطُّلَّابُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> أَدْرُسُ <break time="1.2s" /> نَدْرُسُ <break time="1.2s" /> يَدْرُسُ <break time="1.2s" /> تَدْرُسُ <break time="1.2s" /> أَنَيْتُ <break time="1.2s" /> تَدْرُسِينَ <break time="1.2s" /> مَتَى تَدْرُسِينَ؟ <break time="1.2s" /> تَدْرُسُونَ <break time="1.2s" /> يَدْرُسُونَ <break time="1.2s" /> ٱلطُّلَّابُ يَذْهَبُونَ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> ذَهَبَ يَذْهَبُ <break time="1.2s" /> كَتَبَ يَكْتُبُ <break time="1.2s" /> جَلَسَ يَجْلِسُ <break time="1.2s" /> عَمِلَ يَعْمَلُ <break time="1.2s" /> دَرَسَ يَدْرُسُ <break time="1.2s" /> مَتَى تَدْرُسُ؟ <break time="1.2s" /> مَتَى تَعْمَلُ؟ <break time="1.2s" /> هَذَا أَبُو سَارَةَ.
+```
+
+## Fusha Arabic · 12+ · Level 2 · Lesson 3: The Video Call
+
+Folder: `public/curriculum/fusha-12-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (25)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-1.mp3 | 3 | young woman, introducing | هَذَا أَبِي، وَهَذَا أَخِي ٱلصَّغِيرُ عُمَرُ. |
+| 2 | l03-story-2.mp3 | 3 | father, warm | أَهْلًا يَا يُوسُفُ! أَنَا أَبُو عُمَرَ. |
+| 3 | l03-story-3.mp3 | 3 | young man, polite | تَشَرَّفْنَا يَا أَبَا عُمَرَ! |
+| 4 | l03-story-4.mp3 | 3 | little boy, excited | وَأَنَا أَخُو سَارَةَ! |
+| 5 | l03-story-5.mp3 | 3 | teacher, kind | سَلِّمِي عَلَى أَبِي عُمَرَ يَا سَارَةُ. |
+| 6 | l03-story-6.mp3 | 3 | young woman | إِنْ شَاءَ ٱللَّهُ، يَا أُسْتَاذُ. |
+| 7 | l03-ab.mp3 | 4 |  | أَبٌ |
+| 8 | l03-akh.mp3 | 4 |  | أَخٌ |
+| 9 | l03-ham.mp3 | 4 |  | حَمٌ |
+| 10 | l03-fam.mp3 | 4 |  | فَمٌ |
+| 11 | l03-dhu.mp3 | 4 |  | ذُو |
+| 12 | l03-abu-umar.mp3 | 4 |  | أَبُو عُمَرَ |
+| 13 | l03-jaa-abu-umar.mp3 | 5 |  | جَاءَ أَبُو عُمَرَ. |
+| 14 | l03-akhu-sarah.mp3 | 5 |  | هَذَا أَخُو سَارَةَ. |
+| 15 | l03-raaytu-aba-umar.mp3 | 6 |  | رَأَيْتُ أَبَا عُمَرَ. |
+| 16 | l03-ya-aba-umar.mp3 | 6 | calling, polite | يَا أَبَا عُمَرَ! |
+| 17 | l03-ala-abi-umar.mp3 | 7 |  | سَلِّمِي عَلَى أَبِي عُمَرَ. |
+| 18 | l03-baytu-akhi-sarah.mp3 | 7 |  | بَيْتُ أَخِي سَارَةَ |
+| 19 | l03-al-waladu.mp3 | 8 |  | ٱلْوَلَدُ |
+| 20 | l03-al-walada.mp3 | 8 |  | ٱلْوَلَدَ |
+| 21 | l03-al-waladi.mp3 | 8 |  | ٱلْوَلَدِ |
+| 22 | l03-abu-hurayra.mp3 | 9 | warm | أَبُو هُرَيْرَةَ |
+| 23 | l03-dhu-ilm.mp3 | 9 |  | رَجُلٌ ذُو عِلْمٍ. |
+| 24 | l03-ahlan-ya-aba.mp3 | 11 | warm greeting | أَهْلًا يَا أَبَا عُمَرَ! |
+| 25 | l03-lam-adrus.mp3 | 13 | young man, guilty | لَمْ أَدْرُسْ… بَعْدُ! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+هَذَا أَبِي، وَهَذَا أَخِي ٱلصَّغِيرُ عُمَرُ. <break time="1.2s" /> أَهْلًا يَا يُوسُفُ! أَنَا أَبُو عُمَرَ. <break time="1.2s" /> تَشَرَّفْنَا يَا أَبَا عُمَرَ! <break time="1.2s" /> وَأَنَا أَخُو سَارَةَ! <break time="1.2s" /> سَلِّمِي عَلَى أَبِي عُمَرَ يَا سَارَةُ. <break time="1.2s" /> إِنْ شَاءَ ٱللَّهُ، يَا أُسْتَاذُ. <break time="1.2s" /> أَبٌ <break time="1.2s" /> أَخٌ <break time="1.2s" /> حَمٌ <break time="1.2s" /> فَمٌ <break time="1.2s" /> ذُو <break time="1.2s" /> أَبُو عُمَرَ <break time="1.2s" /> جَاءَ أَبُو عُمَرَ. <break time="1.2s" /> هَذَا أَخُو سَارَةَ. <break time="1.2s" /> رَأَيْتُ أَبَا عُمَرَ. <break time="1.2s" /> يَا أَبَا عُمَرَ! <break time="1.2s" /> سَلِّمِي عَلَى أَبِي عُمَرَ. <break time="1.2s" /> بَيْتُ أَخِي سَارَةَ <break time="1.2s" /> ٱلْوَلَدُ <break time="1.2s" /> ٱلْوَلَدَ <break time="1.2s" /> ٱلْوَلَدِ <break time="1.2s" /> أَبُو هُرَيْرَةَ <break time="1.2s" /> رَجُلٌ ذُو عِلْمٍ. <break time="1.2s" /> أَهْلًا يَا أَبَا عُمَرَ! <break time="1.2s" /> لَمْ أَدْرُسْ… بَعْدُ!
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

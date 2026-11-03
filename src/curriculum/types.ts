@@ -64,6 +64,9 @@ export type SceneId =
   // Fusha · Level 2 · Lesson 2 (slides/motion/g-fv2.tsx): Kids fv2, 12+ fw2
   | 'fv2Cover' | 'fv2Recall' | 'fv2Monday' | 'fv2Story' | 'fv2I' | 'fv2HeShe' | 'fv2We' | 'fv2Front' | 'fv2Verbs' | 'fv2Sort' | 'fv2Talk' | 'fv2Mission' | 'fv2Next'
   | 'fw2Cover' | 'fw2Week' | 'fw2Story' | 'fw2Letters' | 'fw2One' | 'fw2Many' | 'fw2Both' | 'fw2Pairs' | 'fw2Sort' | 'fw2Talk' | 'fw2Mission' | 'fw2Next'
+  // Fusha · Level 2 · Lesson 3 (slides/motion/g-fv3.tsx): Kids fv3, 12+ fw3
+  | 'fv3Cover' | 'fv3Recall' | 'fv3Album' | 'fv3Story' | 'fv3Father' | 'fv3Brother' | 'fv3After' | 'fv3Kunya' | 'fv3Dhu' | 'fv3Sort' | 'fv3Talk' | 'fv3Mission' | 'fv3Next'
+  | 'fw3Cover' | 'fw3Break' | 'fw3Story' | 'fw3Five' | 'fw3U' | 'fw3A' | 'fw3I' | 'fw3Jobs' | 'fw3Kunya' | 'fw3Sort' | 'fw3Talk' | 'fw3Mission' | 'fw3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
