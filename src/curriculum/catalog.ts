@@ -27,6 +27,7 @@ import { lessonE03 } from './content/egyptian-adults/l03-whats-this.js';
 import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
 import { lessonF03 } from './content/fusha-kids/l03-this-one-that-one.js';
 import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
+import { lessonFT03 } from './content/fusha-12/l03-near-and-far.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
 import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
 import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
@@ -409,7 +410,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Review: My First Week', 'Where Did You Go?', 'We Went Together', 'From and To', 'What Did You Eat?', 'My Week',
       'Classmates', 'Many Books', 'Level 1 Story',
     ],
-    lessons: { 1: lessonFT01, 2: lessonFT02 },
+    lessons: { 1: lessonFT01, 2: lessonFT02, 3: lessonFT03 },
   },
   {
     id: 'literacy-a-teens',

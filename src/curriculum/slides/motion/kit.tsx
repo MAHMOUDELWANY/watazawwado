@@ -175,6 +175,7 @@ const ICONS: Record<string, string> = {
   socks: 'M8 3h5v9l3 3a3 3 0 0 1-4 4l-5-5a3 3 0 0 1-1-2V3zM8 7h5',
   headphones: 'M4 15v-3a8 8 0 0 1 16 0v3M4 15h3v5H4zM17 15h3v5h-3z',
   glasses: 'M3 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0M15 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0M9 13h6M3 13l1-5M21 13l-1-5',
+  moon: 'M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z',
   charger: 'M9 2v5M15 2v5M7 7h10v5a5 5 0 0 1-10 0zM12 17v5',
 };
 

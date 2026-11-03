@@ -25,6 +25,7 @@ import { Ea3CoverGraphic, Ea3PlateGraphic, Ea3ListenGraphic, Ea3DaDiGraphic, Ea3
 import { Fk2CoverGraphic, Fk2RecallGraphic, Fk2BoxGraphic, Fk2StoryGraphic, Fk2HamzaGraphic, Fk2YesGraphic, Fk2AnimalsGraphic, Fk2ShadowGraphic, Fk2TalkGraphic, Fk2MissionGraphic, Fk2NextGraphic } from '../motion/g-fk2';
 import { Fk3CoverGraphic, Fk3RecallGraphic, Fk3ParkGraphic, Fk3StoryGraphic, Fk3NearGraphic, Fk3QuestionsGraphic, Fk3WordsGraphic, Fk3TalkGraphic, Fk3MissionGraphic, Fk3NextGraphic } from '../motion/g-fk3';
 import { Ft2CoverGraphic, Ft2PhoneGraphic, Ft2DarkGraphic, Ft2HamzaGraphic, Ft2AnswersGraphic, Ft2WordsGraphic, Ft2TorchGraphic, Ft2ChainGraphic, Ft2TalkGraphic, Ft2MissionGraphic, Ft2NextGraphic } from '../motion/g-ft2';
+import { Ft3CoverGraphic, Ft3RoofGraphic, Ft3ListenGraphic, Ft3FarGraphic, Ft3TilkaGraphic, Ft3GridGraphic, Ft3WordsGraphic, Ft3TalkGraphic, Ft3MissionGraphic, Ft3NextGraphic } from '../motion/g-ft3';
 import { Lb2CoverGraphic, Lb2RecallGraphic, Lb2FastGraphic, Lb2StandGraphic, Lb2ClapsGraphic, Lb2HadhaGraphic, Lb2WawGraphic, Lb2YaaGraphic, Lb2SpotGraphic, Lb2AlongGraphic, Lb2MissionGraphic, Lb2NextGraphic } from '../motion/g-lb2';
 import { Qr2CoverGraphic, Qr2WarmGraphic, Qr2ShaddaGraphic, Qr2Nas1Graphic, Qr2Nas4Graphic, Qr2RhymeGraphic, Qr2Falaq1Graphic, Qr2Falaq4Graphic, Qr2ReadGraphic, Qr2MissionGraphic, Qr2NextGraphic } from '../motion/g-qr2';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
@@ -304,6 +305,16 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   ft2Torch: onStage({ tone: 'dark', Graphic: Ft2TorchGraphic }), ft2Chain: onStage({ tone: 'light', Graphic: Ft2ChainGraphic }),
   ft2Talk: onStage({ tone: 'light', Graphic: Ft2TalkGraphic, keepOnAsk: true }), ft2Mission: onStage({ tone: 'light', Graphic: Ft2MissionGraphic }),
   ft2Next: onStage({ tone: 'light', Graphic: Ft2NextGraphic }),
+  ft3Cover: onStage({ tone: 'light', Graphic: Ft3CoverGraphic }),
+  ft3Roof: onStage({ tone: 'light', Graphic: Ft3RoofGraphic }),
+  ft3Listen: onStage({ tone: 'light', Graphic: Ft3ListenGraphic }),
+  ft3Far: onStage({ tone: 'light', Graphic: Ft3FarGraphic }),
+  ft3Tilka: onStage({ tone: 'light', Graphic: Ft3TilkaGraphic }),
+  ft3Grid: onStage({ tone: 'light', Graphic: Ft3GridGraphic }),
+  ft3Words: onStage({ tone: 'light', Graphic: Ft3WordsGraphic }),
+  ft3Talk: onStage({ tone: 'light', Graphic: Ft3TalkGraphic, keepOnAsk: true }),
+  ft3Mission: onStage({ tone: 'light', Graphic: Ft3MissionGraphic }),
+  ft3Next: onStage({ tone: 'light', Graphic: Ft3NextGraphic }),
   lb2Cover: onStage({ tone: 'light', Graphic: Lb2CoverGraphic }), lb2Recall: onStage({ tone: 'light', Graphic: Lb2RecallGraphic }),
   lb2Fast: onStage({ tone: 'light', Graphic: Lb2FastGraphic }), lb2Stand: onStage({ tone: 'light', Graphic: Lb2StandGraphic }),
   lb2Claps: onStage({ tone: 'light', Graphic: Lb2ClapsGraphic }), lb2Hadha: onStage({ tone: 'light', Graphic: Lb2HadhaGraphic }),

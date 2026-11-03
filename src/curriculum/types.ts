@@ -30,6 +30,8 @@ export type SceneId =
   | 'fk3Cover' | 'fk3Recall' | 'fk3Park' | 'fk3Story' | 'fk3Near' | 'fk3Questions' | 'fk3Words' | 'fk3Sort' | 'fk3Talk' | 'fk3Mission' | 'fk3Next'
   // Fusha · 12+ · Lesson 2 (slides/motion/g-ft2.tsx)
   | 'ft2Cover' | 'ft2Phone' | 'ft2Dark' | 'ft2Hamza' | 'ft2Answers' | 'ft2Words' | 'ft2Torch' | 'ft2Sort' | 'ft2Chain' | 'ft2Talk' | 'ft2Mission' | 'ft2Next'
+  // Fusha · 12+ · Lesson 3 (slides/motion/g-ft3.tsx)
+  | 'ft3Cover' | 'ft3Roof' | 'ft3Listen' | 'ft3Far' | 'ft3Tilka' | 'ft3Grid' | 'ft3Words' | 'ft3Sort' | 'ft3Talk' | 'ft3Mission' | 'ft3Next'
   // Literacy B · Lesson 2 (slides/motion/g-lb2.tsx)
   | 'lb2Cover' | 'lb2Recall' | 'lb2Fast' | 'lb2Stand' | 'lb2Claps' | 'lb2Hadha' | 'lb2Waw' | 'lb2Yaa' | 'lb2Spot' | 'lb2Sort' | 'lb2Along' | 'lb2Mission' | 'lb2Next'
   // Quran Reading · Lesson 2 (slides/motion/g-qr2.tsx)
