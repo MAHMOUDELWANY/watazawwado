@@ -830,3 +830,6 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-03 · Tajweed Level 3, Lesson 1 "Every Stretch, Ranked" built** (draft): catalog entry `tajweed-3` (group
   `quran`, 12+, 17-lesson plan), 14 pages, brief `tajweed/L3-01-every-stretch-ranked.md`. New device for the level: the
   recitation ruler (`g-tr1.tsx`). Ayat 1:4-7, 2:1-5, 106:1-4 verified. Next: Level 3, Lesson 2 "Stop and Start".
+- **2026-11-03 · Tajweed Level 3, Lesson 2 "Stop and Start" built** (draft): 13 pages, brief
+  `tajweed/L3-02-stop-and-start.md`, graphics `g-tr2.tsx` (the ayah as a road of word tiles; stops as coloured gates;
+  going back as an arrow). Ayat 47:19, 4:43, 2:2, 2:5-7, 1:2-3 verified. Next: Level 3, Lesson 3 "Raa in Full".

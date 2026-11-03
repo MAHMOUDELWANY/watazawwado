@@ -54,6 +54,8 @@ export type SceneId =
   | 'tm3Cover' | 'tm3Recall' | 'tm3Zoom' | 'tm3Qaf' | 'tm3Kaf' | 'tm3Bounce' | 'tm3Ikhlas' | 'tm3Slips' | 'tm3Sort' | 'tm3Recite' | 'tm3Mission' | 'tm3Next'
   // Tajweed · Level 3 · Lesson 1 (slides/motion/g-tr1.tsx)
   | 'tr1Cover' | 'tr1Ruler' | 'tr1Causes' | 'tr1Natural' | 'tr1Hamza' | 'tr1Sukoon' | 'tr1Small' | 'tr1Ranked' | 'tr1Evidence' | 'tr1Sort' | 'tr1Six' | 'tr1Recite' | 'tr1Mission' | 'tr1Next'
+  // Tajweed · Level 3 · Lesson 2 (slides/motion/g-tr2.tsx)
+  | 'tr2Cover' | 'tr2Breath' | 'tr2Know' | 'tr2Four' | 'tr2Complete' | 'tr2Good' | 'tr2Wrong' | 'tr2Start' | 'tr2Signs' | 'tr2Sort' | 'tr2Recite' | 'tr2Mission' | 'tr2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
