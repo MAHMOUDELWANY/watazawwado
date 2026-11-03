@@ -12,10 +12,10 @@ import { Hear } from '../Say';
  * Nour (crimson, hijab). The motion carries the one idea of both lessons: the ending turns with the person you face.
  */
 
-const GROUND = 800;
+export const GROUND = 800;
 
 /** Teta's door: a wooden door in a wall, opening when `open`. */
-function TetaDoor({ open }: { open: boolean }) {
+export function TetaDoor({ open }: { open: boolean }) {
   return (
     <div className="pointer-events-none absolute" style={{ left: 1040, top: 330, width: 220, height: 470 }}>
       <div className="absolute inset-0 rounded-t-[110px]" style={{ background: '#EAD9BE' }} />
@@ -29,7 +29,7 @@ function TetaDoor({ open }: { open: boolean }) {
 }
 
 /** A football pitch line and goal, the Teens club. */
-function Pitch() {
+export function Pitch() {
   return (
     <Svg>
       <rect x={760} y={760} width={760} height={40} fill="#5AA153" opacity={0.35} />
@@ -39,7 +39,7 @@ function Pitch() {
   );
 }
 
-function Ball({ x, y, delay = 0, from }: { x: number; y: number; delay?: number; from?: number }) {
+export function Ball({ x, y, delay = 0, from }: { x: number; y: number; delay?: number; from?: number }) {
   return (
     <motion.svg className="pointer-events-none absolute" style={{ left: x - 22, top: y - 22, overflow: 'visible' }} width={44} height={44}
       initial={{ x: from ?? 0, rotate: 0 }} animate={{ x: 0, rotate: 360 }} transition={{ duration: 1.2, delay, ease }}>

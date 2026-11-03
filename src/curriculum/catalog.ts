@@ -34,6 +34,8 @@ import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js'
 import { lessonAT02 } from './content/literacy-a-teens/l02-crack-the-code.js';
 import { lessonEK01 } from './content/egyptian-kids/l01-ahlan-teta.js';
 import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
+import { lessonEK02 } from './content/egyptian-kids/l02-where-are-you-from.js';
+import { lessonET02 } from './content/egyptian-teens/l02-where-are-you-from.js';
 import { lessonEG01 } from './content/english-general/l01-hello-im.js';
 import { lessonEX01 } from './content/english-exams/l01-your-first-three-minutes.js';
 import { seerahK01 } from './content/seerah-kids/l01-the-elephant-who-sat-down.js';
@@ -447,7 +449,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Ahlan, Teta!', 'Where Are You From?', "What's This?", 'Where Are My Keys?', 'Numbers and Phones',
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
-    lessons: { 1: lessonEK01 },
+    lessons: { 1: lessonEK01, 2: lessonEK02 },
   },
   {
     id: 'egyptian-teens',
@@ -464,7 +466,7 @@ export const SUBJECTS: SubjectEntry[] = [
       "Ezzayak? What's Up, Cairo", 'Where Are You From?', "What's This?", 'Where Are My Keys?', 'Numbers and Phones',
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
-    lessons: { 1: lessonET01 },
+    lessons: { 1: lessonET01, 2: lessonET02 },
   },
   {
     id: 'english-general',
