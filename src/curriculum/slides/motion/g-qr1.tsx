@@ -11,16 +11,16 @@ import { Hear, QURAN_FONT, useQuranFont } from '../Say';
  * left (the finger following), and the reading focus is lifted out large with its mark in crimson.
  */
 
-const MUSHAF = '#0E5A4B';
-const Z = '‍';
+export const MUSHAF = '#0E5A4B';
+export const Z = '‍';
 
-function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
+export function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
   useQuranFont();
   const text = <span lang="ar" dir="rtl" style={{ fontFamily: QURAN_FONT, fontSize: size, lineHeight: 1.9, color, whiteSpace: 'nowrap', ...style }}>{children}</span>;
   return clip ? <Hear id={clip}>{text}</Hear> : text;
 }
 
-function Panel({ x, y, w, h, children }: { x: number; y: number; w: number; h: number; children?: React.ReactNode }) {
+export function Panel({ x, y, w, h, children }: { x: number; y: number; w: number; h: number; children?: React.ReactNode }) {
   return (
     <motion.div className="absolute flex flex-col items-center justify-center rounded-[18px]" style={{ left: x, top: y, width: w, height: h, background: MUSHAF, boxShadow: `inset 0 0 0 6px ${GOLD}, inset 0 0 0 10px ${MUSHAF}, inset 0 0 0 12px ${GOLD}88, 0 30px 60px -30px rgba(10,40,30,0.7)` }}
       initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }}>
@@ -29,10 +29,10 @@ function Panel({ x, y, w, h, children }: { x: number; y: number; w: number; h: n
   );
 }
 
-const glow = (on: boolean) => (on ? { color: GOLD, textShadow: `0 0 18px ${GOLD}` } : undefined);
+export const glow = (on: boolean) => (on ? { color: GOLD, textShadow: `0 0 18px ${GOLD}` } : undefined);
 
 /** Sound rings on the panel corner: listen first. */
-function Listen({ x, y }: { x: number; y: number }) {
+export function Listen({ x, y }: { x: number; y: number }) {
   const reduce = useReduce();
   return (
     <Svg>
@@ -48,7 +48,7 @@ function Listen({ x, y }: { x: number; y: number }) {
  * One reading page: the ayah (or two) on the panel (listen), a gold line sweeping under it right to left (follow), and
  * the focus word lifted out big with its mark coloured (read). `focus` and `note` arrive on the later lines.
  */
-function ReadingStage({ lines, ayat, focus, note, focusAt = 2, noteAt = 3 }: {
+export function ReadingStage({ lines, ayat, focus, note, focusAt = 2, noteAt = 3 }: {
   lines: number;
   ayat: { clip: string; text: (on: boolean) => React.ReactNode }[];
   focus: React.ReactNode;
@@ -84,7 +84,7 @@ function ReadingStage({ lines, ayat, focus, note, focusAt = 2, noteAt = 3 }: {
   );
 }
 
-const Red = ({ children }: { children: React.ReactNode }) => <span style={{ color: CRIMSON }}>{children}</span>;
+export const Red = ({ children }: { children: React.ReactNode }) => <span style={{ color: CRIMSON }}>{children}</span>;
 
 /* ---------- spark ---------- */
 

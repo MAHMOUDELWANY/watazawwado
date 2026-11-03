@@ -28,6 +28,8 @@ export type SceneId =
   | 'ft2Cover' | 'ft2Phone' | 'ft2Dark' | 'ft2Hamza' | 'ft2Answers' | 'ft2Words' | 'ft2Torch' | 'ft2Sort' | 'ft2Chain' | 'ft2Talk' | 'ft2Mission' | 'ft2Next'
   // Literacy B · Lesson 2 (slides/motion/g-lb2.tsx)
   | 'lb2Cover' | 'lb2Recall' | 'lb2Fast' | 'lb2Stand' | 'lb2Claps' | 'lb2Hadha' | 'lb2Waw' | 'lb2Yaa' | 'lb2Spot' | 'lb2Sort' | 'lb2Along' | 'lb2Mission' | 'lb2Next'
+  // Quran Reading · Lesson 2 (slides/motion/g-qr2.tsx)
+  | 'qr2Cover' | 'qr2Warm' | 'qr2Shadda' | 'qr2Nas1' | 'qr2Nas4' | 'qr2Rhyme' | 'qr2Falaq1' | 'qr2Falaq4' | 'qr2Review' | 'qr2Read' | 'qr2Mission' | 'qr2Next'
   // Egyptian Arabic · Adults · Lesson 1 (drawn in code, slides/motion/g-ea1.tsx)
   | 'ea1Cover' | 'ea1Book' | 'ea1Door' | 'ea1Pairs' | 'ea1Eh' | 'ea1Mona' | 'ea1Suffix' | 'ea1Hadra' | 'ea1Sorry' | 'ea1Bye' | 'ea1Review' | 'ea1Talk' | 'ea1Mission' | 'ea1Next'
   // Fusha · 12+ · Lesson 1 (drawn in code, slides/motion/g-ft1.tsx)
