@@ -3179,7 +3179,7 @@
    "n": 1,
    "part": 1,
    "text": "ح",
-   "emotion": "clear",
+   "emotion": "حَ: a breathy ḥa from the throat",
    "files": [
     "literacy-a-kids/audio/l01-haa.mp3",
     "literacy-a-kids/audio/l03-hhaa.mp3",
@@ -3194,7 +3194,7 @@
    "n": 2,
    "part": 1,
    "text": "ع",
-   "emotion": "clear",
+   "emotion": "عَ: the squeezed-throat ʿa",
    "files": [
     "literacy-a-kids/audio/l01-ayn.mp3",
     "literacy-a-adults/audio/l01-ayn.mp3",
@@ -3206,7 +3206,7 @@
    "n": 3,
    "part": 1,
    "text": "خ",
-   "emotion": "clear",
+   "emotion": "خَ: kha, a soft gargle",
    "files": [
     "literacy-a-kids/audio/l01-khaa.mp3",
     "literacy-a-kids/audio/l03-khaa.mp3",
@@ -3220,7 +3220,7 @@
    "n": 4,
    "part": 1,
    "text": "ق",
-   "emotion": "clear",
+   "emotion": "قَ: a deep qa from the back of the mouth",
    "files": [
     "literacy-a-kids/audio/l01-qaaf.mp3",
     "literacy-a-adults/audio/l01-qaaf.mp3",
@@ -3231,7 +3231,7 @@
    "n": 5,
    "part": 1,
    "text": "ا",
-   "emotion": "clear",
+   "emotion": "آ: a long \"aa\", as in \"father\"",
    "files": [
     "literacy-a-kids/audio/l01-alif.mp3",
     "literacy-a-kids/audio/l02-alif.mp3",
@@ -3245,7 +3245,7 @@
    "n": 6,
    "part": 1,
    "text": "ب",
-   "emotion": "clear",
+   "emotion": "بَ: ba",
    "files": [
     "literacy-a-kids/audio/l02-baa.mp3",
     "literacy-a-adults/audio/l02-baa.mp3",
@@ -3256,7 +3256,7 @@
    "n": 7,
    "part": 1,
    "text": "ت",
-   "emotion": "clear",
+   "emotion": "تَ: ta",
    "files": [
     "literacy-a-kids/audio/l02-taa.mp3",
     "literacy-a-adults/audio/l02-taa.mp3",
@@ -3267,7 +3267,7 @@
    "n": 8,
    "part": 1,
    "text": "ث",
-   "emotion": "clear",
+   "emotion": "ثَ: tha, the tongue between the teeth",
    "files": [
     "literacy-a-kids/audio/l02-thaa.mp3",
     "literacy-a-adults/audio/l02-thaa.mp3",
@@ -3278,7 +3278,7 @@
    "n": 9,
    "part": 1,
    "text": "ج",
-   "emotion": "clear",
+   "emotion": "جَ: ja, as in \"jam\"",
    "files": [
     "literacy-a-kids/audio/l03-jeem.mp3",
     "literacy-a-adults/audio/l03-jeem.mp3",
@@ -3289,7 +3289,7 @@
    "n": 10,
    "part": 1,
    "text": "د",
-   "emotion": "clear",
+   "emotion": "دَ: da",
    "files": [
     "literacy-a-adults/audio/l03-daal.mp3",
     "literacy-a-teens/audio/l03-daal.mp3"
@@ -3299,7 +3299,7 @@
    "n": 11,
    "part": 1,
    "text": "ذ",
-   "emotion": "clear",
+   "emotion": "ذَ: dha, as in \"this\"",
    "files": [
     "literacy-a-adults/audio/l03-dhaal.mp3",
     "literacy-a-teens/audio/l03-dhaal.mp3"
@@ -3308,37 +3308,37 @@
   {
    "n": 12,
    "part": 1,
-   "text": "s",
-   "emotion": "clear, short sound",
+   "text": "ء",
+   "emotion": "أَ: the little stop in \"uh-oh\"",
    "files": [
-    "english-kids/audio/l01-s-sound.mp3"
+    "literacy-c/audio/l02-sound-2.mp3"
    ]
   },
   {
    "n": 13,
    "part": 2,
-   "text": "a",
-   "emotion": "clear, short sound",
+   "text": "s",
+   "emotion": "a hiss, \"sss\", not the name \"ess\"",
    "files": [
-    "english-kids/audio/l01-a-sound.mp3"
+    "english-kids/audio/l01-s-sound.mp3"
    ]
   },
   {
    "n": 14,
    "part": 2,
-   "text": "t",
-   "emotion": "clear, short sound",
+   "text": "a",
+   "emotion": "the short a of \"apple\", not \"ay\"",
    "files": [
-    "english-kids/audio/l01-t-sound.mp3"
+    "english-kids/audio/l01-a-sound.mp3"
    ]
   },
   {
    "n": 15,
    "part": 2,
-   "text": "ء",
-   "emotion": "clear, slow, twice",
+   "text": "t",
+   "emotion": "a short \"t\", not the name \"tee\"",
    "files": [
-    "literacy-c/audio/l02-sound-2.mp3"
+    "english-kids/audio/l01-t-sound.mp3"
    ]
   }
  ]

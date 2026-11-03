@@ -53,6 +53,19 @@ export function spoken(text: string): string {
  * a [long pause] separates the lines so the take can be cut on the silences.
  * Writes BY-VOICE.md (to read and paste) and by-voice.json (the frozen order, used to cut the takes).
  */
+/** How each letter sound is said (owner, 2026-11-03: the sound of the letter, not its name). */
+const SOUND: Record<string, string> = {
+  'ا': 'آ: a long "aa", as in "father"', 'ب': 'بَ: ba', 'ت': 'تَ: ta', 'ث': 'ثَ: tha, the tongue between the teeth',
+  'ج': 'جَ: ja, as in "jam"', 'ح': 'حَ: a breathy ḥa from the throat', 'خ': 'خَ: kha, a soft gargle', 'د': 'دَ: da',
+  'ذ': 'ذَ: dha, as in "this"', 'ع': 'عَ: the squeezed-throat ʿa', 'ق': 'قَ: a deep qa from the back of the mouth',
+  'ء': 'أَ: the little stop in "uh-oh"', s: 'a hiss, "sss", not the name "ess"', a: 'the short a of "apple", not "ay"',
+  t: 'a short "t", not the name "tee"',
+};
+const SAY: Record<string, string> = {
+  'ا': 'آ', 'ب': 'بَ', 'ت': 'تَ', 'ث': 'ثَ', 'ج': 'جَ', 'ح': 'حَ', 'خ': 'خَ', 'د': 'دَ', 'ذ': 'ذَ', 'ع': 'عَ', 'ق': 'قَ', 'ء': 'أَ',
+  s: 'sss', a: 'a', t: 't',
+};
+
 function byVoice(maxLines = 12, maxChars = 600) {
   const groups = new Map<string, { voice: Voice; text: string; emotion: string; files: string[] }>();
   for (const s of SUBJECTS) {
@@ -82,7 +95,7 @@ function byVoice(maxLines = 12, maxChars = 600) {
     '- Arabic is written as it is said at a stop: no tanween where the line pauses (بَاب, not بَابٌ), as a teacher reads it.',
     '- Quran ayat are never recorded (the reciter streams them). The "owner" list is the owner\'s own voice.', ''];
   const titles: Record<string, string> = { fusha: 'Fusha (Mahmoud Fusha)', eg: 'Egyptian (Mahmoud Egyptian)', en: 'English (mahmoud)', owner: 'Owner, recorded himself (letter sounds)' };
-  for (const v of ['fusha', 'eg', 'en', 'owner'] as Voice[]) {
+  for (const v of ['fusha', 'eg', 'en'] as Voice[]) {
     const all = [...groups.values()].filter((g) => g.voice === v);
     if (!all.length) continue;
     const parts: (typeof all)[] = [[]];
@@ -103,6 +116,23 @@ function byVoice(maxLines = 12, maxChars = 600) {
       md.push(`### ${v}-part-${pi + 1} (lines ${first}–${n})`, '', '```text');
       md.push(rows.map((r) => `${tag(r.emotion)}${r.text}`).join('\n[long pause]\n'), '```', '');
     });
+  }
+  // Letter sounds: the SOUND of each letter, never its name (بَ, not «باء»). Arabic in one take, English in another.
+  const letters = [...groups.values()].filter((g) => g.voice === 'owner');
+  const isAr = (t: string) => /[؀-ۿ]/.test(t);
+  json.owner = [];
+  let k = 0;
+  md.push(`## Letter sounds · ${letters.length} sounds · 2 takes`, '',
+    'The **sound** of each letter, not its name: ب is said «بَ» (ba), never «باء». A letter that stops (ب ت د ج ق) is',
+    'said with a short a so it can be heard; a letter that can be held (ث ح خ ذ ع) is held a moment. Arabic letters in',
+    'one take (`letters-ar.mp3`), English letters in another (`letters-en.mp3`).', '');
+  for (const [name, list] of [['letters-ar', letters.filter((g) => isAr(g.text))], ['letters-en', letters.filter((g) => !isAr(g.text))]] as const) {
+    if (!list.length) continue;
+    md.push(`### ${name} (${list.length})`, '', '| # | Letter | Say it like this |', '|---|---|---|');
+    const rows = list.map((g) => ({ n: ++k, part: name === 'letters-ar' ? 1 : 2, text: g.text, emotion: SOUND[g.text] ?? g.emotion, files: g.files }));
+    rows.forEach((r) => md.push(`| ${r.n} | ${r.text} | ${r.emotion} |`));
+    json.owner.push(...rows);
+    md.push('', '```text', rows.map((r) => SAY[r.text] ?? r.text).join('\n[long pause]\n'), '```', '');
   }
   fs.writeFileSync('docs/curriculum/voice/BY-VOICE.md', md.join('\n'));
   fs.writeFileSync('docs/curriculum/voice/by-voice.json', JSON.stringify(json, null, 1));
