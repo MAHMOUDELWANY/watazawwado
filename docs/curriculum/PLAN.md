@@ -805,3 +805,8 @@ B3–B5 → continue lesson by lesson.
   stray sound after line 1 and دَجَاج/ذُبَاب in one segment; cut by hand. **Egyptian parts 3–16 (lines 25–192, 215
   files) are not recorded:** the owner found the ElevenLabs Egyptian voice weak and a fix is being decided. Do not
   regenerate `by-voice.json` before those are cut.
+- **2026-11-03 · Egyptian voice, owner's call:** the owner records the remaining Egyptian lines himself later (parts
+  3–16 of `voice/BY-VOICE.md`); no more ElevenLabs Egyptian takes. **Tajweed Level 2 map** written
+  (`tajweed/MAP-level-2.md`: 19 lessons, Part A makharij 5 areas / 17 points, Part B sifat; Claude's draft for the
+  owner's review). Next: Tajweed Level 2, Lesson 1 "The Map of the Mouth" (brief, page text, built pages, catalog
+  entry `tajweed-2`).
