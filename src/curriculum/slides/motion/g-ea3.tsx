@@ -35,7 +35,7 @@ function Plate({ x, y, open, dishes = 1 }: { x: number; y: number; open: boolean
 }
 
 /** A thing card: icon above, ده / دي + the word below, tinted by the form; tap plays the clip. */
-function Thing({ x, y, icon, word, fem, id, delay = 0, hot = false }: { x: number; y: number; icon: string; word: string; fem: boolean; id?: string; delay?: number; hot?: boolean }) {
+export function Thing({ x, y, icon, word, fem, id, delay = 0, hot = false }: { x: number; y: number; icon: string; word: string; fem: boolean; id?: string; delay?: number; hot?: boolean }) {
   const c = fem ? DI : DA;
   const body = (
     <motion.div className="flex flex-col items-center rounded-[22px]" style={{ width: 168, padding: '14px 8px 8px', background: CARD, boxShadow: hot ? `0 0 0 4px ${c}, 0 0 30px 6px ${c}44` : SHADOW, pointerEvents: 'auto' }}

@@ -168,6 +168,14 @@ const ICONS: Record<string, string> = {
   tv: 'M3 6h18v11H3zM8 21h8M12 17v4',
   table: 'M3 9h18M5 9l-1 10M19 9l1 10M8 9v4h8V9',
   fork: 'M8 3v6a2 2 0 0 0 4 0V3M10 3v18M16 3c-2 2-2 6 0 8v10',
+  ball: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7l4 3-1.5 5h-5L8 10zM12 3v4M21 10l-5 0M3 10h5M7 20l2.5-5M17 20l-2.5-5',
+  doll: 'M12 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM9 21l1-8h4l1 8zM8 13h8M10 9v4M14 9v4',
+  photo: 'M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15 9h.01',
+  jar: 'M8 3h8v3H8zM7 6h10a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1zM9 12h6M9 15h6',
+  socks: 'M8 3h5v9l3 3a3 3 0 0 1-4 4l-5-5a3 3 0 0 1-1-2V3zM8 7h5',
+  headphones: 'M4 15v-3a8 8 0 0 1 16 0v3M4 15h3v5H4zM17 15h3v5h-3z',
+  glasses: 'M3 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0M15 13a3 3 0 1 0 6 0 3 3 0 0 0-6 0M9 13h6M3 13l1-5M21 13l-1-5',
+  charger: 'M9 2v5M15 2v5M7 7h10v5a5 5 0 0 1-10 0zM12 17v5',
 };
 
 export function Icon({ name, size = 40, color = INK_TEXT, width = 1.8 }: { name: keyof typeof ICONS | string; size?: number; color?: string; width?: number }) {

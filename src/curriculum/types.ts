@@ -43,9 +43,11 @@ export type SceneId =
   // Egyptian Arabic · Kids · Lesson 1 (drawn in code, slides/motion/g-egy.tsx)
   | 'ek1Cover' | 'ek1Door' | 'ek1Listen' | 'ek1Hello' | 'ek1Ismi' | 'ek1AkIk' | 'ek1Bye' | 'ek1Sort' | 'ek1Talk' | 'ek1Mission' | 'ek1Next'
   | 'ek2Cover' | 'ek2Question' | 'ek2Listen' | 'ek2Minen' | 'ek2Map' | 'ek2Masri' | 'ek2Sort' | 'ek2Talk' | 'ek2Mission' | 'ek2Next'
+  | 'ek3Cover' | 'ek3Box' | 'ek3Listen' | 'ek3DaDi' | 'ek3Ta' | 'ek3Things' | 'ek3Sort' | 'ek3Talk' | 'ek3Mission' | 'ek3Next'
   // Egyptian Arabic · Teens · Lesson 1 (drawn in code, slides/motion/g-egy.tsx)
   | 'et1Cover' | 'et1Club' | 'et1Listen' | 'et1How' | 'et1Ending' | 'et1Hi' | 'et1Names' | 'et1Sort' | 'et1Talk' | 'et1Mission' | 'et1Next'
   | 'et2Cover' | 'et2Shirt' | 'et2Listen' | 'et2Minen' | 'et2Asl' | 'et2Nat' | 'et2Sort' | 'et2Talk' | 'et2Mission' | 'et2Next'
+  | 'et3Cover' | 'et3Bag' | 'et3Listen' | 'et3DaDi' | 'et3Ta' | 'et3Stuff' | 'et3Sort' | 'et3Talk' | 'et3Mission' | 'et3Next'
   // English · General · Lesson 1 (drawn in code, slides/motion/g-eng.tsx)
   | 'eg1Cover' | 'eg1Cafe' | 'eg1Listen' | 'eg1Im' | 'eg1Youre' | 'eg1Name' | 'eg1Bye' | 'eg1Sort' | 'eg1Talk' | 'eg1Mission' | 'eg1Next'
   // English · Exams · Lesson 1 (drawn in code, slides/motion/g-eng.tsx)

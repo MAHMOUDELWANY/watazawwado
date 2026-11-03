@@ -1,0 +1,207 @@
+import type { Lesson } from '../../types';
+import { lessonET03TeacherAr } from './l03-teacher-ar.js';
+
+// Rules: docs/curriculum/egyptian/RULES.md. Map: docs/curriculum/egyptian/MAP.md (Teens: the summer club; Lesson 3 =
+// إيه ده؟ / إيه دي؟, ده and دي, the ـة tell, plurals of things take دي). Every Arabic line plays on tap.
+
+const E = (id: string, text: string, emotion?: string) => ({ id, text, voice: 'eg' as const, emotion });
+
+export const lessonET03: Lesson = {
+  subject: 'egyptian-teens',
+  version: 'teens',
+  subjectTitle: 'Egyptian Arabic · Teens',
+  number: 3,
+  title: 'What\'s in Karim\'s Bag?',
+  titleAr: 'إيه ده؟',
+  part: 'Beginner',
+  minutes: 45,
+  goal: 'By the end of this lesson, you will ask what anything is, name your stuff, and choose ده or دي without thinking.',
+  reviewed: false,
+  teacherAr: lessonET03TeacherAr,
+  outcomes: [
+    'Asks إيه ده؟ / إيه دي؟ and إيه ده بالمصري؟',
+    'Chooses دي for words ending in ـة and for plurals of things, ده for most others.',
+    'Names eight everyday things: phone, charger, headphones, keys...',
+  ],
+  chapters: [
+    { label: 'The bag', page: 0 },
+    { label: 'Listen first', page: 2 },
+    { label: 'ده and دي', page: 3 },
+    { label: 'The tell', page: 4 },
+    { label: 'My stuff', page: 5 },
+    { label: 'Practice', page: 6 },
+    { label: 'My mission', page: 8 },
+  ],
+  pages: [
+    {
+      title: 'What\'s in Karim\'s Bag?',
+      station: 'spark',
+      layout: 'cover',
+      scene: 'et3Cover',
+      lines: [],
+      explain: [
+        'Greet in Egyptian and ask: إنت منين؟ Expect the two-part answer with أصلاً.',
+        'Read the mission reply together: what did the cousin or friend answer?',
+      ],
+    },
+    {
+      title: 'The bag',
+      station: 'spark',
+      layout: 'story',
+      scene: 'et3Bag',
+      lines: [
+        'After training, Karim unzips his bag and pulls out a jar.',
+        'Everyone stares: إيه ده؟',
+        'إيه is "what". Guess ده.',
+      ],
+      say: [E('eh-da', 'إيه ده؟', 'curious, laughing')],
+      explain: ['Let the learner guess ده from the scene. Most get "this" straight away.'],
+    },
+    {
+      title: 'Listen first',
+      station: 'zad',
+      layout: 'story',
+      scene: 'et3Listen',
+      lines: [
+        'Listen twice. What is in the jar?',
+        'Then Nour picks up something else. Does she ask with ده?',
+        'Karim\'s answer to the last one gets a laugh. Why?',
+      ],
+      say: [
+        E('l-1', 'إيه ده يا كريم؟', 'curious girl'),
+        E('l-2', 'ده طرشي! من عند تيتة.', 'proud, joking guy'),
+        E('l-3', 'وإيه دي؟', 'suspicious girl'),
+        E('l-4', 'دي شرابات. نضيفة، والله!', 'defensive, laughing guy'),
+      ],
+      explain: [
+        'Play the scene twice. Ask: what is in the jar? (pickles from his grandma). And the last thing? (socks).',
+        'والله here is everyday speech: "I swear, honestly". Teens hear it constantly.',
+      ],
+      teacherNote: 'Notice شرابات (socks) is a plural with دي. The rule comes two pages later; let them notice first.',
+    },
+    {
+      title: 'ده and دي',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'et3DaDi',
+      lines: [
+        'ده and دي both mean "this". Every noun is masculine or feminine, so "this" has two forms.',
+        'Ask with the form you would answer with: إيه ده؟ ده طرشي. إيه دي؟ دي شنطة.',
+        'Don\'t know the word? Ask: إيه ده بالمصري؟',
+      ],
+      vocab: [
+        { arabic: 'ده', translit: 'da', meaning: 'this (masculine)' },
+        { arabic: 'دي', translit: 'di', meaning: 'this (feminine)' },
+        { arabic: 'إيه ده بالمصري؟', translit: 'ēh da bil-maṣri?', meaning: 'what is this in Egyptian?' },
+      ],
+      say: [E('da', 'ده'), E('di', 'دي'), E('eh-da', 'إيه ده؟', 'curious'), E('eh-di', 'إيه دي؟', 'curious'), E('eh-da-bilmasri', 'إيه ده بالمصري؟', 'curious')],
+      explain: ['إيه ده بالمصري؟ is the learner\'s key to every new word. Practise it until it is automatic.'],
+    },
+    {
+      title: 'The tell',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'et3Ta',
+      lines: [
+        'Check the end of the word. ـة? Then دي: دي شنطة، دي كورة.',
+        'Plurals of things take دي too: دي شرابات، دي سماعات.',
+        'Everything else, usually ده: ده موبايل، ده شاحن.',
+      ],
+      items: ['ـة ← دي', 'plural things ← دي', 'the rest ← ده'],
+      vocab: [
+        { arabic: 'شنطة', translit: 'shanṭa', meaning: 'bag' },
+        { arabic: 'شرابات', translit: 'sharabāt', meaning: 'socks' },
+        { arabic: 'سماعات', translit: 'sammā‘āt', meaning: 'headphones' },
+        { arabic: 'موبايل', translit: 'mubāyl', meaning: 'mobile phone' },
+        { arabic: 'شاحن', translit: 'shāḥin', meaning: 'charger' },
+      ],
+      say: [E('di-shanta', 'دي شنطة.'), E('di-sharabat', 'دي شرابات.'), E('di-sammaat', 'دي سماعات.'), E('da-mobayl', 'ده موبايل.'), E('da-shahin', 'ده شاحن.')],
+      explain: ['The plural rule surprises English speakers. Give three plurals and let the learner apply it.'],
+      teacherNote: 'Plurals of people take دول (these); that comes later. Today: plural things only.',
+    },
+    {
+      title: 'Everything in the bag',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'et3Stuff',
+      lines: [
+        'Karim empties the whole bag on the bench.',
+        'Tap each thing. Say ده or دي first, then check.',
+      ],
+      items: ['ده موبايل', 'ده شاحن', 'ده طرشي', 'ده مفتاح', 'دي شنطة', 'دي كورة', 'دي سماعات', 'دي نضارة'],
+      vocab: [
+        { arabic: 'مفتاح', translit: 'muftāḥ', meaning: 'key' },
+        { arabic: 'نضارة', translit: 'naḍḍāra', meaning: 'glasses' },
+        { arabic: 'كورة', translit: 'kōra', meaning: 'ball' },
+      ],
+      say: [E('da-mobayl', 'ده موبايل.'), E('da-shahin', 'ده شاحن.'), E('da-turshi', 'ده طرشي.'), E('da-muftah', 'ده مفتاح.'), E('di-shanta', 'دي شنطة.'), E('di-kora', 'دي كورة.'), E('di-sammaat', 'دي سماعات.'), E('di-naddara', 'دي نضارة.')],
+      explain: ['Let the learner empty their own bag or desk on camera and name five things.'],
+    },
+    {
+      title: 'ده or دي?',
+      station: 'athar',
+      layout: 'game',
+      scene: 'et3Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        look: 'row',
+        prompt: 'Eight things from the club changing room. ده or دي?',
+        bins: [
+          { id: 'da', label: 'ده', hint: 'masculine' },
+          { id: 'di', label: 'دي', hint: 'feminine or plural thing' },
+        ],
+        cards: [
+          { label: 'موبايل (phone)', bin: 'da', why: 'No ـة: ده موبايل.' },
+          { label: 'شنطة (bag)', bin: 'di', why: 'Ends in ـة: دي شنطة.' },
+          { label: 'شاحن (charger)', bin: 'da', why: 'No ـة: ده شاحن.' },
+          { label: 'سماعات (headphones)', bin: 'di', why: 'A plural thing: دي سماعات.' },
+          { label: 'كورة (ball)', bin: 'di', why: 'Ends in ـة: دي كورة.' },
+          { label: 'مفتاح (key)', bin: 'da', why: 'No ـة: ده مفتاح.' },
+          { label: 'شرابات (socks)', bin: 'di', why: 'A plural thing: دي شرابات.' },
+          { label: 'نضارة (glasses)', bin: 'di', why: 'Ends in ـة: دي نضارة.' },
+        ],
+      },
+      explain: ['A short review with no points. Ask for the full sentence each time.'],
+      teacherNote: 'The result is added to your lesson report automatically.',
+    },
+    {
+      title: 'Your turn: show and tell',
+      station: 'athar',
+      layout: 'question',
+      scene: 'et3Talk',
+      lines: [
+        'Grab five things near you.',
+        'Hold each one up. Your teacher asks إيه ده؟ or إيه دي؟ and you answer. Then you ask.',
+      ],
+      say: [E('eh-da', 'إيه ده؟', 'curious'), E('eh-di', 'إيه دي؟', 'curious'), E('eh-da-bilmasri', 'إيه ده بالمصري؟', 'curious')],
+      interaction: { kind: 'ask', prompt: 'Five things, Egyptian only. Stuck on a word? Ask إيه ده بالمصري؟', reveal: 'جامد! Now nothing can stop you: ask, and learn the word.' },
+      explain: ['Give new words freely. Correct only ده / دي today.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'et3Mission',
+      lines: [
+        'Take a photo of your desk or bag. Label five things: ده... / دي...',
+        'Send it to your teacher or a cousin.',
+      ],
+      interaction: { kind: 'choose', prompt: 'What will you photograph?', options: ['My desk', 'My school bag', 'My sports bag', 'My bedroom shelf'] },
+      explain: ['Start the next lesson with the photo.'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'et3Next',
+      lines: [
+        'Nour checks her pockets, then her bag, then the bench.',
+        'Panic: فين موبايلي؟',
+        'Next time: my phone, your phone, and where everything is.',
+      ],
+      say: [E('fen-mobayli', 'فين موبايلي؟', 'panicked girl')],
+      explain: ['End on the panic. Ask the learner: where did you last lose your phone?'],
+    },
+  ],
+};
