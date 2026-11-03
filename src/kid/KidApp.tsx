@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { BookOpen, Calendar, Compass, Globe, GraduationCap, Library, Presentation, Users, Video } from 'lucide-react';
+import { ArrowLeft, BookOpen, Calendar, Compass, Globe, GraduationCap, HeartHandshake, Library, LogOut, Presentation, Users, Video } from 'lucide-react';
 import { authedJson } from '../lib/authedJson';
 import { kidToken, setKidToken } from '../lib/kidDevice';
 import { useAppLanguage } from '../lib/language';
@@ -10,6 +10,7 @@ import { BrandLogo } from '../components/ui/BrandLogo';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { Card } from '../components/ui/Card';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
+import { FeedbackHost, confirmAction, notify } from '../components/ui/Feedback';
 import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components/ui/MobileTabBar';
 import { HomeworkCard } from '../student/components/HomeworkCard';
 import { ReviewCard } from '../student/components/ReviewCard';
@@ -31,6 +32,8 @@ const HomeProgressCard = lazy(() => import('../student/components/progress/HomeP
  * review, homework, progress), lessons, lesson room, curriculum, progress and report, certificates, the honour board and
  * the placement test, all for that one child. No payments, booking, settings, messages or other children: the server
  * refuses every other route, and portal links to /student/... are sent to the same page under /kid.
+ * The child can sign the device out (it leaves the parent's list); grown-up pages say "ask your parent" instead of
+ * bouncing home.
  */
 const CODE_LENGTH = 6;
 const GOLD_TEXT = 'text-[#A06E14] dark:text-[#E5A93C]';
@@ -48,6 +51,21 @@ export default function KidApp() {
 
   const unlinked = useCallback(() => { setKidToken(null); setMe(null); setRemoved(true); setLinked(false); }, []);
 
+  const signOut = async () => {
+    const ok = await confirmAction(
+      isAr ? 'تخرج من الجهاز ده؟ علشان ترجع هتحتاج كود جديد من بابا أو ماما.' : 'Sign out of this device? To come back you will need a new code from your parent.',
+      { confirmLabel: isAr ? 'اخرج' : 'Sign out', danger: true },
+    );
+    if (!ok) return;
+    try {
+      await authedJson('/api/kid/sign-out', { method: 'POST' });
+    } catch (err: any) {
+      // 401: the parent already removed it, so it is signed out anyway.
+      if (err?.status !== 401) { notify(isAr ? 'معرفناش نخرج، جرّب تاني.' : 'Could not sign out. Please try again.', 'error'); return; }
+    }
+    setKidToken(null); setMe(null); setRemoved(false); setFailed(false); setLinked(false);
+  };
+
   useEffect(() => {
     if (!linked) return;
     authedJson<KidMe>('/api/kid/me').then(setMe).catch((err: any) => (err?.status === 401 ? unlinked() : setFailed(true)));
@@ -56,7 +74,13 @@ export default function KidApp() {
   if (!linked) {
     return (
       <AuthPage isAr={isAr}>
-        <PairCard lang={lang} removed={removed} onToggleLang={toggleLanguage} onLinked={() => { setRemoved(false); setFailed(false); setLinked(true); }} />
+        <div className="w-full max-w-md grid gap-4 justify-items-center">
+          <PairCard lang={lang} removed={removed} onToggleLang={toggleLanguage} onLinked={() => { setRemoved(false); setFailed(false); setLinked(true); }} />
+          <Link to="/student?auth=login" className="text-sm font-semibold text-[var(--teal)] hover:underline rounded focus-ring" data-testid="kid-grown-up-login">
+            {isAr ? 'ولي أمر؟ ادخل حسابك من هنا' : 'A parent? Sign in to your account here'}
+          </Link>
+        </div>
+        <FeedbackHost />
       </AuthPage>
     );
   }
@@ -93,6 +117,16 @@ export default function KidApp() {
             <span>{isAr ? 'EN' : 'عربي'}</span>
           </button>
           <ThemeToggle compact className="!w-11 !h-11 !rounded-full" />
+          <button
+            type="button"
+            onClick={signOut}
+            aria-label={isAr ? 'تسجيل الخروج من الجهاز' : 'Sign out of this device'}
+            className="btn-glass is-pill !min-h-11 !min-w-11 !px-3 text-sm"
+            data-testid="kid-sign-out"
+          >
+            <LogOut className="w-4 h-4 rtl:rotate-180" aria-hidden="true" />
+            <span className="hidden sm:inline">{isAr ? 'خروج' : 'Sign out'}</span>
+          </button>
         </div>
       </header>
       <main className={`mx-auto max-w-5xl px-4 sm:px-6 py-6 ${MOBILE_TAB_BAR_PADDING}`}>
@@ -110,10 +144,11 @@ export default function KidApp() {
             <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
             <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
             <Route path="/certificate/:id" element={<StudentCertificatePage lang={lang} />} />
-            <Route path="/community" element={<StudentCommunityPage lang={lang} />} />
+            <Route path="/community" element={<StudentCommunityPage lang={lang} kid />} />
             <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
             <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
             {/* Booking, wallet, messages, settings and the rest are for the parent's account. */}
+            {PARENT_ONLY.map((p) => <Route key={p} path={`/${p}/*`} element={<ParentOnly isAr={isAr} />} />)}
             <Route path="*" element={<Navigate to="/kid" replace />} />
           </Routes>
         )}
@@ -122,6 +157,7 @@ export default function KidApp() {
         label={isAr ? 'التنقل السفلي' : 'Bottom navigation'}
         tabs={tabs.map((t) => ({ key: t.key, label: t.label, icon: t.icon, to: t.path, active: active(t.path) }))}
       />
+      <FeedbackHost />
     </div>
   );
 }
@@ -166,6 +202,26 @@ function PairCard({ lang, removed, onToggleLang, onLinked }: { lang: 'ar' | 'en'
   );
 }
 
+/** Portal pages the shared pages link to (Book, Messages...) that belong to the parent's account. */
+const PARENT_ONLY = ['book', 'messages', 'packages', 'wallet', 'payments', 'account', 'calendar', 'invite'];
+
+function ParentOnly({ isAr }: { isAr: boolean }) {
+  return (
+    <Card className="p-6 sm:p-8 grid gap-3 justify-items-center text-center max-w-md mx-auto" data-testid="kid-parent-only">
+      <span className="w-14 h-14 rounded-2xl bg-accent/15 text-accent grid place-items-center">
+        <HeartHandshake className="w-7 h-7" aria-hidden="true" />
+      </span>
+      <h1 className="text-xl font-display font-bold">{isAr ? 'الصفحة دي عند بابا أو ماما' : 'This one is for your parent'}</h1>
+      <p className="text-sm text-muted-foreground">
+        {isAr ? 'الحجز والدفع والرسايل بتتعمل من حساب بابا أو ماما. قولهم وهما يكمّلوا من عندهم.' : 'Booking, payments and messages are done from your parent’s account. Tell them and they will take it from there.'}
+      </p>
+      <Link to="/kid" className="inline-flex items-center gap-1.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold px-5 min-h-11 focus-ring">
+        <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />{isAr ? 'رجوع للرئيسية' : 'Back home'}
+      </Link>
+    </Card>
+  );
+}
+
 /** The join buttons show from 15 minutes before the lesson until it ends. */
 function LessonCard({ lesson, isAr, big = false }: { lesson: KidLesson; isAr: boolean; big?: boolean }) {
   const locale = isAr ? 'ar-EG' : 'en-GB';
@@ -198,12 +254,6 @@ function LessonCard({ lesson, isAr, big = false }: { lesson: KidLesson; isAr: bo
 
 function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
   const next = me.lessons[0];
-  const tiles = [
-    { to: '/kid/curriculum', icon: Library, label: isAr ? 'منهجي' : 'My curriculum', note: isAr ? 'دروسك وصفحاتها' : 'Your lessons and their pages' },
-    { to: '/kid/progress', icon: Compass, label: isAr ? 'مسيرتي' : 'My progress', note: isAr ? 'اللي خلّصته لحد دلوقتي' : 'What you finished so far' },
-    { to: '/kid/community', icon: Users, label: isAr ? 'مجتمعنا' : 'Community', note: isAr ? 'لوحة الشرف' : 'The honour board' },
-    { to: '/kid/placement', icon: GraduationCap, label: isAr ? 'اختبار المستوى' : 'Level test', note: isAr ? 'اعرف مستواك' : 'Find your level' },
-  ];
   return (
     <div className="grid gap-5" data-testid="kid-home">
       <h1 className="text-2xl sm:text-3xl font-display font-bold">{isAr ? `أهلًا يا ${me.learner.name}` : `Assalamu alaykum, ${me.learner.name}`}</h1>
@@ -220,15 +270,14 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
 
       <Suspense fallback={null}><HomeProgressCard isAr={isAr} /></Suspense>
 
-      <nav aria-label={isAr ? 'أقسامي' : 'My sections'} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {tiles.map((t) => (
-          <Link key={t.to} to={t.to} className="glass-1 rounded-2xl p-4 grid gap-1 min-h-11 hover:bg-surface-subtle transition-colors focus-ring">
-            <t.icon className="w-5 h-5 text-accent" aria-hidden="true" />
-            <span className="font-semibold text-sm">{t.label}</span>
-            <span className="text-xs text-muted-foreground">{t.note}</span>
-          </Link>
-        ))}
-      </nav>
+      {/* Curriculum, progress and community are already the tabs; the level test is the one page that is not. */}
+      <Link to="/kid/placement" className="glass-1 rounded-2xl p-4 flex items-center gap-3 min-h-11 hover:bg-surface-subtle transition-colors focus-ring">
+        <GraduationCap className="w-6 h-6 text-accent shrink-0" aria-hidden="true" />
+        <span className="grid gap-0.5">
+          <span className="font-semibold text-sm">{isAr ? 'اختبار المستوى' : 'Level test'}</span>
+          <span className="text-xs text-muted-foreground">{isAr ? 'اعرف مستواك' : 'Find your level'}</span>
+        </span>
+      </Link>
     </div>
   );
 }

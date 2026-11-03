@@ -42,6 +42,7 @@ describe('NX-16 child phone', () => {
 
   it('a child phone may call only its own few routes', () => {
     assert.strictEqual(isChildRoute('GET', '/api/kid/me'), true);
+    assert.strictEqual(isChildRoute('POST', '/api/kid/sign-out'), true);
     assert.strictEqual(isChildRoute('GET', '/api/student/homework'), true);
     assert.strictEqual(isChildRoute('POST', '/api/student/review/abc'), true);
     assert.strictEqual(isChildRoute('GET', '/api/student/lesson-room/abc'), true);
@@ -99,6 +100,12 @@ describe('NX-16 endpoints', () => {
   it('a child token never opens grown-up pages', async () => {
     const r = await fetch(`${base}/api/student/packages`, { headers: { Authorization: `Bearer ${newDeviceToken()}` } });
     assert.strictEqual(r.status, 403);
+  });
+
+  it('only a linked child device can sign itself out', async () => {
+    assert.strictEqual((await fetch(`${base}/api/kid/sign-out`, { method: 'POST' })).status, 401);
+    const r = await fetch(`${base}/api/kid/sign-out`, { method: 'POST', headers: { Authorization: `Bearer ${newDeviceToken()}` } });
+    assert.strictEqual(r.status, 401);
   });
 
   it('pairing needs a 6-digit code', async () => {

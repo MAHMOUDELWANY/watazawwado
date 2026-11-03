@@ -4,6 +4,17 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Child devices (NX-16): sign out, no repeated tabs, no dead links (2026-11-03)
+- Owner: a device linked to the parent's account could not sign out, and some tabs were repeated.
+- Sign out: a button in the `/kid` header (icon on a phone, "خروج" from `sm` up) asks first, then calls the new `POST /api/kid/sign-out` (on the child-route allow list), which revokes the device so it also leaves the parent's Family tab list. Coming back needs a new code. A device the parent already removed signs out locally.
+- The code screen now has "A parent? Sign in to your account here" (`/student?auth=login`), so a parent can use the same device.
+- Home no longer repeats Curriculum, Progress and Community under the tabs; only the level test (not a tab) stays as a card.
+- Book / messages / packages / wallet / payments / account links from the shared pages used to bounce to home without a word; they now show "This one is for your parent" with a way back.
+- `FeedbackHost` is mounted on `/kid`, so homework, review and sign-out messages show (before, `notify` there showed nothing).
+- Community on the device shows only the Hall of Honor with child-facing copy; the sharing choices (403 for a child token anyway) stay with the parent.
+- Files: `src/kid/KidApp.tsx`, `server/routes/childDevices.ts`, `src/student/pages/StudentCommunityPage.tsx`, `test/nx-16-child-devices.test.ts`.
+- Checks: tsc, NX-16 + PA-01 tests, full suite (8 pre-existing failures in migration, OAuth and booking tests, none here), build; desktop and phone (390px) checked locally with mocked lesson data. Not checked: a real paired phone end to end (browsing a real family's pages was blocked as personal data).
+
 ### Messages: visual pass in the site's look (2026-11-02)
 - Owner asked for a richer messaging screen and chose "the site's identity". `src/components/chat/ChatPanel.tsx` (student, teacher and admin share it): coloured initial avatars (the academy mark on the team conversation), last-message preview with "You:", relative times (today's time, yesterday, weekday, date), unread dot and count, selected-row teal rail.
 - Conversation: khatam pattern background, day separators, messages from the same person within 5 minutes grouped, bubbles with a tail corner on the logical side, time inside the bubble, one tick when sent and two when the other side has opened the conversation, new messages slide in (off with reduced motion), pill composer that grows with the text, Enter sends and Shift+Enter adds a line.

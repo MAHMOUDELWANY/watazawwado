@@ -26,6 +26,7 @@ export const newDeviceToken = () => KID_TOKEN_PREFIX + crypto.randomBytes(32).to
 /** The only API routes a child phone may call (method + path, no query). */
 const CHILD_ROUTES: Array<[string, RegExp]> = [
   ['GET', /^\/api\/kid\/me$/],
+  ['POST', /^\/api\/kid\/sign-out$/],
   ['GET', /^\/api\/student\/homework$/],
   ['POST', /^\/api\/student\/homework\/[^/]+\/done$/],
   ['GET', /^\/api\/student\/review$/],
@@ -168,6 +169,16 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
       link: '/student/account?tab=family',
     });
     return res.json({ token, learnerName: learner?.name || null });
+  });
+
+  // Child phone: sign out. The device is removed from the parent's list; coming back needs a new code.
+  app.post('/api/kid/sign-out', deps.verifyStudentAuth, async (req: any, res: any) => {
+    const client = db(res); if (!client) return;
+    const id = req.childDevice?.id;
+    if (!id) return res.status(403).json({ error: 'This page is for a linked child device.' });
+    const { error } = await client.from('child_devices').update({ revoked_at: new Date().toISOString() }).eq('id', id).is('revoked_at', null);
+    if (error) { console.error('[kid sign-out]', error.message); return res.status(500).json({ error: 'Could not sign out. Please try again.' }); }
+    return res.json({ signedOut: true });
   });
 
   // Child phone: who this phone belongs to and the next lessons (time, subject, Zoom link only).

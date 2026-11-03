@@ -25,7 +25,8 @@ interface HallEntry {
   photoUrl?: string | null;
 }
 
-export default function StudentCommunityPage({ lang }: { lang: 'ar' | 'en' }) {
+/** `kid`: on a linked child device (NX-16) the sharing choices stay with the parent; the child sees the honour board. */
+export default function StudentCommunityPage({ lang, kid = false }: { lang: 'ar' | 'en'; kid?: boolean }) {
   const isAr = lang === 'ar';
   const [params] = useSearchParams();
   const { learners, activeId } = useActiveLearner();
@@ -57,14 +58,16 @@ export default function StudentCommunityPage({ lang }: { lang: 'ar' | 'en' }) {
       <header className="grid gap-1">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مجتمعنا' : 'Our community'}</h1>
         <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
-          {isAr
+          {kid
+            ? (isAr ? 'المجتمع ده لأسر وطلاب وتزودوا بس، ومحدش من برّه بيشوفه. دي لوحة الشرف بتاعة طلابنا.' : 'This community is for Watazawwado families and students only; nobody outside can see it. Here is our students’ Hall of Honor.')
+            : isAr
             ? 'المجتمع ده لأسر وطلاب وتزودوا بس، ومحدش من برّه بيشوفه. هنا بتختاروا إيه يظهر من إنجازاتكم، وبتشوفوا لوحة الشرف.'
             : 'This community is for Watazawwado families and students only; nobody outside can see it. Here you choose what to share of your achievements and see the Hall of Honor.'}
         </p>
       </header>
 
-      <FamilyAchievements isAr={isAr} onChanged={loadHall} />
-      {panelIds.map((id) => <CommunityPanel key={id || 'self'} learnerId={id} isAr={isAr} onChanged={loadHall} />)}
+      {!kid && <FamilyAchievements isAr={isAr} onChanged={loadHall} />}
+      {!kid && panelIds.map((id) => <CommunityPanel key={id || 'self'} learnerId={id} isAr={isAr} onChanged={loadHall} />)}
 
       <section id="hall" aria-labelledby="hall-title" className="grid gap-4 scroll-mt-24">
         <div className="grid gap-1">
