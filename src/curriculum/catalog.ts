@@ -23,6 +23,7 @@ import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonC01 } from './content/literacy-c/l01-numbers-that-talk.js';
 import { francoLesson } from './franco.js';
 import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
+import { lessonE03 } from './content/egyptian-adults/l03-whats-this.js';
 import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
 import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
@@ -355,7 +356,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Come In, Have Tea!', 'Are You Free Tonight?', 'A Gift for Mona', 'Taxi, Train, Ticket', 'What Will You Have?',
       'Review: Ready for Cairo',
     ],
-    lessons: { 1: lessonE01, 2: lessonE02 },
+    lessons: { 1: lessonE01, 2: lessonE02, 3: lessonE03 },
   },
   {
     // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).

@@ -12,7 +12,7 @@ import { ArText, Say, Tile, Skyline, Building, Street, Stairs, useMirror, GROUND
  * one ending that follows the person (ـي / ـية). Every Arabic word plays on tap; the Franco track mirrors the rows.
  */
 
-const ELDER = '#8C6A9E';
+export const ELDER = '#8C6A9E';
 const CARD = '#FFFDF8';
 const SHADOW = '0 18px 34px -24px rgba(60,30,10,0.6)';
 

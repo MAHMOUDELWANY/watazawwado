@@ -33,6 +33,14 @@ export const FRANCO: Record<string, string> = {
   'كندي': 'kanadi', 'كندية': 'kanadeyya', 'ألماني': 'almani', 'ألمانية': 'almaneyya', 'أمريكاني': 'amreekani',
   'أمريكانية': 'amreekaneyya', 'أيوه': 'aywa', 'لأ': 'la2', 'نعم': 'na3am', 'لا': 'la', 'جديد': 'gedeed', 'جديدة': 'gedeeda',
   'جميل': 'gameel', 'جميلة': 'gameela', 'جامعة': 'gam3a', 'ممتاز': 'momtaz', 'ده': 'da', 'دي': 'di',
+  // Lesson 3
+  'بالهنا والشفا': 'bel hana w el shefa', 'إيه ده بالمصري': 'eh da bel masri', 'ـة': '-a', 'طنط': 'Tant', 'وإيه': 'w eh',
+  'وده': 'w da', 'ودي': 'w di', 'محشي': 'ma7shi', 'بسبوسة': 'basbosa', 'بالهنا': 'bel hana', 'والشفا': 'w el shefa',
+  'شوكة': 'shoka', 'شنطة': 'shanta', 'ترابيزة': 'tarabeeza', 'الترابيزة': 'el tarabeeza', 'كرسي': 'korsi',
+  'الكرسي': 'el korsi', 'باب': 'bab', 'الباب': 'el bab', 'شمس': 'shams', 'إيد': 'eed', 'الشباك': 'el shebbak',
+  'كنبة': 'kanaba', 'الكنبة': 'el kanaba', 'تلاجة': 'tallaga', 'التلاجة': 'el tallaga', 'تليفون': 'telefon',
+  'التليفزيون': 'el televezyon', 'السرير': 'el sereer', 'مطبخ': 'matba5', 'المطبخ': 'el matba5', 'المفاتيح': 'el mafatee7',
+  'بالمصري': 'bel masri', 'تعالى': 'ta3ala', 'كوباية': 'kobbaya',
 };
 
 const MARKS = /[ً-ْٰ]/g;

@@ -163,6 +163,11 @@ const ICONS: Record<string, string> = {
   mirror: 'M6 10a6 7 0 1 0 12 0a6 7 0 1 0-12 0M12 17v3M9 21h6',
   wardrobe: 'M5 3h14v18H5zM12 3v18M10 11v2M14 11v2',
   chair: 'M7 3v18M7 13h10v8M7 9h9',
+  sofa: 'M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3M2 11h20v6H2zM4 17v2M20 17v2M6 11v3h12v-3',
+  fridge: 'M6 2h12v20H6zM6 9h12M9 5v2M9 12v3',
+  tv: 'M3 6h18v11H3zM8 21h8M12 17v4',
+  table: 'M3 9h18M5 9l-1 10M19 9l1 10M8 9v4h8V9',
+  fork: 'M8 3v6a2 2 0 0 0 4 0V3M10 3v18M16 3c-2 2-2 6 0 8v10',
 };
 
 export function Icon({ name, size = 40, color = INK_TEXT, width = 1.8 }: { name: keyof typeof ICONS | string; size?: number; color?: string; width?: number }) {

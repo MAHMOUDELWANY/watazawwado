@@ -22,6 +22,8 @@ export type SceneId =
   | 'lc1Cover' | 'lc1Message' | 'lc1Why' | 'lc1What' | 'lc1Plain' | 'lc1Ayn' | 'lc1Ha' | 'lc1Pairs' | 'lc1Read' | 'lc1Review' | 'lc1Reply' | 'lc1Mission' | 'lc1Next'
   // Egyptian Arabic · Adults · Lesson 2 (slides/motion/g-ea2.tsx)
   | 'ea2Cover' | 'ea2Stairs' | 'ea2Listen' | 'ea2Minen' | 'ea2Countries' | 'ea2Masri' | 'ea2Endings' | 'ea2Gim' | 'ea2Polite' | 'ea2Review' | 'ea2Talk' | 'ea2Mission' | 'ea2Next'
+  // Egyptian Arabic · Adults · Lesson 3 (slides/motion/g-ea3.tsx)
+  | 'ea3Cover' | 'ea3Plate' | 'ea3Listen' | 'ea3DaDi' | 'ea3Ta' | 'ea3Flat' | 'ea3People' | 'ea3Recap' | 'ea3Sort' | 'ea3Talk' | 'ea3Mission' | 'ea3Next'
   // Fusha · Kids · Lesson 2 (slides/motion/g-fk2.tsx)
   | 'fk2Cover' | 'fk2Recall' | 'fk2Box' | 'fk2Story' | 'fk2Hamza' | 'fk2Yes' | 'fk2Animals' | 'fk2Shadow' | 'fk2Sort' | 'fk2Talk' | 'fk2Mission' | 'fk2Next'
   // Fusha · 12+ · Lesson 2 (slides/motion/g-ft2.tsx)
