@@ -9,6 +9,10 @@ export type SceneId =
   | 'lwtCover' | 'lwtCity' | 'lwtMessage' | 'lwtWorld' | 'lwtRtl' | 'lwt28' | 'lwtHands' | 'lwtDots' | 'lwtMarks' | 'lwtSounds' | 'lwtAlif' | 'lwtTrue' | 'lwtRead' | 'lwtBlock' | 'lwtNext'
   | 'lwaCover' | 'lwaMap' | 'lwaSign' | 'lwaWorld' | 'lwaRtl' | 'lwa28' | 'lwaHands' | 'lwaDots' | 'lwaMarks' | 'lwaSounds' | 'lwaAlif' | 'lwaTrue' | 'lwaRead' | 'lwaMilestone' | 'lwaNext'
   | 'la1Cover' | 'la1Note' | 'la1Guess' | 'la1Alif' | 'la1Baa' | 'la1Taa' | 'la1Thaa' | 'la1Trick' | 'la1Find' | 'la1Sort' | 'la1Word' | 'la1Mission' | 'la1Next'
+  // Literacy A · Lesson 3, all three ages (slides/motion/g-la3.tsx)
+  | 'la3Cover' | 'la3Note' | 'la3Guess' | 'la3Haa' | 'la3Jeem' | 'la3Khaa' | 'la3Trick' | 'la3Find' | 'la3Sort' | 'la3Word' | 'la3Mission' | 'la3Next'
+  | 'lq3Cover' | 'lq3Message' | 'lq3Cups' | 'lq3Haa' | 'lq3Hooks' | 'lq3Rule' | 'lq3Find' | 'lq3Sort' | 'lq3Words' | 'lq3Mission' | 'lq3Next'
+  | 'lt3Cover' | 'lt3Message' | 'lt3Cups' | 'lt3Haa' | 'lt3Hooks' | 'lt3Rule' | 'lt3Find' | 'lt3Sort' | 'lt3Words' | 'lt3Mission' | 'lt3Next'
   | 'fk1Cover' | 'fk1Game' | 'fk1Story' | 'fk1Haadha' | 'fk1Maa' | 'fk1Man' | 'fk1Words' | 'fk1Talk' | 'fk1Spot' | 'fk1Sort' | 'fk1Mission' | 'fk1Next'
   // English · Kids · Lesson 1 (drawn in code, slides/motion/g-en1.tsx)
   | 'en1Cover' | 'en1Garden' | 'en1S' | 'en1A' | 'en1T' | 'en1Blend' | 'en1Find' | 'en1Sort' | 'en1Read' | 'en1Mission' | 'en1Next'

@@ -1,4 +1,7 @@
 import type { Lesson } from './types';
+import { lessonAA03 } from './content/literacy-a-adults/l03-cups-and-hooks.js';
+import { lessonAT03 } from './content/literacy-a-teens/l03-cups-and-hooks.js';
+import { lessonA03 } from './content/literacy-a-kids/l03-the-cup-family.js';
 import { lesson01 } from './content/zad-kids/l01-the-visitor-in-white.js';
 import { lesson02 } from './content/zad-kids/l02-who-made-it-all.js';
 import { lesson03 } from './content/zad-kids/l03-allah-is-one.js';
@@ -199,7 +202,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Tanween', 'Shadda', 'Al- and the Moon Letters', 'Al- and the Sun Letters', 'ة ى and the Small Alif',
       'Sentences', 'My First Story', 'No Marks', 'Signs, Labels, Menus', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonA01, 2: lessonA02 },
+    lessons: { 1: lessonA01, 2: lessonA02, 3: lessonA03 },
   },
   {
     id: 'literacy-a-adults',
@@ -226,7 +229,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Dropping the Marks', 'Patterns and Context', 'Fonts and Handwriting',
       'Signs and Streets', 'Menus and Labels', 'Messages', 'Headlines and a Short Article', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonAA01, 2: lessonAA02 },
+    lessons: { 1: lessonAA01, 2: lessonAA02, 3: lessonAA03 },
   },
   {
     id: 'fusha-kids',
@@ -441,7 +444,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Dropping the Marks', 'Patterns and Context', 'Fonts and Handwriting',
       'Signs and Streets', 'Menus and Labels', 'Messages', 'Headlines and a Short Article', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonAT01, 2: lessonAT02 },
+    lessons: { 1: lessonAT01, 2: lessonAT02, 3: lessonAT03 },
   },
   {
     id: 'egyptian-kids',

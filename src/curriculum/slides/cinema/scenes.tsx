@@ -28,6 +28,7 @@ import { Fk3CoverGraphic, Fk3RecallGraphic, Fk3ParkGraphic, Fk3StoryGraphic, Fk3
 import { Ft2CoverGraphic, Ft2PhoneGraphic, Ft2DarkGraphic, Ft2HamzaGraphic, Ft2AnswersGraphic, Ft2WordsGraphic, Ft2TorchGraphic, Ft2ChainGraphic, Ft2TalkGraphic, Ft2MissionGraphic, Ft2NextGraphic } from '../motion/g-ft2';
 import { Ft3CoverGraphic, Ft3RoofGraphic, Ft3ListenGraphic, Ft3FarGraphic, Ft3TilkaGraphic, Ft3GridGraphic, Ft3WordsGraphic, Ft3TalkGraphic, Ft3MissionGraphic, Ft3NextGraphic } from '../motion/g-ft3';
 import { Lb2CoverGraphic, Lb2RecallGraphic, Lb2FastGraphic, Lb2StandGraphic, Lb2ClapsGraphic, Lb2HadhaGraphic, Lb2WawGraphic, Lb2YaaGraphic, Lb2SpotGraphic, Lb2AlongGraphic, Lb2MissionGraphic, Lb2NextGraphic } from '../motion/g-lb2';
+import { La3CoverGraphic, La3NoteGraphic, La3GuessGraphic, La3HaaGraphic, La3JeemGraphic, La3KhaaGraphic, La3TrickGraphic, La3FindGraphic, La3WordGraphic, La3MissionGraphic, La3NextGraphic, Lq3CoverGraphic, Lq3MessageGraphic, Lq3CupsGraphic, Lq3HooksGraphic, Lq3RuleGraphic, Lq3WordsGraphic, Lq3MissionGraphic, Lq3NextGraphic } from '../motion/g-la3';
 import { Lb3CoverGraphic, Lb3RecallGraphic, Lb3MysteryGraphic, Lb3ZeroGraphic, Lb3GroupGraphic, Lb3AsrGraphic, Lb3AnaGraphic, Lb3SpotGraphic, Lb3AlongGraphic, Lb3MissionGraphic, Lb3NextGraphic } from '../motion/g-lb3';
 import { Qr2CoverGraphic, Qr2WarmGraphic, Qr2ShaddaGraphic, Qr2Nas1Graphic, Qr2Nas4Graphic, Qr2RhymeGraphic, Qr2Falaq1Graphic, Qr2Falaq4Graphic, Qr2ReadGraphic, Qr2MissionGraphic, Qr2NextGraphic } from '../motion/g-qr2';
 import { Qr3CoverGraphic, Qr3WarmGraphic, Qr3TanweenGraphic, Qr3Ikhlas1Graphic, Qr3Ikhlas3Graphic, Qr3StopGraphic, Qr3Masad1Graphic, Qr3Masad4Graphic, Qr3ReadGraphic, Qr3MissionGraphic, Qr3NextGraphic } from '../motion/g-qr3';
@@ -335,6 +336,37 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   lb2Waw: onStage({ tone: 'light', Graphic: Lb2WawGraphic }), lb2Yaa: onStage({ tone: 'light', Graphic: Lb2YaaGraphic, marks: ['food'] }),
   lb2Spot: onStage({ tone: 'light', Graphic: Lb2SpotGraphic }), lb2Along: onStage({ tone: 'light', Graphic: Lb2AlongGraphic, keepOnAsk: true }),
   lb2Mission: onStage({ tone: 'light', Graphic: Lb2MissionGraphic }), lb2Next: onStage({ tone: 'light', Graphic: Lb2NextGraphic }),
+  la3Cover: onStage({ tone: 'light', Graphic: La3CoverGraphic }),
+  la3Note: onStage({ tone: 'light', Graphic: La3NoteGraphic }),
+  la3Guess: onStage({ tone: 'light', Graphic: La3GuessGraphic, keepOnAsk: true }),
+  la3Haa: onStage({ tone: 'light', Graphic: La3HaaGraphic }),
+  la3Jeem: onStage({ tone: 'light', Graphic: La3JeemGraphic }),
+  la3Khaa: onStage({ tone: 'light', Graphic: La3KhaaGraphic }),
+  la3Trick: onStage({ tone: 'light', Graphic: La3TrickGraphic }),
+  la3Find: onStage({ tone: 'light', Graphic: La3FindGraphic }),
+  la3Word: onStage({ tone: 'light', Graphic: La3WordGraphic }),
+  la3Mission: onStage({ tone: 'light', Graphic: La3MissionGraphic }),
+  la3Next: onStage({ tone: 'light', Graphic: La3NextGraphic }),
+  lq3Cover: onStage({ tone: 'light', Graphic: Lq3CoverGraphic }),
+  lq3Message: onStage({ tone: 'light', Graphic: Lq3MessageGraphic }),
+  lq3Cups: onStage({ tone: 'light', Graphic: Lq3CupsGraphic }),
+  lq3Haa: onStage({ tone: 'light', Graphic: La3HaaGraphic }),
+  lq3Hooks: onStage({ tone: 'light', Graphic: Lq3HooksGraphic }),
+  lq3Rule: onStage({ tone: 'light', Graphic: Lq3RuleGraphic }),
+  lq3Find: onStage({ tone: 'light', Graphic: La3FindGraphic }),
+  lq3Words: onStage({ tone: 'light', Graphic: Lq3WordsGraphic }),
+  lq3Mission: onStage({ tone: 'light', Graphic: Lq3MissionGraphic }),
+  lq3Next: onStage({ tone: 'light', Graphic: Lq3NextGraphic }),
+  lt3Cover: onStage({ tone: 'light', Graphic: Lq3CoverGraphic }),
+  lt3Message: onStage({ tone: 'light', Graphic: Lq3MessageGraphic }),
+  lt3Cups: onStage({ tone: 'light', Graphic: Lq3CupsGraphic }),
+  lt3Haa: onStage({ tone: 'light', Graphic: La3HaaGraphic }),
+  lt3Hooks: onStage({ tone: 'light', Graphic: Lq3HooksGraphic }),
+  lt3Rule: onStage({ tone: 'light', Graphic: Lq3RuleGraphic }),
+  lt3Find: onStage({ tone: 'light', Graphic: La3FindGraphic }),
+  lt3Words: onStage({ tone: 'light', Graphic: Lq3WordsGraphic }),
+  lt3Mission: onStage({ tone: 'light', Graphic: Lq3MissionGraphic }),
+  lt3Next: onStage({ tone: 'light', Graphic: Lq3NextGraphic }),
   lb3Cover: onStage({ tone: 'light', Graphic: Lb3CoverGraphic }),
   lb3Recall: onStage({ tone: 'light', Graphic: Lb3RecallGraphic }),
   lb3Mystery: onStage({ tone: 'light', Graphic: Lb3MysteryGraphic }),
