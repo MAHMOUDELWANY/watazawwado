@@ -793,5 +793,9 @@ B3–B5 → continue lesson by lesson.
   the ـة tell; Franco words added to `franco.ts`), Egyptian Kids L3 "Teta's Old Box" and Teens L3 "What's in Karim's
   Bag?" (`g-egy3.tsx`; teens add plural things ← دي), Fusha Kids L3 "This One, That One" (`g-fk3.tsx`, هَذَا / ذَلِكَ
   in the park), Fusha 12+ L3 "Near and Far" (`g-ft3.tsx`, the four demonstratives on the campus roof) and Literacy
-  C L2 "The Cairo Hamza" (`g-lc2.tsx`: 2 for ء and Cairo's ق, the article el). Drafts,
+  C L2 "The Cairo Hamza" (`g-lc2.tsx`: 2 for ء and Cairo's ق, the article el). Then Quran Reading L3 "One and Many"
+  (Al-Ikhlas, Al-Masad, tanween), Tajweed L3 "Four Doors" (izhar; the Mushaf's sukoon sign; MAP passage corrected:
+  Al-Kawthar has no izhar), Literacy B L3 "Written, Not Read" (the little zeros; Al-Asr tadabbur) and Literacy A L3 for
+  the three ages (ج ح خ, and د ذ for teens and adults; `g-la3.tsx`; stroke paths added to `letters.tsx`). Every version
+  now has at least 3 lessons. Drafts,
   `reviewed: false`.
