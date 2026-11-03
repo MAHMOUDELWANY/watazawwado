@@ -833,3 +833,8 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-03 · Tajweed Level 3, Lesson 2 "Stop and Start" built** (draft): 13 pages, brief
   `tajweed/L3-02-stop-and-start.md`, graphics `g-tr2.tsx` (the ayah as a road of word tiles; stops as coloured gates;
   going back as an arrow). Ayat 47:19, 4:43, 2:2, 2:5-7, 1:2-3 verified. Next: Level 3, Lesson 3 "Raa in Full".
+- **2026-11-03 · Tajweed Level 3, Lesson 3 "Raa in Full" built** (draft): 13 pages, rules from Taysir ar-Rahman
+  pp. 146-152 (the owner's copy: `Documents/watazawwado-sources/tajweed/`, read as page images; its text layer is
+  garbled). Graphics `g-tr3.tsx` (letter tiles; a lens hops to the letter the rule checks). Ayat verified. Taysir pp.
+  226-227 confirms Lesson 1's madd ranking. **Not yet screenshotted step by step (usage limit): do that first.**
+  Level 3 now has its first 3 lessons. Next: Fusha Level 2 (LEVELS-PLAN order).

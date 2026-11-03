@@ -43,6 +43,7 @@ import { lessonT202 } from './content/tajweed-2/l02-the-throat.js';
 import { lessonT203 } from './content/tajweed-2/l03-the-deepest-tongue.js';
 import { lessonT301 } from './content/tajweed-3/l01-every-stretch-ranked.js';
 import { lessonT302 } from './content/tajweed-3/l02-stop-and-start.js';
+import { lessonT303 } from './content/tajweed-3/l03-raa-in-full.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -396,7 +397,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'The Four Silences of Hafs', 'Five Degrees of Heaviness', 'Two Still Letters Meet', 'The Rare Words of Hafs',
       'Between Two Surahs', 'Review: The Whole Ruler', 'Level 3 Recital',
     ],
-    lessons: { 1: lessonT301, 2: lessonT302 },
+    lessons: { 1: lessonT301, 2: lessonT302, 3: lessonT303 },
   },
   {
     id: 'egyptian-adults',
