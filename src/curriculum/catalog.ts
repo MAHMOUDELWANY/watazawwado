@@ -41,6 +41,7 @@ import { lessonT03 } from './content/tajweed/l03-four-doors.js';
 import { lessonT201 } from './content/tajweed-2/l01-the-map-of-the-mouth.js';
 import { lessonT202 } from './content/tajweed-2/l02-the-throat.js';
 import { lessonT203 } from './content/tajweed-2/l03-the-deepest-tongue.js';
+import { lessonT301 } from './content/tajweed-3/l01-every-stretch-ranked.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -370,6 +371,31 @@ export const SUBJECTS: SubjectEntry[] = [
       'Covered and Open', 'Letters With a Mark of Their Own', 'Twins and Neighbours', 'Level 2 Recital',
     ],
     lessons: { 1: lessonT201, 2: lessonT202, 3: lessonT203 },
+  },
+  {
+    id: 'tajweed-3',
+    group: 'quran',
+    title: 'Tajweed · Level 3',
+    titleAr: 'التجويد · المستوى الثالث',
+    version: 'Level 3',
+    versionAr: 'المستوى الثالث',
+    audience: '12+',
+    art: '/curriculum/banners/tajweed.webp',
+    parts: [
+      { title: 'Level 3 · Measure', titleAr: 'المستوى الثالث · المقاييس', from: 1 },
+      { title: 'Level 3 · Madd, Deeper', titleAr: 'المستوى الثالث · المدود بالتفصيل', from: 4 },
+      { title: 'Level 3 · Stopping and Starting', titleAr: 'المستوى الثالث · الوقف والابتداء', from: 9 },
+      { title: 'Level 3 · Heavy, Light and the Words of Hafs', titleAr: 'المستوى الثالث · التفخيم وكلمات حفص', from: 12 },
+      { title: 'Level 3 · Close', titleAr: 'المستوى الثالث · الختام', from: 16 },
+    ],
+    // docs/curriculum/tajweed/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: [
+      'Every Stretch, Ranked', 'Stop and Start', 'Raa in Full', 'The Stretch Before a Hamza', 'The Longest Stretch in Full',
+      'Stretches at a Stop', 'The Small Stretches', 'Two Reasons, One Stretch', 'How to Stop', 'Starting Again',
+      'The Four Silences of Hafs', 'Five Degrees of Heaviness', 'Two Still Letters Meet', 'The Rare Words of Hafs',
+      'Between Two Surahs', 'Review: The Whole Ruler', 'Level 3 Recital',
+    ],
+    lessons: { 1: lessonT301 },
   },
   {
     id: 'egyptian-adults',

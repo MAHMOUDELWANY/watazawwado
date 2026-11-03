@@ -827,3 +827,6 @@ B3–B5 → continue lesson by lesson.
   ash-Shatibiyyah; first three as the levels plan set them: every madd on one "recitation ruler", stopping and
   starting, raa in full; then madd, waqf/ibtida', heaviness and the rare words of Hafs in depth). Claude's draft for the
   owner's review. Next: Level 3, Lesson 1 "Every Stretch, Ranked".
+- **2026-11-03 · Tajweed Level 3, Lesson 1 "Every Stretch, Ranked" built** (draft): catalog entry `tajweed-3` (group
+  `quran`, 12+, 17-lesson plan), 14 pages, brief `tajweed/L3-01-every-stretch-ranked.md`. New device for the level: the
+  recitation ruler (`g-tr1.tsx`). Ayat 1:4-7, 2:1-5, 106:1-4 verified. Next: Level 3, Lesson 2 "Stop and Start".
