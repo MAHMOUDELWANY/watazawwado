@@ -334,7 +334,7 @@ export default function StudentApp() {
               ? 'ادخل حسابك تشوف حصصك ورابط Zoom وملاحظات معلمك، أو افتح حساب جديد في دقيقة.'
               : 'Sign in to see your lessons, your Zoom link and your teacher’s notes, or open a new account in a minute.'}
           />
-          <div className="px-6 sm:px-8 pt-6 pb-7 space-y-3">
+          <div className="pt-8 space-y-3">
             <Button onClick={() => { setAuthInitialView('login'); setAuthModalOpen(true); }} className="w-full !h-12 !rounded-full !text-base !font-bold gap-2">
               <span>{isAr ? 'ادخل حسابك' : 'Sign in'}</span>
               <ArrowRight className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
@@ -352,7 +352,7 @@ export default function StudentApp() {
               </span>
               <ArrowRight className="w-4 h-4 shrink-0 text-muted-foreground rtl:-scale-x-100" aria-hidden="true" />
             </Link>
-            <InstallAppEntry isAr={isAr} className="!mt-5" />
+            <InstallAppEntry isAr={isAr} className="auth-kid-entry !mt-3" />
             <p className="pt-3 text-center text-sm text-muted-foreground">
               {isAr ? 'معلم أو من الإدارة؟ ' : 'Teacher or admin? '}
               <Link to="/staff/login" className="font-bold text-[var(--teal)] hover:underline">{isAr ? 'ادخل من هنا' : 'Sign in here'}</Link>

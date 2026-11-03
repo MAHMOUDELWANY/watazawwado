@@ -311,7 +311,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     : error || notice || '';
 
   // 'page' sits inside the sign-in door (AuthCard), which draws the frame; this only pads the content.
-  const card = variant === 'page' ? 'px-6 sm:px-8 pb-8' : '';
+  const card = '';
 
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} className={`relative w-full max-w-md mx-auto overflow-hidden ${card}`}>
@@ -464,7 +464,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                       onKeyDown={(e) => onKeyDown(i, e)}
                       onPaste={(e) => onPaste(i, e)}
                       className={`w-full h-full text-center text-2xl font-bold tabular-nums rounded-2xl outline-none caret-transparent backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-200 disabled:opacity-100
-                        bg-background dark:bg-white/[0.06] text-foreground border
+                        bg-surface dark:bg-white/[0.06] text-foreground border
                         ${
                           busy
                             ? 'border-[#C99130]/60 dark:border-[#E5A93C]/50 border-t-[#C51F24] dark:border-t-[#E82C32] shadow-[0_-3px_14px_-2px_rgba(197,31,36,0.55)]'
@@ -473,8 +473,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                             : active
                             ? 'border-[#C99130] dark:border-[#E5A93C] shadow-[0_0_0_4px_rgba(229,169,60,0.18),0_0_24px_rgba(229,169,60,0.35)]'
                             : d
-                            ? 'border-[#087D91]/50 dark:border-[#12A4BC]/50'
-                            : 'border-border dark:border-white/15'
+                            ? 'border-foreground/50'
+                            : 'border-foreground/20 dark:border-white/20'
                         }`}
                     />
                     {active && !d && (
@@ -561,7 +561,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                 type="button"
                 onClick={resend}
                 disabled={countdown > 0 || isResending || busy}
-                className={`inline-flex items-center gap-1 font-semibold rounded px-1 text-[#087D91] dark:text-[#12A4BC] hover:underline disabled:no-underline disabled:text-muted-foreground disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}
+                className={`inline-flex items-center gap-1 font-semibold rounded px-1 text-[var(--crimson)] dark:text-[#F0B54A] hover:underline disabled:no-underline disabled:text-muted-foreground disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}
               >
                 {isResending && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 {t('أعد الإرسال', 'Resend')}

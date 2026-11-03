@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Globe, ShieldCheck } from 'lucide-react';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { useAppLanguage } from '../../lib/language';
 
 /**
- * "The Door" (2026-11-03): every sign-in screen (student dialog, student area, kid link, staff login, set password)
- * is one entrance. A full-screen paper (or night) scene with the verse written large and faint behind, the brand
- * ribbon crossing it, and a tall arched door in a gold double frame holding the form, the logo as its keystone.
+ * "Paper and ink" (owner's pick, 2026-11-03): every sign-in screen (student dialog, student area, kid link,
+ * email code, staff login, set password) is a full page of cream paper (espresso at night) with no card.
+ * One centred column: the verse in gold, the title set large in the editorial serif, a gold hairline with a
+ * diamond, hairline fields and one crimson button. Luxury by restraint: space, type and two colours.
  */
 
 export const VERSE_TEXT = '﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾';
@@ -24,95 +26,59 @@ export function useVerseFont() {
   }, []);
 }
 
-/** The scene's decoration: the verse as a watermark and the ribbon drawing across. Sits behind everything. */
+/** The paper itself: grain and one warm lamp-light above the column. Sits behind everything. */
 export function EntranceBackdrop() {
-  const reduce = useReducedMotion();
   useVerseFont();
-  return (
-    <div className="entrance-backdrop" aria-hidden="true">
-      <p className="entrance-verse" dir="rtl" lang="ar">{VERSE_TEXT}</p>
-      <svg className="entrance-ribbon" viewBox="0 0 1440 400" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="entrance-ribbon-g" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#C51F24" />
-            <stop offset="38%" stopColor="#B4552F" />
-            <stop offset="62%" stopColor="#E5A93C" />
-            <stop offset="100%" stopColor="#12A4BC" />
-          </linearGradient>
-        </defs>
-        <motion.path
-          d="M-20 300 C 240 120, 470 360, 720 220 S 1180 60, 1460 170"
-          fill="none"
-          stroke="url(#entrance-ribbon-g)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
-          initial={reduce ? false : { pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.8, delay: 0.15, ease: [0.65, 0, 0.35, 1] }}
-        />
-      </svg>
-    </div>
-  );
+  return <div className="entrance-backdrop" aria-hidden="true" />;
 }
 
-/** The three promises, in the scene's lower corner on wide screens. */
-export function EntrancePromises({ isAr }: { isAr: boolean }) {
-  const lines = isAr
-    ? ['معلم واحد يعرفك باسمك', 'حصة تجريبية مجانية', 'حساب واحد لكل العيلة']
-    : ['One teacher who knows you by name', 'A free trial lesson first', 'One account for the whole family'];
-  return (
-    <ul className="entrance-promises">
-      {lines.map((line) => <li key={line}><span className="entrance-dot" aria-hidden="true" />{line}</li>)}
-    </ul>
-  );
-}
+const rise = (reduce: boolean | null, delay: number) =>
+  reduce ? {} : { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const } };
 
-/** The keystone and the heading at the top of the door. */
+/** The head of every sign-in page: the verse, the title, the gold hairline, the line under it. */
 // Pages use the default h1; a dialog over a page passes heading="h2" so the page keeps one h1 (QA-02).
 export function AuthPortal({ title, subtitle, titleId, heading: Heading = 'h1' }: { title: React.ReactNode; subtitle?: React.ReactNode; titleId?: string; heading?: 'h1' | 'h2' }) {
+  const reduce = useReducedMotion();
+  const { isAr } = useAppLanguage();
+  useVerseFont();
   return (
-    <div className="door-head">
-      <DoorKeystone />
-      <Heading id={titleId} className="door-title font-editorial">{title}</Heading>
-      {subtitle && <p className="door-subtitle">{subtitle}</p>}
+    <div className="ink-head">
+      <motion.p className="ink-verse" dir="rtl" lang="ar" {...rise(reduce, 0)}>{VERSE_TEXT}</motion.p>
+      {/* Our rule: an English page that shows a verse shows its meaning under it. */}
+      {!isAr && <motion.p className="ink-verse-meaning" {...rise(reduce, 0.05)}>“And take provisions, but indeed, the best provision is fear of Allah.” Al-Baqarah 2:197</motion.p>}
+      <motion.div {...rise(reduce, 0.1)}>
+        <Heading id={titleId} className="ink-title font-editorial">{title}</Heading>
+      </motion.div>
+      <span className="ink-rule" aria-hidden="true"><span /></span>
+      {subtitle && <motion.p className="ink-subtitle" {...rise(reduce, 0.2)}>{subtitle}</motion.p>}
     </div>
   );
 }
 
-export function DoorKeystone() {
-  return (
-    <span className="door-keystone" aria-hidden="true">
-      <img src="/logo-256.png" alt="" width={56} height={35} />
-    </span>
-  );
-}
-
-/** Full-page entrance: the scene, a slim top bar, the door in the middle. */
+/** Full-page sign-in: the paper, a slim top bar, the column in the middle. */
 export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onToggleLang?: () => void; children: React.ReactNode }) {
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} className="entrance min-h-dvh text-foreground flex flex-col">
       <EntranceBackdrop />
       <header className="entrance-bar">
-        <Link to="/" className="entrance-pill">
+        <Link to="/" className="entrance-link">
           <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
           <span>{isAr ? 'رجوع للموقع' : 'Back to the website'}</span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {onToggleLang && (
-            <button type="button" onClick={onToggleLang} className="entrance-pill">
+            <button type="button" onClick={onToggleLang} className="entrance-link">
               <Globe className="w-4 h-4" aria-hidden="true" />
-              <span>{isAr ? 'EN' : 'عربي'}</span>
+              <span>{isAr ? 'English' : 'عربي'}</span>
             </button>
           )}
-          <ThemeToggle compact className="!w-11 !h-11 !rounded-full" />
+          <ThemeToggle compact className="!w-11 !h-11 !rounded-full !bg-transparent !border-0 !shadow-none" />
         </div>
       </header>
-      <main className="relative flex-1 w-full px-4 pt-14 pb-10 flex items-center justify-center">{children}</main>
-      <footer className="relative pb-6 flex flex-wrap items-end justify-center lg:justify-between gap-4 px-6 lg:px-10 text-xs text-muted-foreground">
-        <span className="hidden lg:block"><EntrancePromises isAr={isAr} /></span>
+      <main className="relative flex-1 w-full px-6 pt-8 pb-12 flex items-center justify-center">{children}</main>
+      <footer className="relative pb-7 text-center text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-[var(--teal)]" aria-hidden="true" />
+          <ShieldCheck className="w-3.5 h-3.5 text-[var(--gold-deep,#B9782A)]" aria-hidden="true" />
           {isAr ? 'بياناتك محفوظة عندنا بأمان' : 'Your details are kept safe with us'}
         </span>
       </footer>
@@ -120,17 +86,7 @@ export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onTo
   );
 }
 
-/** The door itself; `wide` for the OTP step. */
+/** The column that holds a sign-in form; `wide` for the OTP step. */
 export function AuthCard({ children, wide = false, className = '' }: { children: React.ReactNode; wide?: boolean; className?: string }) {
-  const reduce = useReducedMotion();
-  return (
-    <motion.div
-      initial={reduce ? false : { opacity: 0, y: 24, scale: 0.97 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 220, damping: 28 }}
-      className={`door w-full ${wide ? 'max-w-lg' : 'max-w-[28rem]'} ${className}`}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={`ink-column w-full ${wide ? 'max-w-lg' : 'max-w-[25rem]'} ${className}`}>{children}</div>;
 }

@@ -9,7 +9,7 @@ import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
-import { AuthCard, AuthPortal, DoorKeystone, EntranceBackdrop, EntrancePromises } from './auth/AuthFrame';
+import { AuthCard, AuthPortal, EntranceBackdrop } from './auth/AuthFrame';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
@@ -238,7 +238,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
           dir={isAr ? 'rtl' : 'ltr'}
         >
           <FocusTrap onEscape={onClose}>
-          {/* The whole screen is the entrance (AuthFrame "The Door"): the scene, a slim bar, the door with the form. */}
+          {/* The whole screen is the sign-in page (AuthFrame "paper and ink"): the paper, a slim bar, one column. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -249,27 +249,21 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             <EntranceBackdrop />
             <div className="entrance-bar">
               <span className="entrance-brand" aria-hidden="true">
-                <span className="grid place-items-center w-10 h-10 rounded-[14px] bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60 shadow-[var(--shadow-1)]">
-                  <img src="/logo-256.png" alt="" className="w-7 h-auto" />
-                </span>
-                <span className="hidden sm:block leading-tight">
-                  <span className="block font-editorial text-base font-bold">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
-                  <span className="block text-[11px] text-muted-foreground">{isAr ? 'أكاديمية حصص فردية أونلاين' : 'One-to-one online academy'}</span>
-                </span>
+                <img src="/logo-256.png" alt="" className="w-9 h-auto" />
+                <span className="font-editorial text-lg font-bold leading-none">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
               </span>
-              <div className="flex items-center gap-2">
-                <ThemeToggle compact className="!w-11 !h-11 !rounded-full" />
-                <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-pill is-round">
+              <div className="flex items-center gap-1">
+                <ThemeToggle compact className="!w-11 !h-11 !rounded-full !bg-transparent !border-0 !shadow-none" />
+                <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            <main className="relative flex-1 w-full px-4 pt-12 pb-10 flex items-center justify-center">
-              <AuthCard wide={view === 'verify'} className={isSignup ? 'sm:max-w-[31rem]' : ''}>
+            <main className="relative flex-1 w-full px-6 pt-6 pb-12 flex items-center justify-center">
+              <AuthCard wide={view === 'verify'} className={isSignup ? 'sm:max-w-[30rem]' : ''}>
             {view === 'verify' ? (
-              <div className="px-6 sm:px-8 pb-8">
-                <DoorKeystone />
+              <div>
                 <OtpVerificationCard
                   initialEmail={email}
                   onVerify={async (code, targetEmail) => {
@@ -299,9 +293,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 <>
                   <AuthPortal heading="h2" titleId="auth-modal-title" title={titles[view][0]} subtitle={titles[view][1]} />
 
-                  <div className="px-5 sm:px-8 pt-5 pb-[max(1.75rem,env(safe-area-inset-bottom))]">
+                  <div className="pt-7 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                     {showTabs && (
-                      <div className="auth-tabs mb-5" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
+                      <div className="auth-tabs mb-7" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
                         {(['login', 'signup'] as const).map((v) => (
                           <button
                             key={v}
@@ -309,9 +303,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                             role="tab"
                             aria-selected={view === v}
                             onClick={() => { setView(v); setError(''); setSuccess(''); }}
-                            className="relative z-10 min-h-10 rounded-full text-sm font-bold transition-colors cursor-pointer focus-ring aria-selected:text-foreground text-muted-foreground hover:text-foreground"
+                            className="relative min-h-11 text-[0.95rem] font-semibold transition-colors cursor-pointer focus-ring aria-selected:text-foreground text-muted-foreground hover:text-foreground"
                           >
-                            {view === v && <motion.span layoutId="auth-tab" className="absolute inset-0 -z-10 rounded-full bg-surface shadow-[var(--shadow-1)] ring-1 ring-border/60" transition={{ type: 'spring', stiffness: 460, damping: 36 }} />}
+                            {view === v && <motion.span layoutId="auth-tab" className="auth-tab-mark" transition={{ type: 'spring', stiffness: 460, damping: 36 }} />}
                             {v === 'login' ? (isAr ? 'دخول' : 'Sign in') : (isAr ? 'حساب جديد' : 'New account')}
                           </button>
                         ))}
@@ -397,12 +391,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                         </fieldset>
                       )}
 
-                      {showTabs && (
-                        <>
-                          {googleButton}
-                          <div className="auth-divider">{isAr ? 'أو بالإيميل' : 'or with email'}</div>
-                        </>
-                      )}
 
                       {isSignup && (
                         <div className="auth-half">
@@ -509,6 +497,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       <Button type="submit" isLoading={isSubmitting} className="w-full !h-12 !rounded-full !text-base !font-bold">
                         {submitLabel[view]}
                       </Button>
+
+                      {showTabs && (
+                        <>
+                          <div className="auth-divider">{isAr ? 'أو' : 'or'}</div>
+                          {googleButton}
+                        </>
+                      )}
                     </form>
 
                     {view === 'login' && (
@@ -542,9 +537,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             )}
               </AuthCard>
             </main>
-            <footer className="relative hidden lg:flex px-10 pb-7">
-              <EntrancePromises isAr={isAr} />
-            </footer>
           </motion.div>
           </FocusTrap>
         </div>

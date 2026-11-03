@@ -55,7 +55,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
           transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full flex justify-center my-auto"
         >
-          <AuthCard className="relative">
+          <AuthCard className="relative ink-sheet">
             <button
               type="button"
               onClick={onClose}

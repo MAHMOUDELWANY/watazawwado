@@ -72,7 +72,7 @@ export default function StaffLoginPage() {
             subtitle={t('For the teachers and admins of Watazawwado.', 'للمعلمين والإدارة في وتزودوا.')}
           />
 
-          <div className="px-6 sm:px-8 pt-6 pb-7">
+          <div className="pt-8">
             {error && (
               <div role="alert" className="mb-5 p-3 rounded-[var(--r-2)] bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
