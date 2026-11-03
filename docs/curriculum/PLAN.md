@@ -823,3 +823,7 @@ B3–B5 → continue lesson by lesson.
   `tajweed/L2-03-the-deepest-tongue.md`, graphics `g-tm3.tsx` (a close-up of the back of the mouth: ق touches furthest
   back and fills the mouth, ك one step forward with a breath). Ayat 112:1-4, 108:1, 105:1, 113:1 verified. Tajweed
   Level 2 now has its first 3 lessons (LEVELS-PLAN target). Next: Tajweed Level 3 map (`tajweed/MAP-level-3.md`).
+- **2026-11-03 · Tajweed Level 3 map** written (`tajweed/MAP-level-3.md`: 17 lessons in Hafs by way of
+  ash-Shatibiyyah; first three as the levels plan set them: every madd on one "recitation ruler", stopping and
+  starting, raa in full; then madd, waqf/ibtida', heaviness and the rare words of Hafs in depth). Claude's draft for the
+  owner's review. Next: Level 3, Lesson 1 "Every Stretch, Ranked".
