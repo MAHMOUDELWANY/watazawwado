@@ -7,7 +7,7 @@ ones a learner hears most. Status: Claude's draft, 2026-10-26, for the owner's r
 |---|---|---|---|
 | 1 | Every Letter Has a Right | what tajweed is; clear and hidden mistakes; isti'adha and basmalah | Al-Ikhlas |
 | 2 | The Bounce | qalqalah (ق ط ب ج د), small and big | Al-Falaq, Al-Ikhlas |
-| 3 | Four Doors | noon saakinah and tanween: izhar (the throat letters) | Al-Kawthar, Al-Asr |
+| 3 | Four Doors | noon saakinah and tanween: izhar (the throat letters) | Al-Asr; izhar examples from Al-Masad, Quraysh, Al-Qari'ah, Al-Ikhlas (Al-Kawthar has no izhar) |
 | 4 | Merging | idgham with and without ghunnah (يرملون) | Al-Ma'un |
 | 5 | The Hidden Swap | iqlab (ن → م before ب) | Al-Humazah |
 | 6 | Hiding | ikhfa (15 letters) | Quraysh, Al-Fil |

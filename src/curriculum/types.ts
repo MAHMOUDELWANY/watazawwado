@@ -42,6 +42,8 @@ export type SceneId =
   | 'qr3Cover' | 'qr3Warm' | 'qr3Tanween' | 'qr3Ikhlas1' | 'qr3Ikhlas3' | 'qr3Stop' | 'qr3Masad1' | 'qr3Masad4' | 'qr3Review' | 'qr3Read' | 'qr3Mission' | 'qr3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
+  // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
+  | 'tj3Cover' | 'tj3Recall' | 'tj3Doors' | 'tj3Throat' | 'tj3Izhar' | 'tj3Tanween' | 'tj3Why' | 'tj3Mushaf' | 'tj3Mistakes' | 'tj3Spot' | 'tj3Review' | 'tj3Recite' | 'tj3Mission' | 'tj3Next'
   // Egyptian Arabic · Adults · Lesson 1 (drawn in code, slides/motion/g-ea1.tsx)
   | 'ea1Cover' | 'ea1Book' | 'ea1Door' | 'ea1Pairs' | 'ea1Eh' | 'ea1Mona' | 'ea1Suffix' | 'ea1Hadra' | 'ea1Sorry' | 'ea1Bye' | 'ea1Review' | 'ea1Talk' | 'ea1Mission' | 'ea1Next'
   // Fusha · 12+ · Lesson 1 (drawn in code, slides/motion/g-ft1.tsx)
