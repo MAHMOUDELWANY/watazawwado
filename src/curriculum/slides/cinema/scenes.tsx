@@ -29,6 +29,7 @@ import { Ft2CoverGraphic, Ft2PhoneGraphic, Ft2DarkGraphic, Ft2HamzaGraphic, Ft2A
 import { Ft3CoverGraphic, Ft3RoofGraphic, Ft3ListenGraphic, Ft3FarGraphic, Ft3TilkaGraphic, Ft3GridGraphic, Ft3WordsGraphic, Ft3TalkGraphic, Ft3MissionGraphic, Ft3NextGraphic } from '../motion/g-ft3';
 import { Lb2CoverGraphic, Lb2RecallGraphic, Lb2FastGraphic, Lb2StandGraphic, Lb2ClapsGraphic, Lb2HadhaGraphic, Lb2WawGraphic, Lb2YaaGraphic, Lb2SpotGraphic, Lb2AlongGraphic, Lb2MissionGraphic, Lb2NextGraphic } from '../motion/g-lb2';
 import { Qr2CoverGraphic, Qr2WarmGraphic, Qr2ShaddaGraphic, Qr2Nas1Graphic, Qr2Nas4Graphic, Qr2RhymeGraphic, Qr2Falaq1Graphic, Qr2Falaq4Graphic, Qr2ReadGraphic, Qr2MissionGraphic, Qr2NextGraphic } from '../motion/g-qr2';
+import { Qr3CoverGraphic, Qr3WarmGraphic, Qr3TanweenGraphic, Qr3Ikhlas1Graphic, Qr3Ikhlas3Graphic, Qr3StopGraphic, Qr3Masad1Graphic, Qr3Masad4Graphic, Qr3ReadGraphic, Qr3MissionGraphic, Qr3NextGraphic } from '../motion/g-qr3';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
 import { Lt1CoverGraphic, Lt1SignGraphic, Lt1GuessGraphic, Lt1AlifGraphic, Lt1BaaGraphic, Lt1TaaGraphic, Lt1ThaaGraphic, Lt1SystemGraphic, Lt1FindGraphic, Lt1WordGraphic, Lt1MissionGraphic, Lt1NextGraphic } from '../motion/g-lt1';
@@ -338,6 +339,17 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   qr2Falaq1: onStage({ tone: 'light', Graphic: Qr2Falaq1Graphic }), qr2Falaq4: onStage({ tone: 'light', Graphic: Qr2Falaq4Graphic }),
   qr2Read: onStage({ tone: 'light', Graphic: Qr2ReadGraphic, keepOnAsk: true }), qr2Mission: onStage({ tone: 'light', Graphic: Qr2MissionGraphic }),
   qr2Next: onStage({ tone: 'light', Graphic: Qr2NextGraphic }),
+  qr3Cover: onStage({ tone: 'light', Graphic: Qr3CoverGraphic }),
+  qr3Warm: onStage({ tone: 'light', Graphic: Qr3WarmGraphic }),
+  qr3Tanween: onStage({ tone: 'light', Graphic: Qr3TanweenGraphic }),
+  qr3Ikhlas1: onStage({ tone: 'light', Graphic: Qr3Ikhlas1Graphic }),
+  qr3Ikhlas3: onStage({ tone: 'light', Graphic: Qr3Ikhlas3Graphic }),
+  qr3Stop: onStage({ tone: 'light', Graphic: Qr3StopGraphic }),
+  qr3Masad1: onStage({ tone: 'light', Graphic: Qr3Masad1Graphic }),
+  qr3Masad4: onStage({ tone: 'light', Graphic: Qr3Masad4Graphic }),
+  qr3Read: onStage({ tone: 'light', Graphic: Qr3ReadGraphic, keepOnAsk: true }),
+  qr3Mission: onStage({ tone: 'light', Graphic: Qr3MissionGraphic }),
+  qr3Next: onStage({ tone: 'light', Graphic: Qr3NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),

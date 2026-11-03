@@ -31,6 +31,7 @@ import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonFT03 } from './content/fusha-12/l03-near-and-far.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
 import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
+import { lessonQ03 } from './content/quran-reading/l03-one-and-many.js';
 import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
@@ -320,7 +321,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Journeys', 'Time', 'The Race', 'The Shaking', 'The Clear Proof', 'The Night of Power', 'The Fig', 'Relief',
       'The Night', 'The Sun', 'The Dawn', 'The Overwhelming', 'The Night Visitor', "Juz 'Amma Recital",
     ],
-    lessons: { 1: lessonQ01, 2: lessonQ02 },
+    lessons: { 1: lessonQ01, 2: lessonQ02, 3: lessonQ03 },
   },
   {
     id: 'tajweed',

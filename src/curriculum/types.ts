@@ -38,6 +38,8 @@ export type SceneId =
   | 'lb2Cover' | 'lb2Recall' | 'lb2Fast' | 'lb2Stand' | 'lb2Claps' | 'lb2Hadha' | 'lb2Waw' | 'lb2Yaa' | 'lb2Spot' | 'lb2Sort' | 'lb2Along' | 'lb2Mission' | 'lb2Next'
   // Quran Reading · Lesson 2 (slides/motion/g-qr2.tsx)
   | 'qr2Cover' | 'qr2Warm' | 'qr2Shadda' | 'qr2Nas1' | 'qr2Nas4' | 'qr2Rhyme' | 'qr2Falaq1' | 'qr2Falaq4' | 'qr2Review' | 'qr2Read' | 'qr2Mission' | 'qr2Next'
+  // Quran Reading · Lesson 3 (slides/motion/g-qr3.tsx)
+  | 'qr3Cover' | 'qr3Warm' | 'qr3Tanween' | 'qr3Ikhlas1' | 'qr3Ikhlas3' | 'qr3Stop' | 'qr3Masad1' | 'qr3Masad4' | 'qr3Review' | 'qr3Read' | 'qr3Mission' | 'qr3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Egyptian Arabic · Adults · Lesson 1 (drawn in code, slides/motion/g-ea1.tsx)
