@@ -15,14 +15,14 @@ const KIDS = 'zad-kids/characters';
 const MUSHAF_GREEN = '#0E5A4B';
 
 /** Uthmani text in the Mushaf font; playable when `clip` names one of the page's clips. */
-function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
+export function Q({ children, size, color = INK_TEXT, clip, style }: { children: React.ReactNode; size: number; color?: string; clip?: string; style?: React.CSSProperties }) {
   useQuranFont();
   const text = <span lang="ar" dir="rtl" style={{ fontFamily: QURAN_FONT, fontSize: size, lineHeight: 1.9, color, whiteSpace: 'nowrap', ...style }}>{children}</span>;
   return clip ? <Hear id={clip}>{text}</Hear> : text;
 }
 
 /** A soft gold ring that pulses on something the learner should look at. */
-function Pulse({ x, y, r = 34, color = GOLD, delay = 0 }: { x: number; y: number; r?: number; color?: string; delay?: number }) {
+export function Pulse({ x, y, r = 34, color = GOLD, delay = 0 }: { x: number; y: number; r?: number; color?: string; delay?: number }) {
   const reduce = useReduce();
   return (
     <motion.span className="pointer-events-none absolute rounded-full" style={{ left: x - r, top: y - r, width: r * 2, height: r * 2, border: `4px solid ${color}`, boxShadow: `0 0 24px ${color}88` }}
@@ -32,7 +32,7 @@ function Pulse({ x, y, r = 34, color = GOLD, delay = 0 }: { x: number; y: number
 }
 
 /** A closed or open book: the storybook (warm) or the Mushaf (deep green with a gold frame). */
-function Book({ x, y, w, mushaf = false, open = false, delay = 0, children }: { x: number; y: number; w: number; mushaf?: boolean; open?: boolean; delay?: number; children?: React.ReactNode }) {
+export function Book({ x, y, w, mushaf = false, open = false, delay = 0, children }: { x: number; y: number; w: number; mushaf?: boolean; open?: boolean; delay?: number; children?: React.ReactNode }) {
   const h = w * 0.72;
   return (
     <motion.div className="pointer-events-none absolute" style={{ left: x - w / 2, top: y - h / 2, width: w, height: h }}
