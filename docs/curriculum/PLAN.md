@@ -819,3 +819,7 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-03 · Tajweed Level 2, Lesson 2 "The Throat" built** (draft): 14 pages, brief `tajweed/L2-02-the-throat.md`,
   graphics `g-tm2.tsx` (the throat as a three-floor tower; voiced and breathed twins on every floor). Ayat 112:1,
   113:1-5, 1:2, 1:5 verified. Every step screenshotted. Next: Lesson 3 "The Deepest Tongue" (ق ك).
+- **2026-11-03 · Tajweed Level 2, Lesson 3 "The Deepest Tongue" built** (draft): 12 pages, brief
+  `tajweed/L2-03-the-deepest-tongue.md`, graphics `g-tm3.tsx` (a close-up of the back of the mouth: ق touches furthest
+  back and fills the mouth, ك one step forward with a breath). Ayat 112:1-4, 108:1, 105:1, 113:1 verified. Tajweed
+  Level 2 now has its first 3 lessons (LEVELS-PLAN target). Next: Tajweed Level 3 map (`tajweed/MAP-level-3.md`).

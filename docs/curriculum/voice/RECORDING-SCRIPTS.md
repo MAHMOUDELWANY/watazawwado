@@ -387,6 +387,27 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أَأْ <break time="1.2s" /> أَهْ <break time="1.2s" /> أَعْ <break time="1.2s" /> أَحْ <break time="1.2s" /> أَغْ <break time="1.2s" /> أَخْ
 ```
 
+## Tajweed · Level 2 · Lesson 3: The Deepest Tongue
+
+Folder: `public/curriculum/tajweed-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (6)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-qalb.mp3 | 2 | clear, slow | قَلْب |
+| 2 | l03-kalb.mp3 | 2 | clear, slow | كَلْب |
+| 3 | l03-qul.mp3 | 2 | clear, slow | قُلْ |
+| 4 | l03-kul.mp3 | 2 | clear, slow | كُلْ |
+| 5 | l03-aq.mp3 | 4 | clear, slow | أَقْ |
+| 6 | l03-ak.mp3 | 5 | clear, slow | أَكْ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قَلْب <break time="1.2s" /> كَلْب <break time="1.2s" /> قُلْ <break time="1.2s" /> كُلْ <break time="1.2s" /> أَقْ <break time="1.2s" /> أَكْ
+```
+
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
 
 Folder: `public/curriculum/egyptian-adults/audio/`.

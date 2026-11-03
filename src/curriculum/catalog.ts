@@ -40,6 +40,7 @@ import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
 import { lessonT03 } from './content/tajweed/l03-four-doors.js';
 import { lessonT201 } from './content/tajweed-2/l01-the-map-of-the-mouth.js';
 import { lessonT202 } from './content/tajweed-2/l02-the-throat.js';
+import { lessonT203 } from './content/tajweed-2/l03-the-deepest-tongue.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -368,7 +369,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Review: Every Letter Has a Home', 'Whisper and Voice', 'Strong, Between, Soft', 'Raised and Lowered',
       'Covered and Open', 'Letters With a Mark of Their Own', 'Twins and Neighbours', 'Level 2 Recital',
     ],
-    lessons: { 1: lessonT201, 2: lessonT202 },
+    lessons: { 1: lessonT201, 2: lessonT202, 3: lessonT203 },
   },
   {
     id: 'egyptian-adults',
