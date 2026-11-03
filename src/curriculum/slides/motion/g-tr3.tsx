@@ -25,7 +25,7 @@ function Word({ tiles, raa, look = [], weight, y, label, crossed, pull, breakAft
   const xOf = (i: number) => RIGHT - (i + 1) * TW - i * GAP - (breakAfter !== undefined && i > breakAfter ? 40 : 0);
   const end = delay + 0.5 + look.length * 0.55;
   const w = weight;
-  const raaBg = w === 'heavy' ? HEAVY : w === 'both' ? `linear-gradient(90deg, ${CARD} 50%, ${HEAVY} 50%)` : CARD;
+  const raaBg = w === 'heavy' ? HEAVY : w === 'both' ? '#F6E3B8' : CARD;
   return (
     <>
       {tiles.map((t, i) => {
@@ -33,7 +33,7 @@ function Word({ tiles, raa, look = [], weight, y, label, crossed, pull, breakAft
         return (
           <motion.span key={i} lang="ar" className="pointer-events-none absolute flex items-center justify-center rounded-[16px]" style={{ left: xOf(i), top: y, width: TW, height: 100, ...AR, fontSize: 52, lineHeight: 1.6, boxShadow: isRaa ? `0 0 0 3px ${GOLD}, ${SHADOW}` : SHADOW }}
             initial={{ opacity: 0, y: 14, background: CARD, color: isRaa ? GOLD : INK_TEXT }}
-            animate={{ opacity: 1, y: 0, background: isRaa && w ? raaBg : CARD, color: isRaa && w ? (w === 'light' ? TEAL : GOLD) : isRaa ? CRIMSON : INK_TEXT }}
+            animate={{ opacity: 1, y: 0, background: isRaa && w ? raaBg : CARD, color: isRaa && w ? (w === 'light' ? TEAL : w === 'both' ? HEAVY : GOLD) : isRaa ? CRIMSON : INK_TEXT }}
             transition={{ opacity: { delay: delay + i * 0.06 }, y: { delay: delay + i * 0.06 }, background: { delay: end, duration: 0.5 }, color: { delay: end, duration: 0.5 } }}>
             {t}
           </motion.span>

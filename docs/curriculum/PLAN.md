@@ -836,5 +836,8 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-03 · Tajweed Level 3, Lesson 3 "Raa in Full" built** (draft): 13 pages, rules from Taysir ar-Rahman
   pp. 146-152 (the owner's copy: `Documents/watazawwado-sources/tajweed/`, read as page images; its text layer is
   garbled). Graphics `g-tr3.tsx` (letter tiles; a lens hops to the letter the rule checks). Ayat verified. Taysir pp.
-  226-227 confirms Lesson 1's madd ranking. **Not yet screenshotted step by step (usage limit): do that first.**
+  226-227 confirms Lesson 1's madd ranking. Every step screenshotted afterwards (fixed: the both-ways tile).
   Level 3 now has its first 3 lessons. Next: Fusha Level 2 (LEVELS-PLAN order).
+- **2026-11-03 · Fusha Level 2 map** written (`fusha/MAP-level-2.md`: 17 lessons, Kids and 12+ on one spine, Madinah
+  Reader 3-5 + Lughatuna 2; first three: past with every person, the present verb, the five nouns). Claude's draft for
+  the owner's review. Next: Fusha Level 2, Lesson 1, Kids and 12+.
