@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Sign-in screens: "paper and ink" redesign (2026-11-03)
+- Owner sent a screen recording: the sign-in dialog, `/student` gateway and `/kid` code page looked poor on desktop and phone. Two attempts (a dark-teal art pane, then a full-screen "door") were rejected: deep green is not our colour and did not read as luxury. With previews, the owner picked "paper and ink".
+- Every sign-in screen now shares `src/components/auth/AuthFrame.tsx`: cream paper (espresso at night), no card, one centred column with the verse in gold (its meaning on English pages), a large editorial title, a gold hairline with a diamond, underline tabs with a crimson mark, hairline fields with a crimson caret, one crimson button with Google below it. Links are crimson by day and gold at night. Autofill keeps the paper colour. The sign-in dialog is full screen on desktop and phone (no bottom sheet).
+- Also: kid code boxes visible on paper, a neutral empty "Verify" button, language switch in the page bar, and the get-started dialog keeps a paper sheet.
+- Files: `AuthFrame.tsx`, `StudentAuthModal.tsx`, `OtpVerificationCard.tsx`, `GetStartedModal.tsx`, `KidApp.tsx`, `OtpVerificationPage.tsx`, `StaffLoginPage.tsx`, `StaffSetPasswordPage.tsx`, `StudentApp.tsx`, `src/index.css` (sign-in section), `test/qa-02-accessibility.test.ts`.
+- Checks: tsc, build, impeccable detector clean, static tests touching these files pass; desktop and phone, day and night, Arabic and English checked locally. The server-backed tests could not run in the worktree (no `.env`, no dev-auth server); the change touches no server code.
+
 ### Child devices (NX-16): sign out, no repeated tabs, no dead links (2026-11-03)
 - Owner: a device linked to the parent's account could not sign out, and some tabs were repeated.
 - Sign out: a button in the `/kid` header (icon on a phone, "خروج" from `sm` up) asks first, then calls the new `POST /api/kid/sign-out` (on the child-route allow list), which revokes the device so it also leaves the parent's Family tab list. Coming back needs a new code. A device the parent already removed signs out locally.
