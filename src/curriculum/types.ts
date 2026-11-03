@@ -20,6 +20,8 @@ export type SceneId =
   | 'lt1Cover' | 'lt1Sign' | 'lt1Guess' | 'lt1Alif' | 'lt1Baa' | 'lt1Taa' | 'lt1Thaa' | 'lt1System' | 'lt1Find' | 'lt1Review' | 'lt1Word' | 'lt1Mission' | 'lt1Next'
   // Literacy C · Reading Franco · Lesson 1 (slides/motion/g-lc1.tsx)
   | 'lc1Cover' | 'lc1Message' | 'lc1Why' | 'lc1What' | 'lc1Plain' | 'lc1Ayn' | 'lc1Ha' | 'lc1Pairs' | 'lc1Read' | 'lc1Review' | 'lc1Reply' | 'lc1Mission' | 'lc1Next'
+  // Literacy C · Reading Franco · Lesson 2 (slides/motion/g-lc2.tsx)
+  | 'lc2Cover' | 'lc2Message' | 'lc2Stop' | 'lc2Qaf' | 'lc2Pairs' | 'lc2El' | 'lc2Read' | 'lc2Review' | 'lc2Reply' | 'lc2Mission' | 'lc2Next'
   // Egyptian Arabic · Adults · Lesson 2 (slides/motion/g-ea2.tsx)
   | 'ea2Cover' | 'ea2Stairs' | 'ea2Listen' | 'ea2Minen' | 'ea2Countries' | 'ea2Masri' | 'ea2Endings' | 'ea2Gim' | 'ea2Polite' | 'ea2Review' | 'ea2Talk' | 'ea2Mission' | 'ea2Next'
   // Egyptian Arabic · Adults · Lesson 3 (slides/motion/g-ea3.tsx)

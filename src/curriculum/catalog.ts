@@ -21,6 +21,7 @@ import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonC01 } from './content/literacy-c/l01-numbers-that-talk.js';
+import { lessonC02 } from './content/literacy-c/l02-the-cairo-hamza.js';
 import { francoLesson } from './franco.js';
 import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
 import { lessonE03 } from './content/egyptian-adults/l03-whats-this.js';
@@ -374,7 +375,7 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/literacy-a-adults.webp',
     parts: [{ title: 'Reading Franco', titleAr: 'قراءة الفرانكو', from: 1 }],
     plan: ['Numbers That Talk', 'The Cairo Hamza', 'Scrape and Gargle', 'Long and Short', 'Heavy Letters', 'Little Words', "Tant Hoda's Voice Note"],
-    lessons: { 1: lessonC01 },
+    lessons: { 1: lessonC01, 2: lessonC02 },
   },
   {
     // The Egyptian Adults lessons with every Arabic line in Franco (docs/curriculum/franco/RULES.md, src/curriculum/franco.ts).

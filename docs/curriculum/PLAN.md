@@ -791,4 +791,6 @@ B3–B5 → continue lesson by lesson.
 - 2026-11-03 — Round 2 and 3 of the launch push: Fusha 12+ L2, Literacy B L2, Quran Reading L2, Tajweed L2, Egyptian
   Kids and Teens L2 "Where Are You From?" (`g-egy2.tsx`), Egyptian Adults L3 "What's This?" (`g-ea3.tsx`, ده / دي,
   the ـة tell; Franco words added to `franco.ts`), Egyptian Kids L3 "Teta's Old Box" and Teens L3 "What's in Karim's
-  Bag?" (`g-egy3.tsx`; teens add plural things ← دي). Drafts, `reviewed: false`.
+  Bag?" (`g-egy3.tsx`; teens add plural things ← دي), Fusha Kids L3 "This One, That One" (`g-fk3.tsx`, هَذَا / ذَلِكَ
+  in the park) and Fusha 12+ L3 "Near and Far" (`g-ft3.tsx`, the four demonstratives on the campus roof). Drafts,
+  `reviewed: false`.

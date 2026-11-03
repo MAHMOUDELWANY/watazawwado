@@ -17,7 +17,7 @@ const SHADOW = '0 18px 34px -24px rgba(60,30,10,0.6)';
 const NUM = /([2357])/;
 
 /** A Franco word with its number letters picked out in gold when `glow`. */
-function Word({ t, glow = false, size = 30, color = INK_TEXT, wrap = false }: { t: string; glow?: boolean; size?: number; color?: string; wrap?: boolean }) {
+export function Word({ t, glow = false, size = 30, color = INK_TEXT, wrap = false }: { t: string; glow?: boolean; size?: number; color?: string; wrap?: boolean }) {
   return (
     <span className="font-sans font-extrabold" style={{ fontSize: size, color, whiteSpace: wrap ? 'normal' : 'nowrap' }}>
       {t.split(NUM).map((p, i) => (NUM.test(p) && p.length === 1
@@ -28,7 +28,7 @@ function Word({ t, glow = false, size = 30, color = INK_TEXT, wrap = false }: { 
 }
 
 /** The phone: Tant Hoda's chat in the family group. Children are the messages, stacked from the top. */
-function Phone({ x = 1060, y = 170, children, delay = 0, typing = false }: { x?: number; y?: number; children?: React.ReactNode; delay?: number; typing?: boolean }) {
+export function Phone({ x = 1060, y = 170, children, delay = 0, typing = false }: { x?: number; y?: number; children?: React.ReactNode; delay?: number; typing?: boolean }) {
   return (
     <motion.div className="absolute" style={{ left: x, top: y, width: 380, height: 610, borderRadius: 48, background: '#1F1612', padding: 12, boxShadow: '0 40px 70px -40px rgba(40,20,10,0.8)' }}
       initial={{ opacity: 0, y: 60, rotate: 3 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ duration: 0.9, delay, ease }}>
@@ -47,7 +47,7 @@ function Phone({ x = 1060, y = 170, children, delay = 0, typing = false }: { x?:
 }
 
 /** A chat bubble in the phone: received (left, paper) or sent (right, teal). */
-function Msg({ children, sent = false, delay = 0, who }: { children: React.ReactNode; sent?: boolean; delay?: number; who?: string }) {
+export function Msg({ children, sent = false, delay = 0, who }: { children: React.ReactNode; sent?: boolean; delay?: number; who?: string }) {
   return (
     <motion.div className="flex flex-col" style={{ alignSelf: sent ? 'flex-end' : 'flex-start', maxWidth: 300 }}
       initial={{ opacity: 0, y: 16, scale: 0.92 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.3, duration: 0.7, delay }}>
@@ -78,7 +78,7 @@ function FirstMessage({ glow = false, plain = false, id = 'msg-1' }: { glow?: bo
 }
 
 /** A big tile: a number letter with its Arabic letter as a shadow behind it. `flip` shows ع turned into 3. */
-function NumberTile({ x, y, n, ar, show = true, flip = false, size = 190, delay = 0 }: { x: number; y: number; n: string; ar: string; show?: boolean; flip?: boolean; size?: number; delay?: number }) {
+export function NumberTile({ x, y, n, ar, show = true, flip = false, size = 190, delay = 0 }: { x: number; y: number; n: string; ar: string; show?: boolean; flip?: boolean; size?: number; delay?: number }) {
   return (
     <motion.div className="absolute flex items-center justify-center rounded-[34px]" style={{ left: x - size / 2, top: y - size / 2, width: size, height: size, background: CARD, boxShadow: SHADOW }}
       initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', bounce: 0.35, delay }}>
@@ -90,7 +90,7 @@ function NumberTile({ x, y, n, ar, show = true, flip = false, size = 190, delay 
 }
 
 /** A word card: Franco on top (number letters in gold), the meaning under it; plays on tap. */
-function WordCard({ x, y, t, meaning, id, delay = 0, w = 220 }: { x: number; y: number; t: string; meaning: string; id: string; delay?: number; w?: number }) {
+export function WordCard({ x, y, t, meaning, id, delay = 0, w = 220 }: { x: number; y: number; t: string; meaning: string; id: string; delay?: number; w?: number }) {
   return (
     <motion.div className="absolute flex flex-col items-center rounded-[22px]" style={{ left: x - w / 2, top: y, width: w, padding: '12px 8px', background: CARD, boxShadow: SHADOW }}
       initial={{ opacity: 0, y: 24, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.3, delay }}>
@@ -101,7 +101,7 @@ function WordCard({ x, y, t, meaning, id, delay = 0, w = 220 }: { x: number; y: 
 }
 
 /** The side of a head, the throat lit where the sound is made (the same drawing as Reading Arabic's throat page). */
-function Throat({ x = 0, y = 0, breath = false, mouth = false }: { x?: number; y?: number; breath?: boolean; mouth?: boolean }) {
+export function Throat({ x = 0, y = 0, breath = false, mouth = false }: { x?: number; y?: number; breath?: boolean; mouth?: boolean }) {
   const reduce = useReduce();
   return (
     <Svg>

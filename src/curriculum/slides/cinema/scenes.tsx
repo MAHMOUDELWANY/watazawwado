@@ -20,6 +20,7 @@ import { LwaCoverGraphic, LwaMapGraphic, LwaSignGraphic, LwaWorldGraphic, LwaRtl
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { Lc1CoverGraphic, Lc1MessageGraphic, Lc1WhyGraphic, Lc1WhatGraphic, Lc1PlainGraphic, Lc1AynGraphic, Lc1HaGraphic, Lc1PairsGraphic, Lc1ReadGraphic, Lc1ReplyGraphic, Lc1MissionGraphic, Lc1NextGraphic } from '../motion/g-lc1';
+import { Lc2CoverGraphic, Lc2MessageGraphic, Lc2StopGraphic, Lc2QafGraphic, Lc2PairsGraphic, Lc2ElGraphic, Lc2ReadGraphic, Lc2ReplyGraphic, Lc2MissionGraphic, Lc2NextGraphic } from '../motion/g-lc2';
 import { Ea2CoverGraphic, Ea2StairsGraphic, Ea2ListenGraphic, Ea2MinenGraphic, Ea2CountriesGraphic, Ea2MasriGraphic, Ea2EndingsGraphic, Ea2GimGraphic, Ea2PoliteGraphic, Ea2TalkGraphic, Ea2MissionGraphic, Ea2NextGraphic } from '../motion/g-ea2';
 import { Ea3CoverGraphic, Ea3PlateGraphic, Ea3ListenGraphic, Ea3DaDiGraphic, Ea3TaGraphic, Ea3FlatGraphic, Ea3PeopleGraphic, Ea3RecapGraphic, Ea3TalkGraphic, Ea3MissionGraphic, Ea3NextGraphic } from '../motion/g-ea3';
 import { Fk2CoverGraphic, Fk2RecallGraphic, Fk2BoxGraphic, Fk2StoryGraphic, Fk2HamzaGraphic, Fk2YesGraphic, Fk2AnimalsGraphic, Fk2ShadowGraphic, Fk2TalkGraphic, Fk2MissionGraphic, Fk2NextGraphic } from '../motion/g-fk2';
@@ -266,6 +267,16 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   lc1Ha: onStage({ tone: 'light', Graphic: Lc1HaGraphic }), lc1Pairs: onStage({ tone: 'light', Graphic: Lc1PairsGraphic }),
   lc1Read: onStage({ tone: 'light', Graphic: Lc1ReadGraphic }), lc1Reply: onStage({ tone: 'light', Graphic: Lc1ReplyGraphic, keepOnAsk: true }),
   lc1Mission: onStage({ tone: 'light', Graphic: Lc1MissionGraphic }), lc1Next: onStage({ tone: 'light', Graphic: Lc1NextGraphic }),
+  lc2Cover: onStage({ tone: 'light', Graphic: Lc2CoverGraphic }),
+  lc2Message: onStage({ tone: 'light', Graphic: Lc2MessageGraphic }),
+  lc2Stop: onStage({ tone: 'light', Graphic: Lc2StopGraphic }),
+  lc2Qaf: onStage({ tone: 'light', Graphic: Lc2QafGraphic }),
+  lc2Pairs: onStage({ tone: 'light', Graphic: Lc2PairsGraphic }),
+  lc2El: onStage({ tone: 'light', Graphic: Lc2ElGraphic }),
+  lc2Read: onStage({ tone: 'light', Graphic: Lc2ReadGraphic }),
+  lc2Reply: onStage({ tone: 'light', Graphic: Lc2ReplyGraphic, keepOnAsk: true }),
+  lc2Mission: onStage({ tone: 'light', Graphic: Lc2MissionGraphic }),
+  lc2Next: onStage({ tone: 'light', Graphic: Lc2NextGraphic }),
   ea2Cover: onStage({ tone: 'light', Graphic: Ea2CoverGraphic }), ea2Stairs: onStage({ tone: 'light', Graphic: Ea2StairsGraphic }),
   ea2Listen: onStage({ tone: 'light', Graphic: Ea2ListenGraphic }), ea2Minen: onStage({ tone: 'light', Graphic: Ea2MinenGraphic }),
   ea2Countries: onStage({ tone: 'light', Graphic: Ea2CountriesGraphic }), ea2Masri: onStage({ tone: 'light', Graphic: Ea2MasriGraphic }),
