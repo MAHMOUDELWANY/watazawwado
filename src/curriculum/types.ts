@@ -26,6 +26,8 @@ export type SceneId =
   | 'ea3Cover' | 'ea3Plate' | 'ea3Listen' | 'ea3DaDi' | 'ea3Ta' | 'ea3Flat' | 'ea3People' | 'ea3Recap' | 'ea3Sort' | 'ea3Talk' | 'ea3Mission' | 'ea3Next'
   // Fusha · Kids · Lesson 2 (slides/motion/g-fk2.tsx)
   | 'fk2Cover' | 'fk2Recall' | 'fk2Box' | 'fk2Story' | 'fk2Hamza' | 'fk2Yes' | 'fk2Animals' | 'fk2Shadow' | 'fk2Sort' | 'fk2Talk' | 'fk2Mission' | 'fk2Next'
+  // Fusha · Kids · Lesson 3 (slides/motion/g-fk3.tsx)
+  | 'fk3Cover' | 'fk3Recall' | 'fk3Park' | 'fk3Story' | 'fk3Near' | 'fk3Questions' | 'fk3Words' | 'fk3Sort' | 'fk3Talk' | 'fk3Mission' | 'fk3Next'
   // Fusha · 12+ · Lesson 2 (slides/motion/g-ft2.tsx)
   | 'ft2Cover' | 'ft2Phone' | 'ft2Dark' | 'ft2Hamza' | 'ft2Answers' | 'ft2Words' | 'ft2Torch' | 'ft2Sort' | 'ft2Chain' | 'ft2Talk' | 'ft2Mission' | 'ft2Next'
   // Literacy B · Lesson 2 (slides/motion/g-lb2.tsx)

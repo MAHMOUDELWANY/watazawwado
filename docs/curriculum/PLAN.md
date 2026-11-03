@@ -788,3 +788,7 @@ B3–B5 → continue lesson by lesson.
   "Where Are You From?" and Fusha Kids Lesson 2 "Is This a Cat?" (Zad Kids cast, mystery box); Fusha Kids Lesson 1 now
   names the Zad Kids cast (Maryam and Yusuf). English lines with Arabic now isolate each Arabic run (word order fixed
   in every lesson). Drafts, `reviewed: false`.
+- 2026-11-03 — Round 2 and 3 of the launch push: Fusha 12+ L2, Literacy B L2, Quran Reading L2, Tajweed L2, Egyptian
+  Kids and Teens L2 "Where Are You From?" (`g-egy2.tsx`), Egyptian Adults L3 "What's This?" (`g-ea3.tsx`, ده / دي,
+  the ـة tell; Franco words added to `franco.ts`), Egyptian Kids L3 "Teta's Old Box" and Teens L3 "What's in Karim's
+  Bag?" (`g-egy3.tsx`; teens add plural things ← دي). Drafts, `reviewed: false`.

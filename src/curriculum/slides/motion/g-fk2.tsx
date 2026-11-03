@@ -32,7 +32,7 @@ function AnimalArt({ a, shadow = false }: { a: Animal; shadow?: boolean }) {
 }
 
 /** An animal card centred at (x, y), with its word under it; plays on tap. */
-function AnimalCard({ a, x, y, s = 150, label, clip, delay = 0, shadow = false }: { a: Animal; x: number; y: number; s?: number; label?: string; clip?: string; delay?: number; shadow?: boolean }) {
+export function AnimalCard({ a, x, y, s = 150, label, clip, delay = 0, shadow = false }: { a: Animal; x: number; y: number; s?: number; label?: string; clip?: string; delay?: number; shadow?: boolean }) {
   return (
     <motion.div className="absolute flex flex-col items-center" style={{ left: x - s / 2, top: y - s / 2, width: s }}
       initial={{ opacity: 0, y: 24, scale: 0.85 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.4, duration: 0.8, delay }}>
@@ -43,7 +43,7 @@ function AnimalCard({ a, x, y, s = 150, label, clip, delay = 0, shadow = false }
 }
 
 /** The mystery box: a crate with a round hole and a question mark; it shakes while a hand is inside. */
-function MysteryBox({ x, y, w = 260, shake = false, open = false, delay = 0 }: { x: number; y: number; w?: number; shake?: boolean; open?: boolean; delay?: number }) {
+export function MysteryBox({ x, y, w = 260, shake = false, open = false, delay = 0 }: { x: number; y: number; w?: number; shake?: boolean; open?: boolean; delay?: number }) {
   const reduce = useReduce();
   const h = w * 0.75;
   return (

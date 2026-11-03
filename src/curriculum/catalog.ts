@@ -25,6 +25,7 @@ import { francoLesson } from './franco.js';
 import { lessonE02 } from './content/egyptian-adults/l02-where-are-you-from.js';
 import { lessonE03 } from './content/egyptian-adults/l03-whats-this.js';
 import { lessonF02 } from './content/fusha-kids/l02-is-this-a-cat.js';
+import { lessonF03 } from './content/fusha-kids/l03-this-one-that-one.js';
 import { lessonFT02 } from './content/fusha-12/l02-is-this-your-room.js';
 import { lessonB02 } from './content/literacy-b/l02-the-alif-that-stands-up.js';
 import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
@@ -239,7 +240,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'I Went, You Went', 'We Went', 'From and To', 'What Did You Eat?', 'Days of the Week', 'These and Those', 'Many Books',
       'Level 1 Story',
     ],
-    lessons: { 1: lessonF01, 2: lessonF02 },
+    lessons: { 1: lessonF01, 2: lessonF02, 3: lessonF03 },
   },
   {
     id: 'seerah-teens',
