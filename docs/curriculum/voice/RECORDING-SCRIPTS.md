@@ -366,6 +366,27 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أَهْ <break time="1.2s" /> أَحْ <break time="1.2s" /> أَأْ <break time="1.2s" /> أَعْ <break time="1.2s" /> أَكْ <break time="1.2s" /> أَقْ <break time="1.2s" /> أَبْ <break time="1.2s" /> أَلْ <break time="1.2s" /> أَفْ <break time="1.2s" /> أَمْ
 ```
 
+## Tajweed · Level 2 · Lesson 2: The Throat
+
+Folder: `public/curriculum/tajweed-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (6)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-a-hamza.mp3 | 4 | clear, slow | أَأْ |
+| 2 | l02-ah.mp3 | 4 | clear, slow | أَهْ |
+| 3 | l02-a-ain.mp3 | 5 | clear, slow | أَعْ |
+| 4 | l02-ahh.mp3 | 5 | clear, slow | أَحْ |
+| 5 | l02-a-ghain.mp3 | 6 | clear, slow | أَغْ |
+| 6 | l02-akh.mp3 | 6 | clear, slow | أَخْ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أَأْ <break time="1.2s" /> أَهْ <break time="1.2s" /> أَعْ <break time="1.2s" /> أَحْ <break time="1.2s" /> أَغْ <break time="1.2s" /> أَخْ
+```
+
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
 
 Folder: `public/curriculum/egyptian-adults/audio/`.

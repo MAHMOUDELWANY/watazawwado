@@ -48,6 +48,8 @@ export type SceneId =
   | 'qr3Cover' | 'qr3Warm' | 'qr3Tanween' | 'qr3Ikhlas1' | 'qr3Ikhlas3' | 'qr3Stop' | 'qr3Masad1' | 'qr3Masad4' | 'qr3Review' | 'qr3Read' | 'qr3Mission' | 'qr3Next'
   // Tajweed · Level 2 · Lesson 1 (slides/motion/g-tm1.tsx)
   | 'tm1Cover' | 'tm1Pairs' | 'tm1Listen' | 'tm1Find' | 'tm1Five' | 'tm1Jawf' | 'tm1Halq' | 'tm1Lisan' | 'tm1LipsNose' | 'tm1Fatiha' | 'tm1Sort' | 'tm1Recite' | 'tm1Mission' | 'tm1Next'
+  // Tajweed · Level 2 · Lesson 2 (slides/motion/g-tm2.tsx)
+  | 'tm2Cover' | 'tm2Recall' | 'tm2Floors' | 'tm2Deep' | 'tm2Mid' | 'tm2Near' | 'tm2Pattern' | 'tm2Meaning' | 'tm2Slips' | 'tm2Sort' | 'tm2Voice' | 'tm2Recite' | 'tm2Mission' | 'tm2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

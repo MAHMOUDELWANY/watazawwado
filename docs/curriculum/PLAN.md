@@ -816,3 +816,6 @@ B3–B5 → continue lesson by lesson.
   a still letter is made). Ayat 75:16-18, 1:2, 108:1 verified; tafsir Ibn Kathir. 10 new Fusha clips (hamza-test
   syllables) wait for a new Fusha part. Every step screenshotted; the review clicked through. Next: Level 2, Lesson 2
   "The Throat".
+- **2026-11-03 · Tajweed Level 2, Lesson 2 "The Throat" built** (draft): 14 pages, brief `tajweed/L2-02-the-throat.md`,
+  graphics `g-tm2.tsx` (the throat as a three-floor tower; voiced and breathed twins on every floor). Ayat 112:1,
+  113:1-5, 1:2, 1:5 verified. Every step screenshotted. Next: Lesson 3 "The Deepest Tongue" (ق ك).

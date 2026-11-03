@@ -33,6 +33,7 @@ import { Lb3CoverGraphic, Lb3RecallGraphic, Lb3MysteryGraphic, Lb3ZeroGraphic, L
 import { Qr2CoverGraphic, Qr2WarmGraphic, Qr2ShaddaGraphic, Qr2Nas1Graphic, Qr2Nas4Graphic, Qr2RhymeGraphic, Qr2Falaq1Graphic, Qr2Falaq4Graphic, Qr2ReadGraphic, Qr2MissionGraphic, Qr2NextGraphic } from '../motion/g-qr2';
 import { Qr3CoverGraphic, Qr3WarmGraphic, Qr3TanweenGraphic, Qr3Ikhlas1Graphic, Qr3Ikhlas3Graphic, Qr3StopGraphic, Qr3Masad1Graphic, Qr3Masad4Graphic, Qr3ReadGraphic, Qr3MissionGraphic, Qr3NextGraphic } from '../motion/g-qr3';
 import { Tm1CoverGraphic, Tm1PairsGraphic, Tm1ListenGraphic, Tm1FindGraphic, Tm1FiveGraphic, Tm1JawfGraphic, Tm1HalqGraphic, Tm1LisanGraphic, Tm1LipsNoseGraphic, Tm1FatihaGraphic, Tm1ReciteGraphic, Tm1MissionGraphic, Tm1NextGraphic } from '../motion/g-tm1';
+import { Tm2CoverGraphic, Tm2RecallGraphic, Tm2FloorsGraphic, Tm2DeepGraphic, Tm2MidGraphic, Tm2NearGraphic, Tm2PatternGraphic, Tm2MeaningGraphic, Tm2SlipsGraphic, Tm2VoiceGraphic, Tm2ReciteGraphic, Tm2MissionGraphic, Tm2NextGraphic } from '../motion/g-tm2';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Tj3CoverGraphic, Tj3RecallGraphic, Tj3DoorsGraphic, Tj3ThroatGraphic, Tj3IzharGraphic, Tj3TanweenGraphic, Tj3WhyGraphic, Tj3MushafGraphic, Tj3MistakesGraphic, Tj3SpotGraphic, Tj3ReciteGraphic, Tj3MissionGraphic, Tj3NextGraphic } from '../motion/g-tj3';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -404,6 +405,14 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   tm1LipsNose: onStage({ tone: 'light', Graphic: Tm1LipsNoseGraphic }), tm1Fatiha: onStage({ tone: 'light', Graphic: Tm1FatihaGraphic }),
   tm1Recite: onStage({ tone: 'light', Graphic: Tm1ReciteGraphic, keepOnAsk: true }), tm1Mission: onStage({ tone: 'light', Graphic: Tm1MissionGraphic }),
   tm1Next: onStage({ tone: 'light', Graphic: Tm1NextGraphic }),
+  // Tajweed · Level 2 · Lesson 2 · The Throat
+  tm2Cover: onStage({ tone: 'light', Graphic: Tm2CoverGraphic }), tm2Recall: onStage({ tone: 'light', Graphic: Tm2RecallGraphic }),
+  tm2Floors: onStage({ tone: 'light', Graphic: Tm2FloorsGraphic }), tm2Deep: onStage({ tone: 'light', Graphic: Tm2DeepGraphic }),
+  tm2Mid: onStage({ tone: 'light', Graphic: Tm2MidGraphic }), tm2Near: onStage({ tone: 'light', Graphic: Tm2NearGraphic }),
+  tm2Pattern: onStage({ tone: 'light', Graphic: Tm2PatternGraphic }), tm2Meaning: onStage({ tone: 'light', Graphic: Tm2MeaningGraphic }),
+  tm2Slips: onStage({ tone: 'light', Graphic: Tm2SlipsGraphic }), tm2Voice: onStage({ tone: 'light', Graphic: Tm2VoiceGraphic }),
+  tm2Recite: onStage({ tone: 'light', Graphic: Tm2ReciteGraphic, keepOnAsk: true }), tm2Mission: onStage({ tone: 'light', Graphic: Tm2MissionGraphic }),
+  tm2Next: onStage({ tone: 'light', Graphic: Tm2NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),
