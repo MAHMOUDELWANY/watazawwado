@@ -846,3 +846,10 @@ B3–B5 → continue lesson by lesson.
   17-lesson plans from `fusha/MAP-level-2.md`. One device in `g-fv1.tsx`: the past verb as a stem tile with an ending
   tile that snaps onto it, eight persons, endings that move to any sound verb. New Fusha clips wait for a new Fusha
   part. Every step screenshotted. Next: Fusha Level 2, Lesson 2 "Every Day" (the present verb), both versions.
+- **2026-11-03 · Fusha Level 2, Lesson 2 built for Kids and 12+** (drafts, overnight run): Kids "Every Day" (13 pages,
+  Yusuf's school days, Maryam's toy-microphone interview) and 12+ "The Timetable" (12 pages, the new term's timetable,
+  all eight persons, the memory word أَنَيْتُ, verbs learnt in pairs). Brief `fusha/L2-02-every-day.md`, graphics
+  `g-fv2.tsx` (front tags on the right edge of whole-word tiles; back tags where the form also has an ending). New
+  Fusha clips wait for a new Fusha part. Every step screenshotted. Next: Lesson 3 "My Father, Your Brother" (the five
+  nouns), both versions.
+

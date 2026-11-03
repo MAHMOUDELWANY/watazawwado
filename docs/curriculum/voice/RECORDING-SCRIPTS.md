@@ -328,6 +328,43 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أَيْنَ ذَهَبْتُمُ ٱلْيَوْمَ؟ <break time="1.2s" /> ذَهَبْتُ إِلَى ٱلْمَلْعَبِ. <break time="1.2s" /> وَأَنَا ذَهَبْتُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> وَأُمِّي ذَهَبَتْ إِلَى ٱلسُّوقِ. <break time="1.2s" /> وَمِشْمِشٌ؟ <break time="1.2s" /> مِشْمِشٌ ذَهَبَ إِلَى ٱلْحَدِيقَةِ! <break time="1.2s" /> وَأَنَا جَلَسْتُ فِي ٱلْبَيْتِ! <break time="1.2s" /> ذَهَبْتُ <break time="1.2s" /> ذَهَبَ <break time="1.2s" /> ذَهَبَتْ <break time="1.2s" /> أَيْنَ ذَهَبْتَ؟ <break time="1.2s" /> أَيْنَ ذَهَبْتِ؟ <break time="1.2s" /> ذَهَبْنَا <break time="1.2s" /> ذَهَبْتُمْ <break time="1.2s" /> ذَهَبُوا <break time="1.2s" /> كَتَبْتُ <break time="1.2s" /> كَتَبَتْ <break time="1.2s" /> كَتَبُوا <break time="1.2s" /> أَكَلْتُ <break time="1.2s" /> شَرِبْتُ <break time="1.2s" /> لَعِبْتُ <break time="1.2s" /> لَعِبْتُ كُرَةً. <break time="1.2s" /> شَرِبْتُ عَصِيرًا. <break time="1.2s" /> يَذْهَبُ
 ```
 
+## Fusha Arabic · Kids · Level 2 · Lesson 2: Every Day
+
+Folder: `public/curriculum/fusha-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (22)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-dhahabtu-hadiqa.mp3 | 2 | remembering, happy | ذَهَبْتُ إِلَى ٱلْحَدِيقَةِ. |
+| 2 | l02-story-1.mp3 | 4 | girl, playing reporter | مَتَى تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ يَا يُوسُفُ؟ |
+| 3 | l02-story-2.mp3 | 4 | boy, proud | أَذْهَبُ فِي ٱلصَّبَاحِ. |
+| 4 | l02-story-3.mp3 | 4 | girl, playing reporter | وَمَاذَا تَفْعَلُ هُنَاكَ؟ |
+| 5 | l02-story-4.mp3 | 4 | boy, counting on fingers | أَكْتُبُ، وَأَقْرَأُ، وَأَلْعَبُ! |
+| 6 | l02-story-5.mp3 | 4 | girl, turning to the camera | وَجِدِّي يَذْهَبُ إِلَى ٱلْمَسْجِدِ. |
+| 7 | l02-story-6.mp3 | 4 | warm grandfather | وَفِي ٱلْمَسَاءِ نَأْكُلُ مَعًا. |
+| 8 | l02-adhhabu.mp3 | 5 | clear | أَذْهَبُ |
+| 9 | l02-adhhabu-kulla-yawm.mp3 | 5 | cheerful | أَذْهَبُ إِلَى ٱلْمَدْرَسَةِ كُلَّ يَوْمٍ. |
+| 10 | l02-yadhhabu.mp3 | 6 |  | يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. |
+| 11 | l02-tadhhabu-maryam.mp3 | 6 |  | تَذْهَبُ مَرْيَمُ إِلَى ٱلْمَكْتَبَةِ. |
+| 12 | l02-tadhhabu-anta.mp3 | 6 | pointing at a boy | أَنْتَ تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ. |
+| 13 | l02-nadhhabu.mp3 | 7 | happy | نَذْهَبُ |
+| 14 | l02-nadhhabu-masjid.mp3 | 7 | warm, together | نَذْهَبُ إِلَى ٱلْمَسْجِدِ مَعًا. |
+| 15 | l02-yaktubu.mp3 | 9 | clear | يَكْتُبُ |
+| 16 | l02-aktubu.mp3 | 9 | clear | أَكْتُبُ |
+| 17 | l02-yalabu.mp3 | 9 | clear | يَلْعَبُ |
+| 18 | l02-talabu.mp3 | 9 | clear | تَلْعَبُ |
+| 19 | l02-yashrabu.mp3 | 9 | clear | يَشْرَبُ |
+| 20 | l02-nashrabu.mp3 | 9 | happy | نَشْرَبُ |
+| 21 | l02-mata-tadhhabu.mp3 | 11 | curious reporter | مَتَى تَذْهَبُ إِلَى ٱلْعَمَلِ؟ |
+| 22 | l02-haadha-abi.mp3 | 13 | warm grandfather, remembering | هَذَا أَبِي، وَهَذَا أَخِي. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+ذَهَبْتُ إِلَى ٱلْحَدِيقَةِ. <break time="1.2s" /> مَتَى تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ يَا يُوسُفُ؟ <break time="1.2s" /> أَذْهَبُ فِي ٱلصَّبَاحِ. <break time="1.2s" /> وَمَاذَا تَفْعَلُ هُنَاكَ؟ <break time="1.2s" /> أَكْتُبُ، وَأَقْرَأُ، وَأَلْعَبُ! <break time="1.2s" /> وَجِدِّي يَذْهَبُ إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> وَفِي ٱلْمَسَاءِ نَأْكُلُ مَعًا. <break time="1.2s" /> أَذْهَبُ <break time="1.2s" /> أَذْهَبُ إِلَى ٱلْمَدْرَسَةِ كُلَّ يَوْمٍ. <break time="1.2s" /> يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> تَذْهَبُ مَرْيَمُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> أَنْتَ تَذْهَبُ إِلَى ٱلْمَدْرَسَةِ. <break time="1.2s" /> نَذْهَبُ <break time="1.2s" /> نَذْهَبُ إِلَى ٱلْمَسْجِدِ مَعًا. <break time="1.2s" /> يَكْتُبُ <break time="1.2s" /> أَكْتُبُ <break time="1.2s" /> يَلْعَبُ <break time="1.2s" /> تَلْعَبُ <break time="1.2s" /> يَشْرَبُ <break time="1.2s" /> نَشْرَبُ <break time="1.2s" /> مَتَى تَذْهَبُ إِلَى ٱلْعَمَلِ؟ <break time="1.2s" /> هَذَا أَبِي، وَهَذَا أَخِي.
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -970,6 +1007,45 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 مَاذَا فَعَلْتُمْ أَمْسِ؟ <break time="1.2s" /> ذَهَبْنَا إِلَى ٱلْمَدِينَةِ ٱلْقَدِيمَةِ. <break time="1.2s" /> أَنَا دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ. <break time="1.2s" /> وَيُوسُفُ أَكَلَ فِي كُلِّ مَطْعَمٍ! <break time="1.2s" /> وَٱلْأُسْتَاذَةُ هُدَى؟ <break time="1.2s" /> جَلَسَتْ فِي ٱلْمَقْهَى وَشَرِبَتْ قَهْوَةً. <break time="1.2s" /> دَخَلْتُ <break time="1.2s" /> دَخَلْتَ <break time="1.2s" /> دَخَلْتِ <break time="1.2s" /> دَخَلَ <break time="1.2s" /> دَخَلَتْ <break time="1.2s" /> ذَهَبْنَا <break time="1.2s" /> ذَهَبْتُمْ <break time="1.2s" /> ذَهَبُوا <break time="1.2s" /> كَتَبْتُ <break time="1.2s" /> سَمِعَتْ <break time="1.2s" /> رَجَعُوا <break time="1.2s" /> مَاذَا فَعَلْتَ؟ <break time="1.2s" /> مَاذَا فَعَلْتِ؟ <break time="1.2s" /> يَذْهَبُ
+```
+
+## Fusha Arabic · 12+ · Level 2 · Lesson 2: The Timetable
+
+Folder: `public/curriculum/fusha-12-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | teacher, planning | مَتَى تَدْرُسِينَ يَا سَارَةُ؟ |
+| 2 | l02-story-2.mp3 | 3 | young woman | أَدْرُسُ فِي ٱلصَّبَاحِ، وَأَعْمَلُ فِي ٱلْمَسَاءِ. |
+| 3 | l02-story-3.mp3 | 3 | teacher | وَأَنْتَ يَا يُوسُفُ؟ |
+| 4 | l02-story-4.mp3 | 3 | young man, a bit guilty | أَلْعَبُ كُرَةَ ٱلْقَدَمِ فِي ٱلصَّبَاحِ. |
+| 5 | l02-story-5.mp3 | 3 | teacher, deciding | إِذَنْ نَدْرُسُ مَعًا يَوْمَ ٱلْأَحَدِ. |
+| 6 | l02-story-6.mp3 | 3 | teacher, smiling | وَبَعْدَ ٱلدَّرْسِ يَذْهَبُ ٱلطُّلَّابُ إِلَى ٱلْمَكْتَبَةِ. |
+| 7 | l02-adrusu.mp3 | 4 |  | أَدْرُسُ |
+| 8 | l02-nadrusu.mp3 | 4 |  | نَدْرُسُ |
+| 9 | l02-yadrusu.mp3 | 4 |  | يَدْرُسُ |
+| 10 | l02-tadrusu.mp3 | 4 |  | تَدْرُسُ |
+| 11 | l02-anaytu.mp3 | 4 | slow, as a memory word | أَنَيْتُ |
+| 12 | l02-tadrusina.mp3 | 5 |  | تَدْرُسِينَ |
+| 13 | l02-mata-tadrusina.mp3 | 5 | asking a woman | مَتَى تَدْرُسِينَ؟ |
+| 14 | l02-tadrusuna.mp3 | 6 |  | تَدْرُسُونَ |
+| 15 | l02-yadrusuna.mp3 | 6 |  | يَدْرُسُونَ |
+| 16 | l02-yadhhabuna.mp3 | 6 |  | ٱلطُّلَّابُ يَذْهَبُونَ إِلَى ٱلْمَكْتَبَةِ. |
+| 17 | l02-dhahaba-yadhhabu.mp3 | 8 |  | ذَهَبَ يَذْهَبُ |
+| 18 | l02-kataba-yaktubu.mp3 | 8 |  | كَتَبَ يَكْتُبُ |
+| 19 | l02-jalasa-yajlisu.mp3 | 8 |  | جَلَسَ يَجْلِسُ |
+| 20 | l02-amila-yamalu.mp3 | 8 |  | عَمِلَ يَعْمَلُ |
+| 21 | l02-darasa-yadrusu.mp3 | 8 |  | دَرَسَ يَدْرُسُ |
+| 22 | l02-mata-tadrusu.mp3 | 10 | asking a man | مَتَى تَدْرُسُ؟ |
+| 23 | l02-mata-tamalu.mp3 | 10 | asking a man | مَتَى تَعْمَلُ؟ |
+| 24 | l02-abu-sarah.mp3 | 12 | teacher, friendly | هَذَا أَبُو سَارَةَ. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَتَى تَدْرُسِينَ يَا سَارَةُ؟ <break time="1.2s" /> أَدْرُسُ فِي ٱلصَّبَاحِ، وَأَعْمَلُ فِي ٱلْمَسَاءِ. <break time="1.2s" /> وَأَنْتَ يَا يُوسُفُ؟ <break time="1.2s" /> أَلْعَبُ كُرَةَ ٱلْقَدَمِ فِي ٱلصَّبَاحِ. <break time="1.2s" /> إِذَنْ نَدْرُسُ مَعًا يَوْمَ ٱلْأَحَدِ. <break time="1.2s" /> وَبَعْدَ ٱلدَّرْسِ يَذْهَبُ ٱلطُّلَّابُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> أَدْرُسُ <break time="1.2s" /> نَدْرُسُ <break time="1.2s" /> يَدْرُسُ <break time="1.2s" /> تَدْرُسُ <break time="1.2s" /> أَنَيْتُ <break time="1.2s" /> تَدْرُسِينَ <break time="1.2s" /> مَتَى تَدْرُسِينَ؟ <break time="1.2s" /> تَدْرُسُونَ <break time="1.2s" /> يَدْرُسُونَ <break time="1.2s" /> ٱلطُّلَّابُ يَذْهَبُونَ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> ذَهَبَ يَذْهَبُ <break time="1.2s" /> كَتَبَ يَكْتُبُ <break time="1.2s" /> جَلَسَ يَجْلِسُ <break time="1.2s" /> عَمِلَ يَعْمَلُ <break time="1.2s" /> دَرَسَ يَدْرُسُ <break time="1.2s" /> مَتَى تَدْرُسُ؟ <break time="1.2s" /> مَتَى تَعْمَلُ؟ <break time="1.2s" /> هَذَا أَبُو سَارَةَ.
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

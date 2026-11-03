@@ -46,6 +46,8 @@ import { lessonT302 } from './content/tajweed-3/l02-stop-and-start.js';
 import { lessonT303 } from './content/tajweed-3/l03-raa-in-full.js';
 import { lessonFK201 } from './content/fusha-kids-2/l01-what-did-everyone-do.js';
 import { lessonFT201 } from './content/fusha-12-2/l01-the-class-trip.js';
+import { lessonFK202 } from './content/fusha-kids-2/l02-every-day.js';
+import { lessonFT202 } from './content/fusha-12-2/l02-the-timetable.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -270,7 +272,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['What Did Everyone Do?', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week in Our House', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
-    lessons: { 1: lessonFK201 },
+    lessons: { 1: lessonFK201, 2: lessonFK202 },
   },
   {
     id: 'seerah-teens',
@@ -499,8 +501,8 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/fusha-12.webp',
     parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
-    plan: ['The Class Trip', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week at the Institute', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
-    lessons: { 1: lessonFT201 },
+    plan: ['The Class Trip', 'The Timetable', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week at the Institute', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
+    lessons: { 1: lessonFT201, 2: lessonFT202 },
   },
   {
     id: 'literacy-a-teens',
