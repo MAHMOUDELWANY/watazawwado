@@ -43,6 +43,9 @@ import { lessonT202 } from './content/tajweed-2/l02-the-throat.js';
 import { lessonT203 } from './content/tajweed-2/l03-the-deepest-tongue.js';
 import { lessonT301 } from './content/tajweed-3/l01-every-stretch-ranked.js';
 import { lessonT302 } from './content/tajweed-3/l02-stop-and-start.js';
+import { lessonT303 } from './content/tajweed-3/l03-raa-in-full.js';
+import { lessonFK201 } from './content/fusha-kids-2/l01-what-did-everyone-do.js';
+import { lessonFT201 } from './content/fusha-12-2/l01-the-class-trip.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -256,6 +259,20 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonF01, 2: lessonF02, 3: lessonF03 },
   },
   {
+    id: 'fusha-kids-2',
+    group: 'fusha',
+    title: 'Fusha Arabic · Kids · Level 2',
+    titleAr: 'الفصحى · للأطفال · المستوى الثاني',
+    version: 'Kids · Level 2',
+    versionAr: 'الأطفال · المستوى الثاني',
+    audience: '6–11',
+    art: '/curriculum/banners/fusha-kids.webp',
+    parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
+    // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: ['What Did Everyone Do?', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week in Our House', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
+    lessons: { 1: lessonFK201 },
+  },
+  {
     id: 'seerah-teens',
     group: 'seerah',
     title: 'Seerah · Teens & Adults',
@@ -396,7 +413,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'The Four Silences of Hafs', 'Five Degrees of Heaviness', 'Two Still Letters Meet', 'The Rare Words of Hafs',
       'Between Two Surahs', 'Review: The Whole Ruler', 'Level 3 Recital',
     ],
-    lessons: { 1: lessonT301, 2: lessonT302 },
+    lessons: { 1: lessonT301, 2: lessonT302, 3: lessonT303 },
   },
   {
     id: 'egyptian-adults',
@@ -470,6 +487,20 @@ export const SUBJECTS: SubjectEntry[] = [
       'Classmates', 'Many Books', 'Level 1 Story',
     ],
     lessons: { 1: lessonFT01, 2: lessonFT02, 3: lessonFT03 },
+  },
+  {
+    id: 'fusha-12-2',
+    group: 'fusha',
+    title: 'Fusha Arabic · 12+ · Level 2',
+    titleAr: 'الفصحى · 12 سنة فأكبر · المستوى الثاني',
+    version: '12+ · Level 2',
+    versionAr: '12 سنة فأكبر · المستوى الثاني',
+    audience: '12+',
+    art: '/curriculum/banners/fusha-12.webp',
+    parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
+    // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: ['The Class Trip', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week at the Institute', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
+    lessons: { 1: lessonFT201 },
   },
   {
     id: 'literacy-a-teens',

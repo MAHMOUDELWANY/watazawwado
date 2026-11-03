@@ -37,6 +37,8 @@ import { Tm2CoverGraphic, Tm2RecallGraphic, Tm2FloorsGraphic, Tm2DeepGraphic, Tm
 import { Tm3CoverGraphic, Tm3RecallGraphic, Tm3ZoomGraphic, Tm3QafGraphic, Tm3KafGraphic, Tm3BounceGraphic, Tm3IkhlasGraphic, Tm3SlipsGraphic, Tm3ReciteGraphic, Tm3MissionGraphic, Tm3NextGraphic } from '../motion/g-tm3';
 import { Tr1CoverGraphic, Tr1RulerGraphic, Tr1CausesGraphic, Tr1NaturalGraphic, Tr1HamzaGraphic, Tr1SukoonGraphic, Tr1SmallGraphic, Tr1RankedGraphic, Tr1EvidenceGraphic, Tr1SixGraphic, Tr1ReciteGraphic, Tr1MissionGraphic, Tr1NextGraphic } from '../motion/g-tr1';
 import { Tr2CoverGraphic, Tr2BreathGraphic, Tr2KnowGraphic, Tr2FourGraphic, Tr2CompleteGraphic, Tr2GoodGraphic, Tr2WrongGraphic, Tr2StartGraphic, Tr2SignsGraphic, Tr2ReciteGraphic, Tr2MissionGraphic, Tr2NextGraphic } from '../motion/g-tr2';
+import { Tr3CoverGraphic, Tr3WeightsGraphic, Tr3VowelGraphic, Tr3BeforeGraphic, Tr3StopGraphic, Tr3SameGraphic, Tr3WaslGraphic, Tr3IstilaGraphic, Tr3BothGraphic, Tr3ReciteGraphic, Tr3MissionGraphic, Tr3NextGraphic } from '../motion/g-tr3';
+import { Fv1CoverGraphic, Fv1SaturdayGraphic, Fv1StoryGraphic, Fv1EndingGraphic, Fv1YouGraphic, Fv1ManyGraphic, Fv1EightGraphic, Fv1VerbsGraphic, Fv1TalkGraphic, Fv1MissionGraphic, Fv1NextGraphic, Fw1CoverGraphic, Fw1MondayGraphic, Fw1StoryGraphic, Fw1OneGraphic, Fw1GroupGraphic, Fw1EightGraphic, Fw1VerbsGraphic, Fw1TalkGraphic, Fw1MissionGraphic, Fw1NextGraphic } from '../motion/g-fv1';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Tj3CoverGraphic, Tj3RecallGraphic, Tj3DoorsGraphic, Tj3ThroatGraphic, Tj3IzharGraphic, Tj3TanweenGraphic, Tj3WhyGraphic, Tj3MushafGraphic, Tj3MistakesGraphic, Tj3SpotGraphic, Tj3ReciteGraphic, Tj3MissionGraphic, Tj3NextGraphic } from '../motion/g-tj3';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -438,6 +440,35 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   tr2Wrong: onStage({ tone: 'light', Graphic: Tr2WrongGraphic }), tr2Start: onStage({ tone: 'light', Graphic: Tr2StartGraphic }),
   tr2Signs: onStage({ tone: 'light', Graphic: Tr2SignsGraphic }), tr2Recite: onStage({ tone: 'light', Graphic: Tr2ReciteGraphic, keepOnAsk: true }),
   tr2Mission: onStage({ tone: 'light', Graphic: Tr2MissionGraphic }), tr2Next: onStage({ tone: 'light', Graphic: Tr2NextGraphic }),
+  // Tajweed · Level 3 · Lesson 3 · Raa in Full
+  tr3Cover: onStage({ tone: 'light', Graphic: Tr3CoverGraphic }), tr3Weights: onStage({ tone: 'light', Graphic: Tr3WeightsGraphic }),
+  tr3Vowel: onStage({ tone: 'light', Graphic: Tr3VowelGraphic }), tr3Before: onStage({ tone: 'light', Graphic: Tr3BeforeGraphic }),
+  tr3Stop: onStage({ tone: 'light', Graphic: Tr3StopGraphic }), tr3Same: onStage({ tone: 'light', Graphic: Tr3SameGraphic }),
+  tr3Wasl: onStage({ tone: 'light', Graphic: Tr3WaslGraphic }), tr3Istila: onStage({ tone: 'light', Graphic: Tr3IstilaGraphic }),
+  tr3Both: onStage({ tone: 'light', Graphic: Tr3BothGraphic }), tr3Recite: onStage({ tone: 'light', Graphic: Tr3ReciteGraphic, keepOnAsk: true }),
+  tr3Mission: onStage({ tone: 'light', Graphic: Tr3MissionGraphic }), tr3Next: onStage({ tone: 'light', Graphic: Tr3NextGraphic }),
+  // Fusha · Level 2 · Lesson 1 (Kids fv1, 12+ fw1)
+  fv1Cover: onStage({ tone: 'light', Graphic: Fv1CoverGraphic }),
+  fv1Saturday: onStage({ tone: 'light', Graphic: Fv1SaturdayGraphic }),
+  fv1Story: onStage({ tone: 'light', Graphic: Fv1StoryGraphic }),
+  fv1Ending: onStage({ tone: 'light', Graphic: Fv1EndingGraphic }),
+  fv1You: onStage({ tone: 'light', Graphic: Fv1YouGraphic }),
+  fv1Many: onStage({ tone: 'light', Graphic: Fv1ManyGraphic }),
+  fv1Eight: onStage({ tone: 'light', Graphic: Fv1EightGraphic }),
+  fv1Verbs: onStage({ tone: 'light', Graphic: Fv1VerbsGraphic }),
+  fv1Talk: onStage({ tone: 'light', Graphic: Fv1TalkGraphic, keepOnAsk: true }),
+  fv1Mission: onStage({ tone: 'light', Graphic: Fv1MissionGraphic }),
+  fv1Next: onStage({ tone: 'light', Graphic: Fv1NextGraphic }),
+  fw1Cover: onStage({ tone: 'light', Graphic: Fw1CoverGraphic }),
+  fw1Monday: onStage({ tone: 'light', Graphic: Fw1MondayGraphic }),
+  fw1Story: onStage({ tone: 'light', Graphic: Fw1StoryGraphic }),
+  fw1One: onStage({ tone: 'light', Graphic: Fw1OneGraphic }),
+  fw1Group: onStage({ tone: 'light', Graphic: Fw1GroupGraphic }),
+  fw1Eight: onStage({ tone: 'light', Graphic: Fw1EightGraphic }),
+  fw1Verbs: onStage({ tone: 'light', Graphic: Fw1VerbsGraphic }),
+  fw1Talk: onStage({ tone: 'light', Graphic: Fw1TalkGraphic, keepOnAsk: true }),
+  fw1Mission: onStage({ tone: 'light', Graphic: Fw1MissionGraphic }),
+  fw1Next: onStage({ tone: 'light', Graphic: Fw1NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),

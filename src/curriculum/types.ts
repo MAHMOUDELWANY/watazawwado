@@ -56,6 +56,11 @@ export type SceneId =
   | 'tr1Cover' | 'tr1Ruler' | 'tr1Causes' | 'tr1Natural' | 'tr1Hamza' | 'tr1Sukoon' | 'tr1Small' | 'tr1Ranked' | 'tr1Evidence' | 'tr1Sort' | 'tr1Six' | 'tr1Recite' | 'tr1Mission' | 'tr1Next'
   // Tajweed · Level 3 · Lesson 2 (slides/motion/g-tr2.tsx)
   | 'tr2Cover' | 'tr2Breath' | 'tr2Know' | 'tr2Four' | 'tr2Complete' | 'tr2Good' | 'tr2Wrong' | 'tr2Start' | 'tr2Signs' | 'tr2Sort' | 'tr2Recite' | 'tr2Mission' | 'tr2Next'
+  // Tajweed · Level 3 · Lesson 3 (slides/motion/g-tr3.tsx)
+  | 'tr3Cover' | 'tr3Weights' | 'tr3Vowel' | 'tr3Before' | 'tr3Stop' | 'tr3Same' | 'tr3Wasl' | 'tr3Istila' | 'tr3Both' | 'tr3Sort' | 'tr3Recite' | 'tr3Mission' | 'tr3Next'
+  // Fusha · Level 2 · Lesson 1, Kids (fv1) and 12+ (fw1) (slides/motion/g-fv1.tsx)
+  | 'fv1Cover' | 'fv1Saturday' | 'fv1Story' | 'fv1Ending' | 'fv1You' | 'fv1Many' | 'fv1Eight' | 'fv1Verbs' | 'fv1Sort' | 'fv1Talk' | 'fv1Mission' | 'fv1Next'
+  | 'fw1Cover' | 'fw1Monday' | 'fw1Story' | 'fw1One' | 'fw1Group' | 'fw1Eight' | 'fw1Verbs' | 'fw1Sort' | 'fw1Talk' | 'fw1Mission' | 'fw1Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
