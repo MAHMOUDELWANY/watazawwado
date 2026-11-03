@@ -1,0 +1,230 @@
+import type { Lesson } from '../../types';
+import { lessonFT201TeacherAr } from './l01-teacher-ar.js';
+
+// Rules: docs/curriculum/fusha/RULES.md. Map: docs/curriculum/fusha/MAP-level-2.md (Lesson 1: the past verb with every
+// person; 12+ theme: the class trip, told by each student). Institute cast (Yusuf, Sara, Ustadh Kareem, Ustadha Huda).
+// Sound verbs only. Every Arabic word fully diacritized.
+
+const W = (id: string, text: string, emotion?: string) => ({ id, text, voice: 'fusha' as const, emotion });
+
+export const lessonFT201: Lesson = {
+  subject: 'fusha-12-2',
+  version: 'teens',
+  subjectTitle: 'Fusha Arabic · 12+ · Level 2',
+  number: 1,
+  title: 'The Class Trip',
+  titleAr: 'رِحْلَةُ ٱلْفَصْلِ',
+  part: 'Level 2',
+  minutes: 45,
+  goal: 'By the end of this lesson, you will tell what you and others did, putting the right ending on any regular past verb.',
+  reviewed: false,
+  teacherAr: lessonFT201TeacherAr,
+  outcomes: [
+    'Builds the past verb for eight persons: ـْتُ، ـْتَ، ـْتِ، ـَ، ـَتْ، ـْنَا، ـْتُمْ، ـُوا.',
+    'Asks and answers مَاذَا فَعَلْتَ؟ / مَاذَا فَعَلْتِ؟ / مَاذَا فَعَلْتُمْ؟',
+    'Uses eight sound verbs: ذَهَبَ، كَتَبَ، أَكَلَ، شَرِبَ، جَلَسَ، رَجَعَ، دَخَلَ، سَمِعَ.',
+    'Tells a short story of a day in the past, with three people in it.',
+  ],
+  chapters: [
+    { label: 'Warm-up', page: 0 },
+    { label: 'Listen first', page: 2 },
+    { label: 'The endings', page: 3 },
+    { label: 'Practice', page: 7 },
+    { label: 'My mission', page: 9 },
+  ],
+  pages: [
+    {
+      title: 'The Class Trip',
+      station: 'spark',
+      layout: 'cover',
+      scene: 'fw1Cover',
+      lines: [],
+      explain: [
+        'Welcome the learner to Level 2. Level 1 built sentences about things; Level 2 is about what people do.',
+        'Ask: what did you do last weekend? Note the verbs the learner reaches for.',
+      ],
+    },
+    {
+      title: 'Monday morning',
+      station: 'spark',
+      layout: 'story',
+      scene: 'fw1Monday',
+      lines: [
+        'Yesterday the class went on a trip to the old city. This morning, Ustadh Kareem wants the story.',
+        'He asks one question, and everyone answers with the same verb.',
+        'But the verb keeps changing at its end. By the end of the lesson you will know why before you hear it.',
+      ],
+      explain: ['Show the class and ask the learner to guess what each person did on the trip.'],
+    },
+    {
+      title: 'Listen first',
+      station: 'zad',
+      layout: 'story',
+      scene: 'fw1Story',
+      lines: [
+        'Listen twice. Who did what on the trip?',
+        'Listen to the verb each time: where does it change?',
+        'Who did something different from the rest?',
+      ],
+      say: [
+        W('story-1', 'مَاذَا فَعَلْتُمْ أَمْسِ؟', 'teacher, warm'),
+        W('story-2', 'ذَهَبْنَا إِلَى ٱلْمَدِينَةِ ٱلْقَدِيمَةِ.', 'young man'),
+        W('story-3', 'أَنَا دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ.', 'young woman'),
+        W('story-4', 'وَيُوسُفُ أَكَلَ فِي كُلِّ مَطْعَمٍ!', 'young woman, teasing'),
+        W('story-5', 'وَٱلْأُسْتَاذَةُ هُدَى؟', 'teacher, curious'),
+        W('story-6', 'جَلَسَتْ فِي ٱلْمَقْهَى وَشَرِبَتْ قَهْوَةً.', 'young man, laughing'),
+      ],
+      explain: [
+        'Play the scene twice. Ask in English: where did they all go? What did Sara do? Yusuf? Ustadha Huda?',
+        'Then ask: which word do they all use for "went", "wrote", "ate"? Let the learner notice that the ends change.',
+      ],
+      teacherNote: 'Input first: the scene carries the meaning. The endings are named on the next page.',
+    },
+    {
+      title: 'One person',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'fw1One',
+      lines: [
+        'Take the stem دَخَلَـ, entered. Five endings make five people.',
+        'ـْتُ I, ـْتَ you (a man), ـْتِ you (a woman): دَخَلْتُ، دَخَلْتَ، دَخَلْتِ.',
+        'ـَ he, ـَتْ she: دَخَلَ، دَخَلَتْ. The he form is the one in the dictionary.',
+      ],
+      vocab: [
+        { arabic: 'دَخَلْتُ', translit: 'dakhaltu', meaning: 'I entered' },
+        { arabic: 'دَخَلْتَ', translit: 'dakhalta', meaning: 'you entered (m)' },
+        { arabic: 'دَخَلْتِ', translit: 'dakhalti', meaning: 'you entered (f)' },
+        { arabic: 'دَخَلَ', translit: 'dakhala', meaning: 'he entered' },
+        { arabic: 'دَخَلَتْ', translit: 'dakhalat', meaning: 'she entered' },
+      ],
+      say: [W('dakhaltu', 'دَخَلْتُ'), W('dakhalta', 'دَخَلْتَ'), W('dakhalti', 'دَخَلْتِ'), W('dakhala', 'دَخَلَ'), W('dakhalat', 'دَخَلَتْ')],
+      explain: [
+        'Note the pairs that differ by one short vowel: ـْتُ / ـْتَ / ـْتِ. Say them slowly and let the learner point at the person.',
+        'ـَتْ (she) and ـْتَ (you, m) look alike: the sukoon moves. Show both on the board.',
+      ],
+    },
+    {
+      title: 'A group',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'fw1Group',
+      lines: [
+        'ـْنَا we, ـْتُمْ you all, ـُوا they: ذَهَبْنَا، ذَهَبْتُمْ، ذَهَبُوا.',
+        'Ustadh Kareem\'s question was مَاذَا فَعَلْتُمْ؟, what did you all do? Yusuf answered for the group: ذَهَبْنَا.',
+        'The alif after ـُوا is written but not read. It only marks the end of the verb.',
+      ],
+      vocab: [
+        { arabic: 'ذَهَبْنَا', translit: 'dhahabnā', meaning: 'we went' },
+        { arabic: 'ذَهَبْتُمْ', translit: 'dhahabtum', meaning: 'you all went' },
+        { arabic: 'ذَهَبُوا', translit: 'dhahabū', meaning: 'they went' },
+      ],
+      say: [W('dhahabna', 'ذَهَبْنَا'), W('dhahabtum', 'ذَهَبْتُمْ'), W('dhahabu', 'ذَهَبُوا')],
+      explain: ['Arabic also has dual forms and feminine plurals; they come later in the level. Today: eight persons.'],
+      teacherNote: 'The silent alif of ـُوا is called al-alif al-fariqah.',
+    },
+    {
+      title: 'Eight keys, every lock',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'fw1Eight',
+      lines: [
+        'All eight endings on one stem: that is the whole past tense of a regular verb.',
+        'Swap the stem for كَتَبَـ, سَمِعَـ, رَجَعَـ: the same eight endings fit every one.',
+        'So you do not learn كَتَبْتُ and رَجَعْتُ as new words. You learn a stem, and you already own its eight forms.',
+      ],
+      say: [W('katabtu', 'كَتَبْتُ'), W('samiat', 'سَمِعَتْ'), W('rajau', 'رَجَعُوا')],
+      explain: [
+        'This is the wow of the lesson: one set of endings multiplies every new verb by eight.',
+        'Ask the learner to build رَجَعْنَا and سَمِعْتِ on their own.',
+      ],
+    },
+    {
+      title: 'Eight verbs for a day out',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'fw1Verbs',
+      lines: [
+        'Eight sound verbs, enough to tell any day: ذَهَبَ went, دَخَلَ entered, جَلَسَ sat, أَكَلَ ate.',
+        'شَرِبَ drank, كَتَبَ wrote, سَمِعَ heard, رَجَعَ came back.',
+        'Read Sara\'s line again: دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ. Two verbs, one ending, one person.',
+      ],
+      vocab: [
+        { arabic: 'جَلَسَ', translit: 'jalasa', meaning: 'he sat' },
+        { arabic: 'أَكَلَ', translit: 'akala', meaning: 'he ate' },
+        { arabic: 'شَرِبَ', translit: 'shariba', meaning: 'he drank' },
+        { arabic: 'كَتَبَ', translit: 'kataba', meaning: 'he wrote' },
+        { arabic: 'سَمِعَ', translit: 'sami‘a', meaning: 'he heard' },
+        { arabic: 'رَجَعَ', translit: 'raja‘a', meaning: 'he came back' },
+        { arabic: 'ٱلْمَتْحَفُ', translit: 'al-matḥaf', meaning: 'the museum' },
+      ],
+      say: [W('story-3', 'أَنَا دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ.', 'young woman')],
+      explain: ['شَرِبَ and سَمِعَ have a kasra in the middle; the endings do not care. Point that out.'],
+    },
+    {
+      title: 'Who did it?',
+      station: 'athar',
+      layout: 'game',
+      scene: 'fw1Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        prompt: 'Read the verb. Who did it?',
+        bins: [
+          { id: 'speaker', label: 'I / we', hint: 'أَنَا / نَحْنُ' },
+          { id: 'listener', label: 'you', hint: 'أَنْتَ / أَنْتِ / أَنْتُمْ' },
+          { id: 'other', label: 'he / she / they', hint: 'هُوَ / هِيَ / هُمْ' },
+        ],
+        cards: [
+          { label: 'رَجَعْنَا', bin: 'speaker', why: 'ـْنَا: we came back.' },
+          { label: 'سَمِعْتِ', bin: 'listener', why: 'ـْتِ: you (a woman) heard.' },
+          { label: 'جَلَسَتْ', bin: 'other', why: 'ـَتْ: she sat. Compare ـْتَ, you (a man).' },
+          { label: 'كَتَبْتَ', bin: 'listener', why: 'ـْتَ: you (a man) wrote.' },
+          { label: 'دَخَلْتُ', bin: 'speaker', why: 'ـْتُ: I entered.' },
+          { label: 'شَرِبُوا', bin: 'other', why: 'ـُوا: they drank.' },
+          { label: 'أَكَلْتُمْ', bin: 'listener', why: 'ـْتُمْ: you all ate.' },
+          { label: 'ذَهَبَ', bin: 'other', why: 'ـَ: he went.' },
+        ],
+      },
+      explain: ['Ask the learner to read each verb aloud first: the short vowels decide, and they must be heard.'],
+      teacherNote: 'The result is added to your lesson report automatically.',
+    },
+    {
+      title: 'Your turn: the weekend',
+      station: 'athar',
+      layout: 'question',
+      scene: 'fw1Talk',
+      lines: [
+        'Your teacher asks مَاذَا فَعَلْتَ؟ or مَاذَا فَعَلْتِ؟ about last weekend.',
+        'Answer with three verbs about yourself, and one about someone else: أَخِي ذَهَبَ…، أُخْتِي جَلَسَتْ…',
+      ],
+      say: [W('madha-faalta', 'مَاذَا فَعَلْتَ؟', 'teacher, to a man'), W('madha-faalti', 'مَاذَا فَعَلْتِ؟', 'teacher, to a woman')],
+      interaction: { kind: 'ask', prompt: 'Tell your weekend in four sentences. Did each verb carry the right ending?', reveal: 'Four verbs, the right person every time.' },
+      explain: ['Then swap roles: the learner asks you with the right ending for you.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'fw1Mission',
+      lines: [
+        'Every evening this week, write three lines in Arabic about your day: ذَهَبْتُ…، أَكَلْتُ…، رَجَعْتُ…',
+        'On the last day, write one line about each person in your family.',
+      ],
+      interaction: { kind: 'choose', prompt: 'Where will you keep your Arabic diary?', options: ['A notebook', 'My phone notes', 'Messages to my teacher', 'Somewhere else'] },
+      explain: ['Read one diary line together at the start of next lesson.'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'fw1Next',
+      lines: [
+        'Ustadha Huda hands out the timetable: يَدْرُسُ، يَكْتُبُ، يَذْهَبُ.',
+        'Not what happened, but what happens every day. This time the change is at the start of the word.',
+        'Next time: the present verb.',
+      ],
+      say: [W('yadhhabu', 'يَذْهَبُ', 'clear')],
+      explain: ['End on the present. Let the learner hear the new sound at the start: يَـ.'],
+    },
+  ],
+};

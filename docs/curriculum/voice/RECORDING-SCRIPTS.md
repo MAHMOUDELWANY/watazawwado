@@ -289,6 +289,45 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أَهَذَا قِطٌّ؟ <break time="1.2s" /> نَعَمْ، هَذَا قِطٌّ. <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> لَا، هَذَا أَرْنَبٌ. <break time="1.2s" /> مَا هَذَا يَا جِدِّي؟ <break time="1.2s" /> هَذَا طَائِرٌ. <break time="1.2s" /> وَمَا ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ حِصَانٌ. <break time="1.2s" /> وَهَذَا مِشْمِشٌ! <break time="1.2s" /> هَذَا <break time="1.2s" /> ذَلِكَ <break time="1.2s" /> هَذَا طَائِرٌ. <break time="1.2s" /> ذَلِكَ حِصَانٌ. <break time="1.2s" /> مَا ذَلِكَ؟ <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> أَذَلِكَ حِصَانٌ؟ <break time="1.2s" /> نَعَمْ، ذَلِكَ حِصَانٌ. <break time="1.2s" /> هَذَا وَلَدٌ. <break time="1.2s" /> هَذَا بَيْتٌ. <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> ذَلِكَ جَبَلٌ. <break time="1.2s" /> ذَلِكَ قَمَرٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> ٱلْبَابُ
 ```
 
+## Fusha Arabic · Kids · Level 2 · Lesson 1: What Did Everyone Do?
+
+Folder: `public/curriculum/fusha-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | warm grandfather | أَيْنَ ذَهَبْتُمُ ٱلْيَوْمَ؟ |
+| 2 | l01-story-2.mp3 | 3 | proud boy | ذَهَبْتُ إِلَى ٱلْمَلْعَبِ. |
+| 3 | l01-story-3.mp3 | 3 | happy girl | وَأَنَا ذَهَبْتُ إِلَى ٱلْمَكْتَبَةِ. |
+| 4 | l01-story-4.mp3 | 3 | girl | وَأُمِّي ذَهَبَتْ إِلَى ٱلسُّوقِ. |
+| 5 | l01-story-5.mp3 | 3 | curious grandfather | وَمِشْمِشٌ؟ |
+| 6 | l01-story-6.mp3 | 3 | laughing boy | مِشْمِشٌ ذَهَبَ إِلَى ٱلْحَدِيقَةِ! |
+| 7 | l01-story-7.mp3 | 3 | laughing grandfather | وَأَنَا جَلَسْتُ فِي ٱلْبَيْتِ! |
+| 8 | l01-dhahabtu.mp3 | 4 |  | ذَهَبْتُ |
+| 9 | l01-dhahaba.mp3 | 4 |  | ذَهَبَ |
+| 10 | l01-dhahabat.mp3 | 4 |  | ذَهَبَتْ |
+| 11 | l01-ayna-dhahabta.mp3 | 5 | grandfather, to a boy | أَيْنَ ذَهَبْتَ؟ |
+| 12 | l01-ayna-dhahabti.mp3 | 5 | grandfather, to a girl | أَيْنَ ذَهَبْتِ؟ |
+| 13 | l01-dhahabna.mp3 | 6 |  | ذَهَبْنَا |
+| 14 | l01-dhahabtum.mp3 | 6 |  | ذَهَبْتُمْ |
+| 15 | l01-dhahabu.mp3 | 6 |  | ذَهَبُوا |
+| 16 | l01-katabtu.mp3 | 7 |  | كَتَبْتُ |
+| 17 | l01-katabat.mp3 | 7 |  | كَتَبَتْ |
+| 18 | l01-katabu.mp3 | 7 |  | كَتَبُوا |
+| 19 | l01-akaltu.mp3 | 8 |  | أَكَلْتُ |
+| 20 | l01-sharibtu.mp3 | 8 |  | شَرِبْتُ |
+| 21 | l01-laibtu.mp3 | 8 |  | لَعِبْتُ |
+| 22 | l01-laibtu-kura.mp3 | 8 | proud boy | لَعِبْتُ كُرَةً. |
+| 23 | l01-sharibtu-asir.mp3 | 8 | happy girl | شَرِبْتُ عَصِيرًا. |
+| 24 | l01-yadhhabu.mp3 | 12 | clear | يَذْهَبُ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أَيْنَ ذَهَبْتُمُ ٱلْيَوْمَ؟ <break time="1.2s" /> ذَهَبْتُ إِلَى ٱلْمَلْعَبِ. <break time="1.2s" /> وَأَنَا ذَهَبْتُ إِلَى ٱلْمَكْتَبَةِ. <break time="1.2s" /> وَأُمِّي ذَهَبَتْ إِلَى ٱلسُّوقِ. <break time="1.2s" /> وَمِشْمِشٌ؟ <break time="1.2s" /> مِشْمِشٌ ذَهَبَ إِلَى ٱلْحَدِيقَةِ! <break time="1.2s" /> وَأَنَا جَلَسْتُ فِي ٱلْبَيْتِ! <break time="1.2s" /> ذَهَبْتُ <break time="1.2s" /> ذَهَبَ <break time="1.2s" /> ذَهَبَتْ <break time="1.2s" /> أَيْنَ ذَهَبْتَ؟ <break time="1.2s" /> أَيْنَ ذَهَبْتِ؟ <break time="1.2s" /> ذَهَبْنَا <break time="1.2s" /> ذَهَبْتُمْ <break time="1.2s" /> ذَهَبُوا <break time="1.2s" /> كَتَبْتُ <break time="1.2s" /> كَتَبَتْ <break time="1.2s" /> كَتَبُوا <break time="1.2s" /> أَكَلْتُ <break time="1.2s" /> شَرِبْتُ <break time="1.2s" /> لَعِبْتُ <break time="1.2s" /> لَعِبْتُ كُرَةً. <break time="1.2s" /> شَرِبْتُ عَصِيرًا. <break time="1.2s" /> يَذْهَبُ
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -896,6 +935,41 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 مَا ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> وَمَا تِلْكَ؟ <break time="1.2s" /> تِلْكَ مَكْتَبَةٌ. <break time="1.2s" /> وَهَذِهِ قَهْوَةٌ. تَفَضَّلْ! <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ أُسْتَاذٌ. ذَلِكَ كَرِيمٌ! <break time="1.2s" /> هَذَا مَسْجِدٌ. <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> مَا ذَلِكَ؟ <break time="1.2s" /> أَذَلِكَ مَسْجِدٌ؟ <break time="1.2s" /> هَذِهِ قَهْوَةٌ. <break time="1.2s" /> تِلْكَ مَكْتَبَةٌ. <break time="1.2s" /> مَا تِلْكَ؟ <break time="1.2s" /> هَذَا <break time="1.2s" /> هَذِهِ <break time="1.2s" /> ذَلِكَ <break time="1.2s" /> تِلْكَ <break time="1.2s" /> ذَلِكَ مَطْعَمٌ. <break time="1.2s" /> ذَلِكَ مَلْعَبٌ. <break time="1.2s" /> تِلْكَ حَدِيقَةٌ. <break time="1.2s" /> تِلْكَ سَيَّارَةٌ. <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> ٱلْبَابُ
+```
+
+## Fusha Arabic · 12+ · Level 2 · Lesson 1: The Class Trip
+
+Folder: `public/curriculum/fusha-12-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | teacher, warm | مَاذَا فَعَلْتُمْ أَمْسِ؟ |
+| 2 | l01-story-2.mp3 | 3 | young man | ذَهَبْنَا إِلَى ٱلْمَدِينَةِ ٱلْقَدِيمَةِ. |
+| 3 | l01-story-3.mp3 | 3 | young woman | أَنَا دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ. |
+| 4 | l01-story-4.mp3 | 3 | young woman, teasing | وَيُوسُفُ أَكَلَ فِي كُلِّ مَطْعَمٍ! |
+| 5 | l01-story-5.mp3 | 3 | teacher, curious | وَٱلْأُسْتَاذَةُ هُدَى؟ |
+| 6 | l01-story-6.mp3 | 3 | young man, laughing | جَلَسَتْ فِي ٱلْمَقْهَى وَشَرِبَتْ قَهْوَةً. |
+| 7 | l01-dakhaltu.mp3 | 4 |  | دَخَلْتُ |
+| 8 | l01-dakhalta.mp3 | 4 |  | دَخَلْتَ |
+| 9 | l01-dakhalti.mp3 | 4 |  | دَخَلْتِ |
+| 10 | l01-dakhala.mp3 | 4 |  | دَخَلَ |
+| 11 | l01-dakhalat.mp3 | 4 |  | دَخَلَتْ |
+| 12 | l01-dhahabna.mp3 | 5 |  | ذَهَبْنَا |
+| 13 | l01-dhahabtum.mp3 | 5 |  | ذَهَبْتُمْ |
+| 14 | l01-dhahabu.mp3 | 5 |  | ذَهَبُوا |
+| 15 | l01-katabtu.mp3 | 6 |  | كَتَبْتُ |
+| 16 | l01-samiat.mp3 | 6 |  | سَمِعَتْ |
+| 17 | l01-rajau.mp3 | 6 |  | رَجَعُوا |
+| 18 | l01-madha-faalta.mp3 | 9 | teacher, to a man | مَاذَا فَعَلْتَ؟ |
+| 19 | l01-madha-faalti.mp3 | 9 | teacher, to a woman | مَاذَا فَعَلْتِ؟ |
+| 20 | l01-yadhhabu.mp3 | 11 | clear | يَذْهَبُ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَاذَا فَعَلْتُمْ أَمْسِ؟ <break time="1.2s" /> ذَهَبْنَا إِلَى ٱلْمَدِينَةِ ٱلْقَدِيمَةِ. <break time="1.2s" /> أَنَا دَخَلْتُ ٱلْمَتْحَفَ وَكَتَبْتُ عَنْهُ. <break time="1.2s" /> وَيُوسُفُ أَكَلَ فِي كُلِّ مَطْعَمٍ! <break time="1.2s" /> وَٱلْأُسْتَاذَةُ هُدَى؟ <break time="1.2s" /> جَلَسَتْ فِي ٱلْمَقْهَى وَشَرِبَتْ قَهْوَةً. <break time="1.2s" /> دَخَلْتُ <break time="1.2s" /> دَخَلْتَ <break time="1.2s" /> دَخَلْتِ <break time="1.2s" /> دَخَلَ <break time="1.2s" /> دَخَلَتْ <break time="1.2s" /> ذَهَبْنَا <break time="1.2s" /> ذَهَبْتُمْ <break time="1.2s" /> ذَهَبُوا <break time="1.2s" /> كَتَبْتُ <break time="1.2s" /> سَمِعَتْ <break time="1.2s" /> رَجَعُوا <break time="1.2s" /> مَاذَا فَعَلْتَ؟ <break time="1.2s" /> مَاذَا فَعَلْتِ؟ <break time="1.2s" /> يَذْهَبُ
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

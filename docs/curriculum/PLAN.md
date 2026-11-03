@@ -841,3 +841,8 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-03 · Fusha Level 2 map** written (`fusha/MAP-level-2.md`: 17 lessons, Kids and 12+ on one spine, Madinah
   Reader 3-5 + Lughatuna 2; first three: past with every person, the present verb, the five nouns). Claude's draft for
   the owner's review. Next: Fusha Level 2, Lesson 1, Kids and 12+.
+- **2026-11-03 · Fusha Level 2, Lesson 1 built for Kids and 12+** (drafts): catalog entries `fusha-kids-2` ("What Did
+  Everyone Do?", 12 pages, the family's Saturday) and `fusha-12-2` ("The Class Trip", 11 pages, the institute), both
+  17-lesson plans from `fusha/MAP-level-2.md`. One device in `g-fv1.tsx`: the past verb as a stem tile with an ending
+  tile that snaps onto it, eight persons, endings that move to any sound verb. New Fusha clips wait for a new Fusha
+  part. Every step screenshotted. Next: Fusha Level 2, Lesson 2 "Every Day" (the present verb), both versions.
