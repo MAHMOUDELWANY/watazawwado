@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AuthPage } from '../components/auth/AuthFrame';
+import { AuthPage, AuthCard, DoorKeystone } from '../components/auth/AuthFrame';
 import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -40,8 +40,11 @@ export default function OtpVerificationPage() {
   };
 
   return (
-    <AuthPage isAr={isAr}>
+    <AuthPage isAr={isAr} onToggleLang={toggleLanguage}>
+      <AuthCard>
+      <DoorKeystone />
       <OtpVerificationCard
+        key={lang}
         initialEmail={initialEmail}
         onVerify={handleVerify}
         onResend={handleResend}
@@ -51,6 +54,7 @@ export default function OtpVerificationPage() {
         onToggleLang={toggleLanguage}
         variant="page"
       />
+      </AuthCard>
     </AuthPage>
   );
 }

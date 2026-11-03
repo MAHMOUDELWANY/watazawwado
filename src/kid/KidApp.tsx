@@ -4,7 +4,7 @@ import { ArrowLeft, BookOpen, Calendar, Compass, Globe, GraduationCap, HeartHand
 import { authedJson } from '../lib/authedJson';
 import { kidToken, setKidToken } from '../lib/kidDevice';
 import { useAppLanguage } from '../lib/language';
-import { AuthPage } from '../components/auth/AuthFrame';
+import { AuthPage, AuthCard, DoorKeystone } from '../components/auth/AuthFrame';
 import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { BrandLoader } from '../components/ui/BrandLoader';
@@ -73,9 +73,12 @@ export default function KidApp() {
 
   if (!linked) {
     return (
-      <AuthPage isAr={isAr}>
-        <div className="w-full max-w-md grid gap-4 justify-items-center">
-          <PairCard lang={lang} removed={removed} onToggleLang={toggleLanguage} onLinked={() => { setRemoved(false); setFailed(false); setLinked(true); }} />
+      <AuthPage isAr={isAr} onToggleLang={toggleLanguage}>
+        <div className="w-full max-w-[28rem] grid gap-5 justify-items-center">
+          <AuthCard>
+            <DoorKeystone />
+            <PairCard lang={lang} removed={removed} onToggleLang={toggleLanguage} onLinked={() => { setRemoved(false); setFailed(false); setLinked(true); }} />
+          </AuthCard>
           <Link to="/student?auth=login" className="text-sm font-semibold text-[var(--teal)] hover:underline rounded focus-ring" data-testid="kid-grown-up-login">
             {isAr ? 'ولي أمر؟ ادخل حسابك من هنا' : 'A parent? Sign in to your account here'}
           </Link>
