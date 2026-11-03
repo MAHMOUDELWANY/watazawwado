@@ -2,7 +2,8 @@
  "fusha": [
   {
    "n": 1,
-   "text": "قِطَارُ الْحُرُوفِ",
+   "part": 1,
+   "text": "قِطَارُ الْحُرُوف",
    "emotion": "cheerful",
    "files": [
     "literacy-a-kids/audio/l01-qitar-al-huruf.mp3"
@@ -10,7 +11,8 @@
   },
   {
    "n": 2,
-   "text": "قِطَارٌ",
+   "part": 1,
+   "text": "قِطَار",
    "emotion": "clear",
    "files": [
     "literacy-a-kids/audio/l01-qitar.mp3"
@@ -18,6 +20,7 @@
   },
   {
    "n": 3,
+   "part": 1,
    "text": "بَ",
    "emotion": "clear",
    "files": [
@@ -28,7 +31,8 @@
   },
   {
    "n": 4,
-   "text": "بَابٌ",
+   "part": 1,
+   "text": "بَاب",
    "emotion": "proud",
    "files": [
     "literacy-a-kids/audio/l02-baab.mp3",
@@ -40,7 +44,8 @@
   },
   {
    "n": 5,
-   "text": "تَاجٌ",
+   "part": 1,
+   "text": "تَاج",
    "emotion": "proud",
    "files": [
     "literacy-a-kids/audio/l03-taaj.mp3",
@@ -50,7 +55,8 @@
   },
   {
    "n": 6,
-   "text": "سُوقُ الْخُضَارِ",
+   "part": 1,
+   "text": "سُوقُ الْخُضَار",
    "emotion": "clear",
    "files": [
     "literacy-a-adults/audio/l01-suq-al-khudar.mp3"
@@ -58,7 +64,8 @@
   },
   {
    "n": 7,
-   "text": "ثَابِتٌ",
+   "part": 1,
+   "text": "ثَابِت",
    "emotion": "calm, steady",
    "files": [
     "literacy-a-adults/audio/l02-thaabit.mp3",
@@ -67,7 +74,8 @@
   },
   {
    "n": 8,
-   "text": "دَجَاجٌ",
+   "part": 1,
+   "text": "دَجَاج",
    "emotion": "amused",
    "files": [
     "literacy-a-adults/audio/l03-dajaaj.mp3",
@@ -76,7 +84,8 @@
   },
   {
    "n": 9,
-   "text": "ذُبَابٌ",
+   "part": 1,
+   "text": "ذُبَاب",
    "emotion": "amused",
    "files": [
     "literacy-a-adults/audio/l03-dhubaab.mp3",
@@ -85,6 +94,7 @@
   },
   {
    "n": 10,
+   "part": 1,
    "text": "مَا هَذَا؟",
    "emotion": "",
    "files": [
@@ -99,7 +109,8 @@
   },
   {
    "n": 11,
-   "text": "هَذَا قَلَمٌ.",
+   "part": 1,
+   "text": "هَذَا قَلَم.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-story-2.mp3",
@@ -108,6 +119,7 @@
   },
   {
    "n": 12,
+   "part": 1,
    "text": "وَمَا هَذَا؟",
    "emotion": "",
    "files": [
@@ -116,7 +128,8 @@
   },
   {
    "n": 13,
-   "text": "هَذَا كِتَابٌ.",
+   "part": 2,
+   "text": "هَذَا كِتَاب.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-story-4.mp3",
@@ -126,6 +139,7 @@
   },
   {
    "n": 14,
+   "part": 2,
    "text": "وَمَنْ هَذَا؟",
    "emotion": "",
    "files": [
@@ -134,7 +148,8 @@
   },
   {
    "n": 15,
-   "text": "هَذَا قِطٌّ! لَا، لَا... هَذَا يُوسُفُ!",
+   "part": 2,
+   "text": "هَذَا قِطّ! لَا، لَا... هَذَا يُوسُف!",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-story-6.mp3"
@@ -142,6 +157,7 @@
   },
   {
    "n": 16,
+   "part": 2,
    "text": "هَذَا",
    "emotion": "",
    "files": [
@@ -152,7 +168,8 @@
   },
   {
    "n": 17,
-   "text": "هَذَا بَابٌ.",
+   "part": 2,
+   "text": "هَذَا بَاب.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-bab.mp3"
@@ -160,7 +177,8 @@
   },
   {
    "n": 18,
-   "text": "هَذَا بَيْتٌ.",
+   "part": 2,
+   "text": "هَذَا بَيْت.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-bayt.mp3",
@@ -169,7 +187,8 @@
   },
   {
    "n": 19,
-   "text": "هَذَا كُرْسِيٌّ.",
+   "part": 2,
+   "text": "هَذَا كُرْسِيّ.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-kursi.mp3",
@@ -178,6 +197,7 @@
   },
   {
    "n": 20,
+   "part": 2,
    "text": "مَنْ هَذَا؟",
    "emotion": "",
    "files": [
@@ -187,7 +207,8 @@
   },
   {
    "n": 21,
-   "text": "هَذَا وَلَدٌ.",
+   "part": 2,
+   "text": "هَذَا وَلَد.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-walad.mp3",
@@ -196,7 +217,8 @@
   },
   {
    "n": 22,
-   "text": "هَذَا طَالِبٌ.",
+   "part": 2,
+   "text": "هَذَا طَالِب.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-talib.mp3"
@@ -204,7 +226,8 @@
   },
   {
    "n": 23,
-   "text": "هَذَا مُعَلِّمٌ.",
+   "part": 2,
+   "text": "هَذَا مُعَلِّم.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-muallim.mp3"
@@ -212,7 +235,8 @@
   },
   {
    "n": 24,
-   "text": "قِطٌّ",
+   "part": 2,
+   "text": "قِطّ",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-qitt.mp3",
@@ -221,7 +245,8 @@
   },
   {
    "n": 25,
-   "text": "مِفْتَاحٌ",
+   "part": 3,
+   "text": "مِفْتَاح",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-miftah.mp3",
@@ -230,7 +255,8 @@
   },
   {
    "n": 26,
-   "text": "سَرِيرٌ",
+   "part": 3,
+   "text": "سَرِير",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-sarir.mp3",
@@ -239,7 +265,8 @@
   },
   {
    "n": 27,
-   "text": "قَلَمٌ",
+   "part": 3,
+   "text": "قَلَم",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-qalam.mp3",
@@ -248,7 +275,8 @@
   },
   {
    "n": 28,
-   "text": "كِتَابٌ",
+   "part": 3,
+   "text": "كِتَاب",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-kitab.mp3",
@@ -257,7 +285,8 @@
   },
   {
    "n": 29,
-   "text": "بَيْتٌ",
+   "part": 3,
+   "text": "بَيْت",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-bayt.mp3"
@@ -265,7 +294,8 @@
   },
   {
    "n": 30,
-   "text": "كُرْسِيٌّ",
+   "part": 3,
+   "text": "كُرْسِيّ",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-kursi.mp3",
@@ -274,7 +304,8 @@
   },
   {
    "n": 31,
-   "text": "وَلَدٌ",
+   "part": 3,
+   "text": "وَلَد",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-walad.mp3"
@@ -282,7 +313,8 @@
   },
   {
    "n": 32,
-   "text": "طَالِبٌ",
+   "part": 3,
+   "text": "طَالِب",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-talib.mp3",
@@ -291,7 +323,8 @@
   },
   {
    "n": 33,
-   "text": "هَذَا مِفْتَاحٌ.",
+   "part": 3,
+   "text": "هَذَا مِفْتَاح.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-miftah.mp3",
@@ -302,7 +335,8 @@
   },
   {
    "n": 34,
-   "text": "هَذَا سَرِيرٌ!",
+   "part": 3,
+   "text": "هَذَا سَرِير!",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-haadha-sarir.mp3"
@@ -310,7 +344,8 @@
   },
   {
    "n": 35,
-   "text": "أَهَذَا قِطٌّ؟",
+   "part": 3,
+   "text": "أَهَذَا قِطّ؟",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l01-a-haadha-qitt.mp3",
@@ -320,7 +355,8 @@
   },
   {
    "n": 36,
-   "text": "أَهَذَا كَلْبٌ؟",
+   "part": 3,
+   "text": "أَهَذَا كَلْب؟",
    "emotion": "curious, unsure",
    "files": [
     "fusha-kids/audio/l02-story-1.mp3",
@@ -330,6 +366,7 @@
   },
   {
    "n": 37,
+   "part": 4,
    "text": "لَا.",
    "emotion": "playful",
    "files": [
@@ -339,7 +376,8 @@
   },
   {
    "n": 38,
-   "text": "أَهَذَا أَرْنَبٌ؟",
+   "part": 4,
+   "text": "أَهَذَا أَرْنَب؟",
    "emotion": "curious",
    "files": [
     "fusha-kids/audio/l02-story-3.mp3"
@@ -347,7 +385,8 @@
   },
   {
    "n": 39,
-   "text": "نَعَمْ، هَذَا أَرْنَبٌ!",
+   "part": 4,
+   "text": "نَعَم، هَذَا أَرْنَب!",
    "emotion": "happy",
    "files": [
     "fusha-kids/audio/l02-story-4.mp3"
@@ -355,7 +394,8 @@
   },
   {
    "n": 40,
-   "text": "أَهَذَا دُبٌّ؟",
+   "part": 4,
+   "text": "أَهَذَا دُبّ؟",
    "emotion": "unsure, a little scared",
    "files": [
     "fusha-kids/audio/l02-story-5.mp3",
@@ -364,7 +404,8 @@
   },
   {
    "n": 41,
-   "text": "لَا، لَا! هَذَا قِطٌّ!",
+   "part": 4,
+   "text": "لَا، لَا! هَذَا قِطّ!",
    "emotion": "laughing",
    "files": [
     "fusha-kids/audio/l02-story-6.mp3"
@@ -372,7 +413,8 @@
   },
   {
    "n": 42,
-   "text": "هَذَا قِطٌّ.",
+   "part": 4,
+   "text": "هَذَا قِطّ.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l02-haadha-qitt.mp3"
@@ -380,7 +422,8 @@
   },
   {
    "n": 43,
-   "text": "نَعَمْ",
+   "part": 4,
+   "text": "نَعَم",
    "emotion": "happy",
    "files": [
     "fusha-kids/audio/l02-naam.mp3"
@@ -388,6 +431,7 @@
   },
   {
    "n": 44,
+   "part": 4,
    "text": "لَا",
    "emotion": "firm, friendly",
    "files": [
@@ -396,7 +440,8 @@
   },
   {
    "n": 45,
-   "text": "نَعَمْ، هَذَا قِطٌّ.",
+   "part": 4,
+   "text": "نَعَم، هَذَا قِطّ.",
    "emotion": "happy",
    "files": [
     "fusha-kids/audio/l02-naam-qitt.mp3",
@@ -405,7 +450,8 @@
   },
   {
    "n": 46,
-   "text": "لَا، هَذَا كَلْبٌ.",
+   "part": 4,
+   "text": "لَا، هَذَا كَلْب.",
    "emotion": "friendly",
    "files": [
     "fusha-kids/audio/l02-la-kalb.mp3"
@@ -413,15 +459,18 @@
   },
   {
    "n": 47,
-   "text": "كَلْبٌ",
+   "part": 4,
+   "text": "كَلْب",
    "emotion": "",
    "files": [
-    "fusha-kids/audio/l02-kalb.mp3"
+    "fusha-kids/audio/l02-kalb.mp3",
+    "tajweed/audio/l01-kalb.mp3"
    ]
   },
   {
    "n": 48,
-   "text": "أَرْنَبٌ",
+   "part": 4,
+   "text": "أَرْنَب",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l02-arnab.mp3"
@@ -429,7 +478,8 @@
   },
   {
    "n": 49,
-   "text": "حِصَانٌ",
+   "part": 5,
+   "text": "حِصَان",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l02-hisan.mp3"
@@ -437,7 +487,8 @@
   },
   {
    "n": 50,
-   "text": "دُبٌّ",
+   "part": 5,
+   "text": "دُبّ",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l02-dubb.mp3"
@@ -445,7 +496,8 @@
   },
   {
    "n": 51,
-   "text": "دِيكٌ",
+   "part": 5,
+   "text": "دِيك",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l02-dik.mp3"
@@ -453,7 +505,8 @@
   },
   {
    "n": 52,
-   "text": "نَعَمْ، هَذَا دُبٌّ.",
+   "part": 5,
+   "text": "نَعَم، هَذَا دُبّ.",
    "emotion": "happy",
    "files": [
     "fusha-kids/audio/l02-naam-dubb.mp3"
@@ -461,7 +514,8 @@
   },
   {
    "n": 53,
-   "text": "أَهَذَا قَلَمٌ؟",
+   "part": 5,
+   "text": "أَهَذَا قَلَم؟",
    "emotion": "grandfatherly, playful",
    "files": [
     "fusha-kids/audio/l02-a-haadha-qalam.mp3",
@@ -470,7 +524,8 @@
   },
   {
    "n": 54,
-   "text": "ذَلِكَ",
+   "part": 5,
+   "text": "ذَلِك",
    "emotion": "pointing far, slow",
    "files": [
     "fusha-kids/audio/l02-dhalika.mp3",
@@ -481,7 +536,8 @@
   },
   {
    "n": 55,
-   "text": "لَا، هَذَا أَرْنَبٌ.",
+   "part": 5,
+   "text": "لَا، هَذَا أَرْنَب.",
    "emotion": "friendly",
    "files": [
     "fusha-kids/audio/l03-la-arnab.mp3"
@@ -489,6 +545,7 @@
   },
   {
    "n": 56,
+   "part": 5,
    "text": "مَا هَذَا يَا جِدِّي؟",
    "emotion": "curious boy",
    "files": [
@@ -497,7 +554,8 @@
   },
   {
    "n": 57,
-   "text": "هَذَا طَائِرٌ.",
+   "part": 5,
+   "text": "هَذَا طَائِر.",
    "emotion": "warm grandfather",
    "files": [
     "fusha-kids/audio/l03-story-2.mp3",
@@ -506,7 +564,8 @@
   },
   {
    "n": 58,
-   "text": "وَمَا ذَلِكَ؟",
+   "part": 5,
+   "text": "وَمَا ذَلِك؟",
    "emotion": "curious girl, pointing far",
    "files": [
     "fusha-kids/audio/l03-story-3.mp3"
@@ -514,7 +573,8 @@
   },
   {
    "n": 59,
-   "text": "ذَلِكَ حِصَانٌ.",
+   "part": 5,
+   "text": "ذَلِكَ حِصَان.",
    "emotion": "warm grandfather",
    "files": [
     "fusha-kids/audio/l03-story-4.mp3",
@@ -523,7 +583,8 @@
   },
   {
    "n": 60,
-   "text": "وَهَذَا مِشْمِشٌ!",
+   "part": 5,
+   "text": "وَهَذَا مِشْمِش!",
    "emotion": "laughing boy",
    "files": [
     "fusha-kids/audio/l03-story-5.mp3"
@@ -531,7 +592,8 @@
   },
   {
    "n": 61,
-   "text": "مَا ذَلِكَ؟",
+   "part": 6,
+   "text": "مَا ذَلِك؟",
    "emotion": "curious",
    "files": [
     "fusha-kids/audio/l03-maa-dhalika.mp3",
@@ -541,7 +603,8 @@
   },
   {
    "n": 62,
-   "text": "مَنْ ذَلِكَ؟",
+   "part": 6,
+   "text": "مَنْ ذَلِك؟",
    "emotion": "curious",
    "files": [
     "fusha-kids/audio/l03-man-dhalika.mp3",
@@ -551,7 +614,8 @@
   },
   {
    "n": 63,
-   "text": "أَذَلِكَ حِصَانٌ؟",
+   "part": 6,
+   "text": "أَذَلِكَ حِصَان؟",
    "emotion": "asking, voice going up",
    "files": [
     "fusha-kids/audio/l03-a-dhalika-hisan.mp3"
@@ -559,7 +623,8 @@
   },
   {
    "n": 64,
-   "text": "نَعَمْ، ذَلِكَ حِصَانٌ.",
+   "part": 6,
+   "text": "نَعَم، ذَلِكَ حِصَان.",
    "emotion": "happy",
    "files": [
     "fusha-kids/audio/l03-naam-dhalika-hisan.mp3"
@@ -567,7 +632,8 @@
   },
   {
    "n": 65,
-   "text": "ذَلِكَ مَسْجِدٌ.",
+   "part": 6,
+   "text": "ذَلِكَ مَسْجِد.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l03-dhalika-masjid.mp3",
@@ -577,7 +643,8 @@
   },
   {
    "n": 66,
-   "text": "ذَلِكَ جَبَلٌ.",
+   "part": 6,
+   "text": "ذَلِكَ جَبَل.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l03-dhalika-jabal.mp3"
@@ -585,7 +652,8 @@
   },
   {
    "n": 67,
-   "text": "ذَلِكَ قَمَرٌ.",
+   "part": 6,
+   "text": "ذَلِكَ قَمَر.",
    "emotion": "",
    "files": [
     "fusha-kids/audio/l03-dhalika-qamar.mp3"
@@ -593,7 +661,8 @@
   },
   {
    "n": 68,
-   "text": "ٱلْبَابُ",
+   "part": 6,
+   "text": "ٱلْبَاب",
    "emotion": "proud girl",
    "files": [
     "fusha-kids/audio/l03-al-bab.mp3",
@@ -602,6 +671,7 @@
   },
   {
    "n": 69,
+   "part": 6,
    "text": "قَلْب",
    "emotion": "clear, deep",
    "files": [
@@ -610,23 +680,17 @@
   },
   {
    "n": 70,
-   "text": "كَلْب",
-   "emotion": "clear",
-   "files": [
-    "tajweed/audio/l01-kalb.mp3"
-   ]
-  },
-  {
-   "n": 71,
-   "text": "أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+   "part": 6,
+   "text": "أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيم",
    "emotion": "calm, reverent",
    "files": [
     "tajweed/audio/l01-istiadha.mp3"
    ]
   },
   {
-   "n": 72,
-   "text": "هَذَا مَكْتَبٌ.",
+   "n": 71,
+   "part": 6,
+   "text": "هَذَا مَكْتَب.",
    "emotion": "friendly, guiding",
    "files": [
     "fusha-12/audio/l01-d-1.mp3",
@@ -634,120 +698,135 @@
    ]
   },
   {
-   "n": 73,
-   "text": "وَهَذِهِ غُرْفَةٌ.",
+   "n": 72,
+   "part": 6,
+   "text": "وَهَذِهِ غُرْفَة.",
    "emotion": "friendly",
    "files": [
     "fusha-12/audio/l01-d-2.mp3"
    ]
   },
   {
-   "n": 74,
-   "text": "وَمَنْ هَذِهِ؟",
+   "n": 73,
+   "part": 7,
+   "text": "وَمَنْ هَذِه؟",
    "emotion": "curious",
    "files": [
     "fusha-12/audio/l01-d-5.mp3"
    ]
   },
   {
-   "n": 75,
-   "text": "هَذِهِ سَارَةُ. هِيَ طَالِبَةٌ.",
+   "n": 74,
+   "part": 7,
+   "text": "هَذِهِ سَارَة. هِيَ طَالِبَة.",
    "emotion": "warm, introducing",
    "files": [
     "fusha-12/audio/l01-d-6.mp3"
    ]
   },
   {
-   "n": 76,
-   "text": "هَذِهِ غُرْفَةٌ.",
+   "n": 75,
+   "part": 7,
+   "text": "هَذِهِ غُرْفَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-haadhihi-ghurfa.mp3"
    ]
   },
   {
-   "n": 77,
-   "text": "هَذِهِ طَالِبَةٌ.",
+   "n": 76,
+   "part": 7,
+   "text": "هَذِهِ طَالِبَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-haadhihi-taaliba.mp3"
    ]
   },
   {
-   "n": 78,
-   "text": "هَذَا مُدَرِّسٌ.",
+   "n": 77,
+   "part": 7,
+   "text": "هَذَا مُدَرِّس.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-haadha-mudarris.mp3"
    ]
   },
   {
-   "n": 79,
-   "text": "هَذِهِ مُدَرِّسَةٌ.",
+   "n": 78,
+   "part": 7,
+   "text": "هَذِهِ مُدَرِّسَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-haadhihi-mudarrisa.mp3"
    ]
   },
   {
-   "n": 80,
-   "text": "مَكْتَبٌ",
+   "n": 79,
+   "part": 7,
+   "text": "مَكْتَب",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-maktab.mp3"
    ]
   },
   {
-   "n": 81,
-   "text": "حَقِيبَةٌ",
+   "n": 80,
+   "part": 7,
+   "text": "حَقِيبَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-haqiba.mp3"
    ]
   },
   {
-   "n": 82,
-   "text": "سَيَّارَةٌ",
+   "n": 81,
+   "part": 7,
+   "text": "سَيَّارَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-sayyara.mp3"
    ]
   },
   {
-   "n": 83,
-   "text": "نَافِذَةٌ",
+   "n": 82,
+   "part": 7,
+   "text": "نَافِذَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-nafidha.mp3"
    ]
   },
   {
-   "n": 84,
-   "text": "غُرْفَةٌ",
+   "n": 83,
+   "part": 7,
+   "text": "غُرْفَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-ghurfa.mp3"
    ]
   },
   {
-   "n": 85,
-   "text": "طَالِبَةٌ",
+   "n": 84,
+   "part": 7,
+   "text": "طَالِبَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-taaliba.mp3"
    ]
   },
   {
-   "n": 86,
-   "text": "مُدَرِّسَةٌ",
+   "n": 85,
+   "part": 8,
+   "text": "مُدَرِّسَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l01-mudarrisa.mp3"
    ]
   },
   {
-   "n": 87,
-   "text": "أَهَذَا هَاتِفُكَ؟",
+   "n": 86,
+   "part": 8,
+   "text": "أَهَذَا هَاتِفُك؟",
    "emotion": "playful",
    "files": [
     "fusha-12/audio/l01-a-haadha.mp3",
@@ -755,15 +834,17 @@
    ]
   },
   {
-   "n": 88,
-   "text": "نَعَمْ!",
+   "n": 87,
+   "part": 8,
+   "text": "نَعَم!",
    "emotion": "relieved",
    "files": [
     "fusha-12/audio/l02-naam.mp3"
    ]
   },
   {
-   "n": 89,
+   "n": 88,
+   "part": 8,
    "text": "شُكْرًا.",
    "emotion": "grateful",
    "files": [
@@ -771,8 +852,9 @@
    ]
   },
   {
-   "n": 90,
-   "text": "أَهَذَا سَرِيرٌ؟",
+   "n": 89,
+   "part": 8,
+   "text": "أَهَذَا سَرِير؟",
    "emotion": "unsure, in the dark",
    "files": [
     "fusha-12/audio/l02-d-1.mp3",
@@ -780,8 +862,9 @@
    ]
   },
   {
-   "n": 91,
-   "text": "لَا، هَذَا مَكْتَبٌ.",
+   "n": 90,
+   "part": 8,
+   "text": "لَا، هَذَا مَكْتَب.",
    "emotion": "calm, amused",
    "files": [
     "fusha-12/audio/l02-d-2.mp3",
@@ -789,16 +872,18 @@
    ]
   },
   {
-   "n": 92,
-   "text": "أَهَذِهِ نَافِذَةٌ؟",
+   "n": 91,
+   "part": 8,
+   "text": "أَهَذِهِ نَافِذَة؟",
    "emotion": "unsure",
    "files": [
     "fusha-12/audio/l02-d-3.mp3"
    ]
   },
   {
-   "n": 93,
-   "text": "نَعَمْ، هَذِهِ نَافِذَةٌ.",
+   "n": 92,
+   "part": 8,
+   "text": "نَعَم، هَذِهِ نَافِذَة.",
    "emotion": "kind",
    "files": [
     "fusha-12/audio/l02-d-4.mp3",
@@ -806,80 +891,90 @@
    ]
   },
   {
-   "n": 94,
-   "text": "أَهَذَا بَابٌ؟",
+   "n": 93,
+   "part": 8,
+   "text": "أَهَذَا بَاب؟",
    "emotion": "hopeful",
    "files": [
     "fusha-12/audio/l02-d-5.mp3"
    ]
   },
   {
-   "n": 95,
-   "text": "نَعَمْ! وَهَذَا نُورٌ!",
+   "n": 94,
+   "part": 8,
+   "text": "نَعَم! وَهَذَا نُور!",
    "emotion": "happy, the lights come back",
    "files": [
     "fusha-12/audio/l02-d-6.mp3"
    ]
   },
   {
-   "n": 96,
-   "text": "هَذَا سَرِيرٌ.",
+   "n": 95,
+   "part": 8,
+   "text": "هَذَا سَرِير.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l02-haadha-sarir.mp3"
    ]
   },
   {
-   "n": 97,
-   "text": "مِصْبَاحٌ",
+   "n": 96,
+   "part": 8,
+   "text": "مِصْبَاح",
    "emotion": "",
    "files": [
     "fusha-12/audio/l02-misbah.mp3"
    ]
   },
   {
-   "n": 98,
-   "text": "خِزَانَةٌ",
+   "n": 97,
+   "part": 9,
+   "text": "خِزَانَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l02-khizana.mp3"
    ]
   },
   {
-   "n": 99,
-   "text": "وِسَادَةٌ",
+   "n": 98,
+   "part": 9,
+   "text": "وِسَادَة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l02-wisada.mp3"
    ]
   },
   {
-   "n": 100,
-   "text": "مِرْآةٌ",
+   "n": 99,
+   "part": 9,
+   "text": "مِرْآة",
    "emotion": "",
    "files": [
     "fusha-12/audio/l02-mirah.mp3"
    ]
   },
   {
-   "n": 101,
-   "text": "مِفْتَاحٌ! شُكْرًا.",
+   "n": 100,
+   "part": 9,
+   "text": "مِفْتَاح! شُكْرًا.",
    "emotion": "pleased, learning",
    "files": [
     "fusha-12/audio/l02-c-5.mp3"
    ]
   },
   {
-   "n": 102,
-   "text": "وَمَا تِلْكَ؟",
+   "n": 101,
+   "part": 9,
+   "text": "وَمَا تِلْك؟",
    "emotion": "curious",
    "files": [
     "fusha-12/audio/l03-d-3.mp3"
    ]
   },
   {
-   "n": 103,
-   "text": "تِلْكَ مَكْتَبَةٌ.",
+   "n": 102,
+   "part": 9,
+   "text": "تِلْكَ مَكْتَبَة.",
    "emotion": "friendly",
    "files": [
     "fusha-12/audio/l03-d-4.mp3",
@@ -887,104 +982,117 @@
    ]
   },
   {
-   "n": 104,
-   "text": "وَهَذِهِ قَهْوَةٌ. تَفَضَّلْ!",
+   "n": 103,
+   "part": 9,
+   "text": "وَهَذِهِ قَهْوَة. تَفَضَّل!",
    "emotion": "warm, handing a cup",
    "files": [
     "fusha-12/audio/l03-d-5.mp3"
    ]
   },
   {
-   "n": 105,
-   "text": "ذَلِكَ أُسْتَاذٌ. ذَلِكَ كَرِيمٌ!",
+   "n": 104,
+   "part": 9,
+   "text": "ذَلِكَ أُسْتَاذ. ذَلِكَ كَرِيم!",
    "emotion": "amused",
    "files": [
     "fusha-12/audio/l03-d-7.mp3"
    ]
   },
   {
-   "n": 106,
-   "text": "هَذَا مَسْجِدٌ.",
+   "n": 105,
+   "part": 9,
+   "text": "هَذَا مَسْجِد.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-haadha-masjid.mp3"
    ]
   },
   {
-   "n": 107,
-   "text": "أَذَلِكَ مَسْجِدٌ؟",
+   "n": 106,
+   "part": 9,
+   "text": "أَذَلِكَ مَسْجِد؟",
    "emotion": "asking, voice rising",
    "files": [
     "fusha-12/audio/l03-a-dhalika-masjid.mp3"
    ]
   },
   {
-   "n": 108,
-   "text": "هَذِهِ قَهْوَةٌ.",
+   "n": 107,
+   "part": 9,
+   "text": "هَذِهِ قَهْوَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-haadhihi-qahwa.mp3"
    ]
   },
   {
-   "n": 109,
-   "text": "مَا تِلْكَ؟",
+   "n": 108,
+   "part": 9,
+   "text": "مَا تِلْك؟",
    "emotion": "curious",
    "files": [
     "fusha-12/audio/l03-maa-tilka.mp3"
    ]
   },
   {
-   "n": 110,
-   "text": "هَذِهِ",
+   "n": 109,
+   "part": 10,
+   "text": "هَذِه",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-haadhihi.mp3"
    ]
   },
   {
-   "n": 111,
-   "text": "تِلْكَ",
+   "n": 110,
+   "part": 10,
+   "text": "تِلْك",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-tilka.mp3"
    ]
   },
   {
-   "n": 112,
-   "text": "ذَلِكَ مَطْعَمٌ.",
+   "n": 111,
+   "part": 10,
+   "text": "ذَلِكَ مَطْعَم.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-dhalika-mataam.mp3"
    ]
   },
   {
-   "n": 113,
-   "text": "ذَلِكَ مَلْعَبٌ.",
+   "n": 112,
+   "part": 10,
+   "text": "ذَلِكَ مَلْعَب.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-dhalika-malaab.mp3"
    ]
   },
   {
-   "n": 114,
-   "text": "تِلْكَ حَدِيقَةٌ.",
+   "n": 113,
+   "part": 10,
+   "text": "تِلْكَ حَدِيقَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-tilka-hadiqa.mp3"
    ]
   },
   {
-   "n": 115,
-   "text": "تِلْكَ سَيَّارَةٌ.",
+   "n": 114,
+   "part": 10,
+   "text": "تِلْكَ سَيَّارَة.",
    "emotion": "",
    "files": [
     "fusha-12/audio/l03-tilka-sayyara.mp3"
    ]
   },
   {
-   "n": 116,
-   "text": "سَلَامٌ يَا كَرِيمُ",
+   "n": 115,
+   "part": 10,
+   "text": "سَلَامٌ يَا كَرِيم",
    "emotion": "friendly",
    "files": [
     "literacy-a-teens/audio/l01-salam-ya-karim.mp3"
@@ -994,7 +1102,8 @@
  "eg": [
   {
    "n": 1,
-   "text": "مَا اسْمُكَ؟",
+   "part": 1,
+   "text": "مَا اسْمُك؟",
    "emotion": "stiff, careful, like reading from a book",
    "files": [
     "egyptian-adults/audio/l01-maa-ismuka.mp3"
@@ -1002,6 +1111,7 @@
   },
   {
    "n": 2,
+   "part": 1,
    "text": "السلام عليكم!",
    "emotion": "warm, loud, welcoming",
    "files": [
@@ -1010,6 +1120,7 @@
   },
   {
    "n": 3,
+   "part": 1,
    "text": "وعليكم السلام.",
    "emotion": "a little shy",
    "files": [
@@ -1018,7 +1129,8 @@
   },
   {
    "n": 4,
-   "text": "أهلاً وسهلاً! اسمَك إيه؟",
+   "part": 1,
+   "text": "أهلاً وسهلا! اسمَك إيه؟",
    "emotion": "friendly, curious",
    "files": [
     "egyptian-adults/audio/l01-d-ahlan-ismak.mp3"
@@ -1026,6 +1138,7 @@
   },
   {
    "n": 5,
+   "part": 1,
    "text": "اسمي آدم. وحضرتك؟",
    "emotion": "polite, pleased",
    "files": [
@@ -1034,6 +1147,7 @@
   },
   {
    "n": 6,
+   "part": 1,
    "text": "أنا سيّد، البوّاب. تشرّفنا!",
    "emotion": "proud, warm",
    "files": [
@@ -1042,6 +1156,7 @@
   },
   {
    "n": 7,
+   "part": 1,
    "text": "الشرف ليّا.",
    "emotion": "smiling",
    "files": [
@@ -1050,6 +1165,7 @@
   },
   {
    "n": 8,
+   "part": 1,
    "text": "السلام عليكم",
    "emotion": "",
    "files": [
@@ -1060,6 +1176,7 @@
   },
   {
    "n": 9,
+   "part": 1,
    "text": "وعليكم السلام",
    "emotion": "",
    "files": [
@@ -1069,6 +1186,7 @@
   },
   {
    "n": 10,
+   "part": 1,
    "text": "صباح الخير",
    "emotion": "bright, morning",
    "files": [
@@ -1077,6 +1195,7 @@
   },
   {
    "n": 11,
+   "part": 1,
    "text": "صباح النور",
    "emotion": "bright, smiling",
    "files": [
@@ -1085,7 +1204,8 @@
   },
   {
    "n": 12,
-   "text": "أهلاً وسهلاً",
+   "part": 1,
+   "text": "أهلاً وسهلا",
    "emotion": "",
    "files": [
     "egyptian-adults/audio/l01-ahlan.mp3"
@@ -1093,6 +1213,7 @@
   },
   {
    "n": 13,
+   "part": 2,
    "text": "أهلاً بيك",
    "emotion": "",
    "files": [
@@ -1102,6 +1223,7 @@
   },
   {
    "n": 14,
+   "part": 2,
    "text": "أهلاً بيكي",
    "emotion": "",
    "files": [
@@ -1111,6 +1233,7 @@
   },
   {
    "n": 15,
+   "part": 2,
    "text": "اسمَك إيه؟",
    "emotion": "friendly, curious",
    "files": [
@@ -1120,6 +1243,7 @@
   },
   {
    "n": 16,
+   "part": 2,
    "text": "اسمي آدم.",
    "emotion": "pleased",
    "files": [
@@ -1129,6 +1253,7 @@
   },
   {
    "n": 17,
+   "part": 2,
    "text": "اسمِك، اسمِك!",
    "emotion": "a kind whisper, amused",
    "files": [
@@ -1137,6 +1262,7 @@
   },
   {
    "n": 18,
+   "part": 2,
    "text": "اسمي منى. أهلاً بيك!",
    "emotion": "amused, kind",
    "files": [
@@ -1145,6 +1271,7 @@
   },
   {
    "n": 19,
+   "part": 2,
    "text": "اسم",
    "emotion": "",
    "files": [
@@ -1153,6 +1280,7 @@
   },
   {
    "n": 20,
+   "part": 2,
    "text": "اسمي",
    "emotion": "",
    "files": [
@@ -1161,6 +1289,7 @@
   },
   {
    "n": 21,
+   "part": 2,
    "text": "اسمَك",
    "emotion": "",
    "files": [
@@ -1169,6 +1298,7 @@
   },
   {
    "n": 22,
+   "part": 2,
    "text": "اسمِك",
    "emotion": "",
    "files": [
@@ -1177,6 +1307,7 @@
   },
   {
    "n": 23,
+   "part": 2,
    "text": "اسمِك إيه؟",
    "emotion": "friendly, curious",
    "files": [
@@ -1186,6 +1317,7 @@
   },
   {
    "n": 24,
+   "part": 2,
    "text": "حضرتَك",
    "emotion": "",
    "files": [
@@ -1194,6 +1326,7 @@
   },
   {
    "n": 25,
+   "part": 3,
    "text": "حضرتِك",
    "emotion": "",
    "files": [
@@ -1202,6 +1335,7 @@
   },
   {
    "n": 26,
+   "part": 3,
    "text": "إنت",
    "emotion": "",
    "files": [
@@ -1211,6 +1345,7 @@
   },
   {
    "n": 27,
+   "part": 3,
    "text": "إنتي",
    "emotion": "",
    "files": [
@@ -1219,6 +1354,7 @@
   },
   {
    "n": 28,
+   "part": 3,
    "text": "أنا",
    "emotion": "",
    "files": [
@@ -1228,6 +1364,7 @@
   },
   {
    "n": 29,
+   "part": 3,
    "text": "آسف!",
    "emotion": "embarrassed, quick",
    "files": [
@@ -1236,6 +1373,7 @@
   },
   {
    "n": 30,
+   "part": 3,
    "text": "ولا يهمّك.",
    "emotion": "kind, relaxed",
    "files": [
@@ -1244,7 +1382,8 @@
   },
   {
    "n": 31,
-   "text": "شكراً.",
+   "part": 3,
+   "text": "شكرا.",
    "emotion": "grateful",
    "files": [
     "egyptian-adults/audio/l01-shukran.mp3"
@@ -1252,6 +1391,7 @@
   },
   {
    "n": 32,
+   "part": 3,
    "text": "العفو.",
    "emotion": "warm",
    "files": [
@@ -1260,6 +1400,7 @@
   },
   {
    "n": 33,
+   "part": 3,
    "text": "آسفة.",
    "emotion": "embarrassed",
    "files": [
@@ -1268,6 +1409,7 @@
   },
   {
    "n": 34,
+   "part": 3,
    "text": "ولا يهمِّك.",
    "emotion": "kind, relaxed",
    "files": [
@@ -1276,6 +1418,7 @@
   },
   {
    "n": 35,
+   "part": 3,
    "text": "مع السلامة.",
    "emotion": "warm goodbye",
    "files": [
@@ -1284,6 +1427,7 @@
   },
   {
    "n": 36,
+   "part": 3,
    "text": "الله يسلّمَك.",
    "emotion": "warm",
    "files": [
@@ -1292,6 +1436,7 @@
   },
   {
    "n": 37,
+   "part": 4,
    "text": "الله يسلّمِك.",
    "emotion": "warm",
    "files": [
@@ -1300,6 +1445,7 @@
   },
   {
    "n": 38,
+   "part": 4,
    "text": "إنت منين؟",
    "emotion": "curious, friendly",
    "files": [
@@ -1314,6 +1460,7 @@
   },
   {
    "n": 39,
+   "part": 4,
    "text": "إنت منين يا آدم؟",
    "emotion": "friendly, curious",
    "files": [
@@ -1323,6 +1470,7 @@
   },
   {
    "n": 40,
+   "part": 4,
    "text": "أنا من إنجلترا. وإنتي؟",
    "emotion": "proud, a little shy",
    "files": [
@@ -1332,6 +1480,7 @@
   },
   {
    "n": 41,
+   "part": 4,
    "text": "أنا من هنا، من القاهرة.",
    "emotion": "warm, proud",
    "files": [
@@ -1340,6 +1489,7 @@
   },
   {
    "n": 42,
+   "part": 4,
    "text": "وأنا من أسوان!",
    "emotion": "loud, proud, joking",
    "files": [
@@ -1348,6 +1498,7 @@
   },
   {
    "n": 43,
+   "part": 4,
    "text": "من",
    "emotion": "",
    "files": [
@@ -1358,6 +1509,7 @@
   },
   {
    "n": 44,
+   "part": 4,
    "text": "فين",
    "emotion": "",
    "files": [
@@ -1368,6 +1520,7 @@
   },
   {
    "n": 45,
+   "part": 4,
    "text": "منين؟",
    "emotion": "curious",
    "files": [
@@ -1377,6 +1530,7 @@
   },
   {
    "n": 46,
+   "part": 4,
    "text": "أنا من هنا.",
    "emotion": "proud",
    "files": [
@@ -1385,6 +1539,7 @@
   },
   {
    "n": 47,
+   "part": 4,
    "text": "مصر",
    "emotion": "",
    "files": [
@@ -1395,6 +1550,7 @@
   },
   {
    "n": 48,
+   "part": 4,
    "text": "إنجلترا",
    "emotion": "",
    "files": [
@@ -1404,6 +1560,7 @@
   },
   {
    "n": 49,
+   "part": 5,
    "text": "أمريكا",
    "emotion": "",
    "files": [
@@ -1413,6 +1570,7 @@
   },
   {
    "n": 50,
+   "part": 5,
    "text": "كندا",
    "emotion": "",
    "files": [
@@ -1422,6 +1580,7 @@
   },
   {
    "n": 51,
+   "part": 5,
    "text": "ألمانيا",
    "emotion": "",
    "files": [
@@ -1430,6 +1589,7 @@
   },
   {
    "n": 52,
+   "part": 5,
    "text": "السعودية",
    "emotion": "",
    "files": [
@@ -1438,6 +1598,7 @@
   },
   {
    "n": 53,
+   "part": 5,
    "text": "إنت إنجليزي!",
    "emotion": "pleased, pointing",
    "files": [
@@ -1446,6 +1607,7 @@
   },
   {
    "n": 54,
+   "part": 5,
    "text": "وهي مصرية.",
    "emotion": "proud",
    "files": [
@@ -1454,6 +1616,7 @@
   },
   {
    "n": 55,
+   "part": 5,
    "text": "مصري",
    "emotion": "",
    "files": [
@@ -1463,6 +1626,7 @@
   },
   {
    "n": 56,
+   "part": 5,
    "text": "مصرية",
    "emotion": "",
    "files": [
@@ -1472,6 +1636,7 @@
   },
   {
    "n": 57,
+   "part": 5,
    "text": "كندي",
    "emotion": "",
    "files": [
@@ -1481,6 +1646,7 @@
   },
   {
    "n": 58,
+   "part": 5,
    "text": "كندية",
    "emotion": "",
    "files": [
@@ -1490,6 +1656,7 @@
   },
   {
    "n": 59,
+   "part": 5,
    "text": "ألماني",
    "emotion": "",
    "files": [
@@ -1498,6 +1665,7 @@
   },
   {
    "n": 60,
+   "part": 5,
    "text": "ألمانية",
    "emotion": "",
    "files": [
@@ -1506,6 +1674,7 @@
   },
   {
    "n": 61,
+   "part": 6,
    "text": "أمريكاني",
    "emotion": "amused",
    "files": [
@@ -1515,6 +1684,7 @@
   },
   {
    "n": 62,
+   "part": 6,
    "text": "أمريكانية",
    "emotion": "",
    "files": [
@@ -1523,6 +1693,7 @@
   },
   {
    "n": 63,
+   "part": 6,
    "text": "أيوه",
    "emotion": "",
    "files": [
@@ -1531,6 +1702,7 @@
   },
   {
    "n": 64,
+   "part": 6,
    "text": "لأ",
    "emotion": "",
    "files": [
@@ -1539,6 +1711,7 @@
   },
   {
    "n": 65,
+   "part": 6,
    "text": "إنت جديد هنا؟",
    "emotion": "kind, curious",
    "files": [
@@ -1547,6 +1720,7 @@
   },
   {
    "n": 66,
+   "part": 6,
    "text": "جديد",
    "emotion": "",
    "files": [
@@ -1556,6 +1730,7 @@
   },
   {
    "n": 67,
+   "part": 6,
    "text": "جميل",
    "emotion": "admiring",
    "files": [
@@ -1564,6 +1739,7 @@
   },
   {
    "n": 68,
+   "part": 6,
    "text": "جامعة",
    "emotion": "",
    "files": [
@@ -1572,6 +1748,7 @@
   },
   {
    "n": 69,
+   "part": 6,
    "text": "إنتي منين؟",
    "emotion": "curious, friendly",
    "files": [
@@ -1582,6 +1759,7 @@
   },
   {
    "n": 70,
+   "part": 6,
    "text": "حضرتِك منين؟",
    "emotion": "polite, gentle",
    "files": [
@@ -1590,6 +1768,7 @@
   },
   {
    "n": 71,
+   "part": 6,
    "text": "أنا من طنطا.",
    "emotion": "warm, proud",
    "files": [
@@ -1598,6 +1777,7 @@
   },
   {
    "n": 72,
+   "part": 6,
    "text": "إيه ده؟",
    "emotion": "surprised, delighted",
    "files": [
@@ -1611,6 +1791,7 @@
   },
   {
    "n": 73,
+   "part": 7,
    "text": "إيه ده يا طنط؟",
    "emotion": "curious, polite",
    "files": [
@@ -1619,6 +1800,7 @@
   },
   {
    "n": 74,
+   "part": 7,
    "text": "ده محشي.",
    "emotion": "warm, proud",
    "files": [
@@ -1628,6 +1810,7 @@
   },
   {
    "n": 75,
+   "part": 7,
    "text": "وإيه دي؟",
    "emotion": "curious",
    "files": [
@@ -1639,6 +1822,7 @@
   },
   {
    "n": 76,
+   "part": 7,
    "text": "دي بسبوسة. بالهنا والشفا!",
    "emotion": "warm, generous",
    "files": [
@@ -1647,6 +1831,7 @@
   },
   {
    "n": 77,
+   "part": 7,
    "text": "دي شوكة يا آدم!",
    "emotion": "laughing",
    "files": [
@@ -1655,6 +1840,7 @@
   },
   {
    "n": 78,
+   "part": 7,
    "text": "ده",
    "emotion": "",
    "files": [
@@ -1665,6 +1851,7 @@
   },
   {
    "n": 79,
+   "part": 7,
    "text": "دي",
    "emotion": "",
    "files": [
@@ -1675,6 +1862,7 @@
   },
   {
    "n": 80,
+   "part": 7,
    "text": "إيه دي؟",
    "emotion": "curious",
    "files": [
@@ -1685,6 +1873,7 @@
   },
   {
    "n": 81,
+   "part": 7,
    "text": "دي بسبوسة.",
    "emotion": "",
    "files": [
@@ -1693,6 +1882,7 @@
   },
   {
    "n": 82,
+   "part": 7,
    "text": "دي شنطة.",
    "emotion": "",
    "files": [
@@ -1702,6 +1892,7 @@
   },
   {
    "n": 83,
+   "part": 7,
    "text": "دي ترابيزة.",
    "emotion": "",
    "files": [
@@ -1710,6 +1901,7 @@
   },
   {
    "n": 84,
+   "part": 7,
    "text": "ده كرسي.",
    "emotion": "",
    "files": [
@@ -1718,6 +1910,7 @@
   },
   {
    "n": 85,
+   "part": 8,
    "text": "ده باب.",
    "emotion": "",
    "files": [
@@ -1726,6 +1919,7 @@
   },
   {
    "n": 86,
+   "part": 8,
    "text": "ده الباب.",
    "emotion": "showing round",
    "files": [
@@ -1734,6 +1928,7 @@
   },
   {
    "n": 87,
+   "part": 8,
    "text": "وده الشباك.",
    "emotion": "showing round",
    "files": [
@@ -1742,6 +1937,7 @@
   },
   {
    "n": 88,
+   "part": 8,
    "text": "دي الكنبة.",
    "emotion": "showing round",
    "files": [
@@ -1750,6 +1946,7 @@
   },
   {
    "n": 89,
+   "part": 8,
    "text": "ودي التلاجة.",
    "emotion": "showing round",
    "files": [
@@ -1758,6 +1955,7 @@
   },
   {
    "n": 90,
+   "part": 8,
    "text": "ده التليفزيون.",
    "emotion": "",
    "files": [
@@ -1766,6 +1964,7 @@
   },
   {
    "n": 91,
+   "part": 8,
    "text": "ده السرير.",
    "emotion": "",
    "files": [
@@ -1774,6 +1973,7 @@
   },
   {
    "n": 92,
+   "part": 8,
    "text": "وده المطبخ.",
    "emotion": "",
    "files": [
@@ -1782,6 +1982,7 @@
   },
   {
    "n": 93,
+   "part": 8,
    "text": "ده عم سيد.",
    "emotion": "friendly, introducing",
    "files": [
@@ -1790,6 +1991,7 @@
   },
   {
    "n": 94,
+   "part": 8,
    "text": "ودي منى.",
    "emotion": "friendly, introducing",
    "files": [
@@ -1798,6 +2000,7 @@
   },
   {
    "n": 95,
+   "part": 8,
    "text": "فين المفاتيح؟",
    "emotion": "stressed, searching",
    "files": [
@@ -1806,6 +2009,7 @@
   },
   {
    "n": 96,
+   "part": 8,
    "text": "أهلاً يا حبيبي! عامل إيه؟",
    "emotion": "warm, happy, an aunt greeting her nephew",
    "files": [
@@ -1814,6 +2018,7 @@
   },
   {
    "n": 97,
+   "part": 9,
    "text": "بابا",
    "emotion": "",
    "files": [
@@ -1822,6 +2027,7 @@
   },
   {
    "n": 98,
+   "part": 9,
    "text": "ماما",
    "emotion": "",
    "files": [
@@ -1830,6 +2036,7 @@
   },
   {
    "n": 99,
+   "part": 9,
    "text": "تمام",
    "emotion": "relaxed, smiling",
    "files": [
@@ -1838,6 +2045,7 @@
   },
   {
    "n": 100,
+   "part": 9,
    "text": "مع",
    "emotion": "",
    "files": [
@@ -1846,6 +2054,7 @@
   },
   {
    "n": 101,
+   "part": 9,
    "text": "على",
    "emotion": "",
    "files": [
@@ -1854,6 +2063,7 @@
   },
   {
    "n": 102,
+   "part": 9,
    "text": "عربي",
    "emotion": "",
    "files": [
@@ -1862,6 +2072,7 @@
   },
   {
    "n": 103,
+   "part": 9,
    "text": "عيش",
    "emotion": "",
    "files": [
@@ -1870,6 +2081,7 @@
   },
   {
    "n": 104,
+   "part": 9,
    "text": "حبيبي",
    "emotion": "warm",
    "files": [
@@ -1878,6 +2090,7 @@
   },
   {
    "n": 105,
+   "part": 9,
    "text": "صباح",
    "emotion": "",
    "files": [
@@ -1886,6 +2099,7 @@
   },
   {
    "n": 106,
+   "part": 9,
    "text": "حلو",
    "emotion": "pleased",
    "files": [
@@ -1894,6 +2108,7 @@
   },
   {
    "n": 107,
+   "part": 9,
    "text": "حاجة",
    "emotion": "",
    "files": [
@@ -1902,6 +2117,7 @@
   },
   {
    "n": 108,
+   "part": 9,
    "text": "أمل",
    "emotion": "",
    "files": [
@@ -1910,6 +2126,7 @@
   },
   {
    "n": 109,
+   "part": 10,
    "text": "عمل",
    "emotion": "",
    "files": [
@@ -1918,6 +2135,7 @@
   },
   {
    "n": 110,
+   "part": 10,
    "text": "هنا",
    "emotion": "",
    "files": [
@@ -1926,6 +2144,7 @@
   },
   {
    "n": 111,
+   "part": 10,
    "text": "حنّة",
    "emotion": "",
    "files": [
@@ -1934,6 +2153,7 @@
   },
   {
    "n": 112,
+   "part": 10,
    "text": "عامل إيه؟",
    "emotion": "curious, warm",
    "files": [
@@ -1943,6 +2163,7 @@
   },
   {
    "n": 113,
+   "part": 10,
    "text": "الحمد لله، تمام. وإنتي؟",
    "emotion": "cheerful, polite",
    "files": [
@@ -1951,6 +2172,7 @@
   },
   {
    "n": 114,
+   "part": 10,
    "text": "نقابلك؟",
    "emotion": "hopeful, asking",
    "files": [
@@ -1959,6 +2181,7 @@
   },
   {
    "n": 115,
+   "part": 10,
    "text": "نقابلك بكرة على القهوة؟",
    "emotion": "warm, inviting, an aunt to her nephew",
    "files": [
@@ -1967,6 +2190,7 @@
   },
   {
    "n": 116,
+   "part": 10,
    "text": "سؤال",
    "emotion": "",
    "files": [
@@ -1975,6 +2199,7 @@
   },
   {
    "n": 117,
+   "part": 10,
    "text": "سأل",
    "emotion": "",
    "files": [
@@ -1983,6 +2208,7 @@
   },
   {
    "n": 118,
+   "part": 10,
    "text": "مسألة",
    "emotion": "",
    "files": [
@@ -1991,6 +2217,7 @@
   },
   {
    "n": 119,
+   "part": 10,
    "text": "قلب",
    "emotion": "",
    "files": [
@@ -1999,6 +2226,7 @@
   },
   {
    "n": 120,
+   "part": 10,
    "text": "قهوة",
    "emotion": "",
    "files": [
@@ -2007,6 +2235,7 @@
   },
   {
    "n": 121,
+   "part": 11,
    "text": "قلم",
    "emotion": "",
    "files": [
@@ -2015,6 +2244,7 @@
   },
   {
    "n": 122,
+   "part": 11,
    "text": "قول",
    "emotion": "",
    "files": [
@@ -2023,6 +2253,7 @@
   },
   {
    "n": 123,
+   "part": 11,
    "text": "القرآن",
    "emotion": "respectful",
    "files": [
@@ -2031,6 +2262,7 @@
   },
   {
    "n": 124,
+   "part": 11,
    "text": "كلب",
    "emotion": "",
    "files": [
@@ -2039,6 +2271,7 @@
   },
   {
    "n": 125,
+   "part": 11,
    "text": "علم",
    "emotion": "",
    "files": [
@@ -2047,6 +2280,7 @@
   },
   {
    "n": 126,
+   "part": 11,
    "text": "البيت",
    "emotion": "",
    "files": [
@@ -2055,6 +2289,7 @@
   },
   {
    "n": 127,
+   "part": 11,
    "text": "الباب",
    "emotion": "",
    "files": [
@@ -2063,6 +2298,7 @@
   },
   {
    "n": 128,
+   "part": 11,
    "text": "القهوة",
    "emotion": "",
    "files": [
@@ -2071,6 +2307,7 @@
   },
   {
    "n": 129,
+   "part": 11,
    "text": "الشمس",
    "emotion": "",
    "files": [
@@ -2079,6 +2316,7 @@
   },
   {
    "n": 130,
+   "part": 11,
    "text": "أيوه، أكيد! الساعة كام؟",
    "emotion": "happy, eager",
    "files": [
@@ -2087,6 +2325,7 @@
   },
   {
    "n": 131,
+   "part": 11,
    "text": "خلاص، الساعة خمسة!",
    "emotion": "decided, cheerful",
    "files": [
@@ -2095,6 +2334,7 @@
   },
   {
    "n": 132,
+   "part": 11,
    "text": "تيتة",
    "emotion": "warm, excited",
    "files": [
@@ -2103,6 +2343,7 @@
   },
   {
    "n": 133,
+   "part": 12,
    "text": "أهلاً يا حبيبي! نوّرت!",
    "emotion": "very warm, grandma",
    "files": [
@@ -2111,6 +2352,7 @@
   },
   {
    "n": 134,
+   "part": 12,
    "text": "السلام عليكم! أنا زياد. إنت اسمَك إيه؟",
    "emotion": "cheerful boy",
    "files": [
@@ -2119,6 +2361,7 @@
   },
   {
    "n": 135,
+   "part": 12,
    "text": "وعليكم السلام! اسمي آدم.",
    "emotion": "shy, then happy",
    "files": [
@@ -2127,6 +2370,7 @@
   },
   {
    "n": 136,
+   "part": 12,
    "text": "وأنا مريم!",
    "emotion": "bright girl",
    "files": [
@@ -2135,7 +2379,8 @@
   },
   {
    "n": 137,
-   "text": "أهلاً",
+   "part": 12,
+   "text": "أهلا",
    "emotion": "",
    "files": [
     "egyptian-kids/audio/l01-ahlan.mp3"
@@ -2143,6 +2388,7 @@
   },
   {
    "n": 138,
+   "part": 12,
    "text": "أنا زياد.",
    "emotion": "cheerful",
    "files": [
@@ -2151,6 +2397,7 @@
   },
   {
    "n": 139,
+   "part": 12,
    "text": "مع السلامة!",
    "emotion": "warm",
    "files": [
@@ -2159,6 +2406,7 @@
   },
   {
    "n": 140,
+   "part": 12,
    "text": "باي!",
    "emotion": "playful",
    "files": [
@@ -2167,6 +2415,7 @@
   },
   {
    "n": 141,
+   "part": 12,
    "text": "أنا من مصر!",
    "emotion": "happy girl",
    "files": [
@@ -2175,6 +2424,7 @@
   },
   {
    "n": 142,
+   "part": 12,
    "text": "وأنا كمان من مصر!",
    "emotion": "loud, excited boy",
    "files": [
@@ -2183,6 +2433,7 @@
   },
   {
    "n": 143,
+   "part": 12,
    "text": "أنا من...",
    "emotion": "proud",
    "files": [
@@ -2191,6 +2442,7 @@
   },
   {
    "n": 144,
+   "part": 12,
    "text": "زياد مصري.",
    "emotion": "warm grandma",
    "files": [
@@ -2199,6 +2451,7 @@
   },
   {
    "n": 145,
+   "part": 13,
    "text": "مريم مصرية.",
    "emotion": "warm grandma",
    "files": [
@@ -2207,6 +2460,7 @@
   },
   {
    "n": 146,
+   "part": 13,
    "text": "وآدم إنجليزي!",
    "emotion": "amused grandma",
    "files": [
@@ -2215,6 +2469,7 @@
   },
   {
    "n": 147,
+   "part": 13,
    "text": "إيه ده يا تيتة؟",
    "emotion": "curious boy",
    "files": [
@@ -2223,6 +2478,7 @@
   },
   {
    "n": 148,
+   "part": 13,
    "text": "ده كتاب قديم.",
    "emotion": "warm grandma",
    "files": [
@@ -2231,6 +2487,7 @@
   },
   {
    "n": 149,
+   "part": 13,
    "text": "دي صورة بابا وهو صغير!",
    "emotion": "warm grandma, laughing",
    "files": [
@@ -2239,6 +2496,7 @@
   },
   {
    "n": 150,
+   "part": 13,
    "text": "ودي كورة!",
    "emotion": "excited boy",
    "files": [
@@ -2247,6 +2505,7 @@
   },
   {
    "n": 151,
+   "part": 13,
    "text": "ده كتاب.",
    "emotion": "",
    "files": [
@@ -2255,6 +2514,7 @@
   },
   {
    "n": 152,
+   "part": 13,
    "text": "دي صورة.",
    "emotion": "",
    "files": [
@@ -2263,6 +2523,7 @@
   },
   {
    "n": 153,
+   "part": 13,
    "text": "دي كورة.",
    "emotion": "",
    "files": [
@@ -2272,6 +2533,7 @@
   },
   {
    "n": 154,
+   "part": 13,
    "text": "ده قلم.",
    "emotion": "",
    "files": [
@@ -2280,6 +2542,7 @@
   },
   {
    "n": 155,
+   "part": 13,
    "text": "ده مفتاح.",
    "emotion": "",
    "files": [
@@ -2289,6 +2552,7 @@
   },
   {
    "n": 156,
+   "part": 13,
    "text": "دي عروسة.",
    "emotion": "",
    "files": [
@@ -2297,6 +2561,7 @@
   },
   {
    "n": 157,
+   "part": 14,
    "text": "فين الكورة؟",
    "emotion": "worried boy",
    "files": [
@@ -2305,6 +2570,7 @@
   },
   {
    "n": 158,
+   "part": 14,
    "text": "إزيَّك؟",
    "emotion": "friendly, casual",
    "files": [
@@ -2313,6 +2579,7 @@
   },
   {
    "n": 159,
+   "part": 14,
    "text": "إزيّك؟ عامل إيه؟",
    "emotion": "casual, friendly",
    "files": [
@@ -2321,6 +2588,7 @@
   },
   {
    "n": 160,
+   "part": 14,
    "text": "الحمد لله، تمام. وإنت؟",
    "emotion": "relieved",
    "files": [
@@ -2329,6 +2597,7 @@
   },
   {
    "n": 161,
+   "part": 14,
    "text": "كويس، الحمد لله. أنا كريم.",
    "emotion": "easy-going",
    "files": [
@@ -2337,6 +2606,7 @@
   },
   {
    "n": 162,
+   "part": 14,
    "text": "هاي! أنا نور.",
    "emotion": "bright",
    "files": [
@@ -2345,6 +2615,7 @@
   },
   {
    "n": 163,
+   "part": 14,
    "text": "إزيّك يا نور؟ عاملة إيه؟",
    "emotion": "friendly",
    "files": [
@@ -2353,6 +2624,7 @@
   },
   {
    "n": 164,
+   "part": 14,
    "text": "الحمد لله.",
    "emotion": "calm",
    "files": [
@@ -2361,6 +2633,7 @@
   },
   {
    "n": 165,
+   "part": 14,
    "text": "تمام.",
    "emotion": "easy",
    "files": [
@@ -2369,6 +2642,7 @@
   },
   {
    "n": 166,
+   "part": 14,
    "text": "كويس.",
    "emotion": "easy",
    "files": [
@@ -2377,6 +2651,7 @@
   },
   {
    "n": 167,
+   "part": 14,
    "text": "وإنت؟",
    "emotion": "friendly",
    "files": [
@@ -2385,6 +2660,7 @@
   },
   {
    "n": 168,
+   "part": 14,
    "text": "إزيِّك؟",
    "emotion": "friendly",
    "files": [
@@ -2393,6 +2669,7 @@
   },
   {
    "n": 169,
+   "part": 15,
    "text": "عاملة إيه؟",
    "emotion": "casual",
    "files": [
@@ -2401,6 +2678,7 @@
   },
   {
    "n": 170,
+   "part": 15,
    "text": "هاي!",
    "emotion": "casual",
    "files": [
@@ -2409,6 +2687,7 @@
   },
   {
    "n": 171,
+   "part": 15,
    "text": "يلا، باي!",
    "emotion": "casual",
    "files": [
@@ -2417,6 +2696,7 @@
   },
   {
    "n": 172,
+   "part": 15,
    "text": "أنا عمر.",
    "emotion": "confident",
    "files": [
@@ -2425,6 +2705,7 @@
   },
   {
    "n": 173,
+   "part": 15,
    "text": "إنت اسمَك إيه؟",
    "emotion": "curious",
    "files": [
@@ -2433,6 +2714,7 @@
   },
   {
    "n": 174,
+   "part": 15,
    "text": "إنتي اسمِك إيه؟",
    "emotion": "curious",
    "files": [
@@ -2441,6 +2723,7 @@
   },
   {
    "n": 175,
+   "part": 15,
    "text": "إنت منين يا عمر؟",
    "emotion": "curious girl",
    "files": [
@@ -2449,6 +2732,7 @@
   },
   {
    "n": 176,
+   "part": 15,
    "text": "أنا من كندا، بس أصلاً من مصر.",
    "emotion": "a bit proud, relaxed",
    "files": [
@@ -2457,6 +2741,7 @@
   },
   {
    "n": 177,
+   "part": 15,
    "text": "بجد؟ يعني إنت مصري!",
    "emotion": "surprised, happy girl",
    "files": [
@@ -2465,6 +2750,7 @@
   },
   {
    "n": 178,
+   "part": 15,
    "text": "مصري جديد! نسخة كندي!",
    "emotion": "joking guy, laughing",
    "files": [
@@ -2473,6 +2759,7 @@
   },
   {
    "n": 179,
+   "part": 15,
    "text": "بس",
    "emotion": "",
    "files": [
@@ -2481,7 +2768,8 @@
   },
   {
    "n": 180,
-   "text": "أصلاً",
+   "part": 15,
+   "text": "أصلا",
    "emotion": "",
    "files": [
     "egyptian-teens/audio/l02-aslan.mp3"
@@ -2489,6 +2777,7 @@
   },
   {
    "n": 181,
+   "part": 16,
    "text": "بجد؟",
    "emotion": "surprised",
    "files": [
@@ -2497,6 +2786,7 @@
   },
   {
    "n": 182,
+   "part": 16,
    "text": "إيه ده يا كريم؟",
    "emotion": "curious girl",
    "files": [
@@ -2505,6 +2795,7 @@
   },
   {
    "n": 183,
+   "part": 16,
    "text": "ده طرشي! من عند تيتة.",
    "emotion": "proud, joking guy",
    "files": [
@@ -2513,6 +2804,7 @@
   },
   {
    "n": 184,
+   "part": 16,
    "text": "دي شرابات. نضيفة، والله!",
    "emotion": "defensive, laughing guy",
    "files": [
@@ -2521,6 +2813,7 @@
   },
   {
    "n": 185,
+   "part": 16,
    "text": "إيه ده بالمصري؟",
    "emotion": "curious",
    "files": [
@@ -2529,6 +2822,7 @@
   },
   {
    "n": 186,
+   "part": 16,
    "text": "دي شرابات.",
    "emotion": "",
    "files": [
@@ -2537,6 +2831,7 @@
   },
   {
    "n": 187,
+   "part": 16,
    "text": "دي سماعات.",
    "emotion": "",
    "files": [
@@ -2545,6 +2840,7 @@
   },
   {
    "n": 188,
+   "part": 16,
    "text": "ده موبايل.",
    "emotion": "",
    "files": [
@@ -2553,6 +2849,7 @@
   },
   {
    "n": 189,
+   "part": 16,
    "text": "ده شاحن.",
    "emotion": "",
    "files": [
@@ -2561,6 +2858,7 @@
   },
   {
    "n": 190,
+   "part": 16,
    "text": "ده طرشي.",
    "emotion": "",
    "files": [
@@ -2569,6 +2867,7 @@
   },
   {
    "n": 191,
+   "part": 16,
    "text": "دي نضارة.",
    "emotion": "",
    "files": [
@@ -2577,6 +2876,7 @@
   },
   {
    "n": 192,
+   "part": 16,
    "text": "فين موبايلي؟",
    "emotion": "panicked girl",
    "files": [
@@ -2587,6 +2887,7 @@
  "en": [
   {
    "n": 1,
+   "part": 1,
    "text": "sun",
    "emotion": "warm, clear",
    "files": [
@@ -2595,6 +2896,7 @@
   },
   {
    "n": 2,
+   "part": 1,
    "text": "sock",
    "emotion": "warm, clear",
    "files": [
@@ -2603,6 +2905,7 @@
   },
   {
    "n": 3,
+   "part": 1,
    "text": "ant",
    "emotion": "warm, clear",
    "files": [
@@ -2611,6 +2914,7 @@
   },
   {
    "n": 4,
+   "part": 1,
    "text": "apple",
    "emotion": "warm, clear",
    "files": [
@@ -2619,6 +2923,7 @@
   },
   {
    "n": 5,
+   "part": 1,
    "text": "tent",
    "emotion": "warm, clear",
    "files": [
@@ -2627,6 +2932,7 @@
   },
   {
    "n": 6,
+   "part": 1,
    "text": "tap",
    "emotion": "warm, clear",
    "files": [
@@ -2635,6 +2941,7 @@
   },
   {
    "n": 7,
+   "part": 1,
    "text": "sat",
    "emotion": "proud",
    "files": [
@@ -2643,6 +2950,7 @@
   },
   {
    "n": 8,
+   "part": 1,
    "text": "at",
    "emotion": "proud",
    "files": [
@@ -2651,6 +2959,7 @@
   },
   {
    "n": 9,
+   "part": 1,
    "text": "pin",
    "emotion": "warm, clear",
    "files": [
@@ -2659,6 +2968,7 @@
   },
   {
    "n": 10,
+   "part": 1,
    "text": "pan",
    "emotion": "warm, clear",
    "files": [
@@ -2667,6 +2977,7 @@
   },
   {
    "n": 11,
+   "part": 1,
    "text": "tin",
    "emotion": "warm, clear",
    "files": [
@@ -2675,6 +2986,7 @@
   },
   {
    "n": 12,
+   "part": 1,
    "text": "Hi! Is this seat free?",
    "emotion": "polite, a little shy",
    "files": [
@@ -2683,6 +2995,7 @@
   },
   {
    "n": 13,
+   "part": 2,
    "text": "Yes, please sit down.",
    "emotion": "warm",
    "files": [
@@ -2691,6 +3004,7 @@
   },
   {
    "n": 14,
+   "part": 2,
    "text": "Thanks. I'm Sami. What's your name?",
    "emotion": "friendly",
    "files": [
@@ -2699,6 +3013,7 @@
   },
   {
    "n": 15,
+   "part": 2,
    "text": "I'm Layla. Nice to meet you.",
    "emotion": "friendly, smiling",
    "files": [
@@ -2707,6 +3022,7 @@
   },
   {
    "n": 16,
+   "part": 2,
    "text": "Nice to meet you too.",
    "emotion": "warm",
    "files": [
@@ -2715,6 +3031,7 @@
   },
   {
    "n": 17,
+   "part": 2,
    "text": "Oh, that's my flight! Bye, Sami! Have a nice day!",
    "emotion": "hurried, cheerful",
    "files": [
@@ -2723,6 +3040,7 @@
   },
   {
    "n": 18,
+   "part": 2,
    "text": "I am",
    "emotion": "clear",
    "files": [
@@ -2731,6 +3049,7 @@
   },
   {
    "n": 19,
+   "part": 2,
    "text": "I'm",
    "emotion": "clear",
    "files": [
@@ -2739,6 +3058,7 @@
   },
   {
    "n": 20,
+   "part": 2,
    "text": "I'm Sami.",
    "emotion": "friendly, natural",
    "files": [
@@ -2747,6 +3067,7 @@
   },
   {
    "n": 21,
+   "part": 2,
    "text": "you are",
    "emotion": "clear",
    "files": [
@@ -2755,6 +3076,7 @@
   },
   {
    "n": 22,
+   "part": 2,
    "text": "You're Layla.",
    "emotion": "friendly, natural",
    "files": [
@@ -2763,6 +3085,7 @@
   },
   {
    "n": 23,
+   "part": 2,
    "text": "What's your name?",
    "emotion": "curious, friendly",
    "files": [
@@ -2771,6 +3094,7 @@
   },
   {
    "n": 24,
+   "part": 2,
    "text": "Bye!",
    "emotion": "cheerful",
    "files": [
@@ -2779,6 +3103,7 @@
   },
   {
    "n": 25,
+   "part": 3,
    "text": "See you!",
    "emotion": "cheerful",
    "files": [
@@ -2787,6 +3112,7 @@
   },
   {
    "n": 26,
+   "part": 3,
    "text": "Have a nice day!",
    "emotion": "warm",
    "files": [
@@ -2795,6 +3121,7 @@
   },
   {
    "n": 27,
+   "part": 3,
    "text": "Where are you from?",
    "emotion": "curious",
    "files": [
@@ -2803,6 +3130,7 @@
   },
   {
    "n": 28,
+   "part": 3,
    "text": "Do you like your hometown?",
    "emotion": "neutral examiner",
    "files": [
@@ -2811,6 +3139,7 @@
   },
   {
    "n": 29,
+   "part": 3,
    "text": "Yes.",
    "emotion": "nervous",
    "files": [
@@ -2819,6 +3148,7 @@
   },
   {
    "n": 30,
+   "part": 3,
    "text": "Yes, I do, mainly because it's quiet and close to the sea. For example, every Friday I walk along the beach with my family.",
    "emotion": "relaxed, natural",
    "files": [
@@ -2827,6 +3157,7 @@
   },
   {
    "n": 31,
+   "part": 3,
    "text": "Do you work or are you a student?",
    "emotion": "neutral examiner",
    "files": [
@@ -2835,6 +3166,7 @@
   },
   {
    "n": 32,
+   "part": 3,
    "text": "What do you like to do in your free time?",
    "emotion": "neutral examiner",
    "files": [
@@ -2845,6 +3177,7 @@
  "owner": [
   {
    "n": 1,
+   "part": 1,
    "text": "ح",
    "emotion": "clear",
    "files": [
@@ -2859,6 +3192,7 @@
   },
   {
    "n": 2,
+   "part": 1,
    "text": "ع",
    "emotion": "clear",
    "files": [
@@ -2870,6 +3204,7 @@
   },
   {
    "n": 3,
+   "part": 1,
    "text": "خ",
    "emotion": "clear",
    "files": [
@@ -2883,6 +3218,7 @@
   },
   {
    "n": 4,
+   "part": 1,
    "text": "ق",
    "emotion": "clear",
    "files": [
@@ -2893,6 +3229,7 @@
   },
   {
    "n": 5,
+   "part": 1,
    "text": "ا",
    "emotion": "clear",
    "files": [
@@ -2906,6 +3243,7 @@
   },
   {
    "n": 6,
+   "part": 1,
    "text": "ب",
    "emotion": "clear",
    "files": [
@@ -2916,6 +3254,7 @@
   },
   {
    "n": 7,
+   "part": 1,
    "text": "ت",
    "emotion": "clear",
    "files": [
@@ -2926,6 +3265,7 @@
   },
   {
    "n": 8,
+   "part": 1,
    "text": "ث",
    "emotion": "clear",
    "files": [
@@ -2936,6 +3276,7 @@
   },
   {
    "n": 9,
+   "part": 1,
    "text": "ج",
    "emotion": "clear",
    "files": [
@@ -2946,6 +3287,7 @@
   },
   {
    "n": 10,
+   "part": 1,
    "text": "د",
    "emotion": "clear",
    "files": [
@@ -2955,6 +3297,7 @@
   },
   {
    "n": 11,
+   "part": 1,
    "text": "ذ",
    "emotion": "clear",
    "files": [
@@ -2964,6 +3307,7 @@
   },
   {
    "n": 12,
+   "part": 1,
    "text": "s",
    "emotion": "clear, short sound",
    "files": [
@@ -2972,6 +3316,7 @@
   },
   {
    "n": 13,
+   "part": 2,
    "text": "a",
    "emotion": "clear, short sound",
    "files": [
@@ -2980,6 +3325,7 @@
   },
   {
    "n": 14,
+   "part": 2,
    "text": "t",
    "emotion": "clear, short sound",
    "files": [
@@ -2988,6 +3334,7 @@
   },
   {
    "n": 15,
+   "part": 2,
    "text": "ء",
    "emotion": "clear, slow, twice",
    "files": [
