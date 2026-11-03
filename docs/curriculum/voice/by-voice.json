@@ -1,0 +1,2998 @@
+{
+ "fusha": [
+  {
+   "n": 1,
+   "text": "قِطَارُ الْحُرُوفِ",
+   "emotion": "cheerful",
+   "files": [
+    "literacy-a-kids/audio/l01-qitar-al-huruf.mp3"
+   ]
+  },
+  {
+   "n": 2,
+   "text": "قِطَارٌ",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-qitar.mp3"
+   ]
+  },
+  {
+   "n": 3,
+   "text": "بَ",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-ba.mp3",
+    "literacy-a-adults/audio/l01-ba.mp3",
+    "literacy-a-teens/audio/l01-ba.mp3"
+   ]
+  },
+  {
+   "n": 4,
+   "text": "بَابٌ",
+   "emotion": "proud",
+   "files": [
+    "literacy-a-kids/audio/l02-baab.mp3",
+    "literacy-a-adults/audio/l02-baab.mp3",
+    "fusha-kids/audio/l01-bab.mp3",
+    "fusha-12/audio/l01-bab.mp3",
+    "literacy-a-teens/audio/l02-baab.mp3"
+   ]
+  },
+  {
+   "n": 5,
+   "text": "تَاجٌ",
+   "emotion": "proud",
+   "files": [
+    "literacy-a-kids/audio/l03-taaj.mp3",
+    "literacy-a-adults/audio/l03-taaj.mp3",
+    "literacy-a-teens/audio/l03-taaj.mp3"
+   ]
+  },
+  {
+   "n": 6,
+   "text": "سُوقُ الْخُضَارِ",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-adults/audio/l01-suq-al-khudar.mp3"
+   ]
+  },
+  {
+   "n": 7,
+   "text": "ثَابِتٌ",
+   "emotion": "calm, steady",
+   "files": [
+    "literacy-a-adults/audio/l02-thaabit.mp3",
+    "literacy-a-teens/audio/l02-thaabit.mp3"
+   ]
+  },
+  {
+   "n": 8,
+   "text": "دَجَاجٌ",
+   "emotion": "amused",
+   "files": [
+    "literacy-a-adults/audio/l03-dajaaj.mp3",
+    "literacy-a-teens/audio/l03-dajaaj.mp3"
+   ]
+  },
+  {
+   "n": 9,
+   "text": "ذُبَابٌ",
+   "emotion": "amused",
+   "files": [
+    "literacy-a-adults/audio/l03-dhubaab.mp3",
+    "literacy-a-teens/audio/l03-dhubaab.mp3"
+   ]
+  },
+  {
+   "n": 10,
+   "text": "مَا هَذَا؟",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-1.mp3",
+    "fusha-kids/audio/l01-maa-haadha.mp3",
+    "fusha-kids/audio/l02-maa-haadha.mp3",
+    "fusha-kids/audio/l03-maa-haadha.mp3",
+    "fusha-12/audio/l01-d-3.mp3",
+    "fusha-12/audio/l02-maa-haadha.mp3",
+    "fusha-12/audio/l02-c-3.mp3"
+   ]
+  },
+  {
+   "n": 11,
+   "text": "هَذَا قَلَمٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-2.mp3",
+    "fusha-kids/audio/l01-haadha-qalam.mp3"
+   ]
+  },
+  {
+   "n": 12,
+   "text": "وَمَا هَذَا؟",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-3.mp3"
+   ]
+  },
+  {
+   "n": 13,
+   "text": "هَذَا كِتَابٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-4.mp3",
+    "fusha-kids/audio/l01-haadha-kitab.mp3",
+    "fusha-kids/audio/l02-haadha-kitab.mp3"
+   ]
+  },
+  {
+   "n": 14,
+   "text": "وَمَنْ هَذَا؟",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-5.mp3"
+   ]
+  },
+  {
+   "n": 15,
+   "text": "هَذَا قِطٌّ! لَا، لَا... هَذَا يُوسُفُ!",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-story-6.mp3"
+   ]
+  },
+  {
+   "n": 16,
+   "text": "هَذَا",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha.mp3",
+    "fusha-kids/audio/l03-haadha.mp3",
+    "fusha-12/audio/l03-haadha.mp3"
+   ]
+  },
+  {
+   "n": 17,
+   "text": "هَذَا بَابٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-bab.mp3"
+   ]
+  },
+  {
+   "n": 18,
+   "text": "هَذَا بَيْتٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-bayt.mp3",
+    "fusha-kids/audio/l03-haadha-bayt.mp3"
+   ]
+  },
+  {
+   "n": 19,
+   "text": "هَذَا كُرْسِيٌّ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-kursi.mp3",
+    "fusha-kids/audio/l02-haadha-kursi.mp3"
+   ]
+  },
+  {
+   "n": 20,
+   "text": "مَنْ هَذَا؟",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-man-haadha.mp3",
+    "fusha-12/audio/l01-man-haadha.mp3"
+   ]
+  },
+  {
+   "n": 21,
+   "text": "هَذَا وَلَدٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-walad.mp3",
+    "fusha-kids/audio/l03-haadha-walad.mp3"
+   ]
+  },
+  {
+   "n": 22,
+   "text": "هَذَا طَالِبٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-talib.mp3"
+   ]
+  },
+  {
+   "n": 23,
+   "text": "هَذَا مُعَلِّمٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-muallim.mp3"
+   ]
+  },
+  {
+   "n": 24,
+   "text": "قِطٌّ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-qitt.mp3",
+    "fusha-kids/audio/l02-qitt.mp3"
+   ]
+  },
+  {
+   "n": 25,
+   "text": "مِفْتَاحٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-miftah.mp3",
+    "fusha-12/audio/l01-miftah.mp3"
+   ]
+  },
+  {
+   "n": 26,
+   "text": "سَرِيرٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-sarir.mp3",
+    "fusha-12/audio/l02-sarir.mp3"
+   ]
+  },
+  {
+   "n": 27,
+   "text": "قَلَمٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-qalam.mp3",
+    "fusha-12/audio/l01-qalam.mp3"
+   ]
+  },
+  {
+   "n": 28,
+   "text": "كِتَابٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-kitab.mp3",
+    "fusha-12/audio/l01-kitab.mp3"
+   ]
+  },
+  {
+   "n": 29,
+   "text": "بَيْتٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-bayt.mp3"
+   ]
+  },
+  {
+   "n": 30,
+   "text": "كُرْسِيٌّ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-kursi.mp3",
+    "fusha-12/audio/l02-kursi.mp3"
+   ]
+  },
+  {
+   "n": 31,
+   "text": "وَلَدٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-walad.mp3"
+   ]
+  },
+  {
+   "n": 32,
+   "text": "طَالِبٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-talib.mp3",
+    "fusha-12/audio/l01-talib.mp3"
+   ]
+  },
+  {
+   "n": 33,
+   "text": "هَذَا مِفْتَاحٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-miftah.mp3",
+    "fusha-kids/audio/l02-haadha-miftah.mp3",
+    "fusha-12/audio/l01-d-4.mp3",
+    "fusha-12/audio/l02-c-4.mp3"
+   ]
+  },
+  {
+   "n": 34,
+   "text": "هَذَا سَرِيرٌ!",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-haadha-sarir.mp3"
+   ]
+  },
+  {
+   "n": 35,
+   "text": "أَهَذَا قِطٌّ؟",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l01-a-haadha-qitt.mp3",
+    "fusha-kids/audio/l02-a-haadha-qitt.mp3",
+    "fusha-kids/audio/l03-a-haadha-qitt.mp3"
+   ]
+  },
+  {
+   "n": 36,
+   "text": "أَهَذَا كَلْبٌ؟",
+   "emotion": "curious, unsure",
+   "files": [
+    "fusha-kids/audio/l02-story-1.mp3",
+    "fusha-kids/audio/l02-a-haadha-kalb.mp3",
+    "fusha-kids/audio/l03-a-haadha-kalb.mp3"
+   ]
+  },
+  {
+   "n": 37,
+   "text": "لَا.",
+   "emotion": "playful",
+   "files": [
+    "fusha-kids/audio/l02-story-2.mp3",
+    "fusha-12/audio/l02-c-2.mp3"
+   ]
+  },
+  {
+   "n": 38,
+   "text": "أَهَذَا أَرْنَبٌ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-kids/audio/l02-story-3.mp3"
+   ]
+  },
+  {
+   "n": 39,
+   "text": "نَعَمْ، هَذَا أَرْنَبٌ!",
+   "emotion": "happy",
+   "files": [
+    "fusha-kids/audio/l02-story-4.mp3"
+   ]
+  },
+  {
+   "n": 40,
+   "text": "أَهَذَا دُبٌّ؟",
+   "emotion": "unsure, a little scared",
+   "files": [
+    "fusha-kids/audio/l02-story-5.mp3",
+    "fusha-kids/audio/l02-a-haadha-dubb.mp3"
+   ]
+  },
+  {
+   "n": 41,
+   "text": "لَا، لَا! هَذَا قِطٌّ!",
+   "emotion": "laughing",
+   "files": [
+    "fusha-kids/audio/l02-story-6.mp3"
+   ]
+  },
+  {
+   "n": 42,
+   "text": "هَذَا قِطٌّ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-haadha-qitt.mp3"
+   ]
+  },
+  {
+   "n": 43,
+   "text": "نَعَمْ",
+   "emotion": "happy",
+   "files": [
+    "fusha-kids/audio/l02-naam.mp3"
+   ]
+  },
+  {
+   "n": 44,
+   "text": "لَا",
+   "emotion": "firm, friendly",
+   "files": [
+    "fusha-kids/audio/l02-la.mp3"
+   ]
+  },
+  {
+   "n": 45,
+   "text": "نَعَمْ، هَذَا قِطٌّ.",
+   "emotion": "happy",
+   "files": [
+    "fusha-kids/audio/l02-naam-qitt.mp3",
+    "fusha-kids/audio/l03-naam-qitt.mp3"
+   ]
+  },
+  {
+   "n": 46,
+   "text": "لَا، هَذَا كَلْبٌ.",
+   "emotion": "friendly",
+   "files": [
+    "fusha-kids/audio/l02-la-kalb.mp3"
+   ]
+  },
+  {
+   "n": 47,
+   "text": "كَلْبٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-kalb.mp3"
+   ]
+  },
+  {
+   "n": 48,
+   "text": "أَرْنَبٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-arnab.mp3"
+   ]
+  },
+  {
+   "n": 49,
+   "text": "حِصَانٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-hisan.mp3"
+   ]
+  },
+  {
+   "n": 50,
+   "text": "دُبٌّ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-dubb.mp3"
+   ]
+  },
+  {
+   "n": 51,
+   "text": "دِيكٌ",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l02-dik.mp3"
+   ]
+  },
+  {
+   "n": 52,
+   "text": "نَعَمْ، هَذَا دُبٌّ.",
+   "emotion": "happy",
+   "files": [
+    "fusha-kids/audio/l02-naam-dubb.mp3"
+   ]
+  },
+  {
+   "n": 53,
+   "text": "أَهَذَا قَلَمٌ؟",
+   "emotion": "grandfatherly, playful",
+   "files": [
+    "fusha-kids/audio/l02-a-haadha-qalam.mp3",
+    "fusha-12/audio/l02-c-1.mp3"
+   ]
+  },
+  {
+   "n": 54,
+   "text": "ذَلِكَ",
+   "emotion": "pointing far, slow",
+   "files": [
+    "fusha-kids/audio/l02-dhalika.mp3",
+    "fusha-kids/audio/l03-dhalika.mp3",
+    "fusha-12/audio/l02-dhalika.mp3",
+    "fusha-12/audio/l03-dhalika.mp3"
+   ]
+  },
+  {
+   "n": 55,
+   "text": "لَا، هَذَا أَرْنَبٌ.",
+   "emotion": "friendly",
+   "files": [
+    "fusha-kids/audio/l03-la-arnab.mp3"
+   ]
+  },
+  {
+   "n": 56,
+   "text": "مَا هَذَا يَا جِدِّي؟",
+   "emotion": "curious boy",
+   "files": [
+    "fusha-kids/audio/l03-story-1.mp3"
+   ]
+  },
+  {
+   "n": 57,
+   "text": "هَذَا طَائِرٌ.",
+   "emotion": "warm grandfather",
+   "files": [
+    "fusha-kids/audio/l03-story-2.mp3",
+    "fusha-kids/audio/l03-haadha-tair.mp3"
+   ]
+  },
+  {
+   "n": 58,
+   "text": "وَمَا ذَلِكَ؟",
+   "emotion": "curious girl, pointing far",
+   "files": [
+    "fusha-kids/audio/l03-story-3.mp3"
+   ]
+  },
+  {
+   "n": 59,
+   "text": "ذَلِكَ حِصَانٌ.",
+   "emotion": "warm grandfather",
+   "files": [
+    "fusha-kids/audio/l03-story-4.mp3",
+    "fusha-kids/audio/l03-dhalika-hisan.mp3"
+   ]
+  },
+  {
+   "n": 60,
+   "text": "وَهَذَا مِشْمِشٌ!",
+   "emotion": "laughing boy",
+   "files": [
+    "fusha-kids/audio/l03-story-5.mp3"
+   ]
+  },
+  {
+   "n": 61,
+   "text": "مَا ذَلِكَ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-kids/audio/l03-maa-dhalika.mp3",
+    "fusha-12/audio/l03-d-1.mp3",
+    "fusha-12/audio/l03-maa-dhalika.mp3"
+   ]
+  },
+  {
+   "n": 62,
+   "text": "مَنْ ذَلِكَ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-kids/audio/l03-man-dhalika.mp3",
+    "fusha-12/audio/l03-d-6.mp3",
+    "fusha-12/audio/l03-man-dhalika.mp3"
+   ]
+  },
+  {
+   "n": 63,
+   "text": "أَذَلِكَ حِصَانٌ؟",
+   "emotion": "asking, voice going up",
+   "files": [
+    "fusha-kids/audio/l03-a-dhalika-hisan.mp3"
+   ]
+  },
+  {
+   "n": 64,
+   "text": "نَعَمْ، ذَلِكَ حِصَانٌ.",
+   "emotion": "happy",
+   "files": [
+    "fusha-kids/audio/l03-naam-dhalika-hisan.mp3"
+   ]
+  },
+  {
+   "n": 65,
+   "text": "ذَلِكَ مَسْجِدٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l03-dhalika-masjid.mp3",
+    "fusha-12/audio/l03-d-2.mp3",
+    "fusha-12/audio/l03-dhalika-masjid.mp3"
+   ]
+  },
+  {
+   "n": 66,
+   "text": "ذَلِكَ جَبَلٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l03-dhalika-jabal.mp3"
+   ]
+  },
+  {
+   "n": 67,
+   "text": "ذَلِكَ قَمَرٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-kids/audio/l03-dhalika-qamar.mp3"
+   ]
+  },
+  {
+   "n": 68,
+   "text": "ٱلْبَابُ",
+   "emotion": "proud girl",
+   "files": [
+    "fusha-kids/audio/l03-al-bab.mp3",
+    "fusha-12/audio/l03-al-bab.mp3"
+   ]
+  },
+  {
+   "n": 69,
+   "text": "قَلْب",
+   "emotion": "clear, deep",
+   "files": [
+    "tajweed/audio/l01-qalb.mp3"
+   ]
+  },
+  {
+   "n": 70,
+   "text": "كَلْب",
+   "emotion": "clear",
+   "files": [
+    "tajweed/audio/l01-kalb.mp3"
+   ]
+  },
+  {
+   "n": 71,
+   "text": "أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+   "emotion": "calm, reverent",
+   "files": [
+    "tajweed/audio/l01-istiadha.mp3"
+   ]
+  },
+  {
+   "n": 72,
+   "text": "هَذَا مَكْتَبٌ.",
+   "emotion": "friendly, guiding",
+   "files": [
+    "fusha-12/audio/l01-d-1.mp3",
+    "fusha-12/audio/l01-haadha-maktab.mp3"
+   ]
+  },
+  {
+   "n": 73,
+   "text": "وَهَذِهِ غُرْفَةٌ.",
+   "emotion": "friendly",
+   "files": [
+    "fusha-12/audio/l01-d-2.mp3"
+   ]
+  },
+  {
+   "n": 74,
+   "text": "وَمَنْ هَذِهِ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-12/audio/l01-d-5.mp3"
+   ]
+  },
+  {
+   "n": 75,
+   "text": "هَذِهِ سَارَةُ. هِيَ طَالِبَةٌ.",
+   "emotion": "warm, introducing",
+   "files": [
+    "fusha-12/audio/l01-d-6.mp3"
+   ]
+  },
+  {
+   "n": 76,
+   "text": "هَذِهِ غُرْفَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-haadhihi-ghurfa.mp3"
+   ]
+  },
+  {
+   "n": 77,
+   "text": "هَذِهِ طَالِبَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-haadhihi-taaliba.mp3"
+   ]
+  },
+  {
+   "n": 78,
+   "text": "هَذَا مُدَرِّسٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-haadha-mudarris.mp3"
+   ]
+  },
+  {
+   "n": 79,
+   "text": "هَذِهِ مُدَرِّسَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-haadhihi-mudarrisa.mp3"
+   ]
+  },
+  {
+   "n": 80,
+   "text": "مَكْتَبٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-maktab.mp3"
+   ]
+  },
+  {
+   "n": 81,
+   "text": "حَقِيبَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-haqiba.mp3"
+   ]
+  },
+  {
+   "n": 82,
+   "text": "سَيَّارَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-sayyara.mp3"
+   ]
+  },
+  {
+   "n": 83,
+   "text": "نَافِذَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-nafidha.mp3"
+   ]
+  },
+  {
+   "n": 84,
+   "text": "غُرْفَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-ghurfa.mp3"
+   ]
+  },
+  {
+   "n": 85,
+   "text": "طَالِبَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-taaliba.mp3"
+   ]
+  },
+  {
+   "n": 86,
+   "text": "مُدَرِّسَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l01-mudarrisa.mp3"
+   ]
+  },
+  {
+   "n": 87,
+   "text": "أَهَذَا هَاتِفُكَ؟",
+   "emotion": "playful",
+   "files": [
+    "fusha-12/audio/l01-a-haadha.mp3",
+    "fusha-12/audio/l02-a-haadha-haatifuka.mp3"
+   ]
+  },
+  {
+   "n": 88,
+   "text": "نَعَمْ!",
+   "emotion": "relieved",
+   "files": [
+    "fusha-12/audio/l02-naam.mp3"
+   ]
+  },
+  {
+   "n": 89,
+   "text": "شُكْرًا.",
+   "emotion": "grateful",
+   "files": [
+    "fusha-12/audio/l02-shukran.mp3"
+   ]
+  },
+  {
+   "n": 90,
+   "text": "أَهَذَا سَرِيرٌ؟",
+   "emotion": "unsure, in the dark",
+   "files": [
+    "fusha-12/audio/l02-d-1.mp3",
+    "fusha-12/audio/l02-a-haadha-sarir.mp3"
+   ]
+  },
+  {
+   "n": 91,
+   "text": "لَا، هَذَا مَكْتَبٌ.",
+   "emotion": "calm, amused",
+   "files": [
+    "fusha-12/audio/l02-d-2.mp3",
+    "fusha-12/audio/l02-la-maktab.mp3"
+   ]
+  },
+  {
+   "n": 92,
+   "text": "أَهَذِهِ نَافِذَةٌ؟",
+   "emotion": "unsure",
+   "files": [
+    "fusha-12/audio/l02-d-3.mp3"
+   ]
+  },
+  {
+   "n": 93,
+   "text": "نَعَمْ، هَذِهِ نَافِذَةٌ.",
+   "emotion": "kind",
+   "files": [
+    "fusha-12/audio/l02-d-4.mp3",
+    "fusha-12/audio/l02-naam-hiya.mp3"
+   ]
+  },
+  {
+   "n": 94,
+   "text": "أَهَذَا بَابٌ؟",
+   "emotion": "hopeful",
+   "files": [
+    "fusha-12/audio/l02-d-5.mp3"
+   ]
+  },
+  {
+   "n": 95,
+   "text": "نَعَمْ! وَهَذَا نُورٌ!",
+   "emotion": "happy, the lights come back",
+   "files": [
+    "fusha-12/audio/l02-d-6.mp3"
+   ]
+  },
+  {
+   "n": 96,
+   "text": "هَذَا سَرِيرٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l02-haadha-sarir.mp3"
+   ]
+  },
+  {
+   "n": 97,
+   "text": "مِصْبَاحٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l02-misbah.mp3"
+   ]
+  },
+  {
+   "n": 98,
+   "text": "خِزَانَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l02-khizana.mp3"
+   ]
+  },
+  {
+   "n": 99,
+   "text": "وِسَادَةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l02-wisada.mp3"
+   ]
+  },
+  {
+   "n": 100,
+   "text": "مِرْآةٌ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l02-mirah.mp3"
+   ]
+  },
+  {
+   "n": 101,
+   "text": "مِفْتَاحٌ! شُكْرًا.",
+   "emotion": "pleased, learning",
+   "files": [
+    "fusha-12/audio/l02-c-5.mp3"
+   ]
+  },
+  {
+   "n": 102,
+   "text": "وَمَا تِلْكَ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-12/audio/l03-d-3.mp3"
+   ]
+  },
+  {
+   "n": 103,
+   "text": "تِلْكَ مَكْتَبَةٌ.",
+   "emotion": "friendly",
+   "files": [
+    "fusha-12/audio/l03-d-4.mp3",
+    "fusha-12/audio/l03-tilka-maktaba.mp3"
+   ]
+  },
+  {
+   "n": 104,
+   "text": "وَهَذِهِ قَهْوَةٌ. تَفَضَّلْ!",
+   "emotion": "warm, handing a cup",
+   "files": [
+    "fusha-12/audio/l03-d-5.mp3"
+   ]
+  },
+  {
+   "n": 105,
+   "text": "ذَلِكَ أُسْتَاذٌ. ذَلِكَ كَرِيمٌ!",
+   "emotion": "amused",
+   "files": [
+    "fusha-12/audio/l03-d-7.mp3"
+   ]
+  },
+  {
+   "n": 106,
+   "text": "هَذَا مَسْجِدٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-haadha-masjid.mp3"
+   ]
+  },
+  {
+   "n": 107,
+   "text": "أَذَلِكَ مَسْجِدٌ؟",
+   "emotion": "asking, voice rising",
+   "files": [
+    "fusha-12/audio/l03-a-dhalika-masjid.mp3"
+   ]
+  },
+  {
+   "n": 108,
+   "text": "هَذِهِ قَهْوَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-haadhihi-qahwa.mp3"
+   ]
+  },
+  {
+   "n": 109,
+   "text": "مَا تِلْكَ؟",
+   "emotion": "curious",
+   "files": [
+    "fusha-12/audio/l03-maa-tilka.mp3"
+   ]
+  },
+  {
+   "n": 110,
+   "text": "هَذِهِ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-haadhihi.mp3"
+   ]
+  },
+  {
+   "n": 111,
+   "text": "تِلْكَ",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-tilka.mp3"
+   ]
+  },
+  {
+   "n": 112,
+   "text": "ذَلِكَ مَطْعَمٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-dhalika-mataam.mp3"
+   ]
+  },
+  {
+   "n": 113,
+   "text": "ذَلِكَ مَلْعَبٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-dhalika-malaab.mp3"
+   ]
+  },
+  {
+   "n": 114,
+   "text": "تِلْكَ حَدِيقَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-tilka-hadiqa.mp3"
+   ]
+  },
+  {
+   "n": 115,
+   "text": "تِلْكَ سَيَّارَةٌ.",
+   "emotion": "",
+   "files": [
+    "fusha-12/audio/l03-tilka-sayyara.mp3"
+   ]
+  },
+  {
+   "n": 116,
+   "text": "سَلَامٌ يَا كَرِيمُ",
+   "emotion": "friendly",
+   "files": [
+    "literacy-a-teens/audio/l01-salam-ya-karim.mp3"
+   ]
+  }
+ ],
+ "eg": [
+  {
+   "n": 1,
+   "text": "مَا اسْمُكَ؟",
+   "emotion": "stiff, careful, like reading from a book",
+   "files": [
+    "egyptian-adults/audio/l01-maa-ismuka.mp3"
+   ]
+  },
+  {
+   "n": 2,
+   "text": "السلام عليكم!",
+   "emotion": "warm, loud, welcoming",
+   "files": [
+    "egyptian-adults/audio/l01-d-salam.mp3"
+   ]
+  },
+  {
+   "n": 3,
+   "text": "وعليكم السلام.",
+   "emotion": "a little shy",
+   "files": [
+    "egyptian-adults/audio/l01-d-wa-alaykum.mp3"
+   ]
+  },
+  {
+   "n": 4,
+   "text": "أهلاً وسهلاً! اسمَك إيه؟",
+   "emotion": "friendly, curious",
+   "files": [
+    "egyptian-adults/audio/l01-d-ahlan-ismak.mp3"
+   ]
+  },
+  {
+   "n": 5,
+   "text": "اسمي آدم. وحضرتك؟",
+   "emotion": "polite, pleased",
+   "files": [
+    "egyptian-adults/audio/l01-d-ismi-adam.mp3"
+   ]
+  },
+  {
+   "n": 6,
+   "text": "أنا سيّد، البوّاب. تشرّفنا!",
+   "emotion": "proud, warm",
+   "files": [
+    "egyptian-adults/audio/l01-d-ana-sayed.mp3"
+   ]
+  },
+  {
+   "n": 7,
+   "text": "الشرف ليّا.",
+   "emotion": "smiling",
+   "files": [
+    "egyptian-adults/audio/l01-d-sharaf.mp3"
+   ]
+  },
+  {
+   "n": 8,
+   "text": "السلام عليكم",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-salam.mp3",
+    "egyptian-kids/audio/l01-salam.mp3",
+    "egyptian-teens/audio/l01-salam.mp3"
+   ]
+  },
+  {
+   "n": 9,
+   "text": "وعليكم السلام",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-wa-alaykum.mp3",
+    "egyptian-kids/audio/l01-wa-alaykum.mp3"
+   ]
+  },
+  {
+   "n": 10,
+   "text": "صباح الخير",
+   "emotion": "bright, morning",
+   "files": [
+    "egyptian-adults/audio/l01-sabah-kheer.mp3"
+   ]
+  },
+  {
+   "n": 11,
+   "text": "صباح النور",
+   "emotion": "bright, smiling",
+   "files": [
+    "egyptian-adults/audio/l01-sabah-noor.mp3"
+   ]
+  },
+  {
+   "n": 12,
+   "text": "أهلاً وسهلاً",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ahlan.mp3"
+   ]
+  },
+  {
+   "n": 13,
+   "text": "أهلاً بيك",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ahlan-bik.mp3",
+    "egyptian-kids/audio/l01-ahlan-bik.mp3"
+   ]
+  },
+  {
+   "n": 14,
+   "text": "أهلاً بيكي",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ahlan-biki.mp3",
+    "egyptian-kids/audio/l01-ahlan-biki.mp3"
+   ]
+  },
+  {
+   "n": 15,
+   "text": "اسمَك إيه؟",
+   "emotion": "friendly, curious",
+   "files": [
+    "egyptian-adults/audio/l01-ismak-eh.mp3",
+    "egyptian-kids/audio/l01-ismak-eh.mp3"
+   ]
+  },
+  {
+   "n": 16,
+   "text": "اسمي آدم.",
+   "emotion": "pleased",
+   "files": [
+    "egyptian-adults/audio/l01-ismi-adam.mp3",
+    "egyptian-kids/audio/l01-ismi-adam.mp3"
+   ]
+  },
+  {
+   "n": 17,
+   "text": "اسمِك، اسمِك!",
+   "emotion": "a kind whisper, amused",
+   "files": [
+    "egyptian-adults/audio/l01-m-whisper.mp3"
+   ]
+  },
+  {
+   "n": 18,
+   "text": "اسمي منى. أهلاً بيك!",
+   "emotion": "amused, kind",
+   "files": [
+    "egyptian-adults/audio/l01-m-mona.mp3"
+   ]
+  },
+  {
+   "n": 19,
+   "text": "اسم",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ism.mp3"
+   ]
+  },
+  {
+   "n": 20,
+   "text": "اسمي",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ismi.mp3"
+   ]
+  },
+  {
+   "n": 21,
+   "text": "اسمَك",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ismak.mp3"
+   ]
+  },
+  {
+   "n": 22,
+   "text": "اسمِك",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ismik.mp3"
+   ]
+  },
+  {
+   "n": 23,
+   "text": "اسمِك إيه؟",
+   "emotion": "friendly, curious",
+   "files": [
+    "egyptian-adults/audio/l01-ismik-eh.mp3",
+    "egyptian-kids/audio/l01-ismik-eh.mp3"
+   ]
+  },
+  {
+   "n": 24,
+   "text": "حضرتَك",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-hadritak.mp3"
+   ]
+  },
+  {
+   "n": 25,
+   "text": "حضرتِك",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-hadritik.mp3"
+   ]
+  },
+  {
+   "n": 26,
+   "text": "إنت",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-inta.mp3",
+    "literacy-c/audio/l01-enta.mp3"
+   ]
+  },
+  {
+   "n": 27,
+   "text": "إنتي",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-inti.mp3"
+   ]
+  },
+  {
+   "n": 28,
+   "text": "أنا",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l01-ana.mp3",
+    "literacy-c/audio/l01-ana.mp3"
+   ]
+  },
+  {
+   "n": 29,
+   "text": "آسف!",
+   "emotion": "embarrassed, quick",
+   "files": [
+    "egyptian-adults/audio/l01-asif.mp3"
+   ]
+  },
+  {
+   "n": 30,
+   "text": "ولا يهمّك.",
+   "emotion": "kind, relaxed",
+   "files": [
+    "egyptian-adults/audio/l01-wala-yhimmak.mp3"
+   ]
+  },
+  {
+   "n": 31,
+   "text": "شكراً.",
+   "emotion": "grateful",
+   "files": [
+    "egyptian-adults/audio/l01-shukran.mp3"
+   ]
+  },
+  {
+   "n": 32,
+   "text": "العفو.",
+   "emotion": "warm",
+   "files": [
+    "egyptian-adults/audio/l01-afw.mp3"
+   ]
+  },
+  {
+   "n": 33,
+   "text": "آسفة.",
+   "emotion": "embarrassed",
+   "files": [
+    "egyptian-adults/audio/l01-asfa.mp3"
+   ]
+  },
+  {
+   "n": 34,
+   "text": "ولا يهمِّك.",
+   "emotion": "kind, relaxed",
+   "files": [
+    "egyptian-adults/audio/l01-wala-yhimmik.mp3"
+   ]
+  },
+  {
+   "n": 35,
+   "text": "مع السلامة.",
+   "emotion": "warm goodbye",
+   "files": [
+    "egyptian-adults/audio/l01-maa-salama.mp3"
+   ]
+  },
+  {
+   "n": 36,
+   "text": "الله يسلّمَك.",
+   "emotion": "warm",
+   "files": [
+    "egyptian-adults/audio/l01-allah-ysallimak.mp3"
+   ]
+  },
+  {
+   "n": 37,
+   "text": "الله يسلّمِك.",
+   "emotion": "warm",
+   "files": [
+    "egyptian-adults/audio/l01-allah-ysallimik.mp3"
+   ]
+  },
+  {
+   "n": 38,
+   "text": "إنت منين؟",
+   "emotion": "curious, friendly",
+   "files": [
+    "egyptian-adults/audio/l01-inta-minen.mp3",
+    "egyptian-adults/audio/l02-inta-minen.mp3",
+    "egyptian-kids/audio/l01-inta-minen.mp3",
+    "egyptian-kids/audio/l02-inta-minen.mp3",
+    "egyptian-teens/audio/l01-inta-minen.mp3",
+    "egyptian-teens/audio/l02-nour-minen.mp3",
+    "egyptian-teens/audio/l02-inta-minen.mp3"
+   ]
+  },
+  {
+   "n": 39,
+   "text": "إنت منين يا آدم؟",
+   "emotion": "friendly, curious",
+   "files": [
+    "egyptian-adults/audio/l02-l-minen.mp3",
+    "egyptian-kids/audio/l02-d-1.mp3"
+   ]
+  },
+  {
+   "n": 40,
+   "text": "أنا من إنجلترا. وإنتي؟",
+   "emotion": "proud, a little shy",
+   "files": [
+    "egyptian-adults/audio/l02-l-ana-min.mp3",
+    "egyptian-kids/audio/l02-d-2.mp3"
+   ]
+  },
+  {
+   "n": 41,
+   "text": "أنا من هنا، من القاهرة.",
+   "emotion": "warm, proud",
+   "files": [
+    "egyptian-adults/audio/l02-l-mona.mp3"
+   ]
+  },
+  {
+   "n": 42,
+   "text": "وأنا من أسوان!",
+   "emotion": "loud, proud, joking",
+   "files": [
+    "egyptian-adults/audio/l02-l-sayed.mp3"
+   ]
+  },
+  {
+   "n": 43,
+   "text": "من",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-min.mp3",
+    "egyptian-kids/audio/l02-min.mp3",
+    "egyptian-teens/audio/l02-min.mp3"
+   ]
+  },
+  {
+   "n": 44,
+   "text": "فين",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-fen.mp3",
+    "egyptian-kids/audio/l02-fen.mp3",
+    "egyptian-teens/audio/l02-fen.mp3"
+   ]
+  },
+  {
+   "n": 45,
+   "text": "منين؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-adults/audio/l02-minen.mp3",
+    "egyptian-kids/audio/l02-minen.mp3"
+   ]
+  },
+  {
+   "n": 46,
+   "text": "أنا من هنا.",
+   "emotion": "proud",
+   "files": [
+    "egyptian-adults/audio/l02-ana-min-hina.mp3"
+   ]
+  },
+  {
+   "n": 47,
+   "text": "مصر",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-masr.mp3",
+    "literacy-c/audio/l01-masr.mp3",
+    "egyptian-kids/audio/l02-masr.mp3"
+   ]
+  },
+  {
+   "n": 48,
+   "text": "إنجلترا",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-ingiltira.mp3",
+    "egyptian-kids/audio/l02-ingiltira.mp3"
+   ]
+  },
+  {
+   "n": 49,
+   "text": "أمريكا",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-amrika.mp3",
+    "egyptian-kids/audio/l02-amrika.mp3"
+   ]
+  },
+  {
+   "n": 50,
+   "text": "كندا",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-kanada.mp3",
+    "egyptian-kids/audio/l02-kanada.mp3"
+   ]
+  },
+  {
+   "n": 51,
+   "text": "ألمانيا",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-almanya.mp3"
+   ]
+  },
+  {
+   "n": 52,
+   "text": "السعودية",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-saudiyya.mp3"
+   ]
+  },
+  {
+   "n": 53,
+   "text": "إنت إنجليزي!",
+   "emotion": "pleased, pointing",
+   "files": [
+    "egyptian-adults/audio/l02-inta-ingilizi.mp3"
+   ]
+  },
+  {
+   "n": 54,
+   "text": "وهي مصرية.",
+   "emotion": "proud",
+   "files": [
+    "egyptian-adults/audio/l02-hiyya-masriyya.mp3"
+   ]
+  },
+  {
+   "n": 55,
+   "text": "مصري",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-masri.mp3",
+    "egyptian-teens/audio/l02-masri.mp3"
+   ]
+  },
+  {
+   "n": 56,
+   "text": "مصرية",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-masriyya.mp3",
+    "egyptian-teens/audio/l02-masriyya.mp3"
+   ]
+  },
+  {
+   "n": 57,
+   "text": "كندي",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-kanadi.mp3",
+    "egyptian-teens/audio/l02-kanadi.mp3"
+   ]
+  },
+  {
+   "n": 58,
+   "text": "كندية",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-kanadiyya.mp3",
+    "egyptian-teens/audio/l02-kanadiyya.mp3"
+   ]
+  },
+  {
+   "n": 59,
+   "text": "ألماني",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-almani.mp3"
+   ]
+  },
+  {
+   "n": 60,
+   "text": "ألمانية",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-almaniyya.mp3"
+   ]
+  },
+  {
+   "n": 61,
+   "text": "أمريكاني",
+   "emotion": "amused",
+   "files": [
+    "egyptian-adults/audio/l02-amrikani.mp3",
+    "egyptian-teens/audio/l02-amrikani.mp3"
+   ]
+  },
+  {
+   "n": 62,
+   "text": "أمريكانية",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-amrikaniyya.mp3"
+   ]
+  },
+  {
+   "n": 63,
+   "text": "أيوه",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-aywa.mp3"
+   ]
+  },
+  {
+   "n": 64,
+   "text": "لأ",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-la.mp3"
+   ]
+  },
+  {
+   "n": 65,
+   "text": "إنت جديد هنا؟",
+   "emotion": "kind, curious",
+   "files": [
+    "egyptian-adults/audio/l02-inta-gidid.mp3"
+   ]
+  },
+  {
+   "n": 66,
+   "text": "جديد",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-gidid.mp3",
+    "egyptian-teens/audio/l02-gidid.mp3"
+   ]
+  },
+  {
+   "n": 67,
+   "text": "جميل",
+   "emotion": "admiring",
+   "files": [
+    "egyptian-adults/audio/l02-gamil.mp3"
+   ]
+  },
+  {
+   "n": 68,
+   "text": "جامعة",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l02-gama.mp3"
+   ]
+  },
+  {
+   "n": 69,
+   "text": "إنتي منين؟",
+   "emotion": "curious, friendly",
+   "files": [
+    "egyptian-adults/audio/l02-inti-minen.mp3",
+    "egyptian-kids/audio/l02-inti-minen.mp3",
+    "egyptian-teens/audio/l02-inti-minen.mp3"
+   ]
+  },
+  {
+   "n": 70,
+   "text": "حضرتِك منين؟",
+   "emotion": "polite, gentle",
+   "files": [
+    "egyptian-adults/audio/l02-hadritik-minen.mp3"
+   ]
+  },
+  {
+   "n": 71,
+   "text": "أنا من طنطا.",
+   "emotion": "warm, proud",
+   "files": [
+    "egyptian-adults/audio/l02-ana-min-tanta.mp3"
+   ]
+  },
+  {
+   "n": 72,
+   "text": "إيه ده؟",
+   "emotion": "surprised, delighted",
+   "files": [
+    "egyptian-adults/audio/l02-eh-da.mp3",
+    "egyptian-adults/audio/l03-eh-da.mp3",
+    "egyptian-kids/audio/l02-eh-da.mp3",
+    "egyptian-kids/audio/l03-eh-da.mp3",
+    "egyptian-teens/audio/l02-eh-da.mp3",
+    "egyptian-teens/audio/l03-eh-da.mp3"
+   ]
+  },
+  {
+   "n": 73,
+   "text": "إيه ده يا طنط؟",
+   "emotion": "curious, polite",
+   "files": [
+    "egyptian-adults/audio/l03-l-1.mp3"
+   ]
+  },
+  {
+   "n": 74,
+   "text": "ده محشي.",
+   "emotion": "warm, proud",
+   "files": [
+    "egyptian-adults/audio/l03-l-2.mp3",
+    "egyptian-adults/audio/l03-da-mahshi.mp3"
+   ]
+  },
+  {
+   "n": 75,
+   "text": "وإيه دي؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-adults/audio/l03-l-3.mp3",
+    "egyptian-adults/audio/l03-l-5.mp3",
+    "egyptian-kids/audio/l03-l-3.mp3",
+    "egyptian-teens/audio/l03-l-3.mp3"
+   ]
+  },
+  {
+   "n": 76,
+   "text": "دي بسبوسة. بالهنا والشفا!",
+   "emotion": "warm, generous",
+   "files": [
+    "egyptian-adults/audio/l03-l-4.mp3"
+   ]
+  },
+  {
+   "n": 77,
+   "text": "دي شوكة يا آدم!",
+   "emotion": "laughing",
+   "files": [
+    "egyptian-adults/audio/l03-l-6.mp3"
+   ]
+  },
+  {
+   "n": 78,
+   "text": "ده",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da.mp3",
+    "egyptian-kids/audio/l03-da.mp3",
+    "egyptian-teens/audio/l03-da.mp3"
+   ]
+  },
+  {
+   "n": 79,
+   "text": "دي",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-di.mp3",
+    "egyptian-kids/audio/l03-di.mp3",
+    "egyptian-teens/audio/l03-di.mp3"
+   ]
+  },
+  {
+   "n": 80,
+   "text": "إيه دي؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-adults/audio/l03-eh-di.mp3",
+    "egyptian-kids/audio/l03-eh-di.mp3",
+    "egyptian-teens/audio/l03-eh-di.mp3"
+   ]
+  },
+  {
+   "n": 81,
+   "text": "دي بسبوسة.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-di-basbousa.mp3"
+   ]
+  },
+  {
+   "n": 82,
+   "text": "دي شنطة.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-di-shanta.mp3",
+    "egyptian-teens/audio/l03-di-shanta.mp3"
+   ]
+  },
+  {
+   "n": 83,
+   "text": "دي ترابيزة.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-di-tarabeza.mp3"
+   ]
+  },
+  {
+   "n": 84,
+   "text": "ده كرسي.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da-kursi.mp3"
+   ]
+  },
+  {
+   "n": 85,
+   "text": "ده باب.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da-bab.mp3"
+   ]
+  },
+  {
+   "n": 86,
+   "text": "ده الباب.",
+   "emotion": "showing round",
+   "files": [
+    "egyptian-adults/audio/l03-da-ilbab.mp3"
+   ]
+  },
+  {
+   "n": 87,
+   "text": "وده الشباك.",
+   "emotion": "showing round",
+   "files": [
+    "egyptian-adults/audio/l03-da-ishshibbak.mp3"
+   ]
+  },
+  {
+   "n": 88,
+   "text": "دي الكنبة.",
+   "emotion": "showing round",
+   "files": [
+    "egyptian-adults/audio/l03-di-ilkanaba.mp3"
+   ]
+  },
+  {
+   "n": 89,
+   "text": "ودي التلاجة.",
+   "emotion": "showing round",
+   "files": [
+    "egyptian-adults/audio/l03-di-ittallaga.mp3"
+   ]
+  },
+  {
+   "n": 90,
+   "text": "ده التليفزيون.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da-ittilifizyon.mp3"
+   ]
+  },
+  {
+   "n": 91,
+   "text": "ده السرير.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da-issirir.mp3"
+   ]
+  },
+  {
+   "n": 92,
+   "text": "وده المطبخ.",
+   "emotion": "",
+   "files": [
+    "egyptian-adults/audio/l03-da-ilmatbakh.mp3"
+   ]
+  },
+  {
+   "n": 93,
+   "text": "ده عم سيد.",
+   "emotion": "friendly, introducing",
+   "files": [
+    "egyptian-adults/audio/l03-da-amm-sayed.mp3"
+   ]
+  },
+  {
+   "n": 94,
+   "text": "ودي منى.",
+   "emotion": "friendly, introducing",
+   "files": [
+    "egyptian-adults/audio/l03-di-mona.mp3"
+   ]
+  },
+  {
+   "n": 95,
+   "text": "فين المفاتيح؟",
+   "emotion": "stressed, searching",
+   "files": [
+    "egyptian-adults/audio/l03-fen-ilmafatih.mp3"
+   ]
+  },
+  {
+   "n": 96,
+   "text": "أهلاً يا حبيبي! عامل إيه؟",
+   "emotion": "warm, happy, an aunt greeting her nephew",
+   "files": [
+    "literacy-c/audio/l01-msg-1.mp3"
+   ]
+  },
+  {
+   "n": 97,
+   "text": "بابا",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-baba.mp3"
+   ]
+  },
+  {
+   "n": 98,
+   "text": "ماما",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-mama.mp3"
+   ]
+  },
+  {
+   "n": 99,
+   "text": "تمام",
+   "emotion": "relaxed, smiling",
+   "files": [
+    "literacy-c/audio/l01-tamam.mp3"
+   ]
+  },
+  {
+   "n": 100,
+   "text": "مع",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-ma3a.mp3"
+   ]
+  },
+  {
+   "n": 101,
+   "text": "على",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-3ala.mp3"
+   ]
+  },
+  {
+   "n": 102,
+   "text": "عربي",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-3arabi.mp3"
+   ]
+  },
+  {
+   "n": 103,
+   "text": "عيش",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-3eesh.mp3"
+   ]
+  },
+  {
+   "n": 104,
+   "text": "حبيبي",
+   "emotion": "warm",
+   "files": [
+    "literacy-c/audio/l01-7abibi.mp3"
+   ]
+  },
+  {
+   "n": 105,
+   "text": "صباح",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-saba7.mp3"
+   ]
+  },
+  {
+   "n": 106,
+   "text": "حلو",
+   "emotion": "pleased",
+   "files": [
+    "literacy-c/audio/l01-7elw.mp3"
+   ]
+  },
+  {
+   "n": 107,
+   "text": "حاجة",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-7aga.mp3"
+   ]
+  },
+  {
+   "n": 108,
+   "text": "أمل",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-amal.mp3"
+   ]
+  },
+  {
+   "n": 109,
+   "text": "عمل",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-3amal.mp3"
+   ]
+  },
+  {
+   "n": 110,
+   "text": "هنا",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-hena.mp3"
+   ]
+  },
+  {
+   "n": 111,
+   "text": "حنّة",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l01-7enna.mp3"
+   ]
+  },
+  {
+   "n": 112,
+   "text": "عامل إيه؟",
+   "emotion": "curious, warm",
+   "files": [
+    "literacy-c/audio/l01-3amel-eh.mp3",
+    "egyptian-teens/audio/l01-amil-eh.mp3"
+   ]
+  },
+  {
+   "n": 113,
+   "text": "الحمد لله، تمام. وإنتي؟",
+   "emotion": "cheerful, polite",
+   "files": [
+    "literacy-c/audio/l01-reply.mp3"
+   ]
+  },
+  {
+   "n": 114,
+   "text": "نقابلك؟",
+   "emotion": "hopeful, asking",
+   "files": [
+    "literacy-c/audio/l01-ne2ablak.mp3"
+   ]
+  },
+  {
+   "n": 115,
+   "text": "نقابلك بكرة على القهوة؟",
+   "emotion": "warm, inviting, an aunt to her nephew",
+   "files": [
+    "literacy-c/audio/l02-msg-2.mp3"
+   ]
+  },
+  {
+   "n": 116,
+   "text": "سؤال",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-so2al.mp3"
+   ]
+  },
+  {
+   "n": 117,
+   "text": "سأل",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-sa2al.mp3"
+   ]
+  },
+  {
+   "n": 118,
+   "text": "مسألة",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-mas2ala.mp3"
+   ]
+  },
+  {
+   "n": 119,
+   "text": "قلب",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-2alb.mp3"
+   ]
+  },
+  {
+   "n": 120,
+   "text": "قهوة",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-2ahwa.mp3"
+   ]
+  },
+  {
+   "n": 121,
+   "text": "قلم",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-2alam.mp3"
+   ]
+  },
+  {
+   "n": 122,
+   "text": "قول",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-2oul.mp3"
+   ]
+  },
+  {
+   "n": 123,
+   "text": "القرآن",
+   "emotion": "respectful",
+   "files": [
+    "literacy-c/audio/l02-el-quran.mp3"
+   ]
+  },
+  {
+   "n": 124,
+   "text": "كلب",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-kalb.mp3"
+   ]
+  },
+  {
+   "n": 125,
+   "text": "علم",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-3alam.mp3"
+   ]
+  },
+  {
+   "n": 126,
+   "text": "البيت",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-el-beet.mp3"
+   ]
+  },
+  {
+   "n": 127,
+   "text": "الباب",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-el-bab.mp3"
+   ]
+  },
+  {
+   "n": 128,
+   "text": "القهوة",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-el-2ahwa.mp3"
+   ]
+  },
+  {
+   "n": 129,
+   "text": "الشمس",
+   "emotion": "",
+   "files": [
+    "literacy-c/audio/l02-el-shams.mp3"
+   ]
+  },
+  {
+   "n": 130,
+   "text": "أيوه، أكيد! الساعة كام؟",
+   "emotion": "happy, eager",
+   "files": [
+    "literacy-c/audio/l02-reply-2.mp3"
+   ]
+  },
+  {
+   "n": 131,
+   "text": "خلاص، الساعة خمسة!",
+   "emotion": "decided, cheerful",
+   "files": [
+    "literacy-c/audio/l02-5alas.mp3"
+   ]
+  },
+  {
+   "n": 132,
+   "text": "تيتة",
+   "emotion": "warm, excited",
+   "files": [
+    "egyptian-kids/audio/l01-teta.mp3"
+   ]
+  },
+  {
+   "n": 133,
+   "text": "أهلاً يا حبيبي! نوّرت!",
+   "emotion": "very warm, grandma",
+   "files": [
+    "egyptian-kids/audio/l01-d-teta.mp3"
+   ]
+  },
+  {
+   "n": 134,
+   "text": "السلام عليكم! أنا زياد. إنت اسمَك إيه؟",
+   "emotion": "cheerful boy",
+   "files": [
+    "egyptian-kids/audio/l01-d-ziad.mp3"
+   ]
+  },
+  {
+   "n": 135,
+   "text": "وعليكم السلام! اسمي آدم.",
+   "emotion": "shy, then happy",
+   "files": [
+    "egyptian-kids/audio/l01-d-adam.mp3"
+   ]
+  },
+  {
+   "n": 136,
+   "text": "وأنا مريم!",
+   "emotion": "bright girl",
+   "files": [
+    "egyptian-kids/audio/l01-d-mariam.mp3"
+   ]
+  },
+  {
+   "n": 137,
+   "text": "أهلاً",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l01-ahlan.mp3"
+   ]
+  },
+  {
+   "n": 138,
+   "text": "أنا زياد.",
+   "emotion": "cheerful",
+   "files": [
+    "egyptian-kids/audio/l01-ana-ziad.mp3"
+   ]
+  },
+  {
+   "n": 139,
+   "text": "مع السلامة!",
+   "emotion": "warm",
+   "files": [
+    "egyptian-kids/audio/l01-maa-salama.mp3"
+   ]
+  },
+  {
+   "n": 140,
+   "text": "باي!",
+   "emotion": "playful",
+   "files": [
+    "egyptian-kids/audio/l01-bye.mp3"
+   ]
+  },
+  {
+   "n": 141,
+   "text": "أنا من مصر!",
+   "emotion": "happy girl",
+   "files": [
+    "egyptian-kids/audio/l02-d-3.mp3"
+   ]
+  },
+  {
+   "n": 142,
+   "text": "وأنا كمان من مصر!",
+   "emotion": "loud, excited boy",
+   "files": [
+    "egyptian-kids/audio/l02-d-4.mp3"
+   ]
+  },
+  {
+   "n": 143,
+   "text": "أنا من...",
+   "emotion": "proud",
+   "files": [
+    "egyptian-kids/audio/l02-ana-min.mp3"
+   ]
+  },
+  {
+   "n": 144,
+   "text": "زياد مصري.",
+   "emotion": "warm grandma",
+   "files": [
+    "egyptian-kids/audio/l02-ziad-masri.mp3"
+   ]
+  },
+  {
+   "n": 145,
+   "text": "مريم مصرية.",
+   "emotion": "warm grandma",
+   "files": [
+    "egyptian-kids/audio/l02-mariam-masriyya.mp3"
+   ]
+  },
+  {
+   "n": 146,
+   "text": "وآدم إنجليزي!",
+   "emotion": "amused grandma",
+   "files": [
+    "egyptian-kids/audio/l02-adam-ingilizi.mp3"
+   ]
+  },
+  {
+   "n": 147,
+   "text": "إيه ده يا تيتة؟",
+   "emotion": "curious boy",
+   "files": [
+    "egyptian-kids/audio/l03-l-1.mp3"
+   ]
+  },
+  {
+   "n": 148,
+   "text": "ده كتاب قديم.",
+   "emotion": "warm grandma",
+   "files": [
+    "egyptian-kids/audio/l03-l-2.mp3"
+   ]
+  },
+  {
+   "n": 149,
+   "text": "دي صورة بابا وهو صغير!",
+   "emotion": "warm grandma, laughing",
+   "files": [
+    "egyptian-kids/audio/l03-l-4.mp3"
+   ]
+  },
+  {
+   "n": 150,
+   "text": "ودي كورة!",
+   "emotion": "excited boy",
+   "files": [
+    "egyptian-kids/audio/l03-l-5.mp3"
+   ]
+  },
+  {
+   "n": 151,
+   "text": "ده كتاب.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-da-kitab.mp3"
+   ]
+  },
+  {
+   "n": 152,
+   "text": "دي صورة.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-di-sura.mp3"
+   ]
+  },
+  {
+   "n": 153,
+   "text": "دي كورة.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-di-kora.mp3",
+    "egyptian-teens/audio/l03-di-kora.mp3"
+   ]
+  },
+  {
+   "n": 154,
+   "text": "ده قلم.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-da-alam.mp3"
+   ]
+  },
+  {
+   "n": 155,
+   "text": "ده مفتاح.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-da-muftah.mp3",
+    "egyptian-teens/audio/l03-da-muftah.mp3"
+   ]
+  },
+  {
+   "n": 156,
+   "text": "دي عروسة.",
+   "emotion": "",
+   "files": [
+    "egyptian-kids/audio/l03-di-arusa.mp3"
+   ]
+  },
+  {
+   "n": 157,
+   "text": "فين الكورة؟",
+   "emotion": "worried boy",
+   "files": [
+    "egyptian-kids/audio/l03-fen-ilkora.mp3"
+   ]
+  },
+  {
+   "n": 158,
+   "text": "إزيَّك؟",
+   "emotion": "friendly, casual",
+   "files": [
+    "egyptian-teens/audio/l01-ezzayak.mp3"
+   ]
+  },
+  {
+   "n": 159,
+   "text": "إزيّك؟ عامل إيه؟",
+   "emotion": "casual, friendly",
+   "files": [
+    "egyptian-teens/audio/l01-d-karim.mp3"
+   ]
+  },
+  {
+   "n": 160,
+   "text": "الحمد لله، تمام. وإنت؟",
+   "emotion": "relieved",
+   "files": [
+    "egyptian-teens/audio/l01-d-omar.mp3"
+   ]
+  },
+  {
+   "n": 161,
+   "text": "كويس، الحمد لله. أنا كريم.",
+   "emotion": "easy-going",
+   "files": [
+    "egyptian-teens/audio/l01-d-karim2.mp3"
+   ]
+  },
+  {
+   "n": 162,
+   "text": "هاي! أنا نور.",
+   "emotion": "bright",
+   "files": [
+    "egyptian-teens/audio/l01-d-nour.mp3"
+   ]
+  },
+  {
+   "n": 163,
+   "text": "إزيّك يا نور؟ عاملة إيه؟",
+   "emotion": "friendly",
+   "files": [
+    "egyptian-teens/audio/l01-d-karim3.mp3"
+   ]
+  },
+  {
+   "n": 164,
+   "text": "الحمد لله.",
+   "emotion": "calm",
+   "files": [
+    "egyptian-teens/audio/l01-hamdulillah.mp3"
+   ]
+  },
+  {
+   "n": 165,
+   "text": "تمام.",
+   "emotion": "easy",
+   "files": [
+    "egyptian-teens/audio/l01-tamam.mp3"
+   ]
+  },
+  {
+   "n": 166,
+   "text": "كويس.",
+   "emotion": "easy",
+   "files": [
+    "egyptian-teens/audio/l01-kwayyis.mp3"
+   ]
+  },
+  {
+   "n": 167,
+   "text": "وإنت؟",
+   "emotion": "friendly",
+   "files": [
+    "egyptian-teens/audio/l01-w-inta.mp3"
+   ]
+  },
+  {
+   "n": 168,
+   "text": "إزيِّك؟",
+   "emotion": "friendly",
+   "files": [
+    "egyptian-teens/audio/l01-izzayyik.mp3"
+   ]
+  },
+  {
+   "n": 169,
+   "text": "عاملة إيه؟",
+   "emotion": "casual",
+   "files": [
+    "egyptian-teens/audio/l01-amla-eh.mp3"
+   ]
+  },
+  {
+   "n": 170,
+   "text": "هاي!",
+   "emotion": "casual",
+   "files": [
+    "egyptian-teens/audio/l01-hi.mp3"
+   ]
+  },
+  {
+   "n": 171,
+   "text": "يلا، باي!",
+   "emotion": "casual",
+   "files": [
+    "egyptian-teens/audio/l01-yalla-bye.mp3"
+   ]
+  },
+  {
+   "n": 172,
+   "text": "أنا عمر.",
+   "emotion": "confident",
+   "files": [
+    "egyptian-teens/audio/l01-ana-omar.mp3"
+   ]
+  },
+  {
+   "n": 173,
+   "text": "إنت اسمَك إيه؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-teens/audio/l01-inta-ismak.mp3"
+   ]
+  },
+  {
+   "n": 174,
+   "text": "إنتي اسمِك إيه؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-teens/audio/l01-inti-ismik.mp3"
+   ]
+  },
+  {
+   "n": 175,
+   "text": "إنت منين يا عمر؟",
+   "emotion": "curious girl",
+   "files": [
+    "egyptian-teens/audio/l02-d-1.mp3"
+   ]
+  },
+  {
+   "n": 176,
+   "text": "أنا من كندا، بس أصلاً من مصر.",
+   "emotion": "a bit proud, relaxed",
+   "files": [
+    "egyptian-teens/audio/l02-d-2.mp3"
+   ]
+  },
+  {
+   "n": 177,
+   "text": "بجد؟ يعني إنت مصري!",
+   "emotion": "surprised, happy girl",
+   "files": [
+    "egyptian-teens/audio/l02-d-3.mp3"
+   ]
+  },
+  {
+   "n": 178,
+   "text": "مصري جديد! نسخة كندي!",
+   "emotion": "joking guy, laughing",
+   "files": [
+    "egyptian-teens/audio/l02-d-4.mp3"
+   ]
+  },
+  {
+   "n": 179,
+   "text": "بس",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l02-bass.mp3"
+   ]
+  },
+  {
+   "n": 180,
+   "text": "أصلاً",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l02-aslan.mp3"
+   ]
+  },
+  {
+   "n": 181,
+   "text": "بجد؟",
+   "emotion": "surprised",
+   "files": [
+    "egyptian-teens/audio/l02-bigad.mp3"
+   ]
+  },
+  {
+   "n": 182,
+   "text": "إيه ده يا كريم؟",
+   "emotion": "curious girl",
+   "files": [
+    "egyptian-teens/audio/l03-l-1.mp3"
+   ]
+  },
+  {
+   "n": 183,
+   "text": "ده طرشي! من عند تيتة.",
+   "emotion": "proud, joking guy",
+   "files": [
+    "egyptian-teens/audio/l03-l-2.mp3"
+   ]
+  },
+  {
+   "n": 184,
+   "text": "دي شرابات. نضيفة، والله!",
+   "emotion": "defensive, laughing guy",
+   "files": [
+    "egyptian-teens/audio/l03-l-4.mp3"
+   ]
+  },
+  {
+   "n": 185,
+   "text": "إيه ده بالمصري؟",
+   "emotion": "curious",
+   "files": [
+    "egyptian-teens/audio/l03-eh-da-bilmasri.mp3"
+   ]
+  },
+  {
+   "n": 186,
+   "text": "دي شرابات.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-di-sharabat.mp3"
+   ]
+  },
+  {
+   "n": 187,
+   "text": "دي سماعات.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-di-sammaat.mp3"
+   ]
+  },
+  {
+   "n": 188,
+   "text": "ده موبايل.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-da-mobayl.mp3"
+   ]
+  },
+  {
+   "n": 189,
+   "text": "ده شاحن.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-da-shahin.mp3"
+   ]
+  },
+  {
+   "n": 190,
+   "text": "ده طرشي.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-da-turshi.mp3"
+   ]
+  },
+  {
+   "n": 191,
+   "text": "دي نضارة.",
+   "emotion": "",
+   "files": [
+    "egyptian-teens/audio/l03-di-naddara.mp3"
+   ]
+  },
+  {
+   "n": 192,
+   "text": "فين موبايلي؟",
+   "emotion": "panicked girl",
+   "files": [
+    "egyptian-teens/audio/l03-fen-mobayli.mp3"
+   ]
+  }
+ ],
+ "en": [
+  {
+   "n": 1,
+   "text": "sun",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-sun.mp3"
+   ]
+  },
+  {
+   "n": 2,
+   "text": "sock",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-sock.mp3"
+   ]
+  },
+  {
+   "n": 3,
+   "text": "ant",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-ant.mp3"
+   ]
+  },
+  {
+   "n": 4,
+   "text": "apple",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-apple.mp3"
+   ]
+  },
+  {
+   "n": 5,
+   "text": "tent",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-tent.mp3"
+   ]
+  },
+  {
+   "n": 6,
+   "text": "tap",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-tap.mp3"
+   ]
+  },
+  {
+   "n": 7,
+   "text": "sat",
+   "emotion": "proud",
+   "files": [
+    "english-kids/audio/l01-sat.mp3"
+   ]
+  },
+  {
+   "n": 8,
+   "text": "at",
+   "emotion": "proud",
+   "files": [
+    "english-kids/audio/l01-at.mp3"
+   ]
+  },
+  {
+   "n": 9,
+   "text": "pin",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-pin.mp3"
+   ]
+  },
+  {
+   "n": 10,
+   "text": "pan",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-pan.mp3"
+   ]
+  },
+  {
+   "n": 11,
+   "text": "tin",
+   "emotion": "warm, clear",
+   "files": [
+    "english-kids/audio/l01-tin.mp3"
+   ]
+  },
+  {
+   "n": 12,
+   "text": "Hi! Is this seat free?",
+   "emotion": "polite, a little shy",
+   "files": [
+    "english-general/audio/l01-d-1.mp3"
+   ]
+  },
+  {
+   "n": 13,
+   "text": "Yes, please sit down.",
+   "emotion": "warm",
+   "files": [
+    "english-general/audio/l01-d-2.mp3"
+   ]
+  },
+  {
+   "n": 14,
+   "text": "Thanks. I'm Sami. What's your name?",
+   "emotion": "friendly",
+   "files": [
+    "english-general/audio/l01-d-3.mp3"
+   ]
+  },
+  {
+   "n": 15,
+   "text": "I'm Layla. Nice to meet you.",
+   "emotion": "friendly, smiling",
+   "files": [
+    "english-general/audio/l01-d-4.mp3"
+   ]
+  },
+  {
+   "n": 16,
+   "text": "Nice to meet you too.",
+   "emotion": "warm",
+   "files": [
+    "english-general/audio/l01-d-5.mp3"
+   ]
+  },
+  {
+   "n": 17,
+   "text": "Oh, that's my flight! Bye, Sami! Have a nice day!",
+   "emotion": "hurried, cheerful",
+   "files": [
+    "english-general/audio/l01-d-6.mp3"
+   ]
+  },
+  {
+   "n": 18,
+   "text": "I am",
+   "emotion": "clear",
+   "files": [
+    "english-general/audio/l01-i-am.mp3"
+   ]
+  },
+  {
+   "n": 19,
+   "text": "I'm",
+   "emotion": "clear",
+   "files": [
+    "english-general/audio/l01-im.mp3"
+   ]
+  },
+  {
+   "n": 20,
+   "text": "I'm Sami.",
+   "emotion": "friendly, natural",
+   "files": [
+    "english-general/audio/l01-im-sami.mp3"
+   ]
+  },
+  {
+   "n": 21,
+   "text": "you are",
+   "emotion": "clear",
+   "files": [
+    "english-general/audio/l01-you-are.mp3"
+   ]
+  },
+  {
+   "n": 22,
+   "text": "You're Layla.",
+   "emotion": "friendly, natural",
+   "files": [
+    "english-general/audio/l01-youre-layla.mp3"
+   ]
+  },
+  {
+   "n": 23,
+   "text": "What's your name?",
+   "emotion": "curious, friendly",
+   "files": [
+    "english-general/audio/l01-whats-your-name.mp3"
+   ]
+  },
+  {
+   "n": 24,
+   "text": "Bye!",
+   "emotion": "cheerful",
+   "files": [
+    "english-general/audio/l01-bye.mp3"
+   ]
+  },
+  {
+   "n": 25,
+   "text": "See you!",
+   "emotion": "cheerful",
+   "files": [
+    "english-general/audio/l01-see-you.mp3"
+   ]
+  },
+  {
+   "n": 26,
+   "text": "Have a nice day!",
+   "emotion": "warm",
+   "files": [
+    "english-general/audio/l01-nice-day.mp3"
+   ]
+  },
+  {
+   "n": 27,
+   "text": "Where are you from?",
+   "emotion": "curious",
+   "files": [
+    "english-general/audio/l01-where-from.mp3"
+   ]
+  },
+  {
+   "n": 28,
+   "text": "Do you like your hometown?",
+   "emotion": "neutral examiner",
+   "files": [
+    "english-exams/audio/l01-q-hometown.mp3"
+   ]
+  },
+  {
+   "n": 29,
+   "text": "Yes.",
+   "emotion": "nervous",
+   "files": [
+    "english-exams/audio/l01-a-short.mp3"
+   ]
+  },
+  {
+   "n": 30,
+   "text": "Yes, I do, mainly because it's quiet and close to the sea. For example, every Friday I walk along the beach with my family.",
+   "emotion": "relaxed, natural",
+   "files": [
+    "english-exams/audio/l01-a-long.mp3"
+   ]
+  },
+  {
+   "n": 31,
+   "text": "Do you work or are you a student?",
+   "emotion": "neutral examiner",
+   "files": [
+    "english-exams/audio/l01-q-work.mp3"
+   ]
+  },
+  {
+   "n": 32,
+   "text": "What do you like to do in your free time?",
+   "emotion": "neutral examiner",
+   "files": [
+    "english-exams/audio/l01-q-free.mp3"
+   ]
+  }
+ ],
+ "owner": [
+  {
+   "n": 1,
+   "text": "ح",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-haa.mp3",
+    "literacy-a-kids/audio/l03-hhaa.mp3",
+    "literacy-a-adults/audio/l01-haa.mp3",
+    "literacy-a-adults/audio/l03-hhaa.mp3",
+    "literacy-c/audio/l01-sound-7.mp3",
+    "literacy-a-teens/audio/l01-haa.mp3",
+    "literacy-a-teens/audio/l03-hhaa.mp3"
+   ]
+  },
+  {
+   "n": 2,
+   "text": "ع",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-ayn.mp3",
+    "literacy-a-adults/audio/l01-ayn.mp3",
+    "literacy-c/audio/l01-sound-3.mp3",
+    "literacy-a-teens/audio/l01-ayn.mp3"
+   ]
+  },
+  {
+   "n": 3,
+   "text": "خ",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-khaa.mp3",
+    "literacy-a-kids/audio/l03-khaa.mp3",
+    "literacy-a-adults/audio/l01-khaa.mp3",
+    "literacy-a-adults/audio/l03-khaa.mp3",
+    "literacy-a-teens/audio/l01-khaa.mp3",
+    "literacy-a-teens/audio/l03-khaa.mp3"
+   ]
+  },
+  {
+   "n": 4,
+   "text": "ق",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-qaaf.mp3",
+    "literacy-a-adults/audio/l01-qaaf.mp3",
+    "literacy-a-teens/audio/l01-qaaf.mp3"
+   ]
+  },
+  {
+   "n": 5,
+   "text": "ا",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l01-alif.mp3",
+    "literacy-a-kids/audio/l02-alif.mp3",
+    "literacy-a-adults/audio/l01-alif.mp3",
+    "literacy-a-adults/audio/l02-alif.mp3",
+    "literacy-a-teens/audio/l01-alif.mp3",
+    "literacy-a-teens/audio/l02-alif.mp3"
+   ]
+  },
+  {
+   "n": 6,
+   "text": "ب",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l02-baa.mp3",
+    "literacy-a-adults/audio/l02-baa.mp3",
+    "literacy-a-teens/audio/l02-baa.mp3"
+   ]
+  },
+  {
+   "n": 7,
+   "text": "ت",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l02-taa.mp3",
+    "literacy-a-adults/audio/l02-taa.mp3",
+    "literacy-a-teens/audio/l02-taa.mp3"
+   ]
+  },
+  {
+   "n": 8,
+   "text": "ث",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l02-thaa.mp3",
+    "literacy-a-adults/audio/l02-thaa.mp3",
+    "literacy-a-teens/audio/l02-thaa.mp3"
+   ]
+  },
+  {
+   "n": 9,
+   "text": "ج",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-kids/audio/l03-jeem.mp3",
+    "literacy-a-adults/audio/l03-jeem.mp3",
+    "literacy-a-teens/audio/l03-jeem.mp3"
+   ]
+  },
+  {
+   "n": 10,
+   "text": "د",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-adults/audio/l03-daal.mp3",
+    "literacy-a-teens/audio/l03-daal.mp3"
+   ]
+  },
+  {
+   "n": 11,
+   "text": "ذ",
+   "emotion": "clear",
+   "files": [
+    "literacy-a-adults/audio/l03-dhaal.mp3",
+    "literacy-a-teens/audio/l03-dhaal.mp3"
+   ]
+  },
+  {
+   "n": 12,
+   "text": "s",
+   "emotion": "clear, short sound",
+   "files": [
+    "english-kids/audio/l01-s-sound.mp3"
+   ]
+  },
+  {
+   "n": 13,
+   "text": "a",
+   "emotion": "clear, short sound",
+   "files": [
+    "english-kids/audio/l01-a-sound.mp3"
+   ]
+  },
+  {
+   "n": 14,
+   "text": "t",
+   "emotion": "clear, short sound",
+   "files": [
+    "english-kids/audio/l01-t-sound.mp3"
+   ]
+  },
+  {
+   "n": 15,
+   "text": "ء",
+   "emotion": "clear, slow, twice",
+   "files": [
+    "literacy-c/audio/l02-sound-2.mp3"
+   ]
+  }
+ ]
+}
