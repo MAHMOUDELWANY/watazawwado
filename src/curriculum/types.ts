@@ -46,6 +46,8 @@ export type SceneId =
   | 'qr2Cover' | 'qr2Warm' | 'qr2Shadda' | 'qr2Nas1' | 'qr2Nas4' | 'qr2Rhyme' | 'qr2Falaq1' | 'qr2Falaq4' | 'qr2Review' | 'qr2Read' | 'qr2Mission' | 'qr2Next'
   // Quran Reading · Lesson 3 (slides/motion/g-qr3.tsx)
   | 'qr3Cover' | 'qr3Warm' | 'qr3Tanween' | 'qr3Ikhlas1' | 'qr3Ikhlas3' | 'qr3Stop' | 'qr3Masad1' | 'qr3Masad4' | 'qr3Review' | 'qr3Read' | 'qr3Mission' | 'qr3Next'
+  // Tajweed · Level 2 · Lesson 1 (slides/motion/g-tm1.tsx)
+  | 'tm1Cover' | 'tm1Pairs' | 'tm1Listen' | 'tm1Find' | 'tm1Five' | 'tm1Jawf' | 'tm1Halq' | 'tm1Lisan' | 'tm1LipsNose' | 'tm1Fatiha' | 'tm1Sort' | 'tm1Recite' | 'tm1Mission' | 'tm1Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

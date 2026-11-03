@@ -38,6 +38,7 @@ import { lessonQ02 } from './content/quran-reading/l02-the-last-two-surahs.js';
 import { lessonQ03 } from './content/quran-reading/l03-one-and-many.js';
 import { lessonT02 } from './content/tajweed/l02-the-bounce.js';
 import { lessonT03 } from './content/tajweed/l03-four-doors.js';
+import { lessonT201 } from './content/tajweed-2/l01-the-map-of-the-mouth.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -345,6 +346,28 @@ export const SUBJECTS: SubjectEntry[] = [
       'The Longest Stretch', 'Heavy and Light', 'Raa', 'Where to Stop', 'Level 1 Recital',
     ],
     lessons: { 1: lessonT01, 2: lessonT02, 3: lessonT03 },
+  },
+  {
+    id: 'tajweed-2',
+    group: 'quran',
+    title: 'Tajweed · Level 2',
+    titleAr: 'التجويد · المستوى الثاني',
+    version: 'Level 2',
+    versionAr: 'المستوى الثاني',
+    audience: '12+',
+    art: '/curriculum/banners/tajweed.webp',
+    parts: [
+      { title: 'Level 2 · Where Letters Are Born', titleAr: 'المستوى الثاني · مخارج الحروف', from: 1 },
+      { title: 'Level 2 · How Letters Come Out', titleAr: 'المستوى الثاني · صفات الحروف', from: 13 },
+    ],
+    // docs/curriculum/tajweed/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: [
+      'The Map of the Mouth', 'The Throat', 'The Deepest Tongue', 'The Middle of the Tongue', 'The Side of the Tongue',
+      'The Tip, Part 1', 'The Tip, Part 2', 'The Whistle', 'Between the Teeth', 'The Lips', 'The Empty Space and the Nose',
+      'Review: Every Letter Has a Home', 'Whisper and Voice', 'Strong, Between, Soft', 'Raised and Lowered',
+      'Covered and Open', 'Letters With a Mark of Their Own', 'Twins and Neighbours', 'Level 2 Recital',
+    ],
+    lessons: { 1: lessonT201 },
   },
   {
     id: 'egyptian-adults',

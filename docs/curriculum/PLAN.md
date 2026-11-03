@@ -810,3 +810,9 @@ B3–B5 → continue lesson by lesson.
   (`tajweed/MAP-level-2.md`: 19 lessons, Part A makharij 5 areas / 17 points, Part B sifat; Claude's draft for the
   owner's review). Next: Tajweed Level 2, Lesson 1 "The Map of the Mouth" (brief, page text, built pages, catalog
   entry `tajweed-2`).
+- **2026-11-03 · Tajweed Level 2, Lesson 1 "The Map of the Mouth" built** (draft, `reviewed: false`): catalog entry
+  `tajweed-2` (group `quran`, 12+), 14 pages, brief `tajweed/L2-01-the-map-of-the-mouth.md`. New device for the whole
+  level: `MouthMap` in `slides/motion/g-tm1.tsx` (side view; areas light, letter points glow, a bead of air stops where
+  a still letter is made). Ayat 75:16-18, 1:2, 108:1 verified; tafsir Ibn Kathir. 10 new Fusha clips (hamza-test
+  syllables) wait for a new Fusha part. Every step screenshotted; the review clicked through. Next: Level 2, Lesson 2
+  "The Throat".

@@ -58,6 +58,30 @@ One take: paste this whole block as one generation; I cut it into the files abov
 | 3 | l02-taa.mp3 | 6 | clear | ت |
 | 4 | l02-thaa.mp3 | 7 | clear | ث |
 
+## Reading Arabic · Kids · Lesson 3: The Cup Family
+
+Folder: `public/curriculum/literacy-a-kids/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (1)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-taaj.mp3 | 10 | proud | تَاجٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+تَاجٌ
+```
+
+### Recorded by the owner himself (not ElevenLabs) (3)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hhaa.mp3 | 4 | clear | ح |
+| 2 | l03-jeem.mp3 | 5 | clear | ج |
+| 3 | l03-khaa.mp3 | 6 | clear | خ |
+
 ## Reading Arabic · Adults · Lesson 1: Welcome to Arabic
 
 Folder: `public/curriculum/literacy-a-adults/audio/`.
@@ -110,6 +134,34 @@ One take: paste this whole block as one generation; I cut it into the files abov
 | 2 | l02-baa.mp3 | 5 | clear | ب |
 | 3 | l02-taa.mp3 | 6 | clear | ت |
 | 4 | l02-thaa.mp3 | 7 | clear | ث |
+
+## Reading Arabic · Adults · Lesson 3: Cups and Hooks
+
+Folder: `public/curriculum/literacy-a-adults/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (3)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-taaj.mp3 | 9 | proud | تَاجٌ |
+| 2 | l03-dajaaj.mp3 | 9 | amused | دَجَاجٌ |
+| 3 | l03-dhubaab.mp3 | 9 | amused | ذُبَابٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+تَاجٌ <break time="1.2s" /> دَجَاجٌ <break time="1.2s" /> ذُبَابٌ
+```
+
+### Recorded by the owner himself (not ElevenLabs) (5)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hhaa.mp3 | 3 | clear | ح |
+| 2 | l03-jeem.mp3 | 3 | clear | ج |
+| 3 | l03-khaa.mp3 | 3 | clear | خ |
+| 4 | l03-daal.mp3 | 5 | clear | د |
+| 5 | l03-dhaal.mp3 | 5 | clear | ذ |
 
 ## Fusha Arabic · Kids · Lesson 1: What Is This?
 
@@ -198,6 +250,45 @@ One take: paste this whole block as one generation; I cut it into the files abov
 مَا هَذَا؟ <break time="1.2s" /> هَذَا كِتَابٌ. <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> هَذَا كُرْسِيٌّ. <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> لَا. <break time="1.2s" /> أَهَذَا أَرْنَبٌ؟ <break time="1.2s" /> نَعَمْ، هَذَا أَرْنَبٌ! <break time="1.2s" /> أَهَذَا دُبٌّ؟ <break time="1.2s" /> لَا، لَا! هَذَا قِطٌّ! <break time="1.2s" /> هَذَا قِطٌّ. <break time="1.2s" /> أَهَذَا قِطٌّ؟ <break time="1.2s" /> نَعَمْ <break time="1.2s" /> لَا <break time="1.2s" /> نَعَمْ، هَذَا قِطٌّ. <break time="1.2s" /> لَا، هَذَا كَلْبٌ. <break time="1.2s" /> قِطٌّ <break time="1.2s" /> كَلْبٌ <break time="1.2s" /> أَرْنَبٌ <break time="1.2s" /> حِصَانٌ <break time="1.2s" /> دُبٌّ <break time="1.2s" /> دِيكٌ <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> أَهَذَا دُبٌّ؟ <break time="1.2s" /> نَعَمْ، هَذَا دُبٌّ. <break time="1.2s" /> أَهَذَا قَلَمٌ؟ <break time="1.2s" /> ذَلِكَ
 ```
 
+## Fusha Arabic · Kids · Lesson 3: This One, That One
+
+Folder: `public/curriculum/fusha-kids/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-a-haadha-qitt.mp3 | 2 | curious | أَهَذَا قِطٌّ؟ |
+| 2 | l03-naam-qitt.mp3 | 2 | happy | نَعَمْ، هَذَا قِطٌّ. |
+| 3 | l03-a-haadha-kalb.mp3 | 2 | curious | أَهَذَا كَلْبٌ؟ |
+| 4 | l03-la-arnab.mp3 | 2 | friendly | لَا، هَذَا أَرْنَبٌ. |
+| 5 | l03-story-1.mp3 | 4 | curious boy | مَا هَذَا يَا جِدِّي؟ |
+| 6 | l03-story-2.mp3 | 4 | warm grandfather | هَذَا طَائِرٌ. |
+| 7 | l03-story-3.mp3 | 4 | curious girl, pointing far | وَمَا ذَلِكَ؟ |
+| 8 | l03-story-4.mp3 | 4 | warm grandfather | ذَلِكَ حِصَانٌ. |
+| 9 | l03-story-5.mp3 | 4 | laughing boy | وَهَذَا مِشْمِشٌ! |
+| 10 | l03-haadha.mp3 | 5 | close, gentle | هَذَا |
+| 11 | l03-dhalika.mp3 | 5 | pointing far, slow | ذَلِكَ |
+| 12 | l03-haadha-tair.mp3 | 5 |  | هَذَا طَائِرٌ. |
+| 13 | l03-dhalika-hisan.mp3 | 5 |  | ذَلِكَ حِصَانٌ. |
+| 14 | l03-maa-dhalika.mp3 | 6 | curious | مَا ذَلِكَ؟ |
+| 15 | l03-man-dhalika.mp3 | 6 | curious | مَنْ ذَلِكَ؟ |
+| 16 | l03-a-dhalika-hisan.mp3 | 6 | asking, voice going up | أَذَلِكَ حِصَانٌ؟ |
+| 17 | l03-naam-dhalika-hisan.mp3 | 6 | happy | نَعَمْ، ذَلِكَ حِصَانٌ. |
+| 18 | l03-haadha-walad.mp3 | 7 |  | هَذَا وَلَدٌ. |
+| 19 | l03-haadha-bayt.mp3 | 7 |  | هَذَا بَيْتٌ. |
+| 20 | l03-dhalika-masjid.mp3 | 7 |  | ذَلِكَ مَسْجِدٌ. |
+| 21 | l03-dhalika-jabal.mp3 | 7 |  | ذَلِكَ جَبَلٌ. |
+| 22 | l03-dhalika-qamar.mp3 | 7 |  | ذَلِكَ قَمَرٌ. |
+| 23 | l03-maa-haadha.mp3 | 9 | curious | مَا هَذَا؟ |
+| 24 | l03-al-bab.mp3 | 11 | proud girl | ٱلْبَابُ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أَهَذَا قِطٌّ؟ <break time="1.2s" /> نَعَمْ، هَذَا قِطٌّ. <break time="1.2s" /> أَهَذَا كَلْبٌ؟ <break time="1.2s" /> لَا، هَذَا أَرْنَبٌ. <break time="1.2s" /> مَا هَذَا يَا جِدِّي؟ <break time="1.2s" /> هَذَا طَائِرٌ. <break time="1.2s" /> وَمَا ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ حِصَانٌ. <break time="1.2s" /> وَهَذَا مِشْمِشٌ! <break time="1.2s" /> هَذَا <break time="1.2s" /> ذَلِكَ <break time="1.2s" /> هَذَا طَائِرٌ. <break time="1.2s" /> ذَلِكَ حِصَانٌ. <break time="1.2s" /> مَا ذَلِكَ؟ <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> أَذَلِكَ حِصَانٌ؟ <break time="1.2s" /> نَعَمْ، ذَلِكَ حِصَانٌ. <break time="1.2s" /> هَذَا وَلَدٌ. <break time="1.2s" /> هَذَا بَيْتٌ. <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> ذَلِكَ جَبَلٌ. <break time="1.2s" /> ذَلِكَ قَمَرٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> ٱلْبَابُ
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -248,6 +339,31 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 قَلْب <break time="1.2s" /> كَلْب <break time="1.2s" /> أَعُوذُ بِاللهِ مِنَ الشَّيْطَانِ الرَّجِيمِ
+```
+
+## Tajweed · Level 2 · Lesson 1: The Map of the Mouth
+
+Folder: `public/curriculum/tajweed-2/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (10)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-ah.mp3 | 2 | clear, slow | أَهْ |
+| 2 | l01-ahh.mp3 | 2 | clear, slow | أَحْ |
+| 3 | l01-a-hamza.mp3 | 2 | clear, slow | أَأْ |
+| 4 | l01-a-ain.mp3 | 2 | clear, slow | أَعْ |
+| 5 | l01-ak.mp3 | 2 | clear, slow | أَكْ |
+| 6 | l01-aq.mp3 | 2 | clear, slow | أَقْ |
+| 7 | l01-ab.mp3 | 4 | clear, slow | أَبْ |
+| 8 | l01-al.mp3 | 4 | clear, slow | أَلْ |
+| 9 | l01-af.mp3 | 9 | clear, slow | أَفْ |
+| 10 | l01-am.mp3 | 9 | clear, slow | أَمْ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أَهْ <break time="1.2s" /> أَحْ <break time="1.2s" /> أَأْ <break time="1.2s" /> أَعْ <break time="1.2s" /> أَكْ <break time="1.2s" /> أَقْ <break time="1.2s" /> أَبْ <break time="1.2s" /> أَلْ <break time="1.2s" /> أَفْ <break time="1.2s" /> أَمْ
 ```
 
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
@@ -353,6 +469,47 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إنت منين؟ <break time="1.2s" /> إنت منين يا آدم؟ <break time="1.2s" /> أنا من إنجلترا. وإنتي؟ <break time="1.2s" /> أنا من هنا، من القاهرة. <break time="1.2s" /> وأنا من أسوان! <break time="1.2s" /> من <break time="1.2s" /> فين <break time="1.2s" /> منين؟ <break time="1.2s" /> أنا من هنا. <break time="1.2s" /> مصر <break time="1.2s" /> إنجلترا <break time="1.2s" /> أمريكا <break time="1.2s" /> كندا <break time="1.2s" /> ألمانيا <break time="1.2s" /> السعودية <break time="1.2s" /> إنت إنجليزي! <break time="1.2s" /> وهي مصرية. <break time="1.2s" /> مصري <break time="1.2s" /> مصرية <break time="1.2s" /> كندي <break time="1.2s" /> كندية <break time="1.2s" /> ألماني <break time="1.2s" /> ألمانية <break time="1.2s" /> أمريكاني <break time="1.2s" /> أمريكانية <break time="1.2s" /> أيوه <break time="1.2s" /> لأ <break time="1.2s" /> إنت جديد هنا؟ <break time="1.2s" /> جديد <break time="1.2s" /> جميل <break time="1.2s" /> جامعة <break time="1.2s" /> إنتي منين؟ <break time="1.2s" /> حضرتِك منين؟ <break time="1.2s" /> أنا من طنطا. <break time="1.2s" /> إيه ده؟
 ```
 
+## Egyptian Arabic · Adults · Lesson 3: What's This?
+
+Folder: `public/curriculum/egyptian-adults/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-eh-da.mp3 | 2 | surprised, delighted | إيه ده؟ |
+| 2 | l03-l-1.mp3 | 3 | curious, polite | إيه ده يا طنط؟ |
+| 3 | l03-l-2.mp3 | 3 | warm, proud | ده محشي. |
+| 4 | l03-l-3.mp3 | 3 | curious | وإيه دي؟ |
+| 5 | l03-l-4.mp3 | 3 | warm, generous | دي بسبوسة. بالهنا والشفا! |
+| 6 | l03-l-5.mp3 | 3 | curious, a bit lost | وإيه دي؟ |
+| 7 | l03-l-6.mp3 | 3 | laughing | دي شوكة يا آدم! |
+| 8 | l03-da.mp3 | 4 |  | ده |
+| 9 | l03-di.mp3 | 4 |  | دي |
+| 10 | l03-eh-di.mp3 | 4 | curious | إيه دي؟ |
+| 11 | l03-da-mahshi.mp3 | 4 |  | ده محشي. |
+| 12 | l03-di-basbousa.mp3 | 4 |  | دي بسبوسة. |
+| 13 | l03-di-shanta.mp3 | 5 |  | دي شنطة. |
+| 14 | l03-di-tarabeza.mp3 | 5 |  | دي ترابيزة. |
+| 15 | l03-da-kursi.mp3 | 5 |  | ده كرسي. |
+| 16 | l03-da-bab.mp3 | 5 |  | ده باب. |
+| 17 | l03-da-ilbab.mp3 | 6 | showing round | ده الباب. |
+| 18 | l03-da-ishshibbak.mp3 | 6 | showing round | وده الشباك. |
+| 19 | l03-di-ilkanaba.mp3 | 6 | showing round | دي الكنبة. |
+| 20 | l03-di-ittallaga.mp3 | 6 | showing round | ودي التلاجة. |
+| 21 | l03-da-ittilifizyon.mp3 | 6 |  | ده التليفزيون. |
+| 22 | l03-da-issirir.mp3 | 6 |  | ده السرير. |
+| 23 | l03-da-ilmatbakh.mp3 | 6 |  | وده المطبخ. |
+| 24 | l03-da-amm-sayed.mp3 | 7 | friendly, introducing | ده عم سيد. |
+| 25 | l03-di-mona.mp3 | 7 | friendly, introducing | ودي منى. |
+| 26 | l03-fen-ilmafatih.mp3 | 12 | stressed, searching | فين المفاتيح؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه ده؟ <break time="1.2s" /> إيه ده يا طنط؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي بسبوسة. بالهنا والشفا! <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شوكة يا آدم! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> دي بسبوسة. <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي ترابيزة. <break time="1.2s" /> ده كرسي. <break time="1.2s" /> ده باب. <break time="1.2s" /> ده الباب. <break time="1.2s" /> وده الشباك. <break time="1.2s" /> دي الكنبة. <break time="1.2s" /> ودي التلاجة. <break time="1.2s" /> ده التليفزيون. <break time="1.2s" /> ده السرير. <break time="1.2s" /> وده المطبخ. <break time="1.2s" /> ده عم سيد. <break time="1.2s" /> ودي منى. <break time="1.2s" /> فين المفاتيح؟
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.
@@ -396,6 +553,44 @@ One take: paste this whole block as one generation; I cut it into the files abov
 |---|---|---|---|---|
 | 1 | l01-sound-3.mp3 | 6 | clear, slow, twice | ع |
 | 2 | l01-sound-7.mp3 | 7 | clear, slow, twice | ح |
+
+## Reading Franco · Lesson 2: The Cairo Hamza
+
+Folder: `public/curriculum/literacy-c/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-msg-2.mp3 | 2 | warm, inviting, an aunt to her nephew | نقابلك بكرة على القهوة؟ |
+| 2 | l02-so2al.mp3 | 3 |  | سؤال |
+| 3 | l02-sa2al.mp3 | 3 |  | سأل |
+| 4 | l02-mas2ala.mp3 | 3 |  | مسألة |
+| 5 | l02-2alb.mp3 | 4 |  | قلب |
+| 6 | l02-2ahwa.mp3 | 4 |  | قهوة |
+| 7 | l02-2alam.mp3 | 4 |  | قلم |
+| 8 | l02-2oul.mp3 | 4 |  | قول |
+| 9 | l02-el-quran.mp3 | 4 | respectful | القرآن |
+| 10 | l02-kalb.mp3 | 5 |  | كلب |
+| 11 | l02-3alam.mp3 | 5 |  | علم |
+| 12 | l02-el-beet.mp3 | 6 |  | البيت |
+| 13 | l02-el-bab.mp3 | 6 |  | الباب |
+| 14 | l02-el-2ahwa.mp3 | 6 |  | القهوة |
+| 15 | l02-el-shams.mp3 | 6 |  | الشمس |
+| 16 | l02-reply-2.mp3 | 9 | happy, eager | أيوه، أكيد! الساعة كام؟ |
+| 17 | l02-5alas.mp3 | 11 | decided, cheerful | خلاص، الساعة خمسة! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+نقابلك بكرة على القهوة؟ <break time="1.2s" /> سؤال <break time="1.2s" /> سأل <break time="1.2s" /> مسألة <break time="1.2s" /> قلب <break time="1.2s" /> قهوة <break time="1.2s" /> قلم <break time="1.2s" /> قول <break time="1.2s" /> القرآن <break time="1.2s" /> كلب <break time="1.2s" /> علم <break time="1.2s" /> البيت <break time="1.2s" /> الباب <break time="1.2s" /> القهوة <break time="1.2s" /> الشمس <break time="1.2s" /> أيوه، أكيد! الساعة كام؟ <break time="1.2s" /> خلاص، الساعة خمسة!
+```
+
+### Recorded by the owner himself (not ElevenLabs) (1)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-sound-2.mp3 | 3 | clear, slow, twice | ء |
 
 ## Egyptian Arabic · Franco · Lesson 1: Ahlan! What's Your Name?
 
@@ -500,6 +695,47 @@ One take: paste this whole block as one generation; I cut it into the files abov
 enta meneen? <break time="1.2s" /> enta meneen ya Adam? <break time="1.2s" /> ana men Engeltera. w enti? <break time="1.2s" /> ana men hena, men el 2ahera. <break time="1.2s" /> w ana men Aswan! <break time="1.2s" /> men <break time="1.2s" /> feen <break time="1.2s" /> meneen? <break time="1.2s" /> ana men hena. <break time="1.2s" /> Masr <break time="1.2s" /> Engeltera <break time="1.2s" /> Amreeka <break time="1.2s" /> Kanada <break time="1.2s" /> Almanya <break time="1.2s" /> el Sa3odeyya <break time="1.2s" /> enta engeleezi! <break time="1.2s" /> w heyya Masreyya. <break time="1.2s" /> Masri <break time="1.2s" /> Masreyya <break time="1.2s" /> kanadi <break time="1.2s" /> kanadeyya <break time="1.2s" /> almani <break time="1.2s" /> almaneyya <break time="1.2s" /> amreekani <break time="1.2s" /> amreekaneyya <break time="1.2s" /> aywa <break time="1.2s" /> la2 <break time="1.2s" /> enta gedeed hena? <break time="1.2s" /> gedeed <break time="1.2s" /> gameel <break time="1.2s" /> gam3a <break time="1.2s" /> enti meneen? <break time="1.2s" /> 7adretek meneen? <break time="1.2s" /> ana men Tanta. <break time="1.2s" /> eh da?
 ```
 
+## Egyptian Arabic · Franco · Lesson 3: What's This?
+
+Folder: `public/curriculum/egyptian-franco/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-eh-da.mp3 | 2 | surprised, delighted | eh da? |
+| 2 | l03-l-1.mp3 | 3 | curious, polite | eh da ya Tant? |
+| 3 | l03-l-2.mp3 | 3 | warm, proud | da ma7shi. |
+| 4 | l03-l-3.mp3 | 3 | curious | w eh di? |
+| 5 | l03-l-4.mp3 | 3 | warm, generous | di basbosa. bel hana w el shefa! |
+| 6 | l03-l-5.mp3 | 3 | curious, a bit lost | w eh di? |
+| 7 | l03-l-6.mp3 | 3 | laughing | di shoka ya Adam! |
+| 8 | l03-da.mp3 | 4 |  | da |
+| 9 | l03-di.mp3 | 4 |  | di |
+| 10 | l03-eh-di.mp3 | 4 | curious | eh di? |
+| 11 | l03-da-mahshi.mp3 | 4 |  | da ma7shi. |
+| 12 | l03-di-basbousa.mp3 | 4 |  | di basbosa. |
+| 13 | l03-di-shanta.mp3 | 5 |  | di shanta. |
+| 14 | l03-di-tarabeza.mp3 | 5 |  | di tarabeeza. |
+| 15 | l03-da-kursi.mp3 | 5 |  | da korsi. |
+| 16 | l03-da-bab.mp3 | 5 |  | da bab. |
+| 17 | l03-da-ilbab.mp3 | 6 | showing round | da el bab. |
+| 18 | l03-da-ishshibbak.mp3 | 6 | showing round | w da el shebbak. |
+| 19 | l03-di-ilkanaba.mp3 | 6 | showing round | di el kanaba. |
+| 20 | l03-di-ittallaga.mp3 | 6 | showing round | w di el tallaga. |
+| 21 | l03-da-ittilifizyon.mp3 | 6 |  | da el televezyon. |
+| 22 | l03-da-issirir.mp3 | 6 |  | da el sereer. |
+| 23 | l03-da-ilmatbakh.mp3 | 6 |  | w da el matba5. |
+| 24 | l03-da-amm-sayed.mp3 | 7 | friendly, introducing | da 3amm Sayed. |
+| 25 | l03-di-mona.mp3 | 7 | friendly, introducing | w di Mona. |
+| 26 | l03-fen-ilmafatih.mp3 | 12 | stressed, searching | feen el mafatee7? |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+eh da? <break time="1.2s" /> eh da ya Tant? <break time="1.2s" /> da ma7shi. <break time="1.2s" /> w eh di? <break time="1.2s" /> di basbosa. bel hana w el shefa! <break time="1.2s" /> w eh di? <break time="1.2s" /> di shoka ya Adam! <break time="1.2s" /> da <break time="1.2s" /> di <break time="1.2s" /> eh di? <break time="1.2s" /> da ma7shi. <break time="1.2s" /> di basbosa. <break time="1.2s" /> di shanta. <break time="1.2s" /> di tarabeeza. <break time="1.2s" /> da korsi. <break time="1.2s" /> da bab. <break time="1.2s" /> da el bab. <break time="1.2s" /> w da el shebbak. <break time="1.2s" /> di el kanaba. <break time="1.2s" /> w di el tallaga. <break time="1.2s" /> da el televezyon. <break time="1.2s" /> da el sereer. <break time="1.2s" /> w da el matba5. <break time="1.2s" /> da 3amm Sayed. <break time="1.2s" /> w di Mona. <break time="1.2s" /> feen el mafatee7?
+```
+
 ## Fusha Arabic · 12+ · Lesson 1: First Day at the Institute
 
 Folder: `public/curriculum/fusha-12/audio/`.
@@ -581,6 +817,45 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أَهَذَا هَاتِفُكَ؟ <break time="1.2s" /> نَعَمْ! <break time="1.2s" /> شُكْرًا. <break time="1.2s" /> أَهَذَا سَرِيرٌ؟ <break time="1.2s" /> لَا، هَذَا مَكْتَبٌ. <break time="1.2s" /> أَهَذِهِ نَافِذَةٌ؟ <break time="1.2s" /> نَعَمْ، هَذِهِ نَافِذَةٌ. <break time="1.2s" /> أَهَذَا بَابٌ؟ <break time="1.2s" /> نَعَمْ! وَهَذَا نُورٌ! <break time="1.2s" /> هَذَا سَرِيرٌ. <break time="1.2s" /> أَهَذَا سَرِيرٌ؟ <break time="1.2s" /> نَعَمْ، هَذِهِ نَافِذَةٌ. <break time="1.2s" /> لَا، هَذَا مَكْتَبٌ. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> سَرِيرٌ <break time="1.2s" /> مِصْبَاحٌ <break time="1.2s" /> كُرْسِيٌّ <break time="1.2s" /> خِزَانَةٌ <break time="1.2s" /> وِسَادَةٌ <break time="1.2s" /> مِرْآةٌ <break time="1.2s" /> أَهَذَا قَلَمٌ؟ <break time="1.2s" /> لَا. <break time="1.2s" /> مَا هَذَا؟ <break time="1.2s" /> هَذَا مِفْتَاحٌ. <break time="1.2s" /> مِفْتَاحٌ! شُكْرًا. <break time="1.2s" /> ذَلِكَ
 ```
 
+## Fusha Arabic · 12+ · Lesson 3: Near and Far
+
+Folder: `public/curriculum/fusha-12/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-d-1.mp3 | 3 | curious, pointing far | مَا ذَلِكَ؟ |
+| 2 | l03-d-2.mp3 | 3 | friendly | ذَلِكَ مَسْجِدٌ. |
+| 3 | l03-d-3.mp3 | 3 | curious | وَمَا تِلْكَ؟ |
+| 4 | l03-d-4.mp3 | 3 | friendly | تِلْكَ مَكْتَبَةٌ. |
+| 5 | l03-d-5.mp3 | 3 | warm, handing a cup | وَهَذِهِ قَهْوَةٌ. تَفَضَّلْ! |
+| 6 | l03-d-6.mp3 | 3 | curious | مَنْ ذَلِكَ؟ |
+| 7 | l03-d-7.mp3 | 3 | amused | ذَلِكَ أُسْتَاذٌ. ذَلِكَ كَرِيمٌ! |
+| 8 | l03-haadha-masjid.mp3 | 4 |  | هَذَا مَسْجِدٌ. |
+| 9 | l03-dhalika-masjid.mp3 | 4 |  | ذَلِكَ مَسْجِدٌ. |
+| 10 | l03-maa-dhalika.mp3 | 4 | curious | مَا ذَلِكَ؟ |
+| 11 | l03-a-dhalika-masjid.mp3 | 4 | asking, voice rising | أَذَلِكَ مَسْجِدٌ؟ |
+| 12 | l03-haadhihi-qahwa.mp3 | 5 |  | هَذِهِ قَهْوَةٌ. |
+| 13 | l03-tilka-maktaba.mp3 | 5 |  | تِلْكَ مَكْتَبَةٌ. |
+| 14 | l03-maa-tilka.mp3 | 5 | curious | مَا تِلْكَ؟ |
+| 15 | l03-haadha.mp3 | 6 |  | هَذَا |
+| 16 | l03-haadhihi.mp3 | 6 |  | هَذِهِ |
+| 17 | l03-dhalika.mp3 | 6 |  | ذَلِكَ |
+| 18 | l03-tilka.mp3 | 6 |  | تِلْكَ |
+| 19 | l03-dhalika-mataam.mp3 | 7 |  | ذَلِكَ مَطْعَمٌ. |
+| 20 | l03-dhalika-malaab.mp3 | 7 |  | ذَلِكَ مَلْعَبٌ. |
+| 21 | l03-tilka-hadiqa.mp3 | 7 |  | تِلْكَ حَدِيقَةٌ. |
+| 22 | l03-tilka-sayyara.mp3 | 7 |  | تِلْكَ سَيَّارَةٌ. |
+| 23 | l03-man-dhalika.mp3 | 9 | curious | مَنْ ذَلِكَ؟ |
+| 24 | l03-al-bab.mp3 | 11 | teacherly, clear | ٱلْبَابُ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَا ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> وَمَا تِلْكَ؟ <break time="1.2s" /> تِلْكَ مَكْتَبَةٌ. <break time="1.2s" /> وَهَذِهِ قَهْوَةٌ. تَفَضَّلْ! <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> ذَلِكَ أُسْتَاذٌ. ذَلِكَ كَرِيمٌ! <break time="1.2s" /> هَذَا مَسْجِدٌ. <break time="1.2s" /> ذَلِكَ مَسْجِدٌ. <break time="1.2s" /> مَا ذَلِكَ؟ <break time="1.2s" /> أَذَلِكَ مَسْجِدٌ؟ <break time="1.2s" /> هَذِهِ قَهْوَةٌ. <break time="1.2s" /> تِلْكَ مَكْتَبَةٌ. <break time="1.2s" /> مَا تِلْكَ؟ <break time="1.2s" /> هَذَا <break time="1.2s" /> هَذِهِ <break time="1.2s" /> ذَلِكَ <break time="1.2s" /> تِلْكَ <break time="1.2s" /> ذَلِكَ مَطْعَمٌ. <break time="1.2s" /> ذَلِكَ مَلْعَبٌ. <break time="1.2s" /> تِلْكَ حَدِيقَةٌ. <break time="1.2s" /> تِلْكَ سَيَّارَةٌ. <break time="1.2s" /> مَنْ ذَلِكَ؟ <break time="1.2s" /> ٱلْبَابُ
+```
+
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic
 
 Folder: `public/curriculum/literacy-a-teens/audio/`.
@@ -634,6 +909,34 @@ One take: paste this whole block as one generation; I cut it into the files abov
 | 3 | l02-taa.mp3 | 5 | clear | ت |
 | 4 | l02-thaa.mp3 | 5 | clear | ث |
 
+## Reading Arabic · Teens · Lesson 3: Cups and Hooks
+
+Folder: `public/curriculum/literacy-a-teens/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (3)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-taaj.mp3 | 9 | proud | تَاجٌ |
+| 2 | l03-dajaaj.mp3 | 9 | amused | دَجَاجٌ |
+| 3 | l03-dhubaab.mp3 | 9 | amused | ذُبَابٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+تَاجٌ <break time="1.2s" /> دَجَاجٌ <break time="1.2s" /> ذُبَابٌ
+```
+
+### Recorded by the owner himself (not ElevenLabs) (5)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hhaa.mp3 | 3 | clear | ح |
+| 2 | l03-jeem.mp3 | 3 | clear | ج |
+| 3 | l03-khaa.mp3 | 3 | clear | خ |
+| 4 | l03-daal.mp3 | 5 | clear | د |
+| 5 | l03-dhaal.mp3 | 5 | clear | ذ |
+
 ## Egyptian Arabic · Kids · Lesson 1: Ahlan, Teta!
 
 Folder: `public/curriculum/egyptian-kids/audio/`.
@@ -664,6 +967,70 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 تيتة <break time="1.2s" /> أهلاً يا حبيبي! نوّرت! <break time="1.2s" /> السلام عليكم! أنا زياد. إنت اسمَك إيه؟ <break time="1.2s" /> وعليكم السلام! اسمي آدم. <break time="1.2s" /> وأنا مريم! <break time="1.2s" /> السلام عليكم <break time="1.2s" /> وعليكم السلام <break time="1.2s" /> أهلاً <break time="1.2s" /> أهلاً بيك <break time="1.2s" /> أهلاً بيكي <break time="1.2s" /> اسمي آدم. <break time="1.2s" /> أنا زياد. <break time="1.2s" /> اسمَك إيه؟ <break time="1.2s" /> اسمِك إيه؟ <break time="1.2s" /> مع السلامة! <break time="1.2s" /> باي! <break time="1.2s" /> إنت منين؟
+```
+
+## Egyptian Arabic · Kids · Lesson 2: Where Are You From?
+
+Folder: `public/curriculum/egyptian-kids/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-inta-minen.mp3 | 2 | curious girl | إنت منين؟ |
+| 2 | l02-d-1.mp3 | 3 | curious girl | إنت منين يا آدم؟ |
+| 3 | l02-d-2.mp3 | 3 | proud boy | أنا من إنجلترا. وإنتي؟ |
+| 4 | l02-d-3.mp3 | 3 | happy girl | أنا من مصر! |
+| 5 | l02-d-4.mp3 | 3 | loud, excited boy | وأنا كمان من مصر! |
+| 6 | l02-min.mp3 | 4 |  | من |
+| 7 | l02-fen.mp3 | 4 |  | فين |
+| 8 | l02-minen.mp3 | 4 | curious | منين؟ |
+| 9 | l02-ana-min.mp3 | 4 | proud | أنا من... |
+| 10 | l02-masr.mp3 | 5 |  | مصر |
+| 11 | l02-ingiltira.mp3 | 5 |  | إنجلترا |
+| 12 | l02-amrika.mp3 | 5 |  | أمريكا |
+| 13 | l02-kanada.mp3 | 5 |  | كندا |
+| 14 | l02-ziad-masri.mp3 | 6 | warm grandma | زياد مصري. |
+| 15 | l02-mariam-masriyya.mp3 | 6 | warm grandma | مريم مصرية. |
+| 16 | l02-adam-ingilizi.mp3 | 6 | amused grandma | وآدم إنجليزي! |
+| 17 | l02-inti-minen.mp3 | 8 | curious boy | إنتي منين؟ |
+| 18 | l02-eh-da.mp3 | 10 | curious boy | إيه ده؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إنت منين؟ <break time="1.2s" /> إنت منين يا آدم؟ <break time="1.2s" /> أنا من إنجلترا. وإنتي؟ <break time="1.2s" /> أنا من مصر! <break time="1.2s" /> وأنا كمان من مصر! <break time="1.2s" /> من <break time="1.2s" /> فين <break time="1.2s" /> منين؟ <break time="1.2s" /> أنا من... <break time="1.2s" /> مصر <break time="1.2s" /> إنجلترا <break time="1.2s" /> أمريكا <break time="1.2s" /> كندا <break time="1.2s" /> زياد مصري. <break time="1.2s" /> مريم مصرية. <break time="1.2s" /> وآدم إنجليزي! <break time="1.2s" /> إنتي منين؟ <break time="1.2s" /> إيه ده؟
+```
+
+## Egyptian Arabic · Kids · Lesson 3: Teta's Old Box
+
+Folder: `public/curriculum/egyptian-kids/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (16)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-eh-da.mp3 | 2 | curious boy | إيه ده؟ |
+| 2 | l03-l-1.mp3 | 3 | curious boy | إيه ده يا تيتة؟ |
+| 3 | l03-l-2.mp3 | 3 | warm grandma | ده كتاب قديم. |
+| 4 | l03-l-3.mp3 | 3 | curious girl | وإيه دي؟ |
+| 5 | l03-l-4.mp3 | 3 | warm grandma, laughing | دي صورة بابا وهو صغير! |
+| 6 | l03-l-5.mp3 | 3 | excited boy | ودي كورة! |
+| 7 | l03-da.mp3 | 4 |  | ده |
+| 8 | l03-di.mp3 | 4 |  | دي |
+| 9 | l03-da-kitab.mp3 | 4 |  | ده كتاب. |
+| 10 | l03-di-sura.mp3 | 4 |  | دي صورة. |
+| 11 | l03-di-kora.mp3 | 5 |  | دي كورة. |
+| 12 | l03-da-alam.mp3 | 5 |  | ده قلم. |
+| 13 | l03-da-muftah.mp3 | 6 |  | ده مفتاح. |
+| 14 | l03-di-arusa.mp3 | 6 |  | دي عروسة. |
+| 15 | l03-eh-di.mp3 | 8 | curious girl | إيه دي؟ |
+| 16 | l03-fen-ilkora.mp3 | 10 | worried boy | فين الكورة؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه ده؟ <break time="1.2s" /> إيه ده يا تيتة؟ <break time="1.2s" /> ده كتاب قديم. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي صورة بابا وهو صغير! <break time="1.2s" /> ودي كورة! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> ده كتاب. <break time="1.2s" /> دي صورة. <break time="1.2s" /> دي كورة. <break time="1.2s" /> ده قلم. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي عروسة. <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> فين الكورة؟
 ```
 
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
@@ -699,6 +1066,74 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 إزيَّك؟ <break time="1.2s" /> إزيّك؟ عامل إيه؟ <break time="1.2s" /> الحمد لله، تمام. وإنت؟ <break time="1.2s" /> كويس، الحمد لله. أنا كريم. <break time="1.2s" /> هاي! أنا نور. <break time="1.2s" /> إزيّك يا نور؟ عاملة إيه؟ <break time="1.2s" /> عامل إيه؟ <break time="1.2s" /> الحمد لله. <break time="1.2s" /> تمام. <break time="1.2s" /> كويس. <break time="1.2s" /> وإنت؟ <break time="1.2s" /> إزيِّك؟ <break time="1.2s" /> عاملة إيه؟ <break time="1.2s" /> هاي! <break time="1.2s" /> السلام عليكم <break time="1.2s" /> يلا، باي! <break time="1.2s" /> أنا عمر. <break time="1.2s" /> إنت اسمَك إيه؟ <break time="1.2s" /> إنتي اسمِك إيه؟ <break time="1.2s" /> إنت منين؟
+```
+
+## Egyptian Arabic · Teens · Lesson 2: Where Are You From?
+
+Folder: `public/curriculum/egyptian-teens/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (19)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-nour-minen.mp3 | 2 | curious, friendly girl | إنت منين؟ |
+| 2 | l02-d-1.mp3 | 3 | curious girl | إنت منين يا عمر؟ |
+| 3 | l02-d-2.mp3 | 3 | a bit proud, relaxed | أنا من كندا، بس أصلاً من مصر. |
+| 4 | l02-d-3.mp3 | 3 | surprised, happy girl | بجد؟ يعني إنت مصري! |
+| 5 | l02-d-4.mp3 | 3 | joking guy, laughing | مصري جديد! نسخة كندي! |
+| 6 | l02-min.mp3 | 4 |  | من |
+| 7 | l02-fen.mp3 | 4 |  | فين |
+| 8 | l02-inta-minen.mp3 | 4 | curious | إنت منين؟ |
+| 9 | l02-inti-minen.mp3 | 4 | curious | إنتي منين؟ |
+| 10 | l02-bass.mp3 | 5 |  | بس |
+| 11 | l02-aslan.mp3 | 5 |  | أصلاً |
+| 12 | l02-bigad.mp3 | 5 | surprised | بجد؟ |
+| 13 | l02-masri.mp3 | 6 |  | مصري |
+| 14 | l02-masriyya.mp3 | 6 |  | مصرية |
+| 15 | l02-kanadi.mp3 | 6 |  | كندي |
+| 16 | l02-kanadiyya.mp3 | 6 |  | كندية |
+| 17 | l02-amrikani.mp3 | 6 | amused | أمريكاني |
+| 18 | l02-gidid.mp3 | 6 |  | جديد |
+| 19 | l02-eh-da.mp3 | 10 | curious, laughing | إيه ده؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إنت منين؟ <break time="1.2s" /> إنت منين يا عمر؟ <break time="1.2s" /> أنا من كندا، بس أصلاً من مصر. <break time="1.2s" /> بجد؟ يعني إنت مصري! <break time="1.2s" /> مصري جديد! نسخة كندي! <break time="1.2s" /> من <break time="1.2s" /> فين <break time="1.2s" /> إنت منين؟ <break time="1.2s" /> إنتي منين؟ <break time="1.2s" /> بس <break time="1.2s" /> أصلاً <break time="1.2s" /> بجد؟ <break time="1.2s" /> مصري <break time="1.2s" /> مصرية <break time="1.2s" /> كندي <break time="1.2s" /> كندية <break time="1.2s" /> أمريكاني <break time="1.2s" /> جديد <break time="1.2s" /> إيه ده؟
+```
+
+## Egyptian Arabic · Teens · Lesson 3: What's in Karim's Bag?
+
+Folder: `public/curriculum/egyptian-teens/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (19)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-eh-da.mp3 | 2 | curious, laughing | إيه ده؟ |
+| 2 | l03-l-1.mp3 | 3 | curious girl | إيه ده يا كريم؟ |
+| 3 | l03-l-2.mp3 | 3 | proud, joking guy | ده طرشي! من عند تيتة. |
+| 4 | l03-l-3.mp3 | 3 | suspicious girl | وإيه دي؟ |
+| 5 | l03-l-4.mp3 | 3 | defensive, laughing guy | دي شرابات. نضيفة، والله! |
+| 6 | l03-da.mp3 | 4 |  | ده |
+| 7 | l03-di.mp3 | 4 |  | دي |
+| 8 | l03-eh-di.mp3 | 4 | curious | إيه دي؟ |
+| 9 | l03-eh-da-bilmasri.mp3 | 4 | curious | إيه ده بالمصري؟ |
+| 10 | l03-di-shanta.mp3 | 5 |  | دي شنطة. |
+| 11 | l03-di-sharabat.mp3 | 5 |  | دي شرابات. |
+| 12 | l03-di-sammaat.mp3 | 5 |  | دي سماعات. |
+| 13 | l03-da-mobayl.mp3 | 5 |  | ده موبايل. |
+| 14 | l03-da-shahin.mp3 | 5 |  | ده شاحن. |
+| 15 | l03-da-turshi.mp3 | 6 |  | ده طرشي. |
+| 16 | l03-da-muftah.mp3 | 6 |  | ده مفتاح. |
+| 17 | l03-di-kora.mp3 | 6 |  | دي كورة. |
+| 18 | l03-di-naddara.mp3 | 6 |  | دي نضارة. |
+| 19 | l03-fen-mobayli.mp3 | 10 | panicked girl | فين موبايلي؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه ده؟ <break time="1.2s" /> إيه ده يا كريم؟ <break time="1.2s" /> ده طرشي! من عند تيتة. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شرابات. نضيفة، والله! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> إيه ده بالمصري؟ <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي شرابات. <break time="1.2s" /> دي سماعات. <break time="1.2s" /> ده موبايل. <break time="1.2s" /> ده شاحن. <break time="1.2s" /> ده طرشي. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي كورة. <break time="1.2s" /> دي نضارة. <break time="1.2s" /> فين موبايلي؟
 ```
 
 ## English · General · Lesson 1: Hello, I'm…
