@@ -71,6 +71,7 @@ import { lessonEKI03 } from './content/egyptian-kids-2/l03-tetas-story.js';
 import { lessonEA301 } from './content/egyptian-adults-3/l01-in-my-opinion.js';
 import { lessonEA302 } from './content/egyptian-adults-3/l02-as-they-say.js';
 import { lessonEA303 } from './content/egyptian-adults-3/l03-at-street-speed.js';
+import { lessonETA01 } from './content/egyptian-teens-3/l01-who-should-be-captain.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -684,6 +685,19 @@ export const SUBJECTS: SubjectEntry[] = [
     // docs/curriculum/egyptian/MAP-intermediate.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['What Did You Do at the Match?', "Tomorrow's Final", "You Won't Believe What Happened", 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: The Club Trip', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', 'The Lost Phone', 'Review: The Concert', 'Intermediate Story'],
     lessons: { 1: lessonETI01, 2: lessonETI02, 3: lessonETI03 },
+  },  {
+    id: 'egyptian-teens-3',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Teens · Advanced',
+    titleAr: 'العامية المصرية · للشباب · المتقدم',
+    version: 'Teens · Advanced',
+    versionAr: 'الشباب · المتقدم',
+    audience: '12–17',
+    art: '/curriculum/banners/egyptian-teens.webp',
+    parts: [{ title: "Advanced · The Club's Last Summer", titleAr: 'المتقدم · آخر صيف في النادي', from: 1 }],
+    // docs/curriculum/egyptian/MAP-advanced.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['Who Should Be Captain?', "That's What They Say", 'Say It Again, Slower!'],
+    lessons: { 1: lessonETA01 },
   },
 
   {

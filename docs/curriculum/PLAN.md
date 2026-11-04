@@ -938,3 +938,9 @@ B3–B5 → continue lesson by lesson.
   note from Amm Sayed's son: fillers (يعني، بقى، طب، بقولك إيه), words that run together (بقولك، هستناك), listening
   for who / what / when, a short reply. New device: the word stream and its filter; wow: padding drops through and five
   key pieces stay. Graphics `g-ea33.tsx`. Adults Advanced now has 3 lessons. Next: Teens Advanced, then Kids Advanced.
+- **2026-11-04 — Egyptian Advanced (Teens), Lesson 1 "Who Should Be Captain?" (draft, `reviewed: false`).** New
+  catalog entry `egyptian-teens-3`. The club's last summer: the team picks a captain. أنا شايف / شايفة إن، في رأيي،
+  معاك / معاكي حق، أنا معاك، لأ طبعاً، معاك حق بس، مش متأكد / متأكدة، بصراحة. New devices: the captain board (each
+  agreement adds a tally) and the agree-o-meter, a gauge from full yes to full no; wow: the needle visits all five
+  phrases and rests on the soft no. Graphics `g-eta1.tsx` (`Chat` now exported from `g-eti1.tsx`). Next: Teens
+  Advanced Lesson 2 "That's What They Say".

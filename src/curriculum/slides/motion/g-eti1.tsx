@@ -21,7 +21,7 @@ const NOUR = CRIMSON;
 const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
 
 /** A phone with chat bubbles; `n` bubbles shown. */
-function Chat({ msgs, n, id }: { msgs: { t: string; who: string; c: string }[]; n: number; id?: string }) {
+export function Chat({ msgs, n, id }: { msgs: { t: string; who: string; c: string }[]; n: number; id?: string }) {
   return (
     <motion.div className="pointer-events-none absolute rounded-[36px]" style={{ left: 990, top: 160, width: 340, height: 600, background: '#2A1E18', boxShadow: SHADOW }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
       <div className="absolute inset-x-[14px] top-[44px] bottom-[20px] flex flex-col gap-3 rounded-[24px] p-4" style={{ background: '#F3EEE5' }}>

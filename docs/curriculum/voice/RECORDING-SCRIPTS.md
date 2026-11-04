@@ -2209,6 +2209,41 @@ One take: paste this whole block as one generation; I cut it into the files abov
 هنلعب الفاينل. <break time="1.2s" /> لعبنا الفاينل. <break time="1.2s" /> مش هتصدق اللي حصل في الفاينل! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> لما فضلت دقيقة، عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما فضلت دقيقة… <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين جابوا جون. لما فضلت دقيقة، عمر جاب جون. وفجأة الكورة جت عندي. وفي الآخر كسبنا! <break time="1.2s" /> مش هتصدق اللي حصل! <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
 ```
 
+## Egyptian Arabic · Teens · Advanced · Lesson 1: Who Should Be Captain?
+
+Folder: `public/curriculum/egyptian-teens-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-eh-raayak.mp3 | 2 |  | إيه رأيك؟ |
+| 2 | l01-story-1.mp3 | 4 | coach, warm | مين يبقى الكابتن؟ إيه رأيكم؟ |
+| 3 | l01-story-2.mp3 | 4 | teen boy, sure | أنا شايف إن نور لازم تبقى الكابتن. |
+| 4 | l01-story-3.mp3 | 4 | teen boy, loud, joking | لأ طبعاً! أنا أسرع واحد في الفريق! |
+| 5 | l01-story-4.mp3 | 4 | teen boy, calm | معاك حق إنك سريع، بس نور بتسمع الكل. |
+| 6 | l01-story-5.mp3 | 4 | teen girl, shy | بصراحة… مش متأكدة. |
+| 7 | l01-story-6.mp3 | 4 | teen boy, giving in, smiling | ماشي… عندك حق. نور! |
+| 8 | l01-shayef.mp3 | 5 |  | أنا شايف إن نور لازم تبقى الكابتن. |
+| 9 | l01-shayfa.mp3 | 5 |  | أنا شايفة إن كريم سريع. |
+| 10 | l01-fi-raayi.mp3 | 5 |  | في رأيي… |
+| 11 | l01-maak-haa.mp3 | 6 |  | معاك حق. |
+| 12 | l01-maaki-haa.mp3 | 6 |  | معاكي حق. |
+| 13 | l01-ana-maak.mp3 | 6 |  | أنا معاك! |
+| 14 | l01-la-tabaan.mp3 | 7 |  | لأ طبعاً! |
+| 15 | l01-maak-haa-bass.mp3 | 7 |  | معاك حق إنك سريع، بس نور بتسمع الكل. |
+| 16 | l01-mish-metakked.mp3 | 8 |  | مش متأكد. |
+| 17 | l01-bsaraha.mp3 | 8 |  | بصراحة… مش متأكدة. |
+| 18 | l01-meter.mp3 | 9 |  | أنا معاك. معاك حق. مش متأكد. معاك حق، بس… لأ طبعاً! |
+| 19 | l01-koshari.mp3 | 11 | teen boy, playful | أنا شايف إن الكشري أحلى من البيتزا. إيه رأيك؟ |
+| 20 | l01-elli-fat.mp3 | 13 | teen boy, dramatic, joking | اللي فات مات! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه رأيك؟ <break time="1.2s" /> مين يبقى الكابتن؟ إيه رأيكم؟ <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> لأ طبعاً! أنا أسرع واحد في الفريق! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> ماشي… عندك حق. نور! <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> أنا شايفة إن كريم سريع. <break time="1.2s" /> في رأيي… <break time="1.2s" /> معاك حق. <break time="1.2s" /> معاكي حق. <break time="1.2s" /> أنا معاك! <break time="1.2s" /> لأ طبعاً! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> أنا معاك. معاك حق. مش متأكد. معاك حق، بس… لأ طبعاً! <break time="1.2s" /> أنا شايف إن الكشري أحلى من البيتزا. إيه رأيك؟ <break time="1.2s" /> اللي فات مات!
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.
