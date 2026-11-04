@@ -1874,6 +1874,34 @@ One take: paste this whole block as one generation; I cut it into the files abov
 بكرة هنروح جنينة الحيوانات! <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> وأنا هشوف الزرافة! <break time="1.2s" /> وآدم هيشوف إيه؟ <break time="1.2s" /> أنا… هاكل آيس كريم! <break time="1.2s" /> هشوف <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> هشوف الزرافة! <break time="1.2s" /> هتشوف إيه؟ <break time="1.2s" /> هتشوفي إيه؟ <break time="1.2s" /> زياد هيشوف الأسد. <break time="1.2s" /> مريم هتشوف الزرافة. <break time="1.2s" /> هشوف الأسد، والزرافة، والفيل! <break time="1.2s" /> هتشوف إيه بكرة؟ <break time="1.2s" /> هتشوفي إيه بكرة؟ <break time="1.2s" /> لما كنت صغيرة… رحت نفس الجنينة. وبعدين…
 ```
 
+## Egyptian Arabic · Kids · Intermediate · Lesson 3: Teta's Story
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (13)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-1.mp3 | 3 | grandma, storytelling | لما كنت صغيرة، رحت جنينة الحيوانات. |
+| 2 | l03-story-2.mp3 | 3 | grandma, smiling | شفت القرد، وبعدين اديته موزة. |
+| 3 | l03-story-3.mp3 | 3 | grandma, dramatic | وفجأة… القرد خد الطاقية بتاعتي! |
+| 4 | l03-story-4.mp3 | 3 | boy, excited | يا خبر! وبعدين؟ |
+| 5 | l03-story-5.mp3 | 3 | grandma, laughing | في الآخر… رجّعلي الطاقية، وكل الموزة! |
+| 6 | l03-wbaadeen.mp3 | 4 |  | شفت القرد، وبعدين اديته موزة. |
+| 7 | l03-wbaadeen-q.mp3 | 4 |  | وبعدين؟ |
+| 8 | l03-fagaa.mp3 | 5 | dramatic | وفجأة… القرد خد الطاقية! |
+| 9 | l03-ya-khabar.mp3 | 5 | gasp | يا خبر! |
+| 10 | l03-fel-akher.mp3 | 6 |  | في الآخر رجّعلي الطاقية. |
+| 11 | l03-strip.mp3 | 7 | storytelling, lively | رحت جنينة الحيوانات، وبعدين اديت القرد موزة. وفجأة خد الطاقية! في الآخر رجّعها. |
+| 12 | l03-wbaadeen-2.mp3 | 9 | grandma, eager | وبعدين؟ |
+| 13 | l03-rohna.mp3 | 11 | children, happy | رحنا البحر! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+لما كنت صغيرة، رحت جنينة الحيوانات. <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وفجأة… القرد خد الطاقية بتاعتي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر… رجّعلي الطاقية، وكل الموزة! <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> وفجأة… القرد خد الطاقية! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر رجّعلي الطاقية. <break time="1.2s" /> رحت جنينة الحيوانات، وبعدين اديت القرد موزة. وفجأة خد الطاقية! في الآخر رجّعها. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر!
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.

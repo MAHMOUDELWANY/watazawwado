@@ -921,3 +921,7 @@ B3–B5 → continue lesson by lesson.
   giraffe, elephant) pop up in thought clouds; wow: the zoo memory game. Graphics `g-eki2.tsx`. Phones and voice notes
   in the Intermediate graphics moved from slate to espresso (owner: no deep-green/dark-cold surfaces). Next: Kids
   Lesson 3 "Teta's Story".
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 3 "Teta's Story" (draft, `reviewed: false`).** وبعدين، فجأة،
+  في الآخر in Teta's story of the monkey who took her hat; the hat flies out of its panel on فجأة; wow: four pictures
+  become a story with three words. Monkey, hat and banana added to the panel set. Graphics `g-eki3.tsx`. Egyptian
+  Intermediate now has 3 lessons in each age (Adults, Teens, Kids). Next: Egyptian Advanced map (Adults first).
