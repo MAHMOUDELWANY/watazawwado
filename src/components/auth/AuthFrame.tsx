@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Globe, ShieldCheck } from 'lucide-react';
@@ -10,7 +10,8 @@ import { ThemeToggle } from '../ui/ThemeToggle';
  * email code, staff login, set password) is one dark espresso room. A lamp follows the pointer and lights a
  * khatam pattern; the eight-point star is drawn behind the academy's name, which a pen of light writes in the
  * page's language only (Watazawwado left to right, or وتزوّدوا right to left) in our ink: teal, cream, gold,
- * crimson. The form sits on a glass card beside it (below it on phones), and the star's ring closes as you type.
+ * crimson. The form sits on a glass card beside it (below it on phones). The star's ring has one arc per field,
+ * lit only when that field is complete and valid; when every field is done the star seals in gold.
  */
 
 export const VERSE_TEXT = '﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾';
@@ -35,14 +36,18 @@ const InRoom = createContext(false);
 const rise = (reduce: boolean | null, delay: number) =>
   reduce ? {} : { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const } };
 
-/** Eight-point star (khatam) in hairlines; --off (1..0) closes the outer ring and --p turns the inner star as the visitor types. */
-function Khatam() {
+/** Eight-point star (khatam) in hairlines, ringed by one arc per field of the form (`marks`): an arc lights when its
+ *  field is complete, and when all are lit the star seals (the inner star turns home and the ring glows gold). */
+function Khatam({ marks, rtl }: { marks: boolean[]; rtl: boolean }) {
   const sq = 'M-50,-50H50V50H-50Z';
+  const n = marks.length;
+  const sealed = n > 0 && marks.every(Boolean);
+  // A gap of 2.5% of the ring between arcs; a single field gets the whole ring.
+  const seg = n > 1 ? 1 / n - 0.025 : 1;
   return (
-    <svg viewBox="-100 -100 200 200" className="room-star" aria-hidden="true">
+    <svg viewBox="-100 -100 200 200" className={`room-star${sealed ? ' is-sealed' : ''}`} aria-hidden="true">
       <g className="kh-spin">
         <circle r="96" pathLength={1} className="kh-draw kh-ring" style={{ animationDelay: '.05s' }} />
-        <circle r="96" pathLength={1} className="kh-progress" />
         <circle r="71" pathLength={1} className="kh-draw kh-gold" style={{ animationDelay: '.25s' }} />
         <path d={sq} pathLength={1} className="kh-draw kh-red" style={{ animationDelay: '.45s' }} />
         <path d={sq} pathLength={1} transform="rotate(45)" className="kh-draw kh-red" style={{ animationDelay: '.65s' }} />
@@ -52,6 +57,20 @@ function Khatam() {
         </g>
         <circle r="12" pathLength={1} className="kh-draw kh-red" style={{ animationDelay: '1.2s' }} />
       </g>
+      {/* The arcs start at the top and run in the reading direction: clockwise in English, the other way in Arabic. */}
+      <g transform={rtl ? 'scale(-1 1)' : undefined}>
+        {marks.map((on, i) => (
+          <circle
+            key={`${n}-${i}`}
+            r="96"
+            pathLength={1}
+            transform={`rotate(${-90 + (i / n) * 360 + (n > 1 ? 4.5 : 0)})`}
+            className={`kh-bead${on ? ' is-on' : ''}`}
+            style={{ strokeDasharray: `${seg} ${2 - seg}`, ['--seg' as string]: seg }}
+          />
+        ))}
+      </g>
+      {sealed && <circle r="96" className="kh-seal" />}
     </svg>
   );
 }
@@ -100,11 +119,11 @@ function NameInLight({ isAr }: { isAr: boolean }) {
 }
 
 /** The stage: the star, the name, and the verse (its English meaning on English pages). */
-function EntranceStage({ isAr }: { isAr: boolean }) {
+function EntranceStage({ isAr, marks }: { isAr: boolean; marks: boolean[] }) {
   useVerseFont();
   return (
     <div className="room-stage">
-      <Khatam />
+      <Khatam marks={marks} rtl={isAr} />
       <NameInLight isAr={isAr} />
       {isAr ? (
         <p className="room-tag room-tag-ar" dir="rtl" lang="ar">
@@ -154,26 +173,50 @@ export function EntranceRoom({ isAr, bar, footer, children }: { isAr: boolean; b
     return () => { window.removeEventListener('pointermove', move); cancelAnimationFrame(raf); };
   }, [reduce]);
 
-  // The star's outer ring closes as the visible fields fill in.
-  const onInput = () => {
-    const el = ref.current;
+  // One mark per visible field of the form, true once the field is complete: filled in and valid by its own rules
+  // (required, minLength, min, type=email, pattern). An email also needs a dot in its domain. Code boxes count one each.
+  const [marks, setMarks] = useState<boolean[]>([]);
+  useEffect(() => {
+    const el = ref.current?.querySelector('.room-main');
     if (!el) return;
-    const fields = Array.from(el.querySelectorAll<HTMLInputElement>('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"])'))
-      .filter((i) => i.offsetParent !== null);
-    if (!fields.length) return;
-    const p = fields.reduce((sum, i) => sum + Math.min(i.value.length / 6, 1), 0) / fields.length;
-    el.style.setProperty('--p', String(p));
-    el.style.setProperty('--off', String(1 - p));
-  };
+    let raf = 0;
+    const measure = () => {
+      cancelAnimationFrame(raf);
+      // After React has committed the change (a pasted code fills every box in one render).
+      raf = requestAnimationFrame(() => {
+        // A checkbox the form needs (data-ring-mark, e.g. "I am 18 or older") counts too, lit when ticked.
+        const fields = Array.from(el.querySelectorAll<HTMLInputElement>('input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]), input[type="checkbox"][data-ring-mark]'))
+          .filter((i) => i.offsetParent !== null);
+        const next = fields.map((i) => {
+          if (i.type === 'checkbox') return i.checked;
+          const v = i.value.trim();
+          if (!v || !i.checkValidity()) return false;
+          return i.type !== 'email' || /@[^@\s]+\.[^@.\s]{2,}$/.test(v);
+        });
+        setMarks((prev) => (prev.join() === next.join() ? prev : next));
+        ref.current?.style.setProperty('--p', String(next.length ? next.filter(Boolean).length / next.length : 0));
+      });
+    };
+    // A view change (sign in, new account, code) changes the fields; autofill fills them without typing.
+    // The card's size changes when it first shows and when the view changes, so that re-counts the fields too.
+    const mo = new MutationObserver(measure);
+    mo.observe(el, { childList: true, subtree: true });
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    const events = ['input', 'change', 'paste', 'keyup', 'focusin'];
+    events.forEach((t) => el.addEventListener(t, measure));
+    measure();
+    return () => { mo.disconnect(); ro.disconnect(); events.forEach((t) => el.removeEventListener(t, measure)); cancelAnimationFrame(raf); };
+  }, []);
 
   return (
     <InRoom.Provider value={true}>
-      <div ref={ref} onInput={onInput} className="room">
+      <div ref={ref} className="room">
         <div className="room-pattern" aria-hidden="true" />
         <div className="room-glow" aria-hidden="true" />
         <header className="entrance-bar">{bar}</header>
         <div className="room-grid">
-          <EntranceStage isAr={isAr} />
+          <EntranceStage isAr={isAr} marks={marks} />
           <main className="room-main">{children}</main>
         </div>
         {footer}

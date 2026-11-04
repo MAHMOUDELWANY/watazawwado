@@ -38,7 +38,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   const [accountType, setAccountType] = useState<'self' | 'family'>('self');
   const [confirmedAdult, setConfirmedAdult] = useState(false);
   const [guardianAge, setGuardianAge] = useState('');
-  const { signIn, signUp, signInWithGoogle, verifyOtp, resendOtp, resetPassword, updatePassword, signOut } = useTeacherAuth();
+  const { signIn, signUp, signInWithGoogle, verifyOtp, resendOtp, resetPassword, updatePassword, signOut, user, userRole: authRole, loading: authLoading } = useTeacherAuth();
   const navigate = useNavigate();
 
   /** Sign-up only: the age gate's message, or '' when the form may create the account. */
@@ -107,6 +107,19 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     html.style.overflow = 'hidden';
     return () => { html.style.overflow = prev; };
   }, [isOpen]);
+
+  // Already signed in (a saved session), or signed in from another tab: the sign-in window has nothing to do, so it
+  // closes and opens the account instead of covering it. Only before this window starts its own sign-in, so a fresh
+  // sign-up keeps its code and welcome steps.
+  const startedHere = React.useRef(false);
+  if (isSubmitting) startedHere.current = true;
+  useEffect(() => {
+    if (!isOpen) { startedHere.current = false; return; }
+    if (authLoading || !user || authRole !== 'student' || startedHere.current) return;
+    if (view !== 'login' && view !== 'signup') return;
+    onClose();
+    navigate('/student', { replace: true });
+  }, [isOpen, authLoading, user, authRole, view, onClose, navigate]);
 
   if (!isOpen) return null;
 
@@ -351,6 +364,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                             <label className="flex items-start gap-2.5 pt-1 cursor-pointer select-none">
                               <input
                                 type="checkbox"
+                                data-ring-mark
                                 checked={confirmedAdult}
                                 onChange={(e) => { setConfirmedAdult(e.target.checked); setError(''); }}
                                 className="mt-0.5 w-[18px] h-[18px] shrink-0 accent-[#087D91] cursor-pointer"
