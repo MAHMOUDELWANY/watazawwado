@@ -9,6 +9,7 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Cause: `resetPassword` redirected to `/#reset-password`; Supabase appends `#access_token=…&type=recovery`, so the URL had two `#` and supabase-js read the key as `reset-password#access_token`. Every reset since that redirect was added failed the same way.
 - Fix: redirect to `/` (`src/lib/auth.tsx`); the dialog already opens on `type=recovery` in the hash.
 - Checks: tsc, Vite build. Not run: the server-backed suite (no `.env` in the worktree; no server code changed). Production check needs a fresh reset email; the old link is used up.
+
 ### Sign-in room: day and night, language switch everywhere, contrast (2026-11-04)
 - Owner: some buttons had no contrast, there was no day/night mode or language switch on every page, and the back buttons needed clearer contrast.
 - The room now follows the site theme: cream paper by day (crimson links, a darker ink for the name: teal, gold, burnt gold, crimson) and the espresso room at night. Colours are room tokens on `.entrance` / `.dark .entrance`; the name's gradient reads `--ink-1..5`.
