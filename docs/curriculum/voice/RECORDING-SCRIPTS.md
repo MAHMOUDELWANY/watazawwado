@@ -636,6 +636,58 @@ One take: paste this whole block as one generation; I cut it into the files abov
 قَلْب <break time="1.2s" /> كَلْب <break time="1.2s" /> قُلْ <break time="1.2s" /> كُلْ <break time="1.2s" /> أَقْ <break time="1.2s" /> أَكْ
 ```
 
+## Egyptian Arabic · Sounds · Lesson 1: Where Did the Qaf Go?
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (6)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | polite, careful, like a textbook | أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ. |
+| 2 | l01-story-3.mp3 | 3 | polite, careful | وَأُرِيدُ قَلَمًا أَيْضًا. |
+| 3 | l01-qahwa-f.mp3 | 4 |  | قَهْوَةٌ |
+| 4 | l01-qalam-f.mp3 | 4 |  | قَلَمٌ |
+| 5 | l01-jamil-f.mp3 | 7 |  | جَمِيلٌ |
+| 6 | l01-dhahab-f.mp3 | 13 |  | ذَهَبٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ. <break time="1.2s" /> وَأُرِيدُ قَلَمًا أَيْضًا. <break time="1.2s" /> قَهْوَةٌ <break time="1.2s" /> قَلَمٌ <break time="1.2s" /> جَمِيلٌ <break time="1.2s" /> ذَهَبٌ
+```
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-2.mp3 | 3 | waiter, cheerful | قهوة؟ حاضر يا باشا! |
+| 2 | l01-story-4.mp3 | 3 | waiter, pointing | قلم؟ عندك الكشك اللي جنبنا. |
+| 3 | l01-story-5.mp3 | 3 | doorman, laughing warmly | يا آدم، إنت بتتكلم زي الكتاب! جميل! |
+| 4 | l01-ahwa-e.mp3 | 4 | clear | قهوة |
+| 5 | l01-alam-e.mp3 | 4 | clear | قلم |
+| 6 | l01-alb.mp3 | 5 |  | قلب |
+| 7 | l01-aal.mp3 | 5 |  | قال |
+| 8 | l01-foo.mp3 | 5 |  | فوق |
+| 9 | l01-suu.mp3 | 5 |  | سوق |
+| 10 | l01-sadii.mp3 | 5 |  | صديق |
+| 11 | l01-quraan.mp3 | 6 |  | القرآن |
+| 12 | l01-qadiyya.mp3 | 6 |  | القضية |
+| 13 | l01-gamiil.mp3 | 7 |  | جميل |
+| 14 | l01-gamb.mp3 | 7 |  | جنب |
+| 15 | l01-gidiid.mp3 | 7 |  | جديد |
+| 16 | l01-gama.mp3 | 7 |  | جامعة |
+| 17 | l01-sentence.mp3 | 9 | relaxed, natural speed | أنا عايز أقعد في القهوة اللي جنب الجامعة. |
+| 18 | l01-wahid-ahwa.mp3 | 11 | friendly | واحد قهوة، لو سمحت. |
+| 19 | l01-fen-gama.mp3 | 11 | asking | فين الجامعة؟ |
+| 20 | l01-dahab-e.mp3 | 13 | jeweller, inviting | دهب؟ عندنا دهب جميل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قهوة؟ حاضر يا باشا! <break time="1.2s" /> قلم؟ عندك الكشك اللي جنبنا. <break time="1.2s" /> يا آدم، إنت بتتكلم زي الكتاب! جميل! <break time="1.2s" /> قهوة <break time="1.2s" /> قلم <break time="1.2s" /> قلب <break time="1.2s" /> قال <break time="1.2s" /> فوق <break time="1.2s" /> سوق <break time="1.2s" /> صديق <break time="1.2s" /> القرآن <break time="1.2s" /> القضية <break time="1.2s" /> جميل <break time="1.2s" /> جنب <break time="1.2s" /> جديد <break time="1.2s" /> جامعة <break time="1.2s" /> أنا عايز أقعد في القهوة اللي جنب الجامعة. <break time="1.2s" /> واحد قهوة، لو سمحت. <break time="1.2s" /> فين الجامعة؟ <break time="1.2s" /> دهب؟ عندنا دهب جميل!
+```
+
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
 
 Folder: `public/curriculum/egyptian-adults/audio/`.

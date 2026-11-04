@@ -870,4 +870,10 @@ B3–B5 → continue lesson by lesson.
   12+ "The Debate Club" (13 pages each). Brief `fusha/L3-03-inna-and-sisters.md`, graphics `g-fx3.tsx` (the seesaw).
   Fusha Levels 2 and 3 now have their first 3 lessons in both versions (LEVELS-PLAN target). Every step screenshotted.
   Next (LEVELS-PLAN order): Egyptian Sounds (12+) map and Lessons 1-3, then Egyptian Intermediate and Advanced.
+- **2026-11-04 · Egyptian Sounds (12+) map and Lesson 1 built** (draft, overnight run): map `egyptian/MAP-sounds.md`
+  (8 lessons, for learners who know Fusha; Adam studied Fusha in London and lands in Cairo). Catalog entry
+  `egyptian-sounds` (group `egyptian`, 12+). Lesson 1 "Where Did the Qaf Go?" (13 pages: ق → catch, ج → g, the words
+  that keep q). Graphics `g-es1.tsx` (twins: a book card for the Fusha word, a street sign for the Cairo word, a dial
+  for the letter that moves). Adam's Fusha lines use the Fusha clone; the Egyptian lines wait for the owner's own
+  recordings. Every step screenshotted. Next: Sounds Lesson 2 "Th and Dh".
 
