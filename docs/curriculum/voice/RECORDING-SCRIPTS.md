@@ -974,6 +974,47 @@ One take: paste this whole block as one generation; I cut it into the files abov
 بروح الشغل كل يوم. <break time="1.2s" /> امبارح رحت السوق. <break time="1.2s" /> صباح الخير يا آدم! عملت إيه امبارح؟ <break time="1.2s" /> رحت الأهرامات! <break time="1.2s" /> بجد؟ مع مين؟ <break time="1.2s" /> مع عم سيد. هو راح معايا. <break time="1.2s" /> وإنتي يا منى، رحتي فين امبارح؟ <break time="1.2s" /> أنا؟ رحت الشغل… زي كل يوم! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الشغل. <break time="1.2s" /> رحت السوق. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> هو راح معايا. <break time="1.2s" /> شربت شاي. <break time="1.2s" /> شفت الأهرامات. <break time="1.2s" /> كلت كشري. <break time="1.2s" /> رحت <break time="1.2s" /> رحتي <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنروح إسكندرية!
 ```
 
+## Egyptian Arabic · Adults · Intermediate · Lesson 2: Tomorrow, God Willing
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-rooht.mp3 | 2 |  | رحت |
+| 2 | l02-hanrooh.mp3 | 2 |  | بكرة هنروح إسكندرية. |
+| 3 | l02-story-1.mp3 | 4 | woman, excited | بكرة هنروح إسكندرية! |
+| 4 | l02-story-2.mp3 | 4 | man, curious | بجد؟ هتمشوا إمتى؟ |
+| 5 | l02-story-3.mp3 | 4 | woman, cheerful | هنمشي الساعة سبعة الصبح، إن شاء الله. |
+| 6 | l02-story-4.mp3 | 4 | man, curious | وهتعملوا إيه هناك؟ |
+| 7 | l02-story-5.mp3 | 4 | woman, inviting | هناكل سمك ونقعد على البحر. هتيجي معانا؟ |
+| 8 | l02-story-6.mp3 | 4 | man, delighted | أكيد هاجي! |
+| 9 | l02-barooh.mp3 | 5 |  | بروح |
+| 10 | l02-harooh.mp3 | 5 |  | هروح |
+| 11 | l02-bokra-harooh.mp3 | 5 |  | بكرة هروح الشغل. |
+| 12 | l02-hatrooh.mp3 | 6 |  | هتروح |
+| 13 | l02-hatroohi.mp3 | 6 |  | هتروحي |
+| 14 | l02-hayrooh.mp3 | 6 |  | هيروح |
+| 15 | l02-hanrooh-2.mp3 | 6 |  | هنروح |
+| 16 | l02-mish-harooh.mp3 | 7 |  | مش هروح. |
+| 17 | l02-andi-shoghl.mp3 | 7 |  | أنا مش هروح، عندي شغل. |
+| 18 | l02-inshallah.mp3 | 8 |  | إن شاء الله |
+| 19 | l02-baad-bokra.mp3 | 8 |  | بعد بكرة |
+| 20 | l02-usbooa-gay.mp3 | 8 |  | الأسبوع الجاي |
+| 21 | l02-rooht-2.mp3 | 9 |  | رحت |
+| 22 | l02-barooh-2.mp3 | 9 |  | بروح |
+| 23 | l02-harooh-2.mp3 | 9 |  | هروح |
+| 24 | l02-hatamel-eh.mp3 | 11 | friendly, to a man | هتعمل إيه بكرة؟ |
+| 25 | l02-hatameli-eh.mp3 | 11 | friendly, to a woman | هتعملي إيه بكرة؟ |
+| 26 | l02-fagaa.mp3 | 13 | man, out of breath | وفجأة… القطر مشي! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+رحت <break time="1.2s" /> بكرة هنروح إسكندرية. <break time="1.2s" /> بكرة هنروح إسكندرية! <break time="1.2s" /> بجد؟ هتمشوا إمتى؟ <break time="1.2s" /> هنمشي الساعة سبعة الصبح، إن شاء الله. <break time="1.2s" /> وهتعملوا إيه هناك؟ <break time="1.2s" /> هناكل سمك ونقعد على البحر. هتيجي معانا؟ <break time="1.2s" /> أكيد هاجي! <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> بكرة هروح الشغل. <break time="1.2s" /> هتروح <break time="1.2s" /> هتروحي <break time="1.2s" /> هيروح <break time="1.2s" /> هنروح <break time="1.2s" /> مش هروح. <break time="1.2s" /> أنا مش هروح، عندي شغل. <break time="1.2s" /> إن شاء الله <break time="1.2s" /> بعد بكرة <break time="1.2s" /> الأسبوع الجاي <break time="1.2s" /> رحت <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> وفجأة… القطر مشي!
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.

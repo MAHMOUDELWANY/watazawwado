@@ -893,3 +893,7 @@ B3–B5 → continue lesson by lesson.
   tile; wow: the same five endings as the Fusha past. Graphics `g-ei1.tsx`. Egyptian lines wait for the owner's
   recordings. Franco Intermediate follows once the Adults lessons are reviewed (the mirror is wired to Beginner only).
   Next: Adults Intermediate Lesson 2 "Tomorrow, God Willing".
+- **2026-11-04 — Egyptian Intermediate (Adults), Lesson 2 "Tomorrow, God Willing" (draft, `reviewed: false`).** The
+  future: هـ + present (هروح، هتروح، هتروحي، هيروح، هنروح), مش هـ, إن شاء الله and the time words; Mona's tickets to
+  Alexandria. New device: the timeline read right to left (yesterday · every day · tomorrow); wow: one verb at all
+  three stops (رحت، بروح، هروح). Graphics `g-ei2.tsx`. Next: Lesson 3 "And Then…".

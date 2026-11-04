@@ -84,6 +84,8 @@ export type SceneId =
   | 'es3Cover' | 'es3Recall' | 'es3Metro' | 'es3Story' | 'es3Endings' | 'es3Shrink' | 'es3Drop' | 'es3Stress' | 'es3Music' | 'es3Sort' | 'es3Talk' | 'es3Mission' | 'es3Next'
   // Egyptian · Adults · Intermediate · Lesson 1 (slides/motion/g-ei1.tsx)
   | 'ei1Cover' | 'ei1Recall' | 'ei1Stairs' | 'ei1Story' | 'ei1Ana' | 'ei1Enta' | 'ei1Huwa' | 'ei1More' | 'ei1Pattern' | 'ei1Sort' | 'ei1Talk' | 'ei1Mission' | 'ei1Next'
+  // Egyptian · Adults · Intermediate · Lesson 2 (slides/motion/g-ei2.tsx)
+  | 'ei2Cover' | 'ei2Recall' | 'ei2News' | 'ei2Story' | 'ei2Swap' | 'ei2Who' | 'ei2Mish' | 'ei2Inshallah' | 'ei2Line' | 'ei2Sort' | 'ei2Talk' | 'ei2Mission' | 'ei2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

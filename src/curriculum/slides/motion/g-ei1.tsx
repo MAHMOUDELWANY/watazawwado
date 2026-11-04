@@ -16,7 +16,7 @@ import { BookCard, StreetCard } from './g-es1';
 const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
 
 /** A verb tile (whole word) with its ending tag below; an empty `end` draws a dashed slot. */
-function Verb({ x, y, word, end, who, id, delay = 0, size = 44, hot = false }: { x: number; y: number; word: string; end: string; who?: string; id?: string; delay?: number; size?: number; hot?: boolean }) {
+export function Verb({ x, y, word, end, who, id, delay = 0, size = 44, hot = false, color = GOLD }: { x: number; y: number; word: string; end: string; who?: string; id?: string; delay?: number; size?: number; hot?: boolean; color?: string }) {
   const tile = (
     <span className="inline-flex rounded-[18px]" style={{ padding: '2px 22px 4px', background: '#FFFDF8', boxShadow: hot ? `0 0 0 4px ${GOLD}, ${SHADOW}` : SHADOW }}>
       <ArText size={size}>{word}</ArText>
@@ -28,7 +28,7 @@ function Verb({ x, y, word, end, who, id, delay = 0, size = 44, hot = false }: {
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease }}>{id ? <Hear id={id}>{tile}</Hear> : tile}</motion.div>
       </div>
       <div className="absolute" style={{ left: x, top: y + size * 0.9 + 6, transform: 'translate(-50%, 0)' }}>
-        <motion.span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full font-sans font-black" style={{ padding: '4px 14px', fontSize: 18, background: end ? GOLD : 'transparent', color: end ? '#fff' : INK_TEXT, border: end ? 'none' : `2px dashed ${INK_TEXT}55` }}
+        <motion.span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full font-sans font-black" style={{ padding: '4px 14px', fontSize: 18, background: end ? color : 'transparent', color: end ? '#fff' : INK_TEXT, border: end ? 'none' : `2px dashed ${INK_TEXT}55` }}
           initial={{ opacity: 0, y: 26, scale: 0.6 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.5, duration: 0.7, delay: delay + 0.4 }}>
           {end || '—'}{who && <span className="font-bold" style={{ opacity: 0.85 }}>{who}</span>}
         </motion.span>
@@ -38,7 +38,7 @@ function Verb({ x, y, word, end, who, id, delay = 0, size = 44, hot = false }: {
 }
 
 /** A calendar sheet: seven small days, with one (yesterday) or all (every day) lit. */
-function Week({ x, y, lit, label, delay = 0 }: { x: number; y: number; lit: 'all' | 'one'; label: string; delay?: number }) {
+export function Week({ x, y, lit, label, delay = 0 }: { x: number; y: number; lit: 'all' | 'one'; label: string; delay?: number }) {
   return (
     <motion.div className="pointer-events-none absolute flex flex-col items-center gap-2" style={{ left: x - 170, top: y, width: 340 }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease }}>
       <div className="flex gap-2">
