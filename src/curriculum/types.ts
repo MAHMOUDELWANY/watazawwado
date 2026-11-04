@@ -73,6 +73,9 @@ export type SceneId =
   // Fusha · Level 3 · Lesson 2 (slides/motion/g-fx2.tsx): Kids fx2, 12+ fy2
   | 'fx2Cover' | 'fx2Recall' | 'fx2Crash' | 'fx2Story' | 'fx2Was' | 'fx2Switch' | 'fx2She' | 'fx2Gone' | 'fx2Why' | 'fx2Sort' | 'fx2Talk' | 'fx2Mission' | 'fx2Next'
   | 'fy2Cover' | 'fy2News' | 'fy2Story' | 'fy2Past' | 'fy2Present' | 'fy2Stand' | 'fy2Forms' | 'fy2Missing' | 'fy2Read' | 'fy2Sort' | 'fy2Talk' | 'fy2Mission' | 'fy2Next'
+  // Fusha · Level 3 · Lesson 3 (slides/motion/g-fx3.tsx): Kids fx3, 12+ fy3
+  | 'fx3Cover' | 'fx3Recall' | 'fx3Trial' | 'fx3Story' | 'fx3Inna' | 'fx3Seesaw' | 'fx3Lakinna' | 'fx3Hu' | 'fx3Verdict' | 'fx3Sort' | 'fx3Talk' | 'fx3Mission' | 'fx3Next'
+  | 'fy3Cover' | 'fy3Motion' | 'fy3Story' | 'fy3Inna' | 'fy3Seesaw' | 'fy3Lakinna' | 'fy3Moods' | 'fy3Pronouns' | 'fy3Six' | 'fy3Sort' | 'fy3Talk' | 'fy3Mission' | 'fy3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

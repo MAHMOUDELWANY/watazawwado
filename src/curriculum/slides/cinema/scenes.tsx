@@ -43,6 +43,7 @@ import { Fv2CoverGraphic, Fv2RecallGraphic, Fv2MondayGraphic, Fv2StoryGraphic, F
 import { Fv3CoverGraphic, Fv3RecallGraphic, Fv3AlbumGraphic, Fv3StoryGraphic, Fv3FatherGraphic, Fv3BrotherGraphic, Fv3AfterGraphic, Fv3KunyaGraphic, Fv3DhuGraphic, Fv3TalkGraphic, Fv3MissionGraphic, Fv3NextGraphic, Fw3CoverGraphic, Fw3BreakGraphic, Fw3StoryGraphic, Fw3FiveGraphic, Fw3UGraphic, Fw3AGraphic, Fw3IGraphic, Fw3JobsGraphic, Fw3KunyaGraphic, Fw3TalkGraphic, Fw3MissionGraphic, Fw3NextGraphic } from '../motion/g-fv3';
 import { Fx1CoverGraphic, Fx1RecallGraphic, Fx1BikeGraphic, Fx1StoryGraphic, Fx1RootGraphic, Fx1TwoGraphic, Fx1ThreeGraphic, Fx1MouldGraphic, Fx1PresentGraphic, Fx1TalkGraphic, Fx1MissionGraphic, Fx1NextGraphic, Fy1CoverGraphic, Fy1BoardGraphic, Fy1StoryGraphic, Fy1PatternGraphic, Fy1TwoGraphic, Fy1ThreeGraphic, Fy1FourGraphic, Fy1LadderGraphic, Fy1DictionaryGraphic, Fy1TalkGraphic, Fy1MissionGraphic, Fy1NextGraphic } from '../motion/g-fx1';
 import { Fx2CoverGraphic, Fx2RecallGraphic, Fx2CrashGraphic, Fx2StoryGraphic, Fx2WasGraphic, Fx2SwitchGraphic, Fx2SheGraphic, Fx2GoneGraphic, Fx2WhyGraphic, Fx2TalkGraphic, Fx2MissionGraphic, Fx2NextGraphic, Fy2CoverGraphic, Fy2NewsGraphic, Fy2StoryGraphic, Fy2PastGraphic, Fy2PresentGraphic, Fy2StandGraphic, Fy2FormsGraphic, Fy2MissingGraphic, Fy2ReadGraphic, Fy2TalkGraphic, Fy2MissionGraphic, Fy2NextGraphic } from '../motion/g-fx2';
+import { Fx3CoverGraphic, Fx3RecallGraphic, Fx3TrialGraphic, Fx3StoryGraphic, Fx3InnaGraphic, Fx3SeesawGraphic, Fx3LakinnaGraphic, Fx3HuGraphic, Fx3VerdictGraphic, Fx3TalkGraphic, Fx3MissionGraphic, Fx3NextGraphic, Fy3CoverGraphic, Fy3MotionGraphic, Fy3StoryGraphic, Fy3InnaGraphic, Fy3SeesawGraphic, Fy3LakinnaGraphic, Fy3MoodsGraphic, Fy3PronounsGraphic, Fy3SixGraphic, Fy3TalkGraphic, Fy3MissionGraphic, Fy3NextGraphic } from '../motion/g-fx3';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Tj3CoverGraphic, Tj3RecallGraphic, Tj3DoorsGraphic, Tj3ThroatGraphic, Tj3IzharGraphic, Tj3TanweenGraphic, Tj3WhyGraphic, Tj3MushafGraphic, Tj3MistakesGraphic, Tj3SpotGraphic, Tj3ReciteGraphic, Tj3MissionGraphic, Tj3NextGraphic } from '../motion/g-tj3';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -572,6 +573,31 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   fy2Talk: onStage({ tone: 'light', Graphic: Fy2TalkGraphic, keepOnAsk: true }),
   fy2Mission: onStage({ tone: 'light', Graphic: Fy2MissionGraphic }),
   fy2Next: onStage({ tone: 'light', Graphic: Fy2NextGraphic }),
+  // Fusha · Level 3 · Lesson 3 (Kids fx3, 12+ fy3)
+  fx3Cover: onStage({ tone: 'light', Graphic: Fx3CoverGraphic }),
+  fx3Recall: onStage({ tone: 'light', Graphic: Fx3RecallGraphic }),
+  fx3Trial: onStage({ tone: 'light', Graphic: Fx3TrialGraphic }),
+  fx3Story: onStage({ tone: 'light', Graphic: Fx3StoryGraphic }),
+  fx3Inna: onStage({ tone: 'light', Graphic: Fx3InnaGraphic }),
+  fx3Seesaw: onStage({ tone: 'light', Graphic: Fx3SeesawGraphic }),
+  fx3Lakinna: onStage({ tone: 'light', Graphic: Fx3LakinnaGraphic }),
+  fx3Hu: onStage({ tone: 'light', Graphic: Fx3HuGraphic }),
+  fx3Verdict: onStage({ tone: 'light', Graphic: Fx3VerdictGraphic }),
+  fx3Talk: onStage({ tone: 'light', Graphic: Fx3TalkGraphic, keepOnAsk: true }),
+  fx3Mission: onStage({ tone: 'light', Graphic: Fx3MissionGraphic }),
+  fx3Next: onStage({ tone: 'light', Graphic: Fx3NextGraphic }),
+  fy3Cover: onStage({ tone: 'light', Graphic: Fy3CoverGraphic }),
+  fy3Motion: onStage({ tone: 'light', Graphic: Fy3MotionGraphic }),
+  fy3Story: onStage({ tone: 'light', Graphic: Fy3StoryGraphic }),
+  fy3Inna: onStage({ tone: 'light', Graphic: Fy3InnaGraphic }),
+  fy3Seesaw: onStage({ tone: 'light', Graphic: Fy3SeesawGraphic }),
+  fy3Lakinna: onStage({ tone: 'light', Graphic: Fy3LakinnaGraphic }),
+  fy3Moods: onStage({ tone: 'light', Graphic: Fy3MoodsGraphic }),
+  fy3Pronouns: onStage({ tone: 'light', Graphic: Fy3PronounsGraphic }),
+  fy3Six: onStage({ tone: 'light', Graphic: Fy3SixGraphic }),
+  fy3Talk: onStage({ tone: 'light', Graphic: Fy3TalkGraphic, keepOnAsk: true }),
+  fy3Mission: onStage({ tone: 'light', Graphic: Fy3MissionGraphic }),
+  fy3Next: onStage({ tone: 'light', Graphic: Fy3NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),

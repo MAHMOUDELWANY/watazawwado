@@ -484,6 +484,39 @@ One take: paste this whole block as one generation; I cut it into the files abov
 عَلَّمَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ! <break time="1.2s" /> وَٱنْظُرْ يَا جِدِّي، فُتِحَ ٱلشُّبَّاكُ! <break time="1.2s" /> وَأُكِلَ ٱلسَّمَكُ! <break time="1.2s" /> مَنْ كَسَرَ ٱلْمَزْهَرِيَّةَ؟ <break time="1.2s" /> مِشْمِشٌ كَسَرَهَا! <break time="1.2s" /> مِسْكِينٌ مِشْمِشٌ! <break time="1.2s" /> كَسَرَ <break time="1.2s" /> كُسِرَ <break time="1.2s" /> كَسَرَ مِشْمِشٌ ٱلْمَزْهَرِيَّةَ. <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> أَكَلَ <break time="1.2s" /> أُكِلَ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كُتِبَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ. <break time="1.2s" /> فُتِحَ ٱلشُّبَّاكُ. <break time="1.2s" /> أُكِلَ ٱلسَّمَكُ. <break time="1.2s" /> فُتِحَ ٱلْبَابُ لِلضُّيُوفِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ! <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ!
 ```
 
+## Fusha Arabic · Kids · Level 3 · Lesson 3: Indeed and But
+
+Folder: `public/curriculum/fusha-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-ukila-samak.mp3 | 2 | mysterious | أُكِلَ ٱلسَّمَكُ. |
+| 2 | l03-story-1.mp3 | 4 | grandfather, like a judge | مَنْ أَكَلَ ٱلسَّمَكَ؟ |
+| 3 | l03-story-2.mp3 | 4 | girl, certain | إِنَّ مِشْمِشًا بَرِيءٌ يَا جِدِّي! |
+| 4 | l03-story-3.mp3 | 4 | boy, pointing | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+| 5 | l03-story-4.mp3 | 4 | girl, pleading | إِنَّهُ جَائِعٌ، مِسْكِينٌ! |
+| 6 | l03-story-5.mp3 | 4 | grandfather, laughing | إِنَّ مِشْمِشًا ذَكِيٌّ، لَكِنَّهُ لِصٌّ صَغِيرٌ! |
+| 7 | l03-mishmish-bari.mp3 | 5 |  | مِشْمِشٌ بَرِيءٌ. |
+| 8 | l03-inna.mp3 | 5 | strong | إِنَّ |
+| 9 | l03-inna-mishmishan.mp3 | 5 | certain | إِنَّ مِشْمِشًا بَرِيءٌ! |
+| 10 | l03-samak-ladhidh.mp3 | 6 |  | ٱلسَّمَكُ لَذِيذٌ. |
+| 11 | l03-inna-samak.mp3 | 6 | very sure | إِنَّ ٱلسَّمَكَ لَذِيذٌ. |
+| 12 | l03-lakinna.mp3 | 7 | strong | لَكِنَّ |
+| 13 | l03-lakinna-samak.mp3 | 7 | boy, triumphant | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+| 14 | l03-innahu-jaai.mp3 | 8 | girl, pleading | إِنَّهُ جَائِعٌ! |
+| 15 | l03-lakinnahu-liss.mp3 | 8 | grandfather, laughing | لَكِنَّهُ لِصٌّ صَغِيرٌ! |
+| 16 | l03-inna-ghurfa.mp3 | 11 | certain | إِنَّ ٱلْغُرْفَةَ نَظِيفَةٌ! |
+| 17 | l03-lakinna-ghurfa.mp3 | 11 | laughing | لَكِنَّ ٱلْأَلْعَابَ عَلَى ٱلْأَرْضِ! |
+| 18 | l03-taallamtu.mp3 | 13 | girl, proud | تَعَلَّمْتُ كَثِيرًا، وَتَعَاوَنَّا! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُكِلَ ٱلسَّمَكُ. <break time="1.2s" /> مَنْ أَكَلَ ٱلسَّمَكَ؟ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ يَا جِدِّي! <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! <break time="1.2s" /> إِنَّهُ جَائِعٌ، مِسْكِينٌ! <break time="1.2s" /> إِنَّ مِشْمِشًا ذَكِيٌّ، لَكِنَّهُ لِصٌّ صَغِيرٌ! <break time="1.2s" /> مِشْمِشٌ بَرِيءٌ. <break time="1.2s" /> إِنَّ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ! <break time="1.2s" /> ٱلسَّمَكُ لَذِيذٌ. <break time="1.2s" /> إِنَّ ٱلسَّمَكَ لَذِيذٌ. <break time="1.2s" /> لَكِنَّ <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! <break time="1.2s" /> إِنَّهُ جَائِعٌ! <break time="1.2s" /> لَكِنَّهُ لِصٌّ صَغِيرٌ! <break time="1.2s" /> إِنَّ ٱلْغُرْفَةَ نَظِيفَةٌ! <break time="1.2s" /> لَكِنَّ ٱلْأَلْعَابَ عَلَى ٱلْأَرْضِ! <break time="1.2s" /> تَعَلَّمْتُ كَثِيرًا، وَتَعَاوَنَّا!
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -1294,6 +1327,41 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. <break time="1.2s" /> مَنْ فَتَحَهُ؟ <break time="1.2s" /> لَا يُذْكَرُ ٱلْفَاعِلُ. ٱلْمُهِمُّ ٱلطَّرِيقُ. <break time="1.2s" /> وَتُبْنَى مَدْرَسَةٌ جَدِيدَةٌ بِجَانِبِهِ. <break time="1.2s" /> وَمَتَى يُفْتَحُ ٱلْمَطَارُ؟ <break time="1.2s" /> هَذَا سُؤَالٌ صَعْبٌ! <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> ذَكَرَ <break time="1.2s" /> ذُكِرَ <break time="1.2s" /> فُتِحَتِ ٱلْمَكْتَبَةُ. <break time="1.2s" /> يَفْتَحُ <break time="1.2s" /> يُفْتَحُ <break time="1.2s" /> يُذْكَرُ <break time="1.2s" /> تُبْنَى مَدْرَسَةٌ. <break time="1.2s" /> فَتَحَتِ ٱلْبَلَدِيَّةُ ٱلطَّرِيقَ. <break time="1.2s" /> فُتِحَ ٱلطَّرِيقُ. <break time="1.2s" /> عُلِّمَ <break time="1.2s" /> أُرْسِلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يُرْسَلُ <break time="1.2s" /> كُتِبَ ٱلْكِتَابُ فِي ٱلْقَرْنِ ٱلْعَاشِرِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> فُتِحَتْ مَكْتَبَةٌ جَدِيدَةٌ لِلْأَطْفَالِ. <break time="1.2s" /> يُغْلَقُ ٱلشَّارِعُ يَوْمَ ٱلْجُمُعَةِ. <break time="1.2s" /> عُلِّمَ أَلْفُ طِفْلٍ ٱلسِّبَاحَةَ هَذَا ٱلصَّيْفَ. <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ. <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ.
+```
+
+## Fusha Arabic · 12+ · Level 3 · Lesson 3: The Debate Club
+
+Folder: `public/curriculum/fusha-12-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-1.mp3 | 3 | teacher, chairing | ٱلْمَوْضُوعُ: هَلْ يُمْنَعُ ٱلْهَاتِفُ فِي ٱلْمَدْرَسَةِ؟ |
+| 2 | l03-story-2.mp3 | 3 | young woman, confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ لِلدِّرَاسَةِ. |
+| 3 | l03-story-3.mp3 | 3 | young man, firm | لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ فِي ٱلدَّرْسِ. |
+| 4 | l03-story-4.mp3 | 3 | young woman, teasing | كَأَنَّكَ لَا تَلْعَبُ بِهِ أَنْتَ! |
+| 5 | l03-story-5.mp3 | 3 | young man, laughing | لَيْتَ ٱلْهَاتِفَ يَدْرُسُ عَنِّي! |
+| 6 | l03-story-6.mp3 | 3 | teacher, wise | لَعَلَّ ٱلْحَلَّ فِي ٱلْوَسَطِ. |
+| 7 | l03-hatif-mufid.mp3 | 4 |  | ٱلْهَاتِفُ مُفِيدٌ. |
+| 8 | l03-inna-hatif.mp3 | 4 | confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+| 9 | l03-inna-tullab.mp3 | 5 |  | إِنَّ ٱلطُّلَّابَ مَشْغُولُونَ. |
+| 10 | l03-lakinna-tullab.mp3 | 6 |  | لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ. |
+| 11 | l03-anna-hatif.mp3 | 6 |  | أَعْتَقِدُ أَنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+| 12 | l03-kaanna-fasl.mp3 | 7 |  | كَأَنَّ ٱلْفَصْلَ مَلْعَبٌ. |
+| 13 | l03-innahu.mp3 | 8 |  | إِنَّهُ |
+| 14 | l03-lakinnani.mp3 | 8 |  | لَكِنَّنِي |
+| 15 | l03-laallaha.mp3 | 8 |  | لَعَلَّهَا |
+| 16 | l03-dars-sahl.mp3 | 9 |  | ٱلدَّرْسُ سَهْلٌ. |
+| 17 | l03-inna-dars.mp3 | 9 |  | إِنَّ ٱلدَّرْسَ سَهْلٌ. |
+| 18 | l03-layta-dars.mp3 | 9 | wistful | لَيْتَ ٱلدَّرْسَ سَهْلٌ! |
+| 19 | l03-inna-wajib.mp3 | 11 | confident | إِنَّ ٱلْوَاجِبَ مُفِيدٌ. |
+| 20 | l03-taallamna.mp3 | 13 | young woman, proud | تَعَلَّمْنَا كَثِيرًا لِأَنَّنَا تَعَاوَنَّا. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+ٱلْمَوْضُوعُ: هَلْ يُمْنَعُ ٱلْهَاتِفُ فِي ٱلْمَدْرَسَةِ؟ <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ لِلدِّرَاسَةِ. <break time="1.2s" /> لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ فِي ٱلدَّرْسِ. <break time="1.2s" /> كَأَنَّكَ لَا تَلْعَبُ بِهِ أَنْتَ! <break time="1.2s" /> لَيْتَ ٱلْهَاتِفَ يَدْرُسُ عَنِّي! <break time="1.2s" /> لَعَلَّ ٱلْحَلَّ فِي ٱلْوَسَطِ. <break time="1.2s" /> ٱلْهَاتِفُ مُفِيدٌ. <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ. <break time="1.2s" /> إِنَّ ٱلطُّلَّابَ مَشْغُولُونَ. <break time="1.2s" /> لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ. <break time="1.2s" /> أَعْتَقِدُ أَنَّ ٱلْهَاتِفَ مُفِيدٌ. <break time="1.2s" /> كَأَنَّ ٱلْفَصْلَ مَلْعَبٌ. <break time="1.2s" /> إِنَّهُ <break time="1.2s" /> لَكِنَّنِي <break time="1.2s" /> لَعَلَّهَا <break time="1.2s" /> ٱلدَّرْسُ سَهْلٌ. <break time="1.2s" /> إِنَّ ٱلدَّرْسَ سَهْلٌ. <break time="1.2s" /> لَيْتَ ٱلدَّرْسَ سَهْلٌ! <break time="1.2s" /> إِنَّ ٱلْوَاجِبَ مُفِيدٌ. <break time="1.2s" /> تَعَلَّمْنَا كَثِيرًا لِأَنَّنَا تَعَاوَنَّا.
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

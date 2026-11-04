@@ -866,4 +866,8 @@ B3–B5 → continue lesson by lesson.
   and 12+ "The Headline" (13 pages each). Brief `fusha/L3-02-the-passive.md`, graphics `g-fx2.tsx` (the sentence shelf:
   the doer sinks away, the thing takes its seat and its ـُ). Every step screenshotted. Next: Lesson 3 "Indeed and But"
   (إِنَّ and her sisters), both versions.
+- **2026-11-04 · Fusha Level 3, Lesson 3 built for Kids and 12+** (drafts, overnight run): Kids "Indeed and But" and
+  12+ "The Debate Club" (13 pages each). Brief `fusha/L3-03-inna-and-sisters.md`, graphics `g-fx3.tsx` (the seesaw).
+  Fusha Levels 2 and 3 now have their first 3 lessons in both versions (LEVELS-PLAN target). Every step screenshotted.
+  Next (LEVELS-PLAN order): Egyptian Sounds (12+) map and Lessons 1-3, then Egyptian Intermediate and Advanced.
 
