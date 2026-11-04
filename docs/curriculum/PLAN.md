@@ -944,3 +944,8 @@ B3–B5 → continue lesson by lesson.
   agreement adds a tally) and the agree-o-meter, a gauge from full yes to full no; wow: the needle visits all five
   phrases and rests on the soft no. Graphics `g-eta1.tsx` (`Chat` now exported from `g-eti1.tsx`). Next: Teens
   Advanced Lesson 2 "That's What They Say".
+- **2026-11-04 — Egyptian Advanced (Teens), Lesson 2 "That's What They Say" (draft, `reviewed: false`).** The team
+  chat the night before the tournament: اللي فات مات (with the rule: never about a person who died), إيد لوحدها ما
+  تسقفش، يا خبر أبيض / إسود، الحلو ما يكملش. Taught as the people's sayings, not religious text. New device: the meme
+  card, where the word-for-word English is struck out and the real meaning slides in; wow: a 32-word paragraph folds
+  into اللي فات مات. Graphics `g-eta2.tsx` (`VoiceNote` now exported from `g-eti3.tsx`). Next: Teens Advanced Lesson 3.

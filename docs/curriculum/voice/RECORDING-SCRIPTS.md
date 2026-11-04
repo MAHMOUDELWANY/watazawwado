@@ -2244,6 +2244,34 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه رأيك؟ <break time="1.2s" /> مين يبقى الكابتن؟ إيه رأيكم؟ <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> لأ طبعاً! أنا أسرع واحد في الفريق! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> ماشي… عندك حق. نور! <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> أنا شايفة إن كريم سريع. <break time="1.2s" /> في رأيي… <break time="1.2s" /> معاك حق. <break time="1.2s" /> معاكي حق. <break time="1.2s" /> أنا معاك! <break time="1.2s" /> لأ طبعاً! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> أنا معاك. معاك حق. مش متأكد. معاك حق، بس… لأ طبعاً! <break time="1.2s" /> أنا شايف إن الكشري أحلى من البيتزا. إيه رأيك؟ <break time="1.2s" /> اللي فات مات!
 ```
 
+## Egyptian Arabic · Teens · Advanced · Lesson 2: That's What They Say
+
+Folder: `public/curriculum/egyptian-teens-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (13)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-maak-haa-bass.mp3 | 2 |  | معاك حق، بس… |
+| 2 | l02-story-1.mp3 | 4 | teen boy, dramatic, then warm | اللي فات مات! نور الكابتن، وأنا معاها. |
+| 3 | l02-story-2.mp3 | 4 | teen girl, confident | إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض! |
+| 4 | l02-story-3.mp3 | 4 | teen boy, surprised, laughing | يا خبر أبيض! كريم بقى طيب؟! |
+| 5 | l02-story-4.mp3 | 4 | teen boy, groaning | الماتش اتلغى… مطر. الحلو ما يكملش! |
+| 6 | l02-elli-fat.mp3 | 5 |  | اللي فات مات! |
+| 7 | l02-eed.mp3 | 6 |  | إيد لوحدها ما تسقفش. |
+| 8 | l02-abyad.mp3 | 7 |  | يا خبر أبيض! |
+| 9 | l02-iswed.mp3 | 7 |  | يا خبر إسود! |
+| 10 | l02-helw.mp3 | 8 |  | الحلو ما يكملش! |
+| 11 | l02-short.mp3 | 9 |  | اللي فات مات. |
+| 12 | l02-news-1.mp3 | 11 | teen boy, excited | نور جابت تلات جوان في التمرين! |
+| 13 | l02-fast.mp3 | 13 | teen boy, extremely fast | بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب… |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+معاك حق، بس… <break time="1.2s" /> اللي فات مات! نور الكابتن، وأنا معاها. <break time="1.2s" /> إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض! <break time="1.2s" /> يا خبر أبيض! كريم بقى طيب؟! <break time="1.2s" /> الماتش اتلغى… مطر. الحلو ما يكملش! <break time="1.2s" /> اللي فات مات! <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> يا خبر أبيض! <break time="1.2s" /> يا خبر إسود! <break time="1.2s" /> الحلو ما يكملش! <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> نور جابت تلات جوان في التمرين! <break time="1.2s" /> بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب…
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.

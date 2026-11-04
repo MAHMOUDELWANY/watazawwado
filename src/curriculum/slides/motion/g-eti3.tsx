@@ -19,7 +19,7 @@ const NOUR = CRIMSON;
 const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
 
 /** A voice-note bar at (x, y), its waveform filling as the story goes. */
-function VoiceNote({ x, y, fill = 1, delay = 0 }: { x: number; y: number; fill?: number; delay?: number }) {
+export function VoiceNote({ x, y, fill = 1, delay = 0 }: { x: number; y: number; fill?: number; delay?: number }) {
   return (
     <motion.div className="pointer-events-none absolute flex items-center gap-[3px] rounded-full" style={{ left: x - 200, top: y - 32, width: 400, height: 64, padding: '0 22px', background: '#2A1E18', boxShadow: SHADOW }} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease }}>
       <span className="mr-2 rounded-full" style={{ width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderLeft: `16px solid ${GOLD}` }} />

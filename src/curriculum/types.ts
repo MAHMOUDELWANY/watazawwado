@@ -108,6 +108,8 @@ export type SceneId =
   | 'ea33Cover' | 'ea33Recall' | 'ea33Note' | 'ea33Story' | 'ea33Fillers' | 'ea33Run' | 'ea33Three' | 'ea33Reply' | 'ea33Filter' | 'ea33Sort' | 'ea33Talk' | 'ea33Mission' | 'ea33Next'
   // Egyptian Arabic · Teens · Advanced · Lesson 1 · Who Should Be Captain? (slides/motion/g-eta1.tsx)
   | 'eta1Cover' | 'eta1Recall' | 'eta1Club' | 'eta1Story' | 'eta1Think' | 'eta1Agree' | 'eta1But' | 'eta1Unsure' | 'eta1Meter' | 'eta1Sort' | 'eta1Talk' | 'eta1Mission' | 'eta1Next'
+  // Egyptian Arabic · Teens · Advanced · Lesson 2 · That's What They Say (slides/motion/g-eta2.tsx)
+  | 'eta2Cover' | 'eta2Recall' | 'eta2Chat' | 'eta2Story' | 'eta2Fat' | 'eta2Hand' | 'eta2News' | 'eta2Helw' | 'eta2Short' | 'eta2Sort' | 'eta2Talk' | 'eta2Mission' | 'eta2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
