@@ -2026,6 +2026,32 @@ One take: paste this whole block as one generation; I cut it into the files abov
 أنا شايف إن الشوكولاتة أحلى حاجة! <break time="1.2s" /> لأ، أنا شايفة إن المانجا أحلى! <break time="1.2s" /> أنا كمان! المانجا! <break time="1.2s" /> كل واحد ورأيه، يا حبايبي. <break time="1.2s" /> أنا شايف إن الشوكولاتة أحلى! <break time="1.2s" /> أنا شايفة إن المانجا أحلى! <break time="1.2s" /> أنا كمان! <break time="1.2s" /> لأ، أنا شايف إن الفراولة أحلى. <break time="1.2s" /> كل واحد ورأيه. <break time="1.2s" /> إيه أحلى لون؟ <break time="1.2s" /> على مهلك يا زياد!
 ```
 
+## Egyptian Arabic · Kids · Advanced · Lesson 2: Teta's Sayings
+
+Folder: `public/curriculum/egyptian-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (11)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | grandmother, gentle | على مهلك يا زياد! في التأني السلامة. |
+| 2 | l02-story-2.mp3 | 3 | little girl, upset | يا تيتة، الأوضة كركبة! |
+| 3 | l02-story-3.mp3 | 3 | grandmother, cheerful | إيد لوحدها ما تسقفش. يلا كلنا مع بعض! |
+| 4 | l02-story-4.mp3 | 3 | grandmother, warm | خدوا المانجا دي لطنط سعاد. الجار قبل الدار. |
+| 5 | l02-taanni.mp3 | 4 |  | في التأني السلامة. |
+| 6 | l02-ala-mahlak.mp3 | 4 |  | على مهلك! |
+| 7 | l02-eed.mp3 | 5 |  | إيد لوحدها ما تسقفش. |
+| 8 | l02-gaar.mp3 | 6 |  | الجار قبل الدار. |
+| 9 | l02-three.mp3 | 7 |  | في التأني السلامة. إيد لوحدها ما تسقفش. الجار قبل الدار. |
+| 10 | l02-rushing.mp3 | 9 | little boy, rushing | أنا بجري على السلم! |
+| 11 | l02-arfeen.mp3 | 11 | little boy, cheeky | عارفين ليه…؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+على مهلك يا زياد! في التأني السلامة. <break time="1.2s" /> يا تيتة، الأوضة كركبة! <break time="1.2s" /> إيد لوحدها ما تسقفش. يلا كلنا مع بعض! <break time="1.2s" /> خدوا المانجا دي لطنط سعاد. الجار قبل الدار. <break time="1.2s" /> في التأني السلامة. <break time="1.2s" /> على مهلك! <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> الجار قبل الدار. <break time="1.2s" /> في التأني السلامة. إيد لوحدها ما تسقفش. الجار قبل الدار. <break time="1.2s" /> أنا بجري على السلم! <break time="1.2s" /> عارفين ليه…؟
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.

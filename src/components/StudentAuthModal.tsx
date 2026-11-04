@@ -9,19 +9,23 @@ import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
-import { AuthCard, AuthPortal, EntranceLogo, EntranceRoom } from './auth/AuthFrame';
+import { AuthCard, AuthPortal, EntranceLogo, EntranceRoom, EntranceSwitches } from './auth/AuthFrame';
+import { useAppLanguage } from '../lib/language';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   lang?: 'en' | 'ar';
+  /** The page's own language switch (public pages move between / and /ar); defaults to the stored language. */
+  onToggleLang?: () => void;
   initialView?: 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
 }
 
 type View = 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
 
-export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login' }: StudentAuthModalProps) {
+export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login', onToggleLang }: StudentAuthModalProps) {
+  const { toggleLanguage } = useAppLanguage();
   const [view, setView] = useState<View>(initialView);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -253,9 +257,12 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
               bar={
                 <>
                   <span className="entrance-brand"><EntranceLogo isAr={isAr} /></span>
-                  <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <EntranceSwitches isAr={isAr} onToggleLang={onToggleLang ?? toggleLanguage} />
+                    <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </>
               }
             >

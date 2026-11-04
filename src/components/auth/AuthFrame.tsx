@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Globe, ShieldCheck } from 'lucide-react';
 import { useAppLanguage } from '../../lib/language';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 /**
  * "The lamp room" (owner's pick, 2026-11-04): every sign-in screen (student dialog, student area, kid link,
@@ -60,12 +61,13 @@ function Ink({ id, rtl }: { id: string; rtl: boolean }) {
   return (
     <defs>
       <linearGradient id={id} gradientUnits="objectBoundingBox" x1={rtl ? 1 : 0} y1=".3" x2={rtl ? 0 : 1} y2=".7">
-        <stop offset="0" stopColor="#12A4BC" />
-        <stop offset=".1" stopColor="#12A4BC" />
-        <stop offset=".32" stopColor="#F1DDB2" />
-        <stop offset=".55" stopColor="#E5A93C" />
-        <stop offset=".8" stopColor="#C9852E" />
-        <stop offset="1" stopColor="#C51F24" />
+        {/* Colours come from --ink-1..5 so day and night each get an ink that reads on their paper. */}
+        <stop offset="0" style={{ stopColor: 'var(--ink-1)' }} />
+        <stop offset=".1" style={{ stopColor: 'var(--ink-1)' }} />
+        <stop offset=".32" style={{ stopColor: 'var(--ink-2)' }} />
+        <stop offset=".55" style={{ stopColor: 'var(--ink-3)' }} />
+        <stop offset=".8" style={{ stopColor: 'var(--ink-4)' }} />
+        <stop offset="1" style={{ stopColor: 'var(--ink-5)' }} />
       </linearGradient>
       <linearGradient id={`${id}-sheen`} gradientUnits="userSpaceOnUse" x1="-300" y1="0" x2="0" y2="0">
         <stop offset="0" stopColor="#FFF6DC" stopOpacity="0" />
@@ -185,6 +187,19 @@ export function EntranceLogo({ isAr }: { isAr: boolean }) {
   return <img src="/logo-256.png" alt={isAr ? 'وتزودوا' : 'Watazawwado'} className="w-10 h-auto" />;
 }
 
+/** The switches every sign-in bar carries: language, then day and night. */
+export function EntranceSwitches({ isAr, onToggleLang }: { isAr: boolean; onToggleLang: () => void }) {
+  return (
+    <>
+      <button type="button" onClick={onToggleLang} className="entrance-link" lang={isAr ? 'en' : 'ar'}>
+        <Globe className="w-4 h-4" aria-hidden="true" />
+        <span>{isAr ? 'English' : 'عربي'}</span>
+      </button>
+      <ThemeToggle compact className="entrance-link is-round" />
+    </>
+  );
+}
+
 /** The head of the card: the title and the line under it (and the verse, outside the room). */
 // Pages use the default h1; a dialog over a page passes heading="h2" so the page keeps one h1 (QA-02).
 export function AuthPortal({ title, subtitle, titleId, heading: Heading = 'h1' }: { title: React.ReactNode; subtitle?: React.ReactNode; titleId?: string; heading?: 'h1' | 'h2' }) {
@@ -208,6 +223,7 @@ export function AuthPortal({ title, subtitle, titleId, heading: Heading = 'h1' }
 
 /** Full-page sign-in: the room with the logo, the language switch and the way back to the site. */
 export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onToggleLang?: () => void; children: React.ReactNode }) {
+  const { toggleLanguage } = useAppLanguage();
   return (
     <div dir={isAr ? 'rtl' : 'ltr'} className="entrance min-h-dvh text-foreground">
       <EntranceRoom
@@ -216,15 +232,10 @@ export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onTo
           <>
             <Link to="/" className="entrance-brand" aria-label={isAr ? 'الصفحة الرئيسية' : 'Home'}><EntranceLogo isAr={isAr} /></Link>
             <div className="flex items-center gap-1.5">
-              {onToggleLang && (
-                <button type="button" onClick={onToggleLang} className="entrance-link">
-                  <Globe className="w-4 h-4" aria-hidden="true" />
-                  <span>{isAr ? 'English' : 'عربي'}</span>
-                </button>
-              )}
-              <Link to="/" className="entrance-link">
+              <EntranceSwitches isAr={isAr} onToggleLang={onToggleLang ?? toggleLanguage} />
+              <Link to="/" className="entrance-link" aria-label={isAr ? 'رجوع للموقع' : 'Back to the website'}>
                 <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
-                <span>{isAr ? 'رجوع للموقع' : 'Back to the website'}</span>
+                <span className="max-sm:hidden">{isAr ? 'رجوع للموقع' : 'Back to the website'}</span>
               </Link>
             </div>
           </>
