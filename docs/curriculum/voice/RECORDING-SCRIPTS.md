@@ -1949,6 +1949,45 @@ One take: paste this whole block as one generation; I cut it into the files abov
 بلعب كورة كل يوم. <break time="1.2s" /> امبارح رحت النادي. <break time="1.2s" /> يا عمر! عملت إيه في الماتش؟ <break time="1.2s" /> جبت جون! <break time="1.2s" /> بجد؟ ونور؟ <break time="1.2s" /> نور جابت جونين! <break time="1.2s" /> إنتي جبتي جونين؟! <break time="1.2s" /> آه! وإنت رحت فين؟ <break time="1.2s" /> نمت… <break time="1.2s" /> جبت جون. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> إنتي جبتي جونين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> نور جابت جونين. <break time="1.2s" /> نمت. <break time="1.2s" /> رحت النادي. <break time="1.2s" /> جبت جون. نور جابت جونين! إنتي رحتي فين؟ <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنلعب الفاينل!
 ```
 
+## Egyptian Arabic · Teens · Intermediate · Lesson 2: Tomorrow's Final
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-gibt.mp3 | 2 |  | جبت جون. |
+| 2 | l02-hanlaab.mp3 | 2 |  | بكرة هنلعب الفاينل. |
+| 3 | l02-story-1.mp3 | 4 | coach, excited | بكرة هنلعب الفاينل! |
+| 4 | l02-story-2.mp3 | 4 | teen boy, eager | هنلعب الساعة كام يا كابتن؟ |
+| 5 | l02-story-3.mp3 | 4 | coach | هنبدأ الساعة خمسة. هتيجوا بدري؟ |
+| 6 | l02-story-4.mp3 | 4 | teen girl, keen | أنا هاجي الساعة أربعة! |
+| 7 | l02-story-5.mp3 | 4 | teen boy | وأنا هجيب الكورة. |
+| 8 | l02-story-6.mp3 | 4 | teen boy, determined, a bit funny | وأنا… مش هنام النهارده! |
+| 9 | l02-balaab.mp3 | 5 |  | بلعب |
+| 10 | l02-halaab.mp3 | 5 |  | هلعب |
+| 11 | l02-bokra-halaab.mp3 | 5 |  | بكرة هلعب. |
+| 12 | l02-hatlaab.mp3 | 6 |  | هتلعب |
+| 13 | l02-hatlaabi.mp3 | 6 |  | هتلعبي |
+| 14 | l02-haylaab.mp3 | 6 |  | هيلعب |
+| 15 | l02-hanlaab-2.mp3 | 6 |  | هنلعب |
+| 16 | l02-mish-hanam.mp3 | 7 |  | مش هنام النهارده! |
+| 17 | l02-akeed.mp3 | 8 |  | هاجي أكيد. |
+| 18 | l02-inshallah.mp3 | 8 |  | هاجي إن شاء الله. |
+| 19 | l02-gibt-2.mp3 | 9 |  | جبت |
+| 20 | l02-bageeb.mp3 | 9 |  | بجيب |
+| 21 | l02-hageeb.mp3 | 9 |  | هجيب |
+| 22 | l02-hatamel-eh.mp3 | 11 | coach | هتعمل إيه بكرة؟ |
+| 23 | l02-hatameli-eh.mp3 | 11 | coach, to a girl | هتعملي إيه بكرة؟ |
+| 24 | l02-mosh-hatsadda2.mp3 | 13 | teen boy, breathless | مش هتصدق اللي حصل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+جبت جون. <break time="1.2s" /> بكرة هنلعب الفاينل. <break time="1.2s" /> بكرة هنلعب الفاينل! <break time="1.2s" /> هنلعب الساعة كام يا كابتن؟ <break time="1.2s" /> هنبدأ الساعة خمسة. هتيجوا بدري؟ <break time="1.2s" /> أنا هاجي الساعة أربعة! <break time="1.2s" /> وأنا هجيب الكورة. <break time="1.2s" /> وأنا… مش هنام النهارده! <break time="1.2s" /> بلعب <break time="1.2s" /> هلعب <break time="1.2s" /> بكرة هلعب. <break time="1.2s" /> هتلعب <break time="1.2s" /> هتلعبي <break time="1.2s" /> هيلعب <break time="1.2s" /> هنلعب <break time="1.2s" /> مش هنام النهارده! <break time="1.2s" /> هاجي أكيد. <break time="1.2s" /> هاجي إن شاء الله. <break time="1.2s" /> جبت <break time="1.2s" /> بجيب <break time="1.2s" /> هجيب <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> مش هتصدق اللي حصل!
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.

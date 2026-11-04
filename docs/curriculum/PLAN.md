@@ -905,3 +905,6 @@ B3–B5 → continue lesson by lesson.
   New catalog entry `egyptian-teens-2` (the club a year later: Omar, Karim, Nour). The past endings with جاب، نام، راح;
   wow: a team group chat with no names, where the ending alone tells who did what. Graphics `g-eti1.tsx` (reuses the
   Adults ending tag). Next: Teens Lesson 2 "Tomorrow's Final".
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 2 "Tomorrow's Final" (draft, `reviewed: false`).** The future
+  with هـ (هلعب، هتلعبي، هيلعب، هنلعب), مش هـ, أكيد / إن شاء الله; the coach's news the night before the final. Reuses
+  the timeline and prefix tag; wow: جبت · بجيب · هجيب. Graphics `g-eti2.tsx`. Next: Teens Lesson 3.
