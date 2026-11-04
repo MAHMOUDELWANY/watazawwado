@@ -198,6 +198,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           isOpen={studentModalOpen}
           onClose={() => setStudentModalOpen(false)}
           lang={lang}
+          onToggleLang={handleToggleLang}
           initialView={studentModalInitialView}
         />}
         </Suspense>
