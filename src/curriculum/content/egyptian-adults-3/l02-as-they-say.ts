@@ -1,0 +1,236 @@
+import type { Lesson } from '../../types';
+import { lessonEA302TeacherAr } from './l02-teacher-ar.js';
+
+// Rules: docs/curriculum/egyptian/RULES.md. Map: docs/curriculum/egyptian/MAP-advanced.md (Adults, Lesson 2: four
+// everyday sayings in their real setting; the lift story continues). The sayings are the people's proverbs, not
+// religious text, and are taught as such. Egyptian lines recorded by the owner.
+
+const E = (id: string, text: string, emotion?: string) => ({ id, text, voice: 'eg' as const, emotion });
+
+export const lessonEA302: Lesson = {
+  subject: 'egyptian-adults-3',
+  version: 'adults',
+  subjectTitle: 'Egyptian Arabic · Adults · Advanced',
+  number: 2,
+  title: 'As They Say…',
+  titleAr: 'زي ما بيقولوا…',
+  part: 'Advanced',
+  minutes: 50,
+  goal: 'By the end of this lesson, you will understand four sayings Egyptians use every week, and use one at the right moment.',
+  reviewed: false,
+  teacherAr: lessonEA302TeacherAr,
+  outcomes: [
+    'Understands اللي فات مات، على قد لحافك مد رجليك، إيد لوحدها ما تسقفش، الصبر مفتاح الفرج.',
+    'Tells the picture in a saying from what it really means.',
+    'Picks the saying that fits a situation, and knows when to stay quiet.',
+  ],
+  chapters: [
+    { label: 'Warm-up', page: 0 },
+    { label: 'Listen first', page: 3 },
+    { label: 'Four sayings', page: 4 },
+    { label: 'Picture and meaning', page: 8 },
+    { label: 'Practice', page: 9 },
+    { label: 'My mission', page: 11 },
+  ],
+  pages: [
+    {
+      title: 'As They Say…',
+      station: 'spark',
+      layout: 'cover',
+      scene: 'ea32Cover',
+      lines: [],
+      explain: [
+        'Check the mission: which step of the ladder did you use, and how did the other person react?',
+        'Tell them: today, the short sayings that end an argument in Cairo.',
+      ],
+    },
+    {
+      title: 'The ladder, and the last word',
+      station: 'spark',
+      layout: 'concept',
+      scene: 'ea32Recall',
+      lines: [
+        'Last time: from لأ خالص to معاك حق، بس…',
+        'In Cairo an argument often ends with a saying everyone knows. Nobody argues with a proverb.',
+        'Amm Sayed already used one: اللي فات مات.',
+      ],
+      say: [E('maak-ha2-bass', 'معاك حق، بس…'), E('elli-fat-mat', 'اللي فات مات.')],
+      explain: ['Two minutes. Ask them to disagree politely with one sentence you say.'],
+    },
+    {
+      title: 'Sayings everywhere',
+      station: 'spark',
+      layout: 'story',
+      scene: 'ea32Street',
+      lines: [
+        'Listen to any Cairo street for ten minutes and you will hear a saying.',
+        'At the grocer\'s, in a taxi, at a family lunch.',
+        'The residents are back on the stairs, and the lift is still a problem.',
+      ],
+      explain: ['Ask: which sayings do people use in your family? Collect one in English.'],
+    },
+    {
+      title: 'Listen first',
+      station: 'zad',
+      layout: 'story',
+      scene: 'ea32Story',
+      lines: [
+        'Listen twice. What is Mona\'s father still upset about?',
+        'What does Mona suggest instead of a big lift?',
+        'How does the story end, and what does Amm Sayed say?',
+      ],
+      say: [
+        E('story-1', 'دفعنا كتير في الدهان السنة اللي فاتت…', 'middle-aged man, sighing'),
+        E('story-2', 'اللي فات مات يا أستاذ حسن.', 'older man, kind'),
+        E('story-3', 'على قد لحافك مد رجليك. نجيب أسانسير صغير.', 'woman, practical'),
+        E('story-4', 'وكلنا نساعد. إيد لوحدها ما تسقفش.', 'man, careful, warm'),
+        E('story-5', 'الأسانسير هيتأخر شهرين!', 'woman, disappointed'),
+        E('story-6', 'معلش… الصبر مفتاح الفرج.', 'older man, calm'),
+      ],
+      explain: [
+        'Play twice. Ask in English: what upsets Hassan? (money spent on paint last year). Mona\'s idea? (a smaller lift).',
+        'The end? (the lift is two months late; Amm Sayed says patience is the key to relief).',
+      ],
+      teacherNote: 'Input first: four sayings in one short scene. Let them guess each meaning from the situation.',
+    },
+    {
+      title: 'What\'s gone is gone',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea32Fat',
+      lines: [
+        'اللي فات مات: "what has passed has died".',
+        'Meaning: stop worrying about money spent or a mistake made. Look forward.',
+        'Use it for things and plans, never about a person who has passed away.',
+      ],
+      vocab: [{ arabic: 'اللي فات مات', translit: 'illi faat maat', meaning: 'what\'s gone is gone' }],
+      say: [E('elli-fat-mat-2', 'اللي فات مات يا أستاذ حسن.')],
+      explain: ['Give a small regret (I lost my umbrella); they comfort with اللي فات مات.'],
+    },
+    {
+      title: 'The size of your blanket',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea32Lehaf',
+      lines: [
+        'على قد لحافك مد رجليك: "stretch your legs as far as your blanket goes".',
+        'Meaning: spend what you have, not more. A smaller lift, not no lift.',
+        'Said kindly, it is advice. Said sharply, it is a telling-off. Tone decides.',
+      ],
+      vocab: [
+        { arabic: 'لحاف', translit: 'liḥaaf', meaning: 'quilt, blanket' },
+        { arabic: 'على قد', translit: '\'ala add', meaning: 'as far as, according to' },
+      ],
+      say: [E('lehaf', 'على قد لحافك مد رجليك.')],
+      explain: ['Ask: when would you say this to a friend? When would it sound rude?'],
+    },
+    {
+      title: 'One hand can\'t clap',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea32Eed',
+      lines: [
+        'إيد لوحدها ما تسقفش: "one hand alone doesn\'t clap".',
+        'Meaning: nothing big gets done alone. Adam used it to bring the building together.',
+        'It is the saying of the volunteer, the team, the family project.',
+      ],
+      vocab: [{ arabic: 'إيد لوحدها ما تسقفش', translit: 'iid liwaḥdaha ma tsa\'\'afsh', meaning: 'one hand can\'t clap' }],
+      say: [E('eed', 'إيد لوحدها ما تسقفش.')],
+      explain: ['Clap with one hand, then two. Let them say the saying before you do.'],
+    },
+    {
+      title: 'Patience is the key',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea32Sabr',
+      lines: [
+        'الصبر مفتاح الفرج: "patience is the key to relief".',
+        'Said with معلش when something is late or hard: the lift, a visa, a long queue.',
+        'It comforts without promising. The person still has to wait, but not alone.',
+      ],
+      vocab: [
+        { arabic: 'الصبر', translit: 'iṣ-ṣabr', meaning: 'patience' },
+        { arabic: 'مفتاح', translit: 'muftaaḥ', meaning: 'key' },
+      ],
+      say: [E('sabr', 'معلش… الصبر مفتاح الفرج.')],
+      explain: ['Ask about something they are waiting for; answer with معلش… الصبر مفتاح الفرج.'],
+    },
+    {
+      title: 'Picture and meaning',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea32Flip',
+      lines: [
+        'Every saying is a little picture: a blanket, one hand, a key.',
+        'Flip the card and the picture becomes the meaning: money, teamwork, patience.',
+        'Learn the picture and you will never forget the saying. That is how Egyptians learned them too.',
+      ],
+      explain: ['Point at each picture; the learner says the saying, then the meaning in English.'],
+      teacherNote: 'The wow: four sayings, four pictures. The learner can now hear them on the street and know what they mean.',
+    },
+    {
+      title: 'Which saying?',
+      station: 'athar',
+      layout: 'game',
+      scene: 'ea32Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        look: 'row',
+        prompt: 'Which saying fits the moment?',
+        bins: [
+          { id: 'fat', label: 'اللي فات مات', hint: 'look forward' },
+          { id: 'eed', label: 'إيد لوحدها ما تسقفش', hint: 'together' },
+          { id: 'sabr', label: 'الصبر مفتاح الفرج', hint: 'wait' },
+        ],
+        cards: [
+          { label: 'Your friend is still angry about a phone he broke last month.', bin: 'fat', why: 'It is in the past: اللي فات مات.' },
+          { label: 'The neighbours want to clean the street, but each waits for the others.', bin: 'eed', why: 'Nobody can do it alone: إيد لوحدها ما تسقفش.' },
+          { label: 'Your visa is taking three more weeks.', bin: 'sabr', why: 'Something to wait for: الصبر مفتاح الفرج.' },
+          { label: 'A colleague regrets a meeting that went badly yesterday.', bin: 'fat', why: 'Done is done: اللي فات مات.' },
+          { label: 'The family wants to cook a big iftar for the whole building.', bin: 'eed', why: 'A team job: إيد لوحدها ما تسقفش.' },
+          { label: 'The repairman is late again.', bin: 'sabr', why: 'Waiting: الصبر مفتاح الفرج.' },
+        ],
+      },
+      explain: ['Read each situation aloud; the learner says the saying, with معلش where it fits.'],
+    },
+    {
+      title: 'Your turn: the stairs',
+      station: 'athar',
+      layout: 'question',
+      scene: 'ea32Talk',
+      lines: [
+        'The teacher plays three neighbours with three problems.',
+        'Answer each with a short reply and the saying that fits. Watch your tone.',
+      ],
+      say: [E('problem', 'الأسانسير لسه ما جاش… وأنا تعبت من السلم!', 'older woman, tired')],
+      interaction: { kind: 'ask', prompt: 'Did the saying fit, and did it sound kind?', reveal: 'برافو! You sound like you grew up here.' },
+      explain: ['Play: the late lift, money spent on a broken fridge, a street clean-up nobody starts.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'ea32Mission',
+      lines: [
+        'Ask an Egyptian (or your teacher) for their favourite saying, and the story of when they last used it.',
+        'Write it down with its picture and its meaning.',
+      ],
+      interaction: { kind: 'choose', prompt: 'Who will you ask?', options: ['My teacher', 'An Egyptian friend', 'A neighbour', 'Online'] },
+      explain: ['Next time, the learner teaches you the saying they collected.'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'ea32Next',
+      lines: [
+        'Adam\'s phone buzzes. A voice note from Amm Sayed\'s son, very fast.',
+        'Adam plays it once… twice… He catches three words.',
+        'Next time: understanding Egyptian at street speed.',
+      ],
+      say: [E('fast', 'إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة!', 'young man, very fast')],
+      explain: ['Play it once at full speed. Ask: what did you catch?'],
+    },
+  ],
+};

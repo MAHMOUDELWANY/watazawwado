@@ -1086,6 +1086,35 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه رأيك؟ <break time="1.2s" /> إيه رأيك؟ <break time="1.2s" /> يا جماعة، العمارة محتاجة أسانسير. <break time="1.2s" /> أنا شايف إن ده غالي أوي. <break time="1.2s" /> معاك حق يا بابا، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> أيوه… بس مين هيدفع؟ <break time="1.2s" /> في رأيي، كلنا ندفع شوية. ده أحسن للكل. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> أنا شايف إن ده غالي. <break time="1.2s" /> أنا شايفة إن ده مهم. <break time="1.2s" /> في رأيي، ده أحسن. <break time="1.2s" /> معاك حق. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> بالظبط! <break time="1.2s" /> معاك حق، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> ممكن… بس <break time="1.2s" /> لأ خالص! <break time="1.2s" /> لأ خالص… مش متأكد… ممكن، بس… معاك حق، بس… <break time="1.2s" /> أنا شايف إن السطح محتاج جنينة. إيه رأيك؟ <break time="1.2s" /> اللي فات مات.
 ```
 
+## Egyptian Arabic · Adults · Advanced · Lesson 2: As They Say…
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (14)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-maak-ha2-bass.mp3 | 2 |  | معاك حق، بس… |
+| 2 | l02-elli-fat-mat.mp3 | 2 |  | اللي فات مات. |
+| 3 | l02-story-1.mp3 | 4 | middle-aged man, sighing | دفعنا كتير في الدهان السنة اللي فاتت… |
+| 4 | l02-story-2.mp3 | 4 | older man, kind | اللي فات مات يا أستاذ حسن. |
+| 5 | l02-story-3.mp3 | 4 | woman, practical | على قد لحافك مد رجليك. نجيب أسانسير صغير. |
+| 6 | l02-story-4.mp3 | 4 | man, careful, warm | وكلنا نساعد. إيد لوحدها ما تسقفش. |
+| 7 | l02-story-5.mp3 | 4 | woman, disappointed | الأسانسير هيتأخر شهرين! |
+| 8 | l02-story-6.mp3 | 4 | older man, calm | معلش… الصبر مفتاح الفرج. |
+| 9 | l02-elli-fat-mat-2.mp3 | 5 |  | اللي فات مات يا أستاذ حسن. |
+| 10 | l02-lehaf.mp3 | 6 |  | على قد لحافك مد رجليك. |
+| 11 | l02-eed.mp3 | 7 |  | إيد لوحدها ما تسقفش. |
+| 12 | l02-sabr.mp3 | 8 |  | معلش… الصبر مفتاح الفرج. |
+| 13 | l02-problem.mp3 | 11 | older woman, tired | الأسانسير لسه ما جاش… وأنا تعبت من السلم! |
+| 14 | l02-fast.mp3 | 13 | young man, very fast | إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+معاك حق، بس… <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> دفعنا كتير في الدهان السنة اللي فاتت… <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. نجيب أسانسير صغير. <break time="1.2s" /> وكلنا نساعد. إيد لوحدها ما تسقفش. <break time="1.2s" /> الأسانسير هيتأخر شهرين! <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> الأسانسير لسه ما جاش… وأنا تعبت من السلم! <break time="1.2s" /> إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة!
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.

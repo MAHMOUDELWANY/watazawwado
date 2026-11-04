@@ -930,3 +930,7 @@ B3–B5 → continue lesson by lesson.
   `egyptian-adults-3`. The residents' meeting about a lift: أنا شايف إن، في رأيي، معاك حق، بالظبط، معاك حق بس،
   مش متأكد، لأ خالص. New device: the politeness ladder (blunt to gentle); wow: the same "no" four ways. Graphics
   `g-ea31.tsx`. Next: Advanced Lesson 2 "As They Say…".
+- **2026-11-04 — Egyptian Advanced (Adults), Lesson 2 "As They Say…" (draft, `reviewed: false`).** Four everyday
+  sayings in the lift story: اللي فات مات، على قد لحافك مد رجليك، إيد لوحدها ما تسقفش، الصبر مفتاح الفرج (taught as
+  the people's proverbs, not religious text). New device: the saying card, literal picture on the face, meaning on the
+  back; wow: all four flip at once. Graphics `g-ea32.tsx`. Next: Advanced Lesson 3 "At Street Speed".
