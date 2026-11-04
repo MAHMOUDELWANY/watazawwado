@@ -1015,6 +1015,41 @@ One take: paste this whole block as one generation; I cut it into the files abov
 رحت <break time="1.2s" /> بكرة هنروح إسكندرية. <break time="1.2s" /> بكرة هنروح إسكندرية! <break time="1.2s" /> بجد؟ هتمشوا إمتى؟ <break time="1.2s" /> هنمشي الساعة سبعة الصبح، إن شاء الله. <break time="1.2s" /> وهتعملوا إيه هناك؟ <break time="1.2s" /> هناكل سمك ونقعد على البحر. هتيجي معانا؟ <break time="1.2s" /> أكيد هاجي! <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> بكرة هروح الشغل. <break time="1.2s" /> هتروح <break time="1.2s" /> هتروحي <break time="1.2s" /> هيروح <break time="1.2s" /> هنروح <break time="1.2s" /> مش هروح. <break time="1.2s" /> أنا مش هروح، عندي شغل. <break time="1.2s" /> إن شاء الله <break time="1.2s" /> بعد بكرة <break time="1.2s" /> الأسبوع الجاي <break time="1.2s" /> رحت <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> وفجأة… القطر مشي!
 ```
 
+## Egyptian Arabic · Adults · Intermediate · Lesson 3: And Then…
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hanemshi.mp3 | 2 |  | هنمشي الساعة سبعة. |
+| 2 | l03-mishina.mp3 | 2 |  | مشينا الساعة سبعة. |
+| 3 | l03-story-1.mp3 | 4 | older man, puzzled | إيه يا آدم؟ مش رحت إسكندرية؟ |
+| 4 | l03-story-2.mp3 | 4 | man, laughing | رحت… بس صحيت متأخر، وبعدين خدت تاكسي. |
+| 5 | l03-story-3.mp3 | 4 | man, telling a story | لما وصلت المحطة، شفت منى في الشباك. |
+| 6 | l03-story-4.mp3 | 4 | man, dramatic | وفجأة… القطر مشي! |
+| 7 | l03-story-5.mp3 | 4 | older man, eager | يا خبر! وبعدين؟ |
+| 8 | l03-story-6.mp3 | 4 | man, happy ending | في الآخر ركبت القطر اللي بعده، وكلت سمك مع منى على البحر! |
+| 9 | l03-sihit.mp3 | 5 |  | صحيت متأخر. |
+| 10 | l03-wbaadeen.mp3 | 5 |  | وبعدين خدت تاكسي. |
+| 11 | l03-wbaadeen-q.mp3 | 5 |  | وبعدين؟ |
+| 12 | l03-lamma.mp3 | 6 |  | لما وصلت المحطة… |
+| 13 | l03-shoft-mona.mp3 | 6 |  | شفت منى في الشباك. |
+| 14 | l03-fagaa.mp3 | 7 | dramatic pause | وفجأة… القطر مشي! |
+| 15 | l03-ya-khabar.mp3 | 7 | shocked | يا خبر! |
+| 16 | l03-fel-akher.mp3 | 8 |  | في الآخر ركبت القطر اللي بعده. |
+| 17 | l03-strip.mp3 | 9 | telling a story, lively | صحيت متأخر، وبعدين خدت تاكسي. لما وصلت، القطر مشي فجأة. في الآخر ركبت اللي بعده. |
+| 18 | l03-amalt-eh-naharda.mp3 | 11 | older man, warm | عملت إيه النهارده؟ |
+| 19 | l03-wbaadeen-2.mp3 | 11 | eager | وبعدين؟ |
+| 20 | l03-rohna.mp3 | 13 | woman, telling | رحنا البحر، وهما راحوا السوق. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+هنمشي الساعة سبعة. <break time="1.2s" /> مشينا الساعة سبعة. <break time="1.2s" /> إيه يا آدم؟ مش رحت إسكندرية؟ <break time="1.2s" /> رحت… بس صحيت متأخر، وبعدين خدت تاكسي. <break time="1.2s" /> لما وصلت المحطة، شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر ركبت القطر اللي بعده، وكلت سمك مع منى على البحر! <break time="1.2s" /> صحيت متأخر. <break time="1.2s" /> وبعدين خدت تاكسي. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما وصلت المحطة… <break time="1.2s" /> شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر ركبت القطر اللي بعده. <break time="1.2s" /> صحيت متأخر، وبعدين خدت تاكسي. لما وصلت، القطر مشي فجأة. في الآخر ركبت اللي بعده. <break time="1.2s" /> عملت إيه النهارده؟ <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.

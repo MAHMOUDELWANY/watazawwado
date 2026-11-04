@@ -897,3 +897,7 @@ B3–B5 → continue lesson by lesson.
   future: هـ + present (هروح، هتروح، هتروحي، هيروح، هنروح), مش هـ, إن شاء الله and the time words; Mona's tickets to
   Alexandria. New device: the timeline read right to left (yesterday · every day · tomorrow); wow: one verb at all
   three stops (رحت، بروح، هروح). Graphics `g-ei2.tsx`. Next: Lesson 3 "And Then…".
+- **2026-11-04 — Egyptian Intermediate (Adults), Lesson 3 "And Then…" (draft, `reviewed: false`).** Telling a story
+  with وبعدين، لما، فجأة، في الآخر: Adam tells Amm Sayed how he missed the train and still reached the sea. New device:
+  the story strip (framed event panels, the four words as hinges between them); wow: the same five facts as a list,
+  then as a story. Graphics `g-ei3.tsx`. Adults Intermediate now has 3 lessons. Next: Teens Intermediate.

@@ -61,6 +61,7 @@ import { lessonES02 } from './content/egyptian-sounds/l02-th-and-dh.js';
 import { lessonES03 } from './content/egyptian-sounds/l03-short-and-stressed.js';
 import { lessonEI01 } from './content/egyptian-adults-2/l01-what-did-you-do-yesterday.js';
 import { lessonEI02 } from './content/egyptian-adults-2/l02-tomorrow-god-willing.js';
+import { lessonEI03 } from './content/egyptian-adults-2/l03-and-then.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -493,7 +494,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: 'Intermediate · A Second Season', titleAr: 'المتوسط · موسم تاني', from: 1 }],
     // docs/curriculum/egyptian/MAP-intermediate.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['What Did You Do Yesterday?', 'Tomorrow, God Willing', 'And Then…', 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: A Weekend in Alexandria', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', "At the Doctor's", 'Review: The Wedding', 'A Day at the Office', 'Intermediate Story'],
-    lessons: { 1: lessonEI01, 2: lessonEI02 },
+    lessons: { 1: lessonEI01, 2: lessonEI02, 3: lessonEI03 },
   },
   {
     // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).
