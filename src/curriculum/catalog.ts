@@ -68,6 +68,7 @@ import { lessonETI03 } from './content/egyptian-teens-2/l03-you-wont-believe-it.
 import { lessonEKI01 } from './content/egyptian-kids-2/l01-where-did-you-go.js';
 import { lessonEKI02 } from './content/egyptian-kids-2/l02-tomorrow-the-zoo.js';
 import { lessonEKI03 } from './content/egyptian-kids-2/l03-tetas-story.js';
+import { lessonEA301 } from './content/egyptian-adults-3/l01-in-my-opinion.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -501,7 +502,21 @@ export const SUBJECTS: SubjectEntry[] = [
     // docs/curriculum/egyptian/MAP-intermediate.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['What Did You Do Yesterday?', 'Tomorrow, God Willing', 'And Then…', 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: A Weekend in Alexandria', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', "At the Doctor's", 'Review: The Wedding', 'A Day at the Office', 'Intermediate Story'],
     lessons: { 1: lessonEI01, 2: lessonEI02, 3: lessonEI03 },
+  },  {
+    id: 'egyptian-adults-3',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Adults · Advanced',
+    titleAr: 'العامية المصرية · للكبار · المتقدم',
+    version: 'Adults · Advanced',
+    versionAr: 'الكبار · المتقدم',
+    audience: '18+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [{ title: 'Advanced · Sounding Like a Person', titleAr: 'المتقدم · تتكلم زي الناس', from: 1 }],
+    // docs/curriculum/egyptian/MAP-advanced.md (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['In My Opinion', 'As They Say…', 'At Street Speed', 'If Only…', 'Complaints', "Review: The Residents' Meeting", 'News and Gossip', 'Jokes and Wordplay', 'Formal Egyptian', 'Advanced Story'],
+    lessons: { 1: lessonEA301 },
   },
+
   {
     // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).
     id: 'literacy-c',

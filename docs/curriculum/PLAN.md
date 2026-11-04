@@ -925,3 +925,8 @@ B3–B5 → continue lesson by lesson.
   في الآخر in Teta's story of the monkey who took her hat; the hat flies out of its panel on فجأة; wow: four pictures
   become a story with three words. Monkey, hat and banana added to the panel set. Graphics `g-eki3.tsx`. Egyptian
   Intermediate now has 3 lessons in each age (Adults, Teens, Kids). Next: Egyptian Advanced map (Adults first).
+- **2026-11-04 — Egyptian Advanced map and Adults Lesson 1 "In My Opinion" (draft, `reviewed: false`).**
+  `egyptian/MAP-advanced.md` (Adults 10 lessons, Teens and a lighter Kids Advanced, 3 each first). New catalog entry
+  `egyptian-adults-3`. The residents' meeting about a lift: أنا شايف إن، في رأيي، معاك حق، بالظبط، معاك حق بس،
+  مش متأكد، لأ خالص. New device: the politeness ladder (blunt to gentle); wow: the same "no" four ways. Graphics
+  `g-ea31.tsx`. Next: Advanced Lesson 2 "As They Say…".

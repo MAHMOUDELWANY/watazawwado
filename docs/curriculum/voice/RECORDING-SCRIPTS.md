@@ -1050,6 +1050,42 @@ One take: paste this whole block as one generation; I cut it into the files abov
 هنمشي الساعة سبعة. <break time="1.2s" /> مشينا الساعة سبعة. <break time="1.2s" /> إيه يا آدم؟ مش رحت إسكندرية؟ <break time="1.2s" /> رحت… بس صحيت متأخر، وبعدين خدت تاكسي. <break time="1.2s" /> لما وصلت المحطة، شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر ركبت القطر اللي بعده، وكلت سمك مع منى على البحر! <break time="1.2s" /> صحيت متأخر. <break time="1.2s" /> وبعدين خدت تاكسي. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما وصلت المحطة… <break time="1.2s" /> شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر ركبت القطر اللي بعده. <break time="1.2s" /> صحيت متأخر، وبعدين خدت تاكسي. لما وصلت، القطر مشي فجأة. في الآخر ركبت اللي بعده. <break time="1.2s" /> عملت إيه النهارده؟ <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
 ```
 
+## Egyptian Arabic · Adults · Advanced · Lesson 1: In My Opinion
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (21)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-eh-raayak.mp3 | 2 |  | إيه رأيك؟ |
+| 2 | l01-eh-raayik.mp3 | 2 | to a woman: raayik | إيه رأيك؟ |
+| 3 | l01-story-1.mp3 | 4 | older man, opening a meeting | يا جماعة، العمارة محتاجة أسانسير. |
+| 4 | l01-story-2.mp3 | 4 | middle-aged man, doubtful | أنا شايف إن ده غالي أوي. |
+| 5 | l01-story-3.mp3 | 4 | woman, gentle but firm | معاك حق يا بابا، بس تيتة مش قادرة تطلع السلم. |
+| 6 | l01-story-4.mp3 | 4 | middle-aged man | أيوه… بس مين هيدفع؟ |
+| 7 | l01-story-5.mp3 | 4 | man, calm, careful Egyptian | في رأيي، كلنا ندفع شوية. ده أحسن للكل. |
+| 8 | l01-story-6.mp3 | 4 | older man, pleased | والله عنده حق! |
+| 9 | l01-shayef.mp3 | 5 |  | أنا شايف إن ده غالي. |
+| 10 | l01-shayfa.mp3 | 5 |  | أنا شايفة إن ده مهم. |
+| 11 | l01-fi-raayi.mp3 | 5 |  | في رأيي، ده أحسن. |
+| 12 | l01-maak-ha2.mp3 | 6 |  | معاك حق. |
+| 13 | l01-andu-ha2.mp3 | 6 |  | والله عنده حق! |
+| 14 | l01-bezzabt.mp3 | 6 |  | بالظبط! |
+| 15 | l01-maak-ha2-bass.mp3 | 7 |  | معاك حق، بس تيتة مش قادرة تطلع السلم. |
+| 16 | l01-mish-metakked.mp3 | 8 |  | مش متأكد. |
+| 17 | l01-momken-bass.mp3 | 8 |  | ممكن… بس |
+| 18 | l01-la2-khales.mp3 | 8 | laughing, between friends | لأ خالص! |
+| 19 | l01-ladder.mp3 | 9 | four tones, blunt to gentle | لأ خالص… مش متأكد… ممكن، بس… معاك حق، بس… |
+| 20 | l01-roof.mp3 | 11 | middle-aged man, enthusiastic | أنا شايف إن السطح محتاج جنينة. إيه رأيك؟ |
+| 21 | l01-elli-fat-mat.mp3 | 13 | older man, kind, wise | اللي فات مات. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه رأيك؟ <break time="1.2s" /> إيه رأيك؟ <break time="1.2s" /> يا جماعة، العمارة محتاجة أسانسير. <break time="1.2s" /> أنا شايف إن ده غالي أوي. <break time="1.2s" /> معاك حق يا بابا، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> أيوه… بس مين هيدفع؟ <break time="1.2s" /> في رأيي، كلنا ندفع شوية. ده أحسن للكل. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> أنا شايف إن ده غالي. <break time="1.2s" /> أنا شايفة إن ده مهم. <break time="1.2s" /> في رأيي، ده أحسن. <break time="1.2s" /> معاك حق. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> بالظبط! <break time="1.2s" /> معاك حق، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> ممكن… بس <break time="1.2s" /> لأ خالص! <break time="1.2s" /> لأ خالص… مش متأكد… ممكن، بس… معاك حق، بس… <break time="1.2s" /> أنا شايف إن السطح محتاج جنينة. إيه رأيك؟ <break time="1.2s" /> اللي فات مات.
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.

@@ -100,6 +100,8 @@ export type SceneId =
   | 'eki2Cover' | 'eki2Bed' | 'eki2Story' | 'eki2Ana' | 'eki2Enti' | 'eki2Huwa' | 'eki2Game' | 'eki2Sort' | 'eki2Talk' | 'eki2Mission' | 'eki2Next'
   // Egyptian · Kids · Intermediate · Lesson 3 (slides/motion/g-eki3.tsx)
   | 'eki3Cover' | 'eki3Sofa' | 'eki3Story' | 'eki3Then' | 'eki3Sudden' | 'eki3End' | 'eki3Strip' | 'eki3Sort' | 'eki3Talk' | 'eki3Mission' | 'eki3Next'
+  // Egyptian · Adults · Advanced · Lesson 1 (slides/motion/g-ea31.tsx)
+  | 'ea31Cover' | 'ea31Recall' | 'ea31Meeting' | 'ea31Story' | 'ea31Think' | 'ea31Agree' | 'ea31But' | 'ea31Unsure' | 'ea31Ladder' | 'ea31Sort' | 'ea31Talk' | 'ea31Mission' | 'ea31Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
