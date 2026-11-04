@@ -70,6 +70,46 @@ export type SceneId =
   // Fusha · Level 3 · Lesson 1 (slides/motion/g-fx1.tsx): Kids fx1, 12+ fy1
   | 'fx1Cover' | 'fx1Recall' | 'fx1Bike' | 'fx1Story' | 'fx1Root' | 'fx1Two' | 'fx1Three' | 'fx1Mould' | 'fx1Present' | 'fx1Sort' | 'fx1Talk' | 'fx1Mission' | 'fx1Next'
   | 'fy1Cover' | 'fy1Board' | 'fy1Story' | 'fy1Pattern' | 'fy1Two' | 'fy1Three' | 'fy1Four' | 'fy1Ladder' | 'fy1Dictionary' | 'fy1Sort' | 'fy1Talk' | 'fy1Mission' | 'fy1Next'
+  // Fusha · Level 3 · Lesson 2 (slides/motion/g-fx2.tsx): Kids fx2, 12+ fy2
+  | 'fx2Cover' | 'fx2Recall' | 'fx2Crash' | 'fx2Story' | 'fx2Was' | 'fx2Switch' | 'fx2She' | 'fx2Gone' | 'fx2Why' | 'fx2Sort' | 'fx2Talk' | 'fx2Mission' | 'fx2Next'
+  | 'fy2Cover' | 'fy2News' | 'fy2Story' | 'fy2Past' | 'fy2Present' | 'fy2Stand' | 'fy2Forms' | 'fy2Missing' | 'fy2Read' | 'fy2Sort' | 'fy2Talk' | 'fy2Mission' | 'fy2Next'
+  // Fusha · Level 3 · Lesson 3 (slides/motion/g-fx3.tsx): Kids fx3, 12+ fy3
+  | 'fx3Cover' | 'fx3Recall' | 'fx3Trial' | 'fx3Story' | 'fx3Inna' | 'fx3Seesaw' | 'fx3Lakinna' | 'fx3Hu' | 'fx3Verdict' | 'fx3Sort' | 'fx3Talk' | 'fx3Mission' | 'fx3Next'
+  | 'fy3Cover' | 'fy3Motion' | 'fy3Story' | 'fy3Inna' | 'fy3Seesaw' | 'fy3Lakinna' | 'fy3Moods' | 'fy3Pronouns' | 'fy3Six' | 'fy3Sort' | 'fy3Talk' | 'fy3Mission' | 'fy3Next'
+  // Egyptian · Sounds · Lesson 1 (slides/motion/g-es1.tsx)
+  | 'es1Cover' | 'es1Lost' | 'es1Story' | 'es1Qaf' | 'es1Guess' | 'es1Keep' | 'es1Jim' | 'es1Thousand' | 'es1Sentence' | 'es1Sort' | 'es1Talk' | 'es1Mission' | 'es1Next'
+  // Egyptian · Sounds · Lesson 2 (slides/motion/g-es2.tsx)
+  | 'es2Cover' | 'es2Recall' | 'es2Gold' | 'es2Story' | 'es2Tha' | 'es2Dhal' | 'es2Book' | 'es2Zha' | 'es2Layers' | 'es2Sort' | 'es2Talk' | 'es2Mission' | 'es2Next'
+  // Egyptian · Sounds · Lesson 3 (slides/motion/g-es3.tsx)
+  | 'es3Cover' | 'es3Recall' | 'es3Metro' | 'es3Story' | 'es3Endings' | 'es3Shrink' | 'es3Drop' | 'es3Stress' | 'es3Music' | 'es3Sort' | 'es3Talk' | 'es3Mission' | 'es3Next'
+  // Egyptian · Adults · Intermediate · Lesson 1 (slides/motion/g-ei1.tsx)
+  | 'ei1Cover' | 'ei1Recall' | 'ei1Stairs' | 'ei1Story' | 'ei1Ana' | 'ei1Enta' | 'ei1Huwa' | 'ei1More' | 'ei1Pattern' | 'ei1Sort' | 'ei1Talk' | 'ei1Mission' | 'ei1Next'
+  // Egyptian · Adults · Intermediate · Lesson 2 (slides/motion/g-ei2.tsx)
+  | 'ei2Cover' | 'ei2Recall' | 'ei2News' | 'ei2Story' | 'ei2Swap' | 'ei2Who' | 'ei2Mish' | 'ei2Inshallah' | 'ei2Line' | 'ei2Sort' | 'ei2Talk' | 'ei2Mission' | 'ei2Next'
+  // Egyptian · Adults · Intermediate · Lesson 3 (slides/motion/g-ei3.tsx)
+  | 'ei3Cover' | 'ei3Recall' | 'ei3Back' | 'ei3Story' | 'ei3Then' | 'ei3When' | 'ei3Sudden' | 'ei3End' | 'ei3Strip' | 'ei3Sort' | 'ei3Talk' | 'ei3Mission' | 'ei3Next'
+  // Egyptian · Teens · Intermediate · Lesson 1 (slides/motion/g-eti1.tsx)
+  | 'eti1Cover' | 'eti1Recall' | 'eti1Club' | 'eti1Story' | 'eti1Ana' | 'eti1Enti' | 'eti1Huwa' | 'eti1Tune' | 'eti1Chat' | 'eti1Sort' | 'eti1Talk' | 'eti1Mission' | 'eti1Next'
+  // Egyptian · Teens · Intermediate · Lesson 2 (slides/motion/g-eti2.tsx)
+  | 'eti2Cover' | 'eti2Recall' | 'eti2News' | 'eti2Story' | 'eti2Swap' | 'eti2Who' | 'eti2Mish' | 'eti2Sure' | 'eti2Line' | 'eti2Sort' | 'eti2Talk' | 'eti2Mission' | 'eti2Next'
+  // Egyptian · Teens · Intermediate · Lesson 3 (slides/motion/g-eti3.tsx)
+  | 'eti3Cover' | 'eti3Recall' | 'eti3Note' | 'eti3Story' | 'eti3Then' | 'eti3When' | 'eti3Sudden' | 'eti3End' | 'eti3Strip' | 'eti3Sort' | 'eti3Talk' | 'eti3Mission' | 'eti3Next'
+  // Egyptian · Kids · Intermediate · Lesson 1 (slides/motion/g-eki1.tsx)
+  | 'eki1Cover' | 'eki1Home' | 'eki1Story' | 'eki1Ana' | 'eki1Enti' | 'eki1Huwa' | 'eki1Song' | 'eki1Sort' | 'eki1Talk' | 'eki1Mission' | 'eki1Next'
+  // Egyptian · Kids · Intermediate · Lesson 2 (slides/motion/g-eki2.tsx)
+  | 'eki2Cover' | 'eki2Bed' | 'eki2Story' | 'eki2Ana' | 'eki2Enti' | 'eki2Huwa' | 'eki2Game' | 'eki2Sort' | 'eki2Talk' | 'eki2Mission' | 'eki2Next'
+  // Egyptian · Kids · Intermediate · Lesson 3 (slides/motion/g-eki3.tsx)
+  | 'eki3Cover' | 'eki3Sofa' | 'eki3Story' | 'eki3Then' | 'eki3Sudden' | 'eki3End' | 'eki3Strip' | 'eki3Sort' | 'eki3Talk' | 'eki3Mission' | 'eki3Next'
+  // Egyptian · Adults · Advanced · Lesson 1 (slides/motion/g-ea31.tsx)
+  | 'ea31Cover' | 'ea31Recall' | 'ea31Meeting' | 'ea31Story' | 'ea31Think' | 'ea31Agree' | 'ea31But' | 'ea31Unsure' | 'ea31Ladder' | 'ea31Sort' | 'ea31Talk' | 'ea31Mission' | 'ea31Next'
+  // Egyptian · Adults · Advanced · Lesson 2 (slides/motion/g-ea32.tsx)
+  | 'ea32Cover' | 'ea32Recall' | 'ea32Street' | 'ea32Story' | 'ea32Fat' | 'ea32Lehaf' | 'ea32Eed' | 'ea32Sabr' | 'ea32Flip' | 'ea32Sort' | 'ea32Talk' | 'ea32Mission' | 'ea32Next'
+  // Egyptian · Adults · Advanced · Lesson 3 (slides/motion/g-ea33.tsx)
+  | 'ea33Cover' | 'ea33Recall' | 'ea33Note' | 'ea33Story' | 'ea33Fillers' | 'ea33Run' | 'ea33Three' | 'ea33Reply' | 'ea33Filter' | 'ea33Sort' | 'ea33Talk' | 'ea33Mission' | 'ea33Next'
+  // Egyptian Arabic · Teens · Advanced · Lesson 1 · Who Should Be Captain? (slides/motion/g-eta1.tsx)
+  | 'eta1Cover' | 'eta1Recall' | 'eta1Club' | 'eta1Story' | 'eta1Think' | 'eta1Agree' | 'eta1But' | 'eta1Unsure' | 'eta1Meter' | 'eta1Sort' | 'eta1Talk' | 'eta1Mission' | 'eta1Next'
+  // Egyptian Arabic · Teens · Advanced · Lesson 2 · That's What They Say (slides/motion/g-eta2.tsx)
+  | 'eta2Cover' | 'eta2Recall' | 'eta2Chat' | 'eta2Story' | 'eta2Fat' | 'eta2Hand' | 'eta2News' | 'eta2Helw' | 'eta2Short' | 'eta2Sort' | 'eta2Talk' | 'eta2Mission' | 'eta2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

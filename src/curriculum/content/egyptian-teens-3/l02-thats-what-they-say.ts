@@ -1,0 +1,242 @@
+import type { Lesson } from '../../types';
+import { lessonETA02TeacherAr } from './l02-teacher-ar.js';
+
+// Rules: docs/curriculum/egyptian/RULES.md. Map: docs/curriculum/egyptian/MAP-advanced.md (Teens, Lesson 2: sayings in
+// memes and chats). Taught as the people's sayings, never as religious text. Egyptian lines recorded by the owner.
+
+const E = (id: string, text: string, emotion?: string) => ({ id, text, voice: 'eg' as const, emotion });
+
+export const lessonETA02: Lesson = {
+  subject: 'egyptian-teens-3',
+  version: 'teens',
+  subjectTitle: 'Egyptian Arabic · Teens · Advanced',
+  number: 2,
+  title: "That's What They Say",
+  titleAr: 'زي ما بيقولوا',
+  part: 'Advanced',
+  minutes: 45,
+  goal: 'By the end of this lesson, you will understand four sayings Egyptians drop into chats and memes, and use one at the right moment.',
+  reviewed: false,
+  teacherAr: lessonETA02TeacherAr,
+  outcomes: [
+    'Understands اللي فات مات (let it go) and knows not to say it about a person who died.',
+    'Understands إيد لوحدها ما تسقفش (nobody wins alone).',
+    'Reacts with يا خبر أبيض! or يا خبر إسود!',
+    'Understands الحلو ما يكملش (something always goes wrong).',
+  ],
+  chapters: [
+    { label: 'Warm-up', page: 0 },
+    { label: 'Listen first', page: 3 },
+    { label: 'The sayings', page: 4 },
+    { label: 'Short for…', page: 8 },
+    { label: 'Practice', page: 9 },
+    { label: 'My mission', page: 11 },
+  ],
+  pages: [
+    {
+      title: "That's What They Say",
+      station: 'spark',
+      layout: 'cover',
+      scene: 'eta2Cover',
+      lines: [],
+      explain: [
+        'Check the mission: the learner reads you the chat where they gave an opinion. Where was it on the meter?',
+        'Tell them: today, the short sayings that turn up in every Egyptian group chat.',
+      ],
+    },
+    {
+      title: 'Three words, a whole opinion',
+      station: 'spark',
+      layout: 'concept',
+      scene: 'eta2Recall',
+      lines: [
+        'Last time you said what you think: أنا شايف إن…، معاك حق بس….',
+        'Egyptians often skip the explaining and drop a saying instead.',
+        'Three or four words, and everybody knows exactly what you mean. Unless you are new.',
+      ],
+      say: [E('maak-haa-bass', 'معاك حق، بس…')],
+      explain: ['Ask: is there a saying your family uses all the time? Say it in English.'],
+    },
+    {
+      title: 'The night before',
+      station: 'spark',
+      layout: 'story',
+      scene: 'eta2Chat',
+      lines: [
+        'The night before the tournament. The team chat will not stop.',
+        'Karim has just posted his meme. Everybody is answering with sayings.',
+        'Your job tonight: work out what they are really saying.',
+      ],
+      explain: ['Ask: do your friends answer with memes instead of words? Which ones?'],
+    },
+    {
+      title: 'Listen first',
+      station: 'zad',
+      layout: 'story',
+      scene: 'eta2Story',
+      lines: [
+        'Listen twice. Is Karim still upset about the captain vote?',
+        'What does Nour tell the team? Why is Omar surprised?',
+        'The next morning it rains. What does Karim write?',
+      ],
+      say: [
+        E('story-1', 'اللي فات مات! نور الكابتن، وأنا معاها.', 'teen boy, dramatic, then warm'),
+        E('story-2', 'إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض!', 'teen girl, confident'),
+        E('story-3', 'يا خبر أبيض! كريم بقى طيب؟!', 'teen boy, surprised, laughing'),
+        E('story-4', 'الماتش اتلغى… مطر. الحلو ما يكملش!', 'teen boy, groaning'),
+      ],
+      explain: [
+        'Play twice. Ask in English: is Karim still upset? (no, he lets it go). What does Nour say? (we win together).',
+        'Then: why is Omar surprised? (Karim is being nice). What happened in the morning? (rain, the match is off).',
+      ],
+      teacherNote: 'Input first: all four sayings come in the chat before any meaning is given. Let them guess from the situation.',
+    },
+    {
+      title: 'What passed, died',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'eta2Fat',
+      lines: [
+        'Word for word, اللي فات مات is "what passed, died". It means: forget it, move on.',
+        'Karim uses it about the vote. He lost, and he is letting it go.',
+        'One rule: it is about things, never about a person. Don\'t say it about someone who passed away.',
+      ],
+      vocab: [
+        { arabic: 'اللي فات مات', translit: 'illi faat maat', meaning: 'let it go, move on (lit. what passed, died)' },
+        { arabic: 'فات', translit: 'faat', meaning: 'passed, went by' },
+      ],
+      say: [E('elli-fat', 'اللي فات مات!')],
+      explain: ['Say a small loss (I failed a quiz, I missed the bus). They answer اللي فات مات.'],
+    },
+    {
+      title: 'One hand doesn\'t clap',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'eta2Hand',
+      lines: [
+        'إيد لوحدها ما تسقفش: "a hand on its own doesn\'t clap".',
+        'Try it. One hand makes no sound. Two hands, and you hear it.',
+        'Nour means: nobody wins a tournament alone. It is the team\'s cup or nobody\'s.',
+      ],
+      vocab: [
+        { arabic: 'إيد', translit: 'iid', meaning: 'hand' },
+        { arabic: 'لوحدها', translit: 'lawaḥdaha', meaning: 'on its own' },
+        { arabic: 'ما تسقفش', translit: 'ma tsa\'\'afsh', meaning: 'doesn\'t clap' },
+      ],
+      say: [E('eed', 'إيد لوحدها ما تسقفش.')],
+      explain: ['Clap with one hand, then two. Let them say the saying before you do.'],
+    },
+    {
+      title: 'White news, black news',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'eta2News',
+      lines: [
+        'يا خبر أبيض! is "oh, white news!": surprise, usually at something good or funny.',
+        'يا خبر إسود! is "oh, black news!": something went wrong. You forgot the match is today.',
+        'Same shape, one colour changes everything.',
+      ],
+      vocab: [
+        { arabic: 'يا خبر أبيض!', translit: 'ya khabar abyaḍ!', meaning: 'no way! (happy surprise)' },
+        { arabic: 'يا خبر إسود!', translit: 'ya khabar iswid!', meaning: 'oh no! (bad news)' },
+      ],
+      say: [E('abyad', 'يا خبر أبيض!'), E('iswed', 'يا خبر إسود!')],
+      explain: ['Tell four quick pieces of news, good and bad. They react with the right colour.'],
+    },
+    {
+      title: 'The sweet never finishes',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'eta2Helw',
+      lines: [
+        'الحلو ما يكملش: "the sweet thing doesn\'t finish".',
+        'Everything is perfect, the kit is washed, the team is ready… and it rains.',
+        'Egyptians say it with a laugh, not a cry: something always goes wrong, so smile.',
+      ],
+      vocab: [
+        { arabic: 'الحلو', translit: 'il-ḥilw', meaning: 'the nice / sweet thing' },
+        { arabic: 'ما يكملش', translit: 'ma ykammilsh', meaning: 'doesn\'t last to the end' },
+      ],
+      say: [E('helw', 'الحلو ما يكملش!')],
+      explain: ['Ask for a time when everything was going well and then one thing went wrong. Answer with the saying.'],
+    },
+    {
+      title: 'Short for…',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'eta2Short',
+      lines: [
+        'Every saying is a long message, folded small.',
+        '"I lost, I\'m a bit sad, but I won\'t let it ruin the team, so let\'s forget it" → اللي فات مات.',
+        'That is why the chat moves so fast: four words carry a whole paragraph.',
+      ],
+      say: [E('short', 'اللي فات مات.')],
+      explain: ['Give them a long English message. They fold it into one of the four sayings.'],
+      teacherNote: 'The wow: a full paragraph shrinks into three words on screen. Sayings are compression, not decoration.',
+    },
+    {
+      title: 'Which saying?',
+      station: 'athar',
+      layout: 'game',
+      scene: 'eta2Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        look: 'row',
+        prompt: 'Which saying fits the moment?',
+        bins: [
+          { id: 'fat', label: 'اللي فات مات', hint: 'let it go' },
+          { id: 'eed', label: 'إيد لوحدها…', hint: 'together' },
+          { id: 'helw', label: 'الحلو ما يكملش', hint: 'it always goes wrong' },
+        ],
+        cards: [
+          { label: 'You argued with a friend last week. Today you make up.', bin: 'fat', why: 'Forget it, move on.' },
+          { label: 'Your group project needs everyone to do a part.', bin: 'eed', why: 'Nobody does it alone.' },
+          { label: 'Perfect beach day… and you forgot the food.', bin: 'helw', why: 'Something always goes wrong.' },
+          { label: 'Your team lost the final. New season tomorrow.', bin: 'fat', why: 'What passed, passed.' },
+          { label: 'Three friends carry the sofa up the stairs.', bin: 'eed', why: 'Two hands to clap.' },
+          { label: 'Great film, then the power cuts in the last minute.', bin: 'helw', why: 'The sweet never finishes.' },
+        ],
+      },
+      explain: ['Read each situation aloud. Ask them to say the saying, not just pick it.'],
+    },
+    {
+      title: 'Your turn: the chat',
+      station: 'athar',
+      layout: 'question',
+      scene: 'eta2Talk',
+      lines: [
+        'Your teacher posts news in the team chat. Answer with a saying, or with يا خبر أبيض / إسود.',
+        'Then add one more line in your own words: why you chose it.',
+      ],
+      say: [E('news-1', 'نور جابت تلات جوان في التمرين!', 'teen boy, excited')],
+      interaction: { kind: 'ask', prompt: 'Did each saying fit the moment?', reveal: 'برافو! Now the chat makes sense.' },
+      explain: ['Four news items, fast. One must be sad, so they reach for يا خبر إسود.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'eta2Mission',
+      lines: [
+        'Make a meme with one of the four sayings: a photo, a drawing, anything.',
+        'Send it to your teacher, or to a friend who speaks Egyptian, and see if they laugh.',
+      ],
+      interaction: { kind: 'choose', prompt: 'Which saying will you use?', options: ['اللي فات مات', 'إيد لوحدها ما تسقفش', 'يا خبر أبيض', 'الحلو ما يكملش'] },
+      explain: ['Next time, the learner shows the meme and explains the joke.'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'eta2Next',
+      lines: [
+        'The match is moved to Friday. Karim sends a voice note about it.',
+        'Forty seconds, no breath, and nobody understands a word.',
+        'Next time: how to follow a voice note at full speed, and how to ask for it again.',
+      ],
+      say: [E('fast', 'بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب…', 'teen boy, extremely fast')],
+      explain: ['Play it once at full speed. Ask: did you catch the day?'],
+    },
+  ],
+};

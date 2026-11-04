@@ -446,6 +446,77 @@ One take: paste this whole block as one generation; I cut it into the files abov
 كَتَبَ يَكْتُبُ <break time="1.2s" /> يَا جِدِّي، ٱلدَّرَّاجَةُ لَا تَمْشِي! <break time="1.2s" /> تَعَالَ، أُعَلِّمُكَ. <break time="1.2s" /> مَنْ عَلَّمَكَ يَا يُوسُفُ؟ <break time="1.2s" /> جِدِّي عَلَّمَنِي! <break time="1.2s" /> وَأَنَا سَاعَدْتُ جِدِّي! <break time="1.2s" /> وَأَنَا لَاعَبْتُ مِشْمِشًا! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> عَلِمَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهِمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> عَلَّمَ جِدِّي يُوسُفَ. <break time="1.2s" /> لَعِبَ <break time="1.2s" /> لَاعَبَ <break time="1.2s" /> لَاعَبْتُ مِشْمِشًا. <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> فَعَّلَ <break time="1.2s" /> فَاعَلَ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> تُسَاعِدُ <break time="1.2s" /> أُعَلِّمُ <break time="1.2s" /> مَنْ عَلَّمَكَ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي. <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ!
 ```
 
+## Fusha Arabic · Kids · Level 3 · Lesson 2: Who Broke the Vase?
+
+Folder: `public/curriculum/fusha-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (23)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-allama.mp3 | 2 | clear | عَلَّمَ |
+| 2 | l02-story-1.mp3 | 4 | grandfather, shocked | كُسِرَتِ ٱلْمَزْهَرِيَّةُ! |
+| 3 | l02-story-2.mp3 | 4 | girl, detective | وَٱنْظُرْ يَا جِدِّي، فُتِحَ ٱلشُّبَّاكُ! |
+| 4 | l02-story-3.mp3 | 4 | boy, amazed | وَأُكِلَ ٱلسَّمَكُ! |
+| 5 | l02-story-4.mp3 | 4 | girl, serious | مَنْ كَسَرَ ٱلْمَزْهَرِيَّةَ؟ |
+| 6 | l02-story-5.mp3 | 4 | boy, pointing | مِشْمِشٌ كَسَرَهَا! |
+| 7 | l02-story-6.mp3 | 4 | grandfather, laughing | مِسْكِينٌ مِشْمِشٌ! |
+| 8 | l02-kasara.mp3 | 5 | clear | كَسَرَ |
+| 9 | l02-kusira.mp3 | 5 | clear, slow | كُسِرَ |
+| 10 | l02-kasara-mishmish.mp3 | 5 |  | كَسَرَ مِشْمِشٌ ٱلْمَزْهَرِيَّةَ. |
+| 11 | l02-fataha.mp3 | 6 |  | فَتَحَ |
+| 12 | l02-futiha.mp3 | 6 |  | فُتِحَ |
+| 13 | l02-akala.mp3 | 6 |  | أَكَلَ |
+| 14 | l02-ukila.mp3 | 6 |  | أُكِلَ |
+| 15 | l02-kataba.mp3 | 6 |  | كَتَبَ |
+| 16 | l02-kutiba.mp3 | 6 |  | كُتِبَ |
+| 17 | l02-kusirat.mp3 | 7 |  | كُسِرَتِ ٱلْمَزْهَرِيَّةُ. |
+| 18 | l02-futiha-shubbak.mp3 | 7 |  | فُتِحَ ٱلشُّبَّاكُ. |
+| 19 | l02-ukila-samak.mp3 | 7 |  | أُكِلَ ٱلسَّمَكُ. |
+| 20 | l02-futiha-bab.mp3 | 9 |  | فُتِحَ ٱلْبَابُ لِلضُّيُوفِ. |
+| 21 | l02-man-faala.mp3 | 11 | detective, serious | مَنْ فَعَلَ ذَلِكَ؟ |
+| 22 | l02-inna-mishmishan.mp3 | 13 | girl, certain | إِنَّ مِشْمِشًا بَرِيءٌ! |
+| 23 | l02-lakinna.mp3 | 13 | boy, laughing | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+عَلَّمَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ! <break time="1.2s" /> وَٱنْظُرْ يَا جِدِّي، فُتِحَ ٱلشُّبَّاكُ! <break time="1.2s" /> وَأُكِلَ ٱلسَّمَكُ! <break time="1.2s" /> مَنْ كَسَرَ ٱلْمَزْهَرِيَّةَ؟ <break time="1.2s" /> مِشْمِشٌ كَسَرَهَا! <break time="1.2s" /> مِسْكِينٌ مِشْمِشٌ! <break time="1.2s" /> كَسَرَ <break time="1.2s" /> كُسِرَ <break time="1.2s" /> كَسَرَ مِشْمِشٌ ٱلْمَزْهَرِيَّةَ. <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> أَكَلَ <break time="1.2s" /> أُكِلَ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كُتِبَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ. <break time="1.2s" /> فُتِحَ ٱلشُّبَّاكُ. <break time="1.2s" /> أُكِلَ ٱلسَّمَكُ. <break time="1.2s" /> فُتِحَ ٱلْبَابُ لِلضُّيُوفِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ! <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ!
+```
+
+## Fusha Arabic · Kids · Level 3 · Lesson 3: Indeed and But
+
+Folder: `public/curriculum/fusha-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-ukila-samak.mp3 | 2 | mysterious | أُكِلَ ٱلسَّمَكُ. |
+| 2 | l03-story-1.mp3 | 4 | grandfather, like a judge | مَنْ أَكَلَ ٱلسَّمَكَ؟ |
+| 3 | l03-story-2.mp3 | 4 | girl, certain | إِنَّ مِشْمِشًا بَرِيءٌ يَا جِدِّي! |
+| 4 | l03-story-3.mp3 | 4 | boy, pointing | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+| 5 | l03-story-4.mp3 | 4 | girl, pleading | إِنَّهُ جَائِعٌ، مِسْكِينٌ! |
+| 6 | l03-story-5.mp3 | 4 | grandfather, laughing | إِنَّ مِشْمِشًا ذَكِيٌّ، لَكِنَّهُ لِصٌّ صَغِيرٌ! |
+| 7 | l03-mishmish-bari.mp3 | 5 |  | مِشْمِشٌ بَرِيءٌ. |
+| 8 | l03-inna.mp3 | 5 | strong | إِنَّ |
+| 9 | l03-inna-mishmishan.mp3 | 5 | certain | إِنَّ مِشْمِشًا بَرِيءٌ! |
+| 10 | l03-samak-ladhidh.mp3 | 6 |  | ٱلسَّمَكُ لَذِيذٌ. |
+| 11 | l03-inna-samak.mp3 | 6 | very sure | إِنَّ ٱلسَّمَكَ لَذِيذٌ. |
+| 12 | l03-lakinna.mp3 | 7 | strong | لَكِنَّ |
+| 13 | l03-lakinna-samak.mp3 | 7 | boy, triumphant | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+| 14 | l03-innahu-jaai.mp3 | 8 | girl, pleading | إِنَّهُ جَائِعٌ! |
+| 15 | l03-lakinnahu-liss.mp3 | 8 | grandfather, laughing | لَكِنَّهُ لِصٌّ صَغِيرٌ! |
+| 16 | l03-inna-ghurfa.mp3 | 11 | certain | إِنَّ ٱلْغُرْفَةَ نَظِيفَةٌ! |
+| 17 | l03-lakinna-ghurfa.mp3 | 11 | laughing | لَكِنَّ ٱلْأَلْعَابَ عَلَى ٱلْأَرْضِ! |
+| 18 | l03-taallamtu.mp3 | 13 | girl, proud | تَعَلَّمْتُ كَثِيرًا، وَتَعَاوَنَّا! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُكِلَ ٱلسَّمَكُ. <break time="1.2s" /> مَنْ أَكَلَ ٱلسَّمَكَ؟ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ يَا جِدِّي! <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! <break time="1.2s" /> إِنَّهُ جَائِعٌ، مِسْكِينٌ! <break time="1.2s" /> إِنَّ مِشْمِشًا ذَكِيٌّ، لَكِنَّهُ لِصٌّ صَغِيرٌ! <break time="1.2s" /> مِشْمِشٌ بَرِيءٌ. <break time="1.2s" /> إِنَّ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ! <break time="1.2s" /> ٱلسَّمَكُ لَذِيذٌ. <break time="1.2s" /> إِنَّ ٱلسَّمَكَ لَذِيذٌ. <break time="1.2s" /> لَكِنَّ <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! <break time="1.2s" /> إِنَّهُ جَائِعٌ! <break time="1.2s" /> لَكِنَّهُ لِصٌّ صَغِيرٌ! <break time="1.2s" /> إِنَّ ٱلْغُرْفَةَ نَظِيفَةٌ! <break time="1.2s" /> لَكِنَّ ٱلْأَلْعَابَ عَلَى ٱلْأَرْضِ! <break time="1.2s" /> تَعَلَّمْتُ كَثِيرًا، وَتَعَاوَنَّا!
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -563,6 +634,159 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 قَلْب <break time="1.2s" /> كَلْب <break time="1.2s" /> قُلْ <break time="1.2s" /> كُلْ <break time="1.2s" /> أَقْ <break time="1.2s" /> أَكْ
+```
+
+## Egyptian Arabic · Sounds · Lesson 1: Where Did the Qaf Go?
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (6)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | polite, careful, like a textbook | أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ. |
+| 2 | l01-story-3.mp3 | 3 | polite, careful | وَأُرِيدُ قَلَمًا أَيْضًا. |
+| 3 | l01-qahwa-f.mp3 | 4 |  | قَهْوَةٌ |
+| 4 | l01-qalam-f.mp3 | 4 |  | قَلَمٌ |
+| 5 | l01-jamil-f.mp3 | 7 |  | جَمِيلٌ |
+| 6 | l01-dhahab-f.mp3 | 13 |  | ذَهَبٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ. <break time="1.2s" /> وَأُرِيدُ قَلَمًا أَيْضًا. <break time="1.2s" /> قَهْوَةٌ <break time="1.2s" /> قَلَمٌ <break time="1.2s" /> جَمِيلٌ <break time="1.2s" /> ذَهَبٌ
+```
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-2.mp3 | 3 | waiter, cheerful | قهوة؟ حاضر يا باشا! |
+| 2 | l01-story-4.mp3 | 3 | waiter, pointing | قلم؟ عندك الكشك اللي جنبنا. |
+| 3 | l01-story-5.mp3 | 3 | doorman, laughing warmly | يا آدم، إنت بتتكلم زي الكتاب! جميل! |
+| 4 | l01-ahwa-e.mp3 | 4 | clear | قهوة |
+| 5 | l01-alam-e.mp3 | 4 | clear | قلم |
+| 6 | l01-alb.mp3 | 5 |  | قلب |
+| 7 | l01-aal.mp3 | 5 |  | قال |
+| 8 | l01-foo.mp3 | 5 |  | فوق |
+| 9 | l01-suu.mp3 | 5 |  | سوق |
+| 10 | l01-sadii.mp3 | 5 |  | صديق |
+| 11 | l01-quraan.mp3 | 6 |  | القرآن |
+| 12 | l01-qadiyya.mp3 | 6 |  | القضية |
+| 13 | l01-gamiil.mp3 | 7 |  | جميل |
+| 14 | l01-gamb.mp3 | 7 |  | جنب |
+| 15 | l01-gidiid.mp3 | 7 |  | جديد |
+| 16 | l01-gama.mp3 | 7 |  | جامعة |
+| 17 | l01-sentence.mp3 | 9 | relaxed, natural speed | أنا عايز أقعد في القهوة اللي جنب الجامعة. |
+| 18 | l01-wahid-ahwa.mp3 | 11 | friendly | واحد قهوة، لو سمحت. |
+| 19 | l01-fen-gama.mp3 | 11 | asking | فين الجامعة؟ |
+| 20 | l01-dahab-e.mp3 | 13 | jeweller, inviting | دهب؟ عندنا دهب جميل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قهوة؟ حاضر يا باشا! <break time="1.2s" /> قلم؟ عندك الكشك اللي جنبنا. <break time="1.2s" /> يا آدم، إنت بتتكلم زي الكتاب! جميل! <break time="1.2s" /> قهوة <break time="1.2s" /> قلم <break time="1.2s" /> قلب <break time="1.2s" /> قال <break time="1.2s" /> فوق <break time="1.2s" /> سوق <break time="1.2s" /> صديق <break time="1.2s" /> القرآن <break time="1.2s" /> القضية <break time="1.2s" /> جميل <break time="1.2s" /> جنب <break time="1.2s" /> جديد <break time="1.2s" /> جامعة <break time="1.2s" /> أنا عايز أقعد في القهوة اللي جنب الجامعة. <break time="1.2s" /> واحد قهوة، لو سمحت. <break time="1.2s" /> فين الجامعة؟ <break time="1.2s" /> دهب؟ عندنا دهب جميل!
+```
+
+## Egyptian Arabic · Sounds · Lesson 2: Th and Dh
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (4)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 4 | polite, careful | أُرِيدُ خَاتَمًا مِنَ ٱلذَّهَبِ. |
+| 2 | l02-story-3.mp3 | 4 | surprised | ثَلَاثَةُ آلَافٍ؟ هَذَا كَثِيرٌ! |
+| 3 | l02-thalatha-f.mp3 | 5 |  | ثَلَاثَةٌ |
+| 4 | l02-dhahab-f.mp3 | 6 |  | ذَهَبٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُرِيدُ خَاتَمًا مِنَ ٱلذَّهَبِ. <break time="1.2s" /> ثَلَاثَةُ آلَافٍ؟ هَذَا كَثِيرٌ! <break time="1.2s" /> ثَلَاثَةٌ <break time="1.2s" /> ذَهَبٌ
+```
+
+### ElevenLabs: Mahmoud Egyptian (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-ahwa.mp3 | 2 |  | قهوة |
+| 2 | l02-gamiil.mp3 | 2 |  | جميل |
+| 3 | l02-story-2.mp3 | 4 | jeweller, inviting | دهب؟ عندنا دهب جميل. بتلات آلاف. |
+| 4 | l02-story-4.mp3 | 4 | jeweller, laughing | إنت ذكي يا أستاذ! خلاص، بألفين وتمنمية. |
+| 5 | l02-story-5.mp3 | 4 | doorman, warm | مبروك يا آدم! أمك هتفرح. |
+| 6 | l02-talata.mp3 | 5 |  | تلاتة |
+| 7 | l02-kitir.mp3 | 5 |  | كتير |
+| 8 | l02-talg.mp3 | 5 |  | تلج |
+| 9 | l02-dahab.mp3 | 6 |  | دهب |
+| 10 | l02-deel.mp3 | 6 |  | ديل |
+| 11 | l02-sawra.mp3 | 7 |  | ثورة |
+| 12 | l02-masalan.mp3 | 7 |  | مثلاً |
+| 13 | l02-zaki.mp3 | 7 |  | ذكي |
+| 14 | l02-dahr.mp3 | 8 | tired, rubbing back | ضهري واجعني. |
+| 15 | l02-zariif.mp3 | 8 |  | ظريف |
+| 16 | l02-bikam.mp3 | 11 | curious | ده بكام؟ |
+| 17 | l02-kitir-awi.mp3 | 11 | shocked, playful | ده كتير أوي! |
+| 18 | l02-mahatta.mp3 | 13 | metro announcer | المحطة الجاية: السادات. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قهوة <break time="1.2s" /> جميل <break time="1.2s" /> دهب؟ عندنا دهب جميل. بتلات آلاف. <break time="1.2s" /> إنت ذكي يا أستاذ! خلاص، بألفين وتمنمية. <break time="1.2s" /> مبروك يا آدم! أمك هتفرح. <break time="1.2s" /> تلاتة <break time="1.2s" /> كتير <break time="1.2s" /> تلج <break time="1.2s" /> دهب <break time="1.2s" /> ديل <break time="1.2s" /> ثورة <break time="1.2s" /> مثلاً <break time="1.2s" /> ذكي <break time="1.2s" /> ضهري واجعني. <break time="1.2s" /> ظريف <break time="1.2s" /> ده بكام؟ <break time="1.2s" /> ده كتير أوي! <break time="1.2s" /> المحطة الجاية: السادات.
+```
+
+## Egyptian Arabic · Sounds · Lesson 3: Short and Stressed
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (4)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-2.mp3 | 4 | careful, reading | مَحَطَّةُ ٱلسَّادَاتِ. |
+| 2 | l03-madrasatun.mp3 | 5 |  | مَدْرَسَةٌ |
+| 3 | l03-kitabun.mp3 | 5 |  | كِتَابٌ |
+| 4 | l03-ila-ayna.mp3 | 9 | careful | إِلَى أَيْنَ أَنْتَ ذَاهِبٌ؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَحَطَّةُ ٱلسَّادَاتِ. <break time="1.2s" /> مَدْرَسَةٌ <break time="1.2s" /> كِتَابٌ <break time="1.2s" /> إِلَى أَيْنَ أَنْتَ ذَاهِبٌ؟
+```
+
+### ElevenLabs: Mahmoud Egyptian (23)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-talata.mp3 | 2 |  | تلاتة |
+| 2 | l03-dahab.mp3 | 2 |  | دهب |
+| 3 | l03-zaki.mp3 | 2 |  | ذكي |
+| 4 | l03-story-1.mp3 | 4 | metro announcer | المحطة الجاية: السادات. |
+| 5 | l03-story-3.mp3 | 4 | woman, friendly | إنت رايح فين يا آدم؟ |
+| 6 | l03-story-4.mp3 | 4 | man, trying, then correcting himself | رايح المدرسة… مدرسة! |
+| 7 | l03-story-5.mp3 | 4 | woman, laughing | برافو! الكلام هنا أسرع، والآخر بيقع. |
+| 8 | l03-madrasa.mp3 | 5 |  | مدرسة |
+| 9 | l03-kitaab.mp3 | 5 |  | كتاب |
+| 10 | l03-kitabha.mp3 | 6 |  | كتابها |
+| 11 | l03-baab.mp3 | 6 |  | باب |
+| 12 | l03-babha.mp3 | 6 |  | بابها |
+| 13 | l03-babna.mp3 | 6 |  | بابنا |
+| 14 | l03-rayih.mp3 | 7 |  | رايح |
+| 15 | l03-rayha.mp3 | 7 |  | رايحة |
+| 16 | l03-sakin.mp3 | 7 |  | ساكن |
+| 17 | l03-sakna.mp3 | 7 |  | ساكنة |
+| 18 | l03-madrasa-2.mp3 | 8 | stress clearly on ra | مدرسة |
+| 19 | l03-maktaba.mp3 | 8 | stress clearly on ta | مكتبة |
+| 20 | l03-rayih-fen.mp3 | 9 | natural, quick | رايح فين؟ |
+| 21 | l03-mahatta-gaya.mp3 | 11 | announcer | المحطة الجاية: العتبة. |
+| 22 | l03-rayha-fen.mp3 | 11 | friendly, to a woman | إنتي رايحة فين؟ |
+| 23 | l03-beet-beetak.mp3 | 13 | warm mother, welcoming | أهلاً! البيت بيتك. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+تلاتة <break time="1.2s" /> دهب <break time="1.2s" /> ذكي <break time="1.2s" /> المحطة الجاية: السادات. <break time="1.2s" /> إنت رايح فين يا آدم؟ <break time="1.2s" /> رايح المدرسة… مدرسة! <break time="1.2s" /> برافو! الكلام هنا أسرع، والآخر بيقع. <break time="1.2s" /> مدرسة <break time="1.2s" /> كتاب <break time="1.2s" /> كتابها <break time="1.2s" /> باب <break time="1.2s" /> بابها <break time="1.2s" /> بابنا <break time="1.2s" /> رايح <break time="1.2s" /> رايحة <break time="1.2s" /> ساكن <break time="1.2s" /> ساكنة <break time="1.2s" /> مدرسة <break time="1.2s" /> مكتبة <break time="1.2s" /> رايح فين؟ <break time="1.2s" /> المحطة الجاية: العتبة. <break time="1.2s" /> إنتي رايحة فين؟ <break time="1.2s" /> أهلاً! البيت بيتك.
 ```
 
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
@@ -707,6 +931,221 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 إيه ده؟ <break time="1.2s" /> إيه ده يا طنط؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي بسبوسة. بالهنا والشفا! <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شوكة يا آدم! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> دي بسبوسة. <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي ترابيزة. <break time="1.2s" /> ده كرسي. <break time="1.2s" /> ده باب. <break time="1.2s" /> ده الباب. <break time="1.2s" /> وده الشباك. <break time="1.2s" /> دي الكنبة. <break time="1.2s" /> ودي التلاجة. <break time="1.2s" /> ده التليفزيون. <break time="1.2s" /> ده السرير. <break time="1.2s" /> وده المطبخ. <break time="1.2s" /> ده عم سيد. <break time="1.2s" /> ودي منى. <break time="1.2s" /> فين المفاتيح؟
+```
+
+## Egyptian Arabic · Adults · Intermediate · Lesson 1: What Did You Do Yesterday?
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-barooh.mp3 | 2 |  | بروح الشغل كل يوم. |
+| 2 | l01-rooht-imbarih.mp3 | 2 |  | امبارح رحت السوق. |
+| 3 | l01-story-1.mp3 | 4 | woman, friendly, curious | صباح الخير يا آدم! عملت إيه امبارح؟ |
+| 4 | l01-story-2.mp3 | 4 | man, tired but happy | رحت الأهرامات! |
+| 5 | l01-story-3.mp3 | 4 | woman, impressed | بجد؟ مع مين؟ |
+| 6 | l01-story-4.mp3 | 4 | man, warm | مع عم سيد. هو راح معايا. |
+| 7 | l01-story-5.mp3 | 4 | older man, teasing | وإنتي يا منى، رحتي فين امبارح؟ |
+| 8 | l01-story-6.mp3 | 4 | woman, laughing at herself | أنا؟ رحت الشغل… زي كل يوم! |
+| 9 | l01-rooht.mp3 | 5 |  | رحت |
+| 10 | l01-rooht-shoghl.mp3 | 5 |  | رحت الشغل. |
+| 11 | l01-rooht-soo2.mp3 | 5 |  | رحت السوق. |
+| 12 | l01-amalt-eh.mp3 | 5 |  | عملت إيه؟ |
+| 13 | l01-rooht-feen.mp3 | 6 |  | رحت فين؟ |
+| 14 | l01-roohti-feen.mp3 | 6 |  | رحتي فين؟ |
+| 15 | l01-rah.mp3 | 7 |  | راح |
+| 16 | l01-rahit.mp3 | 7 |  | راحت |
+| 17 | l01-rah-maaya.mp3 | 7 |  | هو راح معايا. |
+| 18 | l01-shiribt.mp3 | 8 |  | شربت شاي. |
+| 19 | l01-shuft.mp3 | 8 |  | شفت الأهرامات. |
+| 20 | l01-kalt.mp3 | 8 |  | كلت كشري. |
+| 21 | l01-rooht-2.mp3 | 9 |  | رحت |
+| 22 | l01-roohti.mp3 | 9 |  | رحتي |
+| 23 | l01-rah-2.mp3 | 9 |  | راح |
+| 24 | l01-rahit-2.mp3 | 9 |  | راحت |
+| 25 | l01-amalti-eh.mp3 | 11 | friendly, to a woman | عملتي إيه امبارح؟ |
+| 26 | l01-bokra-hanrooh.mp3 | 13 | woman, excited | بكرة هنروح إسكندرية! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بروح الشغل كل يوم. <break time="1.2s" /> امبارح رحت السوق. <break time="1.2s" /> صباح الخير يا آدم! عملت إيه امبارح؟ <break time="1.2s" /> رحت الأهرامات! <break time="1.2s" /> بجد؟ مع مين؟ <break time="1.2s" /> مع عم سيد. هو راح معايا. <break time="1.2s" /> وإنتي يا منى، رحتي فين امبارح؟ <break time="1.2s" /> أنا؟ رحت الشغل… زي كل يوم! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الشغل. <break time="1.2s" /> رحت السوق. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> هو راح معايا. <break time="1.2s" /> شربت شاي. <break time="1.2s" /> شفت الأهرامات. <break time="1.2s" /> كلت كشري. <break time="1.2s" /> رحت <break time="1.2s" /> رحتي <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنروح إسكندرية!
+```
+
+## Egyptian Arabic · Adults · Intermediate · Lesson 2: Tomorrow, God Willing
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-rooht.mp3 | 2 |  | رحت |
+| 2 | l02-hanrooh.mp3 | 2 |  | بكرة هنروح إسكندرية. |
+| 3 | l02-story-1.mp3 | 4 | woman, excited | بكرة هنروح إسكندرية! |
+| 4 | l02-story-2.mp3 | 4 | man, curious | بجد؟ هتمشوا إمتى؟ |
+| 5 | l02-story-3.mp3 | 4 | woman, cheerful | هنمشي الساعة سبعة الصبح، إن شاء الله. |
+| 6 | l02-story-4.mp3 | 4 | man, curious | وهتعملوا إيه هناك؟ |
+| 7 | l02-story-5.mp3 | 4 | woman, inviting | هناكل سمك ونقعد على البحر. هتيجي معانا؟ |
+| 8 | l02-story-6.mp3 | 4 | man, delighted | أكيد هاجي! |
+| 9 | l02-barooh.mp3 | 5 |  | بروح |
+| 10 | l02-harooh.mp3 | 5 |  | هروح |
+| 11 | l02-bokra-harooh.mp3 | 5 |  | بكرة هروح الشغل. |
+| 12 | l02-hatrooh.mp3 | 6 |  | هتروح |
+| 13 | l02-hatroohi.mp3 | 6 |  | هتروحي |
+| 14 | l02-hayrooh.mp3 | 6 |  | هيروح |
+| 15 | l02-hanrooh-2.mp3 | 6 |  | هنروح |
+| 16 | l02-mish-harooh.mp3 | 7 |  | مش هروح. |
+| 17 | l02-andi-shoghl.mp3 | 7 |  | أنا مش هروح، عندي شغل. |
+| 18 | l02-inshallah.mp3 | 8 |  | إن شاء الله |
+| 19 | l02-baad-bokra.mp3 | 8 |  | بعد بكرة |
+| 20 | l02-usbooa-gay.mp3 | 8 |  | الأسبوع الجاي |
+| 21 | l02-rooht-2.mp3 | 9 |  | رحت |
+| 22 | l02-barooh-2.mp3 | 9 |  | بروح |
+| 23 | l02-harooh-2.mp3 | 9 |  | هروح |
+| 24 | l02-hatamel-eh.mp3 | 11 | friendly, to a man | هتعمل إيه بكرة؟ |
+| 25 | l02-hatameli-eh.mp3 | 11 | friendly, to a woman | هتعملي إيه بكرة؟ |
+| 26 | l02-fagaa.mp3 | 13 | man, out of breath | وفجأة… القطر مشي! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+رحت <break time="1.2s" /> بكرة هنروح إسكندرية. <break time="1.2s" /> بكرة هنروح إسكندرية! <break time="1.2s" /> بجد؟ هتمشوا إمتى؟ <break time="1.2s" /> هنمشي الساعة سبعة الصبح، إن شاء الله. <break time="1.2s" /> وهتعملوا إيه هناك؟ <break time="1.2s" /> هناكل سمك ونقعد على البحر. هتيجي معانا؟ <break time="1.2s" /> أكيد هاجي! <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> بكرة هروح الشغل. <break time="1.2s" /> هتروح <break time="1.2s" /> هتروحي <break time="1.2s" /> هيروح <break time="1.2s" /> هنروح <break time="1.2s" /> مش هروح. <break time="1.2s" /> أنا مش هروح، عندي شغل. <break time="1.2s" /> إن شاء الله <break time="1.2s" /> بعد بكرة <break time="1.2s" /> الأسبوع الجاي <break time="1.2s" /> رحت <break time="1.2s" /> بروح <break time="1.2s" /> هروح <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> وفجأة… القطر مشي!
+```
+
+## Egyptian Arabic · Adults · Intermediate · Lesson 3: And Then…
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hanemshi.mp3 | 2 |  | هنمشي الساعة سبعة. |
+| 2 | l03-mishina.mp3 | 2 |  | مشينا الساعة سبعة. |
+| 3 | l03-story-1.mp3 | 4 | older man, puzzled | إيه يا آدم؟ مش رحت إسكندرية؟ |
+| 4 | l03-story-2.mp3 | 4 | man, laughing | رحت… بس صحيت متأخر، وبعدين خدت تاكسي. |
+| 5 | l03-story-3.mp3 | 4 | man, telling a story | لما وصلت المحطة، شفت منى في الشباك. |
+| 6 | l03-story-4.mp3 | 4 | man, dramatic | وفجأة… القطر مشي! |
+| 7 | l03-story-5.mp3 | 4 | older man, eager | يا خبر! وبعدين؟ |
+| 8 | l03-story-6.mp3 | 4 | man, happy ending | في الآخر ركبت القطر اللي بعده، وكلت سمك مع منى على البحر! |
+| 9 | l03-sihit.mp3 | 5 |  | صحيت متأخر. |
+| 10 | l03-wbaadeen.mp3 | 5 |  | وبعدين خدت تاكسي. |
+| 11 | l03-wbaadeen-q.mp3 | 5 |  | وبعدين؟ |
+| 12 | l03-lamma.mp3 | 6 |  | لما وصلت المحطة… |
+| 13 | l03-shoft-mona.mp3 | 6 |  | شفت منى في الشباك. |
+| 14 | l03-fagaa.mp3 | 7 | dramatic pause | وفجأة… القطر مشي! |
+| 15 | l03-ya-khabar.mp3 | 7 | shocked | يا خبر! |
+| 16 | l03-fel-akher.mp3 | 8 |  | في الآخر ركبت القطر اللي بعده. |
+| 17 | l03-strip.mp3 | 9 | telling a story, lively | صحيت متأخر، وبعدين خدت تاكسي. لما وصلت، القطر مشي فجأة. في الآخر ركبت اللي بعده. |
+| 18 | l03-amalt-eh-naharda.mp3 | 11 | older man, warm | عملت إيه النهارده؟ |
+| 19 | l03-wbaadeen-2.mp3 | 11 | eager | وبعدين؟ |
+| 20 | l03-rohna.mp3 | 13 | woman, telling | رحنا البحر، وهما راحوا السوق. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+هنمشي الساعة سبعة. <break time="1.2s" /> مشينا الساعة سبعة. <break time="1.2s" /> إيه يا آدم؟ مش رحت إسكندرية؟ <break time="1.2s" /> رحت… بس صحيت متأخر، وبعدين خدت تاكسي. <break time="1.2s" /> لما وصلت المحطة، شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر ركبت القطر اللي بعده، وكلت سمك مع منى على البحر! <break time="1.2s" /> صحيت متأخر. <break time="1.2s" /> وبعدين خدت تاكسي. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما وصلت المحطة… <break time="1.2s" /> شفت منى في الشباك. <break time="1.2s" /> وفجأة… القطر مشي! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر ركبت القطر اللي بعده. <break time="1.2s" /> صحيت متأخر، وبعدين خدت تاكسي. لما وصلت، القطر مشي فجأة. في الآخر ركبت اللي بعده. <break time="1.2s" /> عملت إيه النهارده؟ <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
+```
+
+## Egyptian Arabic · Adults · Advanced · Lesson 1: In My Opinion
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (21)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-eh-raayak.mp3 | 2 |  | إيه رأيك؟ |
+| 2 | l01-eh-raayik.mp3 | 2 | to a woman: raayik | إيه رأيك؟ |
+| 3 | l01-story-1.mp3 | 4 | older man, opening a meeting | يا جماعة، العمارة محتاجة أسانسير. |
+| 4 | l01-story-2.mp3 | 4 | middle-aged man, doubtful | أنا شايف إن ده غالي أوي. |
+| 5 | l01-story-3.mp3 | 4 | woman, gentle but firm | معاك حق يا بابا، بس تيتة مش قادرة تطلع السلم. |
+| 6 | l01-story-4.mp3 | 4 | middle-aged man | أيوه… بس مين هيدفع؟ |
+| 7 | l01-story-5.mp3 | 4 | man, calm, careful Egyptian | في رأيي، كلنا ندفع شوية. ده أحسن للكل. |
+| 8 | l01-story-6.mp3 | 4 | older man, pleased | والله عنده حق! |
+| 9 | l01-shayef.mp3 | 5 |  | أنا شايف إن ده غالي. |
+| 10 | l01-shayfa.mp3 | 5 |  | أنا شايفة إن ده مهم. |
+| 11 | l01-fi-raayi.mp3 | 5 |  | في رأيي، ده أحسن. |
+| 12 | l01-maak-ha2.mp3 | 6 |  | معاك حق. |
+| 13 | l01-andu-ha2.mp3 | 6 |  | والله عنده حق! |
+| 14 | l01-bezzabt.mp3 | 6 |  | بالظبط! |
+| 15 | l01-maak-ha2-bass.mp3 | 7 |  | معاك حق، بس تيتة مش قادرة تطلع السلم. |
+| 16 | l01-mish-metakked.mp3 | 8 |  | مش متأكد. |
+| 17 | l01-momken-bass.mp3 | 8 |  | ممكن… بس |
+| 18 | l01-la2-khales.mp3 | 8 | laughing, between friends | لأ خالص! |
+| 19 | l01-ladder.mp3 | 9 | four tones, blunt to gentle | لأ خالص… مش متأكد… ممكن، بس… معاك حق، بس… |
+| 20 | l01-roof.mp3 | 11 | middle-aged man, enthusiastic | أنا شايف إن السطح محتاج جنينة. إيه رأيك؟ |
+| 21 | l01-elli-fat-mat.mp3 | 13 | older man, kind, wise | اللي فات مات. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه رأيك؟ <break time="1.2s" /> إيه رأيك؟ <break time="1.2s" /> يا جماعة، العمارة محتاجة أسانسير. <break time="1.2s" /> أنا شايف إن ده غالي أوي. <break time="1.2s" /> معاك حق يا بابا، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> أيوه… بس مين هيدفع؟ <break time="1.2s" /> في رأيي، كلنا ندفع شوية. ده أحسن للكل. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> أنا شايف إن ده غالي. <break time="1.2s" /> أنا شايفة إن ده مهم. <break time="1.2s" /> في رأيي، ده أحسن. <break time="1.2s" /> معاك حق. <break time="1.2s" /> والله عنده حق! <break time="1.2s" /> بالظبط! <break time="1.2s" /> معاك حق، بس تيتة مش قادرة تطلع السلم. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> ممكن… بس <break time="1.2s" /> لأ خالص! <break time="1.2s" /> لأ خالص… مش متأكد… ممكن، بس… معاك حق، بس… <break time="1.2s" /> أنا شايف إن السطح محتاج جنينة. إيه رأيك؟ <break time="1.2s" /> اللي فات مات.
+```
+
+## Egyptian Arabic · Adults · Advanced · Lesson 2: As They Say…
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (14)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-maak-ha2-bass.mp3 | 2 |  | معاك حق، بس… |
+| 2 | l02-elli-fat-mat.mp3 | 2 |  | اللي فات مات. |
+| 3 | l02-story-1.mp3 | 4 | middle-aged man, sighing | دفعنا كتير في الدهان السنة اللي فاتت… |
+| 4 | l02-story-2.mp3 | 4 | older man, kind | اللي فات مات يا أستاذ حسن. |
+| 5 | l02-story-3.mp3 | 4 | woman, practical | على قد لحافك مد رجليك. نجيب أسانسير صغير. |
+| 6 | l02-story-4.mp3 | 4 | man, careful, warm | وكلنا نساعد. إيد لوحدها ما تسقفش. |
+| 7 | l02-story-5.mp3 | 4 | woman, disappointed | الأسانسير هيتأخر شهرين! |
+| 8 | l02-story-6.mp3 | 4 | older man, calm | معلش… الصبر مفتاح الفرج. |
+| 9 | l02-elli-fat-mat-2.mp3 | 5 |  | اللي فات مات يا أستاذ حسن. |
+| 10 | l02-lehaf.mp3 | 6 |  | على قد لحافك مد رجليك. |
+| 11 | l02-eed.mp3 | 7 |  | إيد لوحدها ما تسقفش. |
+| 12 | l02-sabr.mp3 | 8 |  | معلش… الصبر مفتاح الفرج. |
+| 13 | l02-problem.mp3 | 11 | older woman, tired | الأسانسير لسه ما جاش… وأنا تعبت من السلم! |
+| 14 | l02-fast.mp3 | 13 | young man, very fast | إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+معاك حق، بس… <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> دفعنا كتير في الدهان السنة اللي فاتت… <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. نجيب أسانسير صغير. <break time="1.2s" /> وكلنا نساعد. إيد لوحدها ما تسقفش. <break time="1.2s" /> الأسانسير هيتأخر شهرين! <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> الأسانسير لسه ما جاش… وأنا تعبت من السلم! <break time="1.2s" /> إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة!
+```
+
+## Egyptian Arabic · Adults · Advanced · Lesson 3: At Street Speed
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-fast.mp3 | 2 | young man, very fast | إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! |
+| 2 | l03-story-1.mp3 | 4 | young man, fast, casual | بقولك إيه يا آدم… يعني، الأسانسير جه خلاص. |
+| 3 | l03-story-2.mp3 | 4 | young man, fast | بس بقى، الراجل عايز حد يمضي، فتعالى بقى قبل الساعة اتنين. |
+| 4 | l03-story-3.mp3 | 4 | young man, fast, warm | طب ماشي، أنا هستناك تحت. يلا سلام! |
+| 5 | l03-yaani.mp3 | 5 |  | يعني |
+| 6 | l03-baa.mp3 | 5 |  | بقى |
+| 7 | l03-tab.mp3 | 5 |  | طب |
+| 8 | l03-ba2ollak.mp3 | 5 |  | بقولك إيه |
+| 9 | l03-ba2ollak-2.mp3 | 6 |  | بقولك |
+| 10 | l03-hastannak.mp3 | 6 |  | هستناك |
+| 11 | l03-key-what.mp3 | 7 |  | الأسانسير جه. |
+| 12 | l03-key-when.mp3 | 7 |  | قبل الساعة اتنين. |
+| 13 | l03-key-do.mp3 | 7 |  | تعالى. |
+| 14 | l03-gay-halan.mp3 | 8 |  | ماشي، جاي حالاً. |
+| 15 | l03-hakoon.mp3 | 8 |  | تمام، الساعة واحدة هكون عندك. |
+| 16 | l03-filtered.mp3 | 9 | slow, clear | آدم، الأسانسير جه. حد يمضي. تعالى قبل الساعة اتنين. |
+| 17 | l03-note-2.mp3 | 11 | young woman, very fast | بقولك إيه، يعني، العشا بكرة بقى الساعة تسعة بدل تمانية، ماشي؟ |
+| 18 | l03-ya-reet.mp3 | 13 | old woman, happy, a little wistful | يا ريت كان جه من زمان! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! <break time="1.2s" /> بقولك إيه يا آدم… يعني، الأسانسير جه خلاص. <break time="1.2s" /> بس بقى، الراجل عايز حد يمضي، فتعالى بقى قبل الساعة اتنين. <break time="1.2s" /> طب ماشي، أنا هستناك تحت. يلا سلام! <break time="1.2s" /> يعني <break time="1.2s" /> بقى <break time="1.2s" /> طب <break time="1.2s" /> بقولك إيه <break time="1.2s" /> بقولك <break time="1.2s" /> هستناك <break time="1.2s" /> الأسانسير جه. <break time="1.2s" /> قبل الساعة اتنين. <break time="1.2s" /> تعالى. <break time="1.2s" /> ماشي، جاي حالاً. <break time="1.2s" /> تمام، الساعة واحدة هكون عندك. <break time="1.2s" /> آدم، الأسانسير جه. حد يمضي. تعالى قبل الساعة اتنين. <break time="1.2s" /> بقولك إيه، يعني، العشا بكرة بقى الساعة تسعة بدل تمانية، ماشي؟ <break time="1.2s" /> يا ريت كان جه من زمان!
 ```
 
 ## Reading Franco · Lesson 1: Numbers That Talk
@@ -1215,6 +1654,84 @@ One take: paste this whole block as one generation; I cut it into the files abov
 مَنْ عَلَّمَكَ ٱلْعَرَبِيَّةَ يَا يُوسُفُ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي أَوَّلًا، ثُمَّ دَرَسْتُ هُنَا. <break time="1.2s" /> وَأَنَا أُكَاتِبُ صَدِيقَةً فِي ٱلْأُرْدُنِّ. <break time="1.2s" /> مُمْتَازٌ! وَمَنْ يُسَاعِدُكِ؟ <break time="1.2s" /> هِيَ تُسَاعِدُنِي، وَأَنَا أُرْسِلُ لَهَا رَسَائِلَ بِٱلْإِنْجِلِيزِيَّةِ. <break time="1.2s" /> هَذَا هُوَ ٱلتَّعَاوُنُ! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> وَزْنٌ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> كَسَّرَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كَاتَبَ <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> شَارَكَ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> خَرَجَ <break time="1.2s" /> أَخْرَجَ <break time="1.2s" /> أَدْخَلَ <break time="1.2s" /> أَرْسَلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يَكْتُبُ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> يَخْرُجُ <break time="1.2s" /> يُخْرِجُ <break time="1.2s" /> رِسَالَةٌ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ.
 ```
 
+## Fusha Arabic · 12+ · Level 3 · Lesson 2: The Headline
+
+Folder: `public/curriculum/fusha-12-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (28)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | young woman, reading news | فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. |
+| 2 | l02-story-2.mp3 | 3 | young man, curious | مَنْ فَتَحَهُ؟ |
+| 3 | l02-story-3.mp3 | 3 | teacher, calm | لَا يُذْكَرُ ٱلْفَاعِلُ. ٱلْمُهِمُّ ٱلطَّرِيقُ. |
+| 4 | l02-story-4.mp3 | 3 | young woman, reading news | وَتُبْنَى مَدْرَسَةٌ جَدِيدَةٌ بِجَانِبِهِ. |
+| 5 | l02-story-5.mp3 | 3 | young man, teasing | وَمَتَى يُفْتَحُ ٱلْمَطَارُ؟ |
+| 6 | l02-story-6.mp3 | 3 | teacher, laughing | هَذَا سُؤَالٌ صَعْبٌ! |
+| 7 | l02-fataha.mp3 | 4 |  | فَتَحَ |
+| 8 | l02-futiha.mp3 | 4 |  | فُتِحَ |
+| 9 | l02-dhakara.mp3 | 4 |  | ذَكَرَ |
+| 10 | l02-dhukira.mp3 | 4 |  | ذُكِرَ |
+| 11 | l02-futihat-maktaba.mp3 | 4 |  | فُتِحَتِ ٱلْمَكْتَبَةُ. |
+| 12 | l02-yaftahu.mp3 | 5 |  | يَفْتَحُ |
+| 13 | l02-yuftahu.mp3 | 5 |  | يُفْتَحُ |
+| 14 | l02-yudhkaru.mp3 | 5 |  | يُذْكَرُ |
+| 15 | l02-tubna.mp3 | 5 |  | تُبْنَى مَدْرَسَةٌ. |
+| 16 | l02-fatahat-baladiyya.mp3 | 6 |  | فَتَحَتِ ٱلْبَلَدِيَّةُ ٱلطَّرِيقَ. |
+| 17 | l02-futiha-tariq.mp3 | 6 |  | فُتِحَ ٱلطَّرِيقُ. |
+| 18 | l02-ullima.mp3 | 7 |  | عُلِّمَ |
+| 19 | l02-ursila.mp3 | 7 |  | أُرْسِلَ |
+| 20 | l02-yursilu.mp3 | 7 |  | يُرْسِلُ |
+| 21 | l02-yursalu.mp3 | 7 |  | يُرْسَلُ |
+| 22 | l02-kutiba-kitab.mp3 | 8 |  | كُتِبَ ٱلْكِتَابُ فِي ٱلْقَرْنِ ٱلْعَاشِرِ. |
+| 23 | l02-man-faala.mp3 | 8 | curious, a little sharp | مَنْ فَعَلَ ذَلِكَ؟ |
+| 24 | l02-h-1.mp3 | 9 | newsreader | فُتِحَتْ مَكْتَبَةٌ جَدِيدَةٌ لِلْأَطْفَالِ. |
+| 25 | l02-h-2.mp3 | 9 | newsreader | يُغْلَقُ ٱلشَّارِعُ يَوْمَ ٱلْجُمُعَةِ. |
+| 26 | l02-h-3.mp3 | 9 | newsreader | عُلِّمَ أَلْفُ طِفْلٍ ٱلسِّبَاحَةَ هَذَا ٱلصَّيْفَ. |
+| 27 | l02-futiha-tariq-2.mp3 | 11 | newsreader | فُتِحَ طَرِيقٌ جَدِيدٌ. |
+| 28 | l02-inna-hatif.mp3 | 13 | young woman, confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. <break time="1.2s" /> مَنْ فَتَحَهُ؟ <break time="1.2s" /> لَا يُذْكَرُ ٱلْفَاعِلُ. ٱلْمُهِمُّ ٱلطَّرِيقُ. <break time="1.2s" /> وَتُبْنَى مَدْرَسَةٌ جَدِيدَةٌ بِجَانِبِهِ. <break time="1.2s" /> وَمَتَى يُفْتَحُ ٱلْمَطَارُ؟ <break time="1.2s" /> هَذَا سُؤَالٌ صَعْبٌ! <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> ذَكَرَ <break time="1.2s" /> ذُكِرَ <break time="1.2s" /> فُتِحَتِ ٱلْمَكْتَبَةُ. <break time="1.2s" /> يَفْتَحُ <break time="1.2s" /> يُفْتَحُ <break time="1.2s" /> يُذْكَرُ <break time="1.2s" /> تُبْنَى مَدْرَسَةٌ. <break time="1.2s" /> فَتَحَتِ ٱلْبَلَدِيَّةُ ٱلطَّرِيقَ. <break time="1.2s" /> فُتِحَ ٱلطَّرِيقُ. <break time="1.2s" /> عُلِّمَ <break time="1.2s" /> أُرْسِلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يُرْسَلُ <break time="1.2s" /> كُتِبَ ٱلْكِتَابُ فِي ٱلْقَرْنِ ٱلْعَاشِرِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> فُتِحَتْ مَكْتَبَةٌ جَدِيدَةٌ لِلْأَطْفَالِ. <break time="1.2s" /> يُغْلَقُ ٱلشَّارِعُ يَوْمَ ٱلْجُمُعَةِ. <break time="1.2s" /> عُلِّمَ أَلْفُ طِفْلٍ ٱلسِّبَاحَةَ هَذَا ٱلصَّيْفَ. <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ. <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ.
+```
+
+## Fusha Arabic · 12+ · Level 3 · Lesson 3: The Debate Club
+
+Folder: `public/curriculum/fusha-12-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-1.mp3 | 3 | teacher, chairing | ٱلْمَوْضُوعُ: هَلْ يُمْنَعُ ٱلْهَاتِفُ فِي ٱلْمَدْرَسَةِ؟ |
+| 2 | l03-story-2.mp3 | 3 | young woman, confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ لِلدِّرَاسَةِ. |
+| 3 | l03-story-3.mp3 | 3 | young man, firm | لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ فِي ٱلدَّرْسِ. |
+| 4 | l03-story-4.mp3 | 3 | young woman, teasing | كَأَنَّكَ لَا تَلْعَبُ بِهِ أَنْتَ! |
+| 5 | l03-story-5.mp3 | 3 | young man, laughing | لَيْتَ ٱلْهَاتِفَ يَدْرُسُ عَنِّي! |
+| 6 | l03-story-6.mp3 | 3 | teacher, wise | لَعَلَّ ٱلْحَلَّ فِي ٱلْوَسَطِ. |
+| 7 | l03-hatif-mufid.mp3 | 4 |  | ٱلْهَاتِفُ مُفِيدٌ. |
+| 8 | l03-inna-hatif.mp3 | 4 | confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+| 9 | l03-inna-tullab.mp3 | 5 |  | إِنَّ ٱلطُّلَّابَ مَشْغُولُونَ. |
+| 10 | l03-lakinna-tullab.mp3 | 6 |  | لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ. |
+| 11 | l03-anna-hatif.mp3 | 6 |  | أَعْتَقِدُ أَنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+| 12 | l03-kaanna-fasl.mp3 | 7 |  | كَأَنَّ ٱلْفَصْلَ مَلْعَبٌ. |
+| 13 | l03-innahu.mp3 | 8 |  | إِنَّهُ |
+| 14 | l03-lakinnani.mp3 | 8 |  | لَكِنَّنِي |
+| 15 | l03-laallaha.mp3 | 8 |  | لَعَلَّهَا |
+| 16 | l03-dars-sahl.mp3 | 9 |  | ٱلدَّرْسُ سَهْلٌ. |
+| 17 | l03-inna-dars.mp3 | 9 |  | إِنَّ ٱلدَّرْسَ سَهْلٌ. |
+| 18 | l03-layta-dars.mp3 | 9 | wistful | لَيْتَ ٱلدَّرْسَ سَهْلٌ! |
+| 19 | l03-inna-wajib.mp3 | 11 | confident | إِنَّ ٱلْوَاجِبَ مُفِيدٌ. |
+| 20 | l03-taallamna.mp3 | 13 | young woman, proud | تَعَلَّمْنَا كَثِيرًا لِأَنَّنَا تَعَاوَنَّا. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+ٱلْمَوْضُوعُ: هَلْ يُمْنَعُ ٱلْهَاتِفُ فِي ٱلْمَدْرَسَةِ؟ <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ لِلدِّرَاسَةِ. <break time="1.2s" /> لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ فِي ٱلدَّرْسِ. <break time="1.2s" /> كَأَنَّكَ لَا تَلْعَبُ بِهِ أَنْتَ! <break time="1.2s" /> لَيْتَ ٱلْهَاتِفَ يَدْرُسُ عَنِّي! <break time="1.2s" /> لَعَلَّ ٱلْحَلَّ فِي ٱلْوَسَطِ. <break time="1.2s" /> ٱلْهَاتِفُ مُفِيدٌ. <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ. <break time="1.2s" /> إِنَّ ٱلطُّلَّابَ مَشْغُولُونَ. <break time="1.2s" /> لَكِنَّ ٱلطُّلَّابَ يَلْعَبُونَ بِهِ. <break time="1.2s" /> أَعْتَقِدُ أَنَّ ٱلْهَاتِفَ مُفِيدٌ. <break time="1.2s" /> كَأَنَّ ٱلْفَصْلَ مَلْعَبٌ. <break time="1.2s" /> إِنَّهُ <break time="1.2s" /> لَكِنَّنِي <break time="1.2s" /> لَعَلَّهَا <break time="1.2s" /> ٱلدَّرْسُ سَهْلٌ. <break time="1.2s" /> إِنَّ ٱلدَّرْسَ سَهْلٌ. <break time="1.2s" /> لَيْتَ ٱلدَّرْسَ سَهْلٌ! <break time="1.2s" /> إِنَّ ٱلْوَاجِبَ مُفِيدٌ. <break time="1.2s" /> تَعَلَّمْنَا كَثِيرًا لِأَنَّنَا تَعَاوَنَّا.
+```
+
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic
 
 Folder: `public/curriculum/literacy-a-teens/audio/`.
@@ -1392,6 +1909,97 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه ده؟ <break time="1.2s" /> إيه ده يا تيتة؟ <break time="1.2s" /> ده كتاب قديم. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي صورة بابا وهو صغير! <break time="1.2s" /> ودي كورة! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> ده كتاب. <break time="1.2s" /> دي صورة. <break time="1.2s" /> دي كورة. <break time="1.2s" /> ده قلم. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي عروسة. <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> فين الكورة؟
 ```
 
+## Egyptian Arabic · Kids · Intermediate · Lesson 1: Where Did You Go, Ziad?
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | grandma, warm | رحت فين يا زياد؟ |
+| 2 | l01-story-2.mp3 | 3 | boy, happy | رحت الجنينة! |
+| 3 | l01-story-3.mp3 | 3 | grandma | ومريم راحت فين؟ |
+| 4 | l01-story-4.mp3 | 3 | girl, cheerful | أنا رحت مع زياد! |
+| 5 | l01-story-5.mp3 | 3 | grandma | وإنت يا آدم؟ |
+| 6 | l01-story-6.mp3 | 3 | boy, guilty, mouth full | أنا… رحت المطبخ! |
+| 7 | l01-rooht.mp3 | 4 |  | رحت |
+| 8 | l01-rooht-gneena.mp3 | 4 |  | رحت الجنينة. |
+| 9 | l01-rooht-matbakh.mp3 | 4 |  | رحت المطبخ. |
+| 10 | l01-rooht-feen.mp3 | 5 |  | رحت فين؟ |
+| 11 | l01-roohti-feen.mp3 | 5 |  | رحتي فين؟ |
+| 12 | l01-ziad-rah.mp3 | 6 |  | زياد راح. |
+| 13 | l01-mariam-rahit.mp3 | 6 |  | مريم راحت. |
+| 14 | l01-song.mp3 | 7 | sing-song, clapping | رحت، رحتي، راح، راحت! |
+| 15 | l01-rooht-feen-naharda.mp3 | 9 | grandma, warm | رحت فين النهارده؟ |
+| 16 | l01-roohti-feen-naharda.mp3 | 9 | grandma, to a girl | رحتي فين النهارده؟ |
+| 17 | l01-bokra-zoo.mp3 | 11 | grandma, excited | بكرة هنروح جنينة الحيوانات! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+رحت فين يا زياد؟ <break time="1.2s" /> رحت الجنينة! <break time="1.2s" /> ومريم راحت فين؟ <break time="1.2s" /> أنا رحت مع زياد! <break time="1.2s" /> وإنت يا آدم؟ <break time="1.2s" /> أنا… رحت المطبخ! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الجنينة. <break time="1.2s" /> رحت المطبخ. <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> زياد راح. <break time="1.2s" /> مريم راحت. <break time="1.2s" /> رحت، رحتي، راح، راحت! <break time="1.2s" /> رحت فين النهارده؟ <break time="1.2s" /> رحتي فين النهارده؟ <break time="1.2s" /> بكرة هنروح جنينة الحيوانات!
+```
+
+## Egyptian Arabic · Kids · Intermediate · Lesson 2: Tomorrow We'll Go to the Zoo
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (16)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | grandma, excited | بكرة هنروح جنينة الحيوانات! |
+| 2 | l02-story-2.mp3 | 3 | boy, roaring | هشوف الأسد! |
+| 3 | l02-story-3.mp3 | 3 | girl, stretching up | وأنا هشوف الزرافة! |
+| 4 | l02-story-4.mp3 | 3 | grandma | وآدم هيشوف إيه؟ |
+| 5 | l02-story-5.mp3 | 3 | boy, dreamy | أنا… هاكل آيس كريم! |
+| 6 | l02-hashoof.mp3 | 4 |  | هشوف |
+| 7 | l02-hashoof-asad.mp3 | 4 |  | هشوف الأسد! |
+| 8 | l02-hashoof-zarafa.mp3 | 4 |  | هشوف الزرافة! |
+| 9 | l02-hatshoof.mp3 | 5 |  | هتشوف إيه؟ |
+| 10 | l02-hatshoofi.mp3 | 5 |  | هتشوفي إيه؟ |
+| 11 | l02-ziad-hayshoof.mp3 | 6 |  | زياد هيشوف الأسد. |
+| 12 | l02-mariam-hatshoof.mp3 | 6 |  | مريم هتشوف الزرافة. |
+| 13 | l02-game.mp3 | 7 | playful, counting | هشوف الأسد، والزرافة، والفيل! |
+| 14 | l02-hatshoof-bokra.mp3 | 9 | grandma, warm | هتشوف إيه بكرة؟ |
+| 15 | l02-hatshoofi-bokra.mp3 | 9 | grandma, to a girl | هتشوفي إيه بكرة؟ |
+| 16 | l02-teta-story.mp3 | 11 | grandma, storytelling | لما كنت صغيرة… رحت نفس الجنينة. وبعدين… |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بكرة هنروح جنينة الحيوانات! <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> وأنا هشوف الزرافة! <break time="1.2s" /> وآدم هيشوف إيه؟ <break time="1.2s" /> أنا… هاكل آيس كريم! <break time="1.2s" /> هشوف <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> هشوف الزرافة! <break time="1.2s" /> هتشوف إيه؟ <break time="1.2s" /> هتشوفي إيه؟ <break time="1.2s" /> زياد هيشوف الأسد. <break time="1.2s" /> مريم هتشوف الزرافة. <break time="1.2s" /> هشوف الأسد، والزرافة، والفيل! <break time="1.2s" /> هتشوف إيه بكرة؟ <break time="1.2s" /> هتشوفي إيه بكرة؟ <break time="1.2s" /> لما كنت صغيرة… رحت نفس الجنينة. وبعدين…
+```
+
+## Egyptian Arabic · Kids · Intermediate · Lesson 3: Teta's Story
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (13)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-1.mp3 | 3 | grandma, storytelling | لما كنت صغيرة، رحت جنينة الحيوانات. |
+| 2 | l03-story-2.mp3 | 3 | grandma, smiling | شفت القرد، وبعدين اديته موزة. |
+| 3 | l03-story-3.mp3 | 3 | grandma, dramatic | وفجأة… القرد خد الطاقية بتاعتي! |
+| 4 | l03-story-4.mp3 | 3 | boy, excited | يا خبر! وبعدين؟ |
+| 5 | l03-story-5.mp3 | 3 | grandma, laughing | في الآخر… رجّعلي الطاقية، وكل الموزة! |
+| 6 | l03-wbaadeen.mp3 | 4 |  | شفت القرد، وبعدين اديته موزة. |
+| 7 | l03-wbaadeen-q.mp3 | 4 |  | وبعدين؟ |
+| 8 | l03-fagaa.mp3 | 5 | dramatic | وفجأة… القرد خد الطاقية! |
+| 9 | l03-ya-khabar.mp3 | 5 | gasp | يا خبر! |
+| 10 | l03-fel-akher.mp3 | 6 |  | في الآخر رجّعلي الطاقية. |
+| 11 | l03-strip.mp3 | 7 | storytelling, lively | رحت جنينة الحيوانات، وبعدين اديت القرد موزة. وفجأة خد الطاقية! في الآخر رجّعها. |
+| 12 | l03-wbaadeen-2.mp3 | 9 | grandma, eager | وبعدين؟ |
+| 13 | l03-rohna.mp3 | 11 | children, happy | رحنا البحر! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+لما كنت صغيرة، رحت جنينة الحيوانات. <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وفجأة… القرد خد الطاقية بتاعتي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر… رجّعلي الطاقية، وكل الموزة! <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> وفجأة… القرد خد الطاقية! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر رجّعلي الطاقية. <break time="1.2s" /> رحت جنينة الحيوانات، وبعدين اديت القرد موزة. وفجأة خد الطاقية! في الآخر رجّعها. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر!
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.
@@ -1493,6 +2101,175 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 إيه ده؟ <break time="1.2s" /> إيه ده يا كريم؟ <break time="1.2s" /> ده طرشي! من عند تيتة. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شرابات. نضيفة، والله! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> إيه ده بالمصري؟ <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي شرابات. <break time="1.2s" /> دي سماعات. <break time="1.2s" /> ده موبايل. <break time="1.2s" /> ده شاحن. <break time="1.2s" /> ده طرشي. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي كورة. <break time="1.2s" /> دي نضارة. <break time="1.2s" /> فين موبايلي؟
+```
+
+## Egyptian Arabic · Teens · Intermediate · Lesson 1: What Did You Do at the Match?
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-balaab.mp3 | 2 |  | بلعب كورة كل يوم. |
+| 2 | l01-rooht-imbarih.mp3 | 2 |  | امبارح رحت النادي. |
+| 3 | l01-story-1.mp3 | 4 | teen boy, eager | يا عمر! عملت إيه في الماتش؟ |
+| 4 | l01-story-2.mp3 | 4 | teen boy, proud | جبت جون! |
+| 5 | l01-story-3.mp3 | 4 | teen boy, curious | بجد؟ ونور؟ |
+| 6 | l01-story-4.mp3 | 4 | teen boy, impressed | نور جابت جونين! |
+| 7 | l01-story-5.mp3 | 4 | teen boy, shocked | إنتي جبتي جونين؟! |
+| 8 | l01-story-6.mp3 | 4 | teen girl, teasing | آه! وإنت رحت فين؟ |
+| 9 | l01-story-7.mp3 | 4 | teen boy, embarrassed | نمت… |
+| 10 | l01-gibt.mp3 | 5 |  | جبت جون. |
+| 11 | l01-amalt-eh.mp3 | 5 |  | عملت إيه؟ |
+| 12 | l01-gibti.mp3 | 6 |  | إنتي جبتي جونين؟ |
+| 13 | l01-roohti.mp3 | 6 |  | رحتي فين؟ |
+| 14 | l01-gab.mp3 | 7 |  | عمر جاب جون. |
+| 15 | l01-gabit.mp3 | 7 |  | نور جابت جونين. |
+| 16 | l01-nimt.mp3 | 8 |  | نمت. |
+| 17 | l01-rooht.mp3 | 8 |  | رحت النادي. |
+| 18 | l01-chat.mp3 | 9 |  | جبت جون. نور جابت جونين! إنتي رحتي فين؟ |
+| 19 | l01-amalti-eh.mp3 | 11 | teen girl, friendly | عملتي إيه امبارح؟ |
+| 20 | l01-bokra-hanlaab.mp3 | 13 | coach, excited | بكرة هنلعب الفاينل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بلعب كورة كل يوم. <break time="1.2s" /> امبارح رحت النادي. <break time="1.2s" /> يا عمر! عملت إيه في الماتش؟ <break time="1.2s" /> جبت جون! <break time="1.2s" /> بجد؟ ونور؟ <break time="1.2s" /> نور جابت جونين! <break time="1.2s" /> إنتي جبتي جونين؟! <break time="1.2s" /> آه! وإنت رحت فين؟ <break time="1.2s" /> نمت… <break time="1.2s" /> جبت جون. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> إنتي جبتي جونين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> نور جابت جونين. <break time="1.2s" /> نمت. <break time="1.2s" /> رحت النادي. <break time="1.2s" /> جبت جون. نور جابت جونين! إنتي رحتي فين؟ <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنلعب الفاينل!
+```
+
+## Egyptian Arabic · Teens · Intermediate · Lesson 2: Tomorrow's Final
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (24)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-gibt.mp3 | 2 |  | جبت جون. |
+| 2 | l02-hanlaab.mp3 | 2 |  | بكرة هنلعب الفاينل. |
+| 3 | l02-story-1.mp3 | 4 | coach, excited | بكرة هنلعب الفاينل! |
+| 4 | l02-story-2.mp3 | 4 | teen boy, eager | هنلعب الساعة كام يا كابتن؟ |
+| 5 | l02-story-3.mp3 | 4 | coach | هنبدأ الساعة خمسة. هتيجوا بدري؟ |
+| 6 | l02-story-4.mp3 | 4 | teen girl, keen | أنا هاجي الساعة أربعة! |
+| 7 | l02-story-5.mp3 | 4 | teen boy | وأنا هجيب الكورة. |
+| 8 | l02-story-6.mp3 | 4 | teen boy, determined, a bit funny | وأنا… مش هنام النهارده! |
+| 9 | l02-balaab.mp3 | 5 |  | بلعب |
+| 10 | l02-halaab.mp3 | 5 |  | هلعب |
+| 11 | l02-bokra-halaab.mp3 | 5 |  | بكرة هلعب. |
+| 12 | l02-hatlaab.mp3 | 6 |  | هتلعب |
+| 13 | l02-hatlaabi.mp3 | 6 |  | هتلعبي |
+| 14 | l02-haylaab.mp3 | 6 |  | هيلعب |
+| 15 | l02-hanlaab-2.mp3 | 6 |  | هنلعب |
+| 16 | l02-mish-hanam.mp3 | 7 |  | مش هنام النهارده! |
+| 17 | l02-akeed.mp3 | 8 |  | هاجي أكيد. |
+| 18 | l02-inshallah.mp3 | 8 |  | هاجي إن شاء الله. |
+| 19 | l02-gibt-2.mp3 | 9 |  | جبت |
+| 20 | l02-bageeb.mp3 | 9 |  | بجيب |
+| 21 | l02-hageeb.mp3 | 9 |  | هجيب |
+| 22 | l02-hatamel-eh.mp3 | 11 | coach | هتعمل إيه بكرة؟ |
+| 23 | l02-hatameli-eh.mp3 | 11 | coach, to a girl | هتعملي إيه بكرة؟ |
+| 24 | l02-mosh-hatsadda2.mp3 | 13 | teen boy, breathless | مش هتصدق اللي حصل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+جبت جون. <break time="1.2s" /> بكرة هنلعب الفاينل. <break time="1.2s" /> بكرة هنلعب الفاينل! <break time="1.2s" /> هنلعب الساعة كام يا كابتن؟ <break time="1.2s" /> هنبدأ الساعة خمسة. هتيجوا بدري؟ <break time="1.2s" /> أنا هاجي الساعة أربعة! <break time="1.2s" /> وأنا هجيب الكورة. <break time="1.2s" /> وأنا… مش هنام النهارده! <break time="1.2s" /> بلعب <break time="1.2s" /> هلعب <break time="1.2s" /> بكرة هلعب. <break time="1.2s" /> هتلعب <break time="1.2s" /> هتلعبي <break time="1.2s" /> هيلعب <break time="1.2s" /> هنلعب <break time="1.2s" /> مش هنام النهارده! <break time="1.2s" /> هاجي أكيد. <break time="1.2s" /> هاجي إن شاء الله. <break time="1.2s" /> جبت <break time="1.2s" /> بجيب <break time="1.2s" /> هجيب <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> مش هتصدق اللي حصل!
+```
+
+## Egyptian Arabic · Teens · Intermediate · Lesson 3: You Won't Believe What Happened
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hanlaab.mp3 | 2 |  | هنلعب الفاينل. |
+| 2 | l03-laabna.mp3 | 2 |  | لعبنا الفاينل. |
+| 3 | l03-story-1.mp3 | 4 | teen boy, excited voice note | مش هتصدق اللي حصل في الفاينل! |
+| 4 | l03-story-2.mp3 | 4 | teen boy, telling | الماتش بدأ، وبعدين هما جابوا جون. |
+| 5 | l03-story-3.mp3 | 4 | teen boy, building up | لما فضلت دقيقة، عمر جاب جون. |
+| 6 | l03-story-4.mp3 | 4 | teen boy, dramatic pause | وفجأة… الكورة جت عندي! |
+| 7 | l03-story-5.mp3 | 4 | teen boy, shouting with joy | وفي الآخر… كسبنا الكاس! |
+| 8 | l03-wbaadeen.mp3 | 5 |  | الماتش بدأ، وبعدين هما جابوا جون. |
+| 9 | l03-wbaadeen-q.mp3 | 5 |  | وبعدين؟ |
+| 10 | l03-lamma.mp3 | 6 |  | لما فضلت دقيقة… |
+| 11 | l03-omar-gab.mp3 | 6 |  | عمر جاب جون. |
+| 12 | l03-fagaa.mp3 | 7 | dramatic pause | وفجأة… الكورة جت عندي! |
+| 13 | l03-fel-akher.mp3 | 8 |  | وفي الآخر… كسبنا الكاس! |
+| 14 | l03-strip.mp3 | 9 | telling, lively | الماتش بدأ، وبعدين جابوا جون. لما فضلت دقيقة، عمر جاب جون. وفجأة الكورة جت عندي. وفي الآخر كسبنا! |
+| 15 | l03-mosh-hatsadda2.mp3 | 11 | teen, excited | مش هتصدق اللي حصل! |
+| 16 | l03-wbaadeen-2.mp3 | 11 | eager | وبعدين؟ |
+| 17 | l03-rohna.mp3 | 13 | teen girl, telling | رحنا البحر، وهما راحوا السوق. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+هنلعب الفاينل. <break time="1.2s" /> لعبنا الفاينل. <break time="1.2s" /> مش هتصدق اللي حصل في الفاينل! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> لما فضلت دقيقة، عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما فضلت دقيقة… <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين جابوا جون. لما فضلت دقيقة، عمر جاب جون. وفجأة الكورة جت عندي. وفي الآخر كسبنا! <break time="1.2s" /> مش هتصدق اللي حصل! <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
+```
+
+## Egyptian Arabic · Teens · Advanced · Lesson 1: Who Should Be Captain?
+
+Folder: `public/curriculum/egyptian-teens-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-eh-raayak.mp3 | 2 |  | إيه رأيك؟ |
+| 2 | l01-story-1.mp3 | 4 | coach, warm | مين يبقى الكابتن؟ إيه رأيكم؟ |
+| 3 | l01-story-2.mp3 | 4 | teen boy, sure | أنا شايف إن نور لازم تبقى الكابتن. |
+| 4 | l01-story-3.mp3 | 4 | teen boy, loud, joking | لأ طبعاً! أنا أسرع واحد في الفريق! |
+| 5 | l01-story-4.mp3 | 4 | teen boy, calm | معاك حق إنك سريع، بس نور بتسمع الكل. |
+| 6 | l01-story-5.mp3 | 4 | teen girl, shy | بصراحة… مش متأكدة. |
+| 7 | l01-story-6.mp3 | 4 | teen boy, giving in, smiling | ماشي… عندك حق. نور! |
+| 8 | l01-shayef.mp3 | 5 |  | أنا شايف إن نور لازم تبقى الكابتن. |
+| 9 | l01-shayfa.mp3 | 5 |  | أنا شايفة إن كريم سريع. |
+| 10 | l01-fi-raayi.mp3 | 5 |  | في رأيي… |
+| 11 | l01-maak-haa.mp3 | 6 |  | معاك حق. |
+| 12 | l01-maaki-haa.mp3 | 6 |  | معاكي حق. |
+| 13 | l01-ana-maak.mp3 | 6 |  | أنا معاك! |
+| 14 | l01-la-tabaan.mp3 | 7 |  | لأ طبعاً! |
+| 15 | l01-maak-haa-bass.mp3 | 7 |  | معاك حق إنك سريع، بس نور بتسمع الكل. |
+| 16 | l01-mish-metakked.mp3 | 8 |  | مش متأكد. |
+| 17 | l01-bsaraha.mp3 | 8 |  | بصراحة… مش متأكدة. |
+| 18 | l01-meter.mp3 | 9 |  | أنا معاك. معاك حق. مش متأكد. معاك حق، بس… لأ طبعاً! |
+| 19 | l01-koshari.mp3 | 11 | teen boy, playful | أنا شايف إن الكشري أحلى من البيتزا. إيه رأيك؟ |
+| 20 | l01-elli-fat.mp3 | 13 | teen boy, dramatic, joking | اللي فات مات! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إيه رأيك؟ <break time="1.2s" /> مين يبقى الكابتن؟ إيه رأيكم؟ <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> لأ طبعاً! أنا أسرع واحد في الفريق! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> ماشي… عندك حق. نور! <break time="1.2s" /> أنا شايف إن نور لازم تبقى الكابتن. <break time="1.2s" /> أنا شايفة إن كريم سريع. <break time="1.2s" /> في رأيي… <break time="1.2s" /> معاك حق. <break time="1.2s" /> معاكي حق. <break time="1.2s" /> أنا معاك! <break time="1.2s" /> لأ طبعاً! <break time="1.2s" /> معاك حق إنك سريع، بس نور بتسمع الكل. <break time="1.2s" /> مش متأكد. <break time="1.2s" /> بصراحة… مش متأكدة. <break time="1.2s" /> أنا معاك. معاك حق. مش متأكد. معاك حق، بس… لأ طبعاً! <break time="1.2s" /> أنا شايف إن الكشري أحلى من البيتزا. إيه رأيك؟ <break time="1.2s" /> اللي فات مات!
+```
+
+## Egyptian Arabic · Teens · Advanced · Lesson 2: That's What They Say
+
+Folder: `public/curriculum/egyptian-teens-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (13)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-maak-haa-bass.mp3 | 2 |  | معاك حق، بس… |
+| 2 | l02-story-1.mp3 | 4 | teen boy, dramatic, then warm | اللي فات مات! نور الكابتن، وأنا معاها. |
+| 3 | l02-story-2.mp3 | 4 | teen girl, confident | إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض! |
+| 4 | l02-story-3.mp3 | 4 | teen boy, surprised, laughing | يا خبر أبيض! كريم بقى طيب؟! |
+| 5 | l02-story-4.mp3 | 4 | teen boy, groaning | الماتش اتلغى… مطر. الحلو ما يكملش! |
+| 6 | l02-elli-fat.mp3 | 5 |  | اللي فات مات! |
+| 7 | l02-eed.mp3 | 6 |  | إيد لوحدها ما تسقفش. |
+| 8 | l02-abyad.mp3 | 7 |  | يا خبر أبيض! |
+| 9 | l02-iswed.mp3 | 7 |  | يا خبر إسود! |
+| 10 | l02-helw.mp3 | 8 |  | الحلو ما يكملش! |
+| 11 | l02-short.mp3 | 9 |  | اللي فات مات. |
+| 12 | l02-news-1.mp3 | 11 | teen boy, excited | نور جابت تلات جوان في التمرين! |
+| 13 | l02-fast.mp3 | 13 | teen boy, extremely fast | بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب… |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+معاك حق، بس… <break time="1.2s" /> اللي فات مات! نور الكابتن، وأنا معاها. <break time="1.2s" /> إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض! <break time="1.2s" /> يا خبر أبيض! كريم بقى طيب؟! <break time="1.2s" /> الماتش اتلغى… مطر. الحلو ما يكملش! <break time="1.2s" /> اللي فات مات! <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> يا خبر أبيض! <break time="1.2s" /> يا خبر إسود! <break time="1.2s" /> الحلو ما يكملش! <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> نور جابت تلات جوان في التمرين! <break time="1.2s" /> بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب…
 ```
 
 ## English · General · Lesson 1: Hello, I'm…

@@ -5,65 +5,116 @@ type L = { en: string; ar: string };
 
 // What a family actually gets around the lesson, in the order a week goes. Each line is a feature that exists today
 // (lesson room, homework, today's review, recitations, weekly email, progress and certificates); keep it that way.
-const STEPS: Array<{ when: L; title: L; body: L }> = [
+// `why` is what it changes for someone who does not know us yet.
+const STEPS: Array<{ when: L; title: L; body: L; why: L }> = [
   {
     when: { en: 'In the lesson', ar: 'في الحصة' },
     title: { en: 'One teacher, one learner, live', ar: 'معلم واحد وطالب واحد، مباشر' },
     body: { en: 'On Zoom, with our lesson slides on your screen. They move as the teacher teaches.', ar: 'على Zoom، وشرائح الدرس قدامك على الشاشة، بتتحرك مع شرح المعلم.' },
+    why: { en: 'The whole lesson is about one learner: their pace, their mistakes.', ar: 'الحصة كلها لطالب واحد: على قد سرعته، وبتصحّح غلطه هو.' },
   },
   {
     when: { en: 'After the lesson', ar: 'بعد الحصة' },
     title: { en: 'Homework, short and clear', ar: 'واجب قصير وواضح' },
     body: { en: 'One to three small tasks from the teacher. You tick them off at home, and the teacher sees it.', ar: 'من مهمة لتلات مهام صغيرة من المعلم. بتعلّم عليها في البيت، والمعلم بيشوفها.' },
+    why: { en: 'You always know what to do before the next lesson.', ar: 'دايمًا عارف تعمل إيه قبل الحصة الجاية.' },
   },
   {
     when: { en: 'Every day', ar: 'كل يوم' },
     title: { en: 'Five minutes of review', ar: 'خمس دقايق مراجعة' },
     body: { en: 'What you memorized comes back on a growing gap, so it stays with you.', ar: 'اللي حفظته بيرجعلك على مسافات بتكبر، عشان يفضل معاك.' },
+    why: { en: 'What you memorize does not fade between lessons.', ar: 'اللي بتحفظه ما بيضيعش بين الحصة والتانية.' },
   },
   {
     when: { en: 'Between lessons', ar: 'بين الحصص' },
     title: { en: 'Recite, and hear back', ar: 'سمّع، وخد الرد' },
     // Recording lives in recitation homework (RecitationRecorder in HomeworkCard), not in the chat.
     body: { en: 'When the homework is a recitation, record it on your phone. Your teacher listens and replies.', ar: 'لما يكون الواجب تسميع، سجّل تلاوتك من الموبايل، والمعلم بيسمعها ويرد عليك.' },
+    why: { en: 'A mistake gets corrected before it settles in.', ar: 'الغلطة بتتصحّح قبل ما تثبت.' },
   },
   {
     when: { en: 'Every week', ar: 'كل أسبوع' },
     title: { en: 'A note for parents', ar: 'رسالة للأهل' },
     body: { en: 'The week’s lessons, the teacher’s words and the homework, in one email.', ar: 'حصص الأسبوع وكلام المعلم والواجب، في إيميل واحد.' },
+    why: { en: 'Parents know how the week went without having to ask.', ar: 'الأهل عارفين الأسبوع مشي إزاي من غير ما يسألوا.' },
   },
   {
     when: { en: 'At each milestone', ar: 'عند كل إنجاز' },
     title: { en: 'Progress you can see', ar: 'تقدّم تشوفه' },
     body: { en: 'A progress page for every learner, and a certificate when a milestone is reached.', ar: 'صفحة تقدّم لكل طالب، وشهادة لما يوصل لإنجاز.' },
+    why: { en: 'You see where you are, and what comes next.', ar: 'بتشوف إنت فين، وإيه اللي جاي.' },
   },
 ];
 
+const N = STEPS.length;
+// Scroll distance per card, in svh: enough to read a card, short enough that the section stays brief.
+const PER_STEP = 42;
+
 /**
- * Homepage: the week around the lesson, told as you scroll (after the "Sparkle scroll story" reference in
- * docs/design/INSPIRATION.md, our colours only). On wide screens a phone stays beside the steps and its screen changes
- * as each step reaches the middle of the view, while a small counter of ayat reviewed rises; on phones each step
- * carries its own small screen. Every screen is a labelled example: no real names or results.
+ * Homepage: the week around the lesson. The section pins to the screen while you scroll through it, and the scroll
+ * turns a 3D ring of six phone screens (the owner's mix of the card stack, phone and ring prototypes, 2026-11-04):
+ * the card in front plays its screen, the one that leaves lifts away like a dealt card, and the caption says what the
+ * step is and why it matters. Every screen is a labelled example: no real names or results.
  */
 export function WeekWithUs({ isEn }: { isEn: boolean }) {
   const t = (l: L) => (isEn ? l.en : l.ar);
   const [active, setActive] = useState(0);
-  const items = useRef<Array<HTMLLIElement | null>>([]);
+  const [started, setStarted] = useState(false);
+  const track = useRef<HTMLDivElement>(null);
+  const cards = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.step)); }),
-      { rootMargin: '-45% 0px -45% 0px' },
-    );
-    items.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    const el = track.current;
+    if (!el) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // The next card comes from the reading side: the right in English, the left in Arabic.
+    const dir = isEn ? 1 : -1;
+    let raf = 0;
+    const render = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - window.innerHeight)));
+      let f = p * (N - 1);
+      if (reduce.matches) f = Math.round(f);
+      const radius = (cards.current[0]?.offsetWidth ?? 240) * 0.95;
+      cards.current.forEach((c, i) => {
+        if (!c) return;
+        const d = i - f;
+        const cos = Math.cos((d * Math.PI) / 3);
+        // A card that has just passed lifts and tilts away, like the top card of a stack.
+        const gone = Math.max(-1, Math.min(0, d));
+        c.style.transform = `rotateY(${d * 60 * dir}deg) translateZ(${radius}px) translateY(${gone * 28}px) rotateZ(${gone * -5 * dir}deg) scale(${0.86 + 0.14 * Math.max(0, cos)})`;
+        c.style.opacity = String(Math.max(0, Math.min(1, (cos + 0.35) / 1.1)));
+        c.style.zIndex = String(Math.round(cos * 10) + 10);
+      });
+      setActive(Math.round(f));
+      setStarted(p > 0.02);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(render); };
+    render();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [isEn]);
+
+  const goTo = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: top + (i / (N - 1)) * (el.offsetHeight - window.innerHeight) + 2, behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  const s = STEPS[active];
 
   return (
-    <section className="public-container py-16 lg:py-24" aria-labelledby="week-with-us">
-      <div className="max-w-[54rem] mx-auto">
-        <div className="max-w-3xl">
+    <section className="pt-16 lg:pt-24" aria-labelledby="week-with-us">
+      <div className="public-container">
+        <div className="max-w-[54rem] mx-auto">
           <h2 id="week-with-us" className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
             {isEn ? 'A week with Watazawwado' : 'أسبوع مع وتزودوا'}
           </h2>
@@ -71,55 +122,65 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
             {isEn ? 'The lesson is the heart of it. This is what happens around it.' : 'الحصة هي القلب. وده اللي بيحصل حواليها.'}
           </p>
         </div>
-        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-20 mt-10">
-          <ol className="week-line relative space-y-10 lg:space-y-0 ps-10" style={{ '--week-fill': active / (STEPS.length - 1) } as React.CSSProperties}>
-            {STEPS.map((s, i) => (
-              <li
-                key={s.title.en}
-                ref={(el) => { items.current[i] = el; }}
-                data-step={i}
-                className={`week-step relative lg:min-h-[46vh] lg:flex lg:flex-col lg:justify-center ${i === active ? 'is-active' : ''}`}
-              >
-                <span aria-hidden="true" className="week-dot absolute -start-10 top-1 lg:top-auto w-5 h-5 rounded-full border-2 border-[var(--background)]" />
-                <span className="text-xs font-bold tracking-[0.14em] text-muted-foreground tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="font-editorial text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mt-1">{t(s.title)}</h3>
-                <p className="mt-1 text-muted-foreground leading-relaxed max-w-[52ch]">
-                  <span className="font-semibold text-[#087D91] dark:text-[#12A4BC]">{t(s.when)}</span>
-                  <span aria-hidden="true"> · </span>
-                  {t(s.body)}
-                </p>
-                <div className={`week-mini lg:hidden mt-5 max-w-[19rem] ${i === active ? 'is-on' : ''}`} aria-hidden="true">
-                  <div className="rounded-[1.6rem] border border-border bg-surface p-4 shadow-[0_18px_40px_-28px_rgba(18,16,14,0.45)]">
-                    <Screen step={i} isEn={isEn} />
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="hidden lg:block" aria-hidden="true">
-            <div className="sticky top-[18vh] isolate">
+      </div>
+
+      {/* For screen readers the week is a plain list; the ring below is decoration. */}
+      <ol className="sr-only">
+        {STEPS.map((x) => <li key={x.title.en}>{t(x.when)}: {t(x.title)}. {t(x.body)} {t(x.why)}</li>)}
+      </ol>
+
+      <div ref={track} className="relative" style={{ height: `calc(${N * PER_STEP}svh + 100svh)` }}>
+        <div className="week-stage sticky top-0 h-[100svh] flex flex-col justify-center pt-14 pb-4" aria-hidden="true">
+          <div className="public-container w-full max-w-[64rem] mx-auto lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+            <div className="week-ring relative mx-auto lg:order-2">
               <span className="week-glow pointer-events-none absolute -inset-10 -z-10 rounded-full" style={{ '--week-glow': GLOW[active] } as React.CSSProperties} />
-              <div
-                className="week-phone relative mx-auto w-[270px] aspect-[9/16.5] rounded-[2.6rem] p-[9px] bg-[#101B22] ring-1 ring-black/5 dark:ring-white/15 shadow-[0_40px_80px_-40px_rgba(16,27,34,0.7)]"
-                style={{ '--week-tilt': `${active % 2 ? 1.6 : -1.6}deg`, '--week-lift': `${active % 2 ? -6 : 0}px` } as React.CSSProperties}
-              >
-                <div className="relative h-full w-full overflow-hidden rounded-[2.1rem] bg-background">
-                  <div className="flex items-center justify-between px-5 pt-4 text-[11px] font-semibold text-muted-foreground" dir="ltr">
-                    <span className="tabular-nums">9:41</span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold)]/15 px-2 py-0.5 text-[#7A4E09] dark:text-[#F6D58E]">
-                      <Khatam className="w-3 h-3" />
-                      <span className="week-count tabular-nums" key={COUNT[active]}>{COUNT[active]}</span>
-                      <span>{isEn ? 'ayat' : 'آية'}</span>
-                    </span>
-                  </div>
-                  {STEPS.map((s, i) => (
-                    <div key={s.title.en} className={`week-screen absolute inset-x-0 top-11 bottom-0 px-4 pt-3 ${i === active ? 'is-on' : ''}`}>
-                      <Screen step={i} isEn={isEn} />
+              {STEPS.map((x, i) => (
+                <div
+                  key={x.title.en}
+                  ref={(el) => { cards.current[i] = el; }}
+                  className={`week-card absolute inset-0 rounded-[2rem] p-[6px] bg-[#101B22] shadow-[0_30px_60px_-30px_rgba(16,27,34,0.7)] ${i === active ? 'is-on' : ''}`}
+                >
+                  <div className="h-full w-full overflow-hidden rounded-[1.65rem] bg-background">
+                    <div className="flex items-center justify-between px-4 pt-3 text-[11px] font-semibold text-muted-foreground" dir="ltr">
+                      <span className="tabular-nums">{String(i + 1).padStart(2, '0')}/{String(N).padStart(2, '0')}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold)]/15 px-2 py-0.5 text-[#7A4E09] dark:text-[#F6D58E]">
+                        <Khatam className="w-3 h-3" />
+                        <span className="tabular-nums">{COUNT[i]}</span>
+                        <span>{isEn ? 'ayat' : 'آية'}</span>
+                      </span>
                     </div>
-                  ))}
+                    <div className="px-3.5 pt-3"><Screen step={i} isEn={isEn} /></div>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            <div className="mt-7 lg:mt-0 lg:order-1 text-center lg:text-start">
+              <div key={active} className="week-caption min-h-[8.5rem] sm:min-h-[7.5rem] max-w-md mx-auto lg:mx-0">
+                <p className="text-sm font-semibold text-[#087D91] dark:text-[#12A4BC]">{t(s.when)}</p>
+                <h3 className="font-editorial text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mt-1">{t(s.title)}</h3>
+                <p className="mt-1.5 text-[15px] text-muted-foreground leading-relaxed">{t(s.body)}</p>
+                <p className="mt-2 inline-flex items-start gap-1.5 text-[15px] font-semibold text-foreground text-start">
+                  <Check className="w-4 h-4 mt-1 shrink-0 text-[#087D91] dark:text-[#12A4BC]" strokeWidth={3} />
+                  {t(s.why)}
+                </p>
               </div>
-              <p className="mt-4 text-center text-xs text-muted-foreground">{isEn ? 'Example screens' : 'شاشات للتوضيح'}</p>
+              <div className="mt-4 flex items-center justify-center lg:justify-start gap-2">
+                {STEPS.map((x, i) => (
+                  <button
+                    key={x.title.en}
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => goTo(i)}
+                    className="week-pip h-2 rounded-full"
+                    data-on={i === active || undefined}
+                    data-done={i < active || undefined}
+                  />
+                ))}
+              </div>
+              <p className={`week-hint mt-3 text-xs text-muted-foreground ${started ? 'is-gone' : ''}`}>
+                {isEn ? 'Keep scrolling: each scroll turns to the next card' : 'كمّل سكرول: كل سكرول يقلب للبطاقة اللي بعدها'}
+              </p>
             </div>
           </div>
         </div>
@@ -130,7 +191,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
 
 // The phone's counter: ayat reviewed so far this week, rising as the week goes (an example, like the screens).
 const COUNT = [0, 0, 12, 12, 20, 27];
-// The light behind the phone follows the ribbon: teal, gold, crimson.
+// The light behind the ring follows the ribbon: teal, gold, crimson.
 const GLOW = ['#087D91', '#087D91', '#E5A93C', '#E5A93C', '#C51F24', '#E5A93C'];
 
 function Khatam({ className = '' }: { className?: string }) {
@@ -203,7 +264,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
         <div className="relative w-28 h-28">
           <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
             <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" strokeWidth="8" />
-            <circle className="week-ring" cx="50" cy="50" r="42" fill="none" stroke="var(--teal)" strokeWidth="8" strokeLinecap="round" pathLength={1} strokeDasharray="1" strokeDashoffset="0.35" />
+            <circle className="week-ring-arc" cx="50" cy="50" r="42" fill="none" stroke="var(--teal)" strokeWidth="8" strokeLinecap="round" pathLength={1} strokeDasharray="1" strokeDashoffset="0.35" />
           </svg>
           <span className="absolute inset-0 grid place-items-center text-center">
             <span>

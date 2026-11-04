@@ -52,6 +52,27 @@ import { lessonFK203 } from './content/fusha-kids-2/l03-my-father-your-brother.j
 import { lessonFT203 } from './content/fusha-12-2/l03-the-video-call.js';
 import { lessonFK301 } from './content/fusha-kids-3/l01-one-root-many-verbs.js';
 import { lessonFT301 } from './content/fusha-12-3/l01-the-root-workshop.js';
+import { lessonFK302 } from './content/fusha-kids-3/l02-who-broke-the-vase.js';
+import { lessonFT302 } from './content/fusha-12-3/l02-the-headline.js';
+import { lessonFK303 } from './content/fusha-kids-3/l03-indeed-and-but.js';
+import { lessonFT303 } from './content/fusha-12-3/l03-the-debate-club.js';
+import { lessonES01 } from './content/egyptian-sounds/l01-where-did-the-qaf-go.js';
+import { lessonES02 } from './content/egyptian-sounds/l02-th-and-dh.js';
+import { lessonES03 } from './content/egyptian-sounds/l03-short-and-stressed.js';
+import { lessonEI01 } from './content/egyptian-adults-2/l01-what-did-you-do-yesterday.js';
+import { lessonEI02 } from './content/egyptian-adults-2/l02-tomorrow-god-willing.js';
+import { lessonEI03 } from './content/egyptian-adults-2/l03-and-then.js';
+import { lessonETI01 } from './content/egyptian-teens-2/l01-what-did-you-do-at-the-match.js';
+import { lessonETI02 } from './content/egyptian-teens-2/l02-tomorrows-final.js';
+import { lessonETI03 } from './content/egyptian-teens-2/l03-you-wont-believe-it.js';
+import { lessonEKI01 } from './content/egyptian-kids-2/l01-where-did-you-go.js';
+import { lessonEKI02 } from './content/egyptian-kids-2/l02-tomorrow-the-zoo.js';
+import { lessonEKI03 } from './content/egyptian-kids-2/l03-tetas-story.js';
+import { lessonEA301 } from './content/egyptian-adults-3/l01-in-my-opinion.js';
+import { lessonEA302 } from './content/egyptian-adults-3/l02-as-they-say.js';
+import { lessonEA303 } from './content/egyptian-adults-3/l03-at-street-speed.js';
+import { lessonETA01 } from './content/egyptian-teens-3/l01-who-should-be-captain.js';
+import { lessonETA02 } from './content/egyptian-teens-3/l02-thats-what-they-say.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -289,8 +310,8 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/fusha-kids.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
-    plan: ['One Root, Many Verbs', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
-    lessons: { 1: lessonFK301 },
+    plan: ['One Root, Many Verbs', 'Who Broke the Vase?', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFK301, 2: lessonFK302, 3: lessonFK303 },
   },
   {
     id: 'seerah-teens',
@@ -436,6 +457,20 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonT301, 2: lessonT302, 3: lessonT303 },
   },
   {
+    id: 'egyptian-sounds',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Sounds',
+    titleAr: 'العامية المصرية · الأصوات',
+    version: 'Sounds (from Fusha)',
+    versionAr: 'الأصوات (من الفصحى)',
+    audience: '12+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [{ title: 'Sounds · From Fusha to Cairo', titleAr: 'الأصوات · من الفصحى للقاهرة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-sounds.md (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['Where Did the Qaf Go?', 'Th and Dh', 'Short and Stressed', 'Ay and Aw', 'The Question Words', 'Bi- and Ha-', 'Ma…sh', 'Review: Read Fusha, Say Egyptian'],
+    lessons: { 1: lessonES01, 2: lessonES02, 3: lessonES03 },
+  },
+  {
     id: 'egyptian-adults',
     group: 'egyptian',
     title: 'Egyptian Arabic · Adults',
@@ -458,6 +493,34 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonE01, 2: lessonE02, 3: lessonE03 },
   },
+  {
+    id: 'egyptian-adults-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Adults · Intermediate',
+    titleAr: 'العامية المصرية · للكبار · المتوسط',
+    version: 'Adults · Intermediate',
+    versionAr: 'الكبار · المتوسط',
+    audience: '18+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [{ title: 'Intermediate · A Second Season', titleAr: 'المتوسط · موسم تاني', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['What Did You Do Yesterday?', 'Tomorrow, God Willing', 'And Then…', 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: A Weekend in Alexandria', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', "At the Doctor's", 'Review: The Wedding', 'A Day at the Office', 'Intermediate Story'],
+    lessons: { 1: lessonEI01, 2: lessonEI02, 3: lessonEI03 },
+  },  {
+    id: 'egyptian-adults-3',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Adults · Advanced',
+    titleAr: 'العامية المصرية · للكبار · المتقدم',
+    version: 'Adults · Advanced',
+    versionAr: 'الكبار · المتقدم',
+    audience: '18+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [{ title: 'Advanced · Sounding Like a Person', titleAr: 'المتقدم · تتكلم زي الناس', from: 1 }],
+    // docs/curriculum/egyptian/MAP-advanced.md (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['In My Opinion', 'As They Say…', 'At Street Speed', 'If Only…', 'Complaints', "Review: The Residents' Meeting", 'News and Gossip', 'Jokes and Wordplay', 'Formal Egyptian', 'Advanced Story'],
+    lessons: { 1: lessonEA301, 2: lessonEA302, 3: lessonEA303 },
+  },
+
   {
     // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).
     id: 'literacy-c',
@@ -533,8 +596,8 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/fusha-12.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
-    plan: ['The Root Workshop', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
-    lessons: { 1: lessonFT301 },
+    plan: ['The Root Workshop', 'The Headline', 'The Debate Club', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFT301, 2: lessonFT302, 3: lessonFT303 },
   },
   {
     id: 'literacy-a-teens',
@@ -579,7 +642,21 @@ export const SUBJECTS: SubjectEntry[] = [
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
     lessons: { 1: lessonEK01, 2: lessonEK02, 3: lessonEK03 },
+  },  {
+    id: 'egyptian-kids-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Kids · Intermediate',
+    titleAr: 'العامية المصرية · للأطفال · المتوسط',
+    version: 'Kids · Intermediate',
+    versionAr: 'الأطفال · المتوسط',
+    audience: '6–11',
+    art: '/curriculum/banners/egyptian-kids.webp',
+    parts: [{ title: "Intermediate · Back at Teta's", titleAr: 'المتوسط · تاني عند تيتة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['Where Did You Go, Ziad?', "Tomorrow We'll Go to the Zoo", "Teta's Story", 'We Went, They Went', "I Didn't Eat It!", 'When I Was Little', 'Review: A Day at the Zoo', 'I Have to Go', 'Bigger and Biggest', 'My Tummy Hurts', 'Intermediate Story'],
+    lessons: { 1: lessonEKI01, 2: lessonEKI02, 3: lessonEKI03 },
   },
+
   {
     id: 'egyptian-teens',
     group: 'egyptian',
@@ -596,7 +673,34 @@ export const SUBJECTS: SubjectEntry[] = [
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
     lessons: { 1: lessonET01, 2: lessonET02, 3: lessonET03 },
+  },  {
+    id: 'egyptian-teens-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Teens · Intermediate',
+    titleAr: 'العامية المصرية · للشباب · المتوسط',
+    version: 'Teens · Intermediate',
+    versionAr: 'الشباب · المتوسط',
+    audience: '12–17',
+    art: '/curriculum/banners/egyptian-teens.webp',
+    parts: [{ title: 'Intermediate · The Club, a Year Later', titleAr: 'المتوسط · النادي بعد سنة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['What Did You Do at the Match?', "Tomorrow's Final", "You Won't Believe What Happened", 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: The Club Trip', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', 'The Lost Phone', 'Review: The Concert', 'Intermediate Story'],
+    lessons: { 1: lessonETI01, 2: lessonETI02, 3: lessonETI03 },
+  },  {
+    id: 'egyptian-teens-3',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Teens · Advanced',
+    titleAr: 'العامية المصرية · للشباب · المتقدم',
+    version: 'Teens · Advanced',
+    versionAr: 'الشباب · المتقدم',
+    audience: '12–17',
+    art: '/curriculum/banners/egyptian-teens.webp',
+    parts: [{ title: "Advanced · The Club's Last Summer", titleAr: 'المتقدم · آخر صيف في النادي', from: 1 }],
+    // docs/curriculum/egyptian/MAP-advanced.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['Who Should Be Captain?', "That's What They Say", 'Say It Again, Slower!'],
+    lessons: { 1: lessonETA01, 2: lessonETA02 },
   },
+
   {
     id: 'english-general',
     group: 'english',

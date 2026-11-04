@@ -862,4 +862,90 @@ B3–B5 → continue lesson by lesson.
   `fusha-kids-3` ("One Root, Many Verbs", 13 pages) and `fusha-12-3` ("The Root Workshop", 13 pages). Brief
   `fusha/L3-01-verb-patterns.md`, graphics `g-fx1.tsx` (the forge: root tiles, pattern moulds, stamped verbs). Every
   step screenshotted. Next: Lesson 2 "It Was Written" (the passive), both versions.
+- **2026-11-04 · Fusha Level 3, Lesson 2 built for Kids and 12+** (drafts, overnight run): Kids "Who Broke the Vase?"
+  and 12+ "The Headline" (13 pages each). Brief `fusha/L3-02-the-passive.md`, graphics `g-fx2.tsx` (the sentence shelf:
+  the doer sinks away, the thing takes its seat and its ـُ). Every step screenshotted. Next: Lesson 3 "Indeed and But"
+  (إِنَّ and her sisters), both versions.
+- **2026-11-04 · Fusha Level 3, Lesson 3 built for Kids and 12+** (drafts, overnight run): Kids "Indeed and But" and
+  12+ "The Debate Club" (13 pages each). Brief `fusha/L3-03-inna-and-sisters.md`, graphics `g-fx3.tsx` (the seesaw).
+  Fusha Levels 2 and 3 now have their first 3 lessons in both versions (LEVELS-PLAN target). Every step screenshotted.
+  Next (LEVELS-PLAN order): Egyptian Sounds (12+) map and Lessons 1-3, then Egyptian Intermediate and Advanced.
+- **2026-11-04 · Egyptian Sounds (12+) map and Lesson 1 built** (draft, overnight run): map `egyptian/MAP-sounds.md`
+  (8 lessons, for learners who know Fusha; Adam studied Fusha in London and lands in Cairo). Catalog entry
+  `egyptian-sounds` (group `egyptian`, 12+). Lesson 1 "Where Did the Qaf Go?" (13 pages: ق → catch, ج → g, the words
+  that keep q). Graphics `g-es1.tsx` (twins: a book card for the Fusha word, a street sign for the Cairo word, a dial
+  for the letter that moves). Adam's Fusha lines use the Fusha clone; the Egyptian lines wait for the owner's own
+  recordings. Every step screenshotted. Next: Sounds Lesson 2 "Th and Dh".
+- **2026-11-04 · Egyptian Sounds, Lesson 2 "Th and Dh" built** (draft, overnight run): 13 pages, the jeweller scene;
+  ث → t and ذ → d in street words, s and z in book words, ظ on both paths, the "two layers" of Cairo Arabic as the wow.
+  Graphics `g-es2.tsx` (teeth profile, two layers; reuses the Lesson 1 twins). Every step screenshotted. Next: Sounds
+  Lesson 3 "Short and Stressed".
 
+- **2026-11-04 — Egyptian Sounds, Lesson 3 "Short and Stressed" (draft, `reviewed: false`).** On the metro: endings fall,
+  long vowels shrink before two consonants, weak vowels drop, the beat moves (madrása). New device: the rhythm track
+  (syllable blocks; wide = long, tall = stressed). Wow: إلى أين أنت ذاهب؟ (9 syllables) vs رايح فين؟ (3). Graphics
+  `g-es3.tsx`. Egyptian lines wait for the owner's recordings. Every step screenshotted. Egyptian Sounds now has 3
+  lessons; next: Egyptian Intermediate map.
+- **2026-11-04 — Egyptian Intermediate map and Adults Lesson 1 "What Did You Do Yesterday?" (draft, `reviewed: false`).**
+  `egyptian/MAP-intermediate.md`: Adults (16 lessons, Adam's second season), Teens (the club a year later) and Kids
+  (Teta's flat), Claude's draft. New catalog entry `egyptian-adults-2`. Lesson 1: the past with -t / -t / -ti / – / -it
+  (رحت، رحتي، راح، راحت; شرب، شاف، كل), Mona and Amm Sayed on the stairs; new device: the ending tag under each whole-word
+  tile; wow: the same five endings as the Fusha past. Graphics `g-ei1.tsx`. Egyptian lines wait for the owner's
+  recordings. Franco Intermediate follows once the Adults lessons are reviewed (the mirror is wired to Beginner only).
+  Next: Adults Intermediate Lesson 2 "Tomorrow, God Willing".
+- **2026-11-04 — Egyptian Intermediate (Adults), Lesson 2 "Tomorrow, God Willing" (draft, `reviewed: false`).** The
+  future: هـ + present (هروح، هتروح، هتروحي، هيروح، هنروح), مش هـ, إن شاء الله and the time words; Mona's tickets to
+  Alexandria. New device: the timeline read right to left (yesterday · every day · tomorrow); wow: one verb at all
+  three stops (رحت، بروح، هروح). Graphics `g-ei2.tsx`. Next: Lesson 3 "And Then…".
+- **2026-11-04 — Egyptian Intermediate (Adults), Lesson 3 "And Then…" (draft, `reviewed: false`).** Telling a story
+  with وبعدين، لما، فجأة، في الآخر: Adam tells Amm Sayed how he missed the train and still reached the sea. New device:
+  the story strip (framed event panels, the four words as hinges between them); wow: the same five facts as a list,
+  then as a story. Graphics `g-ei3.tsx`. Adults Intermediate now has 3 lessons. Next: Teens Intermediate.
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 1 "What Did You Do at the Match?" (draft, `reviewed: false`).**
+  New catalog entry `egyptian-teens-2` (the club a year later: Omar, Karim, Nour). The past endings with جاب، نام، راح;
+  wow: a team group chat with no names, where the ending alone tells who did what. Graphics `g-eti1.tsx` (reuses the
+  Adults ending tag). Next: Teens Lesson 2 "Tomorrow's Final".
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 2 "Tomorrow's Final" (draft, `reviewed: false`).** The future
+  with هـ (هلعب، هتلعبي، هيلعب، هنلعب), مش هـ, أكيد / إن شاء الله; the coach's news the night before the final. Reuses
+  the timeline and prefix tag; wow: جبت · بجيب · هجيب. Graphics `g-eti2.tsx`. Next: Teens Lesson 3.
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 3 "You Won't Believe What Happened" (draft, `reviewed: false`).**
+  Karim's voice note about the final: وبعدين، لما، فجأة، في الآخر. Reuses the story strip with football panels (ball,
+  goal, clock, cup added to the panel set) and a voice-note waveform. Graphics `g-eti3.tsx`. Teens Intermediate now has
+  3 lessons. Next: Kids Intermediate.
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 1 "Where Did You Go, Ziad?" (draft, `reviewed: false`).** New
+  catalog entry `egyptian-kids-2` (back at Teta's flat). رحت / رحتي / راح / راحت with places (garden, school,
+  kitchen); wow: the going song, four verbs lighting up above their people. Graphics `g-eki1.tsx` (tree, school and pot
+  added to the panel set). Next: Kids Lesson 2 "Tomorrow We'll Go to the Zoo".
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 2 "Tomorrow We'll Go to the Zoo" (draft, `reviewed: false`).**
+  The future with هـ: هشوف، هتشوف / هتشوفي، هيشوف / هتشوف; bedtime before the zoo; animals drawn in code (lion,
+  giraffe, elephant) pop up in thought clouds; wow: the zoo memory game. Graphics `g-eki2.tsx`. Phones and voice notes
+  in the Intermediate graphics moved from slate to espresso (owner: no deep-green/dark-cold surfaces). Next: Kids
+  Lesson 3 "Teta's Story".
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 3 "Teta's Story" (draft, `reviewed: false`).** وبعدين، فجأة،
+  في الآخر in Teta's story of the monkey who took her hat; the hat flies out of its panel on فجأة; wow: four pictures
+  become a story with three words. Monkey, hat and banana added to the panel set. Graphics `g-eki3.tsx`. Egyptian
+  Intermediate now has 3 lessons in each age (Adults, Teens, Kids). Next: Egyptian Advanced map (Adults first).
+- **2026-11-04 — Egyptian Advanced map and Adults Lesson 1 "In My Opinion" (draft, `reviewed: false`).**
+  `egyptian/MAP-advanced.md` (Adults 10 lessons, Teens and a lighter Kids Advanced, 3 each first). New catalog entry
+  `egyptian-adults-3`. The residents' meeting about a lift: أنا شايف إن، في رأيي، معاك حق، بالظبط، معاك حق بس،
+  مش متأكد، لأ خالص. New device: the politeness ladder (blunt to gentle); wow: the same "no" four ways. Graphics
+  `g-ea31.tsx`. Next: Advanced Lesson 2 "As They Say…".
+- **2026-11-04 — Egyptian Advanced (Adults), Lesson 2 "As They Say…" (draft, `reviewed: false`).** Four everyday
+  sayings in the lift story: اللي فات مات، على قد لحافك مد رجليك، إيد لوحدها ما تسقفش، الصبر مفتاح الفرج (taught as
+  the people's proverbs, not religious text). New device: the saying card, literal picture on the face, meaning on the
+  back; wow: all four flip at once. Graphics `g-ea32.tsx`. Next: Advanced Lesson 3 "At Street Speed".
+- **2026-11-04 — Egyptian Advanced (Adults), Lesson 3 "At Street Speed" (draft, `reviewed: false`).** A fast voice
+  note from Amm Sayed's son: fillers (يعني، بقى، طب، بقولك إيه), words that run together (بقولك، هستناك), listening
+  for who / what / when, a short reply. New device: the word stream and its filter; wow: padding drops through and five
+  key pieces stay. Graphics `g-ea33.tsx`. Adults Advanced now has 3 lessons. Next: Teens Advanced, then Kids Advanced.
+- **2026-11-04 — Egyptian Advanced (Teens), Lesson 1 "Who Should Be Captain?" (draft, `reviewed: false`).** New
+  catalog entry `egyptian-teens-3`. The club's last summer: the team picks a captain. أنا شايف / شايفة إن، في رأيي،
+  معاك / معاكي حق، أنا معاك، لأ طبعاً، معاك حق بس، مش متأكد / متأكدة، بصراحة. New devices: the captain board (each
+  agreement adds a tally) and the agree-o-meter, a gauge from full yes to full no; wow: the needle visits all five
+  phrases and rests on the soft no. Graphics `g-eta1.tsx` (`Chat` now exported from `g-eti1.tsx`). Next: Teens
+  Advanced Lesson 2 "That's What They Say".
+- **2026-11-04 — Egyptian Advanced (Teens), Lesson 2 "That's What They Say" (draft, `reviewed: false`).** The team
+  chat the night before the tournament: اللي فات مات (with the rule: never about a person who died), إيد لوحدها ما
+  تسقفش، يا خبر أبيض / إسود، الحلو ما يكملش. Taught as the people's sayings, not religious text. New device: the meme
+  card, where the word-for-word English is struck out and the real meaning slides in; wow: a 32-word paragraph folds
+  into اللي فات مات. Graphics `g-eta2.tsx` (`VoiceNote` now exported from `g-eti3.tsx`). Next: Teens Advanced Lesson 3.

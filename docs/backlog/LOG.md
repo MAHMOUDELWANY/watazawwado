@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage "A week with Watazawwado": pinned 3D ring (2026-11-04)
+- Owner: the scroll story made the homepage long on phones. Three prototypes (card stack, page-turning phone, 3D ring); the owner liked all, the ring most, and asked for a mix with content that tells a stranger what they get.
+- The section now pins to the screen and the scroll turns a ring of six phone screens (60° apart): the front card plays its screen, a passed card lifts and tilts away like a dealt card, each card has a phone status bar with the step number and the ayat counter. The next card comes from the reading side (left in Arabic). Under the ring: when, title, body and a new "why it matters" line per step; pips that jump to a step; a "keep scrolling" hint that fades. On desktop the caption sits beside the ring. Screen readers get a plain list. Reduced motion snaps from card to card.
+- Files: `src/components/public/homepage/WeekWithUs.tsx`, `src/index.css` (week section).
+- Checks: tsc, build; phone (375×812, Arabic, dark) and desktop (1280×800) checked locally: pins, no sideways scroll, caption follows the card. The server-backed tests were not run (no `.env` in the worktree); no server code changed. Not checked on a real phone.
+
 ### Sign-in screens: "paper and ink" redesign (2026-11-03)
 - Owner sent a screen recording: the sign-in dialog, `/student` gateway and `/kid` code page looked poor on desktop and phone. Two attempts (a dark-teal art pane, then a full-screen "door") were rejected: deep green is not our colour and did not read as luxury. With previews, the owner picked "paper and ink".
 - Every sign-in screen now shares `src/components/auth/AuthFrame.tsx`: cream paper (espresso at night), no card, one centred column with the verse in gold (its meaning on English pages), a large editorial title, a gold hairline with a diamond, underline tabs with a crimson mark, hairline fields with a crimson caret, one crimson button with Google below it. Links are crimson by day and gold at night. Autofill keeps the paper colour. The sign-in dialog is full screen on desktop and phone (no bottom sheet).
