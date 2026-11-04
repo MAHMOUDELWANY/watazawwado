@@ -446,6 +446,44 @@ One take: paste this whole block as one generation; I cut it into the files abov
 كَتَبَ يَكْتُبُ <break time="1.2s" /> يَا جِدِّي، ٱلدَّرَّاجَةُ لَا تَمْشِي! <break time="1.2s" /> تَعَالَ، أُعَلِّمُكَ. <break time="1.2s" /> مَنْ عَلَّمَكَ يَا يُوسُفُ؟ <break time="1.2s" /> جِدِّي عَلَّمَنِي! <break time="1.2s" /> وَأَنَا سَاعَدْتُ جِدِّي! <break time="1.2s" /> وَأَنَا لَاعَبْتُ مِشْمِشًا! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> عَلِمَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهِمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> عَلَّمَ جِدِّي يُوسُفَ. <break time="1.2s" /> لَعِبَ <break time="1.2s" /> لَاعَبَ <break time="1.2s" /> لَاعَبْتُ مِشْمِشًا. <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> فَعَّلَ <break time="1.2s" /> فَاعَلَ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> تُسَاعِدُ <break time="1.2s" /> أُعَلِّمُ <break time="1.2s" /> مَنْ عَلَّمَكَ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي. <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ!
 ```
 
+## Fusha Arabic · Kids · Level 3 · Lesson 2: Who Broke the Vase?
+
+Folder: `public/curriculum/fusha-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (23)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-allama.mp3 | 2 | clear | عَلَّمَ |
+| 2 | l02-story-1.mp3 | 4 | grandfather, shocked | كُسِرَتِ ٱلْمَزْهَرِيَّةُ! |
+| 3 | l02-story-2.mp3 | 4 | girl, detective | وَٱنْظُرْ يَا جِدِّي، فُتِحَ ٱلشُّبَّاكُ! |
+| 4 | l02-story-3.mp3 | 4 | boy, amazed | وَأُكِلَ ٱلسَّمَكُ! |
+| 5 | l02-story-4.mp3 | 4 | girl, serious | مَنْ كَسَرَ ٱلْمَزْهَرِيَّةَ؟ |
+| 6 | l02-story-5.mp3 | 4 | boy, pointing | مِشْمِشٌ كَسَرَهَا! |
+| 7 | l02-story-6.mp3 | 4 | grandfather, laughing | مِسْكِينٌ مِشْمِشٌ! |
+| 8 | l02-kasara.mp3 | 5 | clear | كَسَرَ |
+| 9 | l02-kusira.mp3 | 5 | clear, slow | كُسِرَ |
+| 10 | l02-kasara-mishmish.mp3 | 5 |  | كَسَرَ مِشْمِشٌ ٱلْمَزْهَرِيَّةَ. |
+| 11 | l02-fataha.mp3 | 6 |  | فَتَحَ |
+| 12 | l02-futiha.mp3 | 6 |  | فُتِحَ |
+| 13 | l02-akala.mp3 | 6 |  | أَكَلَ |
+| 14 | l02-ukila.mp3 | 6 |  | أُكِلَ |
+| 15 | l02-kataba.mp3 | 6 |  | كَتَبَ |
+| 16 | l02-kutiba.mp3 | 6 |  | كُتِبَ |
+| 17 | l02-kusirat.mp3 | 7 |  | كُسِرَتِ ٱلْمَزْهَرِيَّةُ. |
+| 18 | l02-futiha-shubbak.mp3 | 7 |  | فُتِحَ ٱلشُّبَّاكُ. |
+| 19 | l02-ukila-samak.mp3 | 7 |  | أُكِلَ ٱلسَّمَكُ. |
+| 20 | l02-futiha-bab.mp3 | 9 |  | فُتِحَ ٱلْبَابُ لِلضُّيُوفِ. |
+| 21 | l02-man-faala.mp3 | 11 | detective, serious | مَنْ فَعَلَ ذَلِكَ؟ |
+| 22 | l02-inna-mishmishan.mp3 | 13 | girl, certain | إِنَّ مِشْمِشًا بَرِيءٌ! |
+| 23 | l02-lakinna.mp3 | 13 | boy, laughing | لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+عَلَّمَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ! <break time="1.2s" /> وَٱنْظُرْ يَا جِدِّي، فُتِحَ ٱلشُّبَّاكُ! <break time="1.2s" /> وَأُكِلَ ٱلسَّمَكُ! <break time="1.2s" /> مَنْ كَسَرَ ٱلْمَزْهَرِيَّةَ؟ <break time="1.2s" /> مِشْمِشٌ كَسَرَهَا! <break time="1.2s" /> مِسْكِينٌ مِشْمِشٌ! <break time="1.2s" /> كَسَرَ <break time="1.2s" /> كُسِرَ <break time="1.2s" /> كَسَرَ مِشْمِشٌ ٱلْمَزْهَرِيَّةَ. <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> أَكَلَ <break time="1.2s" /> أُكِلَ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كُتِبَ <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ. <break time="1.2s" /> فُتِحَ ٱلشُّبَّاكُ. <break time="1.2s" /> أُكِلَ ٱلسَّمَكُ. <break time="1.2s" /> فُتِحَ ٱلْبَابُ لِلضُّيُوفِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> إِنَّ مِشْمِشًا بَرِيءٌ! <break time="1.2s" /> لَكِنَّ ٱلسَّمَكَ فِي فَمِهِ!
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -1213,6 +1251,49 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 مَنْ عَلَّمَكَ ٱلْعَرَبِيَّةَ يَا يُوسُفُ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي أَوَّلًا، ثُمَّ دَرَسْتُ هُنَا. <break time="1.2s" /> وَأَنَا أُكَاتِبُ صَدِيقَةً فِي ٱلْأُرْدُنِّ. <break time="1.2s" /> مُمْتَازٌ! وَمَنْ يُسَاعِدُكِ؟ <break time="1.2s" /> هِيَ تُسَاعِدُنِي، وَأَنَا أُرْسِلُ لَهَا رَسَائِلَ بِٱلْإِنْجِلِيزِيَّةِ. <break time="1.2s" /> هَذَا هُوَ ٱلتَّعَاوُنُ! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> وَزْنٌ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> كَسَّرَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كَاتَبَ <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> شَارَكَ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> خَرَجَ <break time="1.2s" /> أَخْرَجَ <break time="1.2s" /> أَدْخَلَ <break time="1.2s" /> أَرْسَلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يَكْتُبُ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> يَخْرُجُ <break time="1.2s" /> يُخْرِجُ <break time="1.2s" /> رِسَالَةٌ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ.
+```
+
+## Fusha Arabic · 12+ · Level 3 · Lesson 2: The Headline
+
+Folder: `public/curriculum/fusha-12-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (28)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | young woman, reading news | فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. |
+| 2 | l02-story-2.mp3 | 3 | young man, curious | مَنْ فَتَحَهُ؟ |
+| 3 | l02-story-3.mp3 | 3 | teacher, calm | لَا يُذْكَرُ ٱلْفَاعِلُ. ٱلْمُهِمُّ ٱلطَّرِيقُ. |
+| 4 | l02-story-4.mp3 | 3 | young woman, reading news | وَتُبْنَى مَدْرَسَةٌ جَدِيدَةٌ بِجَانِبِهِ. |
+| 5 | l02-story-5.mp3 | 3 | young man, teasing | وَمَتَى يُفْتَحُ ٱلْمَطَارُ؟ |
+| 6 | l02-story-6.mp3 | 3 | teacher, laughing | هَذَا سُؤَالٌ صَعْبٌ! |
+| 7 | l02-fataha.mp3 | 4 |  | فَتَحَ |
+| 8 | l02-futiha.mp3 | 4 |  | فُتِحَ |
+| 9 | l02-dhakara.mp3 | 4 |  | ذَكَرَ |
+| 10 | l02-dhukira.mp3 | 4 |  | ذُكِرَ |
+| 11 | l02-futihat-maktaba.mp3 | 4 |  | فُتِحَتِ ٱلْمَكْتَبَةُ. |
+| 12 | l02-yaftahu.mp3 | 5 |  | يَفْتَحُ |
+| 13 | l02-yuftahu.mp3 | 5 |  | يُفْتَحُ |
+| 14 | l02-yudhkaru.mp3 | 5 |  | يُذْكَرُ |
+| 15 | l02-tubna.mp3 | 5 |  | تُبْنَى مَدْرَسَةٌ. |
+| 16 | l02-fatahat-baladiyya.mp3 | 6 |  | فَتَحَتِ ٱلْبَلَدِيَّةُ ٱلطَّرِيقَ. |
+| 17 | l02-futiha-tariq.mp3 | 6 |  | فُتِحَ ٱلطَّرِيقُ. |
+| 18 | l02-ullima.mp3 | 7 |  | عُلِّمَ |
+| 19 | l02-ursila.mp3 | 7 |  | أُرْسِلَ |
+| 20 | l02-yursilu.mp3 | 7 |  | يُرْسِلُ |
+| 21 | l02-yursalu.mp3 | 7 |  | يُرْسَلُ |
+| 22 | l02-kutiba-kitab.mp3 | 8 |  | كُتِبَ ٱلْكِتَابُ فِي ٱلْقَرْنِ ٱلْعَاشِرِ. |
+| 23 | l02-man-faala.mp3 | 8 | curious, a little sharp | مَنْ فَعَلَ ذَلِكَ؟ |
+| 24 | l02-h-1.mp3 | 9 | newsreader | فُتِحَتْ مَكْتَبَةٌ جَدِيدَةٌ لِلْأَطْفَالِ. |
+| 25 | l02-h-2.mp3 | 9 | newsreader | يُغْلَقُ ٱلشَّارِعُ يَوْمَ ٱلْجُمُعَةِ. |
+| 26 | l02-h-3.mp3 | 9 | newsreader | عُلِّمَ أَلْفُ طِفْلٍ ٱلسِّبَاحَةَ هَذَا ٱلصَّيْفَ. |
+| 27 | l02-futiha-tariq-2.mp3 | 11 | newsreader | فُتِحَ طَرِيقٌ جَدِيدٌ. |
+| 28 | l02-inna-hatif.mp3 | 13 | young woman, confident | إِنَّ ٱلْهَاتِفَ مُفِيدٌ. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. <break time="1.2s" /> مَنْ فَتَحَهُ؟ <break time="1.2s" /> لَا يُذْكَرُ ٱلْفَاعِلُ. ٱلْمُهِمُّ ٱلطَّرِيقُ. <break time="1.2s" /> وَتُبْنَى مَدْرَسَةٌ جَدِيدَةٌ بِجَانِبِهِ. <break time="1.2s" /> وَمَتَى يُفْتَحُ ٱلْمَطَارُ؟ <break time="1.2s" /> هَذَا سُؤَالٌ صَعْبٌ! <break time="1.2s" /> فَتَحَ <break time="1.2s" /> فُتِحَ <break time="1.2s" /> ذَكَرَ <break time="1.2s" /> ذُكِرَ <break time="1.2s" /> فُتِحَتِ ٱلْمَكْتَبَةُ. <break time="1.2s" /> يَفْتَحُ <break time="1.2s" /> يُفْتَحُ <break time="1.2s" /> يُذْكَرُ <break time="1.2s" /> تُبْنَى مَدْرَسَةٌ. <break time="1.2s" /> فَتَحَتِ ٱلْبَلَدِيَّةُ ٱلطَّرِيقَ. <break time="1.2s" /> فُتِحَ ٱلطَّرِيقُ. <break time="1.2s" /> عُلِّمَ <break time="1.2s" /> أُرْسِلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يُرْسَلُ <break time="1.2s" /> كُتِبَ ٱلْكِتَابُ فِي ٱلْقَرْنِ ٱلْعَاشِرِ. <break time="1.2s" /> مَنْ فَعَلَ ذَلِكَ؟ <break time="1.2s" /> فُتِحَتْ مَكْتَبَةٌ جَدِيدَةٌ لِلْأَطْفَالِ. <break time="1.2s" /> يُغْلَقُ ٱلشَّارِعُ يَوْمَ ٱلْجُمُعَةِ. <break time="1.2s" /> عُلِّمَ أَلْفُ طِفْلٍ ٱلسِّبَاحَةَ هَذَا ٱلصَّيْفَ. <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ. <break time="1.2s" /> إِنَّ ٱلْهَاتِفَ مُفِيدٌ.
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

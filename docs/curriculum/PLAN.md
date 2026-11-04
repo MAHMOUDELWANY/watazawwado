@@ -862,4 +862,8 @@ B3–B5 → continue lesson by lesson.
   `fusha-kids-3` ("One Root, Many Verbs", 13 pages) and `fusha-12-3` ("The Root Workshop", 13 pages). Brief
   `fusha/L3-01-verb-patterns.md`, graphics `g-fx1.tsx` (the forge: root tiles, pattern moulds, stamped verbs). Every
   step screenshotted. Next: Lesson 2 "It Was Written" (the passive), both versions.
+- **2026-11-04 · Fusha Level 3, Lesson 2 built for Kids and 12+** (drafts, overnight run): Kids "Who Broke the Vase?"
+  and 12+ "The Headline" (13 pages each). Brief `fusha/L3-02-the-passive.md`, graphics `g-fx2.tsx` (the sentence shelf:
+  the doer sinks away, the thing takes its seat and its ـُ). Every step screenshotted. Next: Lesson 3 "Indeed and But"
+  (إِنَّ and her sisters), both versions.
 

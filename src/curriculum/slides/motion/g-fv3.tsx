@@ -175,7 +175,7 @@ export function Fv3StoryGraphic({ lines }: GraphicProps) {
         <React.Fragment key="a">
           <SayBubble x={1440} y={575} id="story-1" text="مَنْ هَذَا ٱلْوَلَدُ يَا جِدِّي؟" align="right" width={290} size={22} delay={0.3} />
           <SayBubble x={880} y={625} id="story-2" text="هَذَا أَحْمَدُ، أَبُو يُوسُفَ وَمَرْيَمَ!" width={330} size={22} accent delay={1.8} />
-          <SayBubble x={1240} y={640} id="story-3" text="أَبِي صَغِيرٌ!" width={160} size={24} delay={3} />
+          <SayBubble x={1240} y={640} id="story-3" text="أَبِي صَغِيرٌ!" width={160} size={24} delay={2.4} />
         </React.Fragment>
       )}
       {k === 2 && (

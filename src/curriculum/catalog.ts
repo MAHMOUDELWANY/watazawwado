@@ -52,6 +52,8 @@ import { lessonFK203 } from './content/fusha-kids-2/l03-my-father-your-brother.j
 import { lessonFT203 } from './content/fusha-12-2/l03-the-video-call.js';
 import { lessonFK301 } from './content/fusha-kids-3/l01-one-root-many-verbs.js';
 import { lessonFT301 } from './content/fusha-12-3/l01-the-root-workshop.js';
+import { lessonFK302 } from './content/fusha-kids-3/l02-who-broke-the-vase.js';
+import { lessonFT302 } from './content/fusha-12-3/l02-the-headline.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -289,8 +291,8 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/fusha-kids.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
-    plan: ['One Root, Many Verbs', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
-    lessons: { 1: lessonFK301 },
+    plan: ['One Root, Many Verbs', 'Who Broke the Vase?', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFK301, 2: lessonFK302 },
   },
   {
     id: 'seerah-teens',
@@ -533,8 +535,8 @@ export const SUBJECTS: SubjectEntry[] = [
     art: '/curriculum/banners/fusha-12.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
-    plan: ['The Root Workshop', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
-    lessons: { 1: lessonFT301 },
+    plan: ['The Root Workshop', 'The Headline', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFT301, 2: lessonFT302 },
   },
   {
     id: 'literacy-a-teens',
