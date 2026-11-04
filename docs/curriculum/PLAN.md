@@ -881,3 +881,8 @@ B3–B5 → continue lesson by lesson.
   Graphics `g-es2.tsx` (teeth profile, two layers; reuses the Lesson 1 twins). Every step screenshotted. Next: Sounds
   Lesson 3 "Short and Stressed".
 
+- **2026-11-04 — Egyptian Sounds, Lesson 3 "Short and Stressed" (draft, `reviewed: false`).** On the metro: endings fall,
+  long vowels shrink before two consonants, weak vowels drop, the beat moves (madrása). New device: the rhythm track
+  (syllable blocks; wide = long, tall = stressed). Wow: إلى أين أنت ذاهب؟ (9 syllables) vs رايح فين؟ (3). Graphics
+  `g-es3.tsx`. Egyptian lines wait for the owner's recordings. Every step screenshotted. Egyptian Sounds now has 3
+  lessons; next: Egyptian Intermediate map.

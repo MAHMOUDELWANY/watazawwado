@@ -58,6 +58,7 @@ import { lessonFK303 } from './content/fusha-kids-3/l03-indeed-and-but.js';
 import { lessonFT303 } from './content/fusha-12-3/l03-the-debate-club.js';
 import { lessonES01 } from './content/egyptian-sounds/l01-where-did-the-qaf-go.js';
 import { lessonES02 } from './content/egyptian-sounds/l02-th-and-dh.js';
+import { lessonES03 } from './content/egyptian-sounds/l03-short-and-stressed.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -453,7 +454,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: 'Sounds · From Fusha to Cairo', titleAr: 'الأصوات · من الفصحى للقاهرة', from: 1 }],
     // docs/curriculum/egyptian/MAP-sounds.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Where Did the Qaf Go?', 'Th and Dh', 'Short and Stressed', 'Ay and Aw', 'The Question Words', 'Bi- and Ha-', 'Ma…sh', 'Review: Read Fusha, Say Egyptian'],
-    lessons: { 1: lessonES01, 2: lessonES02 },
+    lessons: { 1: lessonES01, 2: lessonES02, 3: lessonES03 },
   },
   {
     id: 'egyptian-adults',

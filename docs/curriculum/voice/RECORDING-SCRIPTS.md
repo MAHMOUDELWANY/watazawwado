@@ -736,6 +736,59 @@ One take: paste this whole block as one generation; I cut it into the files abov
 قهوة <break time="1.2s" /> جميل <break time="1.2s" /> دهب؟ عندنا دهب جميل. بتلات آلاف. <break time="1.2s" /> إنت ذكي يا أستاذ! خلاص، بألفين وتمنمية. <break time="1.2s" /> مبروك يا آدم! أمك هتفرح. <break time="1.2s" /> تلاتة <break time="1.2s" /> كتير <break time="1.2s" /> تلج <break time="1.2s" /> دهب <break time="1.2s" /> ديل <break time="1.2s" /> ثورة <break time="1.2s" /> مثلاً <break time="1.2s" /> ذكي <break time="1.2s" /> ضهري واجعني. <break time="1.2s" /> ظريف <break time="1.2s" /> ده بكام؟ <break time="1.2s" /> ده كتير أوي! <break time="1.2s" /> المحطة الجاية: السادات.
 ```
 
+## Egyptian Arabic · Sounds · Lesson 3: Short and Stressed
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (4)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-story-2.mp3 | 4 | careful, reading | مَحَطَّةُ ٱلسَّادَاتِ. |
+| 2 | l03-madrasatun.mp3 | 5 |  | مَدْرَسَةٌ |
+| 3 | l03-kitabun.mp3 | 5 |  | كِتَابٌ |
+| 4 | l03-ila-ayna.mp3 | 9 | careful | إِلَى أَيْنَ أَنْتَ ذَاهِبٌ؟ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَحَطَّةُ ٱلسَّادَاتِ. <break time="1.2s" /> مَدْرَسَةٌ <break time="1.2s" /> كِتَابٌ <break time="1.2s" /> إِلَى أَيْنَ أَنْتَ ذَاهِبٌ؟
+```
+
+### ElevenLabs: Mahmoud Egyptian (23)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-talata.mp3 | 2 |  | تلاتة |
+| 2 | l03-dahab.mp3 | 2 |  | دهب |
+| 3 | l03-zaki.mp3 | 2 |  | ذكي |
+| 4 | l03-story-1.mp3 | 4 | metro announcer | المحطة الجاية: السادات. |
+| 5 | l03-story-3.mp3 | 4 | woman, friendly | إنت رايح فين يا آدم؟ |
+| 6 | l03-story-4.mp3 | 4 | man, trying, then correcting himself | رايح المدرسة… مدرسة! |
+| 7 | l03-story-5.mp3 | 4 | woman, laughing | برافو! الكلام هنا أسرع، والآخر بيقع. |
+| 8 | l03-madrasa.mp3 | 5 |  | مدرسة |
+| 9 | l03-kitaab.mp3 | 5 |  | كتاب |
+| 10 | l03-kitabha.mp3 | 6 |  | كتابها |
+| 11 | l03-baab.mp3 | 6 |  | باب |
+| 12 | l03-babha.mp3 | 6 |  | بابها |
+| 13 | l03-babna.mp3 | 6 |  | بابنا |
+| 14 | l03-rayih.mp3 | 7 |  | رايح |
+| 15 | l03-rayha.mp3 | 7 |  | رايحة |
+| 16 | l03-sakin.mp3 | 7 |  | ساكن |
+| 17 | l03-sakna.mp3 | 7 |  | ساكنة |
+| 18 | l03-madrasa-2.mp3 | 8 | stress clearly on ra | مدرسة |
+| 19 | l03-maktaba.mp3 | 8 | stress clearly on ta | مكتبة |
+| 20 | l03-rayih-fen.mp3 | 9 | natural, quick | رايح فين؟ |
+| 21 | l03-mahatta-gaya.mp3 | 11 | announcer | المحطة الجاية: العتبة. |
+| 22 | l03-rayha-fen.mp3 | 11 | friendly, to a woman | إنتي رايحة فين؟ |
+| 23 | l03-beet-beetak.mp3 | 13 | warm mother, welcoming | أهلاً! البيت بيتك. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+تلاتة <break time="1.2s" /> دهب <break time="1.2s" /> ذكي <break time="1.2s" /> المحطة الجاية: السادات. <break time="1.2s" /> إنت رايح فين يا آدم؟ <break time="1.2s" /> رايح المدرسة… مدرسة! <break time="1.2s" /> برافو! الكلام هنا أسرع، والآخر بيقع. <break time="1.2s" /> مدرسة <break time="1.2s" /> كتاب <break time="1.2s" /> كتابها <break time="1.2s" /> باب <break time="1.2s" /> بابها <break time="1.2s" /> بابنا <break time="1.2s" /> رايح <break time="1.2s" /> رايحة <break time="1.2s" /> ساكن <break time="1.2s" /> ساكنة <break time="1.2s" /> مدرسة <break time="1.2s" /> مكتبة <break time="1.2s" /> رايح فين؟ <break time="1.2s" /> المحطة الجاية: العتبة. <break time="1.2s" /> إنتي رايحة فين؟ <break time="1.2s" /> أهلاً! البيت بيتك.
+```
+
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
 
 Folder: `public/curriculum/egyptian-adults/audio/`.
