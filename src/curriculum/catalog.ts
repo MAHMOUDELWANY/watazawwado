@@ -50,6 +50,8 @@ import { lessonFK202 } from './content/fusha-kids-2/l02-every-day.js';
 import { lessonFT202 } from './content/fusha-12-2/l02-the-timetable.js';
 import { lessonFK203 } from './content/fusha-kids-2/l03-my-father-your-brother.js';
 import { lessonFT203 } from './content/fusha-12-2/l03-the-video-call.js';
+import { lessonFK301 } from './content/fusha-kids-3/l01-one-root-many-verbs.js';
+import { lessonFT301 } from './content/fusha-12-3/l01-the-root-workshop.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -275,6 +277,20 @@ export const SUBJECTS: SubjectEntry[] = [
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['What Did Everyone Do?', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week in Our House', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
     lessons: { 1: lessonFK201, 2: lessonFK202, 3: lessonFK203 },
+  },
+  {
+    id: 'fusha-kids-3',
+    group: 'fusha',
+    title: 'Fusha Arabic · Kids · Level 3',
+    titleAr: 'الفصحى · للأطفال · المستوى الثالث',
+    version: 'Kids · Level 3',
+    versionAr: 'الأطفال · المستوى الثالث',
+    audience: '6–11',
+    art: '/curriculum/banners/fusha-kids.webp',
+    parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
+    // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: ['One Root, Many Verbs', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFK301 },
   },
   {
     id: 'seerah-teens',
@@ -505,6 +521,20 @@ export const SUBJECTS: SubjectEntry[] = [
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['The Class Trip', 'The Timetable', 'The Video Call', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week at the Institute', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
     lessons: { 1: lessonFT201, 2: lessonFT202, 3: lessonFT203 },
+  },
+  {
+    id: 'fusha-12-3',
+    group: 'fusha',
+    title: 'Fusha Arabic · 12+ · Level 3',
+    titleAr: 'الفصحى · 12 سنة فأكبر · المستوى الثالث',
+    version: '12+ · Level 3',
+    versionAr: '12 سنة فأكبر · المستوى الثالث',
+    audience: '12+',
+    art: '/curriculum/banners/fusha-12.webp',
+    parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
+    // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
+    plan: ['The Root Workshop', 'It Was Written', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
+    lessons: { 1: lessonFT301 },
   },
   {
     id: 'literacy-a-teens',

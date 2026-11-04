@@ -403,6 +403,49 @@ One take: paste this whole block as one generation; I cut it into the files abov
 يَذْهَبُ جِدِّي إِلَى ٱلْمَسْجِدِ. <break time="1.2s" /> مَنْ هَذَا ٱلْوَلَدُ يَا جِدِّي؟ <break time="1.2s" /> هَذَا أَحْمَدُ، أَبُو يُوسُفَ وَمَرْيَمَ! <break time="1.2s" /> أَبِي صَغِيرٌ! <break time="1.2s" /> وَمَنْ هَذَا؟ <break time="1.2s" /> هَذَا أَخِي سَعِيدٌ. <break time="1.2s" /> وَهَذَا قِطٌّ ذُو ذَيْلٍ طَوِيلٍ! <break time="1.2s" /> أَبٌ <break time="1.2s" /> أَبِي <break time="1.2s" /> أَبُو يُوسُفَ <break time="1.2s" /> أَخٌ <break time="1.2s" /> أَخِي <break time="1.2s" /> أَخُو مَرْيَمَ <break time="1.2s" /> يَذْهَبُ يُوسُفُ إِلَى أَبِي أَحْمَدَ. <break time="1.2s" /> يَلْعَبُ سَامِي مَعَ أَخِي مَرْيَمَ. <break time="1.2s" /> أَبُو أَحْمَدَ <break time="1.2s" /> أُمُّ أَحْمَدَ <break time="1.2s" /> ذُو <break time="1.2s" /> قِطٌّ ذُو ذَيْلٍ طَوِيلٍ. <break time="1.2s" /> رَجُلٌ ذُو لِحْيَةٍ بَيْضَاءَ. <break time="1.2s" /> هَذَا أَبِي. <break time="1.2s" /> هَذَا أَخِي. <break time="1.2s" /> لَا، مَا رَتَّبْتُهَا… بَعْدُ!
 ```
 
+## Fusha Arabic · Kids · Level 3 · Lesson 1: One Root, Many Verbs
+
+Folder: `public/curriculum/fusha-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (28)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-kataba-yaktubu.mp3 | 2 | clear | كَتَبَ يَكْتُبُ |
+| 2 | l01-story-1.mp3 | 4 | sad boy | يَا جِدِّي، ٱلدَّرَّاجَةُ لَا تَمْشِي! |
+| 3 | l01-story-2.mp3 | 4 | warm grandfather | تَعَالَ، أُعَلِّمُكَ. |
+| 4 | l01-story-3.mp3 | 4 | curious girl | مَنْ عَلَّمَكَ يَا يُوسُفُ؟ |
+| 5 | l01-story-4.mp3 | 4 | proud boy | جِدِّي عَلَّمَنِي! |
+| 6 | l01-story-5.mp3 | 4 | girl, cheeky | وَأَنَا سَاعَدْتُ جِدِّي! |
+| 7 | l01-story-6.mp3 | 4 | girl, laughing | وَأَنَا لَاعَبْتُ مِشْمِشًا! |
+| 8 | l01-jadhr.mp3 | 5 |  | جَذْرٌ |
+| 9 | l01-alima.mp3 | 5 | clear | عَلِمَ |
+| 10 | l01-allama.mp3 | 6 | clear, pressing the shadda | عَلَّمَ |
+| 11 | l01-fahima.mp3 | 6 |  | فَهِمَ |
+| 12 | l01-fahhama.mp3 | 6 | pressing the shadda | فَهَّمَ |
+| 13 | l01-allama-jiddi.mp3 | 6 |  | عَلَّمَ جِدِّي يُوسُفَ. |
+| 14 | l01-laiba.mp3 | 7 |  | لَعِبَ |
+| 15 | l01-laaba.mp3 | 7 | stretching the ā | لَاعَبَ |
+| 16 | l01-laabtu-mishmish.mp3 | 7 | laughing girl | لَاعَبْتُ مِشْمِشًا. |
+| 17 | l01-saada.mp3 | 7 |  | سَاعَدَ |
+| 18 | l01-faala.mp3 | 8 |  | فَعَلَ |
+| 19 | l01-faala-2.mp3 | 8 |  | فَعَّلَ |
+| 20 | l01-faala-3.mp3 | 8 |  | فَاعَلَ |
+| 21 | l01-darasa.mp3 | 8 |  | دَرَسَ |
+| 22 | l01-darrasa.mp3 | 8 |  | دَرَّسَ |
+| 23 | l01-yuallimu.mp3 | 9 |  | يُعَلِّمُ |
+| 24 | l01-tusaidu.mp3 | 9 |  | تُسَاعِدُ |
+| 25 | l01-uallimu.mp3 | 9 |  | أُعَلِّمُ |
+| 26 | l01-man-allamaka.mp3 | 11 | curious | مَنْ عَلَّمَكَ؟ |
+| 27 | l01-allamani-abi.mp3 | 11 | proud | عَلَّمَنِي أَبِي. |
+| 28 | l01-kusirat.mp3 | 13 | grandfather, surprised | كُسِرَتِ ٱلْمَزْهَرِيَّةُ! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+كَتَبَ يَكْتُبُ <break time="1.2s" /> يَا جِدِّي، ٱلدَّرَّاجَةُ لَا تَمْشِي! <break time="1.2s" /> تَعَالَ، أُعَلِّمُكَ. <break time="1.2s" /> مَنْ عَلَّمَكَ يَا يُوسُفُ؟ <break time="1.2s" /> جِدِّي عَلَّمَنِي! <break time="1.2s" /> وَأَنَا سَاعَدْتُ جِدِّي! <break time="1.2s" /> وَأَنَا لَاعَبْتُ مِشْمِشًا! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> عَلِمَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهِمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> عَلَّمَ جِدِّي يُوسُفَ. <break time="1.2s" /> لَعِبَ <break time="1.2s" /> لَاعَبَ <break time="1.2s" /> لَاعَبْتُ مِشْمِشًا. <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> فَعَّلَ <break time="1.2s" /> فَاعَلَ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> تُسَاعِدُ <break time="1.2s" /> أُعَلِّمُ <break time="1.2s" /> مَنْ عَلَّمَكَ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي. <break time="1.2s" /> كُسِرَتِ ٱلْمَزْهَرِيَّةُ!
+```
+
 ## English · Kids · Lesson 1: The Snake Sound
 
 Folder: `public/curriculum/english-kids/audio/`.
@@ -1124,6 +1167,52 @@ One take: paste this whole block as one generation; I cut it into the files abov
 
 ```text
 هَذَا أَبِي، وَهَذَا أَخِي ٱلصَّغِيرُ عُمَرُ. <break time="1.2s" /> أَهْلًا يَا يُوسُفُ! أَنَا أَبُو عُمَرَ. <break time="1.2s" /> تَشَرَّفْنَا يَا أَبَا عُمَرَ! <break time="1.2s" /> وَأَنَا أَخُو سَارَةَ! <break time="1.2s" /> سَلِّمِي عَلَى أَبِي عُمَرَ يَا سَارَةُ. <break time="1.2s" /> إِنْ شَاءَ ٱللَّهُ، يَا أُسْتَاذُ. <break time="1.2s" /> أَبٌ <break time="1.2s" /> أَخٌ <break time="1.2s" /> حَمٌ <break time="1.2s" /> فَمٌ <break time="1.2s" /> ذُو <break time="1.2s" /> أَبُو عُمَرَ <break time="1.2s" /> جَاءَ أَبُو عُمَرَ. <break time="1.2s" /> هَذَا أَخُو سَارَةَ. <break time="1.2s" /> رَأَيْتُ أَبَا عُمَرَ. <break time="1.2s" /> يَا أَبَا عُمَرَ! <break time="1.2s" /> سَلِّمِي عَلَى أَبِي عُمَرَ. <break time="1.2s" /> بَيْتُ أَخِي سَارَةَ <break time="1.2s" /> ٱلْوَلَدُ <break time="1.2s" /> ٱلْوَلَدَ <break time="1.2s" /> ٱلْوَلَدِ <break time="1.2s" /> أَبُو هُرَيْرَةَ <break time="1.2s" /> رَجُلٌ ذُو عِلْمٍ. <break time="1.2s" /> أَهْلًا يَا أَبَا عُمَرَ! <break time="1.2s" /> لَمْ أَدْرُسْ… بَعْدُ!
+```
+
+## Fusha Arabic · 12+ · Level 3 · Lesson 1: The Root Workshop
+
+Folder: `public/curriculum/fusha-12-3/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (31)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | teacher, warm | مَنْ عَلَّمَكَ ٱلْعَرَبِيَّةَ يَا يُوسُفُ؟ |
+| 2 | l01-story-2.mp3 | 3 | young man | عَلَّمَنِي أَبِي أَوَّلًا، ثُمَّ دَرَسْتُ هُنَا. |
+| 3 | l01-story-3.mp3 | 3 | young woman, proud | وَأَنَا أُكَاتِبُ صَدِيقَةً فِي ٱلْأُرْدُنِّ. |
+| 4 | l01-story-4.mp3 | 3 | teacher | مُمْتَازٌ! وَمَنْ يُسَاعِدُكِ؟ |
+| 5 | l01-story-5.mp3 | 3 | young woman | هِيَ تُسَاعِدُنِي، وَأَنَا أُرْسِلُ لَهَا رَسَائِلَ بِٱلْإِنْجِلِيزِيَّةِ. |
+| 6 | l01-story-6.mp3 | 3 | teacher, pleased | هَذَا هُوَ ٱلتَّعَاوُنُ! |
+| 7 | l01-jadhr.mp3 | 4 |  | جَذْرٌ |
+| 8 | l01-wazn.mp3 | 4 |  | وَزْنٌ |
+| 9 | l01-faala.mp3 | 4 |  | فَعَلَ |
+| 10 | l01-allama.mp3 | 5 |  | عَلَّمَ |
+| 11 | l01-fahhama.mp3 | 5 |  | فَهَّمَ |
+| 12 | l01-kassara.mp3 | 5 |  | كَسَّرَ |
+| 13 | l01-yuallimu.mp3 | 5 |  | يُعَلِّمُ |
+| 14 | l01-kataba.mp3 | 6 |  | كَتَبَ |
+| 15 | l01-kaataba.mp3 | 6 |  | كَاتَبَ |
+| 16 | l01-saada.mp3 | 6 |  | سَاعَدَ |
+| 17 | l01-shaaraka.mp3 | 6 |  | شَارَكَ |
+| 18 | l01-yukaatibu.mp3 | 6 |  | يُكَاتِبُ |
+| 19 | l01-kharaja.mp3 | 7 |  | خَرَجَ |
+| 20 | l01-akhraja.mp3 | 7 |  | أَخْرَجَ |
+| 21 | l01-adkhala.mp3 | 7 |  | أَدْخَلَ |
+| 22 | l01-arsala.mp3 | 7 |  | أَرْسَلَ |
+| 23 | l01-yursilu.mp3 | 7 |  | يُرْسِلُ |
+| 24 | l01-yaktubu.mp3 | 8 |  | يَكْتُبُ |
+| 25 | l01-yukaatibu-2.mp3 | 8 |  | يُكَاتِبُ |
+| 26 | l01-yakhruju.mp3 | 8 |  | يَخْرُجُ |
+| 27 | l01-yukhriju.mp3 | 8 |  | يُخْرِجُ |
+| 28 | l01-risala.mp3 | 9 |  | رِسَالَةٌ |
+| 29 | l01-darasa.mp3 | 11 |  | دَرَسَ |
+| 30 | l01-darrasa.mp3 | 11 |  | دَرَّسَ |
+| 31 | l01-futiha.mp3 | 13 | newsreader | فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+مَنْ عَلَّمَكَ ٱلْعَرَبِيَّةَ يَا يُوسُفُ؟ <break time="1.2s" /> عَلَّمَنِي أَبِي أَوَّلًا، ثُمَّ دَرَسْتُ هُنَا. <break time="1.2s" /> وَأَنَا أُكَاتِبُ صَدِيقَةً فِي ٱلْأُرْدُنِّ. <break time="1.2s" /> مُمْتَازٌ! وَمَنْ يُسَاعِدُكِ؟ <break time="1.2s" /> هِيَ تُسَاعِدُنِي، وَأَنَا أُرْسِلُ لَهَا رَسَائِلَ بِٱلْإِنْجِلِيزِيَّةِ. <break time="1.2s" /> هَذَا هُوَ ٱلتَّعَاوُنُ! <break time="1.2s" /> جَذْرٌ <break time="1.2s" /> وَزْنٌ <break time="1.2s" /> فَعَلَ <break time="1.2s" /> عَلَّمَ <break time="1.2s" /> فَهَّمَ <break time="1.2s" /> كَسَّرَ <break time="1.2s" /> يُعَلِّمُ <break time="1.2s" /> كَتَبَ <break time="1.2s" /> كَاتَبَ <break time="1.2s" /> سَاعَدَ <break time="1.2s" /> شَارَكَ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> خَرَجَ <break time="1.2s" /> أَخْرَجَ <break time="1.2s" /> أَدْخَلَ <break time="1.2s" /> أَرْسَلَ <break time="1.2s" /> يُرْسِلُ <break time="1.2s" /> يَكْتُبُ <break time="1.2s" /> يُكَاتِبُ <break time="1.2s" /> يَخْرُجُ <break time="1.2s" /> يُخْرِجُ <break time="1.2s" /> رِسَالَةٌ <break time="1.2s" /> دَرَسَ <break time="1.2s" /> دَرَّسَ <break time="1.2s" /> فُتِحَ طَرِيقٌ جَدِيدٌ فِي ٱلْمَدِينَةِ.
 ```
 
 ## Reading Arabic · Teens · Lesson 1: Welcome to Arabic

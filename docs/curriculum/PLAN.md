@@ -856,4 +856,10 @@ B3–B5 → continue lesson by lesson.
   Brother" (13 pages, Jiddo's photo album, kunya أَبُو أَحْمَدَ, ذُو) and 12+ "The Video Call" (13 pages, the five nouns
   in three positions, linked to the case vowels). Brief `fusha/L2-03-five-nouns.md`, graphics `g-fv3.tsx`. Fusha
   Level 2 now has its first 3 lessons in both versions. Next: Fusha Level 3 map, then its Lessons 1-3 (Kids, 12+).
+- **2026-11-04 · Fusha Level 3 map** written (`fusha/MAP-level-3.md`: 17 lessons, Kids and 12+ on one spine, Madinah
+  Reader 6 and 8 + Lughatuna 3). Claude's draft for the owner's review.
+- **2026-11-04 · Fusha Level 3, Lesson 1 built for Kids and 12+** (drafts, overnight run): catalog entries
+  `fusha-kids-3` ("One Root, Many Verbs", 13 pages) and `fusha-12-3` ("The Root Workshop", 13 pages). Brief
+  `fusha/L3-01-verb-patterns.md`, graphics `g-fx1.tsx` (the forge: root tiles, pattern moulds, stamped verbs). Every
+  step screenshotted. Next: Lesson 2 "It Was Written" (the passive), both versions.
 
