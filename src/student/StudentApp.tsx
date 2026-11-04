@@ -329,10 +329,10 @@ export default function StudentApp() {
       <AuthPage isAr={isAr} onToggleLang={toggleLang}>
         <AuthCard>
           <AuthPortal
-            title={isAr ? 'ركنك في وتزودوا' : 'Your corner of Watazawwado'}
+            title={isAr ? 'أهلاً بيك في ركنك' : 'Welcome to your corner'}
             subtitle={isAr
-              ? 'ادخل حسابك تشوف حصصك ورابط Zoom وملاحظات معلمك، أو افتح حساب جديد في دقيقة.'
-              : 'Sign in to see your lessons, your Zoom link and your teacher’s notes, or open a new account in a minute.'}
+              ? 'حصصك ورابط Zoom وملاحظات معلمك، كلها في مكان واحد.'
+              : 'Your lessons, your Zoom link and your teacher’s notes, all in one place.'}
           />
           <div className="pt-8 space-y-3">
             <Button onClick={() => { setAuthInitialView('login'); setAuthModalOpen(true); }} className="w-full !h-12 !rounded-full !text-base !font-bold gap-2">
@@ -355,7 +355,7 @@ export default function StudentApp() {
             <InstallAppEntry isAr={isAr} className="auth-kid-entry !mt-3" />
             <p className="pt-3 text-center text-sm text-muted-foreground">
               {isAr ? 'معلم أو من الإدارة؟ ' : 'Teacher or admin? '}
-              <Link to="/staff/login" className="font-bold text-[var(--teal)] hover:underline">{isAr ? 'ادخل من هنا' : 'Sign in here'}</Link>
+              <Link to="/staff/login" className="font-bold text-[var(--teal)] hover:underline">{isAr ? 'باب المعلمين من هنا' : 'Use the teachers’ door'}</Link>
             </p>
           </div>
         </AuthCard>

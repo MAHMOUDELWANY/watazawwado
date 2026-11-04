@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, User, Users, X, Eye, EyeOff, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import { Button } from './ui/Button';
-import { ThemeToggle } from './ui/ThemeToggle';
 import FocusTrap from './FocusTrap';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
-import { AuthCard, AuthPortal, EntranceBackdrop } from './auth/AuthFrame';
+import { AuthCard, AuthPortal, EntranceLogo, EntranceRoom } from './auth/AuthFrame';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
@@ -196,13 +196,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   };
 
   const titles: Record<Exclude<View, 'verify'>, [string, string]> = {
-    login: [isAr ? 'أهلاً بيك تاني' : 'Welcome back', isAr ? 'ادخل حسابك وكمّل رحلتك.' : 'Sign in and pick up where you left off.'],
-    signup: [isAr ? 'افتح حسابك' : 'Create your account', isAr ? 'دقيقة واحدة، وبعدها تحجز حصتك المجانية.' : 'One minute, then you can book your free trial.'],
+    login: [isAr ? 'أهلاً بيك تاني' : 'Welcome back', isAr ? 'كمّل رحلتك من مكان ما وقفت.' : 'Pick up where you left off.'],
+    signup: [isAr ? 'ابدأ رحلتك' : 'Start your journey', isAr ? 'دقيقة واحدة، وبعدها تحجز حصتك المجانية.' : 'One minute, then you can book your free trial.'],
     forgot: [isAr ? 'نسيت كلمة السر؟' : 'Forgot your password?', isAr ? 'اكتب إيميلك ونبعتلك رابط تختار بيه كلمة جديدة.' : 'Write your email and we will send you a link to choose a new one.'],
     'update-password': [isAr ? 'كلمة سر جديدة' : 'A new password', isAr ? 'اختار كلمة سر جديدة لحسابك.' : 'Choose a new password for your account.'],
   };
   const submitLabel: Record<Exclude<View, 'verify'>, string> = {
-    login: isAr ? 'ادخل' : 'Sign in',
+    login: isAr ? 'ادخل' : 'Enter',
     signup: isAr ? 'افتح الحساب' : 'Create account',
     forgot: isAr ? 'ابعت الرابط' : 'Send the link',
     'update-password': isAr ? 'احفظ كلمة السر' : 'Save password',
@@ -227,7 +227,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     </button>
   );
 
-  return (
+  // Portalled to the body: the student area renders this inside its own sign-in room, under that room's bar.
+  if (typeof document === 'undefined') return null;
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div
@@ -238,7 +240,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
           dir={isAr ? 'rtl' : 'ltr'}
         >
           <FocusTrap onEscape={onClose}>
-          {/* The whole screen is the sign-in page (AuthFrame "paper and ink"): the paper, a slim bar, one column. */}
+          {/* The whole screen is the sign-in page (AuthFrame "lamp room"): the stage with the name, the card beside it. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -246,21 +248,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             transition={{ duration: 0.3 }}
             className="entrance entrance-overlay text-foreground"
           >
-            <EntranceBackdrop />
-            <div className="entrance-bar">
-              <span className="entrance-brand" aria-hidden="true">
-                <img src="/logo-256.png" alt="" className="w-9 h-auto" />
-                <span className="font-editorial text-lg font-bold leading-none">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
-              </span>
-              <div className="flex items-center gap-1">
-                <ThemeToggle compact className="!w-11 !h-11 !rounded-full !bg-transparent !border-0 !shadow-none" />
-                <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <main className="relative flex-1 w-full px-6 pt-6 pb-12 flex items-center justify-center">
+            <EntranceRoom
+              isAr={isAr}
+              bar={
+                <>
+                  <span className="entrance-brand"><EntranceLogo isAr={isAr} /></span>
+                  <button type="button" onClick={onClose} aria-label={isAr ? 'إغلاق' : 'Close'} className="entrance-link is-round">
+                    <X className="w-4 h-4" />
+                  </button>
+                </>
+              }
+            >
               <AuthCard wide={view === 'verify'} className={isSignup ? 'sm:max-w-[30rem]' : ''}>
             {view === 'verify' ? (
               <div>
@@ -506,18 +504,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       )}
                     </form>
 
-                    {view === 'login' && (
-                      <p className="mt-5 text-center text-sm text-muted-foreground">
-                        {isAr ? 'أول مرة معانا؟ ' : 'New here? '}
-                        <button type="button" onClick={() => { setView('signup'); setError(''); setSuccess(''); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
-                          {isAr ? 'افتح حساب في دقيقة' : 'Open an account in a minute'}
-                        </button>
-                      </p>
-                    )}
-
                     {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
                     {view === 'login' && (
-                      <p className="mt-2 text-center text-sm text-muted-foreground">
+                      <p className="mt-5 text-center text-sm text-muted-foreground">
                         {isAr ? 'معاك كود من بابا أو ماما؟ ' : 'Have a code from your parent? '}
                         <button type="button" onClick={() => { onClose(); navigate('/kid'); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
                           {isAr ? 'اربط الجهاز ده' : 'Link this device'}
@@ -536,11 +525,12 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 </>
             )}
               </AuthCard>
-            </main>
+            </EntranceRoom>
           </motion.div>
           </FocusTrap>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
