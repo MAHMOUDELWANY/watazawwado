@@ -886,3 +886,10 @@ B3–B5 → continue lesson by lesson.
   (syllable blocks; wide = long, tall = stressed). Wow: إلى أين أنت ذاهب؟ (9 syllables) vs رايح فين؟ (3). Graphics
   `g-es3.tsx`. Egyptian lines wait for the owner's recordings. Every step screenshotted. Egyptian Sounds now has 3
   lessons; next: Egyptian Intermediate map.
+- **2026-11-04 — Egyptian Intermediate map and Adults Lesson 1 "What Did You Do Yesterday?" (draft, `reviewed: false`).**
+  `egyptian/MAP-intermediate.md`: Adults (16 lessons, Adam's second season), Teens (the club a year later) and Kids
+  (Teta's flat), Claude's draft. New catalog entry `egyptian-adults-2`. Lesson 1: the past with -t / -t / -ti / – / -it
+  (رحت، رحتي، راح، راحت; شرب، شاف، كل), Mona and Amm Sayed on the stairs; new device: the ending tag under each whole-word
+  tile; wow: the same five endings as the Fusha past. Graphics `g-ei1.tsx`. Egyptian lines wait for the owner's
+  recordings. Franco Intermediate follows once the Adults lessons are reviewed (the mirror is wired to Beginner only).
+  Next: Adults Intermediate Lesson 2 "Tomorrow, God Willing".

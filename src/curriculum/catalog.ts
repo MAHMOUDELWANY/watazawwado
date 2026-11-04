@@ -59,6 +59,7 @@ import { lessonFT303 } from './content/fusha-12-3/l03-the-debate-club.js';
 import { lessonES01 } from './content/egyptian-sounds/l01-where-did-the-qaf-go.js';
 import { lessonES02 } from './content/egyptian-sounds/l02-th-and-dh.js';
 import { lessonES03 } from './content/egyptian-sounds/l03-short-and-stressed.js';
+import { lessonEI01 } from './content/egyptian-adults-2/l01-what-did-you-do-yesterday.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -478,6 +479,20 @@ export const SUBJECTS: SubjectEntry[] = [
       'Review: Ready for Cairo',
     ],
     lessons: { 1: lessonE01, 2: lessonE02, 3: lessonE03 },
+  },
+  {
+    id: 'egyptian-adults-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Adults · Intermediate',
+    titleAr: 'العامية المصرية · للكبار · المتوسط',
+    version: 'Adults · Intermediate',
+    versionAr: 'الكبار · المتوسط',
+    audience: '18+',
+    art: '/curriculum/banners/egyptian-adults.webp',
+    parts: [{ title: 'Intermediate · A Second Season', titleAr: 'المتوسط · موسم تاني', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['What Did You Do Yesterday?', 'Tomorrow, God Willing', 'And Then…', 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: A Weekend in Alexandria', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', "At the Doctor's", 'Review: The Wedding', 'A Day at the Office', 'Intermediate Story'],
+    lessons: { 1: lessonEI01 },
   },
   {
     // Literacy C: reading and writing Egyptian in Franco (docs/curriculum/franco/RULES.md, MAP.md; Claude's draft 2026-11-02).

@@ -933,6 +933,47 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه ده؟ <break time="1.2s" /> إيه ده يا طنط؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي بسبوسة. بالهنا والشفا! <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شوكة يا آدم! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> ده محشي. <break time="1.2s" /> دي بسبوسة. <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي ترابيزة. <break time="1.2s" /> ده كرسي. <break time="1.2s" /> ده باب. <break time="1.2s" /> ده الباب. <break time="1.2s" /> وده الشباك. <break time="1.2s" /> دي الكنبة. <break time="1.2s" /> ودي التلاجة. <break time="1.2s" /> ده التليفزيون. <break time="1.2s" /> ده السرير. <break time="1.2s" /> وده المطبخ. <break time="1.2s" /> ده عم سيد. <break time="1.2s" /> ودي منى. <break time="1.2s" /> فين المفاتيح؟
 ```
 
+## Egyptian Arabic · Adults · Intermediate · Lesson 1: What Did You Do Yesterday?
+
+Folder: `public/curriculum/egyptian-adults-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (26)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-barooh.mp3 | 2 |  | بروح الشغل كل يوم. |
+| 2 | l01-rooht-imbarih.mp3 | 2 |  | امبارح رحت السوق. |
+| 3 | l01-story-1.mp3 | 4 | woman, friendly, curious | صباح الخير يا آدم! عملت إيه امبارح؟ |
+| 4 | l01-story-2.mp3 | 4 | man, tired but happy | رحت الأهرامات! |
+| 5 | l01-story-3.mp3 | 4 | woman, impressed | بجد؟ مع مين؟ |
+| 6 | l01-story-4.mp3 | 4 | man, warm | مع عم سيد. هو راح معايا. |
+| 7 | l01-story-5.mp3 | 4 | older man, teasing | وإنتي يا منى، رحتي فين امبارح؟ |
+| 8 | l01-story-6.mp3 | 4 | woman, laughing at herself | أنا؟ رحت الشغل… زي كل يوم! |
+| 9 | l01-rooht.mp3 | 5 |  | رحت |
+| 10 | l01-rooht-shoghl.mp3 | 5 |  | رحت الشغل. |
+| 11 | l01-rooht-soo2.mp3 | 5 |  | رحت السوق. |
+| 12 | l01-amalt-eh.mp3 | 5 |  | عملت إيه؟ |
+| 13 | l01-rooht-feen.mp3 | 6 |  | رحت فين؟ |
+| 14 | l01-roohti-feen.mp3 | 6 |  | رحتي فين؟ |
+| 15 | l01-rah.mp3 | 7 |  | راح |
+| 16 | l01-rahit.mp3 | 7 |  | راحت |
+| 17 | l01-rah-maaya.mp3 | 7 |  | هو راح معايا. |
+| 18 | l01-shiribt.mp3 | 8 |  | شربت شاي. |
+| 19 | l01-shuft.mp3 | 8 |  | شفت الأهرامات. |
+| 20 | l01-kalt.mp3 | 8 |  | كلت كشري. |
+| 21 | l01-rooht-2.mp3 | 9 |  | رحت |
+| 22 | l01-roohti.mp3 | 9 |  | رحتي |
+| 23 | l01-rah-2.mp3 | 9 |  | راح |
+| 24 | l01-rahit-2.mp3 | 9 |  | راحت |
+| 25 | l01-amalti-eh.mp3 | 11 | friendly, to a woman | عملتي إيه امبارح؟ |
+| 26 | l01-bokra-hanrooh.mp3 | 13 | woman, excited | بكرة هنروح إسكندرية! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بروح الشغل كل يوم. <break time="1.2s" /> امبارح رحت السوق. <break time="1.2s" /> صباح الخير يا آدم! عملت إيه امبارح؟ <break time="1.2s" /> رحت الأهرامات! <break time="1.2s" /> بجد؟ مع مين؟ <break time="1.2s" /> مع عم سيد. هو راح معايا. <break time="1.2s" /> وإنتي يا منى، رحتي فين امبارح؟ <break time="1.2s" /> أنا؟ رحت الشغل… زي كل يوم! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الشغل. <break time="1.2s" /> رحت السوق. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> هو راح معايا. <break time="1.2s" /> شربت شاي. <break time="1.2s" /> شفت الأهرامات. <break time="1.2s" /> كلت كشري. <break time="1.2s" /> رحت <break time="1.2s" /> رحتي <break time="1.2s" /> راح <break time="1.2s" /> راحت <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنروح إسكندرية!
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.
