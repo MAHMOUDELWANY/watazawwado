@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Password reset could never save (2026-11-04)
+- Owner hit "معرفناش نحفظ كلمة السر" on the new-password screen. Supabase auth logs showed the recovery link verified (16:50Z) but no `PUT /user` ever arrived: the client had no session.
+- Cause: `resetPassword` redirected to `/#reset-password`; Supabase appends `#access_token=…&type=recovery`, so the URL had two `#` and supabase-js read the key as `reset-password#access_token`. Every reset since that redirect was added failed the same way.
+- Fix: redirect to `/` (`src/lib/auth.tsx`); the dialog already opens on `type=recovery` in the hash.
+- Checks: tsc, Vite build. Not run: the server-backed suite (no `.env` in the worktree; no server code changed). Production check needs a fresh reset email; the old link is used up.
+
 ### Sign-in screens: "the lamp room" (2026-11-04)
 - Owner found "paper and ink" too plain and asked for something dazzling but simple, English first (a large Arabic word up front tells a non-Arabic learner the site is hard), with the writing of the name as the motion and the word, the lamp and the khatam merged. Prototypes D–G were shown; G was picked, then tuned: the name in a gradient of our colours (teal, cream, gold, crimson; a muted teal was tried and the owner preferred the brighter one), only the page's language shown, and nothing repeated on a screen.
 - Every sign-in screen (student dialog, `/student` gateway, `/kid`, email code, staff login, set password) is one espresso room in both themes: a lamp follows the mouse (drifts on its own otherwise) and lights a khatam pattern; the eight-point star is drawn behind the name; a pen of light writes "Watazawwado" left to right or "وتزوّدوا" right to left, then a sheen passes every few seconds. In Arabic the name is the verse's first word and the rest of the verse sits under it; English pages show the meaning. The form is on a glass card beside the stage (below it on phones), and the star's ring closes as the fields fill in. Reduced motion shows the finished state.
