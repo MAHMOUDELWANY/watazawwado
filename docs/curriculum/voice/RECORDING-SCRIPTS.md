@@ -1843,6 +1843,37 @@ One take: paste this whole block as one generation; I cut it into the files abov
 رحت فين يا زياد؟ <break time="1.2s" /> رحت الجنينة! <break time="1.2s" /> ومريم راحت فين؟ <break time="1.2s" /> أنا رحت مع زياد! <break time="1.2s" /> وإنت يا آدم؟ <break time="1.2s" /> أنا… رحت المطبخ! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الجنينة. <break time="1.2s" /> رحت المطبخ. <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> زياد راح. <break time="1.2s" /> مريم راحت. <break time="1.2s" /> رحت، رحتي، راح، راحت! <break time="1.2s" /> رحت فين النهارده؟ <break time="1.2s" /> رحتي فين النهارده؟ <break time="1.2s" /> بكرة هنروح جنينة الحيوانات!
 ```
 
+## Egyptian Arabic · Kids · Intermediate · Lesson 2: Tomorrow We'll Go to the Zoo
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (16)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 3 | grandma, excited | بكرة هنروح جنينة الحيوانات! |
+| 2 | l02-story-2.mp3 | 3 | boy, roaring | هشوف الأسد! |
+| 3 | l02-story-3.mp3 | 3 | girl, stretching up | وأنا هشوف الزرافة! |
+| 4 | l02-story-4.mp3 | 3 | grandma | وآدم هيشوف إيه؟ |
+| 5 | l02-story-5.mp3 | 3 | boy, dreamy | أنا… هاكل آيس كريم! |
+| 6 | l02-hashoof.mp3 | 4 |  | هشوف |
+| 7 | l02-hashoof-asad.mp3 | 4 |  | هشوف الأسد! |
+| 8 | l02-hashoof-zarafa.mp3 | 4 |  | هشوف الزرافة! |
+| 9 | l02-hatshoof.mp3 | 5 |  | هتشوف إيه؟ |
+| 10 | l02-hatshoofi.mp3 | 5 |  | هتشوفي إيه؟ |
+| 11 | l02-ziad-hayshoof.mp3 | 6 |  | زياد هيشوف الأسد. |
+| 12 | l02-mariam-hatshoof.mp3 | 6 |  | مريم هتشوف الزرافة. |
+| 13 | l02-game.mp3 | 7 | playful, counting | هشوف الأسد، والزرافة، والفيل! |
+| 14 | l02-hatshoof-bokra.mp3 | 9 | grandma, warm | هتشوف إيه بكرة؟ |
+| 15 | l02-hatshoofi-bokra.mp3 | 9 | grandma, to a girl | هتشوفي إيه بكرة؟ |
+| 16 | l02-teta-story.mp3 | 11 | grandma, storytelling | لما كنت صغيرة… رحت نفس الجنينة. وبعدين… |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بكرة هنروح جنينة الحيوانات! <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> وأنا هشوف الزرافة! <break time="1.2s" /> وآدم هيشوف إيه؟ <break time="1.2s" /> أنا… هاكل آيس كريم! <break time="1.2s" /> هشوف <break time="1.2s" /> هشوف الأسد! <break time="1.2s" /> هشوف الزرافة! <break time="1.2s" /> هتشوف إيه؟ <break time="1.2s" /> هتشوفي إيه؟ <break time="1.2s" /> زياد هيشوف الأسد. <break time="1.2s" /> مريم هتشوف الزرافة. <break time="1.2s" /> هشوف الأسد، والزرافة، والفيل! <break time="1.2s" /> هتشوف إيه بكرة؟ <break time="1.2s" /> هتشوفي إيه بكرة؟ <break time="1.2s" /> لما كنت صغيرة… رحت نفس الجنينة. وبعدين…
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.

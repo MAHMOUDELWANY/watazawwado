@@ -916,3 +916,8 @@ B3–B5 → continue lesson by lesson.
   catalog entry `egyptian-kids-2` (back at Teta's flat). رحت / رحتي / راح / راحت with places (garden, school,
   kitchen); wow: the going song, four verbs lighting up above their people. Graphics `g-eki1.tsx` (tree, school and pot
   added to the panel set). Next: Kids Lesson 2 "Tomorrow We'll Go to the Zoo".
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 2 "Tomorrow We'll Go to the Zoo" (draft, `reviewed: false`).**
+  The future with هـ: هشوف، هتشوف / هتشوفي، هيشوف / هتشوف; bedtime before the zoo; animals drawn in code (lion,
+  giraffe, elephant) pop up in thought clouds; wow: the zoo memory game. Graphics `g-eki2.tsx`. Phones and voice notes
+  in the Intermediate graphics moved from slate to espresso (owner: no deep-green/dark-cold surfaces). Next: Kids
+  Lesson 3 "Teta's Story".

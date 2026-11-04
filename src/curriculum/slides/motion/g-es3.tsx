@@ -247,7 +247,7 @@ export function Es3MissionGraphic({ lines }: GraphicProps) {
   if (lines < 1) return null;
   return (
     <>
-      <motion.div className="pointer-events-none absolute rounded-[20px]" style={{ left: 900, top: 190, width: 520, height: 300, background: '#1E2B33', boxShadow: SHADOW }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+      <motion.div className="pointer-events-none absolute rounded-[20px]" style={{ left: 900, top: 190, width: 520, height: 300, background: '#2A1E18', boxShadow: SHADOW }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
         <span className="absolute" style={{ left: 230, top: 120, width: 0, height: 0, borderTop: '30px solid transparent', borderBottom: '30px solid transparent', borderLeft: `50px solid ${CAIRO}` }} />
         <span className="absolute font-sans font-bold" style={{ left: 20, top: 260, fontSize: 16, color: '#fff' }}>0:30</span>
       </motion.div>

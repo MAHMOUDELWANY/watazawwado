@@ -21,7 +21,7 @@ const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
 /** A voice-note bar at (x, y), its waveform filling as the story goes. */
 function VoiceNote({ x, y, fill = 1, delay = 0 }: { x: number; y: number; fill?: number; delay?: number }) {
   return (
-    <motion.div className="pointer-events-none absolute flex items-center gap-[3px] rounded-full" style={{ left: x - 200, top: y - 32, width: 400, height: 64, padding: '0 22px', background: '#1E2B33', boxShadow: SHADOW }} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease }}>
+    <motion.div className="pointer-events-none absolute flex items-center gap-[3px] rounded-full" style={{ left: x - 200, top: y - 32, width: 400, height: 64, padding: '0 22px', background: '#2A1E18', boxShadow: SHADOW }} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay, ease }}>
       <span className="mr-2 rounded-full" style={{ width: 0, height: 0, borderTop: '10px solid transparent', borderBottom: '10px solid transparent', borderLeft: `16px solid ${GOLD}` }} />
       {Array.from({ length: 40 }, (_, i) => (
         <motion.span key={i} className="rounded-full" style={{ width: 4, background: i / 40 < fill ? GOLD : '#5B6B74' }} initial={{ height: 4 }} animate={{ height: 6 + ((i * 37) % 28) }} transition={{ delay: delay + 0.3 + i * 0.02, duration: 0.3 }} />
@@ -68,7 +68,7 @@ export function Eti3NoteGraphic({ lines }: GraphicProps) {
   return (
     <>
       <Person x={1000} y={800} scale={1.05} color={KARIM} />
-      <motion.div className="pointer-events-none absolute rounded-[10px]" style={{ left: 1060, top: 560, width: 40, height: 70, background: '#1E2B33' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
+      <motion.div className="pointer-events-none absolute rounded-[10px]" style={{ left: 1060, top: 560, width: 40, height: 70, background: '#2A1E18' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} />
       <VoiceNote x={1180} y={320} fill={lines >= 2 ? 0.5 : 0.1} delay={0.2} />
       {lines >= 2 && <Chip x={1180} y={410} color={TEAL} delay={0.3}>Cairo → London</Chip>}
       {lines >= 3 && <Chip x={1180} y={470} color={GOLD} delay={0.3}>like a commentator</Chip>}
@@ -219,7 +219,7 @@ export function Eti3MissionGraphic({ lines }: GraphicProps) {
   return (
     <>
       <VoiceNote x={1160} y={300} fill={0} />
-      <Chip x={1160} y={380} color="#1E2B33" delay={0.4}>1:00</Chip>
+      <Chip x={1160} y={380} color="#2A1E18" delay={0.4}>1:00</Chip>
       {lines >= 2 && <StreetCard x={1160} y={500} word="مش هتصدق اللي حصل!" size={28} delay={0.2} />}
       {lines >= 2 && <StreetCard x={1160} y={600} word="… وفي الآخر" size={28} delay={0.5} />}
     </>

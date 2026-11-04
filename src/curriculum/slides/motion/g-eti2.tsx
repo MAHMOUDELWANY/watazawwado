@@ -209,7 +209,7 @@ export function Eti2MissionGraphic({ lines }: GraphicProps) {
   if (lines < 1) return null;
   return (
     <>
-      <motion.div className="pointer-events-none absolute rounded-[36px]" style={{ left: 1030, top: 170, width: 260, height: 480, background: '#1E2B33' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+      <motion.div className="pointer-events-none absolute rounded-[36px]" style={{ left: 1030, top: 170, width: 260, height: 480, background: '#2A1E18' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
         <div className="absolute flex items-center gap-[3px] rounded-full" style={{ left: 24, top: 200, width: 212, height: 64, padding: '0 16px', background: CRIMSON }}>
           {Array.from({ length: 22 }, (_, i) => <motion.span key={i} className="rounded-full" style={{ width: 4, background: '#fff' }} initial={{ height: 4 }} animate={{ height: 8 + ((i * 23) % 30) }} transition={{ delay: 0.5 + i * 0.04, duration: 0.3 }} />)}
         </div>
@@ -224,7 +224,7 @@ export function Eti2NextGraphic({ lines }: GraphicProps) {
   return (
     <>
       <Pitch />
-      <motion.div className="pointer-events-none absolute rounded-[14px] font-sans font-black" style={{ left: 1040, top: 200, padding: '8px 24px', fontSize: 36, background: '#1E2B33', color: '#fff' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+      <motion.div className="pointer-events-none absolute rounded-[14px] font-sans font-black" style={{ left: 1040, top: 200, padding: '8px 24px', fontSize: 36, background: '#2A1E18', color: '#fff' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
         1 – 1 · 89'
       </motion.div>
       {lines >= 2 && <Person x={1150} y={800} scale={1} color={KARIM} lean={-6} delay={0.1} />}
