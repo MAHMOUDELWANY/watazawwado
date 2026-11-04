@@ -2000,6 +2000,32 @@ One take: paste this whole block as one generation; I cut it into the files abov
 لما كنت صغيرة، رحت جنينة الحيوانات. <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وفجأة… القرد خد الطاقية بتاعتي! <break time="1.2s" /> يا خبر! وبعدين؟ <break time="1.2s" /> في الآخر… رجّعلي الطاقية، وكل الموزة! <break time="1.2s" /> شفت القرد، وبعدين اديته موزة. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> وفجأة… القرد خد الطاقية! <break time="1.2s" /> يا خبر! <break time="1.2s" /> في الآخر رجّعلي الطاقية. <break time="1.2s" /> رحت جنينة الحيوانات، وبعدين اديت القرد موزة. وفجأة خد الطاقية! في الآخر رجّعها. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر!
 ```
 
+## Egyptian Arabic · Kids · Advanced · Lesson 1: I Think…
+
+Folder: `public/curriculum/egyptian-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (11)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | little boy, excited | أنا شايف إن الشوكولاتة أحلى حاجة! |
+| 2 | l01-story-2.mp3 | 3 | little girl, sure | لأ، أنا شايفة إن المانجا أحلى! |
+| 3 | l01-story-3.mp3 | 3 | little boy, happy | أنا كمان! المانجا! |
+| 4 | l01-story-4.mp3 | 3 | grandmother, warm, smiling | كل واحد ورأيه، يا حبايبي. |
+| 5 | l01-shayef.mp3 | 4 |  | أنا شايف إن الشوكولاتة أحلى! |
+| 6 | l01-shayfa.mp3 | 5 |  | أنا شايفة إن المانجا أحلى! |
+| 7 | l01-kaman.mp3 | 6 |  | أنا كمان! |
+| 8 | l01-la-ana.mp3 | 6 |  | لأ، أنا شايف إن الفراولة أحلى. |
+| 9 | l01-kol-wahed.mp3 | 7 | grandmother, warm | كل واحد ورأيه. |
+| 10 | l01-ahla-lon.mp3 | 9 | teacher, friendly | إيه أحلى لون؟ |
+| 11 | l01-teta-joke.mp3 | 11 | grandmother, laughing | على مهلك يا زياد! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أنا شايف إن الشوكولاتة أحلى حاجة! <break time="1.2s" /> لأ، أنا شايفة إن المانجا أحلى! <break time="1.2s" /> أنا كمان! المانجا! <break time="1.2s" /> كل واحد ورأيه، يا حبايبي. <break time="1.2s" /> أنا شايف إن الشوكولاتة أحلى! <break time="1.2s" /> أنا شايفة إن المانجا أحلى! <break time="1.2s" /> أنا كمان! <break time="1.2s" /> لأ، أنا شايف إن الفراولة أحلى. <break time="1.2s" /> كل واحد ورأيه. <break time="1.2s" /> إيه أحلى لون؟ <break time="1.2s" /> على مهلك يا زياد!
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.
