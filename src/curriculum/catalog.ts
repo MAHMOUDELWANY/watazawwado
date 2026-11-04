@@ -70,6 +70,7 @@ import { lessonEKI02 } from './content/egyptian-kids-2/l02-tomorrow-the-zoo.js';
 import { lessonEKI03 } from './content/egyptian-kids-2/l03-tetas-story.js';
 import { lessonEA301 } from './content/egyptian-adults-3/l01-in-my-opinion.js';
 import { lessonEA302 } from './content/egyptian-adults-3/l02-as-they-say.js';
+import { lessonEA303 } from './content/egyptian-adults-3/l03-at-street-speed.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -515,7 +516,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: 'Advanced · Sounding Like a Person', titleAr: 'المتقدم · تتكلم زي الناس', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['In My Opinion', 'As They Say…', 'At Street Speed', 'If Only…', 'Complaints', "Review: The Residents' Meeting", 'News and Gossip', 'Jokes and Wordplay', 'Formal Egyptian', 'Advanced Story'],
-    lessons: { 1: lessonEA301, 2: lessonEA302 },
+    lessons: { 1: lessonEA301, 2: lessonEA302, 3: lessonEA303 },
   },
 
   {

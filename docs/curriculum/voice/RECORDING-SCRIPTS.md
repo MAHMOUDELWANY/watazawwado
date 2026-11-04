@@ -1115,6 +1115,39 @@ One take: paste this whole block as one generation; I cut it into the files abov
 معاك حق، بس… <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> دفعنا كتير في الدهان السنة اللي فاتت… <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. نجيب أسانسير صغير. <break time="1.2s" /> وكلنا نساعد. إيد لوحدها ما تسقفش. <break time="1.2s" /> الأسانسير هيتأخر شهرين! <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> اللي فات مات يا أستاذ حسن. <break time="1.2s" /> على قد لحافك مد رجليك. <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> معلش… الصبر مفتاح الفرج. <break time="1.2s" /> الأسانسير لسه ما جاش… وأنا تعبت من السلم! <break time="1.2s" /> إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة!
 ```
 
+## Egyptian Arabic · Adults · Advanced · Lesson 3: At Street Speed
+
+Folder: `public/curriculum/egyptian-adults-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-fast.mp3 | 2 | young man, very fast | إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! |
+| 2 | l03-story-1.mp3 | 4 | young man, fast, casual | بقولك إيه يا آدم… يعني، الأسانسير جه خلاص. |
+| 3 | l03-story-2.mp3 | 4 | young man, fast | بس بقى، الراجل عايز حد يمضي، فتعالى بقى قبل الساعة اتنين. |
+| 4 | l03-story-3.mp3 | 4 | young man, fast, warm | طب ماشي، أنا هستناك تحت. يلا سلام! |
+| 5 | l03-yaani.mp3 | 5 |  | يعني |
+| 6 | l03-baa.mp3 | 5 |  | بقى |
+| 7 | l03-tab.mp3 | 5 |  | طب |
+| 8 | l03-ba2ollak.mp3 | 5 |  | بقولك إيه |
+| 9 | l03-ba2ollak-2.mp3 | 6 |  | بقولك |
+| 10 | l03-hastannak.mp3 | 6 |  | هستناك |
+| 11 | l03-key-what.mp3 | 7 |  | الأسانسير جه. |
+| 12 | l03-key-when.mp3 | 7 |  | قبل الساعة اتنين. |
+| 13 | l03-key-do.mp3 | 7 |  | تعالى. |
+| 14 | l03-gay-halan.mp3 | 8 |  | ماشي، جاي حالاً. |
+| 15 | l03-hakoon.mp3 | 8 |  | تمام، الساعة واحدة هكون عندك. |
+| 16 | l03-filtered.mp3 | 9 | slow, clear | آدم، الأسانسير جه. حد يمضي. تعالى قبل الساعة اتنين. |
+| 17 | l03-note-2.mp3 | 11 | young woman, very fast | بقولك إيه، يعني، العشا بكرة بقى الساعة تسعة بدل تمانية، ماشي؟ |
+| 18 | l03-ya-reet.mp3 | 13 | old woman, happy, a little wistful | يا ريت كان جه من زمان! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة! <break time="1.2s" /> بقولك إيه يا آدم… يعني، الأسانسير جه خلاص. <break time="1.2s" /> بس بقى، الراجل عايز حد يمضي، فتعالى بقى قبل الساعة اتنين. <break time="1.2s" /> طب ماشي، أنا هستناك تحت. يلا سلام! <break time="1.2s" /> يعني <break time="1.2s" /> بقى <break time="1.2s" /> طب <break time="1.2s" /> بقولك إيه <break time="1.2s" /> بقولك <break time="1.2s" /> هستناك <break time="1.2s" /> الأسانسير جه. <break time="1.2s" /> قبل الساعة اتنين. <break time="1.2s" /> تعالى. <break time="1.2s" /> ماشي، جاي حالاً. <break time="1.2s" /> تمام، الساعة واحدة هكون عندك. <break time="1.2s" /> آدم، الأسانسير جه. حد يمضي. تعالى قبل الساعة اتنين. <break time="1.2s" /> بقولك إيه، يعني، العشا بكرة بقى الساعة تسعة بدل تمانية، ماشي؟ <break time="1.2s" /> يا ريت كان جه من زمان!
+```
+
 ## Reading Franco · Lesson 1: Numbers That Talk
 
 Folder: `public/curriculum/literacy-c/audio/`.

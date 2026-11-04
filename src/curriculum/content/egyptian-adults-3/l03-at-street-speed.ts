@@ -1,0 +1,237 @@
+import type { Lesson } from '../../types';
+import { lessonEA303TeacherAr } from './l03-teacher-ar.js';
+
+// Rules: docs/curriculum/egyptian/RULES.md. Map: docs/curriculum/egyptian/MAP-advanced.md (Adults, Lesson 3: understanding
+// a fast voice note: linking, dropped sounds, fillers يعني، بقى، طب، بقولك إيه). Egyptian lines recorded by the owner.
+
+const E = (id: string, text: string, emotion?: string) => ({ id, text, voice: 'eg' as const, emotion });
+
+export const lessonEA303: Lesson = {
+  subject: 'egyptian-adults-3',
+  version: 'adults',
+  subjectTitle: 'Egyptian Arabic · Adults · Advanced',
+  number: 3,
+  title: 'At Street Speed',
+  titleAr: 'بسرعة الشارع',
+  part: 'Advanced',
+  minutes: 50,
+  goal: 'By the end of this lesson, you will follow a fast Egyptian voice note, and know which words you can safely let go.',
+  reviewed: false,
+  teacherAr: lessonEA303TeacherAr,
+  outcomes: [
+    'Hears the fillers يعني، بقى، طب، بقولك إيه and knows they carry little meaning.',
+    'Hears words that run together: بقولك = بـ + أقول + لك.',
+    'Picks out the key words of a fast message: who, what, when.',
+    'Answers a voice note with a short, natural reply.',
+  ],
+  chapters: [
+    { label: 'Warm-up', page: 0 },
+    { label: 'Listen first', page: 3 },
+    { label: 'The tricks', page: 4 },
+    { label: 'The filter', page: 8 },
+    { label: 'Practice', page: 9 },
+    { label: 'My mission', page: 11 },
+  ],
+  pages: [
+    {
+      title: 'At Street Speed',
+      station: 'spark',
+      layout: 'cover',
+      scene: 'ea33Cover',
+      lines: [],
+      explain: [
+        'Check the mission: the learner teaches you the saying they collected, with its picture and meaning.',
+        'Tell them: today we slow nothing down. We learn what to listen for instead.',
+      ],
+    },
+    {
+      title: 'Why fast feels impossible',
+      station: 'spark',
+      layout: 'concept',
+      scene: 'ea33Recall',
+      lines: [
+        'In Sounds you learned that Cairo drops endings and squeezes syllables.',
+        'Add speed, and a voice note sounds like one long word.',
+        'The good news: half of what you hear is padding. You do not need it.',
+      ],
+      say: [E('fast', 'إزيك يا عم آدم، بقولك إيه، الأسانسير جه، تعالى بسرعة!', 'young man, very fast')],
+      explain: ['Play the voice note once. Ask: how many words did you catch? Write them down.'],
+    },
+    {
+      title: 'The voice note',
+      station: 'spark',
+      layout: 'story',
+      scene: 'ea33Note',
+      lines: [
+        'Amm Sayed\'s son, Karim, works in a shop downtown. He records everything at full speed.',
+        'This morning he sent Adam a voice note, and a second one ten minutes later.',
+        'Adam sits on the stairs with his phone and plays them again.',
+      ],
+      explain: ['Ask: do you have a friend who talks too fast? How do you follow them?'],
+    },
+    {
+      title: 'Listen first',
+      station: 'zad',
+      layout: 'story',
+      scene: 'ea33Story',
+      lines: [
+        'Listen to the second note twice. Who is it for, and what has arrived?',
+        'When should Adam come, and why?',
+        'Which little words does Karim say again and again?',
+      ],
+      say: [
+        E('story-1', 'بقولك إيه يا آدم… يعني، الأسانسير جه خلاص.', 'young man, fast, casual'),
+        E('story-2', 'بس بقى، الراجل عايز حد يمضي، فتعالى بقى قبل الساعة اتنين.', 'young man, fast'),
+        E('story-3', 'طب ماشي، أنا هستناك تحت. يلا سلام!', 'young man, fast, warm'),
+      ],
+      explain: [
+        'Play twice at full speed. Ask in English: what arrived? (the lift). When should Adam come? (before two).',
+        'Why? (the workman needs someone to sign). Which words repeat? (بقى، يعني، طب).',
+      ],
+      teacherNote: 'Input first, at full speed. Do not slow the audio down; the lesson is about coping with real speed.',
+    },
+    {
+      title: 'Padding words',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea33Fillers',
+      lines: [
+        'يعني ("I mean"), بقى ("so, then"), طب ("OK, well"), بقولك إيه ("listen…").',
+        'They give the speaker time to think. They add almost no meaning.',
+        'When you hear one, relax: the real information comes right after it.',
+      ],
+      vocab: [
+        { arabic: 'يعني', translit: 'ya\'ni', meaning: 'I mean (filler)' },
+        { arabic: 'بقى', translit: 'ba\'a', meaning: 'so, then (filler)' },
+        { arabic: 'طب', translit: 'ṭab', meaning: 'OK, well (filler)' },
+        { arabic: 'بقولك إيه', translit: 'ba\'ullak eh', meaning: 'listen… (to get attention)' },
+      ],
+      say: [E('yaani', 'يعني'), E('baa', 'بقى'), E('tab', 'طب'), E('ba2ollak', 'بقولك إيه')],
+      explain: ['Read the voice note text with the fillers greyed out. Ask: did the meaning change?'],
+    },
+    {
+      title: 'Words that run together',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea33Run',
+      lines: [
+        'بقولك is three pieces said as one: بـ (every day / now) + أقول (I say) + لك (to you).',
+        'The same with هستناك: هـ (will) + أستنى (wait) + ك (for you).',
+        'Learn the pieces once, and the long words stop being scary.',
+      ],
+      vocab: [
+        { arabic: 'بقولك', translit: 'ba\'ullak', meaning: 'I\'m telling you' },
+        { arabic: 'هستناك', translit: 'hastannaak', meaning: 'I\'ll wait for you' },
+      ],
+      say: [E('ba2ollak-2', 'بقولك'), E('hastannak', 'هستناك')],
+      explain: ['Build two more: بقولها (I\'m telling her), هشوفك (I\'ll see you).'],
+    },
+    {
+      title: 'Listen for three things',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea33Three',
+      lines: [
+        'In any message, listen for three things: who, what, when.',
+        'Karim\'s note: الأسانسير (what) · قبل الساعة اتنين (when) · تعالى (what Adam must do).',
+        'Catch those and you understood the message, even if you missed half the words.',
+      ],
+      say: [E('key-what', 'الأسانسير جه.'), E('key-when', 'قبل الساعة اتنين.'), E('key-do', 'تعالى.')],
+      explain: ['Play the note again; the learner raises a hand at each key word.'],
+    },
+    {
+      title: 'A quick reply',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea33Reply',
+      lines: [
+        'A voice note wants a short answer, not a speech.',
+        'ماشي، جاي حالاً. "OK, coming right now." Or: تمام، الساعة واحدة هكون عندك.',
+        'Short, warm, and with the key word back: the time.',
+      ],
+      vocab: [
+        { arabic: 'جاي حالاً', translit: 'gaay ḥaalan', meaning: 'coming right now' },
+        { arabic: 'هكون عندك', translit: 'hakuun \'andak', meaning: 'I\'ll be there (with you)' },
+      ],
+      say: [E('gay-halan', 'ماشي، جاي حالاً.'), E('hakoon', 'تمام، الساعة واحدة هكون عندك.')],
+      explain: ['Ask them to record a reply to Karim: under ten seconds, with a time in it.'],
+    },
+    {
+      title: 'The filter',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'ea33Filter',
+      lines: [
+        'Put the whole note through a filter: padding falls away, the key words stay.',
+        'What is left: آدم · الأسانسير جه · يمضي · قبل الساعة اتنين · تعالى.',
+        'Five pieces. That is the whole message, from a note that felt like a wall of sound.',
+      ],
+      say: [E('filtered', 'آدم، الأسانسير جه. حد يمضي. تعالى قبل الساعة اتنين.', 'slow, clear')],
+      explain: ['Play the fast note, then the filtered one. Then the fast one again: it should feel easier.'],
+      teacherNote: 'The wow: the learner hears the same note three times and the third time it is clear. Speed is a skill.',
+    },
+    {
+      title: 'Padding or key?',
+      station: 'athar',
+      layout: 'game',
+      scene: 'ea33Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        look: 'row',
+        prompt: 'Is this word padding, or part of the message?',
+        bins: [
+          { id: 'pad', label: 'padding', hint: 'let it go' },
+          { id: 'key', label: 'key', hint: 'catch it' },
+        ],
+        cards: [
+          { label: 'يعني', bin: 'pad', why: 'A filler: "I mean".' },
+          { label: 'الأسانسير', bin: 'key', why: 'What the message is about.' },
+          { label: 'بقى', bin: 'pad', why: 'A filler: "so".' },
+          { label: 'قبل الساعة اتنين', bin: 'key', why: 'When: key information.' },
+          { label: 'طب', bin: 'pad', why: 'A filler: "OK, well".' },
+          { label: 'يمضي', bin: 'key', why: 'What needs doing: sign.' },
+        ],
+      },
+      explain: ['Say each word in a fast sentence first, then sort.'],
+    },
+    {
+      title: 'Your turn: two notes',
+      station: 'athar',
+      layout: 'question',
+      scene: 'ea33Talk',
+      lines: [
+        'The teacher records two fast voice notes about plans (a dinner, a meeting).',
+        'For each: say who, what and when in English, then reply in Egyptian in under ten seconds.',
+      ],
+      say: [E('note-2', 'بقولك إيه، يعني، العشا بكرة بقى الساعة تسعة بدل تمانية، ماشي؟', 'young woman, very fast')],
+      interaction: { kind: 'ask', prompt: 'Did you catch who, what and when?', reveal: 'برافو! You can keep up with Cairo now.' },
+      explain: ['Record at real speed. If they miss it, play once more, never slower.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'ea33Mission',
+      lines: [
+        'Find three short Egyptian clips (a vlog, a voice note, a TV interview).',
+        'For each, write only three things: who, what, when. Ignore the rest.',
+      ],
+      interaction: { kind: 'choose', prompt: 'Where will you find the clips?', options: ['YouTube vlogs', 'TV interviews', 'Friends\' voice notes', 'Podcasts'] },
+      explain: ['Next time, play one clip together and compare your three things.'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'ea33Next',
+      lines: [
+        'The lift works. Everyone rides it once, just for fun.',
+        'Mona\'s grandmother, on the fourth floor, smiles: يا ريت كان جه من زمان!',
+        'Next time: wishes and regrets, يا ريت and لو.',
+      ],
+      say: [E('ya-reet', 'يا ريت كان جه من زمان!', 'old woman, happy, a little wistful')],
+      explain: ['End on the grandmother. Ask: what do you wish had come sooner?'],
+    },
+  ],
+};

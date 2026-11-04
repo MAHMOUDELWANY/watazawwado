@@ -934,3 +934,7 @@ B3–B5 → continue lesson by lesson.
   sayings in the lift story: اللي فات مات، على قد لحافك مد رجليك، إيد لوحدها ما تسقفش، الصبر مفتاح الفرج (taught as
   the people's proverbs, not religious text). New device: the saying card, literal picture on the face, meaning on the
   back; wow: all four flip at once. Graphics `g-ea32.tsx`. Next: Advanced Lesson 3 "At Street Speed".
+- **2026-11-04 — Egyptian Advanced (Adults), Lesson 3 "At Street Speed" (draft, `reviewed: false`).** A fast voice
+  note from Amm Sayed's son: fillers (يعني، بقى، طب، بقولك إيه), words that run together (بقولك، هستناك), listening
+  for who / what / when, a short reply. New device: the word stream and its filter; wow: padding drops through and five
+  key pieces stay. Graphics `g-ea33.tsx`. Adults Advanced now has 3 lessons. Next: Teens Advanced, then Kids Advanced.
