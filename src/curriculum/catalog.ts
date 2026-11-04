@@ -73,6 +73,8 @@ import { lessonEA302 } from './content/egyptian-adults-3/l02-as-they-say.js';
 import { lessonEA303 } from './content/egyptian-adults-3/l03-at-street-speed.js';
 import { lessonETA01 } from './content/egyptian-teens-3/l01-who-should-be-captain.js';
 import { lessonETA02 } from './content/egyptian-teens-3/l02-thats-what-they-say.js';
+import { lessonETA03 } from './content/egyptian-teens-3/l03-say-it-again-slower.js';
+import { lessonEKA01 } from './content/egyptian-kids-3/l01-i-think.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -655,6 +657,19 @@ export const SUBJECTS: SubjectEntry[] = [
     // docs/curriculum/egyptian/MAP-intermediate.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Where Did You Go, Ziad?', "Tomorrow We'll Go to the Zoo", "Teta's Story", 'We Went, They Went', "I Didn't Eat It!", 'When I Was Little', 'Review: A Day at the Zoo', 'I Have to Go', 'Bigger and Biggest', 'My Tummy Hurts', 'Intermediate Story'],
     lessons: { 1: lessonEKI01, 2: lessonEKI02, 3: lessonEKI03 },
+  },  {
+    id: 'egyptian-kids-3',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Kids · Advanced',
+    titleAr: 'العامية المصرية · للأطفال · المتقدم',
+    version: 'Kids · Advanced',
+    versionAr: 'الأطفال · المتقدم',
+    audience: '6–11',
+    art: '/curriculum/banners/egyptian-kids.webp',
+    parts: [{ title: "Advanced · Stories and Jokes at Teta's", titleAr: 'المتقدم · حكايات ونكت عند تيتة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-advanced.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['I Think…', "Teta's Sayings", "Ziad's Joke"],
+    lessons: { 1: lessonEKA01 },
   },
 
   {
@@ -698,7 +713,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: "Advanced · The Club's Last Summer", titleAr: 'المتقدم · آخر صيف في النادي', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Who Should Be Captain?', "That's What They Say", 'Say It Again, Slower!'],
-    lessons: { 1: lessonETA01, 2: lessonETA02 },
+    lessons: { 1: lessonETA01, 2: lessonETA02, 3: lessonETA03 },
   },
 
   {

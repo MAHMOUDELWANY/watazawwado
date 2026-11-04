@@ -949,3 +949,12 @@ B3–B5 → continue lesson by lesson.
   تسقفش، يا خبر أبيض / إسود، الحلو ما يكملش. Taught as the people's sayings, not religious text. New device: the meme
   card, where the word-for-word English is struck out and the real meaning slides in; wow: a 32-word paragraph folds
   into اللي فات مات. Graphics `g-eta2.tsx` (`VoiceNote` now exported from `g-eti3.tsx`). Next: Teens Advanced Lesson 3.
+- **2026-11-04 — Egyptian Advanced (Teens), Lesson 3 "Say It Again, Slower!" (draft, `reviewed: false`).** Karim's
+  40-second voice note: asking for a repeat (ممكن تعيد تاني؟، تاني؟، معلش), for slower speech (بالراحة شوية), for the
+  meaning (قصدك…؟، يعني إيه…؟), and letting glue words go (بقولكوا إيه، بقى، يعني). New device: the slow-motion wave;
+  wow: stretched to 0.5×, the glue fades and three anchors glow (when, what time, where). Graphics `g-eta3.tsx`. Teens
+  Advanced now has 3 lessons. Next: Kids Advanced.
+- **2026-11-04 — Egyptian Advanced (Kids), Lesson 1 "I Think…" (draft, `reviewed: false`).** New catalog entry
+  `egyptian-kids-3`. Teta and the ice-cream cart: أنا شايف / شايفة إن، أنا كمان، لأ أنا…، and Teta's كل واحد ورأيه. New
+  device: the cones; each opinion drops a scoop of its flavour; wow: three different towers side by side, all fine.
+  Graphics `g-eka1.tsx`. Next: Kids Advanced Lesson 2 "Teta's Sayings".
