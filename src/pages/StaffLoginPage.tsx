@@ -69,7 +69,7 @@ export default function StaffLoginPage() {
         <AuthCard>
           <AuthPortal
             title={t('Teachers’ door', 'باب المعلمين')}
-            subtitle={t('For the teachers and admins of Watazawwado.', 'للمعلمين والإدارة في وتزودوا.')}
+            subtitle={t('For our teachers and admins.', 'للمعلمين والإدارة عندنا.')}
           />
 
           <div className="pt-8">
