@@ -3,9 +3,10 @@ import { LEVELS, type BankQuestion, type Level, type SubjectBank } from './types
 import { quranReading, tajweed, quranMemorization, quranRevision } from './banks/quran.js';
 import { islamicStudies, fiqh, aqeedah, seerah } from './banks/islamic.js';
 import { zadEssentials } from './banks/zad.js';
+import { LADDERS, climb, type Climb } from './ladders.js';
 import { arabicFoundations, modernStandardArabic, arabicConversation, egyptianArabic, english } from './banks/languages.js';
 
-export { LEVELS, type Level };
+export { LEVELS, LADDERS, type Level, type Climb };
 
 /** One bank per subject on the site (service ids from src/booking/mockData.ts). */
 export const BANKS: Record<string, SubjectBank> = {
@@ -32,6 +33,8 @@ export interface TestQuestion {
   answer: number;
   level: Level;
   skill: { en: string; ar: string };
+  /** Ladder tests only: the lesson (in this level) that teaches the question. */
+  lesson?: number;
 }
 
 function shuffle<T>(items: T[]): T[] {
@@ -43,7 +46,7 @@ function shuffle<T>(items: T[]): T[] {
   return a;
 }
 
-function toTestQuestion(b: BankQuestion, level: Level): TestQuestion {
+function toTestQuestion(b: BankQuestion & { lesson?: number }, level: Level): TestQuestion {
   const en = Array.isArray(b.options) ? b.options : b.options.en;
   const ar = Array.isArray(b.options) ? b.options : b.options.ar;
   // Authoring rule: option 0 is correct. Shuffle positions, same order for both languages.
@@ -53,16 +56,30 @@ function toTestQuestion(b: BankQuestion, level: Level): TestQuestion {
     options: { en: order.map((i) => en[i]), ar: order.map((i) => ar[i]) },
     answer: order.indexOf(0),
     level,
-    skill: b.skill
+    skill: b.skill,
+    ...(b.lesson ? { lesson: b.lesson } : {})
   };
 }
 
+/** One rung of a ladder test, in lesson order (only the options are shuffled). */
+export function rungQuestions(serviceId: string, rung: number): TestQuestion[] {
+  const r = LADDERS[serviceId].rungs[rung];
+  return r.questions.map((b) => toTestQuestion(b, r.level));
+}
+
+/** Where a ladder test stands after these answers (see climb in ladders.ts). */
+export function ladderClimb(serviceId: string, questions: TestQuestion[], answers: number[]): Climb {
+  return climb(LADDERS[serviceId], questions.map((q, i) => ({ level: q.level, lesson: q.lesson, ok: answers[i] === q.answer })));
+}
+
 /**
- * 8 questions around the level chosen at onboarding: 2 from the level below, 3 at it, 3 above,
+ * Ladder subjects (ladders.ts): the first rung only; the rest are added as the learner climbs.
+ * Other subjects: 8 questions around the level chosen at onboarding: 2 from the level below, 3 at it, 3 above,
  * picked at random so every student gets a different test. At the ends: beginner = 5 beginner +
  * 3 elementary; advanced = 3 intermediate + 5 advanced (still 8; banks hold 5 per level).
  */
 export function buildPlacementTest(serviceId: string, statedLevel: string): TestQuestion[] {
+  if (LADDERS[serviceId]) return rungQuestions(serviceId, 0);
   const bank = BANKS[serviceId] || BANKS['quran-reading'];
   const at = Math.max(0, LEVELS.indexOf(statedLevel as Level));
   const last = LEVELS.length - 1;
@@ -110,7 +127,8 @@ export function normalizeQuestions(questions: any[], fallbackLevel: string | nul
     options: Array.isArray(x?.options) ? { en: x.options, ar: x.options } : { en: x?.options?.en || [], ar: x?.options?.ar || [] },
     answer: Number.isInteger(x?.answer) ? x.answer : 0,
     level: LEVELS.includes(x?.level) ? x.level : level,
-    skill: both(x?.skill)
+    skill: both(x?.skill),
+    ...(Number.isInteger(x?.lesson) ? { lesson: x.lesson } : {})
   }));
 }
 

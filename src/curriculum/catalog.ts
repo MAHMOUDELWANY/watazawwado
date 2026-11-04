@@ -76,6 +76,7 @@ import { lessonETA02 } from './content/egyptian-teens-3/l02-thats-what-they-say.
 import { lessonETA03 } from './content/egyptian-teens-3/l03-say-it-again-slower.js';
 import { lessonEKA01 } from './content/egyptian-kids-3/l01-i-think.js';
 import { lessonEKA02 } from './content/egyptian-kids-3/l02-tetas-sayings.js';
+import { lessonEKA03 } from './content/egyptian-kids-3/l03-ziads-joke.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -670,7 +671,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: "Advanced · Stories and Jokes at Teta's", titleAr: 'المتقدم · حكايات ونكت عند تيتة', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['I Think…', "Teta's Sayings", "Ziad's Joke"],
-    lessons: { 1: lessonEKA01, 2: lessonEKA02 },
+    lessons: { 1: lessonEKA01, 2: lessonEKA02, 3: lessonEKA03 },
   },
 
   {

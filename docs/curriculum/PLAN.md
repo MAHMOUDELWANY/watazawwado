@@ -962,3 +962,14 @@ B3–B5 → continue lesson by lesson.
   sayings: في التأني السلامة (with على مهلك)، إيد لوحدها ما تسقفش، الجار قبل الدار. Taught as the people's sayings, not
   religious text. New device: the glass jar and its paper notes; wow: three notes fly to three moments at home.
   Graphics `g-eka2.tsx`. Next: Kids Advanced Lesson 3 "Ziad's Joke".
+- **2026-11-04 — Egyptian Advanced (Kids), Lesson 3 "Ziad's Joke" (draft, `reviewed: false`).** A kind riddle-joke:
+  عارفين ليه واحد بيجري حوالين السرير؟ عشان يلحق النوم! The joke shape (عارفين ليه…؟ / ليه؟ / عشان…), reactions (حلوة!
+  بايخة!), and why it is funny: يلحق has two pictures (catch the bus / catch some sleep). New devices: the bed with a
+  runner, the joke pieces, and the sliding two-picture card (the wow). Graphics `g-eka3.tsx`. Egyptian Advanced now has
+  3 lessons for Adults, Teens and Kids. Next: the placement engine rebuild (LEVELS-PLAN §4).
+- **2026-11-04 — Placement engine rebuilt from the curriculum (LEVELS-PLAN §4), code shipped.** Quran reading, Tajweed,
+  Fusha and Egyptian no longer ask for a level at onboarding. The test climbs level by level, one question per lesson
+  (L1–3), and stops at two misses; the report names the level and the lesson to start from, and the teacher sees the
+  same on the student page. Questions: `server/placement/ladders.ts` (36, written from the lessons; they wait for the
+  owner's review like the lessons). Egyptian Sounds stays a side door the teacher picks. Next: Round 4 (Lesson 4 of
+  every Level 1).

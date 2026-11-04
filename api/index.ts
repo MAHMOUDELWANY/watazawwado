@@ -53,7 +53,7 @@ import { lessonFeeUsd } from '../server/pricing/pricingEngine.js';
 import {
   parseModelJson
 } from '../server/intake/intakeService.js';
-import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
+import { registerCommunityRoutes, ensureTeacherThreads, startLesson, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
@@ -2964,7 +2964,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
     const isAdminViewer = req.teacherUser?.role === 'super_admin';
     const [placementRes, threadRes] = await Promise.all([
       supabase.from('placement_tests')
-        .select('id, service_id, status, score, max_score, suggested_level, admin_level, submitted_at, reviewed_at')
+        .select('id, service_id, status, score, max_score, suggested_level, admin_level, submitted_at, reviewed_at, questions, answers, stated_level')
         .eq('learner_student_id', id).in('status', ['submitted', 'reviewed'])
         .order('created_at', { ascending: false }).limit(1),
       learnerAccount.userId
@@ -3059,6 +3059,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         score: latestPlacement.score,
         max_score: latestPlacement.max_score,
         level: latestPlacement.admin_level || latestPlacement.suggested_level || null,
+        start_lesson: startLesson(latestPlacement),
         reviewed: latestPlacement.status === 'reviewed',
         at: latestPlacement.reviewed_at || latestPlacement.submitted_at
       } : null,

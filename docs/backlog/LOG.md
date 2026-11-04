@@ -7,9 +7,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 ### Sign-in room: the star's ring counts finished fields; no sign-in window over a signed-in account (2026-11-04)
 - Owner: make the ring around the star clearer and exact (light only when a field is fully entered); and with a saved session the sign-in window opened over the account, so a click beside it landed inside.
 - Ring: one arc per visible field (code boxes one each; the "I am 18 or older" checkbox via `data-ring-mark`). An arc lights in crimson only when its field is filled and valid by its own rules (required, minLength, min, pattern, an email with a dot in its domain); when all are lit the arcs turn gold and a ring of light spreads out. Arcs run in the reading direction. Re-counted on input, autofill, paste and view changes.
-- Sign-in window: if a student session already exists (or appears from another tab) before the window starts its own sign-in, it closes and opens `/student`, dropping `?auth=login`.
+- Sign-in window: if a student session already exists (or appears from another tab) before the window starts its own sign-in, it closes and opens `/student`, dropping `?auth=login`. A password-reset link or a code to verify keeps the window open (those arrive with a session).
 - Files: `AuthFrame.tsx`, `StudentAuthModal.tsx`, `src/index.css`.
 - Checks: tsc, build, accessibility static test; login (partial email and 5-character password stay unlit, sealed at the 6th), sign-up (4 arcs) on desktop and phone, `/kid` code (5 of 6 digits) checked locally. Not checked: the saved-session case end to end (needs a real session; no `.env` in the worktree).
+
+### Password reset could never save (2026-11-04)
+- Owner hit "معرفناش نحفظ كلمة السر" on the new-password screen. Supabase auth logs showed the recovery link verified (16:50Z) but no `PUT /user` ever arrived: the client had no session.
+- Cause: `resetPassword` redirected to `/#reset-password`; Supabase appends `#access_token=…&type=recovery`, so the URL had two `#` and supabase-js read the key as `reset-password#access_token`. Every reset since that redirect was added failed the same way.
+- Fix: redirect to `/` (`src/lib/auth.tsx`); the dialog already opens on `type=recovery` in the hash.
+- Checks: tsc, Vite build. Not run: the server-backed suite (no `.env` in the worktree; no server code changed). Production check needs a fresh reset email; the old link is used up.
 
 ### Sign-in room: day and night, language switch everywhere, contrast (2026-11-04)
 - Owner: some buttons had no contrast, there was no day/night mode or language switch on every page, and the back buttons needed clearer contrast.

@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Footprints, Compass, TreePalm, Mountain } from 'lucide-react';
-import { levelsFor } from './subjects';
+import { levelsFor, asksLevel, firstLevel } from './subjects';
 
 /**
  * Current level as a journey: a winding road with four stops, from the start of the road to the
@@ -36,8 +36,10 @@ export function JourneyPath({ value, onChange, isAr, name, subject }: { value: s
   const at = Math.max(0, levels.findIndex((l) => l.id === value));
 
   // A level that this subject does not offer moves to its first level, so the saved level always fits the subject.
+  // Where no level is asked, the learner starts from the first level the test climbs from.
   React.useEffect(() => {
-    if (!levels.some((l) => l.id === value)) onChange(levels[0].id);
+    if (subject && !asksLevel(subject)) { if (value !== firstLevel(subject)) onChange(firstLevel(subject)); }
+    else if (!levels.some((l) => l.id === value)) onChange(levels[0].id);
   }, [subject]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useLayoutEffect(() => {
@@ -58,7 +60,7 @@ export function JourneyPath({ value, onChange, isAr, name, subject }: { value: s
   const left = (x: number) => `${((isAr ? W - x : x) / W) * 100}%`;
   const top = (y: number) => `${(y / H) * 100}%`;
 
-  if (levels.length === 1) return null;
+  if (levels.length === 1 || (subject && !asksLevel(subject))) return null;
 
   return (
     <div>

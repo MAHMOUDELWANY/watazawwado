@@ -40,6 +40,13 @@ import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
 import { useT } from '../../lib/language';
 import { confirmAction, notify } from '../../components/ui/Feedback';
+import { levelsFor } from '../../components/onboarding/subjects';
+
+/** The subject's own name for a placement level (Foundations, Level 2…), or the generic id. */
+const placementLevelLabel = (serviceId: string, level: string, t: (en: string, ar: string) => string) => {
+  const l = levelsFor(serviceId).find((x) => x.id === level);
+  return l ? t(l.en, l.ar) : level;
+};
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -707,7 +714,8 @@ export default function StudentDetailPage() {
                 <div className="text-sm space-y-0.5">
                   <div className="font-semibold text-foreground">{t('Placement test', 'اختبار تحديد المستوى')}</div>
                   <div className="text-muted-foreground">
-                    {studentDetail.placement.level ? <span className="capitalize">{studentDetail.placement.level}</span> : null}
+                    {studentDetail.placement.level ? <span className="capitalize">{placementLevelLabel(studentDetail.placement.service_id, studentDetail.placement.level, t)}</span> : null}
+                    {studentDetail.placement.start_lesson ? ` · ${t(`from Lesson ${studentDetail.placement.start_lesson}`, `من الدرس ${studentDetail.placement.start_lesson}`)}` : ''}
                     {studentDetail.placement.score != null && studentDetail.placement.max_score ? ` · ${studentDetail.placement.score}/${studentDetail.placement.max_score}` : ''}
                     {' · '}{studentDetail.placement.reviewed ? t('reviewed', 'اتراجع') : t('waiting for review', 'مستني مراجعة')}
                   </div>

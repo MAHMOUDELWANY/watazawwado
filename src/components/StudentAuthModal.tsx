@@ -81,14 +81,21 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     }
   };
 
+  // Set once this window has its own reason to be open with a session (its own sign-in, a reset link, a code to
+  // verify), so it does not close itself as "already signed in" (below).
+  const startedHere = React.useRef(false);
+  if (isSubmitting) startedHere.current = true;
+
   useEffect(() => {
     if (isOpen) {
       if (typeof window !== 'undefined') {
         const hash = window.location.hash.toLowerCase();
         if (hash.includes('type=recovery') || hash === '#reset-password') {
+          startedHere.current = true;
           setView('update-password');
           return;
         } else if (window.location.search.includes('auth=verify') || hash.includes('verify')) {
+          startedHere.current = true;
           setView('verify');
           return;
         }
@@ -109,10 +116,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   }, [isOpen]);
 
   // Already signed in (a saved session), or signed in from another tab: the sign-in window has nothing to do, so it
-  // closes and opens the account instead of covering it. Only before this window starts its own sign-in, so a fresh
-  // sign-up keeps its code and welcome steps.
-  const startedHere = React.useRef(false);
-  if (isSubmitting) startedHere.current = true;
+  // closes and opens the account instead of covering it.
   useEffect(() => {
     if (!isOpen) { startedHere.current = false; return; }
     if (authLoading || !user || authRole !== 'student' || startedHere.current) return;

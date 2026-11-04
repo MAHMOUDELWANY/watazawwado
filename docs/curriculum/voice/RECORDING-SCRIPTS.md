@@ -2052,6 +2052,36 @@ One take: paste this whole block as one generation; I cut it into the files abov
 على مهلك يا زياد! في التأني السلامة. <break time="1.2s" /> يا تيتة، الأوضة كركبة! <break time="1.2s" /> إيد لوحدها ما تسقفش. يلا كلنا مع بعض! <break time="1.2s" /> خدوا المانجا دي لطنط سعاد. الجار قبل الدار. <break time="1.2s" /> في التأني السلامة. <break time="1.2s" /> على مهلك! <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> الجار قبل الدار. <break time="1.2s" /> في التأني السلامة. إيد لوحدها ما تسقفش. الجار قبل الدار. <break time="1.2s" /> أنا بجري على السلم! <break time="1.2s" /> عارفين ليه…؟
 ```
 
+## Egyptian Arabic · Kids · Advanced · Lesson 3: Ziad's Joke
+
+Folder: `public/curriculum/egyptian-kids-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (15)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-nokta.mp3 | 2 | older woman, playful | قول لي نكتة يا زياد! |
+| 2 | l03-story-1.mp3 | 3 | little boy, cheeky | عارفين ليه واحد بيجري حوالين السرير؟ |
+| 3 | l03-story-2.mp3 | 3 | little girl, curious | ليه؟ |
+| 4 | l03-story-3.mp3 | 3 | little boy, proud | عشان يلحق النوم! |
+| 5 | l03-story-4.mp3 | 3 | little boy, laughing | هههه! حلوة أوي! |
+| 6 | l03-story-5.mp3 | 3 | grandmother, laughing | بايخة… بس ضحكتني! |
+| 7 | l03-arfeen-leh.mp3 | 4 |  | عارفين ليه…؟ |
+| 8 | l03-leh.mp3 | 4 |  | ليه؟ |
+| 9 | l03-ashan.mp3 | 5 |  | عشان يلحق النوم! |
+| 10 | l03-helwa.mp3 | 6 |  | حلوة أوي! |
+| 11 | l03-bayekha.mp3 | 6 |  | بايخة! |
+| 12 | l03-yel7a2-bus.mp3 | 7 |  | لازم يلحق الأتوبيس! |
+| 13 | l03-yel7a2-nom.mp3 | 7 |  | عشان يلحق النوم! |
+| 14 | l03-leh-t.mp3 | 9 | teacher, curious | ليه؟ |
+| 15 | l03-hafla.mp3 | 11 | grandmother, happy | يلا نعمل حفلة! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قول لي نكتة يا زياد! <break time="1.2s" /> عارفين ليه واحد بيجري حوالين السرير؟ <break time="1.2s" /> ليه؟ <break time="1.2s" /> عشان يلحق النوم! <break time="1.2s" /> هههه! حلوة أوي! <break time="1.2s" /> بايخة… بس ضحكتني! <break time="1.2s" /> عارفين ليه…؟ <break time="1.2s" /> ليه؟ <break time="1.2s" /> عشان يلحق النوم! <break time="1.2s" /> حلوة أوي! <break time="1.2s" /> بايخة! <break time="1.2s" /> لازم يلحق الأتوبيس! <break time="1.2s" /> عشان يلحق النوم! <break time="1.2s" /> ليه؟ <break time="1.2s" /> يلا نعمل حفلة!
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.

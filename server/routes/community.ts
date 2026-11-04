@@ -17,7 +17,7 @@ import type express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { parseModelJson } from '../intake/intakeService.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
-import { BANKS, LEVELS, buildPlacementTest, suggestLevel, skillSummary, normalizeQuestions, type Level, type TestQuestion } from '../placement/index.js';
+import { BANKS, LEVELS, LADDERS, buildPlacementTest, rungQuestions, ladderClimb, suggestLevel, skillSummary, normalizeQuestions, type Level, type TestQuestion } from '../placement/index.js';
 
 type Mw = (req: any, res: any, next: any) => any;
 
@@ -250,7 +250,17 @@ export async function placementStatus(client: any, learner: { id: string; learni
   return open ? { status: 'in_progress', serviceId, testId: open.id } : { status: 'take_now', serviceId };
 }
 
-/** Questions for the browser: both languages (the page follows the site language), never the answers. */
+/**
+ * Ladder tests: the lesson to start from inside the suggested level (the first one whose question was missed). Null for
+ * other subjects, when the first three lessons are all known, or when the team chose another level.
+ */
+export function startLesson(t: any): number | null {
+  if (!LADDERS[t.service_id] || t.status === 'in_progress' || (t.admin_level && t.admin_level !== t.suggested_level)) return null;
+  const r = ladderClimb(t.service_id, normalizeQuestions(t.questions, t.stated_level), t.answers || []);
+  return 'next' in r ? null : r.lesson;
+}
+
+/** Questions for the browser: both languages (the page follows the site language), never the right answers. */
 function publicTest(t: any) {
   return {
     id: t.id,
@@ -260,6 +270,10 @@ function publicTest(t: any) {
     statedLevel: t.stated_level,
     status: t.status,
     questions: t.status === 'in_progress' ? normalizeQuestions(t.questions, t.stated_level).map((x) => ({ q: x.q, options: x.options })) : undefined,
+    // Ladder tests: the learner's own choices on the rungs already sent (locked), so the page resumes after them.
+    answered: t.status === 'in_progress' && Array.isArray(t.answers) ? t.answers : undefined,
+    ladder: !!LADDERS[t.service_id],
+    startLesson: startLesson(t),
     score: t.score,
     maxScore: t.max_score,
     suggestedLevel: t.suggested_level,
@@ -373,7 +387,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const learners = await accountLearners(client, req, deps);
       const out = [];
       for (const l of learners) out.push({ id: l.id, name: l.name, level: l.current_level, ...(await placementStatus(client, l)) });
-      res.json({ learners: out, testMode: PLACEMENT_BEFORE_BOOKING });
+      res.json({ learners: out, testMode: PLACEMENT_BEFORE_BOOKING, ladders: Object.keys(LADDERS) });
     } catch (err) {
       console.error('[GET /api/placement/mine]', err);
       res.status(500).json({ error: 'Could not load your placement test.' });
@@ -441,11 +455,32 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const questions: TestQuestion[] = normalizeQuestions(test.questions, test.stated_level);
       const answers: any[] = Array.isArray(req.body?.answers) ? req.body.answers : [];
       if (answers.length !== questions.length) return res.status(400).json({ error: 'Please answer every question.' });
-      const clean = answers.map((a, i) => (Number.isInteger(a) && a >= 0 && a < (questions[i]?.options?.en?.length || 4) ? a : -1));
+      const sent = Array.isArray(test.answers) ? test.answers : [];
+      // Rungs already sent are locked: their stored answers win over anything the page sends again.
+      const clean = answers.map((a, i) => (i < sent.length ? sent[i] : Number.isInteger(a) && a >= 0 && a < (questions[i]?.options?.en?.length || 4) ? a : -1));
+      let suggested: Level;
+      let start: number | null = null;
+      if (LADDERS[test.service_id]) {
+        const r = ladderClimb(test.service_id, questions, clean);
+        if ('next' in r) {
+          const more = [...questions, ...rungQuestions(test.service_id, r.next)];
+          const { data: row, error } = await client
+            .from('placement_tests')
+            .update({ questions: more, answers: clean })
+            .eq('id', test.id)
+            .eq('status', 'in_progress')
+            .select('*')
+            .single();
+          if (error) throw error;
+          return res.json({ next: true, test: publicTest(row) });
+        }
+        suggested = r.level;
+        start = r.lesson;
+      } else suggested = suggestLevel(questions, clean);
       const score = questions.reduce((s, q, i) => s + (clean[i] === q.answer ? 1 : 0), 0);
-      const suggested = suggestLevel(questions, clean);
       const skills = skillSummary(questions, clean);
-      const summary = `${score}/${questions.length} correct. Chosen level: ${test.stated_level || '-'}; result suggests: ${suggested}.${skills.toImprove.length ? ` To improve: ${skills.toImprove.map(s => s.en).join(', ')}.` : ''}`;
+      const where = LADDERS[test.service_id] ? `result suggests: ${suggested}, ${start ? `from Lesson ${start}` : 'Lessons 1–3 known'}` : `chosen level: ${test.stated_level || '-'}; result suggests: ${suggested}`;
+      const summary = `${score}/${questions.length} correct. ${where[0].toUpperCase()}${where.slice(1)}.${skills.toImprove.length ? ` To improve: ${skills.toImprove.map(s => s.en).join(', ')}.` : ''}`;
       const { error } = await client
         .from('placement_tests')
         .update({ answers: clean, score, max_score: questions.length, suggested_level: suggested, ai_summary: summary, status: 'submitted', submitted_at: new Date().toISOString() })
@@ -456,7 +491,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       await notifySuperAdmins(client, {
         kind: 'placement_submitted',
         title: { en: `Placement test: ${test.learner_name || 'student'}`, ar: `اختبار تحديد مستوى: ${test.learner_name || 'طالب'}` },
-        body: { en: summary, ar: `${score}/${questions.length} إجابة صحيحة. المستوى المقترح: ${suggested}.` },
+        body: { en: summary, ar: `${score}/${questions.length} إجابة صحيحة. المستوى المقترح: ${suggested}${start ? `، من الدرس ${start}` : ''}.` },
         link: '/dashboard/placement'
       });
       res.json({ success: true, testId: test.id });
@@ -488,6 +523,9 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
           adminReply: t.admin_reply,
           submittedAt: t.submitted_at,
           reviewedAt: t.reviewed_at,
+          ladder: !!LADDERS[t.service_id],
+          startLesson: startLesson(t),
+          teacherChecks: LADDERS[t.service_id]?.teacherChecks || null,
           ...skills
         }
       });

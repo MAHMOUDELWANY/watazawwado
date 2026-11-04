@@ -442,8 +442,9 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
 
     try {
+      // No hash here: Supabase appends #access_token=…&type=recovery, and a second # would hide the token from the client.
       const redirectUrl = typeof window !== 'undefined'
-        ? `${window.location.origin}/#reset-password`
+        ? `${window.location.origin}/`
         : undefined;
       const { error } = await supabase.auth.resetPasswordForEmail(email.toLowerCase().trim(), {
         redirectTo: redirectUrl
