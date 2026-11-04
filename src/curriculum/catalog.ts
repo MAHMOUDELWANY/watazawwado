@@ -73,6 +73,7 @@ import { lessonEA302 } from './content/egyptian-adults-3/l02-as-they-say.js';
 import { lessonEA303 } from './content/egyptian-adults-3/l03-at-street-speed.js';
 import { lessonETA01 } from './content/egyptian-teens-3/l01-who-should-be-captain.js';
 import { lessonETA02 } from './content/egyptian-teens-3/l02-thats-what-they-say.js';
+import { lessonETA03 } from './content/egyptian-teens-3/l03-say-it-again-slower.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -698,7 +699,7 @@ export const SUBJECTS: SubjectEntry[] = [
     parts: [{ title: "Advanced · The Club's Last Summer", titleAr: 'المتقدم · آخر صيف في النادي', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Who Should Be Captain?', "That's What They Say", 'Say It Again, Slower!'],
-    lessons: { 1: lessonETA01, 2: lessonETA02 },
+    lessons: { 1: lessonETA01, 2: lessonETA02, 3: lessonETA03 },
   },
 
   {

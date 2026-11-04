@@ -110,6 +110,8 @@ export type SceneId =
   | 'eta1Cover' | 'eta1Recall' | 'eta1Club' | 'eta1Story' | 'eta1Think' | 'eta1Agree' | 'eta1But' | 'eta1Unsure' | 'eta1Meter' | 'eta1Sort' | 'eta1Talk' | 'eta1Mission' | 'eta1Next'
   // Egyptian Arabic · Teens · Advanced · Lesson 2 · That's What They Say (slides/motion/g-eta2.tsx)
   | 'eta2Cover' | 'eta2Recall' | 'eta2Chat' | 'eta2Story' | 'eta2Fat' | 'eta2Hand' | 'eta2News' | 'eta2Helw' | 'eta2Short' | 'eta2Sort' | 'eta2Talk' | 'eta2Mission' | 'eta2Next'
+  // Egyptian Arabic · Teens · Advanced · Lesson 3 · Say It Again, Slower! (slides/motion/g-eta3.tsx)
+  | 'eta3Cover' | 'eta3Recall' | 'eta3Note' | 'eta3Story' | 'eta3Again' | 'eta3Slow' | 'eta3Mean' | 'eta3Glue' | 'eta3SlowMo' | 'eta3Sort' | 'eta3Talk' | 'eta3Mission' | 'eta3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

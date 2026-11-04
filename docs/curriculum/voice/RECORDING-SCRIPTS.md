@@ -2272,6 +2272,38 @@ One take: paste this whole block as one generation; I cut it into the files abov
 معاك حق، بس… <break time="1.2s" /> اللي فات مات! نور الكابتن، وأنا معاها. <break time="1.2s" /> إيد لوحدها ما تسقفش يا جماعة. بكرة كلنا مع بعض! <break time="1.2s" /> يا خبر أبيض! كريم بقى طيب؟! <break time="1.2s" /> الماتش اتلغى… مطر. الحلو ما يكملش! <break time="1.2s" /> اللي فات مات! <break time="1.2s" /> إيد لوحدها ما تسقفش. <break time="1.2s" /> يا خبر أبيض! <break time="1.2s" /> يا خبر إسود! <break time="1.2s" /> الحلو ما يكملش! <break time="1.2s" /> اللي فات مات. <break time="1.2s" /> نور جابت تلات جوان في التمرين! <break time="1.2s" /> بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب…
 ```
 
+## Egyptian Arabic · Teens · Advanced · Lesson 3: Say It Again, Slower!
+
+Folder: `public/curriculum/egyptian-teens-3/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-helw.mp3 | 2 |  | الحلو ما يكملش! |
+| 2 | l03-fast.mp3 | 3 | teen boy, extremely fast | بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب… |
+| 3 | l03-story-1.mp3 | 4 | teen boy, very fast | بقولكوا إيه يا جماعة، الماتش بقى يوم الجمعة الساعة خمسة. |
+| 4 | l03-story-2.mp3 | 4 | teen girl, laughing | إيه؟ معلش، ممكن تعيد تاني؟ بالراحة شوية! |
+| 5 | l03-story-3.mp3 | 4 | teen boy, slow and clear, a bit theatrical | الماتش… يوم الجمعة… الساعة خمسة… في ملعب المدرسة. |
+| 6 | l03-story-4.mp3 | 4 | teen boy, checking | قصدك الجمعة الجاية؟ |
+| 7 | l03-story-5.mp3 | 4 | teen boy, cheerful | آه، الجمعة الجاية. ماتتأخروش! |
+| 8 | l03-teeed.mp3 | 5 |  | معلش، ممكن تعيد تاني؟ |
+| 9 | l03-tani.mp3 | 5 |  | تاني؟ |
+| 10 | l03-belraha.mp3 | 6 |  | بالراحة شوية! |
+| 11 | l03-asdak.mp3 | 7 |  | قصدك الجمعة الجاية؟ |
+| 12 | l03-yaani-eh.mp3 | 7 |  | يعني إيه ملعب؟ |
+| 13 | l03-ba2olko.mp3 | 8 |  | بقولكوا إيه يا جماعة… |
+| 14 | l03-baa.mp3 | 8 |  | الماتش بقى يوم الجمعة. |
+| 15 | l03-anchors.mp3 | 9 | slow, clear | الجمعة. الساعة خمسة. ملعب المدرسة. |
+| 16 | l03-note-t.mp3 | 11 | teen girl, very fast | بقولك إيه، التمرين بقى يوم السبت الساعة ستة في النادي، ماشي؟ |
+| 17 | l03-eed-slow.mp3 | 13 | teen boy, slow, proud | إيد… لوحدها… ما تسقفش! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+الحلو ما يكملش! <break time="1.2s" /> بقولكوا إيه يا جماعة الماتش بقى يوم الجمعة الساعة خمسة بس لازم نيجي بدري عشان الملعب… <break time="1.2s" /> بقولكوا إيه يا جماعة، الماتش بقى يوم الجمعة الساعة خمسة. <break time="1.2s" /> إيه؟ معلش، ممكن تعيد تاني؟ بالراحة شوية! <break time="1.2s" /> الماتش… يوم الجمعة… الساعة خمسة… في ملعب المدرسة. <break time="1.2s" /> قصدك الجمعة الجاية؟ <break time="1.2s" /> آه، الجمعة الجاية. ماتتأخروش! <break time="1.2s" /> معلش، ممكن تعيد تاني؟ <break time="1.2s" /> تاني؟ <break time="1.2s" /> بالراحة شوية! <break time="1.2s" /> قصدك الجمعة الجاية؟ <break time="1.2s" /> يعني إيه ملعب؟ <break time="1.2s" /> بقولكوا إيه يا جماعة… <break time="1.2s" /> الماتش بقى يوم الجمعة. <break time="1.2s" /> الجمعة. الساعة خمسة. ملعب المدرسة. <break time="1.2s" /> بقولك إيه، التمرين بقى يوم السبت الساعة ستة في النادي، ماشي؟ <break time="1.2s" /> إيد… لوحدها… ما تسقفش!
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.
