@@ -13,14 +13,19 @@ import { SUBJECT_FAMILIES } from '../../components/onboarding/subjects';
 import { LEVELS } from '../../components/onboarding/JourneyPath';
 
 /**
- * Placement test (owner decision 2026-10-16): for the subject and level chosen at onboarding,
+ * Placement test (owner decision 2026-10-16; ladder subjects 2026-11-04): ladder subjects need no level: the test
+ * starts at the first level and climbs, one level at a time, until two answers in a level are missed. Other subjects
+ * test around the level chosen at onboarding,
  * opened after the free trial is booked, taken once per subject. Questions come from the site's
  * question banks in both languages and follow the language chosen on the site.
  */
 
 type Status = 'not_yet' | 'take_now' | 'in_progress' | 'submitted' | 'reviewed';
 interface LearnerState { id: string; name: string; level: string | null; serviceId: string; status: Status; testId?: string }
-interface Test { id: string; questions: { q: { en: string; ar: string }; options: { en: string[]; ar: string[] } }[] }
+interface Test { id: string; ladder?: boolean; answered?: number[]; questions: { q: { en: string; ar: string }; options: { en: string[]; ar: string[] } }[] }
+
+/** Answers for a test: the ones already sent (locked), then blanks. */
+const answersFor = (t: Test) => t.questions.map((_, i) => t.answered?.[i] ?? -1);
 
 export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
   const isAr = lang === 'ar';
@@ -35,14 +40,16 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
   const [testMode, setTestMode] = useState(false);
   const [trySubject, setTrySubject] = useState('');
   const [tryLevel, setTryLevel] = useState('');
+  const [ladders, setLadders] = useState<string[]>([]);
 
   // ST-04: a failed first load is an error with retry, not an empty page.
   const [loadFailed, setLoadFailed] = useState(false);
   const load = useCallback(async () => {
     setLoadFailed(false);
     try {
-      const d = await authedJson<{ learners: LearnerState[]; testMode?: boolean }>('/api/placement/mine');
+      const d = await authedJson<{ learners: LearnerState[]; testMode?: boolean; ladders?: string[] }>('/api/placement/mine');
       setLearners(d.learners);
+      setLadders(d.ladders || []);
       setTestMode(!!d.testMode);
       setLearnerId((cur) => cur || d.learners.find((l) => l.status === 'take_now' || l.status === 'in_progress')?.id || d.learners[0]?.id || '');
     } catch (err: any) {
@@ -65,7 +72,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
         body: JSON.stringify({ learnerStudentId: learnerId || undefined, lang, ...(testMode ? { serviceId: trySubject || undefined, level: tryLevel || undefined } : {}) })
       });
       setTest(d.test);
-      setAnswers(new Array(d.test.questions.length).fill(-1));
+      setAnswers(answersFor(d.test));
       window.scrollTo({ top: 0 });
     } catch (err: any) {
       setError(err.message);
@@ -83,10 +90,18 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
     setBusy(true);
     setError(null);
     try {
-      const d = await authedJson<{ testId: string }>(`/api/placement/${test.id}/submit`, {
+      const d = await authedJson<{ testId?: string; next?: boolean; test?: Test }>(`/api/placement/${test.id}/submit`, {
         method: 'POST',
         body: JSON.stringify({ answers })
       });
+      if (d.next && d.test) {
+        // Ladder: this level went well, so the next level's questions are added.
+        setTest(d.test);
+        setAnswers(answersFor(d.test));
+        setBusy(false);
+        window.scrollTo({ top: 0 });
+        return;
+      }
       navigate(`/student/placement/report/${d.testId}`);
     } catch (err: any) {
       setError(err.message);
@@ -105,7 +120,10 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
   if (test) {
     return (
       <QuestionStepper
+        key={test.questions.length}
         isAr={isAr}
+        locked={test.answered?.length || 0}
+        ladder={!!test.ladder}
         questions={test.questions}
         answers={answers}
         setAnswer={(qi, oi) => setAnswers((prev) => prev.map((a, i) => (i === qi ? oi : a)))}
@@ -170,12 +188,12 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
                   ))}
                 </Select>
               </label>
-              <label className="space-y-1.5 text-sm">
+              {!ladders.includes(trySubject || learner.serviceId) && <label className="space-y-1.5 text-sm">
                 <span className="font-semibold text-foreground">{isAr ? 'المستوى' : 'Level'}</span>
                 <Select value={tryLevel || learner.level || 'beginner'} onChange={(e) => setTryLevel(e.target.value)}>
                   {LEVELS.map((l) => <option key={l.id} value={l.id}>{isAr ? l.ar : l.en}</option>)}
                 </Select>
-              </label>
+              </label>}
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button onClick={start} isLoading={busy}>{isAr ? 'ابدأ اختبار تجريبي' : 'Start a trial test'}</Button>
@@ -227,7 +245,11 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
                 {learners.length > 1 ? `${learner.name} · ` : ''}{service ? (isAr ? service.arabicName : service.name) : learner.serviceId}
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {isAr
+                {ladders.includes(learner.serviceId)
+                  ? (isAr
+                    ? 'أسئلة قصيرة من دروسنا، مستوى ورا مستوى. بيبدأ سهل ويقف عند مستواك، فممكن ما تشوفش كل الأسئلة. مفيش نجاح ورسوب، والنتيجة بتقولك تبدأ من أنهي درس.'
+                    : 'Short questions from our lessons, one level at a time. It starts easy and stops at your level, so you may not see them all. There is no pass or fail, and the result tells you which lesson to start from.')
+                  : isAr
                   ? '8 أسئلة اختيار من متعدد (حوالي 5 دقايق) على حسب المادة والمستوى اللي اخترتهم. مفيش نجاح ورسوب — جاوب على قد ما تعرف، والنتيجة بتظهر لك على طول.'
                   : '8 multiple-choice questions (about 5 minutes) based on the subject and level you chose. There is no pass or fail — answer what you can, and you see your result right away.'}
               </p>
@@ -248,8 +270,11 @@ const LETTERS = { en: ['A', 'B', 'C', 'D'], ar: ['أ', 'ب', 'ج', 'د'] };
 const hasArabic = (t: string) => /[؀-ۿ]/.test(t);
 
 /** One question per screen: tap an answer and it moves on; Back/Next and the bars let you revisit. */
-function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, error }: {
+function QuestionStepper({ isAr, locked, ladder, questions, answers, setAnswer, onSubmit, busy, error }: {
   isAr: boolean;
+  /** Questions before this index were sent with an earlier level and can no longer change. */
+  locked: number;
+  ladder: boolean;
   questions: Test['questions'];
   answers: number[];
   setAnswer: (qi: number, oi: number) => void;
@@ -258,7 +283,7 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
   error: string | null;
 }) {
   const reduce = useReducedMotion();
-  const [index, setIndex] = useState(() => Math.max(0, answers.findIndex((a) => a < 0)));
+  const [index, setIndex] = useState(() => Math.max(locked, answers.findIndex((a) => a < 0)));
   const [dir, setDir] = useState(1);
   const total = questions.length;
   const q = questions[index];
@@ -272,7 +297,7 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
   const offset = (isAr ? -1 : 1) * 40;
 
   const go = (to: number) => {
-    if (to < 0 || to >= total) return;
+    if (to < locked || to >= total) return;
     setDir(to > index ? 1 : -1);
     setIndex(to);
   };
@@ -285,6 +310,7 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
   // Keys 1–4 pick an answer.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (index < locked) return;
       const n = Number(e.key);
       if (n >= 1 && n <= options.length) choose(n - 1);
     };
@@ -305,6 +331,7 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
               key={i}
               type="button"
               onClick={() => go(i)}
+              disabled={i < locked}
               aria-label={isAr ? `اذهب للسؤال ${i + 1}` : `Go to question ${i + 1}`}
               className={`h-2 flex-1 rounded-full transition-colors duration-200 cursor-pointer ${
                 answers[i] >= 0 ? 'bg-[linear-gradient(90deg,#087D91,#0A9DB5)]' : 'bg-surface-subtle'
@@ -338,6 +365,7 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
                   role="radio"
                   aria-checked={selected}
                   onClick={() => choose(oi)}
+                  disabled={index < locked}
                   whileTap={reduce ? undefined : { scale: 0.97 }}
                   className={`group flex items-center gap-3 px-4 py-3.5 rounded-2xl border text-start cursor-pointer transition-colors duration-150 ${
                     selected ? 'border-primary bg-primary/10 shadow-sm' : 'border-border hover:border-primary/40 hover:bg-surface-subtle'
@@ -359,13 +387,14 @@ function QuestionStepper({ isAr, questions, answers, setAnswer, onSubmit, busy, 
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
       <div className="flex items-center justify-between gap-3">
-        <Button variant="outline" onClick={() => go(index - 1)} disabled={index === 0} className="gap-1.5">
+        <Button variant="outline" onClick={() => go(index - 1)} disabled={index <= locked} className="gap-1.5">
           <BackIcon className="w-4 h-4" aria-hidden="true" />{isAr ? 'السابق' : 'Back'}
         </Button>
         {isLast || answered === total ? (
           <Button onClick={onSubmit} isLoading={busy} disabled={answered < total}>
             {answered < total
               ? (isAr ? `فاضل ${total - answered} سؤال` : `${total - answered} left to answer`)
+              : ladder ? (isAr ? 'إرسال' : 'Send')
               : (isAr ? 'إرسال وعرض النتيجة' : 'Send and see my result')}
           </Button>
         ) : (

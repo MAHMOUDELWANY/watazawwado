@@ -7,8 +7,9 @@ import { BOOKING_SERVICES } from '../../booking/mockData.js';
  */
 
 /** A level as the learner sees it. `id` is one of the four generic levels the placement banks are written for. */
-export interface SubjectLevel { id: 'beginner' | 'elementary' | 'intermediate' | 'advanced'; en: string; ar: string; descEn: string; descAr: string }
-export interface Subject { id: string; glyph: string; spineEn: string; spineAr: string; en: string; ar: string; levels?: SubjectLevel[] }
+export interface SubjectLevel { id: 'beginner' | 'elementary' | 'intermediate' | 'advanced'; en: string; ar: string; descEn: string; descAr: string; /** Entered by choice, not by the test's climb (Egyptian Sounds, for Fusha speakers). */ sideDoor?: boolean }
+/** `placedByTest`: the placement test finds the level from the lessons (server/placement/ladders.ts), so onboarding asks for none. */
+export interface Subject { id: string; glyph: string; spineEn: string; spineAr: string; en: string; ar: string; levels?: SubjectLevel[]; placedByTest?: boolean }
 export interface Family { key: string; color: string; en: string; ar: string; subjects: Subject[] }
 
 /** One level only: no level picker; the version (Kids / Teens / Adults) comes from the learner's age. */
@@ -21,14 +22,14 @@ export const SUBJECT_FAMILIES: Family[] = [
     key: 'quran', color: '#087D91', en: 'Quran', ar: 'القرآن الكريم',
     subjects: [
       {
-        id: 'quran-reading', glyph: 'ق', spineEn: 'Reading', spineAr: 'القراءة', en: 'Quran reading', ar: 'قراءة القرآن',
+        id: 'quran-reading', placedByTest: true, glyph: 'ق', spineEn: 'Reading', spineAr: 'القراءة', en: 'Quran reading', ar: 'قراءة القرآن',
         levels: [
           { id: 'beginner', en: 'Foundations', ar: 'التأسيس', descEn: 'The letters, their sounds and the qaida, from zero.', descAr: 'الحروف وأصواتها والقاعدة، من الصفر.' },
           { id: 'intermediate', en: 'Reading the Mushaf', ar: 'القراءة من المصحف', descEn: 'Knows the letters; reading from the Mushaf until it flows.', descAr: 'بيعرف الحروف، وبيقرأ من المصحف لحد ما يقرأ بطلاقة.' }
         ]
       },
       {
-        id: 'tajweed', glyph: 'ج', spineEn: 'Tajweed', spineAr: 'التجويد', en: 'Tajweed', ar: 'التجويد',
+        id: 'tajweed', placedByTest: true, glyph: 'ج', spineEn: 'Tajweed', spineAr: 'التجويد', en: 'Tajweed', ar: 'التجويد',
         levels: [
           { id: 'beginner', en: 'Level 1', ar: 'المستوى الأول', descEn: 'The essential rules, applied as you recite.', descAr: 'الأحكام الأساسية، وتطبيقها وانت بتقرأ.' },
           { id: 'intermediate', en: 'Level 2', ar: 'المستوى الثاني', descEn: 'Where each letter comes from and its qualities.', descAr: 'مخارج الحروف وصفاتها.' },
@@ -57,7 +58,7 @@ export const SUBJECT_FAMILIES: Family[] = [
     key: 'languages', color: '#C51F24', en: 'Languages', ar: 'اللغات',
     subjects: [
       {
-        id: 'modern-standard-arabic', glyph: 'ض', spineEn: 'Fusha', spineAr: 'الفصحى', en: 'Fusha Arabic', ar: 'العربية الفصحى',
+        id: 'modern-standard-arabic', placedByTest: true, glyph: 'ض', spineEn: 'Fusha', spineAr: 'الفصحى', en: 'Fusha Arabic', ar: 'العربية الفصحى',
         levels: [
           { id: 'beginner', en: 'Foundations', ar: 'التأسيس', descEn: 'The alphabet, reading and writing, from zero.', descAr: 'الحروف والقراءة والكتابة، من الصفر.' },
           { id: 'elementary', en: 'Beginner', ar: 'مبتدئ', descEn: 'Reads; building words, sentences and first conversations.', descAr: 'بيقرأ، وبيبني كلمات وجمل وأول محادثات.' },
@@ -66,9 +67,9 @@ export const SUBJECT_FAMILIES: Family[] = [
         ]
       },
       {
-        id: 'egyptian-arabic', glyph: 'م', spineEn: 'Egyptian', spineAr: 'المصري', en: 'Egyptian Arabic', ar: 'اللهجة المصرية',
+        id: 'egyptian-arabic', placedByTest: true, glyph: 'م', spineEn: 'Egyptian', spineAr: 'المصري', en: 'Egyptian Arabic', ar: 'اللهجة المصرية',
         levels: [
-          { id: 'beginner', en: 'Sounds', ar: 'الأصوات', descEn: 'The sounds of the dialect and the first everyday words.', descAr: 'أصوات اللهجة وأول كلمات الحياة اليومية.' },
+          { id: 'beginner', en: 'Sounds', ar: 'الأصوات', descEn: 'The sounds of the dialect and the first everyday words.', descAr: 'أصوات اللهجة وأول كلمات الحياة اليومية.', sideDoor: true },
           { id: 'elementary', en: 'Beginner', ar: 'مبتدئ', descEn: 'Simple everyday conversations.', descAr: 'محادثات يومية بسيطة.' },
           { id: 'intermediate', en: 'Intermediate', ar: 'متوسط', descEn: 'Talks about most things, with some hesitation.', descAr: 'بيتكلم في أغلب الحاجات مع شوية تردد.' },
           { id: 'advanced', en: 'Advanced', ar: 'متقدم', descEn: 'Fluent; idioms, humour and fast speech.', descAr: 'متمكن، تعبيرات وهزار وكلام سريع.' }
@@ -110,6 +111,12 @@ export function findSubject(id: string): { subject: Subject; family: Family } | 
 
 /** The levels a learner can pick for a subject (an empty list means the subject is unknown or retired). */
 export const levelsFor = (id: string): SubjectLevel[] => findSubject(id)?.subject.levels || [];
+
+/** The level a learner starts from before any test: the first one that is not a side door. */
+export const firstLevel = (id: string): SubjectLevel['id'] => (levelsFor(id).find((l) => !l.sideDoor) || levelsFor(id)[0])?.id || 'beginner';
+
+/** Whether onboarding asks for a level: not for one-level subjects, nor where the placement test finds it. */
+export const asksLevel = (id: string): boolean => levelsFor(id).length > 1 && !findSubject(id)?.subject.placedByTest;
 
 export const subjectLabel = (id: string, isAr: boolean) => {
   const found = findSubject(id);

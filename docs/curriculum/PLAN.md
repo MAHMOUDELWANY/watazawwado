@@ -967,3 +967,9 @@ B3–B5 → continue lesson by lesson.
   بايخة!), and why it is funny: يلحق has two pictures (catch the bus / catch some sleep). New devices: the bed with a
   runner, the joke pieces, and the sliding two-picture card (the wow). Graphics `g-eka3.tsx`. Egyptian Advanced now has
   3 lessons for Adults, Teens and Kids. Next: the placement engine rebuild (LEVELS-PLAN §4).
+- **2026-11-04 — Placement engine rebuilt from the curriculum (LEVELS-PLAN §4), code shipped.** Quran reading, Tajweed,
+  Fusha and Egyptian no longer ask for a level at onboarding. The test climbs level by level, one question per lesson
+  (L1–3), and stops at two misses; the report names the level and the lesson to start from, and the teacher sees the
+  same on the student page. Questions: `server/placement/ladders.ts` (36, written from the lessons; they wait for the
+  owner's review like the lessons). Egyptian Sounds stays a side door the teacher picks. Next: Round 4 (Lesson 4 of
+  every Level 1).

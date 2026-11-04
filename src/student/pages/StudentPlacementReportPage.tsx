@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { ErrorState } from '../../components/ErrorState';
 import { BOOKING_SERVICES } from '../../booking/mockData';
+import { levelsFor } from '../../components/onboarding/subjects';
 
 /**
  * Placement result in the site's identity, laid out like a formal report (it is not a certificate).
@@ -27,6 +28,10 @@ interface Report {
   submittedAt: string;
   strengths: Skill[];
   toImprove: Skill[];
+  /** Ladder subjects: the lesson to start from inside the suggested level. */
+  ladder?: boolean;
+  startLesson?: number | null;
+  teacherChecks?: Skill | null;
 }
 
 const LEVELS: { id: string; en: string; ar: string }[] = [
@@ -54,7 +59,10 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
   if (!report) return <div className="py-16 flex justify-center"><BrandSpinner size={28} /></div>;
 
   const service = BOOKING_SERVICES.find((s) => s.id === report.serviceId);
-  const levelIdx = Math.max(0, LEVELS.findIndex((l) => l.id === report.suggestedLevel));
+  // The subject's own level names (Foundations, Level 2…) when it has them; the generic four otherwise.
+  const own = levelsFor(report.serviceId);
+  const levels = own.length > 1 ? own : LEVELS;
+  const levelIdx = Math.max(0, levels.findIndex((l) => l.id === report.suggestedLevel));
   const stated = LEVELS.find((l) => l.id === report.statedLevel);
   const pct = report.maxScore ? Math.round((report.score / report.maxScore) * 100) : 0;
   const date = new Date(report.submittedAt).toLocaleDateString(isAr ? 'ar-EG' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -101,8 +109,8 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
               </div>
               <div className="space-y-3">
                 <p className="text-sm text-[#6B5E55]">{t('Level suggested by the result', 'المستوى حسب النتيجة')}</p>
-                <ol className="grid grid-cols-4 gap-1.5" aria-label={t('Level', 'المستوى')}>
-                  {LEVELS.map((l, i) => (
+                <ol className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${levels.length}, minmax(0, 1fr))` }} aria-label={t('Level', 'المستوى')}>
+                  {levels.map((l, i) => (
                     <li key={l.id} className={`rounded-lg px-1 py-2 text-center text-xs font-semibold border ${
                       i === levelIdx ? 'bg-[#087D91] text-white border-[#087D91]' : i < levelIdx ? 'bg-[#087D91]/15 text-[#087D91] border-[#087D91]/30' : 'bg-white text-[#6B5E55] border-[#E6DACB]'
                     }`} aria-current={i === levelIdx ? 'true' : undefined}>
@@ -110,7 +118,10 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
                     </li>
                   ))}
                 </ol>
-                {stated && (
+                {report.startLesson != null && (
+                  <p className="text-sm font-semibold text-[#087D91]">{t(`Start from Lesson ${report.startLesson} of this level`, `البداية من الدرس ${report.startLesson} في المستوى ده`)}</p>
+                )}
+                {stated && !report.ladder && (
                   <p className="text-xs text-[#6B5E55]">{t('Level chosen at sign-up', 'المستوى اللي اخترته في التسجيل')}: {isAr ? stated.ar : stated.en}</p>
                 )}
               </div>
@@ -131,6 +142,10 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
                   </ul>
                 </div>
               </section>
+            )}
+
+            {report.teacherChecks && (
+              <p className="mt-4 text-xs text-[#6B5E55] text-center">{isAr ? report.teacherChecks.ar : report.teacherChecks.en}</p>
             )}
 
             <section className="mt-6 rounded-xl border border-dashed border-[#D8C6AE] p-4">

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
-import { SUBJECT_FAMILIES, levelsFor } from '../../components/onboarding/subjects';
+import { SUBJECT_FAMILIES, levelsFor, asksLevel, firstLevel } from '../../components/onboarding/subjects';
 import { CHILD_MIN_AGE, CHILD_MAX_AGE, isChildAge } from '../../lib/ageRules';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -18,7 +18,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
   const [age, setAge] = useState('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [subject, setSubject] = useState('quran-reading');
-  const [level, setLevel] = useState('beginner');
+  const [level, setLevel] = useState<string>(firstLevel('quran-reading'));
   const [teacherPref, setTeacherPref] = useState('no_preference');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -94,11 +94,11 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
             </label>
             <label className="space-y-1 text-sm text-foreground">
               <span>{isAr ? 'المادة' : 'Subject'}</span>
-              <Select value={subject} onChange={(e) => { setSubject(e.target.value); setLevel('beginner'); }}>
+              <Select value={subject} onChange={(e) => { setSubject(e.target.value); setLevel(firstLevel(e.target.value)); }}>
                 {subjects.map((s) => <option key={s.id} value={s.id}>{isAr ? s.ar : s.en}</option>)}
               </Select>
             </label>
-            {levels.length > 0 && (
+            {asksLevel(subject) && (
               <label className="space-y-1 text-sm text-foreground">
                 <span>{isAr ? 'المستوى' : 'Level'}</span>
                 <Select value={level} onChange={(e) => setLevel(e.target.value)}>

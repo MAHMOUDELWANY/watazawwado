@@ -30,7 +30,7 @@ import { BookShelf } from '../../components/onboarding/BookShelf';
 import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
-import { subjectLabel, findSubject, levelsFor } from '../../components/onboarding/subjects';
+import { subjectLabel, findSubject, levelsFor, asksLevel } from '../../components/onboarding/subjects';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
@@ -920,9 +920,9 @@ export default function StudentOnboardingPage({
                               isAr={isRTL}
                             />
                           </div>
-                          {/* Subjects taught by age version (Zad Path) have no level to pick; JourneyPath then only resets it. */}
+                          {/* No level to pick for subjects taught by age version (Zad Path) or placed by the test; JourneyPath then only resets it. */}
                           <div>
-                            {levelsFor(child.learningInterest).length !== 1 && (
+                            {asksLevel(child.learningInterest) && (
                               <p className="text-xs font-semibold text-foreground mb-2">
                                 {isRTL ? 'مستواه الحالي' : 'Current level'}
                               </p>
@@ -985,7 +985,7 @@ export default function StudentOnboardingPage({
                 </div>
 
                 <div>
-                  {levelsFor(learningInterest).length !== 1 && (
+                  {asksLevel(learningInterest) && (
                     <p className="block text-sm font-semibold text-foreground mb-3">
                       {isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}
                     </p>
