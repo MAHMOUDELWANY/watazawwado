@@ -116,6 +116,8 @@ export type SceneId =
   | 'eka1Cover' | 'eka1Cart' | 'eka1Story' | 'eka1Shayef' | 'eka1Shayfa' | 'eka1Too' | 'eka1Cones' | 'eka1Sort' | 'eka1Talk' | 'eka1Mission' | 'eka1Next'
   // Egyptian Arabic · Kids · Advanced · Lesson 2 · Teta's Sayings (slides/motion/g-eka2.tsx)
   | 'eka2Cover' | 'eka2Jar' | 'eka2Story' | 'eka2Slow' | 'eka2Clap' | 'eka2Jaar' | 'eka2Notes' | 'eka2Sort' | 'eka2Talk' | 'eka2Mission' | 'eka2Next'
+  // Egyptian Arabic · Kids · Advanced · Lesson 3 · Ziad's Joke (slides/motion/g-eka3.tsx)
+  | 'eka3Cover' | 'eka3Ask' | 'eka3Story' | 'eka3Why' | 'eka3Because' | 'eka3React' | 'eka3Two' | 'eka3Sort' | 'eka3Talk' | 'eka3Mission' | 'eka3Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)
