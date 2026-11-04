@@ -62,6 +62,7 @@ import { lessonES03 } from './content/egyptian-sounds/l03-short-and-stressed.js'
 import { lessonEI01 } from './content/egyptian-adults-2/l01-what-did-you-do-yesterday.js';
 import { lessonEI02 } from './content/egyptian-adults-2/l02-tomorrow-god-willing.js';
 import { lessonEI03 } from './content/egyptian-adults-2/l03-and-then.js';
+import { lessonETI01 } from './content/egyptian-teens-2/l01-what-did-you-do-at-the-match.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -634,7 +635,21 @@ export const SUBJECTS: SubjectEntry[] = [
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
     lessons: { 1: lessonET01, 2: lessonET02, 3: lessonET03 },
+  },  {
+    id: 'egyptian-teens-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Teens · Intermediate',
+    titleAr: 'العامية المصرية · للشباب · المتوسط',
+    version: 'Teens · Intermediate',
+    versionAr: 'الشباب · المتوسط',
+    audience: '12–17',
+    art: '/curriculum/banners/egyptian-teens.webp',
+    parts: [{ title: 'Intermediate · The Club, a Year Later', titleAr: 'المتوسط · النادي بعد سنة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['What Did You Do at the Match?', "Tomorrow's Final", "You Won't Believe What Happened", 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: The Club Trip', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', 'The Lost Phone', 'Review: The Concert', 'Intermediate Story'],
+    lessons: { 1: lessonETI01 },
   },
+
   {
     id: 'english-general',
     group: 'english',

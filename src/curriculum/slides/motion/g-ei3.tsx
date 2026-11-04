@@ -14,7 +14,7 @@ import { StreetCard } from './g-es1';
  */
 
 const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
-type Pic = 'alarm' | 'taxi' | 'station' | 'train' | 'sea';
+export type Pic = 'alarm' | 'taxi' | 'station' | 'train' | 'sea';
 
 /** A tiny drawing for each event. */
 function Drawing({ pic }: { pic: Pic }) {
@@ -30,7 +30,7 @@ function Drawing({ pic }: { pic: Pic }) {
 }
 
 /** A framed story panel centred at (x, y). */
-function Panel({ x, y, pic, text, id, delay = 0, dim = false }: { x: number; y: number; pic: Pic; text: string; id?: string; delay?: number; dim?: boolean }) {
+export function Panel({ x, y, pic, text, id, delay = 0, dim = false }: { x: number; y: number; pic: Pic; text: string; id?: string; delay?: number; dim?: boolean }) {
   const cap = <ArText size={20}>{text}</ArText>;
   return (
     <div className="absolute" style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}>
@@ -44,7 +44,7 @@ function Panel({ x, y, pic, text, id, delay = 0, dim = false }: { x: number; y: 
 }
 
 /** A story word as a hinge between panels. */
-function Hinge({ x, y, word, color = CRIMSON, delay = 0 }: { x: number; y: number; word: string; color?: string; delay?: number }) {
+export function Hinge({ x, y, word, color = CRIMSON, delay = 0 }: { x: number; y: number; word: string; color?: string; delay?: number }) {
   return (
     <div className="absolute" style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}>
       <motion.div className="rounded-full" style={{ padding: '2px 16px 4px', background: color, boxShadow: SHADOW }} initial={{ opacity: 0, scale: 0.4, y: -30 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.5, duration: 0.7, delay }}>

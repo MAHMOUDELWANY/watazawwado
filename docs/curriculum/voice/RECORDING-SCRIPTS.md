@@ -1914,6 +1914,41 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه ده؟ <break time="1.2s" /> إيه ده يا كريم؟ <break time="1.2s" /> ده طرشي! من عند تيتة. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي شرابات. نضيفة، والله! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> إيه ده بالمصري؟ <break time="1.2s" /> دي شنطة. <break time="1.2s" /> دي شرابات. <break time="1.2s" /> دي سماعات. <break time="1.2s" /> ده موبايل. <break time="1.2s" /> ده شاحن. <break time="1.2s" /> ده طرشي. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي كورة. <break time="1.2s" /> دي نضارة. <break time="1.2s" /> فين موبايلي؟
 ```
 
+## Egyptian Arabic · Teens · Intermediate · Lesson 1: What Did You Do at the Match?
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (20)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-balaab.mp3 | 2 |  | بلعب كورة كل يوم. |
+| 2 | l01-rooht-imbarih.mp3 | 2 |  | امبارح رحت النادي. |
+| 3 | l01-story-1.mp3 | 4 | teen boy, eager | يا عمر! عملت إيه في الماتش؟ |
+| 4 | l01-story-2.mp3 | 4 | teen boy, proud | جبت جون! |
+| 5 | l01-story-3.mp3 | 4 | teen boy, curious | بجد؟ ونور؟ |
+| 6 | l01-story-4.mp3 | 4 | teen boy, impressed | نور جابت جونين! |
+| 7 | l01-story-5.mp3 | 4 | teen boy, shocked | إنتي جبتي جونين؟! |
+| 8 | l01-story-6.mp3 | 4 | teen girl, teasing | آه! وإنت رحت فين؟ |
+| 9 | l01-story-7.mp3 | 4 | teen boy, embarrassed | نمت… |
+| 10 | l01-gibt.mp3 | 5 |  | جبت جون. |
+| 11 | l01-amalt-eh.mp3 | 5 |  | عملت إيه؟ |
+| 12 | l01-gibti.mp3 | 6 |  | إنتي جبتي جونين؟ |
+| 13 | l01-roohti.mp3 | 6 |  | رحتي فين؟ |
+| 14 | l01-gab.mp3 | 7 |  | عمر جاب جون. |
+| 15 | l01-gabit.mp3 | 7 |  | نور جابت جونين. |
+| 16 | l01-nimt.mp3 | 8 |  | نمت. |
+| 17 | l01-rooht.mp3 | 8 |  | رحت النادي. |
+| 18 | l01-chat.mp3 | 9 |  | جبت جون. نور جابت جونين! إنتي رحتي فين؟ |
+| 19 | l01-amalti-eh.mp3 | 11 | teen girl, friendly | عملتي إيه امبارح؟ |
+| 20 | l01-bokra-hanlaab.mp3 | 13 | coach, excited | بكرة هنلعب الفاينل! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+بلعب كورة كل يوم. <break time="1.2s" /> امبارح رحت النادي. <break time="1.2s" /> يا عمر! عملت إيه في الماتش؟ <break time="1.2s" /> جبت جون! <break time="1.2s" /> بجد؟ ونور؟ <break time="1.2s" /> نور جابت جونين! <break time="1.2s" /> إنتي جبتي جونين؟! <break time="1.2s" /> آه! وإنت رحت فين؟ <break time="1.2s" /> نمت… <break time="1.2s" /> جبت جون. <break time="1.2s" /> عملت إيه؟ <break time="1.2s" /> إنتي جبتي جونين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> نور جابت جونين. <break time="1.2s" /> نمت. <break time="1.2s" /> رحت النادي. <break time="1.2s" /> جبت جون. نور جابت جونين! إنتي رحتي فين؟ <break time="1.2s" /> عملتي إيه امبارح؟ <break time="1.2s" /> بكرة هنلعب الفاينل!
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.

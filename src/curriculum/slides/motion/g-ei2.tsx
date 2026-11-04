@@ -19,7 +19,7 @@ const LABEL = { past: 'امبارح', now: 'كل يوم', future: 'بكرة' } a
 type When = keyof typeof STOPS;
 
 /** The timeline at height y, with the marker at `at` (or none). */
-function Timeline({ y, at, delay = 0 }: { y: number; at?: When; delay?: number }) {
+export function Timeline({ y, at, delay = 0 }: { y: number; at?: When; delay?: number }) {
   return (
     <>
       <motion.div className="pointer-events-none absolute rounded-full" style={{ left: 840, top: y - 3, height: 6, width: 620, background: '#E3D3BA' }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.8, delay, ease }} />

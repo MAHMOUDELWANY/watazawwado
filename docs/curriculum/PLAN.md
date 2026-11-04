@@ -901,3 +901,7 @@ B3–B5 → continue lesson by lesson.
   with وبعدين، لما، فجأة، في الآخر: Adam tells Amm Sayed how he missed the train and still reached the sea. New device:
   the story strip (framed event panels, the four words as hinges between them); wow: the same five facts as a list,
   then as a story. Graphics `g-ei3.tsx`. Adults Intermediate now has 3 lessons. Next: Teens Intermediate.
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 1 "What Did You Do at the Match?" (draft, `reviewed: false`).**
+  New catalog entry `egyptian-teens-2` (the club a year later: Omar, Karim, Nour). The past endings with جاب، نام، راح;
+  wow: a team group chat with no names, where the ending alone tells who did what. Graphics `g-eti1.tsx` (reuses the
+  Adults ending tag). Next: Teens Lesson 2 "Tomorrow's Final".
