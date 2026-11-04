@@ -1811,6 +1811,38 @@ One take: paste this whole block as one generation; I cut it into the files abov
 إيه ده؟ <break time="1.2s" /> إيه ده يا تيتة؟ <break time="1.2s" /> ده كتاب قديم. <break time="1.2s" /> وإيه دي؟ <break time="1.2s" /> دي صورة بابا وهو صغير! <break time="1.2s" /> ودي كورة! <break time="1.2s" /> ده <break time="1.2s" /> دي <break time="1.2s" /> ده كتاب. <break time="1.2s" /> دي صورة. <break time="1.2s" /> دي كورة. <break time="1.2s" /> ده قلم. <break time="1.2s" /> ده مفتاح. <break time="1.2s" /> دي عروسة. <break time="1.2s" /> إيه دي؟ <break time="1.2s" /> فين الكورة؟
 ```
 
+## Egyptian Arabic · Kids · Intermediate · Lesson 1: Where Did You Go, Ziad?
+
+Folder: `public/curriculum/egyptian-kids-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l01-story-1.mp3 | 3 | grandma, warm | رحت فين يا زياد؟ |
+| 2 | l01-story-2.mp3 | 3 | boy, happy | رحت الجنينة! |
+| 3 | l01-story-3.mp3 | 3 | grandma | ومريم راحت فين؟ |
+| 4 | l01-story-4.mp3 | 3 | girl, cheerful | أنا رحت مع زياد! |
+| 5 | l01-story-5.mp3 | 3 | grandma | وإنت يا آدم؟ |
+| 6 | l01-story-6.mp3 | 3 | boy, guilty, mouth full | أنا… رحت المطبخ! |
+| 7 | l01-rooht.mp3 | 4 |  | رحت |
+| 8 | l01-rooht-gneena.mp3 | 4 |  | رحت الجنينة. |
+| 9 | l01-rooht-matbakh.mp3 | 4 |  | رحت المطبخ. |
+| 10 | l01-rooht-feen.mp3 | 5 |  | رحت فين؟ |
+| 11 | l01-roohti-feen.mp3 | 5 |  | رحتي فين؟ |
+| 12 | l01-ziad-rah.mp3 | 6 |  | زياد راح. |
+| 13 | l01-mariam-rahit.mp3 | 6 |  | مريم راحت. |
+| 14 | l01-song.mp3 | 7 | sing-song, clapping | رحت، رحتي، راح، راحت! |
+| 15 | l01-rooht-feen-naharda.mp3 | 9 | grandma, warm | رحت فين النهارده؟ |
+| 16 | l01-roohti-feen-naharda.mp3 | 9 | grandma, to a girl | رحتي فين النهارده؟ |
+| 17 | l01-bokra-zoo.mp3 | 11 | grandma, excited | بكرة هنروح جنينة الحيوانات! |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+رحت فين يا زياد؟ <break time="1.2s" /> رحت الجنينة! <break time="1.2s" /> ومريم راحت فين؟ <break time="1.2s" /> أنا رحت مع زياد! <break time="1.2s" /> وإنت يا آدم؟ <break time="1.2s" /> أنا… رحت المطبخ! <break time="1.2s" /> رحت <break time="1.2s" /> رحت الجنينة. <break time="1.2s" /> رحت المطبخ. <break time="1.2s" /> رحت فين؟ <break time="1.2s" /> رحتي فين؟ <break time="1.2s" /> زياد راح. <break time="1.2s" /> مريم راحت. <break time="1.2s" /> رحت، رحتي، راح، راحت! <break time="1.2s" /> رحت فين النهارده؟ <break time="1.2s" /> رحتي فين النهارده؟ <break time="1.2s" /> بكرة هنروح جنينة الحيوانات!
+```
+
 ## Egyptian Arabic · Teens · Lesson 1: Ezzayak? What's Up, Cairo
 
 Folder: `public/curriculum/egyptian-teens/audio/`.

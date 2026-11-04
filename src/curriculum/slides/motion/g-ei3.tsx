@@ -14,7 +14,7 @@ import { StreetCard } from './g-es1';
  */
 
 const SHADOW = '0 16px 30px -22px rgba(60,30,10,0.6)';
-export type Pic = 'alarm' | 'taxi' | 'station' | 'train' | 'sea' | 'ball' | 'goal' | 'cup' | 'clock';
+export type Pic = 'alarm' | 'taxi' | 'station' | 'train' | 'sea' | 'ball' | 'goal' | 'cup' | 'clock' | 'tree' | 'school' | 'pot';
 
 /** A tiny drawing for each event. */
 function Drawing({ pic }: { pic: Pic }) {
@@ -28,6 +28,9 @@ function Drawing({ pic }: { pic: Pic }) {
       {pic === 'goal' && <g><path d="M14 70 V16 H106 V70" stroke={INK_TEXT} strokeWidth={5} fill="none" />{[0, 1, 2, 3].map((i) => <line key={i} x1={14 + i * 30} y1={16} x2={14 + i * 30} y2={70} stroke={INK_TEXT} strokeWidth={1.5} opacity={0.3} />)}<circle cx={80} cy={52} r={10} fill="#fff" stroke={INK_TEXT} strokeWidth={3} /></g>}
       {pic === 'cup' && <g><path d="M38 8 h44 v14 q0 24 -22 26 q-22 -2 -22 -26 z" fill={GOLD} /><rect x={55} y={48} width={10} height={14} fill={GOLD} /><rect x={44} y={62} width={32} height={8} rx={2} fill={GOLD} /></g>}
       {pic === 'clock' && <g><rect x={24} y={20} width={72} height={44} rx={8} fill="#1E2B33" /><text x={60} y={50} textAnchor="middle" fontSize={20} fontWeight={900} fill="#fff" fontFamily="sans-serif">89'</text></g>}
+      {pic === 'tree' && <g><rect x={54} y={44} width={12} height={30} fill="#8A5A2B" /><circle cx={60} cy={34} r={26} fill="#5AA153" /><circle cx={40} cy={44} r={16} fill="#6DB566" /><circle cx={80} cy={44} r={16} fill="#6DB566" /></g>}
+      {pic === 'school' && <g><polygon points="60,6 104,30 16,30" fill={CRIMSON} /><rect x={22} y={30} width={76} height={44} fill="#EAD9BE" /><rect x={52} y={48} width={16} height={26} fill="#8A5A2B" />{[30, 80].map((x) => <rect key={x} x={x - 6} y={40} width={14} height={12} fill="#9FB3BF" />)}</g>}
+      {pic === 'pot' && <g><path d="M24 34 h72 v20 q0 18 -36 18 q-36 0 -36 -18 z" fill={TEAL} /><rect x={18} y={28} width={84} height={8} rx={4} fill="#0B7C86" />{[0, 1, 2].map((i) => <path key={i} d={`M${44 + i * 16} 22 q -6 -8 0 -16`} stroke={INK_TEXT} strokeWidth={3} fill="none" opacity={0.35} />)}</g>}
       {pic === 'sea' && <g><circle cx={92} cy={22} r={12} fill={GOLD} />{[0, 1].map((i) => <path key={i} d={`M4 ${50 + i * 14} q 14 -10 28 0 t 28 0 t 28 0 t 28 0`} stroke={TEAL} strokeWidth={5} fill="none" />)}</g>}
     </svg>
   );

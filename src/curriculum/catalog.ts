@@ -65,6 +65,7 @@ import { lessonEI03 } from './content/egyptian-adults-2/l03-and-then.js';
 import { lessonETI01 } from './content/egyptian-teens-2/l01-what-did-you-do-at-the-match.js';
 import { lessonETI02 } from './content/egyptian-teens-2/l02-tomorrows-final.js';
 import { lessonETI03 } from './content/egyptian-teens-2/l03-you-wont-believe-it.js';
+import { lessonEKI01 } from './content/egyptian-kids-2/l01-where-did-you-go.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
@@ -620,7 +621,21 @@ export const SUBJECTS: SubjectEntry[] = [
       'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
     ],
     lessons: { 1: lessonEK01, 2: lessonEK02, 3: lessonEK03 },
+  },  {
+    id: 'egyptian-kids-2',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Kids · Intermediate',
+    titleAr: 'العامية المصرية · للأطفال · المتوسط',
+    version: 'Kids · Intermediate',
+    versionAr: 'الأطفال · المتوسط',
+    audience: '6–11',
+    art: '/curriculum/banners/egyptian-kids.webp',
+    parts: [{ title: "Intermediate · Back at Teta's", titleAr: 'المتوسط · تاني عند تيتة', from: 1 }],
+    // docs/curriculum/egyptian/MAP-intermediate.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
+    plan: ['Where Did You Go, Ziad?', "Tomorrow We'll Go to the Zoo", "Teta's Story", 'We Went, They Went', "I Didn't Eat It!", 'When I Was Little', 'Review: A Day at the Zoo', 'I Have to Go', 'Bigger and Biggest', 'My Tummy Hurts', 'Intermediate Story'],
+    lessons: { 1: lessonEKI01 },
   },
+
   {
     id: 'egyptian-teens',
     group: 'egyptian',

@@ -912,3 +912,7 @@ B3–B5 → continue lesson by lesson.
   Karim's voice note about the final: وبعدين، لما، فجأة، في الآخر. Reuses the story strip with football panels (ball,
   goal, clock, cup added to the panel set) and a voice-note waveform. Graphics `g-eti3.tsx`. Teens Intermediate now has
   3 lessons. Next: Kids Intermediate.
+- **2026-11-04 — Egyptian Intermediate (Kids), Lesson 1 "Where Did You Go, Ziad?" (draft, `reviewed: false`).** New
+  catalog entry `egyptian-kids-2` (back at Teta's flat). رحت / رحتي / راح / راحت with places (garden, school,
+  kitchen); wow: the going song, four verbs lighting up above their people. Graphics `g-eki1.tsx` (tree, school and pot
+  added to the panel set). Next: Kids Lesson 2 "Tomorrow We'll Go to the Zoo".
