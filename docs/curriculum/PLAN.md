@@ -908,3 +908,7 @@ B3–B5 → continue lesson by lesson.
 - **2026-11-04 — Egyptian Intermediate (Teens), Lesson 2 "Tomorrow's Final" (draft, `reviewed: false`).** The future
   with هـ (هلعب، هتلعبي، هيلعب، هنلعب), مش هـ, أكيد / إن شاء الله; the coach's news the night before the final. Reuses
   the timeline and prefix tag; wow: جبت · بجيب · هجيب. Graphics `g-eti2.tsx`. Next: Teens Lesson 3.
+- **2026-11-04 — Egyptian Intermediate (Teens), Lesson 3 "You Won't Believe What Happened" (draft, `reviewed: false`).**
+  Karim's voice note about the final: وبعدين، لما، فجأة، في الآخر. Reuses the story strip with football panels (ball,
+  goal, clock, cup added to the panel set) and a voice-note waveform. Graphics `g-eti3.tsx`. Teens Intermediate now has
+  3 lessons. Next: Kids Intermediate.

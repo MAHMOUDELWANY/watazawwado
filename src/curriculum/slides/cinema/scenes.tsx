@@ -52,6 +52,7 @@ import { Ei2CoverGraphic, Ei2RecallGraphic, Ei2NewsGraphic, Ei2StoryGraphic, Ei2
 import { Ei3CoverGraphic, Ei3RecallGraphic, Ei3BackGraphic, Ei3StoryGraphic, Ei3ThenGraphic, Ei3WhenGraphic, Ei3SuddenGraphic, Ei3EndGraphic, Ei3StripGraphic, Ei3TalkGraphic, Ei3MissionGraphic, Ei3NextGraphic } from '../motion/g-ei3';
 import { Eti1CoverGraphic, Eti1RecallGraphic, Eti1ClubGraphic, Eti1StoryGraphic, Eti1AnaGraphic, Eti1EntiGraphic, Eti1HuwaGraphic, Eti1TuneGraphic, Eti1ChatGraphic, Eti1TalkGraphic, Eti1MissionGraphic, Eti1NextGraphic } from '../motion/g-eti1';
 import { Eti2CoverGraphic, Eti2RecallGraphic, Eti2NewsGraphic, Eti2StoryGraphic, Eti2SwapGraphic, Eti2WhoGraphic, Eti2MishGraphic, Eti2SureGraphic, Eti2LineGraphic, Eti2TalkGraphic, Eti2MissionGraphic, Eti2NextGraphic } from '../motion/g-eti2';
+import { Eti3CoverGraphic, Eti3RecallGraphic, Eti3NoteGraphic, Eti3StoryGraphic, Eti3ThenGraphic, Eti3WhenGraphic, Eti3SuddenGraphic, Eti3EndGraphic, Eti3StripGraphic, Eti3TalkGraphic, Eti3MissionGraphic, Eti3NextGraphic } from '../motion/g-eti3';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Tj3CoverGraphic, Tj3RecallGraphic, Tj3DoorsGraphic, Tj3ThroatGraphic, Tj3IzharGraphic, Tj3TanweenGraphic, Tj3WhyGraphic, Tj3MushafGraphic, Tj3MistakesGraphic, Tj3SpotGraphic, Tj3ReciteGraphic, Tj3MissionGraphic, Tj3NextGraphic } from '../motion/g-tj3';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -704,6 +705,18 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   eti2Talk: onStage({ tone: 'light', Graphic: Eti2TalkGraphic, keepOnAsk: true }),
   eti2Mission: onStage({ tone: 'light', Graphic: Eti2MissionGraphic }),
   eti2Next: onStage({ tone: 'light', Graphic: Eti2NextGraphic }),
+  eti3Cover: onStage({ tone: 'light', Graphic: Eti3CoverGraphic }),
+  eti3Recall: onStage({ tone: 'light', Graphic: Eti3RecallGraphic }),
+  eti3Note: onStage({ tone: 'light', Graphic: Eti3NoteGraphic }),
+  eti3Story: onStage({ tone: 'light', Graphic: Eti3StoryGraphic }),
+  eti3Then: onStage({ tone: 'light', Graphic: Eti3ThenGraphic }),
+  eti3When: onStage({ tone: 'light', Graphic: Eti3WhenGraphic }),
+  eti3Sudden: onStage({ tone: 'light', Graphic: Eti3SuddenGraphic }),
+  eti3End: onStage({ tone: 'light', Graphic: Eti3EndGraphic }),
+  eti3Strip: onStage({ tone: 'light', Graphic: Eti3StripGraphic }),
+  eti3Talk: onStage({ tone: 'light', Graphic: Eti3TalkGraphic, keepOnAsk: true }),
+  eti3Mission: onStage({ tone: 'light', Graphic: Eti3MissionGraphic }),
+  eti3Next: onStage({ tone: 'light', Graphic: Eti3NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),

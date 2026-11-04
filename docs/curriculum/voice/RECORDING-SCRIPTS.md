@@ -1988,6 +1988,38 @@ One take: paste this whole block as one generation; I cut it into the files abov
 جبت جون. <break time="1.2s" /> بكرة هنلعب الفاينل. <break time="1.2s" /> بكرة هنلعب الفاينل! <break time="1.2s" /> هنلعب الساعة كام يا كابتن؟ <break time="1.2s" /> هنبدأ الساعة خمسة. هتيجوا بدري؟ <break time="1.2s" /> أنا هاجي الساعة أربعة! <break time="1.2s" /> وأنا هجيب الكورة. <break time="1.2s" /> وأنا… مش هنام النهارده! <break time="1.2s" /> بلعب <break time="1.2s" /> هلعب <break time="1.2s" /> بكرة هلعب. <break time="1.2s" /> هتلعب <break time="1.2s" /> هتلعبي <break time="1.2s" /> هيلعب <break time="1.2s" /> هنلعب <break time="1.2s" /> مش هنام النهارده! <break time="1.2s" /> هاجي أكيد. <break time="1.2s" /> هاجي إن شاء الله. <break time="1.2s" /> جبت <break time="1.2s" /> بجيب <break time="1.2s" /> هجيب <break time="1.2s" /> هتعمل إيه بكرة؟ <break time="1.2s" /> هتعملي إيه بكرة؟ <break time="1.2s" /> مش هتصدق اللي حصل!
 ```
 
+## Egyptian Arabic · Teens · Intermediate · Lesson 3: You Won't Believe What Happened
+
+Folder: `public/curriculum/egyptian-teens-2/audio/`.
+
+### ElevenLabs: Mahmoud Egyptian (17)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l03-hanlaab.mp3 | 2 |  | هنلعب الفاينل. |
+| 2 | l03-laabna.mp3 | 2 |  | لعبنا الفاينل. |
+| 3 | l03-story-1.mp3 | 4 | teen boy, excited voice note | مش هتصدق اللي حصل في الفاينل! |
+| 4 | l03-story-2.mp3 | 4 | teen boy, telling | الماتش بدأ، وبعدين هما جابوا جون. |
+| 5 | l03-story-3.mp3 | 4 | teen boy, building up | لما فضلت دقيقة، عمر جاب جون. |
+| 6 | l03-story-4.mp3 | 4 | teen boy, dramatic pause | وفجأة… الكورة جت عندي! |
+| 7 | l03-story-5.mp3 | 4 | teen boy, shouting with joy | وفي الآخر… كسبنا الكاس! |
+| 8 | l03-wbaadeen.mp3 | 5 |  | الماتش بدأ، وبعدين هما جابوا جون. |
+| 9 | l03-wbaadeen-q.mp3 | 5 |  | وبعدين؟ |
+| 10 | l03-lamma.mp3 | 6 |  | لما فضلت دقيقة… |
+| 11 | l03-omar-gab.mp3 | 6 |  | عمر جاب جون. |
+| 12 | l03-fagaa.mp3 | 7 | dramatic pause | وفجأة… الكورة جت عندي! |
+| 13 | l03-fel-akher.mp3 | 8 |  | وفي الآخر… كسبنا الكاس! |
+| 14 | l03-strip.mp3 | 9 | telling, lively | الماتش بدأ، وبعدين جابوا جون. لما فضلت دقيقة، عمر جاب جون. وفجأة الكورة جت عندي. وفي الآخر كسبنا! |
+| 15 | l03-mosh-hatsadda2.mp3 | 11 | teen, excited | مش هتصدق اللي حصل! |
+| 16 | l03-wbaadeen-2.mp3 | 11 | eager | وبعدين؟ |
+| 17 | l03-rohna.mp3 | 13 | teen girl, telling | رحنا البحر، وهما راحوا السوق. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+هنلعب الفاينل. <break time="1.2s" /> لعبنا الفاينل. <break time="1.2s" /> مش هتصدق اللي حصل في الفاينل! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> لما فضلت دقيقة، عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين هما جابوا جون. <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> لما فضلت دقيقة… <break time="1.2s" /> عمر جاب جون. <break time="1.2s" /> وفجأة… الكورة جت عندي! <break time="1.2s" /> وفي الآخر… كسبنا الكاس! <break time="1.2s" /> الماتش بدأ، وبعدين جابوا جون. لما فضلت دقيقة، عمر جاب جون. وفجأة الكورة جت عندي. وفي الآخر كسبنا! <break time="1.2s" /> مش هتصدق اللي حصل! <break time="1.2s" /> وبعدين؟ <break time="1.2s" /> رحنا البحر، وهما راحوا السوق.
+```
+
 ## English · General · Lesson 1: Hello, I'm…
 
 Folder: `public/curriculum/english-general/audio/`.
