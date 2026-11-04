@@ -958,3 +958,7 @@ B3–B5 → continue lesson by lesson.
   `egyptian-kids-3`. Teta and the ice-cream cart: أنا شايف / شايفة إن، أنا كمان، لأ أنا…، and Teta's كل واحد ورأيه. New
   device: the cones; each opinion drops a scoop of its flavour; wow: three different towers side by side, all fine.
   Graphics `g-eka1.tsx`. Next: Kids Advanced Lesson 2 "Teta's Sayings".
+- **2026-11-04 — Egyptian Advanced (Kids), Lesson 2 "Teta's Sayings" (draft, `reviewed: false`).** Teta's jar of
+  sayings: في التأني السلامة (with على مهلك)، إيد لوحدها ما تسقفش، الجار قبل الدار. Taught as the people's sayings, not
+  religious text. New device: the glass jar and its paper notes; wow: three notes fly to three moments at home.
+  Graphics `g-eka2.tsx`. Next: Kids Advanced Lesson 3 "Ziad's Joke".
