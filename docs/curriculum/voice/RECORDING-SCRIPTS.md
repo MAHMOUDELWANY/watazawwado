@@ -688,6 +688,54 @@ One take: paste this whole block as one generation; I cut it into the files abov
 قهوة؟ حاضر يا باشا! <break time="1.2s" /> قلم؟ عندك الكشك اللي جنبنا. <break time="1.2s" /> يا آدم، إنت بتتكلم زي الكتاب! جميل! <break time="1.2s" /> قهوة <break time="1.2s" /> قلم <break time="1.2s" /> قلب <break time="1.2s" /> قال <break time="1.2s" /> فوق <break time="1.2s" /> سوق <break time="1.2s" /> صديق <break time="1.2s" /> القرآن <break time="1.2s" /> القضية <break time="1.2s" /> جميل <break time="1.2s" /> جنب <break time="1.2s" /> جديد <break time="1.2s" /> جامعة <break time="1.2s" /> أنا عايز أقعد في القهوة اللي جنب الجامعة. <break time="1.2s" /> واحد قهوة، لو سمحت. <break time="1.2s" /> فين الجامعة؟ <break time="1.2s" /> دهب؟ عندنا دهب جميل!
 ```
 
+## Egyptian Arabic · Sounds · Lesson 2: Th and Dh
+
+Folder: `public/curriculum/egyptian-sounds/audio/`.
+
+### ElevenLabs: Mahmoud Fusha (4)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-story-1.mp3 | 4 | polite, careful | أُرِيدُ خَاتَمًا مِنَ ٱلذَّهَبِ. |
+| 2 | l02-story-3.mp3 | 4 | surprised | ثَلَاثَةُ آلَافٍ؟ هَذَا كَثِيرٌ! |
+| 3 | l02-thalatha-f.mp3 | 5 |  | ثَلَاثَةٌ |
+| 4 | l02-dhahab-f.mp3 | 6 |  | ذَهَبٌ |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+أُرِيدُ خَاتَمًا مِنَ ٱلذَّهَبِ. <break time="1.2s" /> ثَلَاثَةُ آلَافٍ؟ هَذَا كَثِيرٌ! <break time="1.2s" /> ثَلَاثَةٌ <break time="1.2s" /> ذَهَبٌ
+```
+
+### ElevenLabs: Mahmoud Egyptian (18)
+
+| # | File | Page | How to say it | Text |
+|---|---|---|---|---|
+| 1 | l02-ahwa.mp3 | 2 |  | قهوة |
+| 2 | l02-gamiil.mp3 | 2 |  | جميل |
+| 3 | l02-story-2.mp3 | 4 | jeweller, inviting | دهب؟ عندنا دهب جميل. بتلات آلاف. |
+| 4 | l02-story-4.mp3 | 4 | jeweller, laughing | إنت ذكي يا أستاذ! خلاص، بألفين وتمنمية. |
+| 5 | l02-story-5.mp3 | 4 | doorman, warm | مبروك يا آدم! أمك هتفرح. |
+| 6 | l02-talata.mp3 | 5 |  | تلاتة |
+| 7 | l02-kitir.mp3 | 5 |  | كتير |
+| 8 | l02-talg.mp3 | 5 |  | تلج |
+| 9 | l02-dahab.mp3 | 6 |  | دهب |
+| 10 | l02-deel.mp3 | 6 |  | ديل |
+| 11 | l02-sawra.mp3 | 7 |  | ثورة |
+| 12 | l02-masalan.mp3 | 7 |  | مثلاً |
+| 13 | l02-zaki.mp3 | 7 |  | ذكي |
+| 14 | l02-dahr.mp3 | 8 | tired, rubbing back | ضهري واجعني. |
+| 15 | l02-zariif.mp3 | 8 |  | ظريف |
+| 16 | l02-bikam.mp3 | 11 | curious | ده بكام؟ |
+| 17 | l02-kitir-awi.mp3 | 11 | shocked, playful | ده كتير أوي! |
+| 18 | l02-mahatta.mp3 | 13 | metro announcer | المحطة الجاية: السادات. |
+
+One take: paste this whole block as one generation; I cut it into the files above, in this order.
+
+```text
+قهوة <break time="1.2s" /> جميل <break time="1.2s" /> دهب؟ عندنا دهب جميل. بتلات آلاف. <break time="1.2s" /> إنت ذكي يا أستاذ! خلاص، بألفين وتمنمية. <break time="1.2s" /> مبروك يا آدم! أمك هتفرح. <break time="1.2s" /> تلاتة <break time="1.2s" /> كتير <break time="1.2s" /> تلج <break time="1.2s" /> دهب <break time="1.2s" /> ديل <break time="1.2s" /> ثورة <break time="1.2s" /> مثلاً <break time="1.2s" /> ذكي <break time="1.2s" /> ضهري واجعني. <break time="1.2s" /> ظريف <break time="1.2s" /> ده بكام؟ <break time="1.2s" /> ده كتير أوي! <break time="1.2s" /> المحطة الجاية: السادات.
+```
+
 ## Egyptian Arabic · Adults · Lesson 1: Ahlan! What's Your Name?
 
 Folder: `public/curriculum/egyptian-adults/audio/`.

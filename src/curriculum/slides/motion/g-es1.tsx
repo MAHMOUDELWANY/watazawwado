@@ -20,7 +20,7 @@ const CAIRO = TEAL;
 const WAITER = '#7A5BA6';
 
 /** The book card: a Fusha word on paper with a spine. */
-function BookCard({ x, y, word, id, sound, delay = 0, size = 44, dim = false }: { x: number; y: number; word: string; id?: string; sound?: string; delay?: number; size?: number; dim?: boolean }) {
+export function BookCard({ x, y, word, id, sound, delay = 0, size = 44, dim = false }: { x: number; y: number; word: string; id?: string; sound?: string; delay?: number; size?: number; dim?: boolean }) {
   const body = (
     <span className="inline-flex flex-col items-center rounded-r-[14px]" style={{ padding: '4px 22px 6px', background: '#F3E7D2', borderLeft: `8px solid ${BOOK}`, boxShadow: SHADOW }}>
       <ArText size={size} color={BOOK}>{word}</ArText>
@@ -35,7 +35,7 @@ function BookCard({ x, y, word, id, sound, delay = 0, size = 44, dim = false }: 
 }
 
 /** The street card: the Cairo word on a teal shop sign. */
-function StreetCard({ x, y, word, id, sound, delay = 0, size = 44 }: { x: number; y: number; word: string; id?: string; sound?: string; delay?: number; size?: number }) {
+export function StreetCard({ x, y, word, id, sound, delay = 0, size = 44 }: { x: number; y: number; word: string; id?: string; sound?: string; delay?: number; size?: number }) {
   const body = (
     <span className="inline-flex flex-col items-center rounded-[14px]" style={{ padding: '4px 22px 6px', background: CAIRO, boxShadow: `0 0 0 4px ${CARD}, ${SHADOW}` }}>
       <ArText size={size} color="#fff">{word}</ArText>
@@ -50,7 +50,7 @@ function StreetCard({ x, y, word, id, sound, delay = 0, size = 44 }: { x: number
 }
 
 /** A pair: book card → arrow → street card, on one row at height y (book on the right, read right to left). */
-function Twin({ y, f, fid, fs, e, eid, es, delay = 0, xr = 1360, xl = 980, size = 42 }: { y: number; f: string; fid?: string; fs?: string; e: string; eid?: string; es?: string; delay?: number; xr?: number; xl?: number; size?: number }) {
+export function Twin({ y, f, fid, fs, e, eid, es, delay = 0, xr = 1360, xl = 980, size = 42 }: { y: number; f: string; fid?: string; fs?: string; e: string; eid?: string; es?: string; delay?: number; xr?: number; xl?: number; size?: number }) {
   return (
     <>
       <BookCard x={xr} y={y} word={f} id={fid} sound={fs} delay={delay} size={size} />
@@ -61,7 +61,7 @@ function Twin({ y, f, fid, fs, e, eid, es, delay = 0, xr = 1360, xl = 980, size 
 }
 
 /** The dial: one letter, its book sound and its Cairo sound; `cairo` turns the needle. */
-function Dial({ x, y, letter, book, cairo, on, delay = 0 }: { x: number; y: number; letter: string; book: string; cairo: string; on: boolean; delay?: number }) {
+export function Dial({ x, y, letter, book, cairo, on, delay = 0 }: { x: number; y: number; letter: string; book: string; cairo: string; on: boolean; delay?: number }) {
   return (
     <>
       <motion.div className="pointer-events-none absolute flex items-center justify-center rounded-full" style={{ left: x - 80, top: y - 80, width: 160, height: 160, background: CARD, boxShadow: `0 0 0 6px ${on ? CAIRO : BOOK}, ${SHADOW}` }}

@@ -876,4 +876,8 @@ B3–B5 → continue lesson by lesson.
   that keep q). Graphics `g-es1.tsx` (twins: a book card for the Fusha word, a street sign for the Cairo word, a dial
   for the letter that moves). Adam's Fusha lines use the Fusha clone; the Egyptian lines wait for the owner's own
   recordings. Every step screenshotted. Next: Sounds Lesson 2 "Th and Dh".
+- **2026-11-04 · Egyptian Sounds, Lesson 2 "Th and Dh" built** (draft, overnight run): 13 pages, the jeweller scene;
+  ث → t and ذ → d in street words, s and z in book words, ظ on both paths, the "two layers" of Cairo Arabic as the wow.
+  Graphics `g-es2.tsx` (teeth profile, two layers; reuses the Lesson 1 twins). Every step screenshotted. Next: Sounds
+  Lesson 3 "Short and Stressed".
 

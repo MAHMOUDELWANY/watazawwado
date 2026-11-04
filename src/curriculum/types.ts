@@ -78,6 +78,8 @@ export type SceneId =
   | 'fy3Cover' | 'fy3Motion' | 'fy3Story' | 'fy3Inna' | 'fy3Seesaw' | 'fy3Lakinna' | 'fy3Moods' | 'fy3Pronouns' | 'fy3Six' | 'fy3Sort' | 'fy3Talk' | 'fy3Mission' | 'fy3Next'
   // Egyptian · Sounds · Lesson 1 (slides/motion/g-es1.tsx)
   | 'es1Cover' | 'es1Lost' | 'es1Story' | 'es1Qaf' | 'es1Guess' | 'es1Keep' | 'es1Jim' | 'es1Thousand' | 'es1Sentence' | 'es1Sort' | 'es1Talk' | 'es1Mission' | 'es1Next'
+  // Egyptian · Sounds · Lesson 2 (slides/motion/g-es2.tsx)
+  | 'es2Cover' | 'es2Recall' | 'es2Gold' | 'es2Story' | 'es2Tha' | 'es2Dhal' | 'es2Book' | 'es2Zha' | 'es2Layers' | 'es2Sort' | 'es2Talk' | 'es2Mission' | 'es2Next'
   // Tajweed · Lesson 2 (slides/motion/g-tj2.tsx)
   | 'tj2Cover' | 'tj2Recall' | 'tj2Five' | 'tj2Why' | 'tj2Small' | 'tj2Big' | 'tj2Biggest' | 'tj2Mistakes' | 'tj2Spot' | 'tj2Review' | 'tj2Recite' | 'tj2Mission' | 'tj2Next'
   // Tajweed · Lesson 3 (slides/motion/g-tj3.tsx)

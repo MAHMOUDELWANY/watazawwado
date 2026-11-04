@@ -45,6 +45,7 @@ import { Fx1CoverGraphic, Fx1RecallGraphic, Fx1BikeGraphic, Fx1StoryGraphic, Fx1
 import { Fx2CoverGraphic, Fx2RecallGraphic, Fx2CrashGraphic, Fx2StoryGraphic, Fx2WasGraphic, Fx2SwitchGraphic, Fx2SheGraphic, Fx2GoneGraphic, Fx2WhyGraphic, Fx2TalkGraphic, Fx2MissionGraphic, Fx2NextGraphic, Fy2CoverGraphic, Fy2NewsGraphic, Fy2StoryGraphic, Fy2PastGraphic, Fy2PresentGraphic, Fy2StandGraphic, Fy2FormsGraphic, Fy2MissingGraphic, Fy2ReadGraphic, Fy2TalkGraphic, Fy2MissionGraphic, Fy2NextGraphic } from '../motion/g-fx2';
 import { Fx3CoverGraphic, Fx3RecallGraphic, Fx3TrialGraphic, Fx3StoryGraphic, Fx3InnaGraphic, Fx3SeesawGraphic, Fx3LakinnaGraphic, Fx3HuGraphic, Fx3VerdictGraphic, Fx3TalkGraphic, Fx3MissionGraphic, Fx3NextGraphic, Fy3CoverGraphic, Fy3MotionGraphic, Fy3StoryGraphic, Fy3InnaGraphic, Fy3SeesawGraphic, Fy3LakinnaGraphic, Fy3MoodsGraphic, Fy3PronounsGraphic, Fy3SixGraphic, Fy3TalkGraphic, Fy3MissionGraphic, Fy3NextGraphic } from '../motion/g-fx3';
 import { Es1CoverGraphic, Es1LostGraphic, Es1StoryGraphic, Es1QafGraphic, Es1GuessGraphic, Es1KeepGraphic, Es1JimGraphic, Es1ThousandGraphic, Es1SentenceGraphic, Es1TalkGraphic, Es1MissionGraphic, Es1NextGraphic } from '../motion/g-es1';
+import { Es2CoverGraphic, Es2RecallGraphic, Es2GoldGraphic, Es2StoryGraphic, Es2ThaGraphic, Es2DhalGraphic, Es2BookGraphic, Es2ZhaGraphic, Es2LayersGraphic, Es2TalkGraphic, Es2MissionGraphic, Es2NextGraphic } from '../motion/g-es2';
 import { Tj2CoverGraphic, Tj2RecallGraphic, Tj2FiveGraphic, Tj2WhyGraphic, Tj2SmallGraphic, Tj2BigGraphic, Tj2BiggestGraphic, Tj2MistakesGraphic, Tj2SpotGraphic, Tj2ReciteGraphic, Tj2MissionGraphic, Tj2NextGraphic } from '../motion/g-tj2';
 import { Tj3CoverGraphic, Tj3RecallGraphic, Tj3DoorsGraphic, Tj3ThroatGraphic, Tj3IzharGraphic, Tj3TanweenGraphic, Tj3WhyGraphic, Tj3MushafGraphic, Tj3MistakesGraphic, Tj3SpotGraphic, Tj3ReciteGraphic, Tj3MissionGraphic, Tj3NextGraphic } from '../motion/g-tj3';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -612,6 +613,19 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   es1Talk: onStage({ tone: 'light', Graphic: Es1TalkGraphic, keepOnAsk: true }),
   es1Mission: onStage({ tone: 'light', Graphic: Es1MissionGraphic }),
   es1Next: onStage({ tone: 'light', Graphic: Es1NextGraphic }),
+  // Egyptian · Sounds · Lesson 2
+  es2Cover: onStage({ tone: 'light', Graphic: Es2CoverGraphic }),
+  es2Recall: onStage({ tone: 'light', Graphic: Es2RecallGraphic }),
+  es2Gold: onStage({ tone: 'light', Graphic: Es2GoldGraphic }),
+  es2Story: onStage({ tone: 'light', Graphic: Es2StoryGraphic }),
+  es2Tha: onStage({ tone: 'light', Graphic: Es2ThaGraphic }),
+  es2Dhal: onStage({ tone: 'light', Graphic: Es2DhalGraphic }),
+  es2Book: onStage({ tone: 'light', Graphic: Es2BookGraphic }),
+  es2Zha: onStage({ tone: 'light', Graphic: Es2ZhaGraphic }),
+  es2Layers: onStage({ tone: 'light', Graphic: Es2LayersGraphic }),
+  es2Talk: onStage({ tone: 'light', Graphic: Es2TalkGraphic, keepOnAsk: true }),
+  es2Mission: onStage({ tone: 'light', Graphic: Es2MissionGraphic }),
+  es2Next: onStage({ tone: 'light', Graphic: Es2NextGraphic }),
   tj2Cover: onStage({ tone: 'light', Graphic: Tj2CoverGraphic }), tj2Recall: onStage({ tone: 'light', Graphic: Tj2RecallGraphic }),
   tj2Five: onStage({ tone: 'light', Graphic: Tj2FiveGraphic }), tj2Why: onStage({ tone: 'light', Graphic: Tj2WhyGraphic }),
   tj2Small: onStage({ tone: 'light', Graphic: Tj2SmallGraphic }), tj2Big: onStage({ tone: 'light', Graphic: Tj2BigGraphic }),
