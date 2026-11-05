@@ -33,9 +33,9 @@ interface CommunityData {
 
 function errorText(err: any, isAr: boolean): string {
   if (err?.status === 400) return isAr ? 'اكتبوا اسم بس، من غير إيميل أو رقم، وفي حدود ٤٠ حرف.' : err.message;
-  if (err?.status === 409) return isAr ? 'الاختيار ده اتسجل قبل كده. حدّثوا الصفحة.' : err.message;
-  if (err?.status === 403) return isAr ? 'ولي الأمر هو اللي يختار ده من حسابه.' : err.message;
-  return isAr ? 'مقدرناش نحفظ اختياركم. جرّبوا تاني.' : 'We could not save your choice. Please try again.';
+  if (err?.status === 409) return isAr ? 'سُجّل هذا الاختيار من قبل. حدّثوا الصفحة.' : err.message;
+  if (err?.status === 403) return isAr ? 'وليّ الأمر هو من يختار هذا من حسابه.' : err.message;
+  return isAr ? 'تعذّر حفظ اختياركم. حاولوا مرة أخرى.' : 'We could not save your choice. Please try again.';
 }
 
 /** First name, or a short name the family types. */
@@ -45,7 +45,7 @@ function NamePicker({ firstName, choice, setChoice, custom, setCustom, isAr, idP
 }) {
   return (
     <fieldset className="grid gap-2">
-      <legend className="text-sm font-semibold text-foreground mb-1">{isAr ? 'الاسم اللي يظهر' : 'Name to show'}</legend>
+      <legend className="text-sm font-semibold text-foreground mb-1">{isAr ? 'الاسم الذي يظهر' : 'Name to show'}</legend>
       {firstName && (
         <label className="flex items-center gap-2 min-h-11 text-sm cursor-pointer">
           <input type="radio" name={`${idPrefix}-name`} checked={choice === 'first'} onChange={() => setChoice('first')} className="accent-teal w-4 h-4" />
@@ -54,11 +54,11 @@ function NamePicker({ firstName, choice, setChoice, custom, setCustom, isAr, idP
       )}
       <label className="flex items-center gap-2 min-h-11 text-sm cursor-pointer">
         <input type="radio" name={`${idPrefix}-name`} checked={choice === 'custom'} onChange={() => setChoice('custom')} className="accent-teal w-4 h-4" />
-        <span>{isAr ? 'اسم تاني نكتبه (كنية أو الاسم كامل)' : 'Another name we type (a nickname or the full name)'}</span>
+        <span>{isAr ? 'اسم آخر نكتبه (كنية أو الاسم كاملًا)' : 'Another name we type (a nickname or the full name)'}</span>
       </label>
       {choice === 'custom' && (
         <Input
-          aria-label={isAr ? 'الاسم اللي يظهر' : 'Name to show'}
+          aria-label={isAr ? 'الاسم الذي يظهر' : 'Name to show'}
           value={custom}
           maxLength={40}
           onChange={(e) => setCustom(e.target.value)}
@@ -77,7 +77,7 @@ function HonorDecision({ item, data, isAr, onDone }: { item: HonorItem; data: Co
   const send = async (decision: 'yes' | 'no') => {
     setError('');
     if (decision === 'yes' && choice === 'custom' && !custom.trim()) {
-      setError(isAr ? 'اكتبوا الاسم اللي يظهر.' : 'Type the name to show.');
+      setError(isAr ? 'اكتبوا الاسم الذي يظهر.' : 'Type the name to show.');
       return;
     }
     setBusy(decision);
@@ -97,7 +97,7 @@ function HonorDecision({ item, data, isAr, onDone }: { item: HonorItem; data: Co
       <NamePicker firstName={data.learner.firstName} choice={choice} setChoice={setChoice} custom={custom} setCustom={setCustom} isAr={isAr} idPrefix={item.id} />
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => send('yes')} isLoading={busy === 'yes'} disabled={busy !== null}>{isAr ? 'أيوه، اعرضوه' : 'Yes, show it'}</Button>
+        <Button onClick={() => send('yes')} isLoading={busy === 'yes'} disabled={busy !== null}>{isAr ? 'نعم، اعرضوه' : 'Yes, show it'}</Button>
         {item.status === 'awaiting_consent' && (
           <Button variant="outline" onClick={() => send('no')} isLoading={busy === 'no'} disabled={busy !== null}>{isAr ? 'لا، خلّيه لنا' : 'No, keep it private'}</Button>
         )}
@@ -133,7 +133,7 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
           {item.status === 'awaiting_consent' && (
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
-                ? 'نحب نحتفل بالإنجاز ده في لوحة الشرف. اللوحة جوه الحسابات، وبيشوفها أسر وطلاب الأكاديمية بس، وممكن ننشره كمان في مجموعات أسرنا. مش هيظهر غير الاسم اللي تختاروه وعنوان الإنجاز، من غير صورة ولا بلد ولا سن، وتقدروا تشيلوه في أي وقت.'
+                ? 'نحب أن نحتفل بهذا الإنجاز في لوحة الشرف. اللوحة داخل الحسابات، ولا يراها إلا أسر الأكاديمية وطلابها، وقد ننشره أيضًا في مجموعات أسرنا. لن يظهر إلا الاسم الذي تختارونه وعنوان الإنجاز، بلا صورة ولا بلد ولا عمر، ويمكنكم حذفه في أي وقت.'
                 : 'We would love to celebrate this on the Hall of Honor. It lives inside the accounts, where only families and students of the academy see it, and we may share it in our families’ groups too. Only the name you choose and the achievement are shown, with no photo, country or age, and you can take it down any time.'}
             </p>
           )}
@@ -146,14 +146,14 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
             </p>
           )}
           {(item.status === 'declined' || item.status === 'withdrawn') && (
-            <p className="text-sm text-muted-foreground">{isAr ? 'خاص، مش ظاهر لحد.' : 'Private. Not shown to anyone.'}</p>
+            <p className="text-sm text-muted-foreground">{isAr ? 'خاص، لا يظهر لأحد.' : 'Private. Not shown to anyone.'}</p>
           )}
         </div>
       </div>
 
       {item.status === 'awaiting_consent' && (data.canDecide
         ? <HonorDecision item={item} data={data} isAr={isAr} onDone={reload} />
-        : <p className="text-sm text-muted-foreground">{isAr ? 'هنسأل ولي الأمر عن ده، ومش هيظهر حاجة قبل ما يوافق.' : 'We will ask the parent or guardian. Nothing is shown before they agree.'}</p>)}
+        : <p className="text-sm text-muted-foreground">{isAr ? 'سنسأل وليّ الأمر عن ذلك، ولن يظهر شيء قبل موافقته.' : 'We will ask the parent or guardian. Nothing is shown before they agree.'}</p>)}
 
       {(item.status === 'declined' || item.status === 'withdrawn') && data.canDecide && (
         open
@@ -165,7 +165,7 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
         confirm ? (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-foreground">{isAr ? 'نشيله من لوحة الشرف؟' : 'Take it off the Hall of Honor?'}</span>
-            <Button size="sm" variant="outline" onClick={withdraw} isLoading={busy}>{isAr ? 'أيوه، شيله' : 'Yes, take it down'}</Button>
+            <Button size="sm" variant="outline" onClick={withdraw} isLoading={busy}>{isAr ? 'نعم، احذفوه' : 'Yes, take it down'}</Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(false)} disabled={busy}>{isAr ? 'رجوع' : 'Keep it'}</Button>
           </div>
         ) : (
@@ -188,7 +188,7 @@ function ClassBoard({ data, isAr, reload, uid }: { data: CommunityData; isAr: bo
   const save = async (join: boolean) => {
     setError('');
     if (join && choice === 'custom' && !custom.trim()) {
-      setError(isAr ? 'اكتبوا الاسم اللي يظهر.' : 'Type the name to show.');
+      setError(isAr ? 'اكتبوا الاسم الذي يظهر.' : 'Type the name to show.');
       return;
     }
     setBusy(true);
@@ -210,7 +210,7 @@ function ClassBoard({ data, isAr, reload, uid }: { data: CommunityData; isAr: bo
         <h3 id={`${uid}-board`} className="font-display text-base font-bold text-foreground">{isAr ? 'لوحة الحلقة' : 'Class board'}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
           {isAr
-            ? 'طلاب نفس المعلم ونفس المرحلة بيشوفوا مجهود بعض: حصص الشهر والأسابيع ورا بعض. اللوحة بتعرض الاسم الأول أو الاسم اللي تختاروه، ومن غير ترتيب ولا درجات.'
+            ? 'يرى طلاب المعلم نفسه والمرحلة نفسها مجهود بعضهم: حصص الشهر والأسابيع المتتالية. تعرض اللوحة الاسم الأول أو الاسم الذي تختارونه، بلا ترتيب ولا درجات.'
             : 'Learners with the same teacher and of the same age see each other’s effort: lessons this month and weeks in a row. The board shows first names or the name you choose, never a rank or a score.'}
         </p>
       </div>
@@ -221,7 +221,7 @@ function ClassBoard({ data, isAr, reload, uid }: { data: CommunityData; isAr: bo
           <div><Button onClick={() => save(true)} isLoading={busy}>{isAr ? 'انضم للوحة' : 'Join the board'}</Button></div>
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">{isAr ? 'ولي الأمر يقدر يختار ده من حسابه.' : 'A parent or guardian can choose this from their account.'}</p>
+        <p className="text-sm text-muted-foreground">{isAr ? 'يستطيع وليّ الأمر اختيار هذا من حسابه.' : 'A parent or guardian can choose this from their account.'}</p>
       ))}
 
       {board.joined && (
@@ -242,7 +242,7 @@ function ClassBoard({ data, isAr, reload, uid }: { data: CommunityData; isAr: bo
           ) : (
             <p className="text-sm text-muted-foreground">
               {isAr
-                ? `انضممتوا باسم «${board.displayName}». اللوحة بتظهر لما ينضم ٣ طلاب على الأقل.`
+                ? `انضممتم باسم «${board.displayName}». تظهر اللوحة حين ينضم ٣ طلاب على الأقل.`
                 : `You joined as “${board.displayName}”. The board appears once at least 3 learners have joined.`}
             </p>
           )}

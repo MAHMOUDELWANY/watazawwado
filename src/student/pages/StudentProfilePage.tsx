@@ -96,54 +96,6 @@ export default function StudentProfilePage({
   const isFamily = linkedChildren.length > 0 || profile?.bookingPreference === 'child' || profile?.learnerType === 'child';
   const [showAddChild, setShowAddChild] = useState(false);
 
-  // Diagnostic helper for student auth probe
-  const probeStudentMe = async () => {
-    try {
-      const token = effectiveSession?.access_token || await getFreshAccessToken();
-      if (!token) {
-        setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
-        return;
-      }
-      const res = await fetch('/api/student/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (res.ok) {
-        setSuccess(isAr ? 'الاتصال بنقطة النهاية سليم بنجاح (200 OK)' : 'API endpoint probe succeeded (200 OK)');
-      } else {
-        setError(isAr ? `فشل الاتصال: رمز الاستجابة ${res.status}` : `Probe failed with status ${res.status}`);
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Probe error');
-    }
-  };
-
-  // Diagnostic probe for student auth verification
-  const runDiagnosticProbe = async () => {
-    try {
-      const token = effectiveSession?.access_token || await getFreshAccessToken();
-      if (!token) {
-        setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
-        return;
-      }
-      const res = await fetch('/api/student-auth-diagnostic', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (res.ok) {
-        setSuccess(isAr ? 'تم التحقق من تشخيص الهوية بنجاح' : 'Auth diagnostic succeeded');
-      } else {
-        setError(isAr ? `فشل فحص التشخيص: رمز ${res.status}` : `Diagnostic failed with status ${res.status}`);
-      }
-    } catch (err: any) {
-      setError(err?.message || 'Diagnostic error');
-    }
-  };
-
   const fetchProfile = async () => {
     try {
       setLoading(true);
@@ -316,7 +268,7 @@ export default function StudentProfilePage({
     },
     ...(isFamily || profile?.guardian ? [{
       id: 'family' as const,
-      name: isAr ? 'العيلة' : 'Family',
+      name: isAr ? 'الأسرة' : 'Family',
       description: isAr ? 'الأبناء المسجلين، إضافة طفل، وولي الأمر' : 'Your children, adding a child & guardian',
       icon: Baby
     }] : []),
@@ -336,8 +288,8 @@ export default function StudentProfilePage({
     },
     {
       id: 'security' as const,
-      name: isAr ? 'أمان الحساب والجلسة' : 'Security & Account',
-      description: isAr ? 'حالة المصادقة، فحص الاتصال، والخروج' : 'Auth verification, diagnostics & sign out',
+      name: isAr ? 'الحساب والخروج' : 'Account & sign out',
+      description: isAr ? 'بريد الدخول وتسجيل الخروج' : 'Your sign-in email and signing out',
       icon: ShieldCheck
     }
   ], [isAr, isFamily, profile?.guardian]);
@@ -378,7 +330,7 @@ export default function StudentProfilePage({
               </h1>
               <Badge variant="secondary" className="text-sm px-2.5 py-0.5">
                 {isFamily
-                  ? (isAr ? 'حساب عيلة' : 'Family account')
+                  ? (isAr ? 'حساب أسرة' : 'Family account')
                   : (isAr ? 'طالب' : 'Student')}
               </Badge>
             </div>
@@ -737,7 +689,7 @@ export default function StudentProfilePage({
                     {isAr ? 'المادة الأساسية' : 'Primary Subject'}
                   </span>
                   <span className="text-sm sm:text-sm font-semibold text-foreground">
-                    {profile?.learningInterest ? subjectName(profile.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet')}
+                    {profile?.learningInterest ? subjectName(profile.learningInterest, isAr) : (isAr ? 'لم تُحدَّد بعد' : 'Not set yet')}
                   </span>
                 </div>
 
@@ -770,7 +722,7 @@ export default function StudentProfilePage({
             <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
-                  {isAr ? 'العيلة' : 'Family'}
+                  {isAr ? 'الأسرة' : 'Family'}
                 </h2>
               </div>
 
@@ -791,7 +743,7 @@ export default function StudentProfilePage({
                       // The assigned teacher's real name (multi-teacher academy); never a hard-coded teacher.
                       const childTeacherName = child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher');
                       
-                      const subjectLabel = child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet');
+                      const subjectLabel = child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لم تُحدَّد بعد' : 'Not set yet');
 
                       return (
                         <div
@@ -893,10 +845,10 @@ export default function StudentProfilePage({
               {!isFamily && (
                 <div className="p-4 rounded-xl border border-border bg-surface-subtle/60 space-y-3" id="add-child-optin">
                   <div>
-                    <span className="block text-sm font-semibold text-foreground">{isAr ? 'عندك طفل عايز يتعلم معانا؟' : 'Have a child who wants to learn with us?'}</span>
+                    <span className="block text-sm font-semibold text-foreground">{isAr ? 'عندك طفل يريد أن يتعلّم معنا؟' : 'Have a child who wants to learn with us?'}</span>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {isAr
-                        ? 'لو ضفت طفل، حسابك هيبقى حساب عيلة: تحجز وتتابع لكل واحد لوحده، وحصصك انت فاضلة زي ما هي.'
+                        ? 'إن أضفت طفلًا، يصبح حسابك حساب أسرة: تحجز وتتابع لكل واحد على حدة، وتبقى حصصك أنت كما هي.'
                         : 'Adding a child turns this into a family account: you book and follow each learner separately, and your own lessons stay as they are.'}
                     </p>
                   </div>
@@ -1083,69 +1035,27 @@ export default function StudentProfilePage({
             <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
-                  {isAr ? 'أمان الحساب والجلسة' : 'Security & Account'}
+                  {isAr ? 'الحساب والخروج' : 'Account & sign out'}
                 </h2>
-                <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
-                  {isAr
-                    ? 'تفاصيل المصادقة السحابية، فحص الاتصال الأمني، وإدارة تسجيل الدخول'
-                    : 'Cloud authentication status, diagnostic verification, and session control'}
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                  {isAr ? 'تدخل بهذا البريد. حسابك وبيانات أسرتك لا يراها إلا أنت وفريقنا.' : 'You sign in with this email. Only you and our team can see your account and your family’s details.'}
                 </p>
               </div>
 
-              {/* Auth Verification Banner */}
-              <div className="p-4 rounded-xl glass-surface border border-border space-y-2">
-                <div className="flex items-center gap-2 text-foreground font-semibold text-sm sm:text-sm">
-                  <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
-                  <span>{isAr ? 'جلسة الطالب مؤمنة' : 'Authenticated Student Session'}</span>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {isAr
-                    ? 'جلسة الدخول مؤمنة ومحمية بقواعد أمان صارمة (RLS). لا يمكن لأي مستخدم آخر الوصول إلى سجلاتك.'
-                    : 'Your session is authenticated securely via Supabase Auth and isolated with Row Level Security.'}
-                </p>
-                <div className="pt-2 text-sm font-mono text-muted-foreground">
-                  <span>{isAr ? 'المعرف:' : 'Identifier:'}</span> <span className="text-foreground">{user?.email}</span>
-                </div>
-              </div>
-
-              {/* Diagnostic Tools */}
-              <div className="p-4 rounded-xl glass-surface border border-border space-y-3">
-                <div>
-                  <span className="block text-sm font-semibold text-foreground">
-                    {isAr ? 'أدوات الفحص والتحقق الأمني' : 'Security Diagnostics & Connectivity Probe'}
-                  </span>
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {isAr
-                      ? 'التحقق من صحة الاتصال بنقاط نهاية حساب الطالب'
-                      : 'Verify live connection and token authorization with student endpoints'}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <button
-                    type="button"
-                    onClick={probeStudentMe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-sm text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <span>{isAr ? 'فحص /api/student/me' : 'Probe /api/student/me'}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={runDiagnosticProbe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-sm text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <span>{isAr ? 'فحص /api/student-auth-diagnostic' : 'Probe /api/student-auth-diagnostic'}</span>
-                  </button>
-                </div>
+              <div className="p-4 rounded-xl glass-surface border border-border flex items-center gap-2 text-sm">
+                <ShieldCheck className="w-4 h-4 text-accent shrink-0" aria-hidden="true" />
+                <span className="text-muted-foreground">{isAr ? 'بريد الدخول:' : 'Sign-in email:'}</span>
+                <span className="text-foreground font-medium break-all" dir="ltr">{user?.email}</span>
               </div>
 
               {/* Sign Out */}
               <div className="pt-4 border-t border-border flex items-center justify-between">
                 <div>
                   <span className="block text-sm font-semibold text-foreground">
-                    {isAr ? 'تسجيل الخروج من المنصة' : 'Sign Out of Student Portal'}
+                    {isAr ? 'تسجيل الخروج' : 'Sign out'}
                   </span>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    {isAr ? 'إنهاء جلسة الدخول الحالية بأمان' : 'Safely end your current authenticated session'}
+                    {isAr ? 'تخرج من حسابك، وتعود بالبريد نفسه متى شئت.' : 'Signs you out. Come back with the same email any time.'}
                   </p>
                 </div>
                 <button

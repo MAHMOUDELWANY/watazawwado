@@ -84,7 +84,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
   const submit = async () => {
     if (!test) return;
     if (answers.some((a) => a < 0)) {
-      setError(isAr ? 'جاوب على كل الأسئلة — لو مش متأكد، اختار أقرب إجابة.' : 'Please answer every question — if unsure, pick your best guess.');
+      setError(isAr ? 'أجب عن كل الأسئلة، وإن لم تكن متأكدًا فاختر أقرب إجابة.' : 'Please answer every question — if unsure, pick your best guess.');
       return;
     }
     setBusy(true);
@@ -141,7 +141,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
     <div className="max-w-xl mx-auto space-y-4">
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}</h1>
-        <p className="text-sm text-muted-foreground mt-1">{isAr ? 'أسئلة قصيرة بتساعد معلمك يجهّزلك الحصة على قد مستواك.' : 'Short questions that help your teacher prepare lessons for your level.'}</p>
+        <p className="text-sm text-muted-foreground mt-1">{isAr ? 'أسئلة قصيرة تساعد معلمك على تجهيز الحصة على قدر مستواك.' : 'Short questions that help your teacher prepare lessons for your level.'}</p>
       </div>
       {learners.length > 1 && (
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={isAr ? 'الطالب' : 'Learner'}>
@@ -174,7 +174,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
-                ? 'مؤقتًا قبل الإطلاق: الاختبار مفتوح من غير حجز. اختار أي مادة وأي مستوى وجرّب، وتقدر تعيد كل مرة.'
+                ? 'مؤقتًا قبل الإطلاق: الاختبار مفتوح دون حجز. اختر أي مادة وأي مستوى وجرّب، ويمكنك الإعادة كل مرة.'
                 : 'Temporary, before launch: the test is open without a booking. Pick any subject and level and try it; you can retake it as often as you like.'}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -212,15 +212,15 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
       <Card className="glass-card">
         <CardContent className="p-6 sm:p-8 space-y-4 text-center">
           {!learner ? (
-            <p className="text-sm text-muted-foreground">{isAr ? 'كمّل بيانات حسابك الأول.' : 'Finish your profile first.'}</p>
+            <p className="text-sm text-muted-foreground">{isAr ? 'أكمل بيانات حسابك أولًا.' : 'Finish your profile first.'}</p>
           ) : learner.status === 'submitted' || learner.status === 'reviewed' ? (
             <>
               <Clock className="w-10 h-10 text-accent mx-auto" />
-              <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'خلّصت اختبار المادة دي' : 'You took the test for this subject'}</h2>
+              <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'أنهيت اختبار هذه المادة' : 'You took the test for this subject'}</h2>
               <p className="text-sm text-muted-foreground">
                 {learner.status === 'reviewed'
                   ? (isAr ? 'فريقنا راجع نتيجتك وكتبلك رأيه.' : 'Our team reviewed your result and wrote you a note.')
-                  : (isAr ? 'فريقنا بيراجع نتيجتك وهيوصلك إشعار.' : 'Our team is reviewing your result; you will get a notification.')}
+                  : (isAr ? 'يراجع فريقنا نتيجتك وسيصلك إشعار.' : 'Our team is reviewing your result; you will get a notification.')}
               </p>
               <Link to={`/student/placement/report/${learner.testId}`} className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
                 {isAr ? 'عرض تقرير النتيجة' : 'View the result report'}
@@ -229,9 +229,9 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
           ) : learner.status === 'not_yet' ? (
             <>
               <CalendarPlus className="w-10 h-10 text-primary mx-auto" />
-              <h2 className="text-lg font-display font-bold text-foreground">{learners.length > 1 ? (isAr ? `اختبار ${learner.name} بيفتح بعد أول حجز له` : `${learner.name}'s test opens after their first booking`) : (isAr ? 'الاختبار بيفتح بعد حجز الحصة التجريبية' : 'The test opens after you book your free trial')}</h2>
+              <h2 className="text-lg font-display font-bold text-foreground">{learners.length > 1 ? (isAr ? `يُفتح اختبار ${learner.name} بعد أول حجز له` : `${learner.name}'s test opens after their first booking`) : (isAr ? 'يُفتح الاختبار بعد حجز الحصة التجريبية' : 'The test opens after you book your free trial')}</h2>
               <p className="text-sm text-muted-foreground">
-                {isAr ? 'احجز حصتك التجريبية المجانية، وبعدها خد الاختبار القصير عشان معلمك يجهّزلك الحصة.' : 'Book your free trial, then take the short test so your teacher can prepare your lesson.'}
+                {isAr ? 'احجز حصتك التجريبية المجانية، ثم أجرِ الاختبار القصير ليجهّز لك معلمك الحصة.' : 'Book your free trial, then take the short test so your teacher can prepare your lesson.'}
               </p>
               <Link to="/student/book" className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
                 {isAr ? 'احجز الحصة التجريبية' : 'Book the free trial'}
@@ -247,14 +247,14 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {ladders.includes(learner.serviceId)
                   ? (isAr
-                    ? 'أسئلة قصيرة من دروسنا، مستوى ورا مستوى. بيبدأ سهل ويقف عند مستواك، فممكن ما تشوفش كل الأسئلة. مفيش نجاح ورسوب، والنتيجة بتقولك تبدأ من أنهي درس.'
+                    ? 'أسئلة قصيرة من دروسنا، مستوى بعد مستوى. يبدأ سهلًا ويتوقف عند مستواك، فقد لا ترى كل الأسئلة. لا نجاح ولا رسوب، والنتيجة تخبرك من أي درس تبدأ.'
                     : 'Short questions from our lessons, one level at a time. It starts easy and stops at your level, so you may not see them all. There is no pass or fail, and the result tells you which lesson to start from.')
                   : isAr
-                  ? '8 أسئلة اختيار من متعدد (حوالي 5 دقايق) على حسب المادة والمستوى اللي اخترتهم. مفيش نجاح ورسوب — جاوب على قد ما تعرف، والنتيجة بتظهر لك على طول.'
+                  ? '8 أسئلة اختيار من متعدد (نحو 5 دقائق) حسب المادة والمستوى اللذين اخترتهما. لا نجاح ولا رسوب، أجب بقدر ما تعرف، وتظهر لك النتيجة فورًا.'
                   : '8 multiple-choice questions (about 5 minutes) based on the subject and level you chose. There is no pass or fail — answer what you can, and you see your result right away.'}
               </p>
               <Button onClick={start} isLoading={busy} className="w-full sm:w-auto">
-                {learner.status === 'in_progress' ? (isAr ? 'كمّل الاختبار' : 'Continue the test') : (isAr ? 'ابدأ الاختبار' : 'Start the test')}
+                {learner.status === 'in_progress' ? (isAr ? 'أكمل الاختبار' : 'Continue the test') : (isAr ? 'ابدأ الاختبار' : 'Start the test')}
               </Button>
             </>
           )}
@@ -404,7 +404,7 @@ function QuestionStepper({ isAr, locked, ladder, questions, answers, setAnswer, 
         )}
       </div>
       <p className="text-center text-xs text-muted-foreground">
-        {isAr ? 'مش متأكد؟ اختار أقرب إجابة. مفيش نجاح ورسوب.' : 'Not sure? Pick your best guess. There is no pass or fail.'}
+        {isAr ? 'لست متأكدًا؟ اختر أقرب إجابة. لا نجاح ولا رسوب.' : 'Not sure? Pick your best guess. There is no pass or fail.'}
       </p>
     </div>
   );

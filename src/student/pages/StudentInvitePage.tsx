@@ -34,7 +34,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
         if (!res.ok) throw new Error(body.error);
         setData(body);
       } catch (err: any) {
-        setError(err.message || (isAr ? 'مقدرناش نحمّل الصفحة.' : "We couldn't load this page."));
+        setError(err.message || (isAr ? 'تعذّر تحميل الصفحة.' : "We couldn't load this page."));
       }
     })();
   }, []);
@@ -45,7 +45,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
   const { program } = data;
   const link = data.code ? `${window.location.origin}/?ref=${data.code}` : '';
   const shareText = isAr
-    ? `بتعلّم في وتزودوا، حصص فردية في القرآن والعربي مع مدرسين محترمين. أول حصة تجريبية مجانًا، ولو سجّلت من اللينك ده هتاخد ${money(program.friendCredit)} رصيد لأول حجز: ${link}`
+    ? `أتعلّم في وتزودوا، حصص فردية في القرآن والعربية مع معلمين محترمين. الحصة التجريبية الأولى مجانية، وإن سجّلت من هذا الرابط تحصل على ${money(program.friendCredit)} رصيدًا لأول حجز: ${link}`
     : `I learn with Watazawwado, one-on-one Quran and Arabic lessons with caring teachers. The first trial lesson is free, and if you join from this link you get ${money(program.friendCredit)} credit for your first booking: ${link}`;
 
   const copy = async () => {
@@ -70,7 +70,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
     signed_up: isAr ? 'سجّل، مستنيين أول حصة مدفوعة' : 'Joined, waiting for the first paid lesson',
     rewarded: isAr ? 'اتضافت مكافأتك' : 'Your reward was added',
     not_rewarded: isAr ? 'وصلت للحد السنوي للمكافآت' : 'Yearly reward limit reached',
-    void: isAr ? 'اتلغت' : 'Cancelled',
+    void: isAr ? 'أُلغيت' : 'Cancelled',
   };
   const reasonText: Record<string, string> = {
     referral_welcome: isAr ? 'هدية ترحيب' : 'Welcome gift',
@@ -87,7 +87,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
         <Gift className="w-8 h-8 mx-auto text-muted-foreground" />
         <h1 className="mt-3 text-lg font-display font-bold text-foreground">{isAr ? 'ادعُ صاحبك' : 'Invite a friend'}</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          {isAr ? 'برنامج الدعوات مش شغال دلوقتي.' : 'The invite program is paused right now.'}
+          {isAr ? 'برنامج الدعوات متوقف الآن.' : 'The invite program is paused right now.'}
         </p>
         {data.balance > 0 && <p className="mt-2 font-semibold">{isAr ? `رصيدك: ${money(data.balance)}` : `Your balance: ${money(data.balance)}`}</p>}
       </div>
@@ -110,7 +110,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
           </h2>
           <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
             {isAr
-              ? 'لو حد من العيلة أو الأصحاب بيدوّر على مدرس قرآن أو عربي، ابعتله اللينك ده. والدال على الخير كفاعله.'
+              ? 'إن كان أحد من الأسرة أو الأصدقاء يبحث عن معلم قرآن أو عربية، أرسل إليه هذا الرابط. والدالّ على الخير كفاعله.'
               : 'If someone in your family or circle is looking for a Quran or Arabic teacher, send them this link. Pointing someone to good counts as doing it.'}
           </p>
 
@@ -148,8 +148,8 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { icon: UserPlus, t: isAr ? 'صاحبك يسجّل من لينكك' : 'Your friend joins from your link', d: isAr ? `وياخد ${money(program.friendCredit)} رصيد على طول.` : `They get ${money(program.friendCredit)} credit right away.` },
-          { icon: BookOpenCheck, t: isAr ? 'ياخد أول حصة مدفوعة' : 'They finish a first paid lesson', d: isAr ? 'الحصة التجريبية المجانية مش محسوبة.' : "The free trial doesn't count." },
-          { icon: Sparkles, t: isAr ? `انت تاخد ${money(program.referrerCredit)}` : `You get ${money(program.referrerCredit)}`, d: isAr ? 'بتتخصم لوحدها من حجزك الجاي.' : 'It comes off your next booking on its own.' },
+          { icon: BookOpenCheck, t: isAr ? 'يأخذ أول حصة مدفوعة' : 'They finish a first paid lesson', d: isAr ? 'الحصة التجريبية المجانية لا تُحتسب.' : "The free trial doesn't count." },
+          { icon: Sparkles, t: isAr ? `تحصل أنت على ${money(program.referrerCredit)}` : `You get ${money(program.referrerCredit)}`, d: isAr ? 'تُخصم تلقائيًا من حجزك القادم.' : 'It comes off your next booking on its own.' },
         ].map((s, i) => (
           <div key={i} className="glass-card border border-border rounded-2xl p-4">
             <div className="flex items-center gap-2">
@@ -190,9 +190,9 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
 
       {/* Invites */}
       <section className="glass-card border border-border rounded-2xl p-5">
-        <h3 className="font-semibold text-foreground">{isAr ? 'اللي دعيتهم' : 'People you invited'}</h3>
+        <h3 className="font-semibold text-foreground">{isAr ? 'من دعوتهم' : 'People you invited'}</h3>
         {data.invites.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">{isAr ? 'لسه محدش سجّل من لينكك.' : 'Nobody has joined from your link yet.'}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{isAr ? 'لم يسجّل أحد من رابطك بعد.' : 'Nobody has joined from your link yet.'}</p>
         ) : (
           <ul className="mt-3 divide-y divide-border">
             {data.invites.map((r) => (
@@ -212,10 +212,10 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
         <summary className="cursor-pointer font-semibold text-foreground">{isAr ? 'الشروط باختصار' : 'The terms, briefly'}</summary>
         <ul className="mt-3 space-y-1.5 text-muted-foreground leading-relaxed list-disc ps-5">
           <li>{isAr ? 'الهدية للحسابات الجديدة بس، ومرة واحدة لكل حساب.' : 'The gift is for new accounts only, once per account.'}</li>
-          <li>{isAr ? 'مكافأتك بتتضاف بعد ما صاحبك يحضر أول حصة مدفوعة. الحصة التجريبية المجانية مش محسوبة.' : 'Your reward is added after your friend attends their first paid lesson. The free trial does not count.'}</li>
-          <li>{isAr ? 'الرصيد بيتخصم من الحصص والباقات، ومش بيتحوّل لفلوس.' : 'Balance comes off lessons and packages; it cannot be cashed out.'}</li>
-          <li>{isAr ? 'مينفعش تدعي نفسك أو تعمل حسابات تانية. لو حصل استخدام غلط، الأكاديمية ممكن تلغي المكافأة.' : "You can't invite yourself or make extra accounts. If the program is misused, the academy may cancel a reward."}</li>
-          <li>{isAr ? 'لو اتعمل استرداد لحجز اتدفع جزء منه بالرصيد، الجزء ده بيرجع لرصيدك.' : 'If a booking paid partly with balance is refunded, that part goes back to your balance.'}</li>
+          <li>{isAr ? 'تُضاف مكافأتك بعد أن يحضر صديقك أول حصة مدفوعة. الحصة التجريبية المجانية لا تُحتسب.' : 'Your reward is added after your friend attends their first paid lesson. The free trial does not count.'}</li>
+          <li>{isAr ? 'يُخصم الرصيد من الحصص والباقات، ولا يتحوّل إلى نقود.' : 'Balance comes off lessons and packages; it cannot be cashed out.'}</li>
+          <li>{isAr ? 'لا يمكنك دعوة نفسك أو إنشاء حسابات إضافية. وإن أسيء استخدام البرنامج، قد تلغي الأكاديمية المكافأة.' : "You can't invite yourself or make extra accounts. If the program is misused, the academy may cancel a reward."}</li>
+          <li>{isAr ? 'إن استُرد حجز دُفع جزء منه بالرصيد، يعود هذا الجزء إلى رصيدك.' : 'If a booking paid partly with balance is refunded, that part goes back to your balance.'}</li>
         </ul>
       </details>
     </div>

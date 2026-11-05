@@ -339,7 +339,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     rescheduled: isAr ? 'اتغيّر ميعادها' : 'Rescheduled',
     pending: isAr ? 'مستنية الدفع' : 'Awaiting payment',
     completed: isAr ? 'خلصت' : 'Done',
-    cancelled: isAr ? 'اتلغت' : 'Cancelled',
+    cancelled: isAr ? 'أُلغيت' : 'Cancelled',
     no_show: isAr ? 'غياب' : 'Missed',
   } as Record<string, string>)[status] || status;
 
@@ -378,7 +378,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           <span className="text-sm text-foreground">
             <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}{placementTodo.length > 1 ? ` (${placementTodo.join(isAr ? '، ' : ', ')})` : ''}</strong>
             {' · '}
-            {isAr ? '5 دقايق بتساعد معلمك يجهّزلك الحصة على قد مستواك.' : '5 minutes that help your teacher prepare lessons for your level.'}
+            {isAr ? '5 دقائق تساعد معلمك على تجهيز الحصة على قدر مستواك.' : '5 minutes that help your teacher prepare lessons for your level.'}
           </span>
           <span className="shrink-0 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
             {isAr ? 'ابدأ' : 'Start'}
@@ -481,7 +481,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               to="/student/account?tab=family"
               className="text-sm text-primary underline underline-offset-4 font-semibold inline-flex items-center gap-1 min-h-11"
             >
-              <span>{isAr ? 'إعدادات العيلة' : 'Family settings'}</span>
+              <span>{isAr ? 'إعدادات الأسرة' : 'Family settings'}</span>
               <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
             </Link>
           </div>
@@ -688,7 +688,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-sm min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
-                        {isAr ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here'}
+                        {isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here'}
                       </span>
                     </div>
                   )}
@@ -732,7 +732,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-colors shadow-xs min-h-[44px]"
                     >
                       <RotateCcw className="w-4 h-4" />
-                      <span>{isAr ? 'احجز تاني بنفس التفاصيل' : 'Book again'}</span>
+                      <span>{isAr ? 'احجز مرة أخرى بالتفاصيل نفسها' : 'Book again'}</span>
                     </Link>
 
                   </div>
@@ -972,7 +972,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
-                ? 'عندك سؤال عن الحصة الجاية أو عايز تراجع حاجة؟ ابعت لمعلمك هنا.'
+                ? 'عندك سؤال عن الحصة القادمة أو تريد مراجعة شيء؟ راسل معلمك هنا.'
                 : 'A question about the next lesson or something to review? Message your teacher here.'}
             </p>
 
