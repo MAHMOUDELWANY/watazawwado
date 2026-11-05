@@ -40,3 +40,4 @@ Change next week: <one thing>
   Language, Platforms, CTA) with the first series of 16 items, 9 Nov to 5 Dec (10 "Building Watazawwado" episodes,
   6 teaching), and a new Weekly Numbers (waitlist and ZAAD comments first). All items are Ideas with a brief; full
   scripts are written item by item with `mahmoud-voice`.
+- 2026-11-05: Week 1 scripts written into Notion (B1 What I kept seeing as a teacher, T1 the Daad, B2 What parents told me, P1 Five minutes a day), two hooks and two wise lines each, captions per platform, pinned comment, UTM links; all four moved to Review. T1 needs a teacher to confirm the makhraj on camera; B1/B2 need the owner to confirm the stories are his own.
