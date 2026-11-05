@@ -12,8 +12,8 @@ const SUBJECTS = {
 };
 
 const STATIC = {
-  ar: 'القرآن والتجويد، وأول الزاد والسيرة، والعربية، والإنجليزية. حصص فردية على Zoom، مع معلّم يعرفك باسمك.',
-  en: 'Quran, Tajweed, Zad Essentials, Seerah, Arabic and English. One-on-one on Zoom, with a teacher who knows you by name.',
+  ar: 'القرآن والتجويد، وأول الزاد والسيرة، والعربية، والإنجليزية. حصص فردية على Zoom، مع معلّم يبقى معك.',
+  en: 'Quran, Tajweed, Zad Essentials, Seerah, Arabic and English. One-on-one on Zoom, with a mentor who stays.',
 };
 
 const INTERVAL_MS = 2600;
@@ -53,7 +53,7 @@ export function HeroSubjects({ isEn, className }: { isEn: boolean; className?: s
         </span>
         {isEn ? ',' : '،'}
         <br />
-        {isEn ? 'on Zoom, with a teacher who knows you by name.' : 'على Zoom، مع معلّم يعرفك باسمك.'}
+        {isEn ? 'on Zoom, with a mentor who stays.' : 'على Zoom، مع معلّم يبقى معك.'}
       </span>
     </p>
   );

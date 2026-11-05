@@ -91,10 +91,10 @@ export function LanguageWelcome() {
             </g>
             <circle cx="20" cy="20" r="3.5" fill="var(--primary)" />
           </svg>
-          <p className="lw-eyebrow">Welcome · <span lang="ar">أهلاً بيك</span></p>
+          <p className="lw-eyebrow">Welcome · <span lang="ar">أهلًا بك</span></p>
           <h2 id="lang-welcome-title" className="lw-title">
             Choose your <em>language.</em>
-            <span className="lw-title-ar" lang="ar" dir="rtl">اختار لغتك</span>
+            <span className="lw-title-ar" lang="ar" dir="rtl">اختر لغتك</span>
           </h2>
           <div className="lw-options" role="radiogroup" aria-labelledby="lang-welcome-title">
             {OPTIONS.map((o, i) => (
@@ -128,7 +128,7 @@ export function LanguageWelcome() {
             lang={chosen?.lang}
             onClick={() => chosen && go(chosen.lang)}
           >
-            {chosen ? chosen.go : <>Choose a language · <span lang="ar">اختار لغة</span></>}
+            {chosen ? chosen.go : <>Choose a language · <span lang="ar">اختر لغة</span></>}
           </PublicButton>
           <p className="lw-note">
             You can change it any time from the menu at the top.

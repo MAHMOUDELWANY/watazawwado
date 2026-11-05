@@ -2128,7 +2128,7 @@ html.dark .text-brand {
    The card transforms are set from JS per frame (transform and opacity only); the front card plays its screen. */
 .week-stage { overflow-x: clip; }
 .week-ring {
-  width: min(64vw, 250px, 36svh);
+  width: min(60vw, 230px, 30svh);
   aspect-ratio: 9 / 14;
   perspective: 1100px;
   transform-style: preserve-3d;

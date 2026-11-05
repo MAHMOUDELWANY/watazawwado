@@ -77,14 +77,16 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
       let f = p * (N - 1);
       if (reduce.matches) f = Math.round(f);
       const radius = (cards.current[0]?.offsetWidth ?? 240) * 0.95;
+      // translateZ brings the front card closer under perspective 1100px; shrink it back to the ring's own size.
+      const fit = (1100 - radius) / 1100;
       cards.current.forEach((c, i) => {
         if (!c) return;
         const d = i - f;
         const cos = Math.cos((d * Math.PI) / 3);
         // A card that has just passed lifts and tilts away, like the top card of a stack.
         const gone = Math.max(-1, Math.min(0, d));
-        c.style.transform = `rotateY(${d * 60 * dir}deg) translateZ(${radius}px) translateY(${gone * 28}px) rotateZ(${gone * -5 * dir}deg) scale(${0.86 + 0.14 * Math.max(0, cos)})`;
-        c.style.opacity = String(Math.max(0, Math.min(1, (cos + 0.35) / 1.1)));
+        c.style.transform = `rotateY(${d * 60 * dir}deg) translateZ(${radius}px) translateY(${gone * 28}px) rotateZ(${gone * -5 * dir}deg) scale(${(0.86 + 0.14 * Math.max(0, cos)) * fit})`;
+        c.style.opacity = String(Math.max(0, Math.min(1, (cos - 0.05) / 0.95)));
         c.style.zIndex = String(Math.round(cos * 10) + 10);
       });
       setActive(Math.round(f));
@@ -130,7 +132,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
       </ol>
 
       <div ref={track} className="relative" style={{ height: `calc(${N * PER_STEP}svh + 100svh)` }}>
-        <div className="week-stage sticky top-0 h-[100svh] flex flex-col justify-center pt-14 pb-4" aria-hidden="true">
+        <div className="week-stage sticky top-0 h-[100svh] flex flex-col justify-center pt-20 pb-24 lg:pb-6" aria-hidden="true">
           <div className="public-container w-full max-w-[64rem] mx-auto lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
             <div className="week-ring relative mx-auto lg:order-2">
               <span className="week-glow pointer-events-none absolute -inset-10 -z-10 rounded-full" style={{ '--week-glow': GLOW[active] } as React.CSSProperties} />
@@ -155,7 +157,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
               ))}
             </div>
 
-            <div className="mt-7 lg:mt-0 lg:order-1 text-center lg:text-start">
+            <div className="mt-8 lg:mt-0 lg:order-1 text-center lg:text-start">
               <div key={active} className="week-caption min-h-[8.5rem] sm:min-h-[7.5rem] max-w-md mx-auto lg:mx-0">
                 <p className="text-sm font-semibold text-[#087D91] dark:text-[#12A4BC]">{t(s.when)}</p>
                 <h3 className="font-editorial text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mt-1">{t(s.title)}</h3>
@@ -178,7 +180,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
                   />
                 ))}
               </div>
-              <p className={`week-hint mt-3 text-xs text-muted-foreground ${started ? 'is-gone' : ''}`}>
+              <p className={`week-hint hidden sm:block mt-3 text-xs text-muted-foreground ${started ? 'is-gone' : ''}`}>
                 {isEn ? 'Keep scrolling: each scroll turns to the next card' : 'تابع التمرير: كل تمريرة تقلب إلى البطاقة التالية'}
               </p>
             </div>

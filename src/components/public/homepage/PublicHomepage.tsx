@@ -110,13 +110,6 @@ export function PublicHomepage() {
             </div>
 
             <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
-              {/* The brand line (docs/marketing/BRAND.md §1, approved 2026-11-05) and who it is for. */}
-              <p className="font-editorial text-xl sm:text-2xl text-foreground leading-snug max-w-xl">
-                {isEn ? 'Not just lessons. A mentor who stays.' : 'ليست حصصًا فقط، بل معلّم يبقى معك.'}
-                <span className="block mt-1 font-sans text-base text-muted-foreground">
-                  {isEn ? 'For Muslim families and adults learning in English.' : 'للأسر المسلمة وللكبار الذين يتعلّمون بالإنجليزية.'}
-                </span>
-              </p>
               <HeroSubjects isEn={isEn} className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl" />
 
               <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
@@ -190,11 +183,14 @@ export function PublicHomepage() {
       </section>
 
       {/* ─── 3a. SOUND FAMILIAR? ─── the pain and what families tried before (CLOSER review 2026-11-05). */}
-      <section className="public-container py-14 lg:py-20" aria-labelledby="home-familiar">
-        <h2 id="home-familiar" className={`font-editorial text-3xl sm:text-4xl text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}>
+      {/* One quiet editorial block: the question and the answer beside the list (no cards, hairlines only). */}
+      <section className="public-container py-16 lg:py-24" aria-labelledby="home-familiar">
+        <div className="max-w-5xl mx-auto grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:items-start">
+        <h2 id="home-familiar" className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground lg:sticky lg:top-28">
           {isEn ? 'Sound familiar?' : 'هل يبدو هذا مألوفًا؟'}
         </h2>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 max-w-3xl">
+        <div>
+        <ul className="divide-y divide-border/70 border-y border-border/70">
           {(isEn ? [
             'The teacher keeps changing, and every new one starts from zero.',
             'Lessons happen, but nobody can tell you the plan.',
@@ -206,14 +202,21 @@ export function PublicHomepage() {
             'أحبّ طفلك الدروس شهرًا، ثم فقد حماسه.',
             'المواعيد لا تناسب أسبوعك أبدًا.',
           ]).map((line) => (
-            <li key={line} className="rounded-2xl border border-border/70 bg-surface-warm/50 px-5 py-4 text-base leading-relaxed text-foreground">{line}</li>
+            <li key={line} className="flex gap-4 py-4 text-base sm:text-lg leading-relaxed text-foreground">
+              <span aria-hidden="true" className="mt-3 h-px w-5 shrink-0 bg-[#C51F24]" />
+              {line}
+            </li>
           ))}
         </ul>
-        <p className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-muted-foreground">
-          {isEn
-            ? 'YouTube, a weekend class, an academy that swaps teachers: families tell us they tried it all. Here, your teacher stays.'
-            : 'يوتيوب، وفصل نهاية الأسبوع، وأكاديمية تبدّل المعلّمين: تخبرنا الأسر أنها جرّبت كل ذلك. هنا يبقى معلّمك معك.'}
+        {/* The answer follows the questions. */}
+        <p className="mt-8 font-editorial text-2xl sm:text-3xl leading-snug text-foreground">
+          {isEn ? 'Here, your teacher stays.' : 'هنا، يبقى معلّمك معك.'}
         </p>
+        <p className="mt-2 text-base text-muted-foreground leading-relaxed max-w-md">
+          {isEn ? 'Families tell us they tried YouTube, weekend classes and academies that swap teachers.' : 'تخبرنا الأسر أنها جرّبت يوتيوب، وفصول نهاية الأسبوع، وأكاديميات تبدّل المعلّمين.'}
+        </p>
+        </div>
+        </div>
       </section>
 
       {/* ─── 3. TWO WAYS TO LEARN ─── */}
