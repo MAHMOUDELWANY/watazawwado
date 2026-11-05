@@ -221,6 +221,8 @@ education leads cost ~$28–35 and religion targeting no longer exists).
 8. **[Decided 2026-10-20]** Production board in Notion: page **Script & Record Videos** under the hub (tabs Steps,
    Ideas, Post Calendar, Categories, modelled on the owner's reference video). Status flow: Idea → Review (script
    written, owner reviews) → Scripted (approved, ready to film) → Filmed → Edited → Scheduled → Published.
+9. **[Decided 2026-11-05]** Brand line: "Not just lessons. A mentor who stays." Meaning, word of mouth and open
+   brand questions in `BRAND.md`.
 
 Open: none.
 

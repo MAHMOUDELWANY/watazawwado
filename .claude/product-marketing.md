@@ -36,6 +36,9 @@ Own animated curriculum with games and a teacher report after every class; place
 your own teacher (kept, not swapped); clear hourly prices; times in your time zone; card/PayPal via Stripe; EU consumer
 rights; male and female teachers; balanced, moderate Azhari foundation; Egyptian Arabic for heritage kids.
 
+Brand line [Decided 2026-11-05]: "Not just lessons. A mentor who stays." The zaad reaches the learner through a
+teacher who knows them and stays. Details: `docs/marketing/BRAND.md`.
+
 ## 7. Objections
 - "Is it safe for my child?" → Zoom waiting room, teacher hosts, you choose the teacher, the parent account
   manages the child's lessons and sees the teacher reports.
