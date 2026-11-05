@@ -369,6 +369,13 @@ export const FAQS: FAQItem[] = [
     category: 'general'
   },
   {
+    question: 'Will my teacher change?',
+    arabicQuestion: 'هل سيتغيّر معلّمي؟',
+    answer: 'Not from our side. Your teacher stays with you lesson after lesson; you can still ask for a change at any time. If a teacher ever has to leave, we tell you two months ahead, and the next teacher receives your full file, so nobody starts from zero.',
+    arabicAnswer: 'لا، ليس من جهتنا. يبقى معلّمك معك حصةً بعد حصة، ويمكنك أن تطلب التغيير متى شئت. وإن اضطر معلّم يومًا إلى المغادرة، نخبرك قبلها بشهرين، ويستلم المعلّم التالي ملفك كاملًا، فلا يبدأ أحد من الصفر.',
+    category: 'general'
+  },
+  {
     question: 'How does the free trial work?',
     arabicQuestion: 'الحصة التجريبية المجانية بتكون إزاي؟',
     answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed), one per new student. Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson, then suggests a plan. No card, no pressure. You can move it once, up to 1 hour before; if it is missed or cancelled, you can book again after 48 hours.',
@@ -392,8 +399,8 @@ export const FAQS: FAQItem[] = [
   {
     question: 'What happens if we miss a lesson?',
     arabicQuestion: 'لو فاتتنا حصة، إيه اللي بيحصل؟',
-    answer: 'We send reminders before every lesson, by email and on the site. A lesson that is missed without cancelling counts as taken, so cancel or move it in time if plans change. If a real emergency comes up, message us on WhatsApp and we will see what we can do. If we or the teacher cancel, you choose a free new time, a lesson credit or a refund.',
-    arabicAnswer: 'بنفكّرك قبل كل حصة بإيميل وعلى الموقع. الحصة اللي بتفوت من غير إلغاء بتتحسب إنها اتاخدت، فلو الظروف اتغيرت الغيها أو غيّر ميعادها في الوقت. ولو حصل ظرف طارئ فعلاً كلّمنا على واتساب ونشوف نقدر نعمل إيه. ولو إحنا أو المعلم لغينا الحصة، إنت تختار ميعاد جديد ببلاش أو رصيد حصة أو استرداد فلوسك.',
+    answer: 'We send reminders before every lesson, by email and on the site. A lesson that is missed without cancelling counts as taken, so cancel or move it in time if plans change. If a real emergency comes up, message us on WhatsApp and we will see what we can do. If we or the teacher cancel, you choose a free new time, a lesson credit or a refund, and your next lesson gets 10 extra minutes.',
+    arabicAnswer: 'بنفكّرك قبل كل حصة بإيميل وعلى الموقع. الحصة اللي بتفوت من غير إلغاء بتتحسب إنها اتاخدت، فلو الظروف اتغيرت الغيها أو غيّر ميعادها في الوقت. ولو حصل ظرف طارئ فعلاً كلّمنا على واتساب ونشوف نقدر نعمل إيه. ولو إحنا أو المعلم لغينا الحصة، إنت تختار ميعاد جديد ببلاش أو رصيد حصة أو استرداد فلوسك، وحصتك الجاية بتزيد ١٠ دقايق.',
     category: 'booking'
   },
   {

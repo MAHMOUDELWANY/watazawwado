@@ -1,3 +1,4 @@
+import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
@@ -18,8 +19,8 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
     badge: { en: 'Balanced, moderate teaching', ar: 'علم وسطي معتدل' },
     bio: [
       {
-        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and the Zad Path at Watazawwado. For more than three years he has taught students one-on-one in several countries.',
-        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية ومسار الأثر في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في أكتر من بلد.'
+        en: 'Ustadh Mahmoud is the founder of Watazawwado and one of its teachers. He teaches Quran, Tajweed, Arabic and the Zad Path. For more than three years he has taught students one-on-one in several countries.',
+        ar: 'الأستاذ محمود مؤسس وتزودوا وأحد معلّميها. بيدرّس القرآن والتجويد والعربية ومسار الأثر. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في أكتر من بلد.'
       },
       {
         en: 'His strong English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
@@ -177,7 +178,7 @@ export function AboutPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
               <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
-                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+                <TrialCtaLabel isEn={isEn} />
               </PublicButton>
               <a
                 href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read about Watazawwado and would like to ask about starting lessons.' : 'السلام عليكم، قريت عن وتزودوا وحابب أسأل عن بداية الحصص.')}

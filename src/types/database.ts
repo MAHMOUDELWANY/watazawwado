@@ -193,6 +193,57 @@ export interface Database {
           updated_at?: string;
         };
       };
+      /** "Pack your zaad" waitlist (20261105000000_waitlist_entries.sql); service role only. */
+      waitlist_entries: {
+        Row: {
+          id: string;
+          email: string;
+          track: 'quran' | 'zad' | 'arabic' | 'english';
+          who: 'me' | 'child';
+          lang: string;
+          source: string | null;
+          pains: string[];
+          note: string | null;
+          wave: number;
+          secret: string;
+          invited_at: string | null;
+          joined_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          track: 'quran' | 'zad' | 'arabic' | 'english';
+          who: 'me' | 'child';
+          lang?: string;
+          source?: string | null;
+          pains?: string[];
+          note?: string | null;
+          wave?: number;
+          secret?: string;
+          invited_at?: string | null;
+          joined_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          track?: 'quran' | 'zad' | 'arabic' | 'english';
+          who?: 'me' | 'child';
+          lang?: string;
+          source?: string | null;
+          pains?: string[];
+          note?: string | null;
+          wave?: number;
+          secret?: string;
+          invited_at?: string | null;
+          joined_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       leads: {
         Row: {
           id: string;

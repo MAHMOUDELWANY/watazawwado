@@ -1,3 +1,5 @@
+import { TrialCtaLabel } from "../TrialCtaLabel";
+import { useLaunch } from '../../../lib/launch';
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
@@ -18,8 +20,18 @@ const STEP_EMBLEMS = [TrialCalendarEmblem, MeetLevelEmblem, PlanScrollEmblem, Le
 const PILLAR_EMBLEMS = [HourglassEmblem, UnderstandEmblem, WeekHabitEmblem, AdabEmblem];
 const AR_DIGITS = ['١', '٢', '٣', '٤'];
 
+/** While sign-up opens in waves, step 1 is joining the line. */
+const WAITLIST_STEP = {
+  ...HOW_IT_WORKS_STEPS[0],
+  title: 'Pack your zaad',
+  arabicTitle: 'جهّز زادك',
+  description: 'Join the line with your email. When your wave opens, we invite you to book your free trial.',
+  arabicDescription: 'انضم إلى الدور ببريدك الإلكتروني، وحين تفتح دفعتك ندعوك لحجز حصتك المجانية.',
+};
+
 export function HowItWorksPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
+  const waitlist = useLaunch().signupMode === 'waitlist';
   const isEn = lang === 'en';
 
   const promises = [
@@ -41,7 +53,7 @@ export function HowItWorksPage() {
           />
 
           <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" aria-label={isEn ? 'The four steps' : 'الخطوات الأربع'}>
-            {HOW_IT_WORKS_STEPS.map((step, i) => (
+            {(waitlist ? [WAITLIST_STEP, ...HOW_IT_WORKS_STEPS.slice(1)] : HOW_IT_WORKS_STEPS).map((step, i) => (
               <li key={step.step}>
                 <ValueCard
                   index={i}
@@ -106,7 +118,7 @@ export function HowItWorksPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
               <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
-                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+                <TrialCtaLabel isEn={isEn} />
               </PublicButton>
               <a
                 href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read How it works on Watazawwado and have a question.' : 'السلام عليكم، قريت صفحة كيف نعمل على وتزودوا وعندي سؤال.')}

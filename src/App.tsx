@@ -60,7 +60,7 @@ const WriteReviewPage = lazyWithReload(() => import('./components/public/reviews
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
   '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
-  '/community': CommunityPage, '/careers': CareersPage, '/articles': ArticlesIndexPage,
+  '/community': CommunityPage, '/careers': CareersPage, '/articles': ArticlesIndexPage, '/zaad': PackYourZaadPage,
 };
 
 /**

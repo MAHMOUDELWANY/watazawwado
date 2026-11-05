@@ -1,3 +1,4 @@
+import { TrialCtaLabel } from "../TrialCtaLabel";
 import React, { useState, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
@@ -483,7 +484,7 @@ export function LearningPage() {
           </p>
           <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
             <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
-              {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+              <TrialCtaLabel isEn={isEn} />
             </PublicButton>
             <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold border border-[#FAF7F2]/30 text-[#FAF7F2] hover:bg-[#FAF7F2]/10 transition-colors">
               {isEn ? 'See prices' : 'شوف الأسعار'}

@@ -1,3 +1,4 @@
+import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
@@ -58,7 +59,7 @@ export function FAQPage() {
             </p>
             <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
               <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
-                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+                <TrialCtaLabel isEn={isEn} />
               </PublicButton>
               <a
                 href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read the FAQ on Watazawwado and still have a question.' : 'السلام عليكم، قريت الأسئلة الشائعة على وتزودوا ولسه عندي سؤال.')}

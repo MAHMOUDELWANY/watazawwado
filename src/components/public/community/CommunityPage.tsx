@@ -1,3 +1,4 @@
+import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Lock, UserCheck, EyeOff } from 'lucide-react';
@@ -107,7 +108,7 @@ export function CommunityPage() {
             <p className="text-foreground font-display text-lg">{isEn ? 'Families who learn with us find it in their account.' : 'الأسر اللي بتتعلم معانا بتلاقيه في حسابها.'}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link to="/get-started" className="btn-primary-material rounded-xl text-white font-bold shadow-md inline-flex items-center justify-center h-11 px-5 text-sm focus-ring">
-                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+                <TrialCtaLabel isEn={isEn} />
               </Link>
               <Link to="/student?auth=login" className="inline-flex items-center justify-center h-11 px-5 text-sm rounded-xl font-semibold border border-teal-600/40 text-teal-800 dark:text-teal-200 hover:bg-teal-500/10 focus-ring">
                 {isEn ? 'I have an account' : 'عندي حساب'}

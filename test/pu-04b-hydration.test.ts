@@ -22,7 +22,7 @@ describe('PU-04b hydrate prerendered public pages', () => {
     // Subject landing pages (/learning/<slug>) are preloaded by their address prefix, like articles.
     assert.ok(app.includes("if (base.startsWith('/learning/')) return SubjectLandingPage.preload();"));
     const lazyPublic = [...app.matchAll(/const (\w+) = lazyWithReload\(\(\) => import\('\.\/components\/public/g)].map((m) => m[1]).filter((n) => n !== 'WriteReviewPage' && n !== 'SubjectLandingPage');
-    assert.strictEqual(lazyPublic.length, 10);
+    assert.strictEqual(lazyPublic.length, 11); // the 10 layout pages plus /zaad
     const map = app.slice(app.indexOf('const LAZY_PUBLIC_PAGES'), app.indexOf('};', app.indexOf('const LAZY_PUBLIC_PAGES')));
     for (const name of lazyPublic) assert.ok(map.includes(`: ${name}`), `${name} is missing from LAZY_PUBLIC_PAGES`);
     // A loaded page is handed to React.lazy synchronously, so hydration never suspends on it.

@@ -11,6 +11,7 @@ import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
 import { AuthCard, AuthPortal, EntranceLogo, EntranceRoom, EntranceSwitches } from './auth/AuthFrame';
 import { useAppLanguage } from '../lib/language';
+import { isInvited, useLaunch, zaadPath } from '../lib/launch';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
@@ -229,6 +230,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     'update-password': isAr ? 'احفظ كلمة السر' : 'Save password',
   };
   const isSignup = view === 'signup';
+  // Sign-up opens in waves: without an invitation, the new-account tab leads to the waitlist (the server checks too).
+  const signupClosed = useLaunch().signupMode === 'waitlist' && !isInvited();
   const showTabs = view === 'login' || isSignup;
 
   const googleButton = (
@@ -334,6 +337,16 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       </div>
                     )}
 
+                    {isSignup && signupClosed ? (
+                      <div className="space-y-4 text-center">
+                        <p className="text-[0.95rem] leading-relaxed text-muted-foreground">
+                          {isAr ? 'نفتح الحسابات الجديدة على دفعات، لنعطي كل طالب معلّمه ووقته. جهّز زادك لتحجز مكانك في الدور، ونرسل لك الدعوة حين يأتي دورك.' : 'We open new accounts in waves, so every learner gets their teacher and their time. Pack your zaad to keep your place in line, and we will email your invitation when it is your turn.'}
+                        </p>
+                        <Button type="button" onClick={() => { onClose(); navigate(zaadPath(!isAr)); }} className="w-full !h-12 !rounded-full !text-base !font-bold">
+                          {isAr ? 'جهّز زادك' : 'Pack your zaad'}
+                        </Button>
+                      </div>
+                    ) : (
                     <form onSubmit={handleSubmit} className="auth-form space-y-4" noValidate={false}>
                       {isSignup && (
                         <fieldset className="space-y-2.5">
@@ -528,6 +541,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                         </>
                       )}
                     </form>
+                    )}
 
                     {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
                     {view === 'login' && (

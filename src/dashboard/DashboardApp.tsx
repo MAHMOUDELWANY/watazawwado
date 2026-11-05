@@ -53,6 +53,7 @@ import TodayPage from './pages/TodayPage';
 import UpcomingPage from './pages/UpcomingPage';
 import TrialsPage from './pages/TrialsPage';
 import LeadsPage from './pages/LeadsPage';
+import WaitlistPage from './pages/WaitlistPage';
 import StudentsPage from './pages/StudentsPage';
 import StudentDetailPage from './pages/StudentDetailPage';
 import BookingsPage from './pages/BookingsPage';
@@ -243,6 +244,7 @@ export function DashboardApp() {
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     { name: L('Students', 'الطلاب'), path: '/dashboard/students', icon: Users, group: G.people },
     { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus, group: G.people },
+    { name: L('Waitlist', 'قائمة الانتظار'), path: '/dashboard/waitlist', icon: UserPlus, group: G.people },
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck, group: G.people },
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles, group: G.people },
     { name: L('Placement', 'تحديد المستوى'), path: '/dashboard/placement', icon: GraduationCap, group: G.people },
@@ -621,6 +623,7 @@ export function DashboardApp() {
                 <Route path="/upcoming" element={<UpcomingPage />} />
                 <Route path="/trials" element={<TrialsPage />} />
                 <Route path="/leads" element={isSuperAdmin ? <LeadsPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/waitlist" element={isSuperAdmin ? <WaitlistPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/intakes" element={isSuperAdmin ? <IntakeReviewPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/teachers" element={isSuperAdmin ? <TeachersPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/students" element={<StudentsPage />} />

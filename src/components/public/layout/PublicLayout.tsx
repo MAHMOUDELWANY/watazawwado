@@ -16,6 +16,7 @@ import { InstallAppNudge } from '../../pwa/InstallApp';
 import { WelcomeMuteButton } from '../WelcomeRecitation';
 import { LanguageWelcome } from '../LanguageWelcome';
 import { Analytics } from '@vercel/analytics/react';
+import { useLaunch, zaadPath } from '../../../lib/launch';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -31,6 +32,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const launch = useLaunch();
 
   // The toggle moves between a page's English and /ar address; elsewhere it only switches language.
   const handleToggleLang = () => {
@@ -128,10 +130,10 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     const handleHashCheck = () => {
       const hash = window.location.hash.toLowerCase();
       if (hash === '#get-started' || hash === '#start') {
-        setGetStartedModalOpen(true);
+        handleOpenGetStarted();
       } else if (hash === '#book' || hash === '#trial' || hash === '#free-trial') {
         // No guest bookings (RULES.md §2): booking starts by signing in or creating an account.
-        setGetStartedModalOpen(true);
+        handleOpenGetStarted();
       } else if (hash === '#manage' || hash === '#reschedule') {
         // Lessons are moved or cancelled from the student account (sign-in required).
         navigate('/student/lessons');
@@ -143,12 +145,19 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     handleHashCheck();
     window.addEventListener('hashchange', handleHashCheck);
     return () => window.removeEventListener('hashchange', handleHashCheck);
-  }, []);
+  }, [launch.signupMode]);
 
-  const handleOpenGetStarted = (serviceId?: string) => {
+  // While sign-up opens in waves, /get-started leads to the waitlist.
+  useEffect(() => {
+    if (launch.signupMode === 'waitlist' && stripLangPrefix(location.pathname) === '/get-started') navigate(zaadPath(lang !== 'ar'), { replace: true });
+  }, [launch.signupMode, location.pathname]);
+
+  function handleOpenGetStarted(serviceId?: string) {
+    // Sign-up opens in waves (RULES.md, launch): the call to action leads to the waitlist instead.
+    if (launch.signupMode === 'waitlist') { navigate(zaadPath(lang !== 'ar')); return; }
     setPreselectedService(serviceId);
     setGetStartedModalOpen(true);
-  };
+  }
 
 
   return (

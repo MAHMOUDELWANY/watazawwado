@@ -56,7 +56,8 @@ describe('Waitlist input', () => {
   });
 });
 
-describe('Waitlist routes', { skip: !serverUp && 'dev server not running' }, () => {
+// These write to the configured (production) waitlist, so they run only on request: WAITLIST_ROUTE_TESTS=1.
+describe('Waitlist routes', { skip: (!serverUp && 'dev server not running') || (!process.env.WAITLIST_ROUTE_TESTS && 'set WAITLIST_ROUTE_TESTS=1 to run') }, () => {
   const email = `waitlist-test-${Date.now()}@example.com`;
   let entry: any;
 

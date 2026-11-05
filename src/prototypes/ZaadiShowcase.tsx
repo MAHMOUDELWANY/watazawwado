@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Moon, Sun } from 'lucide-react';
 import { ZaadiRig, type ZaadiPose } from '../components/zaadi/ZaadiRig';
 import { useTheme } from '../components/ThemeProvider';
+import { useT } from '../lib/language';
 import { hideBootSplash } from '../lib/bootSplash';
 
 /** DEV-ONLY showcase (route /prototype/zaadi): Zaadi's poses and a tiny lesson where Zaadi reacts. Nothing is saved. */
@@ -17,6 +18,7 @@ const PRAISE = ['Excellent!', 'Beautiful!', 'MashaAllah!'];
 
 export default function ZaadiShowcase() {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useT();
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [combo, setCombo] = useState(0);
@@ -36,7 +38,7 @@ export default function ZaadiShowcase() {
       <main className="mx-auto max-w-[440px] px-5 pb-16 pt-4">
         <div className="flex items-center justify-between">
           <p className="font-editorial text-[26px] tracking-tight">Meet Zaadi</p>
-          <button onClick={toggleTheme} aria-label="Switch light or dark" className="grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground">
+          <button onClick={toggleTheme} aria-label={t('Switch light or dark', 'بدّل بين الفاتح والغامق')} className="grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground">
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
         </div>

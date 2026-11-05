@@ -418,6 +418,11 @@ export default function StudentOnboardingPage({
 
       const data = await res.json();
       if (!res.ok) {
+        if (data.error === 'waitlist') {
+          throw new Error(isRTL
+            ? 'نفتح الحسابات الجديدة على دفعات. جهّز زادك من watazawwado.academy/ar/zaad لتحجز مكانك، ونرسل لك الدعوة حين يأتي دورك.'
+            : 'New accounts open in waves. Pack your zaad at watazawwado.academy/zaad to keep your place, and we will email your invitation when it is your turn.');
+        }
         throw new Error(data.error || (isRTL ? 'تعذر حفظ بيانات الحساب. يرجى المحاولة لاحقاً.' : 'Failed to complete onboarding. Please try again.'));
       }
 

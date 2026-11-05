@@ -7,6 +7,8 @@ import { hideBootSplash } from '../../../lib/bootSplash';
 import { useT } from '../../../lib/language';
 import { supabase } from '../../../lib/supabase';
 import { ZaadiRig, type ZaadiPose } from '../../zaadi/ZaadiRig';
+import { markInvited } from '../../../lib/launch';
+import FocusTrap from '../../FocusTrap';
 
 /**
  * "Pack your zaad": the waitlist (RULES.md §2 "Launch in waves", BRAND.md §5–8). One track, who it is for, an email
@@ -218,7 +220,7 @@ export default function PackYourZaadPage() {
   const { theme, toggleTheme } = useTheme();
   const { isAr, t } = useT();
   const lang: 'en' | 'ar' = isAr ? 'ar' : 'en';
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // 0 = opened from an invitation
   const [track, setTrack] = useState<Track | null>(null);
   const [rising, setRising] = useState<string | null>(null);
   const [who, setWho] = useState<'me' | 'child' | null>(null);
@@ -271,7 +273,10 @@ export default function PackYourZaadPage() {
         if (res.ok) { setWho(pending.who); finish({ ...body, track: pending.track }, tr); }
         else { setTrack(tr); setWho(pending.who); setStep(3); setError(body.error || t('Something went wrong. Please try again.', 'حصلت مشكلة. جرّب تاني.')); }
       });
-    } else if (saved && savedTrack && !params.has('invited')) {
+    } else if (params.get('invited') === '1') {
+      markInvited(); setStep(0); setMood('cheer');
+      setSay(t('Your place is ready. Welcome!', 'مكانك جاهز. أهلًا بيك!'));
+    } else if (saved && savedTrack) {
       // already in line: show the place again instead of a second join
       setEntry(saved); setTrack(savedTrack); setStep(4);
     }
@@ -377,6 +382,17 @@ export default function PackYourZaadPage() {
         </div>
 
         <AnimatePresence mode="wait">
+          {step === 0 && (
+            <motion.section key="s0" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+              <h1 className={`mt-5 leading-[1.05] ${isAr ? 'text-[36px] font-bold' : 'font-editorial text-[40px] font-medium tracking-tight'}`}>{t('Your invitation is here', 'دعوتك وصلت')}</h1>
+              <p className="mx-auto mt-2.5 max-w-[32ch] text-[16px] leading-relaxed text-muted-foreground">
+                {t('Create your account with the email you joined with. Your place is held for 72 hours.', 'أنشئ حسابك بالبريد الذي سجّلت به. مكانك محجوز لك 72 ساعة.')}
+              </p>
+              <a href="/student?auth=signup" className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-foreground px-8 text-base font-bold text-background">
+                {t('Create your account', 'أنشئ حسابك')}
+              </a>
+            </motion.section>
+          )}
           {step === 1 && (
             <motion.section key="s1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
               <h1 className={`mt-5 text-center leading-[1.05] ${isAr ? 'text-[38px] font-bold' : 'font-editorial text-[42px] font-medium tracking-tight'}`}>{t('Pack your zaad', 'جهّز زادك')}</h1>
@@ -447,7 +463,7 @@ export default function PackYourZaadPage() {
                 <input type="email" inputMode="email" autoComplete="email" dir="ltr" placeholder={t('Your email', 'إيميلك')} aria-label={t('Your email', 'إيميلك')} value={email} onChange={(e) => setEmail(e.target.value)}
                   className="w-full border-0 border-b-[1.5px] border-border bg-transparent px-1 py-4 text-[17px] outline-none focus:border-[#E5A93C]" />
                 {/* honeypot: hidden from people, filled by bots */}
-                <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={honey} onChange={(e) => setHoney(e.target.value)} name="website" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
+                <input tabIndex={-1} autoComplete="off" aria-hidden="true" aria-label={t('Leave this empty', 'اترك هذا فارغًا')} value={honey} onChange={(e) => setHoney(e.target.value)} name="website" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
                 <motion.button type="submit" whileTap={{ scale: 0.98 }} disabled={!emailOk || busy}
                   className="mt-6 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white disabled:opacity-35">{busy ? t('Saving…', 'بنحفظ…') : t('Save my spot', 'احجز مكاني')}</motion.button>
               </form>
@@ -535,6 +551,7 @@ export default function PackYourZaadPage() {
         {shareOpen && track && entry && (
           <motion.div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShareOpen(false)}>
+            <FocusTrap onEscape={() => setShareOpen(false)}>
             <motion.div role="dialog" aria-label={t('Share my bag', 'شارك شنطتي')} onClick={(e) => e.stopPropagation()} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
               transition={{ type: 'spring', stiffness: 320, damping: 30 }}
               className="w-full max-w-[440px] rounded-t-[32px] bg-background px-5 pb-8 pt-5 sm:rounded-[32px]">
@@ -553,6 +570,7 @@ export default function PackYourZaadPage() {
               </button>
               <p className="mt-2.5 text-center text-[12px] text-muted-foreground">{t('Tip: take a screenshot of the card for your story.', 'نصيحة: خد سكرين شوت للكارت وحطه في الستوري.')}</p>
             </motion.div>
+            </FocusTrap>
           </motion.div>
         )}
       </AnimatePresence>

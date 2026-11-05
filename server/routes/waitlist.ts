@@ -96,7 +96,7 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
           title: { en: 'Your zaad is packed', ar: 'زادك جاهز' },
           body: {
             en: `You're number ${place} in line for our first wave (${waveSize()} places, early December). You packed ${t.en}. We'll write to you before your wave opens; no password and no payment until then.`,
-            ar: `إنت رقم ${place} في انتظار الدفعة الأولى (${waveSize()} مكانًا، أوائل ديسمبر). جهّزت ${t.ar}. هنكتبلك قبل ما دفعتك تفتح، ومن غير باسورد ولا دفع لحد وقتها.`,
+            ar: `أنت رقم ${place} في انتظار الدفعة الأولى (${waveSize()} مكانًا، أوائل ديسمبر). جهّزت ${t.ar}. سنكتب لك قبل أن تفتح دفعتك، ولا كلمة سر ولا دفع حتى ذلك الوقت.`,
           },
         });
         sendEmail({ to: input.email, from: 'info', ...mail }).catch(() => {});
@@ -113,8 +113,8 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
     if (fresh && process.env.NODE_ENV === 'production') {
       const mail = renderSimpleNotice({
         lang: input.lang,
-        title: { en: 'You are already in line', ar: 'إنت في الدور بالفعل' },
-        body: { en: `You're number ${place} in line. We'll write to you before your wave opens.`, ar: `إنت رقم ${place} في الدور. هنكتبلك قبل ما دفعتك تفتح.` },
+        title: { en: 'You are already in line', ar: 'أنت في الدور بالفعل' },
+        body: { en: `You're number ${place} in line. We'll write to you before your wave opens.`, ar: `أنت رقم ${place} في الدور. سنكتب لك قبل أن تفتح دفعتك.` },
       });
       sendEmail({ to: input.email, from: 'info', ...mail }).catch(() => {});
     }
@@ -200,7 +200,7 @@ export function registerWaitlistRoutes(app: express.Express, deps: {
       title: { en: 'Your place is open', ar: 'مكانك جاهز' },
       body: {
         en: 'Your wave is open and your place is held for 72 hours, because the next family in line is waiting. Create your account with this email and book your free trial.',
-        ar: 'دفعتك فتحت، ومكانك محجوز 72 ساعة، لأن العيلة اللي بعدك في الدور مستنية. اعمل حسابك بالإيميل ده، واحجز حصتك التجريبية المجانية.',
+        ar: 'فُتحت دفعتك، ومكانك محجوز لك 72 ساعة، لأن الأسرة التالية في الدور تنتظر. أنشئ حسابك بهذا البريد، واحجز حصتك التجريبية المجانية.',
       },
       buttonPath: `${entry.lang === 'ar' ? '/ar' : ''}/zaad?invited=1`,
     });
