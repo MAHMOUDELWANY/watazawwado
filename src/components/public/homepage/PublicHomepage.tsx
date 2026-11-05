@@ -1,3 +1,4 @@
+import { FamiliarIcon } from './FamiliarIcons';
 import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
@@ -201,10 +202,10 @@ export function PublicHomepage() {
             'الحصص مستمرة، لكن لا أحد يخبرك بالخطة.',
             'أحبّ طفلك الدروس شهرًا، ثم فقد حماسه.',
             'المواعيد لا تناسب أسبوعك أبدًا.',
-          ]).map((line) => (
-            <li key={line} className="flex gap-4 py-4 text-base sm:text-lg leading-relaxed text-foreground">
-              <span aria-hidden="true" className="mt-3 h-px w-5 shrink-0 bg-[#C51F24]" />
-              {line}
+          ]).map((line, i) => (
+            <li key={line} className="flex items-center gap-4 sm:gap-5 py-4 text-base sm:text-lg leading-relaxed text-foreground">
+              <FamiliarIcon kind={(['teacher', 'plan', 'interest', 'time'] as const)[i]} />
+              <span>{line}</span>
             </li>
           ))}
         </ul>
