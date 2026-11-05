@@ -113,7 +113,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
       targetId: 'theme-toggle-btn',
       title: lang === 'ar' ? 'نهاري وليلي' : 'Day and night',
       description: lang === 'ar'
-        ? 'اختار الإضاءة اللي ترتاح لها عينك.'
+        ? 'اختر الإضاءة التي ترتاح لها عينك.'
         : 'Choose the light that is easiest on your eyes.',
       position: 'bottom',
     },

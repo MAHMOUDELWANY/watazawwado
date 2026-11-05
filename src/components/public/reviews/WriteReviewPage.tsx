@@ -23,7 +23,7 @@ export function WriteReviewPage() {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p),
     });
     const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(isAr ? 'معرفناش نبعت. اتأكد من البيانات وجرّب تاني.' : d.error || 'Could not send.');
+    if (!r.ok) throw new Error(isAr ? 'تعذّر الإرسال. تأكد من البيانات وحاول مرة أخرى.' : d.error || 'Could not send.');
     setState('sent');
   };
 
@@ -33,20 +33,20 @@ export function WriteReviewPage() {
         <div className="max-w-2xl mx-auto space-y-8">
           <PageHero
             title={isAr ? <>شاركنا <span className="text-ribbon">رأيك</span></> : <>Share your <span className="text-ribbon">experience</span></>}
-            intro={isAr ? 'رأيك بيساعد عيلات تانية تختار عن معرفة. شكراً إنك بتاخد دقيقتين.' : 'Your words help other families choose with confidence. Thank you for taking two minutes.'}
+            intro={isAr ? 'رأيك يساعد أسرًا أخرى على الاختيار عن معرفة. شكرًا لأنك تمنحنا دقيقتين.' : 'Your words help other families choose with confidence. Thank you for taking two minutes.'}
           />
           <Card className="p-5 sm:p-7">
             {state === 'loading' && <div className="py-10 grid justify-items-center"><BrandLoader size="md" /></div>}
             {state === 'closed' && (
               <p role="alert" className="text-sm text-muted-foreground">
-                {isAr ? 'اللينك ده اتستخدم قبل كده أو انتهت مدته. لو عايز تكتب رأيك، اطلب منا لينك جديد على واتساب.' : 'This link was already used or has expired. If you would like to write a review, ask us for a new link on WhatsApp.'}
+                {isAr ? 'هذا الرابط استُخدم من قبل أو انتهت مدته. إن أردت كتابة رأيك، اطلب منا رابطًا جديدًا على واتساب.' : 'This link was already used or has expired. If you would like to write a review, ask us for a new link on WhatsApp.'}
               </p>
             )}
             {state === 'open' && <ReviewForm isAr={isAr} onSubmit={submit} />}
             {state === 'sent' && (
               <p role="status" className="flex items-start gap-2 text-foreground" data-testid="review-sent">
                 <CheckCircle2 className="w-5 h-5 text-teal shrink-0 mt-0.5" aria-hidden="true" />
-                {isAr ? 'وصلنا رأيك، جزاك الله خيراً. هيظهر على الموقع بعد ما نراجعه.' : 'We received your review. Jazakum Allahu khayran. It will appear on our site once we have looked at it.'}
+                {isAr ? 'وصلنا رأيك، جزاك الله خيرًا. سيظهر على الموقع بعد مراجعته.' : 'We received your review. Jazakum Allahu khayran. It will appear on our site once we have looked at it.'}
               </p>
             )}
           </Card>

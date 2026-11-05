@@ -35,7 +35,7 @@ export function HowItWorksPage() {
   const isEn = lang === 'en';
 
   const promises = [
-    { icon: ShieldCheck, en: ['A free first lesson', '30 minutes, no card, nothing renews.'], ar: ['أول حصة مجاناً', '٣٠ دقيقة، من غير بطاقة، ومفيش حاجة بتتجدد.'] },
+    { icon: ShieldCheck, en: ['A free first lesson', '30 minutes, no card, nothing renews.'], ar: ['الحصة الأولى مجانية', '٣٠ دقيقة، بلا بطاقة، ولا شيء يتجدد.'] },
     { icon: CalendarClock, en: ['Your time, your pace', 'Move a lesson up to 1 hour before, cancel up to 3 hours before.'], ar: ['وقتك وإيقاعك', 'غيّر الميعاد لحد ساعة قبلها، أو الغي لحد ٣ ساعات قبلها.'] },
     { icon: MessageCircle, en: ['Your teacher, close by', 'Ask between lessons in the chat on the site.'], ar: ['معلمك قريب منك', 'اسأله بين الحصص في المحادثة على الموقع.'] },
   ];
@@ -76,7 +76,7 @@ export function HowItWorksPage() {
                 {isEn ? 'Principles in every lesson' : 'مبادئ راسخة في كل درس'}
               </h2>
               <p className="text-base text-muted-foreground leading-relaxed">
-                {isEn ? 'Four things we never trade away, whatever the subject.' : 'أربع حاجات مبنتنازلش عنها، أياً كانت المادة.'}
+                {isEn ? 'Four things we never trade away, whatever the subject.' : 'أربعة أمور لا نتنازل عنها، أيًّا كانت المادة.'}
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -114,7 +114,7 @@ export function HowItWorksPage() {
             <p className="mt-3 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
               {isEn
                 ? 'Pick a time that suits you. Your teacher meets you on Zoom, listens, and suggests the way.'
-                : 'اختار الميعاد اللي يناسبك. معلمك هيقابلك على Zoom، ويسمعك، ويقترح عليك الطريق.'}
+                : 'اختر الموعد الذي يناسبك. سيقابلك معلمك على Zoom، ويستمع إليك، ويقترح عليك الطريق.'}
             </p>
             <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
               <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">

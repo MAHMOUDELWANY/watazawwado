@@ -132,7 +132,7 @@ export function LanguageWelcome() {
           </PublicButton>
           <p className="lw-note">
             You can change it any time from the menu at the top.
-            <span className="block mt-1" lang="ar" dir="rtl">وتقدر تغيّرها في أي وقت من القائمة اللي فوق.</span>
+            <span className="block mt-1" lang="ar" dir="rtl">ويمكنك تغييرها في أي وقت من القائمة في الأعلى.</span>
           </p>
         </div>
       </FocusTrap>

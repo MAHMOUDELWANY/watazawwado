@@ -18,7 +18,7 @@ export function PrivacyPolicyPage() {
             title={isEn ? <>Privacy <span className="text-ribbon">Policy</span></> : <>سياسة <span className="text-ribbon">الخصوصية</span></>}
             intro={isEn
               ? 'What we collect, why, how long we keep it, and the rights you have over your data and your children’s.'
-              : 'إيه البيانات اللي بنجمعها، وليه، وبنحتفظ بيها قد إيه، وإيه حقوقك على بياناتك وبيانات أولادك.'}
+              : 'ما البيانات التي نجمعها، ولماذا، وكم نحتفظ بها، وما حقوقك على بياناتك وبيانات أطفالك.'}
             meta={isEn ? 'Last updated: November 2026' : 'آخر تحديث: نوفمبر 2026'}
           />
 

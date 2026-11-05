@@ -10,12 +10,12 @@ const OFFER = [
   {
     icon: Clock,
     en: ['Your own hours', 'You open the weekly hours you can really teach, and families book from them.'],
-    ar: ['مواعيدك إنت', 'بتفتح الساعات اللي تقدر تدرّس فيها فعلاً كل أسبوع، والعيلات بتحجز منها.'],
+    ar: ['مواعيدك أنت', 'تفتح الساعات التي تستطيع التدريس فيها فعلًا كل أسبوع، وتحجز منها الأسر.'],
   },
   {
     icon: Wallet,
     en: ['A fixed hourly rate, every month', 'Agreed in writing, in your own currency, sent between the 1st and the 5th of the next month with a payslip.'],
-    ar: ['أجر ثابت للساعة، كل شهر', 'متفق عليه كتابةً وبعملتك، وبيوصلك بين يوم 1 و5 من الشهر اللي بعده مع إيصال.'],
+    ar: ['أجر ثابت للساعة، كل شهر', 'متفق عليه كتابةً وبعملتك، ويصلك بين اليوم 1 و5 من الشهر التالي مع إيصال.'],
   },
   {
     icon: BookOpen,
@@ -25,7 +25,7 @@ const OFFER = [
   {
     icon: Video,
     en: ['One dashboard for everything', 'Your lessons, Zoom links, notes, homework and your month so far, in one place.'],
-    ar: ['لوحة واحدة لكل حاجة', 'حصصك ولينكات Zoom والملاحظات والواجبات وحساب شهرك، كله في مكان واحد.'],
+    ar: ['لوحة واحدة لكل شيء', 'حصصك وروابط Zoom والملاحظات والواجبات وحساب شهرك، كلها في مكان واحد.'],
   },
 ] as const;
 
@@ -39,7 +39,7 @@ const LOOKING_FOR = [
   {
     icon: Languages,
     en: ['At ease with families in the West', 'Enough English to explain to a child born abroad, and to talk to their parents.'],
-    ar: ['مرتاح مع العيلات اللي برّه', 'إنجليزي كفاية تشرح بيه لطفل اتولد برّه، وتتكلم مع أهله.'],
+    ar: ['مرتاح مع الأسر في الغرب', 'إنجليزية كافية لتشرح لطفل وُلد في الخارج، وتتحدث مع أهله.'],
   },
   {
     icon: HeartHandshake,
@@ -49,7 +49,7 @@ const LOOKING_FOR = [
   {
     icon: Wifi,
     en: ['A quiet place to teach', 'A stable internet connection, a camera and a headset, and a quiet room.'],
-    ar: ['مكان هادي للتدريس', 'إنترنت ثابت، وكاميرا وسماعة، وأوضة هادية.'],
+    ar: ['مكان هادئ للتدريس', 'إنترنت ثابت، وكاميرا وسماعة، وغرفة هادئة.'],
   },
   {
     icon: Clock,
@@ -59,14 +59,14 @@ const LOOKING_FOR = [
   {
     icon: ShieldCheck,
     en: ['Safe with children', 'You follow our child-safety rules: no recording, and talk stays on our platform.'],
-    ar: ['أمين مع الأطفال', 'بتلتزم بقواعد أمان الأطفال عندنا: مفيش تسجيل، والكلام كله على منصتنا.'],
+    ar: ['أمين مع الأطفال', 'تلتزم بقواعد أمان الأطفال عندنا: لا تسجيل، والحديث كله على منصتنا.'],
   },
 ] as const;
 
 const STEPS = [
   {
     en: ['Write to us', 'Your CV, what you teach, a short recording of your recitation or of you explaining a lesson, and the hours you could teach.'],
-    ar: ['ابعتلنا', 'السيرة الذاتية، والمواد اللي بتدرّسها، وتسجيل قصير لتلاوتك أو وإنت بتشرح درس، والساعات اللي تقدر تدرّس فيها.'],
+    ar: ['أرسل إلينا', 'السيرة الذاتية، والمواد التي تدرّسها، وتسجيلًا قصيرًا لتلاوتك أو لك وأنت تشرح درسًا، والساعات التي تستطيع التدريس فيها.'],
   },
   {
     en: ['A short interview', 'A video call with our team to get to know you and how you teach.'],
@@ -97,12 +97,12 @@ export function CareersPage() {
             title={isEn ? <>Teach <span className="text-ribbon">with us</span></> : <>درّس <span className="text-ribbon">معانا</span></>}
             intro={isEn
               ? 'We are a team of male and female teachers giving one-on-one lessons to Muslim families in the West: Quran, the Zad Path, Arabic and English. If teaching one student well matters to you, we would like to meet you.'
-              : 'إحنا فريق من المعلمين والمعلمات بندّي حصص فردية لعيلات مسلمة برّه: قرآن، ومسار الأثر، وعربي، وإنجليزي. لو بيهمك تعلّم طالب واحد صح، يسعدنا نتعرّف عليك.'}
+              : 'نحن فريق من المعلمين والمعلمات نقدّم حصصًا فردية لأسر مسلمة في الغرب: القرآن، ومسار الأثر، والعربية، والإنجليزية. إن كان يهمّك أن تعلّم طالبًا واحدًا كما ينبغي، يسعدنا أن نتعرّف عليك.'}
           />
 
           <section aria-labelledby="careers-offer" className="space-y-5">
             <h2 id="careers-offer" className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground">
-              {isEn ? 'What you get' : 'هتلاقي إيه معانا'}
+              {isEn ? 'What you get' : 'ماذا تجد معنا'}
             </h2>
             <ul className="grid sm:grid-cols-2 gap-4">
               {OFFER.map(({ icon: Icon, en, ar }) => (
@@ -121,7 +121,7 @@ export function CareersPage() {
 
           <section aria-labelledby="careers-who" className="space-y-5">
             <h2 id="careers-who" className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground">
-              {isEn ? 'Who we are looking for' : 'المعلم اللي بندوّر عليه'}
+              {isEn ? 'Who we are looking for' : 'المعلم الذي نبحث عنه'}
             </h2>
             <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-5">
               {LOOKING_FOR.map(({ icon: Icon, en, ar }) => (

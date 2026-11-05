@@ -18,12 +18,12 @@ const PARTS = [
   {
     emblem: 'juz' as const,
     en: ['Hall of Honor', 'When a student memorizes a juz or a long surah, or finishes a level or a book, we celebrate it with the whole academy.'],
-    ar: ['لوحة الشرف', 'لما طالب يحفظ جزء أو سورة طويلة، أو يخلّص مستوى أو كتاب، بنحتفل بيه مع الأكاديمية كلها.']
+    ar: ['لوحة الشرف', 'حين يحفظ طالب جزءًا أو سورة طويلة، أو ينهي مستوى أو كتابًا، نحتفل به مع الأكاديمية كلها.']
   },
   {
     emblem: 'rhythm-12' as const,
     en: ['Class board', 'Learners with the same teacher and of the same age see each other’s effort: lessons this month and weeks in a row. There are no ranks or scores.'],
-    ar: ['لوحة الحلقة', 'طلاب نفس المعلم ونفس السن بيشوفوا مجهود بعض: حصص الشهر والأسابيع ورا بعض. مفيش ترتيب ولا درجات.']
+    ar: ['لوحة الحلقة', 'يرى طلاب المعلم نفسه والعمر نفسه مجهود بعضهم: حصص الشهر والأسابيع المتتالية. بلا ترتيب ولا درجات.']
   }
 ] as const;
 
@@ -31,17 +31,17 @@ const PROMISES = [
   {
     icon: Lock,
     en: ['Members only', 'Only families and students of the academy see it, from inside their account. Search engines and visitors see nothing.'],
-    ar: ['للأعضاء بس', 'بيشوفه أسر وطلاب الأكاديمية بس، من جوه حساباتهم. محركات البحث والزوار مش بيشوفوا حاجة.']
+    ar: ['للأعضاء فقط', 'لا يراه إلا أسر الأكاديمية وطلابها، من داخل حساباتهم. محركات البحث والزوار لا يرون شيئًا.']
   },
   {
     icon: UserCheck,
     en: ['The family decides', 'Nothing about a child is shown until a parent agrees. Adult learners decide for themselves. You choose the name, and you can take it down any time.'],
-    ar: ['القرار للأسرة', 'مفيش حاجة عن طفل بتظهر قبل ما ولي الأمر يوافق، والطالب الكبير بيقرر لنفسه. أنتم بتختاروا الاسم، وتقدروا تشيلوه في أي وقت.']
+    ar: ['القرار للأسرة', 'لا يظهر شيء عن طفل قبل موافقة وليّ الأمر، والطالب الكبير يقرر لنفسه. أنتم تختارون الاسم، ويمكنكم حذفه في أي وقت.']
   },
   {
     icon: EyeOff,
     en: ['A name and the achievement', 'No photos, countries or ages. Just the name you choose and what was achieved.'],
-    ar: ['اسم وإنجاز بس', 'من غير صور ولا بلد ولا سن. الاسم اللي تختاروه والإنجاز بس.']
+    ar: ['اسم وإنجاز فقط', 'بلا صور ولا بلد ولا عمر. الاسم الذي تختارونه والإنجاز فقط.']
   }
 ] as const;
 
@@ -58,7 +58,7 @@ export function CommunityPage() {
             title={isEn ? <>Our <span className="text-ribbon">community</span></> : <><span className="text-ribbon">مجتمع</span> وتزودوا</>}
             intro={isEn
               ? 'A closed circle for our families and students, inside your account once you join.'
-              : 'دايرة مقفولة لأسرنا وطلابنا، بتلاقيها جوه حسابك أول ما تنضم لنا.'}
+              : 'دائرة مغلقة لأسرنا وطلابنا، تجدها داخل حسابك حين تنضم إلينا.'}
           />
 
           <ul className="grid sm:grid-cols-2 gap-4">
@@ -84,11 +84,11 @@ export function CommunityPage() {
                 <span className="justify-self-start inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#E5A93C]/20 text-[#7A4E09] dark:text-[#F6D58E]">
                   {isEn ? 'EXAMPLE' : 'مثال'}
                 </span>
-                <p className="font-display text-lg font-bold text-foreground">{isEn ? 'The name the family chooses' : 'الاسم اللي الأسرة تختاره'}</p>
+                <p className="font-display text-lg font-bold text-foreground">{isEn ? 'The name the family chooses' : 'الاسم الذي تختاره الأسرة'}</p>
                 <p className="text-foreground">{isEn ? 'Memorized Juz ʿAmma' : 'حفظ جزء عمّ'}</p>
               </div>
             </Card>
-            <p className="text-xs text-muted-foreground">{isEn ? 'How an entry looks inside the account.' : 'كده بيظهر الإنجاز جوه الحساب.'}</p>
+            <p className="text-xs text-muted-foreground">{isEn ? 'How an entry looks inside the account.' : 'هكذا يظهر الإنجاز داخل الحساب.'}</p>
           </section>
 
           <ul className="grid sm:grid-cols-3 gap-4">
@@ -105,7 +105,7 @@ export function CommunityPage() {
           </ul>
 
           <div className="grid gap-3 justify-items-center text-center">
-            <p className="text-foreground font-display text-lg">{isEn ? 'Families who learn with us find it in their account.' : 'الأسر اللي بتتعلم معانا بتلاقيه في حسابها.'}</p>
+            <p className="text-foreground font-display text-lg">{isEn ? 'Families who learn with us find it in their account.' : 'تجده الأسر التي تتعلّم معنا في حساباتها.'}</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link to="/get-started" className="btn-primary-material rounded-xl text-white font-bold shadow-md inline-flex items-center justify-center h-11 px-5 text-sm focus-ring">
                 <TrialCtaLabel isEn={isEn} />
@@ -115,7 +115,7 @@ export function CommunityPage() {
               </Link>
             </div>
             <Link to="/safety" className="text-sm underline underline-offset-2 text-muted-foreground hover:text-foreground">
-              {isEn ? 'How we keep children safe' : 'إزاي بنحافظ على أمان الأطفال'}
+              {isEn ? 'How we keep children safe' : 'كيف نحافظ على أمان الأطفال'}
             </Link>
           </div>
         </div>

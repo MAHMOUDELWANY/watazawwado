@@ -10,7 +10,7 @@ import { findSubjectPage, SUBJECT_PAGES_PATH } from '../../../data/subjectPages'
 import { localizedPath } from '../../../lib/language';
 
 const STEPS_EN = ['Create a free account and choose your teacher.', 'Book a free 30-minute trial lesson.', 'Take a short placement test, then book lessons at times that suit you.'];
-const STEPS_AR = ['اعمل حساب مجاني واختار معلمك.', 'احجز حصة تجريبية مجانية ٣٠ دقيقة.', 'خد اختبار تحديد مستوى قصير، وبعدين احجز حصصك في المواعيد اللي تناسبك.'];
+const STEPS_AR = ['أنشئ حسابًا مجانيًا واختر معلمك.', 'احجز حصة تجريبية مجانية مدتها ٣٠ دقيقة.', 'أجرِ اختبار تحديد مستوى قصيرًا، ثم احجز حصصك في المواعيد التي تناسبك.'];
 
 /** One subject-and-audience landing page (/learning/<slug>), in the page's language. */
 export function SubjectLandingPage() {
@@ -40,7 +40,7 @@ export function SubjectLandingPage() {
           </div>
 
           <section className="space-y-4">
-            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'What you learn' : 'هتتعلم إيه'}</h2>
+            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'What you learn' : 'ماذا ستتعلّم'}</h2>
             <ul className="space-y-3">
               {(isEn ? page.learnEn : page.learnAr).map((item) => (
                 <li key={item} className="flex gap-3 text-foreground/90 leading-relaxed">
@@ -51,14 +51,14 @@ export function SubjectLandingPage() {
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'How to start' : 'تبدأ إزاي'}</h2>
+            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'How to start' : 'كيف تبدأ'}</h2>
             <ol className="list-decimal ps-6 space-y-2 text-foreground/90 leading-relaxed">
               {(isEn ? STEPS_EN : STEPS_AR).map((s) => <li key={s}>{s}</li>)}
             </ol>
           </section>
 
           <section className="space-y-4">
-            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'Questions families ask' : 'أسئلة بتتسأل كتير'}</h2>
+            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'Questions families ask' : 'أسئلة تتكرر كثيرًا'}</h2>
             <div className="space-y-3">
               {(isEn ? page.faqEn : page.faqAr).map((f) => (
                 <Card key={f.q} className="p-5 space-y-1">
@@ -70,7 +70,7 @@ export function SubjectLandingPage() {
           </section>
 
           <Card className="p-5 sm:p-6 text-center space-y-3">
-            <p className="font-bold text-foreground">{isEn ? 'See how a lesson feels before you decide.' : 'شوف الحصة هتبقى عاملة إزاي قبل ما تقرر.'}</p>
+            <p className="font-bold text-foreground">{isEn ? 'See how a lesson feels before you decide.' : 'شاهد كيف تكون الحصة قبل أن تقرر.'}</p>
             <Button onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">{cta}</Button>
           </Card>
 

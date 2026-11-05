@@ -14,32 +14,32 @@ const POINTS = [
   {
     icon: Eye,
     en: ['You can sit in', 'Join any lesson whenever you like, and ask for a different teacher at any time.'],
-    ar: ['تقدر تحضر معاهم', 'احضر أي حصة في أي وقت، وتقدر تطلب معلم تاني وقت ما تحب.']
+    ar: ['يمكنك الحضور معهم', 'احضر أي حصة في أي وقت، ويمكنك طلب معلم آخر متى شئت.']
   },
   {
     icon: DoorClosed,
     en: ['The teacher opens the room', 'The teacher starts every lesson as the Zoom host. Your child waits in the waiting room until the teacher lets them in.'],
-    ar: ['المعلم هو اللي بيفتح الحصة', 'المعلم بيبدأ كل حصة كمضيف على Zoom، وابنك بيستنى في غرفة الانتظار لحد ما المعلم يدخّله.']
+    ar: ['المعلم هو من يفتح الحصة', 'يبدأ المعلم كل حصة مضيفًا على Zoom، وينتظر ابنك في غرفة الانتظار حتى يُدخله المعلم.']
   },
   {
     icon: MessagesSquare,
     en: ['Talk stays on our platform', 'Teachers talk to students only in our Zoom lessons and the chat on our site, which our team can read. They never move contact to a private account and never ask for personal details the lesson doesn’t need.'],
-    ar: ['الكلام كله على المنصة', 'المعلم بيكلّم الطالب في حصص Zoom والمحادثة اللي على موقعنا بس، وفريقنا يقدر يقراها. ومفيش نقل للكلام لأي حساب خاص، ولا سؤال عن بيانات شخصية الحصة مش محتاجاها.']
+    ar: ['الحديث كله على المنصة', 'يتواصل المعلم مع الطالب في حصص Zoom والمحادثة على موقعنا فقط، ويستطيع فريقنا قراءتها. لا ينتقل الحديث إلى أي حساب خاص، ولا يُسأل الطفل عن بيانات شخصية لا تحتاجها الحصة.']
   },
   {
     icon: VideoOff,
     en: ['No recording', 'We don’t record lessons. A teacher may not record, photograph or screenshot your child without your permission.'],
-    ar: ['مفيش تسجيل', 'إحنا مش بنسجّل الحصص. وممنوع المعلم يسجّل أو يصوّر ابنك أو ياخد له سكرين شوت من غير إذنك.']
+    ar: ['لا تسجيل', 'نحن لا نسجّل الحصص. ويُمنع المعلم من تسجيل ابنك أو تصويره أو أخذ لقطة شاشة له دون إذنك.']
   },
   {
     icon: UserRound,
     en: ['You hold the account', 'A parent opens the family account and books for each child. You can see, correct or delete your child’s details at any time.'],
-    ar: ['الحساب في إيدك', 'ولي الأمر هو اللي بيفتح حساب العيلة وبيحجز لكل طفل. وتقدر تشوف بيانات ابنك أو تصححها أو تمسحها في أي وقت.']
+    ar: ['الحساب بيدك', 'وليّ الأمر هو من يفتح حساب الأسرة ويحجز لكل طفل. ويمكنك الاطلاع على بيانات ابنك أو تصحيحها أو حذفها في أي وقت.']
   },
   {
     icon: ShieldAlert,
     en: ['Tell us if anything worries you', 'Message us on WhatsApp or email support@watazawwado.academy straight away. We look into every report and may pause the teacher’s access while we do.'],
-    ar: ['لو حاجة قلقتك، كلّمنا', 'ابعتلنا على واتساب أو على support@watazawwado.academy على طول. بنراجع كل بلاغ، وممكن نوقف وصول المعلم لحد ما نخلّص المراجعة.']
+    ar: ['إن أقلقك شيء، راسلنا', 'راسلنا فورًا على واتساب أو على support@watazawwado.academy. نراجع كل بلاغ، وقد نوقف وصول المعلم حتى ننتهي من المراجعة.']
   }
 ] as const;
 
@@ -53,7 +53,7 @@ export function SafetyPage() {
         <div className="max-w-3xl mx-auto space-y-10">
           <PageHero
             title={isEn ? <>Your child’s <span className="text-ribbon">safety</span></> : <>أمان <span className="text-ribbon">ابنك</span></>}
-            intro={isEn ? 'How every lesson with a child works, in plain words.' : 'إزاي بتمشي كل حصة مع طفل، بكلام بسيط.'}
+            intro={isEn ? 'How every lesson with a child works, in plain words.' : 'كيف تسير كل حصة مع طفل، بكلام بسيط.'}
           />
 
           <ul className="grid sm:grid-cols-2 gap-4">

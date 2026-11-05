@@ -32,7 +32,7 @@ export function ProgressShowcase({ isEn }: { isEn: boolean }) {
         <p className="text-base text-muted-foreground leading-relaxed">
           {t(
             'In your account, every subject has a clear path, and each month has a short report you can print.',
-            'في حسابك، كل مادة ليها طريق واضح، وكل شهر ليه تقرير قصير تقدر تطبعه.'
+            'في حسابك، لكل مادة طريق واضح، ولكل شهر تقرير قصير يمكنك طباعته.'
           )}
         </p>
       </div>
@@ -101,12 +101,12 @@ export function ProgressShowcase({ isEn }: { isEn: boolean }) {
             <p className="text-foreground leading-relaxed">
               {t(
                 'Clear progress on the rules of noon sakinah this month, applied well while reciting. Next: practise the rules of meem sakinah at home, a few minutes a day.',
-                'تقدّم واضح في أحكام النون الساكنة الشهر ده، وبيطبّقها كويس وهو بيقرأ. الجاي: يتمرّن على أحكام الميم الساكنة في البيت، كام دقيقة كل يوم.'
+                'تقدّم واضح في أحكام النون الساكنة هذا الشهر، ويطبّقها جيدًا وهو يقرأ. التالي: يتمرّن على أحكام الميم الساكنة في البيت، بضع دقائق كل يوم.'
               )}
             </p>
           </div>
           <p className="text-xs text-muted-foreground">
-            {t('Sample figures to show the layout, not a real student.', 'أرقام للتوضيح بس، مش لطالب حقيقي.')}
+            {t('Sample figures to show the layout, not a real student.', 'أرقام للتوضيح فقط، لا لطالب حقيقي.')}
           </p>
         </article>
       </div>

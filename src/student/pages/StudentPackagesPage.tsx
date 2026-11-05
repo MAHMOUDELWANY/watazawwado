@@ -657,7 +657,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
                             <span>
                               {ent.refundRequestedAt
                                 ? (isAr ? 'تم طلب الاسترداد، افتح واتساب تاني' : 'Refund requested — open WhatsApp again')
-                                : (isAr ? 'عايز استرداد بدل الرصيد' : 'I prefer a refund')}
+                                : (isAr ? 'أفضّل الاسترداد بدل الرصيد' : 'I prefer a refund')}
                             </span>
                           </button>
                         </div>

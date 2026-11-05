@@ -21,18 +21,18 @@ export function FAQPage() {
             title={isEn ? <>Questions, <span className="text-ribbon">answered simply.</span></> : <>أسئلتك، <span className="text-ribbon">بإجابات بسيطة.</span></>}
             intro={isEn
               ? 'Booking, lessons, payment and Zoom. If something is missing, ask us on WhatsApp.'
-              : 'الحجز والدروس والدفع وZoom. ولو سؤالك مش موجود، اسألنا على واتساب.'}
+              : 'الحجز والدروس والدفع وZoom. وإن لم تجد سؤالك، اسألنا على واتساب.'}
           />
 
           <div className="pt-2 space-y-8">
             <div className="space-y-2.5 pt-2">
               <h2 className="font-editorial text-xl sm:text-2xl text-foreground font-bold">
-                {isEn ? 'How do you keep my child safe?' : 'إزاي بتحافظوا على أمان ابني؟'}
+                {isEn ? 'How do you keep my child safe?' : 'كيف تحافظون على أمان ابني؟'}
               </h2>
               <p className="text-muted-foreground leading-relaxed text-base max-w-[70ch]">
                 {isEn
                   ? 'You can sit in on any lesson, the teacher hosts the Zoom room with a waiting room, lessons are not recorded, and teachers talk to students only on our platform. '
-                  : 'تقدر تحضر أي حصة، والمعلم هو مضيف غرفة Zoom ومعاها غرفة انتظار، والحصص مش بتتسجّل، والمعلم بيكلّم الطالب على منصتنا بس. '}
+                  : 'يمكنك حضور أي حصة، والمعلم هو مضيف غرفة Zoom ومعها غرفة انتظار، والحصص لا تُسجَّل، ويتواصل المعلم مع الطالب على منصتنا فقط. '}
                 <Link to="/safety" className="underline text-primary font-semibold">{isEn ? 'Read how it works' : 'اعرف التفاصيل'}</Link>
               </p>
             </div>
@@ -50,7 +50,7 @@ export function FAQPage() {
 
           <section className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 text-center mt-16">
             <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
-              {isEn ? 'Still have a question?' : 'لسه عندك سؤال؟'}
+              {isEn ? 'Still have a question?' : 'ما زال لديك سؤال؟'}
             </h2>
             <p className="mt-3 text-base sm:text-lg leading-relaxed max-w-md mx-auto text-[#FAF7F2]/80">
               {isEn
