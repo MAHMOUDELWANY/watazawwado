@@ -36,15 +36,15 @@ export const PUBLIC_PAGES: PageSeo[] = [
     titleEn: 'About Watazawwado Academy: our mission and teachers',
     titleAr: 'عن أكاديمية وتزودوا ومعلمينا | Watazawwado',
     descEn: 'Who we are and why we teach: an online academy for one-on-one lessons, balanced and moderate, with an Azhari foundation, following Ahl al-Sunnah wal-Jama‘ah.',
-    descAr: 'إحنا مين وليه بنعلّم: أكاديمية أونلاين لحصص فردية، بتعليم وسطي معتدل وتأسيس أزهري في العقيدة على منهج أهل السنة والجماعة.',
+    descAr: 'من نحن ولماذا نعلّم: أكاديمية أونلاين لحصص فردية، بتعليم وسطي معتدل وتأسيس أزهري في العقيدة على منهج أهل السنة والجماعة.',
     h1En: 'About Watazawwado Academy'
   },
   {
     path: '/how-it-works',
     titleEn: 'How it works: free trial & lessons | Watazawwado Academy',
-    titleAr: 'إزاي بنشتغل: الحصة التجريبية والحصص | وتزودوا Watazawwado',
+    titleAr: 'كيف نعمل: الحصة التجريبية والحصص | وتزودوا Watazawwado',
     descEn: 'Create a free account, book a free 30-minute trial, take a short placement test, then learn 1-on-1 on Zoom at times that suit you.',
-    descAr: 'اعمل حساب مجاني، احجز حصة تجريبية مجانية 30 دقيقة، خد اختبار تحديد مستوى قصير، وبعدها اتعلم حصص فردية على زووم في الوقت اللي يناسبك.',
+    descAr: 'أنشئ حسابًا مجانيًا، واحجز حصة تجريبية مجانية مدتها 30 دقيقة، وأجرِ اختبار تحديد مستوى قصيرًا، ثم تعلّم في حصص فردية على Zoom في الوقت الذي يناسبك.',
     h1En: 'How Watazawwado Academy works'
   },
   {
@@ -76,15 +76,15 @@ export const PUBLIC_PAGES: PageSeo[] = [
     titleEn: 'Your child’s safety in lessons | Watazawwado Academy',
     titleAr: 'أمان ابنك في الحصص | وتزودوا Watazawwado',
     descEn: 'Parents can sit in, the teacher hosts every Zoom lesson with a waiting room, lessons are not recorded and teachers talk to students only on our platform.',
-    descAr: 'ولي الأمر يقدر يحضر، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار، والحصص مش بتتسجّل، والمعلم بيكلّم الطالب على منصتنا بس.',
+    descAr: 'يستطيع وليّ الأمر الحضور، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار، والحصص لا تُسجَّل، ويتواصل المعلم مع الطالب على منصتنا فقط.',
     h1En: 'Your child’s safety'
   },
   {
     path: '/careers',
     titleEn: 'Teach with us: careers | Watazawwado Academy',
-    titleAr: 'درّس معانا: التوظيف | وتزودوا Watazawwado',
+    titleAr: 'درّس معنا: التوظيف | وتزودوا Watazawwado',
     descEn: 'Join our team of male and female teachers giving one-on-one Quran, Zad Path, Arabic and English lessons online: your own hours, a fixed hourly rate and a ready curriculum.',
-    descAr: 'انضم لفريق معلمينا ومعلماتنا في الحصص الفردية أونلاين: قرآن ومسار الأثر وعربي وإنجليزي. مواعيدك إنت، وأجر ثابت للساعة، ومنهج جاهز.',
+    descAr: 'انضم إلى فريق معلمينا ومعلماتنا في الحصص الفردية أونلاين: القرآن ومسار الأثر والعربية والإنجليزية. مواعيدك أنت، وأجر ثابت للساعة، ومنهج جاهز.',
     h1En: 'Teach with us'
   },
   {
@@ -92,7 +92,7 @@ export const PUBLIC_PAGES: PageSeo[] = [
     titleEn: 'Our community for families and students | Watazawwado Academy',
     titleAr: 'مجتمع وتزودوا لأسرنا وطلابنا | وتزودوا Watazawwado',
     descEn: 'A closed community inside your account: a Hall of Honor for big milestones and a class board for effort, shared only when the family agrees.',
-    descAr: 'مجتمع مقفول جوه حسابك: لوحة شرف للإنجازات الكبيرة ولوحة حلقة للمجهود، وبيظهر بس لما الأسرة توافق.',
+    descAr: 'مجتمع مغلق داخل حسابك: لوحة شرف للإنجازات الكبيرة ولوحة حلقة للمجهود، ولا يظهر شيء إلا بموافقة الأسرة.',
     h1En: 'Our community'
   },
   {
@@ -100,7 +100,7 @@ export const PUBLIC_PAGES: PageSeo[] = [
     titleEn: 'Privacy policy | Watazawwado Academy',
     titleAr: 'سياسة الخصوصية | وتزودوا Watazawwado',
     descEn: 'How Watazawwado Academy collects, uses and protects your personal data.',
-    descAr: 'إزاي أكاديمية وتزودوا بتجمع بياناتك الشخصية وبتستخدمها وبتحميها.',
+    descAr: 'كيف تجمع أكاديمية وتزودوا بياناتك الشخصية وتستخدمها وتحميها.',
     h1En: 'Privacy policy'
   },
   {
@@ -121,7 +121,7 @@ PUBLIC_PAGES.push(
     titleEn: 'Articles for Muslim families | Watazawwado Academy',
     titleAr: 'مقالات للأسرة المسلمة | وتزودوا Watazawwado',
     descEn: 'Practical articles for Muslim families in the West: Quran at home, choosing Arabic for your child, and finding the right teacher.',
-    descAr: 'مقالات عملية للأسرة المسلمة برّه: القرآن في البيت، وأنهي عربي يتعلّمه ابنك، وإزاي تختار المعلم المناسب.',
+    descAr: 'مقالات عملية للأسرة المسلمة في الغرب: القرآن في البيت، وأي عربية يتعلّمها ابنك، وكيف تختار المعلم المناسب.',
     h1En: 'Articles'
   },
   ...ARTICLES.map((a) => ({

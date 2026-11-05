@@ -33,15 +33,15 @@ function plansFor(band: Band): Array<{ en: EnvelopePlan; ar: EnvelopePlan }> {
   return [
     {
       en: { id: 'pkg-4', tone: 'teal', title: 'Steady Start', meta: '4 lessons, 60 minutes each', perLesson: `$${t4.perLesson}`, total: `$${t4.total} for 4 lessons. You save $${t4.save}.`, features: ['One lesson a week, a calm habit', 'Book each lesson when it suits you', 'Cancel up to 3 hours before'] },
-      ar: { id: 'pkg-4', tone: 'teal', title: 'بداية ثابتة', meta: '٤ حصص، ٦٠ دقيقة لكل حصة', perLesson: `$${t4.perLesson}`, total: `${t4.total}$ ${AR_COUNT[0]}، وبتوفّر ${t4.save}$`, features: ['حصة في الأسبوع، عادة هادية', 'تحجز كل حصة في الوقت اللي يناسبك', 'إلغاء لحد ٣ ساعات قبل الحصة'] }
+      ar: { id: 'pkg-4', tone: 'teal', title: 'بداية ثابتة', meta: '٤ حصص، ٦٠ دقيقة لكل حصة', perLesson: `$${t4.perLesson}`, total: `${t4.total}$ ${AR_COUNT[0]}، وتوفّر ${t4.save}$`, features: ['حصة في الأسبوع، عادة هادئة', 'تحجز كل حصة في الوقت الذي يناسبك', 'إلغاء حتى ٣ ساعات قبل الحصة'] }
     },
     {
       en: { id: 'pkg-8', tone: 'crimson', title: 'Committed Learner', meta: '8 lessons, 60 minutes each', badge: 'Balanced', perLesson: `$${t8.perLesson}`, total: `$${t8.total} for 8 lessons. You save $${t8.save}.`, features: ['Two lessons a week, progress you feel', band === 9 ? 'A good rhythm for memorization' : 'A good rhythm for a new language', '5% off for a second child'] },
-      ar: { id: 'pkg-8', tone: 'crimson', title: 'طالب ملتزم', meta: '٨ حصص، ٦٠ دقيقة لكل حصة', badge: 'متوازنة', perLesson: `$${t8.perLesson}`, total: `${t8.total}$ ${AR_COUNT[1]}، وبتوفّر ${t8.save}$`, features: ['حصتين في الأسبوع، تقدّم تحس بيه', band === 9 ? 'وتيرة مناسبة للحفظ والمراجعة' : 'وتيرة مناسبة للغة جديدة', 'خصم 5% للطفل التاني'] }
+      ar: { id: 'pkg-8', tone: 'crimson', title: 'طالب ملتزم', meta: '٨ حصص، ٦٠ دقيقة لكل حصة', badge: 'متوازنة', perLesson: `$${t8.perLesson}`, total: `${t8.total}$ ${AR_COUNT[1]}، وتوفّر ${t8.save}$`, features: ['حصتان في الأسبوع، تقدّم تشعر به', band === 9 ? 'وتيرة مناسبة للحفظ والمراجعة' : 'وتيرة مناسبة للغة جديدة', 'خصم 5% للطفل الثاني'] }
     },
     {
       en: { id: 'pkg-12', tone: 'copper', title: 'Fast Progress', meta: '12 lessons, 60 minutes each', badge: 'Best price', perLesson: `$${t12.perLesson}`, total: `$${t12.total} for 12 lessons. You save $${t12.save}.`, features: ['Three lessons a week, faster steps', 'The lowest price per lesson', '5% off for a second child'] },
-      ar: { id: 'pkg-12', tone: 'copper', title: 'تقدّم أسرع', meta: '١٢ حصة، ٦٠ دقيقة لكل حصة', badge: 'أقل سعر', perLesson: `$${t12.perLesson}`, total: `${t12.total}$ ${AR_COUNT[2]}، وبتوفّر ${t12.save}$`, features: ['٣ حصص في الأسبوع، خطوات أسرع', 'أقل سعر للحصة', 'خصم 5% للطفل التاني'] }
+      ar: { id: 'pkg-12', tone: 'copper', title: 'تقدّم أسرع', meta: '١٢ حصة، ٦٠ دقيقة لكل حصة', badge: 'أقل سعر', perLesson: `$${t12.perLesson}`, total: `${t12.total}$ ${AR_COUNT[2]}، وتوفّر ${t12.save}$`, features: ['٣ حصص في الأسبوع، خطوات أسرع', 'أقل سعر للحصة', 'خصم 5% للطفل الثاني'] }
     }
   ];
 }
@@ -118,15 +118,15 @@ export function PricingPage() {
       <PublicSection>
         <div className="max-w-5xl mx-auto space-y-12">
           <PageHero
-            title={isEn ? <>Clear prices, <span className="text-ribbon">at your own pace.</span></> : <>أسعار واضحة، <span className="text-ribbon">وبالوتيرة اللي تناسبك.</span></>}
+            title={isEn ? <>Clear prices, <span className="text-ribbon">at your own pace.</span></> : <>أسعار واضحة، <span className="text-ribbon">وبالوتيرة التي تناسبك.</span></>}
             intro={isEn
               ? 'Packages of 4, 8 or 12 lessons at a lower price per lesson. Pay once with Stripe. No subscription, nothing renews by itself.'
-              : 'باقات ٤ أو ٨ أو ١٢ حصة بسعر أقل للحصة. تدفع مرة واحدة عبر Stripe. مفيش اشتراك، ومفيش تجديد تلقائي.'}
+              : 'باقات من ٤ أو ٨ أو ١٢ حصة بسعر أقل للحصة. تدفع مرة واحدة عبر Stripe. لا اشتراك، ولا تجديد تلقائي.'}
           />
 
           <section aria-labelledby="pick-subject" className="space-y-4">
             <h2 id="pick-subject" className="text-center font-editorial text-xl sm:text-2xl font-bold text-foreground">
-              {isEn ? 'Choose a subject to see its packages' : 'اختار المادة عشان تشوف باقاتها'}
+              {isEn ? 'Choose a subject to see its packages' : 'اختر المادة لترى باقاتها'}
             </h2>
             <div role="radiogroup" aria-labelledby="pick-subject" className="flex flex-wrap justify-center gap-2">
               {BOOKABLE_SERVICES.map((s) => {
@@ -166,7 +166,7 @@ export function PricingPage() {
                   onHoverChange={envelopes.onHover(plan.id)}
                   onTap={envelopes.onTap(plan.id)}
                   isAr={!isEn}
-                  primaryLabel={isEn ? 'Choose this package' : 'اختار الباقة دي'}
+                  primaryLabel={isEn ? 'Choose this package' : 'اختر هذه الباقة'}
                   onPrimary={() => navigate('/student/book')}
                   secondaryLabel={isEn ? 'Try a free lesson first' : 'جرّب حصة مجانية الأول'}
                   onSecondary={() => onOpenTrialModal()}
@@ -178,7 +178,7 @@ export function PricingPage() {
           <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center">
             {isEn
               ? 'Quran, Tajweed, Memorization and the Zad Path are $9 an hour; Fusha, Egyptian Arabic and English start from $13 an hour. Package prices are for 60-minute lessons; shorter lessons cost the same per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
-              : 'القرآن والتجويد والحفظ ومسار الأثر بـ 9$ للساعة، والفصحى والعامية المصرية والإنجليزية من 13$ للساعة. أسعار الباقات لحصص ٦٠ دقيقة، والحصص الأقصر بنفس السعر للدقيقة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوفها قبل ما تدفع.'}
+              : 'القرآن والتجويد والحفظ ومسار الأثر بـ 9$ للساعة، والفصحى والعامية المصرية والإنجليزية من 13$ للساعة. أسعار الباقات لحصص ٦٠ دقيقة، والحصص الأقصر بالسعر نفسه للدقيقة. وقد تكون الدراسة المتقدمة أو المكثفة أعلى سعرًا؛ يحددها المعلم بعد التقييم، وتراها دائمًا قبل أن تدفع.'}
           </p>
 
           <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -204,10 +204,10 @@ export function PricingPage() {
             <span>
               {isEn
                 ? 'For children: you can sit in on any lesson, the teacher opens the Zoom room, and lessons are not recorded.'
-                : 'للأطفال: تقدر تحضر أي حصة، والمعلم هو اللي بيفتح غرفة Zoom، والحصص مش بتتسجّل.'}
+                : 'للأطفال: يمكنك حضور أي حصة، والمعلم هو من يفتح غرفة Zoom، والحصص لا تُسجَّل.'}
             </span>
             <Link to="/safety" className="inline-flex items-center min-h-11 font-semibold text-foreground underline underline-offset-4">
-              {isEn ? 'How we keep children safe' : 'إزاي بنحافظ على الأطفال'}
+              {isEn ? 'How we keep children safe' : 'كيف نحافظ على الأطفال'}
             </Link>
           </p>
 

@@ -10,39 +10,39 @@ const STEPS: Array<{ when: L; title: L; body: L; why: L }> = [
   {
     when: { en: 'In the lesson', ar: 'في الحصة' },
     title: { en: 'One teacher, one learner, live', ar: 'معلم واحد وطالب واحد، مباشر' },
-    body: { en: 'On Zoom, with our lesson slides on your screen. They move as the teacher teaches.', ar: 'على Zoom، وشرائح الدرس قدامك على الشاشة، بتتحرك مع شرح المعلم.' },
+    body: { en: 'On Zoom, with our lesson slides on your screen. They move as the teacher teaches.', ar: 'على Zoom، وشرائح الدرس أمامك على الشاشة، تتحرك مع شرح المعلم.' },
     why: { en: 'The whole lesson is about one learner: their pace, their mistakes.', ar: 'الحصة كلها لطالب واحد: على قد سرعته، وبتصحّح غلطه هو.' },
   },
   {
     when: { en: 'After the lesson', ar: 'بعد الحصة' },
     title: { en: 'Homework, short and clear', ar: 'واجب قصير وواضح' },
-    body: { en: 'One to three small tasks from the teacher. You tick them off at home, and the teacher sees it.', ar: 'من مهمة لتلات مهام صغيرة من المعلم. بتعلّم عليها في البيت، والمعلم بيشوفها.' },
-    why: { en: 'You always know what to do before the next lesson.', ar: 'دايمًا عارف تعمل إيه قبل الحصة الجاية.' },
+    body: { en: 'One to three small tasks from the teacher. You tick them off at home, and the teacher sees it.', ar: 'من مهمة إلى ثلاث مهام صغيرة من المعلم. تضع علامة عليها في البيت، ويراها المعلم.' },
+    why: { en: 'You always know what to do before the next lesson.', ar: 'تعرف دائمًا ما تفعله قبل الحصة القادمة.' },
   },
   {
     when: { en: 'Every day', ar: 'كل يوم' },
     title: { en: 'Five minutes of review', ar: 'خمس دقايق مراجعة' },
-    body: { en: 'What you memorized comes back on a growing gap, so it stays with you.', ar: 'اللي حفظته بيرجعلك على مسافات بتكبر، عشان يفضل معاك.' },
-    why: { en: 'What you memorize does not fade between lessons.', ar: 'اللي بتحفظه ما بيضيعش بين الحصة والتانية.' },
+    body: { en: 'What you memorized comes back on a growing gap, so it stays with you.', ar: 'ما حفظته يعود إليك على فترات تتباعد، ليبقى معك.' },
+    why: { en: 'What you memorize does not fade between lessons.', ar: 'ما تحفظه لا يضيع بين حصة وأخرى.' },
   },
   {
     when: { en: 'Between lessons', ar: 'بين الحصص' },
     title: { en: 'Recite, and hear back', ar: 'سمّع، وخد الرد' },
     // Recording lives in recitation homework (RecitationRecorder in HomeworkCard), not in the chat.
-    body: { en: 'When the homework is a recitation, record it on your phone. Your teacher listens and replies.', ar: 'لما يكون الواجب تسميع، سجّل تلاوتك من الموبايل، والمعلم بيسمعها ويرد عليك.' },
-    why: { en: 'A mistake gets corrected before it settles in.', ar: 'الغلطة بتتصحّح قبل ما تثبت.' },
+    body: { en: 'When the homework is a recitation, record it on your phone. Your teacher listens and replies.', ar: 'حين يكون الواجب تسميعًا، سجّل تلاوتك من هاتفك، ويستمع إليها المعلم ويردّ عليك.' },
+    why: { en: 'A mistake gets corrected before it settles in.', ar: 'يُصحَّح الخطأ قبل أن يثبت.' },
   },
   {
     when: { en: 'Every week', ar: 'كل أسبوع' },
     title: { en: 'A note for parents', ar: 'رسالة للأهل' },
     body: { en: 'The week’s lessons, the teacher’s words and the homework, in one email.', ar: 'حصص الأسبوع وكلام المعلم والواجب، في إيميل واحد.' },
-    why: { en: 'Parents know how the week went without having to ask.', ar: 'الأهل عارفين الأسبوع مشي إزاي من غير ما يسألوا.' },
+    why: { en: 'Parents know how the week went without having to ask.', ar: 'يعرف الأهل كيف مضى الأسبوع دون أن يسألوا.' },
   },
   {
     when: { en: 'At each milestone', ar: 'عند كل إنجاز' },
     title: { en: 'Progress you can see', ar: 'تقدّم تشوفه' },
     body: { en: 'A progress page for every learner, and a certificate when a milestone is reached.', ar: 'صفحة تقدّم لكل طالب، وشهادة لما يوصل لإنجاز.' },
-    why: { en: 'You see where you are, and what comes next.', ar: 'بتشوف إنت فين، وإيه اللي جاي.' },
+    why: { en: 'You see where you are, and what comes next.', ar: 'ترى أين أنت، وما الذي ينتظرك.' },
   },
 ];
 
@@ -119,7 +119,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
             {isEn ? 'A week with Watazawwado' : 'أسبوع مع وتزودوا'}
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mt-4 max-w-2xl">
-            {isEn ? 'The lesson is the heart of it. This is what happens around it.' : 'الحصة هي القلب. وده اللي بيحصل حواليها.'}
+            {isEn ? 'The lesson is the heart of it. This is what happens around it.' : 'الحصة هي القلب. وهذا ما يحدث حولها.'}
           </p>
         </div>
       </div>
@@ -179,7 +179,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
                 ))}
               </div>
               <p className={`week-hint mt-3 text-xs text-muted-foreground ${started ? 'is-gone' : ''}`}>
-                {isEn ? 'Keep scrolling: each scroll turns to the next card' : 'كمّل سكرول: كل سكرول يقلب للبطاقة اللي بعدها'}
+                {isEn ? 'Keep scrolling: each scroll turns to the next card' : 'تابع التمرير: كل تمريرة تقلب إلى البطاقة التالية'}
               </p>
             </div>
           </div>
@@ -236,7 +236,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <div className="week-rise aspect-video rounded-xl bg-[var(--teal)]/15 grid place-items-center text-[11px] font-semibold text-[var(--teal)]">{tr('Teacher', 'المعلم')}</div>
-        <div className="week-rise aspect-video rounded-xl bg-primary/10 grid place-items-center text-[11px] font-semibold text-primary">{tr('You', 'إنت')}</div>
+        <div className="week-rise aspect-video rounded-xl bg-primary/10 grid place-items-center text-[11px] font-semibold text-primary">{tr('You', 'أنت')}</div>
       </div>
     </div>
   );
@@ -310,7 +310,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
         </div>
         <div className="p-3 space-y-2.5 text-[12px]">
           <p className="text-muted-foreground">{tr('2 lessons · homework done 3/3', 'حصتين · الواجب ٣/٣')}</p>
-          <p className="rounded-xl bg-[var(--gold)]/12 p-2.5 text-foreground">{tr('“Steady progress in the madd rules this week.”', '«تقدّم ثابت في أحكام المد الأسبوع ده.»')}</p>
+          <p className="rounded-xl bg-[var(--gold)]/12 p-2.5 text-foreground">{tr('“Steady progress in the madd rules this week.”', '«تقدّم ثابت في أحكام المد هذا الأسبوع.»')}</p>
           <div className="space-y-1.5">
             <span className="block h-1.5 w-full rounded-full bg-border" />
             <span className="block h-1.5 w-4/5 rounded-full bg-border" />

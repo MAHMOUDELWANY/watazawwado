@@ -48,7 +48,7 @@ export function FamilyVoices({ isEn }: { isEn: boolean }) {
         )}
         <p className="mt-2 text-sm text-muted-foreground max-w-[70ch]">
           {L('Written by families, published as they wrote them. We show every genuine review, good or bad, and never reward reviews.',
-            'كتبتها العيلات بنفسها، وبننشرها زي ما هي. بنعرض كل رأي حقيقي حلو أو وحش، ومش بندّي أي مقابل لأي رأي.')}
+            'كتبتها الأسر بنفسها، وننشرها كما هي. نعرض كل رأي حقيقي، إيجابيًا كان أو سلبيًا، ولا نقدّم أي مقابل لأي رأي.')}
         </p>
 
         {data.count >= MIN_REVIEWS && (

@@ -40,19 +40,19 @@ const EXPLORE: Door[] = [
   {
     to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم ليك إنت.' },
+    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم لك أنت.' },
     cta: { en: 'See subjects', ar: 'شوف المواد' }
   },
   {
     to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],
     title: { en: 'How it works', ar: 'كيف نعمل' },
-    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادية.' },
+    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادئة.' },
     cta: { en: 'See the steps', ar: 'شوف الخطوات' }
   },
   {
     to: '/about', emblem: TeachersEmblem, tone: ['#A3271F', '#3F0E10'],
     title: { en: 'About us', ar: 'من نحن' },
-    body: { en: 'Who we are, who teaches.', ar: 'إحنا مين، ومين هيعلّمك.' },
+    body: { en: 'Who we are, who teaches.', ar: 'من نحن، ومن سيعلّمك.' },
     cta: { en: 'Meet us', ar: 'اتعرّف علينا' }
   },
   {
@@ -153,7 +153,7 @@ export function PublicHomepage() {
               </ul>
               <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
                 <ShieldCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
-                {isEn ? 'How we keep children safe: the teacher opens the room, nothing is recorded' : 'إزاي بنحافظ على الأطفال: المعلم هو اللي بيفتح الغرفة، ومفيش تسجيل'}
+                {isEn ? 'How we keep children safe: the teacher opens the room, nothing is recorded' : 'كيف نحافظ على الأطفال: المعلم هو من يفتح الغرفة، ولا يوجد تسجيل'}
               </Link>
             </div>
           </div>
@@ -221,7 +221,7 @@ export function PublicHomepage() {
         <div className="max-w-5xl mx-auto">
           <div className="max-w-2xl mb-10 lg:mb-14">
             <h2 className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
-              {isEn ? 'One home, for you and everyone you love.' : 'بيت واحد، ليك ولكل اللي بتحبهم.'}
+              {isEn ? 'One home, for you and everyone you love.' : 'بيت واحد، لك ولكل من تحبهم.'}
             </h2>
             <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mt-4">
               {isEn
@@ -260,7 +260,7 @@ export function PublicHomepage() {
           <p className="mt-6 font-editorial text-xl sm:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
             {isEn
               ? 'We measure our work by what stays: a word said right, a verse kept, a good habit that lives on at home.'
-              : 'بنقيس شغلنا باللي بيفضل: كلمة اتقالت صح، وآية اتحفظت، وعادة طيبة فضلت في البيت.'}
+              : 'نقيس عملنا بما يبقى: كلمة قيلت صحيحة، وآية حُفظت، وعادة طيبة بقيت في البيت.'}
           </p>
         </div>
       </section>
@@ -305,7 +305,7 @@ export function PublicHomepage() {
       <section className="public-container pb-16 lg:pb-20" aria-labelledby="home-faq">
         <div className="max-w-3xl mx-auto">
           <h2 id="home-faq" className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground">
-            {isEn ? 'Questions families ask first' : 'أول أسئلة بتسألها العيلات'}
+            {isEn ? 'Questions families ask first' : 'أول ما تسأل عنه الأسر'}
           </h2>
           <div className="mt-6 divide-y divide-border border-y border-border">
             {FAQS.slice(0, 3).map((f) => (
@@ -331,7 +331,7 @@ export function PublicHomepage() {
             <path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" />
           </svg>
           <h2 className="relative font-editorial text-3xl sm:text-5xl font-bold leading-tight">
-            {isEn ? 'Every journey starts with one lesson.' : 'كل رحلة بتبدأ بحصة.'}
+            {isEn ? 'Every journey starts with one lesson.' : 'كل رحلة تبدأ بحصة.'}
           </h2>
           <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
             {isEn

@@ -19,16 +19,16 @@ const SUBJECT_TAGLINES: Record<string, [string, string]> = {
   'quran-reading': ['Read it the way it was revealed.', 'اقرأه كما نزل.'],
   'tajweed': ['Give every letter its right.', 'أعطِ كل حرف حقّه.'],
   'quran-memorization': ["Carry the Qur'an in your heart.", 'احمل القرآن في قلبك.'],
-  'quran-revision': ['Keep what you memorized, for life.', 'اللي حفظته يفضل معاك.'],
+  'quran-revision': ['Keep what you memorized, for life.', 'ما حفظته يبقى معك.'],
   'aqeedah': ['A faith you understand, and feel.', 'إيمان تفهمه وتطمئن بيه.'],
   'fiqh': ['Pray and worship with certainty.', 'صلِّ واعبد ربك على يقين.'],
   'seerah': ['Walk with the Prophet ﷺ, step by step.', 'امشِ مع النبي ﷺ خطوة بخطوة.'],
-  'islamic-studies': ['Live the deen, not just learn it.', 'عِش الدين، مش بس تتعلمه.'],
+  'islamic-studies': ['Live the deen, not just learn it.', 'عِش الدين، لا تتعلّمه فقط.'],
   'zad-essentials': ['The first provisions for the road.', 'أول زادك في الطريق.'],
-  'modern-standard-arabic': ['Understand what you recite.', 'افهم اللي بتقراه.'],
+  'modern-standard-arabic': ['Understand what you recite.', 'افهم ما تتلوه.'],
   'arabic-conversation': ['Speak from the very first lesson.', 'اتكلم من أول حصة.'],
   'egyptian-arabic': ['Talk like you grew up by the Nile.', 'اتكلم كأنك من أهل البلد.'],
-  'arabic-foundations': ['Every journey starts with a letter.', 'كل رحلة بتبدأ بحرف.'],
+  'arabic-foundations': ['Every journey starts with a letter.', 'كل رحلة تبدأ بحرف.'],
   'english': ['Speak English with confidence.', 'اتكلم إنجليزي بثقة.'],
 };
 
@@ -76,34 +76,34 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
   recommendedFrequency: string;
 }> = {
   'quran-reading': {
-    description: 'مرحلتين. التأسيس: كل حرف وصوته وحركاته، وبعدين نوصّل الحروف ونكوّن كلمات. القراءة من المصحف: آيات كاملة بتتقري بثبات وصح. وبنمشي على قد خطوتك، وبصبر.',
-    whoIsItFor: 'أي حد بيبدأ من الصفر، أطفال من ٦ سنين وكبار، وأي حد راجع للقرآن بعد غياب طويل.',
+    description: 'مرحلتان. التأسيس: كل حرف وصوته وحركاته، ثم نصل الحروف ونكوّن كلمات. القراءة من المصحف: آيات كاملة تُقرأ بثبات وصواب. ونسير على قدر خطوتك، وبصبر.',
+    whoIsItFor: 'كل من يبدأ من الصفر، أطفال من ٦ سنوات وكبار، وكل من يعود إلى القرآن بعد غياب طويل.',
     whatYouWillLearn: [
       'كل حرف: شكله وصوته ومخرجه',
       'الحركات القصيرة والطويلة، والسكون والشدّة',
       'توصيل الحروف لكلمات، والكلمات لآيات',
-      'تقرا من المصحف بنفسك من غير ما تتلخبط'
+      'تقرأ من المصحف بنفسك دون تعثّر'
     ],
     recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'tajweed': {
-    description: 'تلات مستويات، وكلها بنطبّقها وإنت بتقرا: مخارج الحروف وصفاتها، وأحكام النون والميم الساكنة، والمدود، والوقف والابتداء.',
-    whoIsItFor: 'أي حد بيعرف يقرا من المصحف وعايز تلاوته تبقى صح وجميلة.',
+    description: 'ثلاثة مستويات، نطبّقها كلها وأنت تقرأ: مخارج الحروف وصفاتها، وأحكام النون والميم الساكنتين، والمدود، والوقف والابتداء.',
+    whoIsItFor: 'كل من يقرأ من المصحف ويريد أن تكون تلاوته صحيحة وجميلة.',
     whatYouWillLearn: [
-      'مخارج الحروف وصفاتها: كل حرف طالع منين وصوته إزاي',
+      'مخارج الحروف وصفاتها: من أين يخرج كل حرف وكيف يكون صوته',
       'أحكام النون الساكنة والتنوين والميم الساكنة عملياً',
       'أنواع المدود، والوقف والابتداء الصح',
-      'ودن تلقط غلطك بنفسك'
+      'أذن تلتقط خطأك بنفسك'
     ],
     recommendedFrequency: 'حصتين في الأسبوع'
   },
   'quran-memorization': {
-    description: 'مادة واحدة على مقاس هدفك: تبدأ تحفظ، أو تزوّد، أو تثبّت اللي معاك. مقدار أسبوعي يناسب حياتك، بتسمّعه لمعلمك عشان الغلط يتصلّح قبل ما يثبت.',
-    whoIsItFor: 'أطفال وكبار بيبدأوا الحفظ، وأي حد حفظ قبل كده وعايز يراجع ويثبّت.',
+    description: 'مادة واحدة على قدر هدفك: تبدأ الحفظ، أو تزيد، أو تثبّت ما معك. مقدار أسبوعي يناسب حياتك، تُسمّعه لمعلمك ليُصحَّح الخطأ قبل أن يثبت.',
+    whoIsItFor: 'أطفال وكبار يبدؤون الحفظ، وكل من حفظ من قبل ويريد أن يراجع ويثبّت.',
     whatYouWillLearn: [
       'تقرا المقطع صح قبل ما تحفظه',
       'خطة مراجعة تحافظ على السور القديمة',
-      'معاني الكلمات المهمة عشان الآيات تفضل معاك',
+      'معاني الكلمات المهمة لتبقى الآيات معك',
       'التفريق بين الآيات المتشابهة'
     ],
     recommendedFrequency: '٢ لـ ٤ حصص في الأسبوع'
@@ -142,19 +142,19 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
     recommendedFrequency: 'حصة أو اتنين في الأسبوع'
   },
   'seerah': {
-    description: 'جزء من مسار الأثر، منهجنا إحنا: حياة النبي ﷺ بالترتيب، حلقة ورا حلقة، وكل موقف بنتعلم منه حاجة لحياتنا النهارده. تلات نسخ حسب السن: أطفال ٦–١١، ناشئة ١٢–١٧، كبار ١٨+.',
-    whoIsItFor: 'كل الأعمار. النسخة بتتحدد حسب السن، فمفيش مستوى تختاره.',
+    description: 'جزء من مسار الأثر، منهجنا نحن: حياة النبي ﷺ بالترتيب، حلقة بعد حلقة، ومن كل موقف نتعلم شيئًا لحياتنا اليوم. ثلاث نسخ حسب العمر: أطفال ٦–١١، ناشئة ١٢–١٧، كبار ١٨+.',
+    whoIsItFor: 'كل الأعمار. تُحدَّد النسخة حسب العمر، فلا يوجد مستوى تختاره.',
     whatYouWillLearn: [
       'حياته ﷺ بالترتيب، قصة ورا قصة',
       'أخلاقه في الشدة، وفي البيت، ومع الناس',
       'درس صغير تعيشه من كل حلقة',
-      'حب ليه ﷺ بيكبر لما تعرفه'
+      'حبّه ﷺ يكبر حين تعرفه'
     ],
     recommendedFrequency: 'حصة في الأسبوع'
   },
   'zad-essentials': {
     description: 'دروس متحركة في العقيدة والطهارة والصلاة والأخلاق. كل موضوع يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، ثم خطوة عملية صغيرة.',
-    whoIsItFor: 'اللي بيبدأوا من الصفر، في تلات نسخ حسب السن: أطفال ٦–١١، ناشئة ١٢–١٧، كبار ١٨+.',
+    whoIsItFor: 'من يبدؤون من الصفر، في ثلاث نسخ حسب العمر: أطفال ٦–١١، ناشئة ١٢–١٧، كبار ١٨+.',
     whatYouWillLearn: [
       'مين هو الله، وليه نعبده وحده',
       'الوضوء والصلاة خطوة بخطوة مع الدليل',
@@ -176,12 +176,12 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
   },
   'modern-standard-arabic': {
     description: 'أربع مستويات: التأسيس، والمبتدئ، والمتوسط، والمتقدم. من الحروف لحد قراية نصوص حقيقية، بقواعد مشروحة ببساطة ومحادثة في كل مستوى. ونسخة للأطفال ونسخة من ١٢ سنة.',
-    whoIsItFor: 'اللي مش بيتكلموا عربي وبيبدأوا من الصفر، وأي حد عايز يفهم القرآن أو يقرا كتب عربي أو يتكلم فصحى.',
+    whoIsItFor: 'من لا يتحدثون العربية ويبدؤون من الصفر، وكل من يريد أن يفهم القرآن أو يقرأ كتبًا عربية أو يتحدث الفصحى.',
     whatYouWillLearn: [
-      'قراية الحروف وكتابتها لو إنت جديد على العربي',
+      'قراءة الحروف وكتابتها إن كنت جديدًا على العربية',
       'محادثة يومية بفصحى واضحة من أول مستوى',
       'القواعد وبناء الجملة بشرح بسيط',
-      'تفهم اللي بتقراه واللي بتتلوه'
+      'تفهم ما تقرؤه وما تتلوه'
     ],
     recommendedFrequency: 'حصتين في الأسبوع'
   },
@@ -198,7 +198,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
   },
   'egyptian-arabic': {
     description: 'بنبدأ بالأصوات، وبعدين مستوى ورا مستوى. وكل كلمة مكتوبة بالفرانكو (عربي بحروف لاتيني) وبالحروف العربي مع بعض، فتقدر تبدأ قبل ما تعرف تقرا عربي. تصميم واحد لكل الأعمار.',
-    whoIsItFor: 'أسر ليها قرايب مصريين، واللي مسافرين مصر، وأولاد المصريين برّه، وأي حد عايز عربي بيتقال كل يوم.',
+    whoIsItFor: 'أسر لها أقارب مصريون، والمسافرون إلى مصر، وأبناء المصريين في الخارج، وكل من يريد عربية يتحدث بها الناس كل يوم.',
     whatYouWillLearn: [
       'أصوات العامية المصرية الأول',
       'كلام كل يوم: التحية والعيلة والشراء والسفر',
@@ -219,8 +219,8 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
     recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'english': {
-    description: 'مسارين. الأطفال: الأصوات (phonics) الأول، وبعدين القراية. ومن ١٢ سنة: مستويات من A1 لـ C1 على مقياس CEFR. ومعلمك عارف الأصوات والقواعد اللي بتتعب الناطقين بالعربي، وبيصححها بصبر.',
-    whoIsItFor: 'أطفال بيتعلموا يقروا إنجليزي، وناشئة وكبار عايزين يتكلموا ويقروا ويكتبوا أحسن.',
+    description: 'مساران. الأطفال: الأصوات (phonics) أولًا، ثم القراءة. ومن ١٢ سنة: مستويات من A1 إلى C1 على مقياس CEFR. ومعلمك يعرف الأصوات والقواعد التي تُتعب الناطقين بالعربية، ويصحّحها بصبر.',
+    whoIsItFor: 'أطفال يتعلّمون قراءة الإنجليزية، وناشئة وكبار يريدون أن يتحدثوا ويقرؤوا ويكتبوا أفضل.',
     whatYouWillLearn: [
       'الأصوات والقراية للأطفال',
       'الكلام في مواقف حقيقية: المدرسة والشغل والبيت',
@@ -296,7 +296,7 @@ export function LearningPage() {
         <div className="max-w-4xl mx-auto text-center space-y-6">
           
           <PageHero
-            title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>تتعلم إيه <span className="text-ribbon">معانا؟</span></>}
+            title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>ماذا تتعلّم <span className="text-ribbon">معنا؟</span></>}
             intro={isEn
               ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Zad Essentials and Seerah, Arabic and English, from the very first letter to advanced study.'
               : 'دروس فردية على مقاس هدفك: القرآن والتجويد، وأول الزاد والسيرة، والعربية والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
@@ -389,12 +389,12 @@ export function LearningPage() {
                 <Search className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-foreground">
-                {isEn ? 'No subject matches that word' : 'ملقيناش مادة بالكلمة دي'}
+                {isEn ? 'No subject matches that word' : 'لم نجد مادة بهذه الكلمة'}
               </h3>
               <p className="text-sm text-muted-foreground">
                 {isEn 
                   ? 'Try another word, or book a free trial and tell your teacher what you want to learn.'
-                  : 'جرّب كلمة تانية، أو احجز حصة مجانية وقول لمعلمك عايز تتعلم إيه.'}
+                  : 'جرّب كلمة أخرى، أو احجز حصة مجانية وأخبر معلمك بما تريد أن تتعلّمه.'}
               </p>
               <button
                 onClick={() => { setSearchQuery(''); setSelectedPillarId('all'); }}

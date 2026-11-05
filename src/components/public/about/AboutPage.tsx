@@ -24,7 +24,7 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
       },
       {
         en: 'His strong English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
-        ar: 'وإنجليزيته القوية بتساعده يشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'
+        ar: 'وتساعده إنجليزيته القوية على شرح النطق والقواعد بوضوح للطلاب الذين نشؤوا في الخارج.'
       }
     ]
   },
@@ -36,11 +36,11 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
     bio: [
       {
         en: 'Ustadha Afnan teaches Quran, Tajweed, Arabic, the Zad Path and English at Watazawwado, with wide experience in teaching. Her strong English helps her explain clearly to students who grew up abroad.',
-        ar: 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية ومسار الأثر والإنجليزية في وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها القوية بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'
+        ar: 'تدرّس الأستاذة أفنان القرآن والتجويد والعربية ومسار الأثر والإنجليزية في وتزودوا، ولديها خبرة كبيرة في التدريس. وتساعدها إنجليزيتها القوية على الشرح بوضوح للطلاب الذين نشؤوا في الخارج.'
       },
       {
         en: 'Families who prefer a female teacher can choose her when they set up their learning profile.',
-        ar: 'واللي بيفضّلوا معلّمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'
+        ar: 'ومن يفضّلون معلّمة يستطيعون اختيارها عند إعداد ملفهم التعليمي.'
       }
     ]
   }
@@ -52,7 +52,7 @@ const PHILOSOPHY: Array<{ emblem: React.ComponentType<{ className?: string }>; t
     title: { en: 'We start where you are', ar: 'نبدأ من مستواك الحقيقي' },
     text: {
       en: 'Nobody is behind. Whether you cannot read a letter yet or your memorization has gone rusty, we begin without judgement and build a firm base.',
-      ar: 'مفيش حد متأخر. سواء لسه مبتقراش حرف، أو حفظك القديم محتاج مراجعة، بنبدأ من غير أحكام ونبني أساس متين.'
+      ar: 'لا أحد متأخر. سواء كنت لا تقرأ حرفًا بعد، أو كان حفظك القديم يحتاج إلى مراجعة، نبدأ دون أحكام ونبني أساسًا متينًا.'
     }
   },
   {
@@ -60,7 +60,7 @@ const PHILOSOPHY: Array<{ emblem: React.ComponentType<{ className?: string }>; t
     title: { en: 'A safe place to make mistakes', ar: 'مكان آمن تغلط فيه' },
     text: {
       en: 'Reciting or speaking a new language can feel shy. Lessons are calm and patient, and every correction comes with kindness.',
-      ar: 'التلاوة أو الكلام بلغة جديدة ممكن يكسف. الحصص هادية وصبورة، وكل تصحيح بييجي بلطف.'
+      ar: 'قد تُشعرك التلاوة أو الكلام بلغة جديدة بالخجل. الحصص هادئة وصبورة، وكل تصحيح يأتي بلطف.'
     }
   },
   {
@@ -68,7 +68,7 @@ const PHILOSOPHY: Array<{ emblem: React.ComponentType<{ className?: string }>; t
     title: { en: 'One teacher, lesson after lesson', ar: 'نفس المعلم، حصة بعد حصة' },
     text: {
       en: 'You learn with the same teacher, who knows how you learn, where you struggle and how to encourage you.',
-      ar: 'بتتعلم مع نفس المعلم، اللي فاهم طريقتك، وعارف بتتعب فين، وإزاي يشجعك.'
+      ar: 'تتعلّم مع المعلم نفسه، الذي يفهم طريقتك، ويعرف أين تتعب، وكيف يشجعك.'
     }
   },
   {
@@ -76,7 +76,7 @@ const PHILOSOPHY: Array<{ emblem: React.ComponentType<{ className?: string }>; t
     title: { en: 'Close to you, with nobody in between', ar: 'قريبين منك، من غير وسطاء' },
     text: {
       en: 'You are not a ticket number. Ask your teacher in the chat on the site between lessons, or reach us on WhatsApp.',
-      ar: 'إنت مش رقم. اسأل معلمك في المحادثة على الموقع بين الحصص، أو كلّمنا على واتساب.'
+      ar: 'لست رقمًا. اسأل معلمك في المحادثة على الموقع بين الحصص، أو راسلنا على واتساب.'
     }
   }
 ];
@@ -101,7 +101,7 @@ export function AboutPage() {
           {/* Why we exist */}
           <section aria-labelledby="mission-title" className="glass-2 rounded-[var(--r-5)] px-6 py-10 sm:px-12 text-center max-w-3xl mx-auto">
             <h2 id="mission-title" className="font-editorial text-3xl sm:text-4xl font-bold text-foreground">
-              {isEn ? 'Why we exist' : 'ليه إحنا هنا'}
+              {isEn ? 'Why we exist' : 'لماذا نحن هنا'}
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
               {isEn
@@ -124,7 +124,7 @@ export function AboutPage() {
               <p className="text-base text-muted-foreground leading-relaxed">
                 {isEn
                   ? 'The academy is growing. Every teacher is chosen with care and teaches in the same spirit.'
-                  : 'الأكاديمية بتكبر، وكل معلم بيتختار بعناية وبيدرّس بنفس الروح.'}
+                  : 'تكبر الأكاديمية، وكل معلم يُختار بعناية ويدرّس بالروح نفسها.'}
               </p>
             </div>
 

@@ -14,7 +14,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         arabicName: 'قراءة القرآن الكريم',
         category: 'quran',
         tagline: 'From the first letter to reading the Mushaf on your own.',
-        arabicTagline: 'من أول حرف لحد ما تقرا من المصحف بنفسك.',
+        arabicTagline: 'من أول حرف حتى تقرأ من المصحف بنفسك.',
         description: 'Two stages. Foundations: every letter, its sound and its vowels, then joining letters into words. Reading the Mushaf: whole verses, read steadily and correctly. We go at your pace, with patience.',
         whoIsItFor: 'Anyone starting from zero, children from age 6 and adults, and anyone coming back to the Quran after a long break.',
         whatYouWillLearn: [
@@ -50,7 +50,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         arabicName: 'الحفظ والمراجعة',
         category: 'quran',
         tagline: 'Memorize new surahs, or keep what you have firm.',
-        arabicTagline: 'احفظ سور جديدة، أو ثبّت اللي حفظته.',
+        arabicTagline: 'احفظ سورًا جديدة، أو ثبّت ما حفظته.',
         description: 'One subject, built around your goal: start memorizing, add more, or keep what you already have. A weekly target that fits your life, recited to your teacher so mistakes are caught before they settle.',
         whoIsItFor: 'Children and adults starting to memorize, and anyone who memorized before and wants to revise and keep it.',
         whatYouWillLearn: [
@@ -87,7 +87,7 @@ export const SERVICES_DATA: ServicePillar[] = [
     title: 'The Zad Path',
     arabicTitle: 'مسار الأثر',
     description: 'Our own curriculum: faith, worship, character and the life of the Prophet ﷺ, made to change how you live. Three versions by age.',
-    arabicDescription: 'منهجنا إحنا: الإيمان والعبادة والأخلاق وسيرة النبي ﷺ، معمول عشان يغيّر حياتك. تلات نسخ حسب السن.',
+    arabicDescription: 'منهجنا نحن: الإيمان والعبادة والأخلاق وسيرة النبي ﷺ، صُمّم ليغيّر حياتك. ثلاث نسخ حسب العمر.',
     services: [
       {
         id: 'aqeedah',
@@ -230,7 +230,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         arabicName: 'اللهجة المصرية الحية',
         category: 'arabic',
         tagline: 'The Arabic people speak every day in Egypt.',
-        arabicTagline: 'العربي اللي الناس بتتكلمه كل يوم في مصر.',
+        arabicTagline: 'العربية التي يتحدث بها الناس كل يوم في مصر.',
         description: 'We start with the sounds, then go level by level. Every word is written both in Franco (Arabic in Latin letters) and in Arabic script, so you can start before you read Arabic. One design for all ages.',
         whoIsItFor: 'Families with Egyptian relatives, travellers to Egypt, children of Egyptian parents abroad, and anyone who wants everyday spoken Arabic.',
         whatYouWillLearn: [
@@ -299,7 +299,7 @@ export const HOW_IT_WORKS_STEPS = [
     title: 'Book your free trial',
     arabicTitle: 'احجز حصتك المجانية',
     description: 'Pick a time in your own time zone. Thirty minutes on Zoom, no card and nothing to pay.',
-    arabicDescription: 'اختار ميعاد بتوقيتك. ٣٠ دقيقة على Zoom، من غير بطاقة ومن غير ما تدفع حاجة.',
+    arabicDescription: 'اختر موعدًا بتوقيتك. ٣٠ دقيقة على Zoom، بلا بطاقة ودون أن تدفع شيئًا.',
     highlight: 'No obligation',
     arabicHighlight: 'من غير أي التزام'
   },
@@ -308,7 +308,7 @@ export const HOW_IT_WORKS_STEPS = [
     title: 'Meet your teacher',
     arabicTitle: 'قابل معلمك',
     description: 'Your teacher listens to your goal, finds your level gently, and gives you a real mini-lesson.',
-    arabicDescription: 'معلمك بيسمع هدفك، ويعرف مستواك بهدوء، ويديك درس صغير حقيقي تحس فيه بطريقة الشرح.',
+    arabicDescription: 'يستمع معلمك إلى هدفك، ويعرف مستواك بهدوء، ويقدّم لك درسًا قصيرًا حقيقيًا تلمس فيه طريقة الشرح.',
     highlight: 'A gentle assessment',
     arabicHighlight: 'تقييم هادي'
   },
@@ -317,7 +317,7 @@ export const HOW_IT_WORKS_STEPS = [
     title: 'Get your plan',
     arabicTitle: 'استلم خطتك',
     description: 'A clear path: the lesson length (30, 45 or 60 minutes), how often you meet, and what you will study.',
-    arabicDescription: 'طريق واضح: مدة الحصة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وكام مرة في الأسبوع، وهتدرس إيه بالظبط.',
+    arabicDescription: 'طريق واضح: مدة الحصة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وعدد المرات في الأسبوع، وما الذي ستدرسه بالضبط.',
     highlight: 'Made for you',
     arabicHighlight: 'على مقاسك'
   },
@@ -326,7 +326,7 @@ export const HOW_IT_WORKS_STEPS = [
     title: 'Learn, week after week',
     arabicTitle: 'اتعلّم أسبوع ورا أسبوع',
     description: 'Private lessons on Zoom, and the on-site chat between them. Move a lesson yourself up to 1 hour before, or cancel up to 3 hours before.',
-    arabicDescription: 'حصص فردية على Zoom، والمحادثة على الموقع بين الحصص. تغيّر ميعاد حصتك بنفسك لحد ساعة قبلها، أو تلغيها لحد ٣ ساعات قبلها.',
+    arabicDescription: 'حصص فردية على Zoom، والمحادثة على الموقع بين الحصص. غيّر موعد حصتك بنفسك حتى ساعة قبلها، أو ألغِها حتى ٣ ساعات قبلها.',
     highlight: 'Flexible',
     arabicHighlight: 'بمرونة'
   }
@@ -338,19 +338,19 @@ export const TEACHING_PILLARS = [
     title: 'Mastery before speed',
     arabicTitle: 'الإتقان قبل السرعة',
     description: 'We move on when a step is solid, not when the page ends. Slow and sure lasts longer.',
-    arabicDescription: 'بنكمّل لما الخطوة تثبت، مش لما الصفحة تخلص. الخطوة الهادية الثابتة بتعيش أطول.'
+    arabicDescription: 'ننتقل حين تثبت الخطوة، لا حين تنتهي الصفحة. فالخطوة الهادئة الثابتة تبقى أطول.'
   },
   {
     title: 'Understand what you learn',
-    arabicTitle: 'نفهم اللي بنتعلمه',
+    arabicTitle: 'نفهم ما نتعلمه',
     description: 'A verse you understand stays with you. Every rule and every new word comes with its meaning.',
-    arabicDescription: 'الآية اللي بتفهمها بتفضل معاك. وكل قاعدة وكل كلمة جديدة بييجي معاها معناها.'
+    arabicDescription: 'الآية التي تفهمها تبقى معك. وكل قاعدة وكل كلمة جديدة تأتي ومعها معناها.'
   },
   {
     title: 'A small habit, every week',
     arabicTitle: 'عادة صغيرة كل أسبوع',
     description: 'Half an hour that comes back every week beats a long lesson that never returns. We fit the pace to your life.',
-    arabicDescription: 'نص ساعة بترجع كل أسبوع أحسن من حصة طويلة مبترجعش. وبنظبط الإيقاع على حياتك.'
+    arabicDescription: 'نصف ساعة تعود إليها كل أسبوع خيرٌ من حصة طويلة لا تعود. ونضبط الإيقاع على حياتك.'
   },
   {
     title: 'Manners before knowledge',
@@ -365,7 +365,7 @@ export const FAQS: FAQItem[] = [
     question: 'Is every lesson one-on-one?',
     arabicQuestion: 'هل كل حصة فردية؟',
     answer: 'Yes. Every lesson is you and your teacher, nobody else; there are no group lessons. You normally keep the same teacher, and you can ask us to change teacher at any time.',
-    arabicAnswer: 'أيوه. كل حصة إنت ومعلمك وبس، ومفيش حصص جماعية. وعادةً بتفضل مع نفس المعلم، وتقدر تطلب مننا تغيير المعلم في أي وقت.',
+    arabicAnswer: 'نعم. كل حصة لك ولمعلمك فقط، ولا توجد حصص جماعية. وتبقى عادةً مع المعلم نفسه، ويمكنك أن تطلب منا تغيير المعلم في أي وقت.',
     category: 'general'
   },
   {
@@ -377,93 +377,93 @@ export const FAQS: FAQItem[] = [
   },
   {
     question: 'How does the free trial work?',
-    arabicQuestion: 'الحصة التجريبية المجانية بتكون إزاي؟',
+    arabicQuestion: 'كيف تكون الحصة التجريبية المجانية؟',
     answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed), one per new student. Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson, then suggests a plan. No card, no pressure. You can move it once, up to 1 hour before; if it is missed or cancelled, you can book again after 48 hours.',
-    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وممكن توصل ٤٥ لو احتجنا)، واحدة لكل طالب جديد. معلمك بيتعرف على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرحلك درس صغير حقيقي، وبعدها يقترح عليك خطة. من غير بطاقة ومن غير أي ضغط. تقدر تغيّر ميعادها مرة واحدة لحد ساعة قبلها، ولو فاتت أو اتلغت تقدر تحجز تاني بعد ٤٨ ساعة.',
+    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وقد تصل إلى ٤٥ عند الحاجة)، واحدة لكل طالب جديد. يتعرّف معلمك على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرح لك درسًا قصيرًا حقيقيًا، ثم يقترح عليك خطة. بلا بطاقة وبلا أي ضغط. يمكنك تغيير موعدها مرة واحدة حتى ساعة قبلها، وإن فاتتك أو أُلغيت يمكنك الحجز من جديد بعد ٤٨ ساعة.',
     category: 'trial'
   },
   {
     question: 'Can I choose a female teacher?',
     arabicQuestion: 'أقدر أختار معلّمة؟',
     answer: 'Yes. When you set up your learning profile you choose a male or a female teacher, for yourself or for each child. Many families choose a female teacher for their daughters, and you can ask us to change teacher at any time.',
-    arabicAnswer: 'أيوه. وإنت بتعمل ملفك التعليمي بتختار معلّم أو معلّمة، ليك أو لكل طفل من أولادك. أسر كتير بتختار معلّمة لبناتها، وتقدر تطلب مننا تغيير المعلم في أي وقت.',
+    arabicAnswer: 'نعم. عند إعداد ملفك التعليمي تختار معلّمًا أو معلّمة، لك أو لكل طفل من أطفالك. كثير من الأسر تختار معلّمة لبناتها، ويمكنك أن تطلب منا تغيير المعلم في أي وقت.',
     category: 'general'
   },
   {
     question: 'What is the cancellation and rescheduling policy?',
     arabicQuestion: 'أقدر ألغي أو أغيّر ميعاد الحصة؟',
     answer: 'You can cancel up to 3 hours before (a paid lesson comes back as a lesson credit) and move it yourself up to 1 hour before, to tomorrow or later. In the last hour nothing can change; for a real emergency, message us on WhatsApp.',
-    arabicAnswer: 'تقدر تلغي الحصة لحد ٣ ساعات قبل ميعادها (والحصة المدفوعة بترجعلك كرصيد)، وتغيّر ميعادها بنفسك من حسابك لحد ساعة قبلها، لأي يوم من بكرة ورايح. في آخر ساعة مفيش تغيير؛ ولو حصل ظرف طارئ فعلاً، كلّمنا على واتساب.',
+    arabicAnswer: 'يمكنك إلغاء الحصة حتى ٣ ساعات قبل موعدها (وتعود الحصة المدفوعة إليك رصيدًا)، وتغيير موعدها بنفسك من حسابك حتى ساعة قبلها، إلى أي يوم من الغد فصاعدًا. في الساعة الأخيرة لا يمكن التغيير؛ وإن طرأ ظرف طارئ فعلًا، راسلنا على واتساب.',
     category: 'booking'
   },
   {
     question: 'What happens if we miss a lesson?',
-    arabicQuestion: 'لو فاتتنا حصة، إيه اللي بيحصل؟',
+    arabicQuestion: 'ماذا يحدث إن فاتتنا حصة؟',
     answer: 'We send reminders before every lesson, by email and on the site. A lesson that is missed without cancelling counts as taken, so cancel or move it in time if plans change. If a real emergency comes up, message us on WhatsApp and we will see what we can do. If we or the teacher cancel, you choose a free new time, a lesson credit or a refund, and your next lesson gets 10 extra minutes.',
-    arabicAnswer: 'بنفكّرك قبل كل حصة بإيميل وعلى الموقع. الحصة اللي بتفوت من غير إلغاء بتتحسب إنها اتاخدت، فلو الظروف اتغيرت الغيها أو غيّر ميعادها في الوقت. ولو حصل ظرف طارئ فعلاً كلّمنا على واتساب ونشوف نقدر نعمل إيه. ولو إحنا أو المعلم لغينا الحصة، إنت تختار ميعاد جديد ببلاش أو رصيد حصة أو استرداد فلوسك، وحصتك الجاية بتزيد ١٠ دقايق.',
+    arabicAnswer: 'نذكّرك قبل كل حصة بالبريد وعلى الموقع. الحصة التي تفوت دون إلغاء تُحتسب كأنها أُخذت، فإن تغيّرت ظروفك ألغِها أو غيّر موعدها في الوقت المناسب. وإن طرأ ظرف طارئ فعلًا راسلنا على واتساب ونرى ما يمكننا فعله. وإن ألغينا نحن أو المعلم الحصة، تختار أنت موعدًا جديدًا مجانًا أو رصيد حصة أو استرداد المبلغ، وتزيد حصتك التالية ١٠ دقائق.',
     category: 'booking'
   },
   {
     question: 'How will I know how my child is doing?',
-    arabicQuestion: 'هعرف إزاي ابني ماشي إزاي؟',
+    arabicQuestion: 'كيف أعرف كيف يتقدّم ابني؟',
     answer: 'After lessons the teacher writes a short summary for the family, with what to practise next. Your account shows where each child is in every subject, and a monthly report you can print. You can also message the teacher and our team any time.',
-    arabicAnswer: 'بعد الحصص المعلم بيكتب للأسرة ملخص قصير وإيه اللي يتمرّن عليه بعدها. وفي حسابك هتشوف كل طفل وصل لفين في كل مادة، وتقرير شهري تقدر تطبعه. وتقدر تكلّم المعلم وفريقنا في أي وقت.',
+    arabicAnswer: 'بعد الحصص يكتب المعلم للأسرة ملخصًا قصيرًا وما يتمرّن عليه الطفل بعدها. وفي حسابك ترى أين وصل كل طفل في كل مادة، وتقريرًا شهريًا يمكنك طباعته. ويمكنك مراسلة المعلم وفريقنا في أي وقت.',
     category: 'teaching'
   },
   {
     question: 'Can I manage all my children in one account?',
     arabicQuestion: 'أقدر أتابع كل أولادي من حساب واحد؟',
     answer: 'Yes. A parent opens one family account and adds each child (ages 6 to 17). You book, follow progress and see one family calendar for everyone, and a package for a second child gets 5% off.',
-    arabicAnswer: 'أيوه. ولي الأمر بيفتح حساب عيلة واحد ويضيف كل طفل (من ٦ لـ١٧ سنة). بتحجز وتتابع التقدّم وتشوف تقويم واحد للعيلة كلها، وباقة الطفل التاني عليها خصم ٥٪.',
+    arabicAnswer: 'نعم. يفتح وليّ الأمر حساب أسرة واحدًا ويضيف كل طفل (من ٦ إلى ١٧ سنة). تحجز وتتابع التقدّم وترى تقويمًا واحدًا للأسرة كلها، وعلى باقة الطفل الثاني خصم ٥٪.',
     category: 'general'
   },
   {
     question: 'I cannot read any Arabic. Can I still start?',
-    arabicQuestion: 'مبعرفش أقرا عربي خالص، أقدر أبدأ؟',
+    arabicQuestion: 'لا أعرف قراءة العربية إطلاقًا، هل أستطيع البدء؟',
     answer: 'Of course, and you are not alone. We begin with the very first letter, its shape and its sound, step by step and with patience.',
-    arabicAnswer: 'طبعاً، وإنت مش لوحدك. بنبدأ من أول حرف، شكله وصوته، خطوة بخطوة وبصبر.',
+    arabicAnswer: 'بالتأكيد، ولست وحدك. نبدأ من أول حرف، شكله وصوته، خطوة بخطوة وبصبر.',
     category: 'teaching'
   },
   {
     question: 'How long is a lesson?',
-    arabicQuestion: 'الحصة مدتها قد إيه؟',
+    arabicQuestion: 'كم مدة الحصة؟',
     answer: '30, 45 or 60 minutes. Thirty minutes suits young children and busy days; sixty suits long revision or grammar. Shorter lessons cost the same per minute.',
     arabicAnswer: '٣٠ أو ٤٥ أو ٦٠ دقيقة. الـ٣٠ مناسبة للأطفال والأيام المزحومة، والـ٦٠ للمراجعة الطويلة والنحو. والحصة الأقصر بنفس سعر الدقيقة.',
     category: 'booking'
   },
   {
     question: 'How do I pay?',
-    arabicQuestion: 'بدفع إزاي؟',
+    arabicQuestion: 'كيف أدفع؟',
     answer: 'Online through Stripe: card, Apple Pay or PayPal. A paid lesson is confirmed once the payment goes through. The free trial costs nothing.',
-    arabicAnswer: 'أونلاين عن طريق Stripe: بطاقة أو Apple Pay أو PayPal. الحصة المدفوعة بتتأكد أول ما الدفع يتم، والحصة التجريبية ببلاش.',
+    arabicAnswer: 'أونلاين عن طريق Stripe: بطاقة أو Apple Pay أو PayPal. تتأكد الحصة المدفوعة فور إتمام الدفع، والحصة التجريبية مجانية.',
     category: 'booking'
   },
   {
     question: 'How do time zones work?',
-    arabicQuestion: 'المواعيد بتوقيت مين؟',
+    arabicQuestion: 'المواعيد بتوقيت أي بلد؟',
     answer: 'Every time on the site is shown in your own time zone, automatically. No maths needed. Lessons are booked from tomorrow onwards, never for the same day.',
-    arabicAnswer: 'كل المواعيد على الموقع بتظهر بتوقيت بلدك تلقائياً، مش محتاج تحسب فرق الساعات. والحجز بيكون من بكرة ورايح، مش في نفس اليوم.',
+    arabicAnswer: 'تظهر كل المواعيد على الموقع بتوقيت بلدك تلقائيًا، فلا تحتاج إلى حساب فرق الساعات. ويكون الحجز من الغد فصاعدًا، لا في اليوم نفسه.',
     category: 'general'
   },
   {
     question: 'Do I need an account to book?',
-    arabicQuestion: 'محتاج حساب عشان أحجز؟',
+    arabicQuestion: 'هل أحتاج إلى حساب لأحجز؟',
     answer: 'Yes, every booking needs a free account, the free trial too. It takes a minute, and it is where you see your lessons, Zoom links and packages, and talk to your teacher.',
-    arabicAnswer: 'أيوه، كل حجز محتاج حساب مجاني، حتى الحصة التجريبية. بياخد دقيقة، ومنه تتابع حصصك وروابط Zoom وباقاتك، وتكلّم معلمك.',
+    arabicAnswer: 'نعم، كل حجز يحتاج إلى حساب مجاني، حتى الحصة التجريبية. يستغرق دقيقة، ومنه تتابع حصصك وروابط Zoom وباقاتك، وتراسل معلمك.',
     category: 'booking'
   },
   {
     question: 'From what age can my child start?',
     arabicQuestion: 'ابني يقدر يبدأ من سن كام؟',
     answer: 'From 6. A parent opens a family account and adds each child aged 6 to 17. Learners aged 18 and over open their own account.',
-    arabicAnswer: 'من ٦ سنين. ولي الأمر بيفتح حساب عيلة ويضيف كل طفل من ٦ لـ١٧ سنة، واللي عنده ١٨ سنة أو أكتر بيفتح حسابه بنفسه.',
+    arabicAnswer: 'من ٦ سنوات. يفتح وليّ الأمر حساب أسرة ويضيف كل طفل من ٦ إلى ١٧ سنة، ومن بلغ ١٨ سنة أو أكثر يفتح حسابه بنفسه.',
     category: 'general'
   },
   {
     question: 'Can I get my money back?',
     arabicQuestion: 'أقدر أسترد فلوسي؟',
     answer: 'You can withdraw within 14 days of buying a lesson or a package, and we refund what was not delivered. A paid lesson cancelled in time becomes a lesson credit, or you can ask for a refund on WhatsApp. If we or the teacher cancel, you choose a new time, a credit or a refund. The full rules are in our terms.',
-    arabicAnswer: 'تقدر تنسحب خلال ١٤ يوم من شراء الحصة أو الباقة، وبنرجّعلك تمن اللي ماخدتوش. والحصة المدفوعة اللي بتلغيها في الوقت بترجعلك رصيد حصة، أو تطلب استرداد على واتساب. ولو إحنا أو المعلم لغينا، إنت تختار ميعاد جديد أو رصيد أو استرداد. والتفاصيل كلها في الشروط.',
+    arabicAnswer: 'يمكنك الانسحاب خلال ١٤ يومًا من شراء الحصة أو الباقة، ونردّ إليك قيمة ما لم تأخذه. والحصة المدفوعة التي تلغيها في الوقت المناسب تعود إليك رصيد حصة، أو تطلب الاسترداد على واتساب. وإن ألغينا نحن أو المعلم، تختار أنت موعدًا جديدًا أو رصيدًا أو استردادًا. والتفاصيل كلها في الشروط.',
     category: 'booking'
   }
 ];

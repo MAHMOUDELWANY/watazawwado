@@ -122,7 +122,7 @@ const CARDS = [
     title: { en: 'Learn for yourself', ar: 'تعلّم لنفسك' },
     body: {
       en: 'Your own account: book lessons at times that suit you, follow your progress, and talk to your teacher in the on-site chat.',
-      ar: 'حسابك الخاص: احجز دروسك في المواعيد اللي تناسبك، وتابع تقدمك، وكلّم معلمك في المحادثة داخل الموقع.'
+      ar: 'حسابك الخاص: احجز دروسك في المواعيد التي تناسبك، وتابع تقدّمك، وراسل معلمك في المحادثة داخل الموقع.'
     },
     note: { en: 'Direct feedback from your teacher', ar: 'متابعة مباشرة من معلمك' },
   },

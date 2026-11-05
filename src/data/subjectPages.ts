@@ -45,7 +45,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'Lessons are 30, 45 or 60 minutes, at times that fit around school. You can sit in whenever you like.'
     ],
     introAr: [
-      'ابنك ليه معلم خاص بيه، مباشر على Zoom، حصة فردية. المعلم بيسمع كل حرف، وبيصحّحه في وقتها، وبيمشي على قد سرعة ابنك، سواء لسه بيبدأ بالحروف أو بيقرا من المصحف.',
+      'لابنك معلم خاص به، مباشرةً على Zoom، في حصة فردية. يسمع المعلم كل حرف ويصحّحه في وقته، ويسير على قدر سرعة ابنك، سواء كان يبدأ بالحروف أو يقرأ من المصحف.',
       'الحصة ٣٠ أو ٤٥ أو ٦٠ دقيقة، في مواعيد تناسب المدرسة. وتقدر تحضر الحصة وقت ما تحب.'
     ],
     learnEn: [
@@ -56,9 +56,9 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     ],
     learnAr: [
       'القراءة من الصفر: الحروف وأصواتها والقاعدة، وبعدين القراءة من المصحف لحد ما يقرا بطلاقة.',
-      'التجويد على ٣ مستويات، بيتطبّق وهو بيقرا، مش قواعد محفوظة وبس.',
+      'التجويد على ٣ مستويات، يُطبَّق أثناء القراءة، لا قواعد محفوظة فقط.',
       'حفظ ومراجعة على قد سرعته، من السور القصيرة.',
-      'اختبار تحديد مستوى قصير بعد الحصة التجريبية، عشان نبدأ من المستوى الصح.'
+      'اختبار تحديد مستوى قصير بعد الحصة التجريبية، لنبدأ من المستوى الصحيح.'
     ],
     faqEn: [
       { q: 'From what age can my child start?', a: 'Children in a family account are 6 to 17. A parent aged 18 or over opens the account and manages each child.' },
@@ -66,8 +66,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'Quran lessons are from $9 an hour, so a 30-minute lesson is $4.50. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'ابني يقدر يبدأ من سن كام؟', a: 'الأطفال في حساب العيلة من ٦ لـ ١٧ سنة. ولي الأمر (١٨ سنة أو أكتر) بيفتح الحساب وبيتابع كل طفل.' },
-      { q: 'بنتي ممكن تاخد مع معلمة؟', a: 'أيوه. معانا معلمين ومعلمات، وإنت بتختار معلم ابنك أو بنتك وإنت بتسجّل.' },
+      { q: 'من أي عمر يمكن لابني أن يبدأ؟', a: 'الأطفال في حساب الأسرة من ٦ إلى ١٧ سنة. ويفتح وليّ الأمر (١٨ سنة أو أكثر) الحساب ويتابع كل طفل.' },
+      { q: 'هل يمكن أن تدرس ابنتي مع معلمة؟', a: 'نعم. لدينا معلمون ومعلمات، وتختار معلم ابنك أو ابنتك عند التسجيل.' },
       { q: 'السعر كام؟', a: 'حصص القرآن من ٩ دولار للساعة، يعني حصة ٣٠ دقيقة بـ ٤.٥ دولار. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-tajweed-classes', 'online-quran-memorization', 'islamic-classes-for-kids']
@@ -87,8 +87,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'Sisters can learn with a female teacher. You choose your teacher when you sign up.'
     ],
     introAr: [
-      'كبار كتير بنعلّمهم ماخدوش فرصتهم وهم صغيرين، وبيتكسفوا يبدأوا دلوقتي. الحصة الفردية خاصة: إنت ومعلمك بس، على قد سرعتك، ومحدش تاني بيسمع.',
-      'الأخوات يقدروا يتعلّموا مع معلمة. وإنت بتختار معلمك وإنت بتسجّل.'
+      'كثير من الكبار الذين نعلّمهم لم تُتح لهم الفرصة في الصغر، ويخجلون من البدء الآن. الحصة الفردية خاصة: أنت ومعلمك فقط، على قدر سرعتك، ولا يسمعك أحد غيره.',
+      'تستطيع الأخوات التعلّم مع معلمة. وتختار معلمك عند التسجيل.'
     ],
     learnEn: [
       'Reading from the first letters, or polishing a reading that already exists.',
@@ -99,8 +99,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     learnAr: [
       'القراءة من أول الحروف، أو تحسين قراءة موجودة أصلاً.',
       'التجويد على ٣ مستويات: الأحكام الأساسية، ومخارج الحروف وصفاتها، وبعدين الأحكام المتقدمة.',
-      'الحفظ والمراجعة: تبدأ، أو تزوّد، أو تثبّت اللي حافظه.',
-      'الحصة ٣٠ أو ٤٥ أو ٦٠ دقيقة، في مواعيد بتختارها من مواعيد معلمك.'
+      'الحفظ والمراجعة: تبدأ، أو تزيد، أو تثبّت ما تحفظه.',
+      'الحصة ٣٠ أو ٤٥ أو ٦٠ دقيقة، في مواعيد تختارها من مواعيد معلمك.'
     ],
     faqEn: [
       { q: 'I am a complete beginner. Is that fine?', a: 'Yes. Quran Reading starts with Foundations: the letters, their sounds and the qaida, from zero.' },
@@ -108,8 +108,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'From $9 an hour, charged by length: $4.50 for 30 minutes. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'أنا مبتدئ خالص. ينفع؟', a: 'أيوه. قراءة القرآن بتبدأ بالتأسيس: الحروف وأصواتها والقاعدة، من الصفر.' },
-      { q: 'الحصص بتتسجّل؟', a: 'لأ. الحصص مش بتتسجّل، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار.' },
+      { q: 'أنا مبتدئ تمامًا. هل يناسبني؟', a: 'نعم. تبدأ قراءة القرآن بالتأسيس: الحروف وأصواتها والقاعدة، من الصفر.' },
+      { q: 'هل تُسجَّل الحصص؟', a: 'لا. الحصص لا تُسجَّل، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار.' },
       { q: 'السعر كام؟', a: 'من ٩ دولار للساعة، والسعر على قد مدة الحصة: ٤.٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-tajweed-classes', 'online-quran-memorization', 'learn-arabic-online']
@@ -121,7 +121,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     titleEn: 'Online Tajweed Classes, 1-on-1 for Kids & Adults | Watazawwado',
     titleAr: 'حصص تجويد أونلاين، فردية للأطفال والكبار | وتزودوا',
     descEn: 'Learn Tajweed online in one-on-one Zoom lessons: three levels from the essential rules to the advanced ones, applied as you recite. Free trial lesson.',
-    descAr: 'اتعلم التجويد أونلاين في حصص فردية على Zoom: ٣ مستويات من الأحكام الأساسية للمتقدمة، بتتطبّق وإنت بتقرا. أول حصة تجريبية مجاناً.',
+    descAr: 'تعلّم التجويد أونلاين في حصص فردية على Zoom: ٣ مستويات من الأحكام الأساسية إلى المتقدمة، تطبّقها وأنت تقرأ. الحصة التجريبية الأولى مجانية.',
     h1En: 'Online Tajweed classes',
     h1Ar: 'حصص تجويد أونلاين',
     introEn: [
@@ -129,8 +129,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'Because the lesson is one-on-one, nothing slips past. A mistake repeated for months is hard to undo; caught early, it is a two-minute fix.'
     ],
     introAr: [
-      'التجويد بيتعلّم بالودن. معلمك بيسمعك وإنت بتقرا، وبيقف عند الحرف اللي محتاج شغل، ويوريك نطقه الصح لحد ما يبقى طبيعي.',
-      'وعشان الحصة فردية، مفيش حاجة بتعدّي. الغلطة اللي بتتكرر شهور صعب تتصلّح، لكن لو اتمسكت بدري بتتصلّح في دقيقتين.'
+      'التجويد يُتعلَّم بالأذن. يسمعك معلمك وأنت تقرأ، ويتوقف عند الحرف الذي يحتاج إلى عمل، ويريك نطقه الصحيح حتى يصبح طبيعيًا.',
+      'ولأن الحصة فردية، لا يفوت شيء. الخطأ الذي يتكرر شهورًا يصعب تصحيحه، أما إن اكتُشف مبكرًا فيُصحَّح في دقيقتين.'
     ],
     learnEn: [
       'Level 1: the essential rules, applied while you recite.',
@@ -139,10 +139,10 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'A placement test after your free trial, so you start at the right level.'
     ],
     learnAr: [
-      'المستوى الأول: الأحكام الأساسية، وتطبيقها وإنت بتقرا.',
+      'المستوى الأول: الأحكام الأساسية، وتطبيقها أثناء القراءة.',
       'المستوى الثاني: مخارج الحروف وصفاتها.',
       'المستوى الثالث: الأحكام المتقدمة، لحد ما الصورة تكمل.',
-      'اختبار تحديد مستوى بعد الحصة التجريبية، عشان تبدأ من المستوى الصح.'
+      'اختبار تحديد مستوى بعد الحصة التجريبية، لتبدأ من المستوى الصحيح.'
     ],
     faqEn: [
       { q: 'Do I need to read Arabic first?', a: 'Tajweed builds on reading. If you cannot read yet, start with Quran Reading; your teacher will tell you in the trial.' },
@@ -150,8 +150,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'From $9 an hour: $4.50 for 30 minutes, $6.75 for 45, $9 for 60. The first lesson is a free trial.' }
     ],
     faqAr: [
-      { q: 'لازم أعرف أقرا عربي الأول؟', a: 'التجويد مبني على القراءة. لو لسه مبتقراش، ابدأ بقراءة القرآن، ومعلمك هيقولك في الحصة التجريبية.' },
-      { q: 'ينفع للأطفال كمان؟', a: 'أيوه. الأطفال من ٦ لـ ١٧ سنة بيتعلّموا في حساب العيلة، والكبار في حسابهم.' },
+      { q: 'هل يجب أن أعرف قراءة العربية أولًا؟', a: 'التجويد مبني على القراءة. إن كنت لا تقرأ بعد، فابدأ بقراءة القرآن، وسيخبرك معلمك في الحصة التجريبية.' },
+      { q: 'هل يناسب الأطفال أيضًا؟', a: 'نعم. يتعلّم الأطفال من ٦ إلى ١٧ سنة في حساب الأسرة، والكبار في حساباتهم.' },
       { q: 'السعر كام؟', a: 'من ٩ دولار للساعة: ٤.٥ لـ ٣٠ دقيقة، و٦.٧٥ لـ ٤٥، و٩ لـ ٦٠. وأول حصة تجريبية مجانية.' }
     ],
     related: ['online-quran-memorization', 'online-quran-classes-for-kids', 'online-quran-classes-for-adults']
@@ -163,7 +163,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     titleEn: 'Online Hifz Classes: Quran Memorization & Revision | Watazawwado',
     titleAr: 'حصص حفظ القرآن ومراجعته أونلاين | وتزودوا',
     descEn: 'One-on-one online Hifz lessons for kids and adults: start memorizing, add more, or keep what you know firm with steady revision. Free trial lesson.',
-    descAr: 'حصص حفظ فردية أونلاين للأطفال والكبار: ابدأ الحفظ، أو زوّد، أو ثبّت اللي حافظه بمراجعة ثابتة. أول حصة تجريبية مجاناً.',
+    descAr: 'حصص حفظ فردية أونلاين للأطفال والكبار: ابدأ الحفظ، أو زِد، أو ثبّت ما تحفظه بمراجعة منتظمة. الحصة التجريبية الأولى مجانية.',
     h1En: 'Online Quran memorization (Hifz)',
     h1Ar: 'حفظ القرآن ومراجعته أونلاين',
     introEn: [
@@ -171,8 +171,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'You tell us your goal when you sign up: starting out, adding more, or keeping what you have firm. Your teacher plans around it.'
     ],
     introAr: [
-      'الحفظ هو النص السهل، والتثبيت هو الشغل الحقيقي. حصص الحفظ عندنا بتجمع الحفظ الجديد والمراجعة مع بعض، عشان اللي تحفظه الشهر ده يفضل معاك السنة الجاية.',
-      'إنت بتقولنا هدفك وإنت بتسجّل: لسه ببدأ، أو بزوّد، أو بثبّت اللي حافظه. ومعلمك بيخطط على أساسه.'
+      'الحفظ هو النصف السهل، والتثبيت هو العمل الحقيقي. تجمع حصص الحفظ عندنا بين الحفظ الجديد والمراجعة، ليبقى ما تحفظه هذا الشهر معك في السنة القادمة.',
+      'تخبرنا بهدفك عند التسجيل: أبدأ، أو أزيد، أو أثبّت ما أحفظه. ويخطط معلمك على أساسه.'
     ],
     learnEn: [
       'Starting out: new memorization from the short surahs.',
@@ -181,10 +181,10 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'A clear task between lessons, so the week counts too.'
     ],
     learnAr: [
-      'لسه ببدأ: حفظ جديد من السور القصيرة.',
+      'أبدأ: حفظ جديد من السور القصيرة.',
       'بزوّد: حافظ كام جزء وعايز تكمّل.',
-      'بثبّت: مراجعة في الأساس، عشان تحافظ على اللي حفظته.',
-      'مهمة واضحة بين كل حصة والتانية، عشان الأسبوع كمان يفرق.'
+      'أثبّت: مراجعة في الأساس، لتحافظ على ما حفظته.',
+      'مهمة واضحة بين كل حصة والتي تليها، ليكون للأسبوع أثر أيضًا.'
     ],
     faqEn: [
       { q: 'How fast will my child memorize?', a: 'It depends on the child and on daily practice. Steady, short revision every day matters more than big amounts once a week.' },
@@ -192,7 +192,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'From $9 an hour, charged by length. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'ابني هيحفظ في قد إيه؟', a: 'ده بيختلف من طفل للتاني وعلى حسب المراجعة اليومية. مراجعة قصيرة ثابتة كل يوم أهم من كمية كبيرة مرة في الأسبوع.' },
+      { q: 'في كم من الوقت سيحفظ ابني؟', a: 'يختلف ذلك من طفل لآخر وبحسب المراجعة اليومية. مراجعة قصيرة منتظمة كل يوم أهم من كمية كبيرة مرة في الأسبوع.' },
       { q: 'ينفع مراجعة بس؟', a: 'أيوه. اختار «بثبّت» والحصص هتركّز على المراجعة.' },
       { q: 'السعر كام؟', a: 'من ٩ دولار للساعة، على قد مدة الحصة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
@@ -205,7 +205,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     titleEn: 'Online Islamic Classes for Kids & Teens: the Zad Path | Watazawwado',
     titleAr: 'حصص دينية أونلاين للأطفال والشباب: مسار الأثر | وتزودوا',
     descEn: 'Our own curriculum of Islamic knowledge, taught 1-on-1 online: Zad Essentials and the Seerah, in Kids (6–11), Teens (12–17) and Adults versions. Free trial lesson.',
-    descAr: 'منهجنا الخاص في العلم الشرعي للأطفال، حصص فردية أونلاين: أول الزاد والسيرة النبوية، بنسخة للأطفال (٦–١١) والشباب (١٢–١٧) والكبار. أول حصة تجريبية مجاناً.',
+    descAr: 'منهجنا الخاص في العلم الشرعي، في حصص فردية أونلاين: أول الزاد والسيرة النبوية، بنسخة للأطفال (٦–١١) والشباب (١٢–١٧) والكبار. الحصة التجريبية الأولى مجانية.',
     h1En: 'Online Islamic classes for kids',
     h1Ar: 'حصص دينية أونلاين للأطفال: مسار الأثر',
     introEn: [
@@ -213,8 +213,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'There is no level to choose. The version follows your child’s age: Kids 6–11, Teens 12–17, Adults 18+. Every lesson leaves time to reflect on what was learned.'
     ],
     introAr: [
-      'مسار الأثر هو منهجنا الخاص: أول حاجات محتاجها كل مسلم، وسيرة النبي ﷺ، بطريقة تخلّي الأطفال يفهموها ويعيشوها.',
-      'مفيش مستوى تختاره. النسخة بتمشي مع سن ابنك: أطفال ٦–١١، وشباب ١٢–١٧، وكبار ١٨ وأكتر. وكل حصة فيها وقت للتدبّر في اللي اتعلّموه.'
+      'مسار الأثر هو منهجنا الخاص: أول ما يحتاجه كل مسلم، وسيرة النبي ﷺ، بطريقة تجعل الأطفال يفهمونها ويعيشونها.',
+      'لا يوجد مستوى تختاره. النسخة تتبع عمر ابنك: أطفال ٦–١١، وشباب ١٢–١٧، وكبار ١٨ فأكثر. وفي كل حصة وقت للتدبّر فيما تعلّموه.'
     ],
     learnEn: [
       'Zad Essentials: the first things every Muslim needs to know.',
@@ -223,10 +223,10 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'A version made for your child’s age, picked automatically.'
     ],
     learnAr: [
-      'أول الزاد: أول حاجات لازم كل مسلم يعرفها.',
+      'أول الزاد: أول ما يجب على كل مسلم أن يعرفه.',
       'السيرة: حياة النبي ﷺ وأخلاقه.',
       'تعليم وسطي معتدل، على منهج أهل السنة والجماعة.',
-      'نسخة معمولة لسن ابنك، بتتحدد لوحدها.'
+      'نسخة مصمّمة لعمر ابنك، تُحدَّد تلقائيًا.'
     ],
     faqEn: [
       { q: 'Can I sit in on the lessons?', a: 'Yes. Parents can sit in on any lesson, and the teacher hosts every Zoom lesson with a waiting room.' },
@@ -255,7 +255,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'There is a version for children and one for learners aged 12 and over.'
     ],
     introAr: [
-      'الفصحى هي لغة القرآن والكتب والأخبار، وبيفهمها العالم العربي كله. وإحنا بنعلّمها كلغة حية: ابنك بيقراها ويكتبها ويتكلمها من أول مستوى.',
+      'الفصحى لغة القرآن والكتب والأخبار، ويفهمها العالم العربي كله. ونحن نعلّمها لغةً حية: يقرؤها ابنك ويكتبها ويتحدث بها من المستوى الأول.',
       'فيه نسخة للأطفال ونسخة للي عندهم ١٢ سنة أو أكتر.'
     ],
     learnEn: [
@@ -276,8 +276,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'Arabic lessons are from $13 an hour: $6.50 for 30 minutes. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'الفصحى ولا العامية: ابني يتعلم أنهي الأول؟', a: 'على حسب هدفكم. كتبنا مقال عن الموضوع ده، ومعلمك يقدر ينصحك في الحصة التجريبية.' },
-      { q: 'بتساعد في فهم القرآن؟', a: 'أيوه. الفصحى لغة القرآن، فكل ما العربي يكبر الفهم بيكبر.' },
+      { q: 'الفصحى أم العامية: بأيهما يبدأ ابني؟', a: 'بحسب هدفكم. كتبنا مقالًا عن هذا الموضوع، ويستطيع معلمك أن ينصحك في الحصة التجريبية.' },
+      { q: 'هل تساعد على فهم القرآن؟', a: 'نعم. الفصحى لغة القرآن، فكلما كبرت عربيتك كبر فهمك.' },
       { q: 'السعر كام؟', a: 'حصص العربي من ١٣ دولار للساعة: ٦.٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['learn-egyptian-arabic-online', 'islamic-classes-for-kids', 'online-quran-classes-for-kids']
@@ -289,7 +289,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     titleEn: 'Learn Egyptian Arabic Online, 1-on-1 Lessons | Watazawwado',
     titleAr: 'اتعلم اللهجة المصرية أونلاين، حصص فردية | وتزودوا',
     descEn: 'Speak Egyptian Arabic with confidence: one-on-one Zoom lessons that start with the sounds, with Franco and Arabic script side by side. Free trial lesson.',
-    descAr: 'اتكلم مصري بثقة: حصص فردية على Zoom بتبدأ بالأصوات، والفرانكو والحروف العربي جنب بعض. أول حصة تجريبية مجاناً.',
+    descAr: 'تحدّث المصرية بثقة: حصص فردية على Zoom تبدأ بالأصوات، والفرانكو والحروف العربية جنبًا إلى جنب. الحصة التجريبية الأولى مجانية.',
     h1En: 'Learn Egyptian Arabic online',
     h1Ar: 'اتعلم اللهجة المصرية أونلاين',
     introEn: [
@@ -297,8 +297,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'You see each word in Franco (Latin letters) and in Arabic script together, so you can start speaking before you read fluently.'
     ],
     introAr: [
-      'المصري هو العربي اللي أغلب الناس بتفهمه، من الأفلام والأغاني لحد مكالمات العيلة. حصصنا بتبدأ بأصوات اللهجة، وبعدين محادثة يومية حقيقية.',
-      'كل كلمة بتشوفها بالفرانكو وبالحروف العربي مع بعض، فتقدر تبدأ تتكلم قبل ما تقرا بطلاقة.'
+      'المصرية هي العربية التي يفهمها أغلب الناس، من الأفلام والأغاني حتى مكالمات العائلة. تبدأ حصصنا بأصوات اللهجة، ثم محادثة يومية حقيقية.',
+      'ترى كل كلمة بالفرانكو وبالحروف العربية معًا، فتستطيع أن تبدأ الكلام قبل أن تقرأ بطلاقة.'
     ],
     learnEn: [
       'Sounds: the sounds of the dialect and the first everyday words.',
@@ -318,8 +318,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'From $13 an hour: $6.50 for 30 minutes. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'ينفع للأطفال؟', a: 'أيوه. اللهجة المصرية ليها تصميم واحد لكل الأعمار، والأطفال بيتعلّموا في حساب العيلة.' },
-      { q: 'إحنا مصريين بس ولادنا بيتكلموا إنجليزي بس. ده هيفيد؟', a: 'أيوه. عائلات كتير عايزة ولادها تتكلم مع الجد والجدة وولاد العم، والمحادثة اليومية هي الأساس.' },
+      { q: 'هل يناسب الأطفال؟', a: 'نعم. للهجة المصرية تصميم واحد لكل الأعمار، ويتعلّم الأطفال في حساب الأسرة.' },
+      { q: 'نحن مصريون لكن أولادنا لا يتكلمون إلا الإنجليزية. هل سيفيدهم؟', a: 'نعم. كثير من العائلات تريد أن يتحدث أولادها مع الجد والجدة وأبناء العم، والمحادثة اليومية هي الأساس.' },
       { q: 'السعر كام؟', a: 'من ١٣ دولار للساعة: ٦.٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['learn-arabic-online', 'online-english-classes', 'islamic-classes-for-kids']
@@ -339,8 +339,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       'Lessons are one-on-one, so the time goes on what you need: speaking, reading, writing or an exam.'
     ],
     introAr: [
-      'إنجليزي مع معلم فاهم إنت جاي منين. الأطفال بيبدأوا بالأصوات (phonics) وأول قراءة، والأكبر بيمشوا على مستويات CEFR من A1 لحد C1.',
-      'الحصة فردية، فالوقت كله بيروح في اللي إنت محتاجه: كلام، أو قراءة، أو كتابة، أو امتحان.'
+      'الإنجليزية مع معلم يفهم من أين أتيت. يبدأ الأطفال بالأصوات (phonics) والقراءة الأولى، ويسير الأكبر على مستويات CEFR من A1 حتى C1.',
+      'الحصة فردية، فيذهب الوقت كله فيما تحتاجه: كلام، أو قراءة، أو كتابة، أو امتحان.'
     ],
     learnEn: [
       'A1 Starter: phonics and first reading for kids, the basics for others.',
@@ -360,8 +360,8 @@ export const SUBJECT_PAGES: SubjectPage[] = [
       { q: 'How much does it cost?', a: 'From $13 an hour: $6.50 for 30 minutes. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
-      { q: 'الحصص دي لمين؟', a: 'للأطفال في حساب العيلة (٦ لـ ١٧) وللكبار (١٨ وأكتر)، من أول كلمات لحد الإنجليزي المتقدم.' },
-      { q: 'المعلم ممكن يشرح بالعربي؟', a: 'أيوه، لما ده يساعد. قول لمعلمك في الحصة التجريبية إنت بتحب تتعلم إزاي.' },
+      { q: 'لمن هذه الحصص؟', a: 'للأطفال في حساب الأسرة (٦ إلى ١٧) وللكبار (١٨ فأكثر)، من الكلمات الأولى حتى الإنجليزية المتقدمة.' },
+      { q: 'هل يمكن أن يشرح المعلم بالعربية؟', a: 'نعم، حين يساعد ذلك. أخبر معلمك في الحصة التجريبية كيف تحب أن تتعلّم.' },
       { q: 'السعر كام؟', a: 'من ١٣ دولار للساعة: ٦.٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['learn-arabic-online', 'learn-egyptian-arabic-online', 'online-quran-classes-for-kids']
