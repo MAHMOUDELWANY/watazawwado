@@ -24,7 +24,7 @@ describe('NX-10 weekly digest by email', () => {
       'Amina took 2 lessons this week.', 'From the teacher: Great tajweed today.', 'Homework for next time: Surah Al-Mulk, ayat 1-15.',
       'Yusuf took 1 lesson this week.',
     ]);
-    assert.strictEqual(p[0].ar, 'حصص Amina الأسبوع ده: درسين.', 'neutral for a boy or a girl');
+    assert.strictEqual(p[0].ar, 'حصص Amina هذا الأسبوع: درسين.', 'neutral for a boy or a girl');
     const mail = renderWeeklyDigestEmail({ name: null, paragraphs: p, lang: 'en' });
     assert.match(JSON.stringify(mail), /Your week with us/);
     assert.match(JSON.stringify(mail), /tab=preferences/, 'has the way to turn it off');

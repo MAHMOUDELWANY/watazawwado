@@ -81,7 +81,7 @@ describe('Task 0.58-C1: Authenticated Production Diagnostic Probe Suite', () => 
 
     // Asserts session.access_token is extracted from effectiveSession
     assert.ok(profilePageSource.includes('effectiveSession?.access_token'), 'Must use effectiveSession.access_token');
-    assert.ok(profilePageSource.includes('/api/student-auth-diagnostic'), 'Must call /api/student-auth-diagnostic endpoint');
+    assert.ok(!profilePageSource.includes('/api/student-auth-diagnostic'), 'Developer probes stay out of the learner profile');
     assert.ok(profilePageSource.includes('Authorization: `Bearer ${token}`'), 'Must attach Authorization Bearer header');
 
     // Asserts no localStorage / sessionStorage token lookup

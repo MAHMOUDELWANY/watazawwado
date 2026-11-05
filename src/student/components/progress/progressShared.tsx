@@ -19,7 +19,7 @@ export function formatDayTime(iso: string | null | undefined, tz: string, isAr: 
 
 /** Weeks-in-a-row line. A pause is "resting", never "lost". */
 export function rhythmText(current: number, longest: number, isAr: boolean): string {
-  if (current > 0) return isAr ? `${current.toLocaleString('ar-EG')} أسابيع متتالية` : `${current} ${current === 1 ? 'week' : 'weeks'} in a row`;
+  if (current > 0) return isAr ? `${current.toLocaleString('ar-EG')} أسابيع على التوالي` : `${current} ${current === 1 ? 'week' : 'weeks'} in a row`;
   if (longest > 0) return isAr ? 'في استراحة، وأي حصة ترجّعها' : 'Resting. One lesson starts it again';
   return isAr ? 'لم نبدأ بعد' : 'Not started yet';
 }

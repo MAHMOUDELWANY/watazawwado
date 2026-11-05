@@ -58,7 +58,7 @@ describe('Section 08-B: Student Profile & Account Visual UX Refinement', () => {
   it('6. Architectural Invariants: Preserves effectiveSession.access_token and student auth endpoints', () => {
     assert.ok(profilePageSource.includes('effectiveSession?.access_token'), 'Must use effectiveSession.access_token');
     assert.ok(profilePageSource.includes('/api/student/me'), 'Must call /api/student/me');
-    assert.ok(profilePageSource.includes('/api/student-auth-diagnostic'), 'Must preserve diagnostic endpoint');
+    assert.ok(!profilePageSource.includes('/api/student-auth-diagnostic'), 'Developer probes stay out of the learner profile');
     assert.ok(profilePageSource.includes('Authorization: `Bearer ${token}`'), 'Must attach Authorization Bearer header');
     assert.ok(!profilePageSource.includes("localStorage.getItem('token')"), 'No localStorage token extraction');
   });

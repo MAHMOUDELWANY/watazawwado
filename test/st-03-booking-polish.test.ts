@@ -6,16 +6,16 @@ import { bookingErrorText, OFFLINE_MESSAGE } from '../src/components/booking/boo
 describe('ST-03 booking flow polish (presentation only)', () => {
   it('network failures read as a plain internet problem, not a database outage', () => {
     assert.strictEqual(bookingErrorText('Failed to fetch', true), OFFLINE_MESSAGE);
-    assert.strictEqual(bookingErrorText(OFFLINE_MESSAGE, false), 'مقدرناش نوصل للموقع. اتأكد من الإنترنت وحاول تاني.');
+    assert.strictEqual(bookingErrorText(OFFLINE_MESSAGE, false), 'تعذّر الوصول إلى الموقع. تأكد من الإنترنت وحاول مرة أخرى.');
     const repo = fs.readFileSync('src/lib/bookingRepository.ts', 'utf8');
     assert.ok(!repo.includes('Database service is currently unavailable'));
     assert.ok(!repo.includes('Invalid date or time scheduling: ${'), 'no raw exception text shown to families');
   });
 
   it('Arabic users see Arabic for known booking errors, and a plain Arabic sentence otherwise', () => {
-    assert.strictEqual(bookingErrorText('This time slot is no longer available. Please select another slot.', false), 'الميعاد ده مبقاش متاح. اختار ميعاد تاني.');
-    assert.strictEqual(bookingErrorText('A valid contact email address is required.', false), 'محتاجين إيميل صحيح نتواصل معاك عليه.');
-    assert.ok(bookingErrorText('Something odd XYZ', false).startsWith('تعذر إتمام الحجز دلوقتي.'));
+    assert.strictEqual(bookingErrorText('This time slot is no longer available. Please select another slot.', false), 'هذا الموعد لم يعد متاحًا. اختر موعدًا آخر.');
+    assert.strictEqual(bookingErrorText('A valid contact email address is required.', false), 'نحتاج إلى بريد صحيح نتواصل معك عليه.');
+    assert.ok(bookingErrorText('Something odd XYZ', false).startsWith('تعذّر إتمام الحجز الآن.'));
     assert.ok(bookingErrorText('Something odd XYZ', false).includes('XYZ'), 'the detail stays for support');
     assert.strictEqual(bookingErrorText('رسالة عربية من السيرفر', false), 'رسالة عربية من السيرفر');
     assert.strictEqual(bookingErrorText('Exact server text', true), 'Exact server text');

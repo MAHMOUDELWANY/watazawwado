@@ -157,7 +157,7 @@ describe('CM-03 effort line wording', () => {
   it('uses Arabic plurals and English singulars correctly', async () => {
     const { arWeekCount, effortLine } = await import('../src/student/components/community/effortText.js');
     assert.deepStrictEqual([1, 2, 3, 10, 11].map(arWeekCount), ['أسبوع واحد', 'أسبوعين', '٣ أسابيع', '١٠ أسابيع', '١١ أسبوع']);
-    assert.strictEqual(effortLine(6, 2, true), '٦ حصص الشهر ده · أسبوعين ورا بعض');
+    assert.strictEqual(effortLine(6, 2, true), '٦ حصص هذا الشهر · أسبوعين على التوالي');
     assert.strictEqual(effortLine(1, 1, false), '1 lesson this month · 1 week in a row');
   });
 });

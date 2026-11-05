@@ -9,6 +9,6 @@ export function arWeekCount(n: number): string {
 
 /** One learner's effort on the class board: lessons this month and weeks in a row. */
 export function effortLine(lessons: number, weeks: number, isAr: boolean): string {
-  if (isAr) return `${arLessonCount(lessons)} هذا الشهر · ${arWeekCount(weeks)} متتالية`;
+  if (isAr) return `${arLessonCount(lessons)} هذا الشهر · ${arWeekCount(weeks)} على التوالي`;
   return `${lessons} ${lessons === 1 ? 'lesson' : 'lessons'} this month · ${weeks} ${weeks === 1 ? 'week' : 'weeks'} in a row`;
 }

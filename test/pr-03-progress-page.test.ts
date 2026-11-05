@@ -201,7 +201,7 @@ describe('PR-03: Progress page — the learning path', () => {
     );
 
     assert.ok(htmlAr.includes('data-testid="progress-calm"'), 'An adult learner sees the calm board');
-    assert.ok(htmlAr.includes('انت في'), 'The headline speaks to the learner directly');
+    assert.ok(htmlAr.includes('أنت في'), 'The headline speaks to the learner directly');
     assert.ok(htmlAr.includes('data-testid="subject-switcher"'), 'Must render subject switcher when >1 subject');
     assert.ok(htmlAr.includes('data-level-state="completed"'), 'Must render completed level');
     assert.ok(htmlAr.includes('data-level-state="current"'), 'Must render current level');
@@ -230,7 +230,7 @@ describe('PR-03: Progress page — the learning path', () => {
     );
     assert.ok(htmlChild.includes('data-testid="progress-road"'), 'A child sees the road');
     assert.ok(htmlChild.includes('data-current-level="true"'), 'The road marks the current level');
-    assert.ok(htmlChild.includes('انت هنا'), 'The road says "you are here"');
+    assert.ok(htmlChild.includes('أنت هنا'), 'The road says "you are here"');
     assert.ok(htmlChild.includes('زادك الله علمًا ونورًا'), 'The road carries the praise phrase');
   });
 
