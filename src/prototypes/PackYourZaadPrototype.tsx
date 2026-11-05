@@ -4,6 +4,7 @@ import { Moon, Sun, ChevronLeft } from 'lucide-react';
 import { SubjectMark } from '../components/onboarding/SubjectMark';
 import { useTheme } from '../components/ThemeProvider';
 import { hideBootSplash } from '../lib/bootSplash';
+import { ZaadiRig, type ZaadiPose } from './ZaadiRig';
 
 /**
  * DEV-ONLY prototype (route /prototype/zaad, never in production builds) of the "Pack your zaad" waitlist,
@@ -11,7 +12,7 @@ import { hideBootSplash } from '../lib/bootSplash';
  * shortcut: fixed place in line (14) and fake Google button; the real flow reads the waitlist table.
  */
 
-type Mood = 'idle' | 'cheer' | 'thanks' | 'party';
+type Mood = 'idle' | 'cheer' | 'thanks' | 'party' | 'wave' | 'sad';
 type Track = { id: string; emblem: string; color: string; spine: string; title: string; line: string; cheer: string };
 
 const TRACKS: Track[] = [
@@ -26,41 +27,9 @@ const PLACE = 14;
 
 /* ---------- Zaadi: an abstract khatam star that shows feeling through motion only (no face) ---------- */
 function Zaadi({ mood, size = 56 }: { mood: Mood; size?: number }) {
-  const reduce = useReducedMotion();
-  const moves: Record<Mood, any> = {
-    idle: { y: [0, -6, 0], rotate: [0, 8, 0], scale: [1, 1.04, 1], transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' } },
-    cheer: { y: [0, -26, 0, -10, 0], rotate: [0, 180, 360], scaleX: [1, 0.85, 1.15, 1], scaleY: [1, 1.2, 0.85, 1], transition: { duration: 0.9, ease: 'easeOut' } },
-    thanks: { rotate: [0, -18, 0], y: [0, 6, 0], scaleY: [1, 0.86, 1], transition: { duration: 0.8, ease: 'easeInOut' } },
-    party: { y: [0, -34, 0, -16, 0, -6, 0], rotate: [0, 360, 720], scale: [1, 1.25, 1, 1.1, 1], transition: { duration: 1.6, ease: 'easeOut' } },
-  };
-  return (
-    <motion.svg key={mood} viewBox="10 10 80 80" width={size} height={size} aria-hidden="true"
-      animate={reduce ? undefined : moves[mood]} style={{ filter: 'drop-shadow(0 0 16px rgba(229,169,60,.55))', overflow: 'visible' }}>
-      <defs>
-        <radialGradient id="zaadi-g" cx="50%" cy="38%" r="65%">
-          <stop offset="0" stopColor="#FFF4D6" /><stop offset=".55" stopColor="#E5A93C" /><stop offset="1" stopColor="#B9782A" />
-        </radialGradient>
-      </defs>
-      <rect x="22" y="22" width="56" height="56" rx="8" fill="url(#zaadi-g)" />
-      <rect x="22" y="22" width="56" height="56" rx="8" fill="url(#zaadi-g)" transform="rotate(45 50 50)" />
-      <circle cx="50" cy="51" r="17" fill="#FFF8E8" />
-      {/* eyes: open and blinking at rest, happy arcs when cheering, closed and soft when thanking */}
-      {mood === 'idle' && (
-        <motion.g animate={reduce ? undefined : { scaleY: [1, 1, 0.1, 1, 1] }} transition={{ duration: 4.2, repeat: Infinity, times: [0, 0.9, 0.93, 0.96, 1] }}
-          style={{ transformBox: 'fill-box', originX: 0.5, originY: 0.5 }} fill="#2B1A12">
-          <ellipse cx="43.5" cy="50" rx="2.8" ry="4" /><ellipse cx="56.5" cy="50" rx="2.8" ry="4" />
-          <circle cx="44.4" cy="48.6" r="1" fill="#fff" /><circle cx="57.4" cy="48.6" r="1" fill="#fff" />
-        </motion.g>
-      )}
-      {(mood === 'cheer' || mood === 'party') && (
-        <g fill="none" stroke="#2B1A12" strokeWidth="2.6" strokeLinecap="round"><path d="M40 51.5 q3.5 -5 7 0" /><path d="M53 51.5 q3.5 -5 7 0" /></g>
-      )}
-      {mood === 'thanks' && (
-        <g fill="none" stroke="#2B1A12" strokeWidth="2.6" strokeLinecap="round"><path d="M40 49 q3.5 4 7 0" /><path d="M53 49 q3.5 4 7 0" /></g>
-      )}
-      <ellipse cx="38" cy="57" rx="3.2" ry="1.8" fill="#F4A3A3" opacity=".55" /><ellipse cx="62" cy="57" rx="3.2" ry="1.8" fill="#F4A3A3" opacity=".55" />
-    </motion.svg>
-  );
+  // the premium rig; party is a cheer, the greeting is a wave
+  const pose: ZaadiPose = mood === 'party' ? 'cheer' : mood;
+  return <ZaadiRig pose={pose} size={size} />;
 }
 
 function Bubble({ text }: { text: string }) {
@@ -232,7 +201,7 @@ export default function PackYourZaadPrototype() {
   const [rising, setRising] = useState<string | null>(null);
   const [who, setWho] = useState<'me' | 'child' | null>(null);
   const [email, setEmail] = useState('');
-  const [mood, setMood] = useState<Mood>('idle');
+  const [mood, setMood] = useState<Mood>('wave');
   const [say, setSay] = useState("Assalamu alaikum, I'm Zaadi. Pick one, and I'll pack it for you.");
   const [bump, setBump] = useState(0);
   const [fire, setFire] = useState(0);
@@ -245,7 +214,7 @@ export default function PackYourZaadPrototype() {
   const bagRef = useRef<HTMLDivElement>(null);
   const [flyer, setFlyer] = useState<{ t: Track; x: number; y: number; dx: number; dy: number } | null>(null);
 
-  useEffect(() => { hideBootSplash(); }, []);
+  useEffect(() => { hideBootSplash(); const t = setTimeout(() => setMood((m) => (m === 'wave' ? 'idle' : m)), 3200); return () => clearTimeout(t); }, []);
   const react = (m: Mood, text: string) => { setMood('idle'); requestAnimationFrame(() => setMood(m)); setSay(text); };
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -300,7 +269,7 @@ export default function PackYourZaadPrototype() {
         {/* stage: Zaadi talks, the bag is the hero */}
         <div className="relative mt-3 flex flex-col items-center">
           <div className="flex w-full items-end justify-center gap-2">
-            <Zaadi mood={mood} size={step === 4 ? 84 : 72} />
+            <Zaadi mood={mood} size={step === 4 ? 104 : 92} />
             <Bubble text={say} />
           </div>
           <div ref={bagRef} className="relative mt-1">
