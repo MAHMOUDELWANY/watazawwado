@@ -55,13 +55,16 @@ export async function placeOf(client: any, createdAt: string): Promise<number> {
   return count || 1;
 }
 
-/** In waitlist mode a new learner may finish onboarding only with an invited email. Marks the entry as joined. */
+export const INVITE_HOLD_MS = 72 * 3600 * 1000;
+
+/** In waitlist mode a new learner may finish onboarding only with an email invited in the last 72 hours (BRAND.md §8). Marks the entry as joined. */
 export async function onboardingAllowed(client: any, email: string | null | undefined): Promise<boolean> {
   if (signupMode() === 'open') return true;
   const clean = String(email || '').trim().toLowerCase();
   if (!clean) return false;
-  const { data } = await client.from('waitlist_entries').select('id, invited_at').eq('email', clean).maybeSingle();
+  const { data } = await client.from('waitlist_entries').select('id, invited_at, joined_at').eq('email', clean).maybeSingle();
   if (!data?.invited_at) return false;
+  if (!data.joined_at && Date.now() - Date.parse(data.invited_at) > INVITE_HOLD_MS) return false;
   await client.from('waitlist_entries').update({ joined_at: new Date().toISOString() }).eq('id', data.id).is('joined_at', null);
   return true;
 }
@@ -75,6 +78,7 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
   const { data: existing } = await client.from('waitlist_entries').select('id, secret, created_at').eq('email', input.email).maybeSingle();
   let row = existing;
   let preexisting = Boolean(existing);
+  let place = 0;
   if (!row) {
     const { data, error } = await client.from('waitlist_entries')
       .insert({ email: input.email, track: input.track, who: input.who, lang: input.lang, source: input.source })
@@ -87,7 +91,7 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
       preexisting = true;
     } else {
       row = data;
-      const place = await placeOf(client, row.created_at);
+      place = await placeOf(client, row.created_at);
       const t = TRACK_NAMES[input.track];
       // Production only: local test runs share the database and must not email anyone.
       if (process.env.NODE_ENV === 'production') {
@@ -103,7 +107,7 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
       }
     }
   }
-  const place = await placeOf(client, row.created_at);
+  if (!place) place = await placeOf(client, row.created_at);
   // Anyone can type any email, so an unverified join of an existing email learns nothing about it: no place, id or
   // secret. The owner of the email gets their place by email instead.
   if (preexisting && !verified) {
@@ -193,8 +197,10 @@ export function registerWaitlistRoutes(app: express.Express, deps: {
     if (!UUID_RE.test(req.params.id)) return res.status(404).json({ error: 'Not found.' });
     const { data: entry } = await client.from('waitlist_entries').select('id, email, lang, invited_at').eq('id', req.params.id).maybeSingle();
     if (!entry) return res.status(404).json({ error: 'Not found.' });
-    const invitedAt = entry.invited_at || new Date().toISOString();
-    if (!entry.invited_at) await client.from('waitlist_entries').update({ invited_at: invitedAt, updated_at: invitedAt }).eq('id', entry.id);
+    // Inviting again restarts the 72-hour hold.
+    const invitedAt = new Date().toISOString();
+    const { error: updateError } = await client.from('waitlist_entries').update({ invited_at: invitedAt, updated_at: invitedAt }).eq('id', entry.id);
+    if (updateError) return res.status(500).json({ error: 'Could not save the invitation. Nothing was sent.' });
     const mail = renderSimpleNotice({
       lang: entry.lang,
       title: { en: 'Your place is open', ar: 'مكانك جاهز' },

@@ -27,6 +27,7 @@ type View = 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
 
 export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login', onToggleLang }: StudentAuthModalProps) {
   const { toggleLanguage } = useAppLanguage();
+  const launch = useLaunch();
   const [view, setView] = useState<View>(initialView);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -231,7 +232,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   };
   const isSignup = view === 'signup';
   // Sign-up opens in waves: without an invitation, the new-account tab leads to the waitlist (the server checks too).
-  const signupClosed = useLaunch().signupMode === 'waitlist' && !isInvited();
+  const signupClosed = launch.signupMode === 'waitlist' && !isInvited();
   const showTabs = view === 'login' || isSignup;
 
   const googleButton = (

@@ -16,7 +16,7 @@ import { InstallAppNudge } from '../../pwa/InstallApp';
 import { WelcomeMuteButton } from '../WelcomeRecitation';
 import { LanguageWelcome } from '../LanguageWelcome';
 import { Analytics } from '@vercel/analytics/react';
-import { useLaunch, zaadPath } from '../../../lib/launch';
+import { loadLaunch, useLaunch, zaadPath } from '../../../lib/launch';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -145,7 +145,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     handleHashCheck();
     window.addEventListener('hashchange', handleHashCheck);
     return () => window.removeEventListener('hashchange', handleHashCheck);
-  }, [launch.signupMode]);
+  }, []);
 
   // While sign-up opens in waves, /get-started leads to the waitlist.
   useEffect(() => {
@@ -154,9 +154,12 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
   function handleOpenGetStarted(serviceId?: string) {
     // Sign-up opens in waves (RULES.md, launch): the call to action leads to the waitlist instead.
-    if (launch.signupMode === 'waitlist') { navigate(zaadPath(lang !== 'ar')); return; }
-    setPreselectedService(serviceId);
-    setGetStartedModalOpen(true);
+    // loadLaunch() is cached after the first call, so this waits only if the mode is not known yet.
+    loadLaunch().then(({ signupMode }) => {
+      if (signupMode === 'waitlist') { navigate(zaadPath(lang !== 'ar')); return; }
+      setPreselectedService(serviceId);
+      setGetStartedModalOpen(true);
+    });
   }
 
 

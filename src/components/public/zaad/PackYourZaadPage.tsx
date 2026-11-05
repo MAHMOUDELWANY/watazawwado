@@ -9,6 +9,7 @@ import { supabase } from '../../../lib/supabase';
 import { ZaadiRig, type ZaadiPose } from '../../zaadi/ZaadiRig';
 import { markInvited } from '../../../lib/launch';
 import FocusTrap from '../../FocusTrap';
+import { Button } from '../../ui/Button';
 
 /**
  * "Pack your zaad": the waitlist (RULES.md §2 "Launch in waves", BRAND.md §5–8). One track, who it is for, an email
@@ -270,6 +271,8 @@ export default function PackYourZaadPage() {
         if (!token || !tr) return;
         const res = await fetch('/api/waitlist/google', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ track: pending.track, who: pending.who, lang, source: utmSource() }) });
         const body = await res.json().catch(() => ({}));
+        // Google was only used to prove the email; joining the line must not leave a signed-in account on this device.
+        await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
         if (res.ok) { setWho(pending.who); finish({ ...body, track: pending.track }, tr); }
         else { setTrack(tr); setWho(pending.who); setStep(3); setError(body.error || t('Something went wrong. Please try again.', 'حصلت مشكلة. جرّب تاني.')); }
       });
@@ -388,9 +391,9 @@ export default function PackYourZaadPage() {
               <p className="mx-auto mt-2.5 max-w-[32ch] text-[16px] leading-relaxed text-muted-foreground">
                 {t('Create your account with the email you joined with. Your place is held for 72 hours.', 'أنشئ حسابك بالبريد الذي سجّلت به. مكانك محجوز لك 72 ساعة.')}
               </p>
-              <a href="/student?auth=signup" className="mt-6 inline-flex h-12 items-center justify-center rounded-full bg-foreground px-8 text-base font-bold text-background">
+              <Button size="lg" onClick={() => { window.location.href = '/student?auth=signup'; }} className="mt-6 !h-12 !rounded-full px-8 !text-base !font-bold">
                 {t('Create your account', 'أنشئ حسابك')}
-              </a>
+              </Button>
             </motion.section>
           )}
           {step === 1 && (

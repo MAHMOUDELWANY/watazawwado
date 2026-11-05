@@ -13,6 +13,9 @@ type Entry = {
 };
 type Data = { entries: Entry[]; byTrack: Record<string, number>; pains: Record<string, number>; waveSize: number; signupMode: 'open' | 'waitlist' };
 
+/** An invitation holds the place for 72 hours (server/routes/waitlist.ts INVITE_HOLD_MS); after that it can be sent again. */
+const HOLD_MS = 72 * 3600 * 1000;
+
 const TRACK: Record<string, [string, string]> = { quran: ['Quran', 'القرآن'], zad: ['Zad Path', 'مسار الزاد'], arabic: ['Arabic', 'العربية'], english: ['English', 'الإنجليزية'] };
 const PAIN: Record<string, [string, string]> = {
   teacher_stays: ['Teacher who stays', 'معلّم يبقى'], clear_plan: ['A clear plan', 'خطة واضحة'], see_progress: ['Seeing progress', 'رؤية التقدّم'],
@@ -116,8 +119,8 @@ export default function WaitlistPage() {
                 <td className="p-3 max-w-[22ch]">{e.note || (e.pains?.length ? e.pains.map((p) => PAIN[p] ? pick(PAIN[p]) : p).join(', ') : '—')}</td>
                 <td className="p-3 whitespace-nowrap">
                   {e.joined_at ? <Badge variant="success">{t('Joined', 'انضمّ')}</Badge>
-                    : e.invited_at ? <Badge variant="warning">{t(`Invited ${when(e.invited_at)}`, `دُعي ${when(e.invited_at)}`)}</Badge>
-                    : <Button size="sm" isLoading={busy === e.id} onClick={() => invite(e)}><Send className="me-1.5 h-3.5 w-3.5" />{t('Invite', 'ادعُ')}</Button>}
+                    : e.invited_at && Date.now() - Date.parse(e.invited_at) < HOLD_MS ? <Badge variant="warning">{t(`Invited ${when(e.invited_at)}`, `دُعي ${when(e.invited_at)}`)}</Badge>
+                    : <Button size="sm" isLoading={busy === e.id} onClick={() => invite(e)}><Send className="me-1.5 h-3.5 w-3.5" />{e.invited_at ? t('Invite again', 'ادعُ مجددًا') : t('Invite', 'ادعُ')}</Button>}
                 </td>
               </tr>
             ))}
