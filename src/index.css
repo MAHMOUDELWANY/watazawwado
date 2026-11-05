@@ -1467,6 +1467,8 @@ h3, .text-heading-lg {
 [dir="rtl"] .text-ribbon { background-image: linear-gradient(260deg, var(--crimson) 0%, #B4552F 35%, #E5A93C 55%, var(--teal) 100%); }
 /* Deep closing band. */
 .band-deep { background: radial-gradient(60rem 30rem at 80% 0%, rgba(229,169,60,0.22), transparent 60%), linear-gradient(135deg, #05363F 0%, #0A5866 55%, #3B2219 100%); color: #FAF7F2; }
+/* Public closing bands: espresso and gold, the brand at night (owner 2026-11-03: no deep-green surfaces). The curriculum keeps .band-deep. */
+.band-espresso { background: radial-gradient(60rem 30rem at 80% 0%, rgba(229,169,60,0.24), transparent 60%), radial-gradient(40rem 24rem at 0% 100%, rgba(197,31,36,0.16), transparent 60%), linear-gradient(135deg, #1C1411 0%, #2A1A14 55%, #3B2219 100%); color: #FAF7F2; }
 /* Inner-page hero: pattern and lights reach the screen edges, behind the page header only. */
 .page-hero::before, .page-hero::after { left: 50%; right: auto; width: 100vw; transform: translateX(-50%); top: -7rem; }
 .page-hero::after {

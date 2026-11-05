@@ -155,7 +155,7 @@ export function CareersPage() {
             </ol>
           </section>
 
-          <div className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-12 text-center">
+          <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-12 text-center">
             <h2 className="font-editorial text-2xl sm:text-3xl font-bold">{isEn ? 'Ready to start?' : 'جاهز تبدأ؟'}</h2>
             <p className="mt-3 text-[#FAF7F2]/80 leading-relaxed max-w-lg mx-auto">
               {isEn ? 'Send your application to our hiring team. We read every message.' : 'ابعت طلبك لفريق التوظيف عندنا. وبنقرا كل رسالة.'}

@@ -48,7 +48,7 @@ export function FAQPage() {
             ))}
           </div>
 
-          <section className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 text-center mt-16">
+          <section className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 text-center mt-16">
             <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
               {isEn ? 'Still have a question?' : 'ما زال لديك سؤال؟'}
             </h2>

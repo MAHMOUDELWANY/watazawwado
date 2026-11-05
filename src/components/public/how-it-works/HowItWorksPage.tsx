@@ -107,7 +107,7 @@ export function HowItWorksPage() {
             ))}
           </ul>
 
-          <section className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
+          <section className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
             <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
               {isEn ? 'The first step is the easiest.' : 'أول خطوة هي الأسهل.'}
             </h2>

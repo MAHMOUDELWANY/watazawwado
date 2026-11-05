@@ -326,7 +326,7 @@ export function PublicHomepage() {
 
       {/* ─── 5. CLOSING CALL TO ACTION ─── */}
       <section id="contact" className="public-container pb-16 lg:pb-24">
-        <div className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
+        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
           <svg aria-hidden="true" viewBox="0 0 800 200" className="absolute inset-x-0 bottom-0 w-full h-auto opacity-40" preserveAspectRatio="none">
             <path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" />
           </svg>

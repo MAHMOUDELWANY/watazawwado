@@ -473,7 +473,7 @@ export function LearningPage() {
 
       {/* ─── 4. CLOSING ─── */}
       <section className="public-container pt-16 pb-0">
-        <div className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
+        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
           <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
             {isEn ? 'Not sure where to start?' : 'محتار تبدأ منين؟'}
           </h2>
