@@ -406,7 +406,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
         <div className="p-4 rounded-2xl border border-teal-500/40 bg-teal-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <span className="text-sm text-foreground">
             {isAr
-              ? 'حجزك لسه محفوظ. لو اشتريت باقة، ارجع للحجز وهتلاقي الرصيد جاهز.'
+              ? 'حجزك ما زال محفوظًا. إن اشتريت باقة، عُد إلى الحجز وستجد الرصيد جاهزًا.'
               : 'Your booking is saved. If you buy a package, go back and your credit will be ready to use.'}
           </span>
           <Link to="/student/book" className="inline-flex items-center justify-center px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold shrink-0">
@@ -645,7 +645,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
                             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-semibold transition-colors min-h-[40px]"
                           >
                             <Plus className="w-3.5 h-3.5 text-accent" />
-                            <span>{isAr ? 'احجز حصة بالرصيد ده' : 'Book a lesson with it'}</span>
+                            <span>{isAr ? 'احجز حصة بهذا الرصيد' : 'Book a lesson with it'}</span>
                           </Link>
                           <button
                             type="button"
@@ -656,7 +656,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
                             <MessageCircle className="w-3.5 h-3.5" />
                             <span>
                               {ent.refundRequestedAt
-                                ? (isAr ? 'تم طلب الاسترداد، افتح واتساب تاني' : 'Refund requested — open WhatsApp again')
+                                ? (isAr ? 'طُلب الاسترداد، افتح واتساب مرة أخرى' : 'Refund requested — open WhatsApp again')
                                 : (isAr ? 'أفضّل الاسترداد بدل الرصيد' : 'I prefer a refund')}
                             </span>
                           </button>
@@ -757,14 +757,14 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
         {renewCatalogId && (
           <div role="status" className="p-3.5 rounded-xl bg-secondary/30 border border-secondary/50 text-sm text-foreground">
             {isAr
-              ? 'اخترنالك نفس الباقة تحت. وافق على الشروط واضغط اختيار الباقة عشان تكمل.'
+              ? 'اخترنا لك الباقة نفسها في الأسفل. وافق على الشروط واضغط اختيار الباقة لتكمل.'
               : 'Your package is selected below. Accept the terms and choose it to continue.'}
           </div>
         )}
         {renewMissing && (
           <div role="status" className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-sm text-foreground">
             {isAr
-              ? 'الباقة دي مبقتش متاحة. اختار باقة تانية من اللي تحت.'
+              ? 'هذه الباقة لم تعد متاحة. اختر باقة أخرى مما في الأسفل.'
               : 'That package is no longer offered. Please choose another one below.'}
           </div>
         )}
@@ -793,7 +793,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
           </div>
           <p className="text-sm text-muted-foreground">
             {isAr
-              ? 'رعاية الأسرة: لو اشتريت باقة لابن أو بنت تانية في نفس الحساب، بتاخد خصم 5% زيادة تلقائياً.'
+              ? 'رعاية الأسرة: إن اشتريت باقة لابن أو ابنة أخرى في الحساب نفسه، تحصل تلقائيًا على خصم إضافي 5%.'
               : 'Family care: buying a package for a second (or third) child on the same account takes an extra 5% off, automatically.'}
           </p>
           {data.giftSeason && (
@@ -802,7 +802,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
                 <input type="checkbox" checked={asGift} onChange={(e) => setAsGift(e.target.checked)} className="mt-1 w-4 h-4 accent-teal-600" />
                 <span>
                   <span className="font-semibold">{isAr ? `اشتريها ${seasonGiftLabel(data.giftSeason, true)}` : `Buy it as a ${seasonGiftLabel(data.giftSeason, false)}`}</span>
-                  <span className="block text-muted-foreground">{isAr ? 'هتاخد كود تبعته لحد عزيز، والحصص بتتفعّل عنده هو.' : 'You get a code to send to someone you love; the lessons go to their account.'}</span>
+                  <span className="block text-muted-foreground">{isAr ? 'تحصل على رمز ترسله إلى شخص عزيز، وتُفعَّل الحصص في حسابه هو.' : 'You get a code to send to someone you love; the lessons go to their account.'}</span>
                 </span>
               </label>
               {asGift && (
@@ -1096,7 +1096,7 @@ function PackageCard({
             </h3>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               {isAr
-                ? 'حصص فردية مباشرة، تحجز كل حصة في الوقت اللي يناسبك.'
+                ? 'حصص فردية مباشرة، تحجز كل حصة في الوقت الذي يناسبك.'
                 : 'Private 1-on-1 lessons; book each one when it suits you.'}
             </p>
           </div>

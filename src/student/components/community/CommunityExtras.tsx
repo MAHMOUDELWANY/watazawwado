@@ -36,7 +36,7 @@ export function FamilyAchievements({ isAr, onChanged }: { isAr: boolean; onChang
       await authedJson(`/api/student/community/family/${item.id}/decision`, { method: 'POST', body: JSON.stringify({ decision, name, lang: isAr ? 'ar' : 'en' }) });
       load(); onChanged?.();
     } catch {
-      setError(isAr ? 'مقدرناش نحفظ اختياركم. جرّبوا تاني.' : 'We could not save your choice. Please try again.');
+      setError(isAr ? 'تعذّر حفظ اختياركم. حاولوا مرة أخرى.' : 'We could not save your choice. Please try again.');
     } finally { setBusy(null); }
   };
 
@@ -52,21 +52,21 @@ export function FamilyAchievements({ isAr, onChanged }: { isAr: boolean; onChang
                 <p className="font-semibold text-foreground">{isAr ? `ما شاء الله! أسرتكم ${item.title_ar}` : `MashaAllah! Your family ${item.title_en.charAt(0).toLowerCase()}${item.title_en.slice(1)}`}</p>
                 {item.status === 'awaiting_consent' && (
                   <p className="text-sm text-muted-foreground">{isAr
-                    ? 'تحبوا يظهر في لوحة الشرف؟ اللوحة جوه الحسابات بس، وهيظهر اسم الأسرة اللي تختاروه من غير أسماء الأولاد ولا صور.'
+                    ? 'هل تحبون أن يظهر في لوحة الشرف؟ اللوحة داخل الحسابات فقط، ويظهر اسم الأسرة الذي تختارونه بلا أسماء الأولاد ولا صور.'
                     : 'Would you like it on the Hall of Honor? It is inside the accounts only, and shows the family name you choose, with no children’s names or photos.'}</p>
                 )}
                 {item.status === 'published' && <p className="text-sm text-muted-foreground">{isAr ? `ظاهر في لوحة الشرف باسم «${item.display_name}».` : `On the Hall of Honor as “${item.display_name}”.`}</p>}
-                {(item.status === 'declined' || item.status === 'withdrawn') && <p className="text-sm text-muted-foreground">{isAr ? 'خاص، مش ظاهر لحد.' : 'Private. Not shown to anyone.'}</p>}
+                {(item.status === 'declined' || item.status === 'withdrawn') && <p className="text-sm text-muted-foreground">{isAr ? 'خاص، لا يظهر لأحد.' : 'Private. Not shown to anyone.'}</p>}
               </div>
             </div>
             {item.status !== 'published' ? (
               <div className="grid gap-2">
                 <label className="grid gap-1 text-sm">
-                  <span>{isAr ? 'اسم الأسرة اللي يظهر' : 'Family name to show'}</span>
+                  <span>{isAr ? 'اسم الأسرة الذي يظهر' : 'Family name to show'}</span>
                   <Input maxLength={40} value={names[item.id] ?? (isAr ? defaults?.ar : defaults?.en) ?? ''} onChange={(e) => setNames((n) => ({ ...n, [item.id]: e.target.value }))} />
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => decide(item, 'yes')} isLoading={busy === `${item.id}:yes`} disabled={busy !== null}>{isAr ? 'أيوه، اعرضوه' : 'Yes, show it'}</Button>
+                  <Button onClick={() => decide(item, 'yes')} isLoading={busy === `${item.id}:yes`} disabled={busy !== null}>{isAr ? 'نعم، اعرضوه' : 'Yes, show it'}</Button>
                   {item.status === 'awaiting_consent' && <Button variant="outline" onClick={() => decide(item, 'no')} isLoading={busy === `${item.id}:no`} disabled={busy !== null}>{isAr ? 'لا، خلّيه لنا' : 'No, keep it private'}</Button>}
                 </div>
               </div>
@@ -99,13 +99,13 @@ export function HonorPhoto({ entryId, status, isAr, onChanged }: { entryId: stri
       await authedJson(`/api/student/community/honor/${entryId}/photo`, { method: 'POST', body: JSON.stringify({ path, consent: true }) });
       setFile(null); setAgree(false); onChanged();
     } catch (e: any) {
-      setError(e?.status === 400 && e?.message ? e.message : (isAr ? 'مقدرناش نرفع الصورة. جرّبوا تاني.' : 'We could not upload the photo. Please try again.'));
+      setError(e?.status === 400 && e?.message ? e.message : (isAr ? 'تعذّر رفع الصورة. حاولوا مرة أخرى.' : 'We could not upload the photo. Please try again.'));
     } finally { setBusy(false); }
   };
   const remove = async () => {
     setBusy(true); setError('');
     try { await authedJson(`/api/student/community/honor/${entryId}/photo/remove`, { method: 'POST' }); onChanged(); }
-    catch { setError(isAr ? 'مقدرناش نشيل الصورة. جرّبوا تاني.' : 'We could not remove the photo. Please try again.'); }
+    catch { setError(isAr ? 'تعذّر حذف الصورة. حاولوا مرة أخرى.' : 'We could not remove the photo. Please try again.'); }
     finally { setBusy(false); }
   };
 
@@ -113,7 +113,7 @@ export function HonorPhoto({ entryId, status, isAr, onChanged }: { entryId: stri
     return (
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-muted-foreground">
-          {status === 'pending' ? (isAr ? 'الصورة عند فريقنا للمراجعة، والشعار ظاهر لحد ما نوافق.' : 'Our team is reviewing the photo; the emblem shows until then.') : (isAr ? 'الصورة ظاهرة في لوحة الشرف.' : 'The photo is on the Hall of Honor.')}
+          {status === 'pending' ? (isAr ? 'الصورة لدى فريقنا للمراجعة، ويظهر الشعار حتى نوافق.' : 'Our team is reviewing the photo; the emblem shows until then.') : (isAr ? 'الصورة ظاهرة في لوحة الشرف.' : 'The photo is on the Hall of Honor.')}
         </span>
         <Button size="sm" variant="ghost" onClick={remove} isLoading={busy}>{isAr ? 'شيلوا الصورة' : 'Remove the photo'}</Button>
         {error && <p role="alert" className="basis-full text-destructive">{error}</p>}
@@ -126,12 +126,12 @@ export function HonorPhoto({ entryId, status, isAr, onChanged }: { entryId: stri
       <summary className="cursor-pointer font-semibold text-foreground min-h-11 flex items-center">{isAr ? 'تحبوا تضيفوا صورة؟ (اختياري)' : 'Add a photo? (optional)'}</summary>
       <div className="grid gap-2 pt-2">
         <p className="text-muted-foreground">{isAr
-          ? 'الشعار ظاهر دلوقتي. لو حبيتوا صورة بدله: أسر وطلاب الأكاديمية بس هيشوفوها، وفريقنا بيراجعها الأول، وتقدروا تشيلوها في أي وقت. وللبنات والسيدات الشعار دايمًا متاح بدل الصورة.'
+          ? 'يظهر الشعار الآن. وإن أحببتم صورة بدلًا منه: لن يراها إلا أسر الأكاديمية وطلابها، ويراجعها فريقنا أولًا، ويمكنكم حذفها في أي وقت. وللبنات والسيدات يبقى الشعار متاحًا دائمًا بدل الصورة.'
           : 'The emblem shows now. If you prefer a photo: only academy families and students will see it, our team reviews it first, and you can remove it any time. For girls and women the emblem is always there instead.'}</p>
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" aria-label={isAr ? 'اختاروا صورة' : 'Choose a photo'} onChange={(e) => setFile(e.target.files?.[0] || null)} className="text-sm" />
         <label className="flex items-start gap-2 cursor-pointer">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="accent-teal w-4 h-4 mt-0.5" />
-          <span>{isAr ? 'موافقين نعرض الصورة دي في لوحة الشرف جوه الأكاديمية.' : 'We agree to show this photo on the Hall of Honor inside the academy.'}</span>
+          <span>{isAr ? 'نوافق على عرض هذه الصورة في لوحة الشرف داخل الأكاديمية.' : 'We agree to show this photo on the Hall of Honor inside the academy.'}</span>
         </label>
         <Button size="sm" className="w-fit" onClick={upload} isLoading={busy} disabled={!file || !agree}>{isAr ? 'ابعتوا الصورة' : 'Send the photo'}</Button>
         {error && <p role="alert" className="text-destructive">{error}</p>}

@@ -36,7 +36,7 @@ function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
   switch (platform) {
     case 'in-app':
       return [
-        t(<>This page is open inside another app, which cannot install it.</>, <>الصفحة دي مفتوحة جوه تطبيق تاني، ومينفعش يثبّتها.</>),
+        t(<>This page is open inside another app, which cannot install it.</>, <>هذه الصفحة مفتوحة داخل تطبيق آخر، ولا يمكنه تثبيتها.</>),
         t(<>Tap the menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key> or <Key>•••</Key> and choose <Key>Open in browser</Key> (Safari on iPhone, Chrome on Android).</>, <>اضغط القائمة <Key><MoreVertical className="w-3.5 h-3.5" /></Key> أو <Key>•••</Key> واختار <Key>افتح في المتصفح</Key> (Safari على الآيفون، Chrome على أندرويد).</>),
         t(<>Then add Watazawwado to your home screen from there.</>, <>ومن هناك ضيف وتزودوا على شاشتك.</>),
       ];
@@ -59,12 +59,12 @@ function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
     case 'samsung':
       return [
         t(<>Installing from Samsung Internet makes Android show a warning, so install from Chrome instead.</>, <>التثبيت من Samsung Internet بيطلّع تحذير من أندرويد، فثبّته من Chrome أحسن.</>),
-        t(<>Tap <Key>Open in Chrome</Key> below.</>, <>اضغط <Key>افتح في Chrome</Key> تحت.</>),
-        t(<>In Chrome, tap <Key>Install the app</Key> on our card, or choose <Key>Install app</Key> from Chrome’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>, <>في Chrome اضغط <Key>ثبّت التطبيق</Key> في الكارت بتاعنا، أو اختار <Key>تثبيت التطبيق</Key> من قائمة Chrome <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>),
+        t(<>Tap <Key>Open in Chrome</Key> below.</>, <>اضغط <Key>افتح في Chrome</Key> في الأسفل.</>),
+        t(<>In Chrome, tap <Key>Install the app</Key> on our card, or choose <Key>Install app</Key> from Chrome’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>, <>في Chrome اضغط <Key>ثبّت التطبيق</Key> في بطاقتنا، أو اختر <Key>تثبيت التطبيق</Key> من قائمة Chrome <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>),
       ];
     case 'mac-safari':
       return [
-        t(<>In the menu bar, open <Key>File</Key>.</>, <>من شريط القوائم فوق افتح <Key>File / ملف</Key>.</>),
+        t(<>In the menu bar, open <Key>File</Key>.</>, <>من شريط القوائم في الأعلى افتح <Key>File / ملف</Key>.</>),
         t(<>Choose <Key>Add to Dock</Key>, then <Key>Add</Key>.</>, <>اختار <Key>Add to Dock</Key> وبعدها <Key>Add</Key>.</>),
       ];
     case 'desktop':
@@ -74,9 +74,9 @@ function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
       ];
     default:
       return [
-        t(<>Open Chrome’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key> at the top.</>, <>افتح قائمة Chrome <Key><MoreVertical className="w-3.5 h-3.5" /></Key> فوق في الركن.</>),
+        t(<>Open Chrome’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key> at the top.</>, <>افتح قائمة Chrome <Key><MoreVertical className="w-3.5 h-3.5" /></Key> في الركن العلوي.</>),
         t(<>Choose <Key>Install app</Key> or <Key>Add to Home screen</Key>.</>, <>اختار <Key>تثبيت التطبيق</Key> أو <Key>إضافة إلى الشاشة الرئيسية</Key>.</>),
-        t(<>Confirm, and Watazawwado opens from its own icon.</>, <>أكّد، ووتزودوا هيفتح من أيقونته على طول.</>),
+        t(<>Confirm, and Watazawwado opens from its own icon.</>, <>أكّد، وسيفتح وتزودوا من أيقونته مباشرة.</>),
       ];
   }
 }
@@ -161,7 +161,7 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
                       </button>
                     ) : (
                       <>
-                        <p className="text-xs font-bold text-muted-foreground mb-3 leading-relaxed">{isAr ? 'متصفحك مش بيفتح التثبيت بلمسة واحدة هنا، فهي خطوة صغيرة منك:' : 'Your browser does not offer one-tap install here, so it takes one small step:'}</p>
+                        <p className="text-xs font-bold text-muted-foreground mb-3 leading-relaxed">{isAr ? 'متصفحك لا يتيح التثبيت بلمسة واحدة هنا، فهي خطوة صغيرة منك:' : 'Your browser does not offer one-tap install here, so it takes one small step:'}</p>
                         <ol className="space-y-3">
                           {steps(s.platform, isAr).map((step, i) => (
                             <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
@@ -230,14 +230,14 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
       >
         <AppTile size={48} />
         <div className="min-w-0 flex-1">
-          <h2 id="install-card-title" className="text-sm font-bold text-foreground pe-6">{isAr ? 'خلّي وتزودوا تطبيق على جهازك' : 'Keep Watazawwado as an app'}</h2>
+          <h2 id="install-card-title" className="text-sm font-bold text-foreground pe-6">{isAr ? 'اجعل وتزودوا تطبيقًا على جهازك' : 'Keep Watazawwado as an app'}</h2>
           <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{isAr ? 'يفتح بلمسة من غير ما تدوّر في المتصفح.' : 'One tap to open, no hunting through browser tabs.'}</p>
           <button type="button" onClick={openSheet} className="mt-3 inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-[var(--teal)] hover:bg-[var(--teal-hover)] text-white text-sm font-bold transition-colors cursor-pointer focus-ring">
             {isAr ? 'ثبّت التطبيق' : 'Install the app'}
             <ArrowRight className="w-3.5 h-3.5 rtl:-scale-x-100" aria-hidden="true" />
           </button>
         </div>
-        <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 absolute top-2.5 end-2.5 w-7 h-7 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface/70 cursor-pointer">
+        <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'ليس الآن' : 'Not now'} className="tap-44 absolute top-2.5 end-2.5 w-7 h-7 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface/70 cursor-pointer">
           <X className="w-3.5 h-3.5" aria-hidden="true" />
         </button>
       </section>
@@ -297,7 +297,7 @@ export function InstallAppNudge({ isAr }: Lang) {
               </p>
               <p className="text-xs text-muted-foreground leading-snug">
                 {s.platform === 'in-app'
-                  ? (isAr ? 'افتح الصفحة في المتصفح الأول عشان تثبّته' : 'Open this page in your browser first to install it')
+                  ? (isAr ? 'افتح الصفحة في المتصفح أولًا لتثبّتها' : 'Open this page in your browser first to install it')
                   : (isAr ? 'حصصك وواجباتك ومراجعتك في تطبيق واحد' : 'Lessons, homework and review in one app')}
               </p>
               <p className="text-[0.7rem] text-muted-foreground/80 mt-0.5" dir="ltr">watazawwado.academy</p>
@@ -307,7 +307,7 @@ export function InstallAppNudge({ isAr }: Lang) {
                 {isAr ? 'ثبّت' : 'Install'}
               </button>
             )}
-            <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 relative shrink-0 w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer">
+            <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'ليس الآن' : 'Not now'} className="tap-44 relative shrink-0 w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer">
               <X className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>

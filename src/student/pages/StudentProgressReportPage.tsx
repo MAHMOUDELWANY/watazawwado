@@ -67,12 +67,12 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
   return (
     <div className="max-w-3xl mx-auto space-y-4" dir={isAr ? 'rtl' : 'ltr'}>
       <div className="flex flex-wrap items-center justify-between gap-2 print:hidden">
-        <div className="flex items-center gap-1" role="group" aria-label={t('Choose the month', 'اختار الشهر')}>
-          <button type="button" onClick={() => shift(-1)} aria-label={t('Previous month', 'الشهر اللي فات')} className="w-11 h-11 grid place-items-center rounded-xl border border-border hover:bg-surface-subtle focus-ring cursor-pointer">
+        <div className="flex items-center gap-1" role="group" aria-label={t('Choose the month', 'اختر الشهر')}>
+          <button type="button" onClick={() => shift(-1)} aria-label={t('Previous month', 'الشهر الماضي')} className="w-11 h-11 grid place-items-center rounded-xl border border-border hover:bg-surface-subtle focus-ring cursor-pointer">
             {isAr ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
           <span className="min-w-[9rem] text-center text-sm font-semibold text-foreground">{monthLabel}</span>
-          <button type="button" onClick={() => shift(1)} disabled={month >= thisMonth} aria-label={t('Next month', 'الشهر الجاي')} className="w-11 h-11 grid place-items-center rounded-xl border border-border hover:bg-surface-subtle focus-ring cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+          <button type="button" onClick={() => shift(1)} disabled={month >= thisMonth} aria-label={t('Next month', 'الشهر القادم')} className="w-11 h-11 grid place-items-center rounded-xl border border-border hover:bg-surface-subtle focus-ring cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
             {isAr ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           </button>
         </div>
@@ -89,7 +89,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
       {loading ? (
         <div className="py-16 flex justify-center"><BrandLoader size="md" text={t('Preparing the report…', 'بنجهّز التقرير…')} /></div>
       ) : failed || !data ? (
-        <ErrorState isAr={isAr} onRetry={load} message={t('We could not prepare this report.', 'معرفناش نجهّز التقرير ده.')} />
+        <ErrorState isAr={isAr} onRetry={load} message={t('We could not prepare this report.', 'تعذّر تجهيز هذا التقرير.')} />
       ) : (
         <article id="progress-report" className="relative bg-[#FFFDF8] text-[#1F1A17] rounded-3xl p-2 shadow-xl" style={{ printColorAdjust: 'exact', WebkitPrintColorAdjust: 'exact' }}>
           <div className="rounded-[20px] border-2 border-[#087D91]/70 p-1.5">
@@ -105,7 +105,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                 <BrandLogo variant="compact" />
               </header>
 
-              <section className="mt-6 grid grid-cols-3 gap-3 text-center" aria-label={t('This month in numbers', 'الشهر ده بالأرقام')}>
+              <section className="mt-6 grid grid-cols-3 gap-3 text-center" aria-label={t('This month in numbers', 'هذا الشهر بالأرقام')}>
                 {[
                   [num(data.lessons.count), t('lessons attended', 'حصص حضرها')],
                   [num(data.lessons.minutes), t('minutes of learning', 'دقيقة تعلّم')],
@@ -120,7 +120,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
 
               {data.subjects.length > 0 && (
                 <section className="mt-5">
-                  <h2 className="text-sm font-bold text-[#087D91] mb-2">{t('Where things stand', 'الطالب واقف فين')}</h2>
+                  <h2 className="text-sm font-bold text-[#087D91] mb-2">{t('Where things stand', 'أين يقف الطالب')}</h2>
                   <ul className="flex flex-wrap gap-2">
                     {data.subjects.map((s) => (
                       <li key={s.id} className="px-3 py-1.5 rounded-full text-xs bg-[#087D91]/10 text-[#05363F]">
@@ -144,7 +144,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-[#6B5E55]">{t('No new milestone this month. Steady lessons are progress too.', 'مفيش إنجاز جديد الشهر ده. والانتظام في الحصص تقدّم برضه.')}</p>
+                  <p className="text-sm text-[#6B5E55]">{t('No new milestone this month. Steady lessons are progress too.', 'لا إنجاز جديد هذا الشهر. والانتظام في الحصص تقدّم أيضًا.')}</p>
                 )}
               </section>
 
@@ -160,19 +160,19 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-[#6B5E55]">{t('No summaries for this month yet.', 'مفيش ملخصات للشهر ده لسه.')}</p>
+                  <p className="text-sm text-[#6B5E55]">{t('No summaries for this month yet.', 'لا ملخصات لهذا الشهر بعد.')}</p>
                 )}
                 {data.homework && data.homework.set > 0 && (
                   <p className="mt-3 text-sm text-[#3B322D]" data-testid="report-homework">
                     <span className="font-bold">{t('Homework: ', 'الواجب: ')}</span>
                     {isAr
-                      ? `${data.homework.set.toLocaleString('ar-EG')} مهام، اتعمل منها ${data.homework.done.toLocaleString('ar-EG')}، وأتقن ${data.homework.mastered.toLocaleString('ar-EG')}.`
+                      ? `${data.homework.set.toLocaleString('ar-EG')} مهام، أُنجز منها ${data.homework.done.toLocaleString('ar-EG')}، وأُتقن ${data.homework.mastered.toLocaleString('ar-EG')}.`
                       : `${data.homework.set} ${data.homework.set === 1 ? 'task' : 'tasks'} set, ${data.homework.done} done at home, ${data.homework.mastered} mastered.`}
                   </p>
                 )}
                 {data.nextSteps && (
                   <p className="mt-3 rounded-xl border border-dashed border-[#D8C6AE] p-3 text-sm">
-                    <span className="font-bold">{t('Next step: ', 'الخطوة الجاية: ')}</span>{data.nextSteps}
+                    <span className="font-bold">{t('Next step: ', 'الخطوة التالية: ')}</span>{data.nextSteps}
                   </p>
                 )}
               </section>

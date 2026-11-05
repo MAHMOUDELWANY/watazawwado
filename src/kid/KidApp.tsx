@@ -54,7 +54,7 @@ export default function KidApp() {
 
   const signOut = async () => {
     const ok = await confirmAction(
-      isAr ? 'تخرج من الجهاز ده؟ علشان ترجع هتحتاج كود جديد من بابا أو ماما.' : 'Sign out of this device? To come back you will need a new code from your parent.',
+      isAr ? 'تخرج من هذا الجهاز؟ لتعود ستحتاج إلى رمز جديد من بابا أو ماما.' : 'Sign out of this device? To come back you will need a new code from your parent.',
       { confirmLabel: isAr ? 'اخرج' : 'Sign out', danger: true },
     );
     if (!ok) return;
@@ -62,7 +62,7 @@ export default function KidApp() {
       await authedJson('/api/kid/sign-out', { method: 'POST' });
     } catch (err: any) {
       // 401: the parent already removed it, so it is signed out anyway.
-      if (err?.status !== 401) { notify(isAr ? 'معرفناش نخرج، جرّب تاني.' : 'Could not sign out. Please try again.', 'error'); return; }
+      if (err?.status !== 401) { notify(isAr ? 'تعذّر الخروج، حاول مرة أخرى.' : 'Could not sign out. Please try again.', 'error'); return; }
     }
     setKidToken(null); setMe(null); setRemoved(false); setFailed(false); setLinked(false);
   };
@@ -134,7 +134,7 @@ export default function KidApp() {
       </header>
       <main className={`mx-auto max-w-5xl px-4 sm:px-6 py-6 ${MOBILE_TAB_BAR_PADDING}`}>
         {failed ? (
-          <p role="alert" className="text-sm text-destructive">{isAr ? 'معرفناش نجيب حصصك، جرّب تاني بعد شوية.' : 'Could not load your lessons. Please try again in a moment.'}</p>
+          <p role="alert" className="text-sm text-destructive">{isAr ? 'تعذّر تحميل حصصك، حاول مرة أخرى بعد قليل.' : 'Could not load your lessons. Please try again in a moment.'}</p>
         ) : !me ? (
           <div className="py-16 grid justify-items-center"><BrandLoader size="md" /></div>
         ) : (
@@ -195,10 +195,10 @@ function PairCard({ lang, removed, onToggleLang, onLinked }: { lang: 'ar' | 'en'
       copy={{
         title: isAr ? <>افتح <span className={GOLD_TEXT}>حصصك</span> هنا</> : <>Open your <span className={GOLD_TEXT}>lessons</span> here</>,
         subtitle: removed
-          ? (isAr ? 'الجهاز ده اتشال من حساب العيلة. اطلب من بابا أو ماما كود جديد واكتبه هنا.' : 'This device was removed from the family account. Ask your parent for a new code and type it here.')
-          : (isAr ? 'بابا أو ماما هيطلّعوا كود من 6 أرقام من تبويب العيلة في حسابهم. ينفع على موبايل أو تابلت أو كمبيوتر.' : 'Your parent makes a 6-digit code in the Family tab of their account. It works on a phone, tablet or computer.'),
-        doneSubtitle: isAr ? 'الجهاز ده اتربط. يلا بينا على حصصك.' : 'This device is linked. On to your lessons.',
-        error: isAr ? 'الكود ده غلط أو خلص وقته. اطلب من بابا أو ماما كود جديد.' : 'This code is wrong or has expired. Ask your parent for a new one.',
+          ? (isAr ? 'أُزيل هذا الجهاز من حساب الأسرة. اطلب من بابا أو ماما رمزًا جديدًا واكتبه هنا.' : 'This device was removed from the family account. Ask your parent for a new code and type it here.')
+          : (isAr ? 'يصنع بابا أو ماما رمزًا من 6 أرقام من تبويب الأسرة في حسابهما. يعمل على الهاتف أو الجهاز اللوحي أو الكمبيوتر.' : 'Your parent makes a 6-digit code in the Family tab of their account. It works on a phone, tablet or computer.'),
+        doneSubtitle: isAr ? 'رُبط هذا الجهاز. هيا إلى حصصك!' : 'This device is linked. On to your lessons.',
+        error: isAr ? 'هذا الرمز غير صحيح أو انتهت مدته. اطلب من بابا أو ماما رمزًا جديدًا.' : 'This code is wrong or has expired. Ask your parent for a new one.',
         groupLabel: isAr ? 'كود الربط من 6 أرقام' : '6-digit link code',
       }}
     />
@@ -214,9 +214,9 @@ function ParentOnly({ isAr }: { isAr: boolean }) {
       <span className="w-14 h-14 rounded-2xl bg-accent/15 text-accent grid place-items-center">
         <HeartHandshake className="w-7 h-7" aria-hidden="true" />
       </span>
-      <h1 className="text-xl font-display font-bold">{isAr ? 'الصفحة دي عند بابا أو ماما' : 'This one is for your parent'}</h1>
+      <h1 className="text-xl font-display font-bold">{isAr ? 'هذه الصفحة عند بابا أو ماما' : 'This one is for your parent'}</h1>
       <p className="text-sm text-muted-foreground">
-        {isAr ? 'الحجز والدفع والرسايل بتتعمل من حساب بابا أو ماما. قولهم وهما يكمّلوا من عندهم.' : 'Booking, payments and messages are done from your parent’s account. Tell them and they will take it from there.'}
+        {isAr ? 'الحجز والدفع والرسائل تتم من حساب بابا أو ماما. أخبرهما وسيكملان من عندهما.' : 'Booking, payments and messages are done from your parent’s account. Tell them and they will take it from there.'}
       </p>
       <Link to="/kid" className="inline-flex items-center gap-1.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold px-5 min-h-11 focus-ring">
         <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />{isAr ? 'رجوع للرئيسية' : 'Back home'}
@@ -249,7 +249,7 @@ function LessonCard({ lesson, isAr, big = false }: { lesson: KidLesson; isAr: bo
           </Link>
         </div>
       ) : big && (
-        <span className="text-xs text-muted-foreground">{isAr ? 'زرار الدخول بيظهر هنا قبل الحصة بربع ساعة.' : 'The join button shows here 15 minutes before the lesson.'}</span>
+        <span className="text-xs text-muted-foreground">{isAr ? 'يظهر زر الدخول هنا قبل الحصة بربع ساعة.' : 'The join button shows here 15 minutes before the lesson.'}</span>
       )}
     </Card>
   );
@@ -265,8 +265,8 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
       </div>
 
       <section className="grid gap-3" aria-labelledby="kid-next">
-        <h2 id="kid-next" className="text-base font-semibold">{isAr ? 'حصتك الجاية' : 'Your next lesson'}</h2>
-        {next ? <LessonCard lesson={next} isAr={isAr} big /> : <p className="text-sm text-muted-foreground">{isAr ? 'مفيش حصص محجوزة دلوقتي.' : 'No lessons booked right now.'}</p>}
+        <h2 id="kid-next" className="text-base font-semibold">{isAr ? 'حصتك القادمة' : 'Your next lesson'}</h2>
+        {next ? <LessonCard lesson={next} isAr={isAr} big /> : <p className="text-sm text-muted-foreground">{isAr ? 'لا توجد حصص محجوزة الآن.' : 'No lessons booked right now.'}</p>}
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
@@ -292,7 +292,7 @@ function KidLessons({ isAr, lessons }: { isAr: boolean; lessons: KidLesson[] }) 
   return (
     <div className="grid gap-4" data-testid="kid-lessons">
       <h1 className="text-2xl font-display font-bold">{isAr ? 'حصصي' : 'My lessons'}</h1>
-      {lessons.length === 0 && <p className="text-sm text-muted-foreground">{isAr ? 'مفيش حصص محجوزة دلوقتي.' : 'No lessons booked right now.'}</p>}
+      {lessons.length === 0 && <p className="text-sm text-muted-foreground">{isAr ? 'لا توجد حصص محجوزة الآن.' : 'No lessons booked right now.'}</p>}
       <div className="grid gap-3 md:grid-cols-2">
         {lessons.map((l) => <LessonCard key={l.id} lesson={l} isAr={isAr} />)}
       </div>
