@@ -11,9 +11,9 @@ import { levelsFor, asksLevel, firstLevel } from './subjects';
  */
 
 export const LEVELS = [
-  { id: 'beginner', en: 'Beginner', ar: 'مبتدئ', stopEn: 'Start of the road', stopAr: 'أول الطريق', descEn: 'Starting from the letters, or with no background yet.', descAr: 'بادئ من الحروف، أو من غير خلفية قبل كده.', Icon: Footprints },
+  { id: 'beginner', en: 'Beginner', ar: 'مبتدئ', stopEn: 'Start of the road', stopAr: 'أول الطريق', descEn: 'Starting from the letters, or with no background yet.', descAr: 'يبدأ من الحروف، أو بلا خلفية سابقة.', Icon: Footprints },
   { id: 'elementary', en: 'Elementary', ar: 'أساسي', stopEn: 'On the path', stopAr: 'على الدرب', descEn: 'Knows the letters and simple words; building fluency.', descAr: 'بيعرف الحروف والكلمات البسيطة، وبيبني الطلاقة.', Icon: Compass },
-  { id: 'intermediate', en: 'Intermediate', ar: 'متوسط', stopEn: 'At the oasis', stopAr: 'عند الواحة', descEn: 'Reads or speaks with some hesitation; needs polishing.', descAr: 'بيقرأ أو بيتكلم مع شوية تردد، ومحتاج ضبط.', Icon: TreePalm },
+  { id: 'intermediate', en: 'Intermediate', ar: 'متوسط', stopEn: 'At the oasis', stopAr: 'عند الواحة', descEn: 'Reads or speaks with some hesitation; needs polishing.', descAr: 'يقرأ أو يتكلم مع بعض التردد، ويحتاج إلى ضبط.', Icon: TreePalm },
   { id: 'advanced', en: 'Advanced', ar: 'متقدم', stopEn: 'Near the summit', stopAr: 'قريب من القمة', descEn: 'Fluent; deepening rules, memorization or advanced study.', descAr: 'متمكن، وبيتعمق في الأحكام أو الحفظ أو الدراسة المتقدمة.', Icon: Mountain }
 ];
 

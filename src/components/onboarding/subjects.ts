@@ -14,7 +14,7 @@ export interface Family { key: string; color: string; en: string; ar: string; su
 
 /** One level only: no level picker; the version (Kids / Teens / Adults) comes from the learner's age. */
 const BY_AGE: SubjectLevel[] = [
-  { id: 'beginner', en: 'Fits your age', ar: 'على قد سنك', descEn: 'The version is picked from your age.', descAr: 'النسخة بتتحدد من السن.' }
+  { id: 'beginner', en: 'Fits your age', ar: 'على قدر عمرك', descEn: 'The version is picked from your age.', descAr: 'تُحدَّد النسخة من العمر.' }
 ];
 
 export const SUBJECT_FAMILIES: Family[] = [
@@ -31,7 +31,7 @@ export const SUBJECT_FAMILIES: Family[] = [
       {
         id: 'tajweed', placedByTest: true, glyph: 'ج', spineEn: 'Tajweed', spineAr: 'التجويد', en: 'Tajweed', ar: 'التجويد',
         levels: [
-          { id: 'beginner', en: 'Level 1', ar: 'المستوى الأول', descEn: 'The essential rules, applied as you recite.', descAr: 'الأحكام الأساسية، وتطبيقها وانت بتقرأ.' },
+          { id: 'beginner', en: 'Level 1', ar: 'المستوى الأول', descEn: 'The essential rules, applied as you recite.', descAr: 'الأحكام الأساسية، وتطبيقها وأنت تقرأ.' },
           { id: 'intermediate', en: 'Level 2', ar: 'المستوى الثاني', descEn: 'Where each letter comes from and its qualities.', descAr: 'مخارج الحروف وصفاتها.' },
           { id: 'advanced', en: 'Level 3', ar: 'المستوى الثالث', descEn: 'The advanced rules, until the whole picture is complete.', descAr: 'الأحكام المتقدمة، لحد ما الصورة تكمل.' }
         ]
@@ -40,9 +40,9 @@ export const SUBJECT_FAMILIES: Family[] = [
         // shortcut: the goal (new / revision) is stored as a level so the placement banks keep working; give it its own field if reports need it.
         id: 'quran-memorization', glyph: 'ح', spineEn: 'Hifz', spineAr: 'الحفظ', en: 'Memorization & revision', ar: 'الحفظ والمراجعة',
         levels: [
-          { id: 'beginner', en: 'Starting out', ar: 'لسه ببدأ', descEn: 'New memorization, from the short surahs.', descAr: 'حفظ جديد، من السور القصيرة.' },
+          { id: 'beginner', en: 'Starting out', ar: 'أبدأ', descEn: 'New memorization, from the short surahs.', descAr: 'حفظ جديد، من السور القصيرة.' },
           { id: 'intermediate', en: 'Adding more', ar: 'بزوّد', descEn: 'I know some juz and want to go further.', descAr: 'حافظ كام جزء وعايز أكمّل.' },
-          { id: 'advanced', en: 'Keeping it firm', ar: 'بثبّت', descEn: 'Mostly revision: keeping what I have.', descAr: 'مراجعة في الأساس: أثبّت اللي حفظته.' }
+          { id: 'advanced', en: 'Keeping it firm', ar: 'أثبّت', descEn: 'Mostly revision: keeping what I have.', descAr: 'مراجعة في الأساس: أثبّت ما حفظته.' }
         ]
       }
     ]

@@ -253,7 +253,7 @@ export default function StudentOnboardingPage({
     ? `الحساب الشخصي للي عندهم ${ADULT_MIN_AGE} سنة أو أكتر. لو أقل، ولي أمرك يقدر يفتح حساب عائلة ويسجّلك فيه.`
     : `A personal account is for learners aged ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent can open a family account for you.`;
   const guardianAgeMessage = isRTL
-    ? `حساب العائلة بيفتحه ولي أمر عنده ${GUARDIAN_MIN_AGE} سنة أو أكتر.`
+    ? `يفتح حساب الأسرة وليّ أمر عمره ${GUARDIAN_MIN_AGE} سنة أو أكثر.`
     : `A family account is opened by a parent or guardian aged ${GUARDIAN_MIN_AGE} or over.`;
   /** Step one: name, ages, WhatsApp. Returns the first problem, or null. */
   const stepOneProblem = (): string | null => {
@@ -424,7 +424,7 @@ export default function StudentOnboardingPage({
             ? 'نفتح الحسابات الجديدة على دفعات. جهّز زادك من watazawwado.academy/ar/zaad لتحجز مكانك، ونرسل لك الدعوة حين يأتي دورك.'
             : 'New accounts open in waves. Pack your zaad at watazawwado.academy/zaad to keep your place, and we will email your invitation when it is your turn.');
         }
-        throw new Error(data.error || (isRTL ? 'تعذر حفظ بيانات الحساب. يرجى المحاولة لاحقاً.' : 'Failed to complete onboarding. Please try again.'));
+        throw new Error(data.error || (isRTL ? 'تعذّر حفظ بيانات الحساب. حاول مرة أخرى.' : 'Failed to complete onboarding. Please try again.'));
       }
 
       setCompletedSuccess(true);
@@ -480,11 +480,11 @@ export default function StudentOnboardingPage({
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
               {learnerType === 'child' ? (
                 isRTL 
-                  ? `تم تسجيل بيانات ${children.length} من الأبناء وربطهم بالمعلمين المعتمدين. الخطوة الجاية: احجزوا الحصة التجريبية، وبعدها اختبار تحديد مستوى قصير لكل طفل.`
-                  : `Successfully registered ${children.length} learner(s) with dedicated instructors. Next: book the free trial, then a short placement test for each child.`
+                  ? `سجّلنا بيانات ${children.length} من الأبناء وربطناهم بمعلميهم. الخطوة التالية: احجزوا الحصة التجريبية، ثم اختبار تحديد مستوى قصير لكل طفل.`
+                  : `Registered ${children.length} learner(s), each with their own teacher. Next: book the free trial, then a short placement test for each child.`
               ) : (
                 isRTL 
-                  ? `مرحباً بك في منصة وتزودوا. تم توجيه ملفك بنجاح إلى (${assignedTeacherName}). الخطوة الجاية: احجز حصتك التجريبية المجانية، وبعدها اختبار تحديد مستوى قصير (حوالي 5 دقايق).`
+                  ? `أهلًا بك في وتزودوا. وصل ملفك إلى معلمك (${assignedTeacherName}). الخطوة التالية: احجز حصتك التجريبية المجانية، ثم اختبار تحديد مستوى قصير (نحو 5 دقائق).`
                   : `Welcome to Watazawwado. Your profile has been assigned to ${assignedTeacherName}. Next: book your free trial, then take a short placement test (about 5 minutes).`
               )}
             </p>
@@ -560,22 +560,22 @@ export default function StudentOnboardingPage({
       <div className="text-center mb-8 space-y-6">
         <JourneyTrail
           step={step}
-          labels={isRTL ? ['مين هيتعلم', 'الزاد', 'الانطلاق'] : ['Who', 'Provision', 'Set off']}
+          labels={isRTL ? ['من سيتعلّم', 'الزاد', 'الانطلاق'] : ['Who', 'Provision', 'Set off']}
         />
         <div>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground leading-tight">
             {step === 1
-              ? (isRTL ? 'مين اللي هيبدأ الرحلة؟' : 'Who is starting the journey?')
+              ? (isRTL ? 'من الذي سيبدأ الرحلة؟' : 'Who is starting the journey?')
               : step === 2
               ? (isRTL ? 'اختار زادك من العلم' : 'Choose your provision of knowledge')
-              : (isRTL ? 'كل حاجة جاهزة للانطلاق' : 'Everything is ready to set off')}
+              : (isRTL ? 'كل شيء جاهز للانطلاق' : 'Everything is ready to set off')}
           </h1>
           <p className="mt-2 text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
             {step === 1
-              ? (isRTL ? 'شوية بيانات بسيطة عشان نختارلك المعلم المناسب.' : 'A few details so we can match you with the right teacher.')
+              ? (isRTL ? 'بعض البيانات البسيطة لنختار لك المعلم المناسب.' : 'A few details so we can match you with the right teacher.')
               : step === 2
-              ? (isRTL ? 'اسحب كتابك من الرف، وقولنا انت فين في الطريق.' : 'Pull your book from the shelf, and tell us where you are on the road.')
-              : (isRTL ? 'راجع بياناتك، وبعدها نبدأ.' : 'Check your details, then we begin.')}
+              ? (isRTL ? 'اسحب كتابك من الرف، وأخبرنا أين أنت من الطريق.' : 'Pull your book from the shelf, and tell us where you are on the road.')
+              : (isRTL ? 'راجع بياناتك، ثم نبدأ.' : 'Check your details, then we begin.')}
           </p>
         </div>
       </div>
@@ -695,7 +695,7 @@ export default function StudentOnboardingPage({
 
                   <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
                     <p className="text-xs text-muted-foreground mb-2.5">
-                      {isRTL ? 'اخترناه لك حسب الجنس، وتقدر تغيّره بضغطة. هيوصله تسجيلك وتتفتح بينكم محادثة.' : 'Suggested by gender; change it with one tap. Your teacher gets your sign-up and a chat opens between you.'}
+                      {isRTL ? 'اخترناه لك حسب الجنس، ويمكنك تغييره بلمسة. يصله تسجيلك وتُفتح بينكما محادثة.' : 'Suggested by gender; change it with one tap. Your teacher gets your sign-up and a chat opens between you.'}
                     </p>
                     <GuideChoice
                       teachers={teachers}
@@ -918,7 +918,7 @@ export default function StudentOnboardingPage({
                         <div className="space-y-4 pt-1">
                           <div>
                             <p className="text-xs font-semibold text-foreground mb-2">
-                              {isRTL ? `المادة اللي ${child.name.trim() || 'الطفل'} هيدرسها` : `What ${child.name.trim() || 'this child'} will study`}
+                              {isRTL ? `المادة التي سيدرسها ${child.name.trim() || 'الطفل'}` : `What ${child.name.trim() || 'this child'} will study`}
                             </p>
                             <BookShelf
                               name={`child-${index}-subject`}
@@ -986,7 +986,7 @@ export default function StudentOnboardingPage({
               <div className="space-y-6">
                 <div>
                   <p className="block text-sm font-semibold text-foreground mb-3">
-                    {isRTL ? 'عايز تدرس إيه؟' : 'What would you like to study?'}
+                    {isRTL ? 'ماذا تريد أن تدرس؟' : 'What would you like to study?'}
                   </p>
                   <BookShelf name="adult-subject" value={learningInterest} onChange={setLearningInterest} isAr={isRTL} />
                 </div>

@@ -48,12 +48,12 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     const problem = signupAgeProblem({ accountType, confirmedAdult, guardianAge });
     if (problem === 'confirm_adult') {
       return isAr
-        ? `أكّد إن سنك ${ADULT_MIN_AGE} سنة أو أكتر. لو أقل، ولي أمرك يفتح "حساب عائلة" ويسجّلك فيه.`
+        ? `أكّد أن عمرك ${ADULT_MIN_AGE} سنة أو أكثر. إن كنت أصغر، يفتح وليّ أمرك "حساب أسرة" ويسجّلك فيه.`
         : `Please confirm you are ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent opens a family account for you.`;
     }
     if (problem === 'guardian_age') {
       return isAr
-        ? `حساب العائلة بيفتحه ولي أمر عنده ${GUARDIAN_MIN_AGE} سنة أو أكتر. اكتب سنك بالأرقام.`
+        ? `يفتح حساب الأسرة وليّ أمر عمره ${GUARDIAN_MIN_AGE} سنة أو أكثر. اكتب عمرك بالأرقام.`
         : `A family account is opened by a parent or guardian aged ${GUARDIAN_MIN_AGE} or over. Enter your age in numbers.`;
     }
     return '';
@@ -78,7 +78,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     setIsSubmitting(true);
     const res = await signInWithGoogle();
     if (!res.success) {
-      setError(res.error || (isAr ? 'معرفناش ندخّلك بحساب Google. جرّب تاني.' : 'We could not sign you in with Google. Please try again.'));
+      setError(res.error || (isAr ? 'تعذّر الدخول بحساب Google. حاول مرة أخرى.' : 'We could not sign you in with Google. Please try again.'));
       setIsSubmitting(false);
     }
   };
@@ -153,7 +153,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
         if (!success && role === 'teacher') {
           setError(
             isAr
-              ? 'الحساب ده حساب معلم. ادخل من صفحة دخول المعلمين (/staff/login).'
+              ? 'هذا حساب معلم. ادخل من صفحة دخول المعلمين (/staff/login).'
               : 'This is a teacher account. Please sign in from the teacher sign-in page (/staff/login).'
           );
           return;
@@ -163,7 +163,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             await signOut();
             setError(
               isAr
-                ? 'الحساب ده حساب معلم. ادخل من صفحة دخول المعلمين.'
+                ? 'هذا حساب معلم. ادخل من صفحة دخول المعلمين.'
                 : 'This is a teacher account. Please sign in from the teacher sign-in page.'
             );
             return;
@@ -174,8 +174,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
         } else {
           setError(
             authError
-              ? (isAr ? 'الإيميل أو كلمة السر مش صح. راجعهم وجرّب تاني.' : authError)
-              : (isAr ? 'معرفناش ندخّلك دلوقتي. جرّب تاني بعد شوية.' : 'We could not sign you in. Please try again shortly.')
+              ? (isAr ? 'البريد أو كلمة السر غير صحيحة. راجعهما وحاول مرة أخرى.' : authError)
+              : (isAr ? 'تعذّر الدخول الآن. حاول مرة أخرى بعد قليل.' : 'We could not sign you in. Please try again shortly.')
           );
         }
       } else if (view === 'signup') {
@@ -186,48 +186,48 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
         });
         if (success) {
           rememberSignupChoice();
-          setSuccess(isAr ? 'بعتنالك رمز التأكيد على إيميلك. بص في صندوق الوارد.' : 'We sent a confirmation code to your email. Check your inbox.');
+          setSuccess(isAr ? 'أرسلنا رمز التأكيد إلى بريدك. تفقّد صندوق الوارد.' : 'We sent a confirmation code to your email. Check your inbox.');
           setView('verify');
         } else {
-          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : authError ? (isAr ? 'معرفناش نفتح الحساب. ممكن الإيميل ده مستخدم قبل كده.' : authError) : (isAr ? 'معرفناش نفتح الحساب. جرّب تاني.' : 'We could not create the account. Please try again.'));
+          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : authError ? (isAr ? 'تعذّر إنشاء الحساب. ربما استُخدم هذا البريد من قبل.' : authError) : (isAr ? 'تعذّر إنشاء الحساب. حاول مرة أخرى.' : 'We could not create the account. Please try again.'));
         }
       } else if (view === 'forgot') {
         const { success, error: authError } = await resetPassword(email);
         if (success) {
-          setSuccess(isAr ? 'بعتنالك رابط على إيميلك تختار بيه كلمة سر جديدة.' : 'We sent you a link to choose a new password.');
+          setSuccess(isAr ? 'أرسلنا إلى بريدك رابطًا تختار به كلمة سر جديدة.' : 'We sent you a link to choose a new password.');
           setTimeout(() => setView('login'), 3000);
         } else {
-          setError(isAr ? 'معرفناش نبعت الرابط. اتأكد من الإيميل وجرّب تاني.' : (authError || 'We could not send the link. Please try again.'));
+          setError(isAr ? 'تعذّر إرسال الرابط. تأكد من البريد وحاول مرة أخرى.' : (authError || 'We could not send the link. Please try again.'));
         }
       } else if (view === 'update-password') {
         const { success, error: authError } = await updatePassword(password);
         if (success) {
-          setSuccess(isAr ? 'كلمة السر الجديدة اتحفظت. بننقلك لحسابك…' : 'Your new password is saved. Taking you to your account…');
+          setSuccess(isAr ? 'حُفظت كلمة السر الجديدة. ننقلك إلى حسابك…' : 'Your new password is saved. Taking you to your account…');
           setTimeout(() => {
             onClose();
             navigate('/student');
           }, 1500);
         } else {
-          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : isAr ? 'معرفناش نحفظ كلمة السر. جرّب تاني.' : (authError || 'We could not save the password. Please try again.'));
+          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : isAr ? 'تعذّر حفظ كلمة السر. حاول مرة أخرى.' : (authError || 'We could not save the password. Please try again.'));
         }
       }
     } catch (err: any) {
-      setError(err.message || (isAr ? 'حصلت مشكلة. جرّب تاني.' : 'Something went wrong. Please try again.'));
+      setError(err.message || (isAr ? 'حدثت مشكلة. حاول مرة أخرى.' : 'Something went wrong. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const titles: Record<Exclude<View, 'verify'>, [string, string]> = {
-    login: [isAr ? 'أهلاً بيك تاني' : 'Welcome back', isAr ? 'كمّل رحلتك من مكان ما وقفت.' : 'Pick up where you left off.'],
-    signup: [isAr ? 'ابدأ رحلتك' : 'Start your journey', isAr ? 'دقيقة واحدة، وبعدها تحجز حصتك المجانية.' : 'One minute, then you can book your free trial.'],
-    forgot: [isAr ? 'نسيت كلمة السر؟' : 'Forgot your password?', isAr ? 'اكتب إيميلك ونبعتلك رابط تختار بيه كلمة جديدة.' : 'Write your email and we will send you a link to choose a new one.'],
-    'update-password': [isAr ? 'كلمة سر جديدة' : 'A new password', isAr ? 'اختار كلمة سر جديدة لحسابك.' : 'Choose a new password for your account.'],
+    login: [isAr ? 'أهلًا بعودتك' : 'Welcome back', isAr ? 'أكمل رحلتك من حيث توقفت.' : 'Pick up where you left off.'],
+    signup: [isAr ? 'ابدأ رحلتك' : 'Start your journey', isAr ? 'دقيقة واحدة، ثم تحجز حصتك المجانية.' : 'One minute, then you can book your free trial.'],
+    forgot: [isAr ? 'نسيت كلمة السر؟' : 'Forgot your password?', isAr ? 'اكتب بريدك ونرسل إليك رابطًا تختار به كلمة جديدة.' : 'Write your email and we will send you a link to choose a new one.'],
+    'update-password': [isAr ? 'كلمة سر جديدة' : 'A new password', isAr ? 'اختر كلمة سر جديدة لحسابك.' : 'Choose a new password for your account.'],
   };
   const submitLabel: Record<Exclude<View, 'verify'>, string> = {
-    login: isAr ? 'ادخل' : 'Enter',
-    signup: isAr ? 'افتح الحساب' : 'Create account',
-    forgot: isAr ? 'ابعت الرابط' : 'Send the link',
+    login: isAr ? 'دخول' : 'Enter',
+    signup: isAr ? 'أنشئ الحساب' : 'Create account',
+    forgot: isAr ? 'أرسل الرابط' : 'Send the link',
     'update-password': isAr ? 'احفظ كلمة السر' : 'Save password',
   };
   const isSignup = view === 'signup';
@@ -248,7 +248,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
       </svg>
-      <span>{isAr ? 'كمّل بحساب Google' : 'Continue with Google'}</span>
+      <span>{isAr ? 'المتابعة بحساب Google' : 'Continue with Google'}</span>
     </button>
   );
 
@@ -351,11 +351,11 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     <form onSubmit={handleSubmit} className="auth-form space-y-4" noValidate={false}>
                       {isSignup && (
                         <fieldset className="space-y-2.5">
-                          <legend className="text-sm font-semibold text-foreground mb-2">{isAr ? 'الحساب ده لمين؟' : 'Who is this account for?'}</legend>
+                          <legend className="text-sm font-semibold text-foreground mb-2">{isAr ? 'لمن هذا الحساب؟' : 'Who is this account for?'}</legend>
                           <div role="radiogroup" aria-label={isAr ? 'نوع الحساب' : 'Account type'} className="grid grid-cols-2 gap-2.5">
                             {([
-                              { id: 'self' as const, Icon: User, title: isAr ? 'ليا أنا' : 'For myself', sub: isAr ? `${ADULT_MIN_AGE} سنة وأكبر` : `Aged ${ADULT_MIN_AGE}+` },
-                              { id: 'family' as const, Icon: Users, title: isAr ? 'لعيلتي' : 'For my family', sub: isAr ? 'ولي أمر يسجّل أولاده' : 'A parent enrols children' }
+                              { id: 'self' as const, Icon: User, title: isAr ? 'لي أنا' : 'For myself', sub: isAr ? `${ADULT_MIN_AGE} سنة فأكثر` : `Aged ${ADULT_MIN_AGE}+` },
+                              { id: 'family' as const, Icon: Users, title: isAr ? 'لأسرتي' : 'For my family', sub: isAr ? 'وليّ أمر يسجّل أطفاله' : 'A parent enrols children' }
                             ]).map(({ id, Icon, title, sub }) => {
                               const selected = accountType === id;
                               return (
@@ -388,14 +388,14 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                                 className="mt-0.5 w-[18px] h-[18px] shrink-0 accent-[#087D91] cursor-pointer"
                               />
                               <span className="text-sm text-foreground leading-snug">
-                                {isAr ? `أؤكد إن سني ${ADULT_MIN_AGE} سنة أو أكتر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}
-                                <span className="block text-xs text-muted-foreground mt-0.5">{isAr ? 'أصغر؟ ولي أمرك يفتح حساب "لعيلتي" ويسجّلك.' : 'Younger? A parent opens a family account for you.'}</span>
+                                {isAr ? `أؤكد أن عمري ${ADULT_MIN_AGE} سنة أو أكثر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}
+                                <span className="block text-xs text-muted-foreground mt-0.5">{isAr ? 'أصغر؟ يفتح وليّ أمرك حساب "لأسرتي" ويسجّلك.' : 'Younger? A parent opens a family account for you.'}</span>
                               </span>
                             </label>
                           ) : (
                             <div className="pt-1">
                               <label htmlFor="signup-guardian-age" className="block text-sm font-semibold text-foreground mb-1.5">
-                                {isAr ? 'سنك (ولي الأمر)' : 'Your age (parent or guardian)'}
+                                {isAr ? 'عمرك (وليّ الأمر)' : 'Your age (parent or guardian)'}
                               </label>
                               <div className="relative">
                                 <ShieldCheck className="auth-field-icon" aria-hidden="true" />
@@ -418,8 +418,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                                 return (
                                   <p id="signup-guardian-age-hint" aria-live="polite" className={`mt-1.5 text-xs ${tooYoung ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
                                     {tooYoung
-                                      ? (isAr ? `لازم ولي الأمر يكون ${GUARDIAN_MIN_AGE} سنة أو أكتر عشان يفتح حساب عائلة.` : `A guardian must be ${GUARDIAN_MIN_AGE} or over to open a family account.`)
-                                      : (isAr ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر.` : `Guardians must be ${GUARDIAN_MIN_AGE} or over.`)}
+                                      ? (isAr ? `يجب أن يكون عمر وليّ الأمر ${GUARDIAN_MIN_AGE} سنة أو أكثر ليفتح حساب أسرة.` : `A guardian must be ${GUARDIAN_MIN_AGE} or over to open a family account.`)
+                                      : (isAr ? `وليّ الأمر ${GUARDIAN_MIN_AGE} سنة أو أكثر.` : `Guardians must be ${GUARDIAN_MIN_AGE} or over.`)}
                                   </p>
                                 );
                               })()}
@@ -432,7 +432,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       {isSignup && (
                         <div className="auth-half">
                           <label htmlFor="auth-name" className="block text-sm font-semibold text-foreground mb-1.5">
-                            {accountType === 'family' ? (isAr ? 'اسم ولي الأمر' : 'Parent or guardian name') : (isAr ? 'اسمك' : 'Your name')}
+                            {accountType === 'family' ? (isAr ? 'اسم وليّ الأمر' : 'Parent or guardian name') : (isAr ? 'اسمك' : 'Your name')}
                           </label>
                           <div className="relative">
                             <User className="auth-field-icon" aria-hidden="true" />
@@ -453,7 +453,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       {view !== 'update-password' && (
                         <div className={isSignup ? 'auth-half' : undefined}>
                           <label htmlFor="auth-email" className="block text-sm font-semibold text-foreground mb-1.5">
-                            {isAr ? 'الإيميل' : 'Email'}
+                            {isAr ? 'البريد الإلكتروني' : 'Email'}
                           </label>
                           <div className="relative">
                             <Mail className="auth-field-icon" aria-hidden="true" />
@@ -513,7 +513,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                             </button>
                           </div>
                           {view !== 'login' && (
-                            <p id="auth-password-hint" className="mt-1.5 text-xs text-muted-foreground">{isAr ? '٦ حروف على الأقل.' : 'At least 6 characters.'}</p>
+                            <p id="auth-password-hint" className="mt-1.5 text-xs text-muted-foreground">{isAr ? '٦ أحرف على الأقل.' : 'At least 6 characters.'}</p>
                           )}
                         </div>
                       )}
@@ -547,9 +547,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
                     {view === 'login' && (
                       <p className="mt-5 text-center text-sm text-muted-foreground">
-                        {isAr ? 'معاك كود من بابا أو ماما؟ ' : 'Have a code from your parent? '}
+                        {isAr ? 'معك رمز من أبيك أو أمك؟ ' : 'Have a code from your parent? '}
                         <button type="button" onClick={() => { onClose(); navigate('/kid'); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
-                          {isAr ? 'اربط الجهاز ده' : 'Link this device'}
+                          {isAr ? 'اربط هذا الجهاز' : 'Link this device'}
                         </button>
                       </p>
                     )}
@@ -557,7 +557,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     {(view === 'forgot' || view === 'update-password') && (
                       <p className="mt-5 text-center text-sm">
                         <button type="button" onClick={() => setView('login')} className="text-[var(--teal)] font-semibold hover:underline cursor-pointer">
-                          {isAr ? 'رجوع لتسجيل الدخول' : 'Back to sign in'}
+                          {isAr ? 'العودة إلى تسجيل الدخول' : 'Back to sign in'}
                         </button>
                       </p>
                     )}

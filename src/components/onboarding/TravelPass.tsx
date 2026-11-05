@@ -11,11 +11,11 @@ import { SubjectMark } from './SubjectMark';
 export function TravelModeChoice({ value, onChange, isAr }: { value: 'adult' | 'child'; onChange: (v: 'adult' | 'child') => void; isAr: boolean }) {
   const reduce = useReducedMotion();
   const modes = [
-    { id: 'adult' as const, Icon: User, title: isAr ? 'مسافر لوحدي' : 'Travelling alone', sub: isAr ? 'هتعلّم بنفسي في حصص فردية' : 'I am learning for myself', color: '#087D91' },
+    { id: 'adult' as const, Icon: User, title: isAr ? 'مسافر وحدي' : 'Travelling alone', sub: isAr ? 'سأتعلّم بنفسي في حصص فردية' : 'I am learning for myself', color: '#087D91' },
     { id: 'child' as const, Icon: Users, title: isAr ? 'قافلة العيلة' : 'Family caravan', sub: isAr ? 'هسجّل أولادي، ولكل واحد معلمه' : 'I am enrolling my children', color: '#8B4935' }
   ];
   return (
-    <div role="radiogroup" aria-label={isAr ? 'مين هيتعلم' : 'Who is learning'} className="grid grid-cols-2 gap-3 sm:gap-4">
+    <div role="radiogroup" aria-label={isAr ? 'من سيتعلّم' : 'Who is learning'} className="grid grid-cols-2 gap-3 sm:gap-4">
       {modes.map(({ id, Icon, title, sub, color }) => {
         const selected = value === id;
         return (

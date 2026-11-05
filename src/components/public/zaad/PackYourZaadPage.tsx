@@ -21,18 +21,18 @@ type Mood = ZaadiPose | 'party';
 type Track = { id: string; emblem: string; color: string; spine: string; spineAr: string; title: string; titleAr: string; line: string; lineAr: string; cheer: string; cheerAr: string };
 
 const TRACKS: Track[] = [
-  { id: 'quran', emblem: 'quran-reading', color: '#087D91', spine: 'Quran', spineAr: 'القرآن', title: 'Quran', titleAr: 'القرآن الكريم', line: 'Reading, Tajweed and memorization', lineAr: 'القراءة والتجويد والحفظ', cheer: 'The Quran first. The best zaad there is.', cheerAr: 'القرآن الأول. وده أحسن زاد.' },
-  { id: 'zad', emblem: 'zad-essentials', color: '#8B4935', spine: 'Zad Path', spineAr: 'مسار الزاد', title: 'The Zad Path', titleAr: 'مسار الزاد', line: 'Islamic studies and the Seerah', lineAr: 'الدراسات الإسلامية والسيرة', cheer: 'The Zad Path. Stories that stay with you.', cheerAr: 'مسار الزاد. حكايات بتفضل معاك.' },
-  { id: 'arabic', emblem: 'modern-standard-arabic', color: '#C51F24', spine: 'Arabic', spineAr: 'العربية', title: 'Arabic', titleAr: 'اللغة العربية', line: 'Fusha, or Egyptian for the family', lineAr: 'الفصحى، أو المصري للعيلة', cheer: 'Arabic. The language of the Quran, and of home.', cheerAr: 'العربي. لغة القرآن، ولغة البيت.' },
-  { id: 'english', emblem: 'english', color: '#B9782A', spine: 'English', spineAr: 'الإنجليزية', title: 'English', titleAr: 'الإنجليزية', line: 'For children and adults', lineAr: 'للأطفال والكبار', cheer: 'English. A good door to open.', cheerAr: 'الإنجليزي. باب حلو يتفتح.' },
+  { id: 'quran', emblem: 'quran-reading', color: '#087D91', spine: 'Quran', spineAr: 'القرآن', title: 'Quran', titleAr: 'القرآن الكريم', line: 'Reading, Tajweed and memorization', lineAr: 'القراءة والتجويد والحفظ', cheer: 'The Quran first. The best zaad there is.', cheerAr: 'القرآن أولًا. وهو خير زاد.' },
+  { id: 'zad', emblem: 'zad-essentials', color: '#8B4935', spine: 'Zad Path', spineAr: 'مسار الزاد', title: 'The Zad Path', titleAr: 'مسار الزاد', line: 'Islamic studies and the Seerah', lineAr: 'الدراسات الإسلامية والسيرة', cheer: 'The Zad Path. Stories that stay with you.', cheerAr: 'مسار الزاد. حكايات تبقى معك.' },
+  { id: 'arabic', emblem: 'modern-standard-arabic', color: '#C51F24', spine: 'Arabic', spineAr: 'العربية', title: 'Arabic', titleAr: 'اللغة العربية', line: 'Fusha, or Egyptian for the family', lineAr: 'الفصحى، أو المصرية للعائلة', cheer: 'Arabic. The language of the Quran, and of home.', cheerAr: 'العربية. لغة القرآن، ولغة البيت.' },
+  { id: 'english', emblem: 'english', color: '#B9782A', spine: 'English', spineAr: 'الإنجليزية', title: 'English', titleAr: 'الإنجليزية', line: 'For children and adults', lineAr: 'للأطفال والكبار', cheer: 'English. A good door to open.', cheerAr: 'الإنجليزية. باب جميل يُفتح.' },
 ];
 const HEIGHTS = [188, 200, 180, 194];
 const PAINS = [
-  { key: 'teacher_stays', en: 'A teacher who stays', ar: 'مدرس بيفضل معايا' },
+  { key: 'teacher_stays', en: 'A teacher who stays', ar: 'معلّم يبقى معي' },
   { key: 'clear_plan', en: 'A clear plan', ar: 'خطة واضحة' },
-  { key: 'see_progress', en: 'Seeing progress', ar: 'أشوف التقدم' },
-  { key: 'child_enjoys', en: 'Lessons my child enjoys', ar: 'حصص ابني يحبها' },
-  { key: 'times_fit', en: 'Times that fit us', ar: 'مواعيد مناسبة لينا' },
+  { key: 'see_progress', en: 'Seeing progress', ar: 'أن أرى التقدّم' },
+  { key: 'child_enjoys', en: 'Lessons my child enjoys', ar: 'حصص يحبها ابني' },
+  { key: 'times_fit', en: 'Times that fit us', ar: 'مواعيد تناسبنا' },
   { key: 'clear_prices', en: 'Clear prices', ar: 'أسعار واضحة' },
 ];
 
@@ -121,7 +121,7 @@ function CountUp({ to }: { to: number }) {
 /* ---------- the share card (story 9:16) ---------- */
 const CARD_TEXT = {
   en: { brand: 'Watazawwado', title: ['I packed', 'my zaad'], place: (n: number) => `Number ${n} in line for wave 1`, next: 'Near the front of the next wave', when: 'Opening in early December', cta: 'Pack yours at', tracks: { quran: 'Quran', zad: 'The Zad Path', arabic: 'Arabic', english: 'English' } as Record<string, string> },
-  ar: { brand: 'وتزوّدوا', title: ['جهّزتُ', 'زادي'], place: (n: number) => `رقم ${n} في انتظار الدفعة الأولى`, next: 'من أوائل الدفعة الجاية', when: 'تبدأ أوائل ديسمبر', cta: 'جهّز زادك على', tracks: { quran: 'القرآن الكريم', zad: 'مسار الزاد', arabic: 'اللغة العربية', english: 'الإنجليزية' } as Record<string, string> },
+  ar: { brand: 'وتزوّدوا', title: ['جهّزتُ', 'زادي'], place: (n: number) => `رقم ${n} في انتظار الدفعة الأولى`, next: 'من أوائل الدفعة القادمة', when: 'تبدأ أوائل ديسمبر', cta: 'جهّز زادك على', tracks: { quran: 'القرآن الكريم', zad: 'مسار الزاد', arabic: 'اللغة العربية', english: 'الإنجليزية' } as Record<string, string> },
 };
 const CARD_SKIN = {
   dark: { bg: 'radial-gradient(130% 70% at 50% 0%, #3B2219 0%, #1B1816 45%, #110F0E 75%)', ink: '#FAF7F2', soft: '#E8DCC8', line: '#F6D58E', pill: 'rgba(255,255,255,.08)', glow: 'rgba(229,169,60,.28)' },
@@ -231,7 +231,7 @@ export default function PackYourZaadPage() {
   const [error, setError] = useState<string | null>(null);
   const [entry, setEntry] = useState<Entry | null>(null);
   const [mood, setMood] = useState<Mood>('wave');
-  const [say, setSay] = useState(t("Assalamu alaikum, I'm Zaadi. Pick one, and I'll pack it for you.", 'السلام عليكم، أنا زادي. اختار حاجة، وأنا هجهّزهالك.'));
+  const [say, setSay] = useState(t("Assalamu alaikum, I'm Zaadi. Pick one, and I'll pack it for you.", 'السلام عليكم، أنا زادي. اختر شيئًا، وسأجهّزه لك.'));
   const [bump, setBump] = useState(0);
   const [fire, setFire] = useState(0);
   const [pains, setPains] = useState<string[]>([]);
@@ -252,8 +252,8 @@ export default function PackYourZaadPage() {
     setEntry(e); setTrack(tr); writeJSON(ENTRY_KEY, e, 'local');
     setStep(4); setBump((n) => n + 1); setFire((n) => n + 1);
     react('party', e.place <= e.waveSize
-      ? t('Your zaad is packed. JazakAllahu khayran for waiting with us!', 'زادك جاهز. جزاك الله خيرًا إنك مستني معانا!')
-      : t('Your zaad is packed. Wave 1 is full, so you are first in line for the next one.', 'زادك جاهز. الدفعة الأولى اكتملت، فإنت من أوائل الدفعة اللي بعدها.'));
+      ? t('Your zaad is packed. JazakAllahu khayran for waiting with us!', 'زادك جاهز. جزاك الله خيرًا على انتظارك معنا!')
+      : t('Your zaad is packed. Wave 1 is full, so you are first in line for the next one.', 'زادك جاهز. اكتملت الدفعة الأولى، فأنت من أوائل الدفعة التالية.'));
   };
 
   useEffect(() => {
@@ -274,11 +274,11 @@ export default function PackYourZaadPage() {
         // Google was only used to prove the email; joining the line must not leave a signed-in account on this device.
         await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
         if (res.ok) { setWho(pending.who); finish({ ...body, track: pending.track }, tr); }
-        else { setTrack(tr); setWho(pending.who); setStep(3); setError(body.error || t('Something went wrong. Please try again.', 'حصلت مشكلة. جرّب تاني.')); }
+        else { setTrack(tr); setWho(pending.who); setStep(3); setError(body.error || t('Something went wrong. Please try again.', 'حدثت مشكلة. حاول مرة أخرى.')); }
       });
     } else if (params.get('invited') === '1') {
       markInvited(); setStep(0); setMood('cheer');
-      setSay(t('Your place is ready. Welcome!', 'مكانك جاهز. أهلًا بيك!'));
+      setSay(t('Your place is ready. Welcome!', 'مكانك جاهز. أهلًا بك!'));
     } else if (saved && savedTrack) {
       // already in line: show the place again instead of a second join
       setEntry(saved); setTrack(savedTrack); setStep(4);
@@ -297,9 +297,9 @@ export default function PackYourZaadPage() {
   const pickWho = (w: 'me' | 'child') => {
     setWho(w); setBump((n) => n + 1);
     react(w === 'me' ? 'proud' : 'dua', w === 'me'
-      ? t('For you. Learning as a grown-up takes courage.', 'ليك إنت. التعلّم وإنت كبير محتاج شجاعة.')
-      : t('For your child. May Allah make it a blessing for them.', 'لابنك. ربنا يجعله بركة ليه.'));
-    setTimeout(() => { setStep(3); react('point', t('Just your email. No password, no payment.', 'إيميلك بس. من غير باسورد ولا دفع.')); }, 1400);
+      ? t('For you. Learning as a grown-up takes courage.', 'لك أنت. التعلّم في الكبر يحتاج إلى شجاعة.')
+      : t('For your child. May Allah make it a blessing for them.', 'لطفلك. جعله الله بركة له.'));
+    setTimeout(() => { setStep(3); react('point', t('Just your email. No password, no payment.', 'بريدك فقط. بلا كلمة سر ولا دفع.')); }, 1400);
   };
   const save = async () => {
     if (!track || !who || busy) return;
@@ -307,26 +307,26 @@ export default function PackYourZaadPage() {
     try {
       const res = await fetch('/api/waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim(), track: track.id, who, lang, source: utmSource(), website: honey }) });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) { setError(body.error || t('Something went wrong. Please try again.', 'حصلت مشكلة. جرّب تاني.')); react('sad', t("That didn't go through. Let's try once more.", 'ما وصلتش. يلا نجرّب تاني.')); return; }
-      if (body.already) { setError(null); setSay(t('This email is already in line. We just emailed you your place.', 'الإيميل ده في الدور بالفعل. بعتنالك مكانك على الإيميل.')); react('wow', t('This email is already in line. We just emailed you your place.', 'الإيميل ده في الدور بالفعل. بعتنالك مكانك على الإيميل.')); return; }
+      if (!res.ok) { setError(body.error || t('Something went wrong. Please try again.', 'حدثت مشكلة. حاول مرة أخرى.')); react('sad', t("That didn't go through. Let's try once more.", 'لم يصل. هيا نحاول مرة أخرى.')); return; }
+      if (body.already) { setError(null); setSay(t('This email is already in line. We just emailed you your place.', 'هذا البريد في الدور بالفعل. أرسلنا إليك مكانك على البريد.')); react('wow', t('This email is already in line. We just emailed you your place.', 'هذا البريد في الدور بالفعل. أرسلنا إليك مكانك على البريد.')); return; }
       finish({ ...body, track: track.id }, track);
     } catch {
-      setError(t('No connection. Please try again.', 'مفيش اتصال. جرّب تاني.'));
+      setError(t('No connection. Please try again.', 'لا يوجد اتصال. حاول مرة أخرى.'));
     } finally { setBusy(false); }
   };
   const google = async () => {
     if (!track || !who) return;
     writeJSON(PENDING_KEY, { track: track.id, who }, 'session');
     const { error: err } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}${isAr ? '/ar' : ''}/zaad?google=1` } });
-    if (err) setError(t('Google sign-in is not available right now. Use your email instead.', 'الدخول بجوجل مش متاح دلوقتي. استخدم إيميلك.'));
+    if (err) setError(t('Google sign-in is not available right now. Use your email instead.', 'الدخول بحساب Google غير متاح الآن. استخدم بريدك.'));
   };
   const togglePain = (p: string) => setPains((s) => (s.includes(p) ? s.filter((x) => x !== p) : [...s, p]));
   const sendVoice = async () => {
     if (!entry) return;
     const res = await fetch(`/api/waitlist/${entry.entryId}/voice`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ secret: entry.secret, pains, note }) }).catch(() => null);
-    if (!res?.ok) { setError(t('Could not send it. Please try again.', 'ما اتبعتش. جرّب تاني.')); return; }
+    if (!res?.ok) { setError(t('Could not send it. Please try again.', 'لم يُرسل. حاول مرة أخرى.')); return; }
     setSent(true); setError(null);
-    react('love', t('Got it. Your words go straight to our team. Thank you!', 'وصلت. كلامك رايح لفريقنا على طول. شكرًا ليك!'));
+    react('love', t('Got it. Your words go straight to our team. Thank you!', 'وصل. كلامك يذهب إلى فريقنا مباشرة. شكرًا لك!'));
   };
   const share = async () => {
     const url = `https://watazawwado.academy${isAr ? '/ar' : ''}/zaad?utm_source=share&utm_medium=referral&utm_campaign=pack-your-zaad`;
@@ -338,10 +338,10 @@ export default function PackYourZaadPage() {
   };
   useEffect(() => {
     if (step !== 4 || sent) return;
-    const timer = setTimeout(() => react('point', t('Your voice is heard here. Tell us what you missed before.', 'صوتك مسموع هنا. قولّنا كان ناقصك إيه قبل كده.')), 3200);
+    const timer = setTimeout(() => react('point', t('Your voice is heard here. Tell us what you missed before.', 'صوتك مسموع هنا. أخبرنا بما كان ينقصك من قبل.')), 3200);
     return () => clearTimeout(timer);
   }, [step]);
-  const back = () => { setStep((s) => Math.max(1, s - 1)); setError(null); setSay(t('Take your time.', 'خد وقتك.')); setMood('idle'); };
+  const back = () => { setStep((s) => Math.max(1, s - 1)); setError(null); setSay(t('Take your time.', 'خذ وقتك.')); setMood('idle'); };
 
   const place = entry?.place ?? 0;
   const size = entry?.waveSize ?? 20;
@@ -359,7 +359,7 @@ export default function PackYourZaadPage() {
           ) : (
             <a href={isAr ? '/ar' : '/'} className="text-sm font-medium text-muted-foreground">{t('Watazawwado', 'وتزوّدوا')}</a>
           )}
-          <button onClick={toggleTheme} aria-label={t('Switch light or dark', 'بدّل بين الفاتح والغامق')} className="grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground">
+          <button onClick={toggleTheme} aria-label={t('Switch light or dark', 'بدّل بين الفاتح والداكن')} className="grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground">
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
         </div>
@@ -400,7 +400,7 @@ export default function PackYourZaadPage() {
             <motion.section key="s1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
               <h1 className={`mt-5 text-center leading-[1.05] ${isAr ? 'text-[38px] font-bold' : 'font-editorial text-[42px] font-medium tracking-tight'}`}>{t('Pack your zaad', 'جهّز زادك')}</h1>
               <p className="mx-auto mt-2.5 max-w-[32ch] text-center text-[16px] leading-relaxed text-muted-foreground">
-                {t(`Our first wave opens in early December, with ${size} places. Choose what you'll carry first.`, `دفعتنا الأولى بتفتح أوائل ديسمبر، وفيها ${size} مكانًا. اختار أول حاجة هتاخدها معاك.`)}
+                {t(`Our first wave opens in early December, with ${size} places. Choose what you'll carry first.`, `تفتح دفعتنا الأولى أوائل ديسمبر، وفيها ${size} مكانًا. اختر أول ما ستحمله معك.`)}
               </p>
               <div role="radiogroup" aria-label={t('Track', 'المسار')} className="mt-6 flex h-[214px] items-end justify-center gap-2.5">
                 {TRACKS.map((tr, i) => {
@@ -434,9 +434,9 @@ export default function PackYourZaadPage() {
 
           {step === 2 && (
             <motion.section key="s2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-              <h2 className={`mt-6 leading-tight ${isAr ? 'text-[30px] font-bold' : 'font-editorial text-[32px] font-medium tracking-tight'}`}>{t('Who is this zaad for?', 'الزاد ده لمين؟')}</h2>
+              <h2 className={`mt-6 leading-tight ${isAr ? 'text-[30px] font-bold' : 'font-editorial text-[32px] font-medium tracking-tight'}`}>{t('Who is this zaad for?', 'لمن هذا الزاد؟')}</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
-                {([['me', t('For me', 'ليّا'), t('18 or older', '18 سنة أو أكتر')], ['child', t('For my child', 'لابني أو بنتي'), t('Ages 6 to 17', 'من 6 لـ 17 سنة')]] as const).map(([k, label, d]) => (
+                {([['me', t('For me', 'لي'), t('18 or older', '18 سنة أو أكثر')], ['child', t('For my child', 'لابني أو ابنتي'), t('Ages 6 to 17', 'من 6 إلى 17 سنة')]] as const).map(([k, label, d]) => (
                   <motion.button key={k} whileTap={{ scale: 0.97 }} onClick={() => pickWho(k)}
                     className={`rounded-3xl border p-5 text-start transition-colors ${who === k ? 'border-[#E5A93C] bg-[#E5A93C]/10' : 'border-border bg-surface'}`}>
                     <svg viewBox="0 0 48 32" className="mb-6 h-8 w-12" aria-hidden="true">
@@ -457,21 +457,21 @@ export default function PackYourZaadPage() {
 
           {step === 3 && (
             <motion.section key="s3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-              <h2 className={`mt-6 leading-tight ${isAr ? 'text-[30px] font-bold' : 'font-editorial text-[32px] font-medium tracking-tight'}`}>{t('Where should we write to you?', 'نكتبلك فين؟')}</h2>
+              <h2 className={`mt-6 leading-tight ${isAr ? 'text-[30px] font-bold' : 'font-editorial text-[32px] font-medium tracking-tight'}`}>{t('Where should we write to you?', 'أين نكتب إليك؟')}</h2>
               <button onClick={google} className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-full border border-border bg-surface py-4 text-[15px] font-medium">
-                <span className="text-[17px] font-bold text-[#4285F4]">G</span>{t('Continue with Google', 'كمّل بجوجل')}
+                <span className="text-[17px] font-bold text-[#4285F4]">G</span>{t('Continue with Google', 'المتابعة بحساب Google')}
               </button>
               <div className="my-4 flex items-center gap-3 text-[13px] text-muted-foreground"><span className="h-px flex-1 bg-border" />{t('or', 'أو')}<span className="h-px flex-1 bg-border" /></div>
               <form onSubmit={(e) => { e.preventDefault(); if (emailOk) save(); }}>
-                <input type="email" inputMode="email" autoComplete="email" dir="ltr" placeholder={t('Your email', 'إيميلك')} aria-label={t('Your email', 'إيميلك')} value={email} onChange={(e) => setEmail(e.target.value)}
+                <input type="email" inputMode="email" autoComplete="email" dir="ltr" placeholder={t('Your email', 'بريدك الإلكتروني')} aria-label={t('Your email', 'بريدك الإلكتروني')} value={email} onChange={(e) => setEmail(e.target.value)}
                   className="w-full border-0 border-b-[1.5px] border-border bg-transparent px-1 py-4 text-[17px] outline-none focus:border-[#E5A93C]" />
                 {/* honeypot: hidden from people, filled by bots */}
                 <input tabIndex={-1} autoComplete="off" aria-hidden="true" aria-label={t('Leave this empty', 'اترك هذا فارغًا')} value={honey} onChange={(e) => setHoney(e.target.value)} name="website" className="absolute -left-[9999px] h-0 w-0 opacity-0" />
                 <motion.button type="submit" whileTap={{ scale: 0.98 }} disabled={!emailOk || busy}
-                  className="mt-6 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white disabled:opacity-35">{busy ? t('Saving…', 'بنحفظ…') : t('Save my spot', 'احجز مكاني')}</motion.button>
+                  className="mt-6 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white disabled:opacity-35">{busy ? t('Saving…', 'جارٍ الحفظ…') : t('Save my spot', 'احجز مكاني')}</motion.button>
               </form>
               {error && <p role="alert" className="mt-3 text-center text-[14px] text-[#C51F24]">{error}</p>}
-              <p className="mt-3.5 text-center text-[13px] text-muted-foreground">{t('No password and no payment. We write once your wave opens.', 'من غير باسورد ولا دفع. هنكتبلك لما دفعتك تفتح.')}</p>
+              <p className="mt-3.5 text-center text-[13px] text-muted-foreground">{t('No password and no payment. We write once your wave opens.', 'بلا كلمة سر ولا دفع. نكتب إليك حين تفتح دفعتك.')}</p>
             </motion.section>
           )}
 
@@ -490,12 +490,12 @@ export default function PackYourZaadPage() {
                     ))}
                   </div>
                   <p className="mt-2.5 text-[13px] text-muted-foreground">
-                    {t(`Wave 1 has ${size} places. ${place - 1} ${place - 1 === 1 ? 'is' : 'are'} ahead of you.`, `الدفعة الأولى فيها ${size} مكانًا، وقدامك ${place - 1}.`)}
+                    {t(`Wave 1 has ${size} places. ${place - 1} ${place - 1 === 1 ? 'is' : 'are'} ahead of you.`, `في الدفعة الأولى ${size} مكانًا، وأمامك ${place - 1}.`)}
                   </p>
                 </>
               ) : (
                 <p className="mx-auto mt-4 max-w-[32ch] text-[14px] text-muted-foreground">
-                  {t(`Wave 1's ${size} places are taken, so you're near the front of the next wave. We'll write to you as soon as it has a date.`, `أماكن الدفعة الأولى الـ ${size} اكتملت، فإنت في أول الدفعة اللي بعدها. هنكتبلك أول ما يتحدد ميعادها.`)}
+                  {t(`Wave 1's ${size} places are taken, so you're near the front of the next wave. We'll write to you as soon as it has a date.`, `اكتملت أماكن الدفعة الأولى الـ ${size}، فأنت في مقدمة الدفعة التالية. سنكتب إليك فور تحديد موعدها.`)}
                 </p>
               )}
 
@@ -503,8 +503,8 @@ export default function PackYourZaadPage() {
                 <div className="flex items-center gap-3">
                   <Zaadi mood={sent ? 'love' : 'think'} size={50} />
                   <div>
-                    <p className="text-[16px] font-medium leading-snug">{t('Your voice shapes what we build', 'صوتك بيشكّل اللي بنبنيه')}</p>
-                    <p className="text-[13px] text-muted-foreground">{t('What was missing for you before? Tap any, or tell us.', 'إيه اللي كان ناقصك قبل كده؟ اختار أو اكتب.')}</p>
+                    <p className="text-[16px] font-medium leading-snug">{t('Your voice shapes what we build', 'صوتك يشكّل ما نبنيه')}</p>
+                    <p className="text-[13px] text-muted-foreground">{t('What was missing for you before? Tap any, or tell us.', 'ما الذي كان ينقصك من قبل؟ اختر أو اكتب.')}</p>
                   </div>
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-2">
@@ -520,21 +520,21 @@ export default function PackYourZaadPage() {
                 </div>
                 {sent ? (
                   <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-[14px] text-muted-foreground">
-                    {t('Sent to our team. We read every word.', 'وصلت لفريقنا. وبنقرا كل كلمة.')}
+                    {t('Sent to our team. We read every word.', 'وصل إلى فريقنا. ونحن نقرأ كل كلمة.')}
                   </motion.p>
                 ) : (
                   <>
                     <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} maxLength={500}
-                      placeholder={t('Or in your own words: what would make this the right place for you?', 'أو بكلامك إنت: إيه اللي يخلّي المكان ده مناسب ليك؟')} aria-label={t('Tell us in your own words', 'قولّنا بكلامك')}
+                      placeholder={t('Or in your own words: what would make this the right place for you?', 'أو بكلماتك أنت: ما الذي يجعل هذا المكان مناسبًا لك؟')} aria-label={t('Tell us in your own words', 'أخبرنا بكلماتك')}
                       className="mt-3 w-full resize-none rounded-2xl border border-border bg-background px-3.5 py-3 text-[15px] outline-none focus:border-[#E5A93C]" />
                     <motion.button whileTap={{ scale: 0.98 }} disabled={!pains.length && !note.trim()} onClick={sendVoice}
-                      className="mt-3 w-full rounded-full border border-foreground py-3 text-[15px] font-medium disabled:opacity-35">{t('Send to the team', 'ابعت للفريق')}</motion.button>
+                      className="mt-3 w-full rounded-full border border-foreground py-3 text-[15px] font-medium disabled:opacity-35">{t('Send to the team', 'أرسل إلى الفريق')}</motion.button>
                   </>
                 )}
                 {error && step === 4 && <p role="alert" className="mt-2 text-[13px] text-[#C51F24]">{error}</p>}
               </div>
-              <motion.button whileTap={{ scale: 0.98 }} onClick={() => { setShareOpen(true); react('clap', t('Show them your bag!', 'ورّيهم شنطتك!')); }}
-                className="mt-7 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white">{t('Share my bag', 'شارك شنطتي')}</motion.button>
+              <motion.button whileTap={{ scale: 0.98 }} onClick={() => { setShareOpen(true); react('clap', t('Show them your bag!', 'أرِهم حقيبتك!')); }}
+                className="mt-7 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white">{t('Share my bag', 'شارك حقيبتي')}</motion.button>
             </motion.section>
           )}
         </AnimatePresence>
@@ -555,7 +555,7 @@ export default function PackYourZaadPage() {
           <motion.div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShareOpen(false)}>
             <FocusTrap onEscape={() => setShareOpen(false)}>
-            <motion.div role="dialog" aria-label={t('Share my bag', 'شارك شنطتي')} onClick={(e) => e.stopPropagation()} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
+            <motion.div role="dialog" aria-label={t('Share my bag', 'شارك حقيبتي')} onClick={(e) => e.stopPropagation()} initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
               transition={{ type: 'spring', stiffness: 320, damping: 30 }}
               className="w-full max-w-[440px] rounded-t-[32px] bg-background px-5 pb-8 pt-5 sm:rounded-[32px]">
               <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
@@ -565,13 +565,13 @@ export default function PackYourZaadPage() {
                 </motion.div>
               </AnimatePresence>
               <div className="mt-4 grid grid-cols-2 gap-2.5">
-                <Segmented<'light' | 'dark'> label={t('Card colour', 'لون الكارت')} value={cardSkin} onChange={setCardSkin} options={[['light', t('Light', 'فاتح')], ['dark', t('Dark', 'غامق')]]} />
-                <Segmented<'en' | 'ar'> label={t('Card language', 'لغة الكارت')} value={cardLang} onChange={setCardLang} options={[['en', 'English'], ['ar', 'عربي']]} />
+                <Segmented<'light' | 'dark'> label={t('Card colour', 'لون البطاقة')} value={cardSkin} onChange={setCardSkin} options={[['light', t('Light', 'فاتح')], ['dark', t('Dark', 'داكن')]]} />
+                <Segmented<'en' | 'ar'> label={t('Card language', 'لغة البطاقة')} value={cardLang} onChange={setCardLang} options={[['en', 'English'], ['ar', 'عربي']]} />
               </div>
               <button onClick={share} className="mt-4 w-full rounded-full bg-primary py-3.5 text-[15px] font-bold text-white">
-                {copied ? t('Link copied', 'اتنسخ اللينك') : t('Share the link', 'شارك اللينك')}
+                {copied ? t('Link copied', 'نُسخ الرابط') : t('Share the link', 'شارك الرابط')}
               </button>
-              <p className="mt-2.5 text-center text-[12px] text-muted-foreground">{t('Tip: take a screenshot of the card for your story.', 'نصيحة: خد سكرين شوت للكارت وحطه في الستوري.')}</p>
+              <p className="mt-2.5 text-center text-[12px] text-muted-foreground">{t('Tip: take a screenshot of the card for your story.', 'نصيحة: التقط صورة للشاشة للبطاقة وضعها في قصتك.')}</p>
             </motion.div>
             </FocusTrap>
           </motion.div>
