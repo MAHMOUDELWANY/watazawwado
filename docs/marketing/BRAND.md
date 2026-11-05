@@ -99,3 +99,33 @@ patterns stay secondary because every academy uses them.
   story, 60% teaching. No pressure, no "book now".
 - First series "Building Watazawwado": what I kept seeing as a teacher → what parents told me → a mentor who stays →
   "what annoyed you?" → "you said ___, here's what we did" (×4) → meet Zaadi → wave 1, 20 spots.
+
+## 8. Brand experience: nine moments [Decided 2026-11-05]
+
+Principle: people remember the strongest moment and the last one, so these are designed on purpose, with the teacher at
+the centre. Zaadi appears only in moments of joy (waitlist, welcome, celebrations), never in payment, cancellation or
+refund messages.
+
+1. **Invitation when a wave opens** ("finally, my turn"): an email with the bag they packed and Zaadi saying "Your
+   place is open". The place is held **72 hours** because the next person is really waiting; one reminder before it
+   ends.
+2. **First WhatsApp reply** ("real people are here"): ready replies in our voice, each naming the exact next step;
+   within 12 hours, within **4 hours** during the weeks a wave opens; signed by the Watazawwado team.
+3. **Sign-up and choosing a teacher** ("they remember me"): the track chosen in "Pack your zaad" is preselected and
+   Zaadi says "I kept your bag"; we never ask the same question twice.
+4. **The first 10 minutes of the trial** (the moment of truth): two minutes about the person, not the lesson; a small
+   success within the first five minutes; at the end "today you learned ___, your plan is ___". Part of the
+   Watazawwado Way (§4).
+5. **The first report to a guardian** ("they see my child as a person"): one strength, one next step, one sentence
+   about the child as a person; sent the same day.
+6. **When something goes wrong on our side** (late teacher, lesson we cancel): an apology from the team within hours,
+   plain and without excuses, on top of the existing choice (free new time, credit or refund), plus **10 extra minutes
+   in the next lesson** as a gift.
+7. **Celebrating progress** ("I am really moving"): Zaadi celebrates the end of a level, a memorized surah and every 10
+   lessons, with a share card in the same system as "I packed my zaad" (e.g. "I finished Level 1").
+8. **Emails and notifications**: all templates reviewed against the brand line, short and warm; Zaadi only in welcome
+   and celebration messages.
+9. **When someone leaves** ("the door is open"): no guilt; one optional one-tap "why?"; "your zaad is saved, come
+   back any time"; progress stays saved.
+
+Moments 4–6 go into the Watazawwado Way teacher course.
