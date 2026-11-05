@@ -45,7 +45,7 @@ describe('Waitlist input', () => {
 
   it('never tells an unverified caller anything about an existing email', () => {
     const src = fs.readFileSync('server/routes/waitlist.ts', 'utf8');
-    assert.ok(src.includes('if (existing && !verified)'));
+    assert.ok(src.includes('if (preexisting && !verified)'));
     assert.ok(src.includes("return res.json({ already: true, waveSize: waveSize() });"));
   });
 

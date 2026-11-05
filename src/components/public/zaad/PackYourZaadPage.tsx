@@ -545,8 +545,8 @@ export default function PackYourZaadPage() {
                 </motion.div>
               </AnimatePresence>
               <div className="mt-4 grid grid-cols-2 gap-2.5">
-                <Segmented label={t('Card colour', 'لون الكارت')} value={cardSkin} onChange={setCardSkin} options={[['light', t('Light', 'فاتح')], ['dark', t('Dark', 'غامق')]]} />
-                <Segmented label={t('Card language', 'لغة الكارت')} value={cardLang} onChange={setCardLang} options={[['en', 'English'], ['ar', 'عربي']]} />
+                <Segmented<'light' | 'dark'> label={t('Card colour', 'لون الكارت')} value={cardSkin} onChange={setCardSkin} options={[['light', t('Light', 'فاتح')], ['dark', t('Dark', 'غامق')]]} />
+                <Segmented<'en' | 'ar'> label={t('Card language', 'لغة الكارت')} value={cardLang} onChange={setCardLang} options={[['en', 'English'], ['ar', 'عربي']]} />
               </div>
               <button onClick={share} className="mt-4 w-full rounded-full bg-primary py-3.5 text-[15px] font-bold text-white">
                 {copied ? t('Link copied', 'اتنسخ اللينك') : t('Share the link', 'شارك اللينك')}

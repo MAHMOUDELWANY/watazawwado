@@ -41,7 +41,7 @@ function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<
 // Public pages other than the homepage load on demand, so the first visit downloads less.
 // Dev-only design prototype; import.meta.env.DEV is false in production builds, so the chunk is dropped there.
 const PackYourZaadPage = lazyWithReload(() => import('./components/public/zaad/PackYourZaadPage'));
-const ZaadiShowcase = import.meta.env.DEV ? lazy(() => import('./prototypes/ZaadiShowcase')) : null;
+const ZaadiShowcase = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/ZaadiShowcase')) : null;
 const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
 const LearningPage = lazyWithReload(() => import('./components/public/learning/LearningPage').then((m) => ({ default: m.LearningPage })));
 const HowItWorksPage = lazyWithReload(() => import('./components/public/how-it-works/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })));

@@ -74,6 +74,7 @@ const TRACK_NAMES: Record<string, { en: string; ar: string }> = {
 async function join(client: any, input: JoinInput, res: any, verified: boolean) {
   const { data: existing } = await client.from('waitlist_entries').select('id, secret, created_at').eq('email', input.email).maybeSingle();
   let row = existing;
+  let preexisting = Boolean(existing);
   if (!row) {
     const { data, error } = await client.from('waitlist_entries')
       .insert({ email: input.email, track: input.track, who: input.who, lang: input.lang, source: input.source })
@@ -83,6 +84,7 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
       const again = await client.from('waitlist_entries').select('id, secret, created_at').eq('email', input.email).maybeSingle();
       if (!again.data) return res.status(500).json({ error: 'We could not save your place. Please try again.' });
       row = again.data;
+      preexisting = true;
     } else {
       row = data;
       const place = await placeOf(client, row.created_at);
@@ -104,8 +106,11 @@ async function join(client: any, input: JoinInput, res: any, verified: boolean) 
   const place = await placeOf(client, row.created_at);
   // Anyone can type any email, so an unverified join of an existing email learns nothing about it: no place, id or
   // secret. The owner of the email gets their place by email instead.
-  if (existing && !verified) {
-    if (process.env.NODE_ENV === 'production') {
+  if (preexisting && !verified) {
+    // at most one 'already in line' email a day per address, so the form cannot be used to flood an inbox
+    const { data: fresh } = await client.from('waitlist_entries').update({ updated_at: new Date().toISOString() })
+      .eq('id', row.id).lt('updated_at', new Date(Date.now() - 24 * 3600 * 1000).toISOString()).select('id').maybeSingle();
+    if (fresh && process.env.NODE_ENV === 'production') {
       const mail = renderSimpleNotice({
         lang: input.lang,
         title: { en: 'You are already in line', ar: 'إنت في الدور بالفعل' },
@@ -144,9 +149,11 @@ export function registerWaitlistRoutes(app: express.Express, deps: {
     if (!token) return res.status(401).json({ error: 'Please sign in with Google first.' });
     const { data, error } = await client.auth.getUser(token);
     if (error || !data?.user?.email) return res.status(401).json({ error: 'Please sign in with Google first.' });
+    // only a confirmed email proves the person owns it; otherwise treat the join like the public form
+    const verified = Boolean(data.user.email_confirmed_at);
     const input = parseJoin(req.body, data.user.email);
     if ('error' in input) return res.status(400).json(input);
-    try { return await join(client, input, res, true); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
+    try { return await join(client, input, res, verified); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
   });
 
   app.post('/api/waitlist/:id/voice', deps.rateLimit, async (req: any, res: any) => {
