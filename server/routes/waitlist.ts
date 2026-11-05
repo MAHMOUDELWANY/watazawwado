@@ -71,7 +71,7 @@ const TRACK_NAMES: Record<string, { en: string; ar: string }> = {
   arabic: { en: 'Arabic', ar: 'اللغة العربية' }, english: { en: 'English', ar: 'الإنجليزية' },
 };
 
-async function join(client: any, input: JoinInput, res: any) {
+async function join(client: any, input: JoinInput, res: any, verified: boolean) {
   const { data: existing } = await client.from('waitlist_entries').select('id, secret, created_at').eq('email', input.email).maybeSingle();
   let row = existing;
   if (!row) {
@@ -102,7 +102,20 @@ async function join(client: any, input: JoinInput, res: any) {
     }
   }
   const place = await placeOf(client, row.created_at);
-  return res.json({ place, waveSize: waveSize(), entryId: row.id, secret: row.secret, returning: Boolean(existing) });
+  // Anyone can type any email, so an unverified join of an existing email learns nothing about it: no place, id or
+  // secret. The owner of the email gets their place by email instead.
+  if (existing && !verified) {
+    if (process.env.NODE_ENV === 'production') {
+      const mail = renderSimpleNotice({
+        lang: input.lang,
+        title: { en: 'You are already in line', ar: 'إنت في الدور بالفعل' },
+        body: { en: `You're number ${place} in line. We'll write to you before your wave opens.`, ar: `إنت رقم ${place} في الدور. هنكتبلك قبل ما دفعتك تفتح.` },
+      });
+      sendEmail({ to: input.email, from: 'info', ...mail }).catch(() => {});
+    }
+    return res.json({ already: true, waveSize: waveSize() });
+  }
+  return res.json({ place, waveSize: waveSize(), entryId: row.id, secret: row.secret });
 }
 
 export function registerWaitlistRoutes(app: express.Express, deps: {
@@ -120,7 +133,7 @@ export function registerWaitlistRoutes(app: express.Express, deps: {
     if (!client) return res.status(503).json({ error: 'Service temporarily unavailable.' });
     const input = parseJoin(req.body);
     if ('error' in input) return res.status(400).json(input);
-    try { return await join(client, input, res); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
+    try { return await join(client, input, res, false); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
   });
 
   // Google: the email comes from the verified Supabase session, never from the body.
@@ -133,7 +146,7 @@ export function registerWaitlistRoutes(app: express.Express, deps: {
     if (error || !data?.user?.email) return res.status(401).json({ error: 'Please sign in with Google first.' });
     const input = parseJoin(req.body, data.user.email);
     if ('error' in input) return res.status(400).json(input);
-    try { return await join(client, input, res); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
+    try { return await join(client, input, res, true); } catch { return res.status(500).json({ error: 'We could not save your place. Please try again.' }); }
   });
 
   app.post('/api/waitlist/:id/voice', deps.rateLimit, async (req: any, res: any) => {

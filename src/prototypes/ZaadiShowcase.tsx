@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Moon, Sun } from 'lucide-react';
-import { ZaadiRig, type ZaadiPose } from './ZaadiRig';
+import { ZaadiRig, type ZaadiPose } from '../components/zaadi/ZaadiRig';
 import { useTheme } from '../components/ThemeProvider';
 import { hideBootSplash } from '../lib/bootSplash';
 

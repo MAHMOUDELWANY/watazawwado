@@ -35,6 +35,15 @@
         "set ALLOW_DEV_AUTH=true&& set GIFT_SEASON_PREVIEW=on&& set VITE_SUPABASE_URL=https://fmwxqyroyxgigvpahpri.supabase.co&& set VITE_SUPABASE_ANON_KEY=sb_publishable_UDlT-RtZL9GEg_nC9rUgYg_n5GbgdqL&& cd /d C:/Users/ahmed/OneDrive/Desktop/watazawwado&& npx tsx server.ts"
       ],
       "port": 3000
+    },
+    {
+      "name": "dev-worktree-env",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set ALLOW_DEV_AUTH=true&& npx tsx --env-file=../../../.env server.ts"
+      ],
+      "port": 3000
     }
   ]
 }
