@@ -12,7 +12,7 @@ import { ZaadiRig, type ZaadiPose } from './ZaadiRig';
  * shortcut: fixed place in line (14) and fake Google button; the real flow reads the waitlist table.
  */
 
-type Mood = 'idle' | 'cheer' | 'thanks' | 'party' | 'wave' | 'sad';
+type Mood = ZaadiPose | 'party';
 type Track = { id: string; emblem: string; color: string; spine: string; title: string; line: string; cheer: string };
 
 const TRACKS: Track[] = [
@@ -158,7 +158,7 @@ function ShareCard({ track, skin, lang }: { track: Track; skin: 'dark' | 'light'
             <span className="absolute inset-x-0 top-1.5 h-[2px] bg-[#D8C6AE]/80" />
           </div>
           <div className="relative"><Bag open={false} zipped bump={0} width={138} /></div>
-          <div className={`absolute -top-6 ${ar ? '-left-7' : '-right-7'}`}><Zaadi mood="cheer" size={54} /></div>
+          <div className={`absolute -top-6 ${ar ? '-left-7' : '-right-7'}`}><Zaadi mood="wave" size={58} /></div>
         </div>
 
         <div className="mt-5 flex items-center gap-2.5 rounded-full py-1.5 pe-4 ps-1.5" style={{ background: s.pill }}>
@@ -223,24 +223,24 @@ export default function PackYourZaadPrototype() {
     const r = el.getBoundingClientRect(); const b = bagRef.current!.getBoundingClientRect();
     setTimeout(() => {
       setFlyer({ t, x: r.left + r.width / 2 - 26, y: r.top + 30, dx: b.left + b.width / 2 - (r.left + r.width / 2), dy: b.top + b.height * 0.55 - (r.top + 30) });
-      setTimeout(() => { setFlyer(null); setBump((n) => n + 1); react('cheer', t.cheer); setTimeout(() => setStep(2), 700); }, reduce ? 0 : 650);
+      setTimeout(() => { setFlyer(null); setBump((n) => n + 1); react('excited', t.cheer); setTimeout(() => setStep(2), 900); }, reduce ? 0 : 650);
     }, reduce ? 0 : 280);
   };
   const pickWho = (w: 'me' | 'child') => {
     setWho(w); setBump((n) => n + 1);
-    react('thanks', w === 'me' ? 'For you. Learning as a grown-up takes courage.' : 'For your child. May Allah make it a blessing for them.');
-    setTimeout(() => setStep(3), 650);
+    react(w === 'me' ? 'proud' : 'dua', w === 'me' ? 'For you. Learning as a grown-up takes courage.' : 'For your child. May Allah make it a blessing for them.');
+    setTimeout(() => { setStep(3); react('point', 'Just your email. No password, no payment.'); }, 1400);
   };
   const save = () => {
     setStep(4); setBump((n) => n + 1); setFire((n) => n + 1);
     react('party', 'Your zaad is packed. JazakAllahu khayran for waiting with us!');
   };
   const togglePain = (p: string) => setPains((s) => (s.includes(p) ? s.filter((x) => x !== p) : [...s, p]));
-  const sendVoice = () => { setSent(true); react('thanks', 'Got it. Your words go straight to our team. Thank you!'); };
+  const sendVoice = () => { setSent(true); react('love', 'Got it. Your words go straight to our team. Thank you!'); };
   // after the celebration, Zaadi invites the learner's voice
   useEffect(() => {
     if (step !== 4) return;
-    const t = setTimeout(() => react('idle', 'Your voice is heard here. Tell us what you missed before.'), 3200);
+    const t = setTimeout(() => react('point', 'Your voice is heard here. Tell us what you missed before.'), 3200);
     return () => clearTimeout(t);
   }, [step]);
   const back = () => { setStep((s) => Math.max(1, s - 1)); setSay('Take your time.'); setMood('idle'); };
@@ -367,7 +367,7 @@ export default function PackYourZaadPrototype() {
 
               <div className="mt-7 rounded-3xl border border-border bg-surface p-5 text-start">
                 <div className="flex items-center gap-3">
-                  <Zaadi mood={sent ? 'thanks' : 'idle'} size={38} />
+                  <Zaadi mood={sent ? 'love' : 'think'} size={50} />
                   <div>
                     <p className="text-[16px] font-medium leading-snug">Your voice shapes what we build</p>
                     <p className="text-[13px] text-muted-foreground">What was missing for you before? Tap any, or tell us.</p>
@@ -398,7 +398,7 @@ export default function PackYourZaadPrototype() {
                   </>
                 )}
               </div>
-              <motion.button whileTap={{ scale: 0.98 }} onClick={() => { setShareOpen(true); react('cheer', 'Show them your bag!'); }}
+              <motion.button whileTap={{ scale: 0.98 }} onClick={() => { setShareOpen(true); react('clap', 'Show them your bag!'); }}
                 className="mt-7 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white">Share my bag</motion.button>
             </motion.section>
           )}
