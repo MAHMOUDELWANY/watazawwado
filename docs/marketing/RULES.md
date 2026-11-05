@@ -24,9 +24,12 @@ date.
 
 ## 2. Voice
 
-1. **The academy speaks** ("we", "our team", "our teachers"). A teacher on camera introduces themselves as a teacher
-   of Watazawwado ("I'm Ustadh Mahmoud, one of the teachers at Watazawwado"). The channel is never a personal
-   channel. (root RULES.md §6b, CLAUDE.md)
+1. **The academy speaks** ("we", "our team", "our teachers") in captions, posts and on the site. The channels are
+   Watazawwado's, never personal. **[Changed 2026-11-05]** During the build, Ustadh Mahmoud speaks on camera as the
+   founder of Watazawwado and a teacher at the same time, and takes viewers through the build; the story always says
+   every teacher here works the same way, so the brand never rests on one person. (root RULES.md §6b)
+   Videos are mainly English; Arabic-teaching videos are English with Arabic. Every video closes with "Pack your
+   zaad" and the zipper gesture; the one CTA is "comment ZAAD" or the link in bio (`BRAND.md`).
 2. Warm, wise, close, never salesy; no hype words ("amazing", "life-changing", "best academy"); short sentences.
 3. Arabic copy: the 50/50 style of root RULES.md §6 (simple Fusha with a warm Egyptian touch).
 4. Every caption and script goes through the `humanizer` skill before publishing.

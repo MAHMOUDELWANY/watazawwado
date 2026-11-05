@@ -223,6 +223,9 @@ education leads cost ~$28–35 and religion targeting no longer exists).
    written, owner reviews) → Scripted (approved, ready to film) → Filmed → Edited → Scheduled → Published.
 9. **[Decided 2026-11-05]** Brand line: "Not just lessons. A mentor who stays." Meaning, word of mouth and open
    brand questions in `BRAND.md`.
+10. **[Decided 2026-11-05]** Honest launch in waves (wave 1: 20 learners, early December), "Pack your zaad"
+    waitlist, founder + teacher on camera, mainly English, brand assets and Zaadi: `BRAND.md` §5–7. This replaces
+    the earlier Notion calendar and Week-1 scripts (free-trial CTA, academy-only voice), which are rebuilt.
 
 Open: none.
 

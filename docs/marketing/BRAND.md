@@ -35,11 +35,11 @@ friend in one sentence; the product proves it.
 
 We never promise outcomes (`docs/marketing/RULES.md` §3.4); outcomes come from customers in their own words.
 
-## 3. "The teacher stays": honest wording [Proposed]
+## 3. "The teacher stays": honest wording [Decided 2026-11-05]
 
 We cannot promise that a teacher never leaves. We can promise:
 1. We never change your teacher on our side.
-2. A teacher who decides to leave gives notice (30 or 60 days, to be decided).
+2. A teacher who decides to leave gives two months' notice.
 3. If a change happens, the new teacher receives the learner's profile and all reports, so the relationship does not
    start from zero.
 
@@ -60,10 +60,42 @@ Owner's ideas (2026-11-05), to be designed as their own task:
 Why this matters: the owner's schedule will fill up, so the brand cannot rest on one teacher. It rests on the way
 every teacher of the academy works (RULES.md §6b).
 
-## 5. Still open
+## 5. Distinctive brand assets [Decided 2026-11-05]
 
-- Distinctive brand assets: pick 2–3 (likely a sound opening and a fixed closing phrase) and use them everywhere.
-- Honest launch: founding-families waves and a real waitlist based on real teacher capacity, not "we haven't
-  started yet"; whether the site stays open.
-- Founder storytelling vs. "the academy speaks" (RULES.md §6b): owner decision.
-- Content language mix (English-first audience).
+Few, repeated everywhere (site, videos, emails), all from the zaad idea. Arches, gold geometry and generic Islamic
+patterns stay secondary because every academy uses them.
+1. **Closing line + gesture:** "Pack your zaad." / «جهّز زادك», said at the end of every video with a zipper-closing
+   gesture of the hand. It is also the name of the waitlist.
+2. **Sound opening (~0.5 s):** a natural sound (a bag zipping shut) with a soft tone; no musical instruments
+   (`RULES.md` §1.6). Recitation is never used as a branded sound.
+3. **The zaad bag:** a simple bag icon with the khatam star, in crimson, on thumbnails and on the site.
+4. **Zaadi (زادي), the companion:** an abstract animated khatam star (no face, no body) for learners and guardians,
+   the counterpart of Jalila for teachers. A rounder, lighter, more playful version for child accounts. Appears only
+   at chosen moments (the waitlist, a welcome, the learning guide), small and light, and respects reduced motion.
+   In videos it is a recurring character; the audience is guardians and adults, not children.
+
+## 6. Honest launch [Decided 2026-11-05]
+
+- Story: "We built the foundation, we open in small waves, and you shape what comes next." Never "we haven't started".
+- Real capacity: two teachers (Ustadh Mahmoud, Ustadha Afnan), roughly 2 pm to 2 am Egypt time, Friday off.
+  **Wave 1: 20 learners**, early December 2026 at the latest; "early December" until the date is certain, a countdown
+  only for a real date.
+- Site: open to browse; new learner sign-up by invitation only; the waitlist "Pack your zaad": tap subjects into the
+  bag, one tap for "me" or "my child", email or Google only, an honest place in line, an instant email, a share card
+  ("I packed my zaad"), an optional tap-card "what annoyed you before?". Referrals never move anyone up the line.
+- Founding families: 20% off for 90 days, first 20 learners (RULES.md §4). The existing friend referral credit works
+  once the wave opens.
+- Weekly short email to the waitlist: what we built because of them.
+- Comments: "comment ZAAD" → automatic DM with the link (ManyChat, Instagram and Facebook); link in bio elsewhere.
+
+## 7. Founder and content [Decided 2026-11-05]
+
+- Ustadh Mahmoud on camera as founder and teacher, on the Watazawwado accounts (his personal accounts are separate).
+  The story always says every teacher here works the same way (§4), so the brand never rests on one person.
+- Talking-to-camera style from a script on a tablet; pauses cut in editing; captions on every video.
+- Mainly English; Arabic-teaching videos are English with Arabic. Arabic copy is 80% friendly Fusha, 20% well-known
+  Egyptian (RULES.md §6).
+- Every video has one audience (parents of children, parents of teens, adults 18+) and one goal. About 40% build
+  story, 60% teaching. No pressure, no "book now".
+- First series "Building Watazawwado": what I kept seeing as a teacher → what parents told me → a mentor who stays →
+  "what annoyed you?" → "you said ___, here's what we did" (×4) → meet Zaadi → wave 1, 20 spots.
