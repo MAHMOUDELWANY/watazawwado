@@ -26,16 +26,25 @@ const AR_DIGITS = '١٢٣٤';
 // Half the card width plus a small gap: the cube's radius, in CSS so it follows the card size.
 const RADIUS = 'calc(min(150px, 38vw) + 24px)';
 
+// Each pain takes one brand colour, the same arch and tint as the "Learn for yourself / for your family" cards.
+const TONES = [
+  'from-[#087D91]/16 border-[#087D91]/30 text-[#087D91] dark:text-[#12A4BC]',
+  'from-[#8B4935]/16 border-[#8B4935]/30 text-[#8B4935] dark:text-[#DA7960]',
+  'from-[#C51F24]/14 border-[#C51F24]/28 text-[#C51F24] dark:text-[#E82C32]',
+  'from-[#E5A93C]/22 border-[#E5A93C]/40 text-[#9A6410] dark:text-[#E5A93C]',
+];
+
 function PainCard({ kind, line, n, isEn }: { kind: (typeof KINDS)[number]; line: string; n: number; isEn: boolean }) {
+  const tone = TONES[n - 1];
   return (
-    <article className="w-[min(300px,76vw)] rounded-[28px] border border-border bg-surface p-3.5 pb-5 text-start shadow-[0_30px_60px_-36px_rgba(18,16,14,0.35)]">
-      <div className="relative aspect-square rounded-[20px] bg-[radial-gradient(120%_90%_at_30%_20%,var(--surface),var(--surface-warm))]">
-        <span className="absolute top-3 start-3.5 text-xs font-bold text-muted-foreground tabular-nums">
-          {isEn ? `${n} / 4` : `${AR_DIGITS[n - 1]} / ٤`}
-        </span>
+    <article className={`arch-top relative overflow-hidden w-[min(300px,76vw)] border bg-gradient-to-b to-transparent bg-surface ${tone} p-3.5 pt-6 pb-5 text-center shadow-[var(--shadow-2)]`}>
+      <div className="arch-top relative mx-auto aspect-square w-[88%] border border-current/25 bg-[radial-gradient(90%_80%_at_50%_35%,var(--surface),transparent)] bg-current/[0.08]">
         <FamiliarIcon kind={kind} large />
       </div>
-      <p className="mt-3.5 mx-1.5 text-[1.05rem] font-semibold leading-relaxed text-foreground">{line}</p>
+      <p className="mt-4 mx-1.5 text-[1.05rem] font-semibold leading-relaxed text-foreground">{line}</p>
+      <span className="mt-2 block text-xs font-bold tabular-nums opacity-80">
+        {isEn ? `${n} / 4` : `${AR_DIGITS[n - 1]} / ٤`}
+      </span>
     </article>
   );
 }

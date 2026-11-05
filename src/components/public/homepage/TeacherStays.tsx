@@ -63,9 +63,7 @@ export function TeacherStays({ isEn }: { isEn: boolean }) {
           onFrame: (p) => {
             const v = vowRef.current;
             if (v) {
-              v.style.setProperty('--w', String(ease(seg(p, 0.9, 0.97))));
-              v.style.setProperty('--w2', String(ease(seg(p, 0.93, 0.99))));
-              v.style.setProperty('--o', String(seg(p, 0.96, 1)));
+              v.style.setProperty('--w', String(ease(seg(p, 0.9, 0.98))));
             }
             setBeat(BEATS.findIndex(([a, b]) => p >= a && p < b));
           },
@@ -81,9 +79,9 @@ export function TeacherStays({ isEn }: { isEn: boolean }) {
 
   // Without the scene (no WebGL, or still loading) the words show in full.
   const full = !ready;
-  const primary = isEn ? LINE_EN : LINE_AR, secondary = isEn ? LINE_AR : LINE_EN;
+  // One line, in the page's language only (owner, 2026-11-05).
+  const primary = isEn ? LINE_EN : LINE_AR;
   const primaryFont = isEn ? "'Caveat', var(--font-serif), cursive" : "'Aref Ruqaa', var(--font-serif), serif";
-  const secondaryFont = isEn ? "'Aref Ruqaa', var(--font-serif), serif" : "'Caveat', var(--font-serif), cursive";
   // Each line is written in its own reading direction.
   const reveal = (v: string, rtl: boolean) => (full ? undefined : rtl
     ? `inset(-20% 0 -20% calc((1 - var(${v},0)) * 100%))`
@@ -108,23 +106,12 @@ export function TeacherStays({ isEn }: { isEn: boolean }) {
             id="home-stays"
             lang={isEn ? 'en' : 'ar'}
             dir={isEn ? 'ltr' : 'rtl'}
-            className="text-ribbon text-[2.4rem] sm:text-6xl leading-[1.45] font-bold"
+            className="text-ribbon text-[2.6rem] sm:text-7xl leading-[1.45] font-bold"
             style={{ clipPath: reveal('--w', !isEn) }}
           >
             {/* The font sits on a span: the site's RTL heading rule pins h2 to Thmanyah with !important. */}
             <span style={{ fontFamily: primaryFont }}>{primary}</span>
           </h2>
-          <p
-            lang={isEn ? 'ar' : 'en'}
-            dir={isEn ? 'rtl' : 'ltr'}
-            className="text-2xl sm:text-3xl text-foreground"
-            style={{ fontFamily: secondaryFont, clipPath: reveal('--w2', isEn) }}
-          >
-            {secondary}
-          </p>
-          <p className="mt-1.5 mx-auto max-w-[34ch] text-sm sm:text-base text-muted-foreground" style={{ opacity: full ? 1 : 'var(--o,0)' }}>
-            {isEn ? 'One teacher who knows you, and picks up where you left off.' : 'معلّم واحد يعرفك، ويكمل معك من حيث وقفت.'}
-          </p>
         </div>
       </div>
     </section>

@@ -23,7 +23,7 @@ export function FamiliarIcon({ kind, large = false }: { kind: Kind; large?: bool
       ref={ref}
       aria-hidden="true"
       className={large
-        ? 'grid place-items-center w-full h-full text-foreground/85'
+        ? 'grid place-items-center w-full h-full' // takes the card's brand colour
         : 'grid place-items-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-surface-warm/70 dark:bg-white/[0.04] ring-1 ring-border/70 text-foreground/80'}
     >
       {/* Large: the drawing is the card's hero, so the strokes get thinner as it grows. */}
