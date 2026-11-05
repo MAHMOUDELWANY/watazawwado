@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
+import { ZaadiRig } from '../../components/zaadi/ZaadiRig';
 import { Select } from '../../components/ui/Select';
 import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch, readReferral } from '../../lib/leadSource';
 import { BookShelf } from '../../components/onboarding/BookShelf';
@@ -472,8 +473,9 @@ export default function StudentOnboardingPage({
         >
 
           <div>
+            <div className="mx-auto -mt-2 mb-3 w-fit"><ZaadiRig pose="cheer" size={104} /></div>
             <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-              {isRTL ? 'أهلًا بيك في عائلة وتزودوا' : 'Welcome to the Watazawwado family'}
+              {isRTL ? 'أهلًا بك في عائلة وتزودوا' : 'Welcome to the Watazawwado family'}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
               {learnerType === 'child' ? (

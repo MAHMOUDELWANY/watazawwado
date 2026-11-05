@@ -8,6 +8,7 @@ import { AuthPage, AuthCard } from '../components/auth/AuthFrame';
 import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { BrandLoader } from '../components/ui/BrandLoader';
+import { ZaadiRig } from '../components/zaadi/ZaadiRig';
 import { Card } from '../components/ui/Card';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { FeedbackHost, confirmAction, notify } from '../components/ui/Feedback';
@@ -258,7 +259,10 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
   const next = me.lessons[0];
   return (
     <div className="grid gap-5" data-testid="kid-home">
-      <h1 className="text-2xl sm:text-3xl font-display font-bold">{isAr ? `أهلًا يا ${me.learner.name}` : `Assalamu alaykum, ${me.learner.name}`}</h1>
+      <div className="flex items-center gap-3">
+        <ZaadiRig pose="wave" size={72} />
+        <h1 className="text-2xl sm:text-3xl font-display font-bold">{isAr ? `أهلًا يا ${me.learner.name}` : `Assalamu alaykum, ${me.learner.name}`}</h1>
+      </div>
 
       <section className="grid gap-3" aria-labelledby="kid-next">
         <h2 id="kid-next" className="text-base font-semibold">{isAr ? 'حصتك الجاية' : 'Your next lesson'}</h2>

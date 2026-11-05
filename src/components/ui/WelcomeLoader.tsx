@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { BrandSpinner } from './BrandLoader';
+import { ZaadiRig } from '../zaadi/ZaadiRig';
 
 export type WelcomeRole = 'student' | 'teacher' | 'admin';
 export type WelcomeGender = 'male' | 'female' | null | undefined;
@@ -84,20 +85,6 @@ function RibbonGradient({ id }: { id: string }) {
   );
 }
 
-/** Student: the eight-point khatam star draws itself in the ribbon colours. */
-function KhatamDrawing({ still }: { still: boolean }) {
-  const draw = still ? { pathLength: 1 } : { pathLength: [0, 1, 1], opacity: [1, 1, 0.35] };
-  const loop = still ? undefined : { duration: 2.4, times: [0, 0.7, 1], repeat: Infinity, ease: 'easeInOut' as const };
-  return (
-    <svg viewBox="0 0 120 120" className="w-32 h-32" aria-hidden="true">
-      <defs><RibbonGradient id="welcome-ribbon-star" /></defs>
-      <motion.rect x="27" y="27" width="66" height="66" rx="3" fill="none" stroke="url(#welcome-ribbon-star)" strokeWidth="3" strokeLinejoin="round" initial={{ pathLength: still ? 1 : 0 }} animate={draw} transition={loop} />
-      <motion.rect x="27" y="27" width="66" height="66" rx="3" fill="none" stroke="url(#welcome-ribbon-star)" strokeWidth="3" strokeLinejoin="round" transform="rotate(45 60 60)" initial={{ pathLength: still ? 1 : 0 }} animate={draw} transition={loop && { ...loop, delay: 0.25 }} />
-      <circle cx="60" cy="60" r="9" fill="none" stroke="#E5A93C" strokeWidth="2" />
-    </svg>
-  );
-}
-
 /** Teacher: a mihrab arch with a lantern glowing inside. */
 function MihrabLantern({ still }: { still: boolean }) {
   return (
@@ -156,7 +143,7 @@ export function WelcomeLoader({ role, lang, name, gender }: WelcomeLoaderProps) 
       className="fixed inset-0 z-[70] isolate bg-background text-foreground khatam-field brand-lights flex flex-col items-center justify-center gap-7 px-6 text-center"
     >
       <motion.div initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        {role === 'student' ? <KhatamDrawing still={still} /> : role === 'teacher' ? <MihrabLantern still={still} /> : <LogoRibbon still={still} isAr={isAr} />}
+        {role === 'student' ? <ZaadiRig pose="wave" size={132} /> : role === 'teacher' ? <MihrabLantern still={still} /> : <LogoRibbon still={still} isAr={isAr} />}
       </motion.div>
       <motion.div className="space-y-2 max-w-md" initial={still ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}>
         <h1 className="font-editorial text-3xl sm:text-4xl font-bold leading-snug">{title}</h1>
