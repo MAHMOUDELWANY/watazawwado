@@ -5827,7 +5827,7 @@ async function notifyRefund(supabase: any, paymentId: string): Promise<void> {
       title: { en: 'Your refund is on its way', ar: 'تم إرسال المبلغ المسترد' },
       body: {
         en: 'We have refunded ' + amount + '. It can take up to 14 days to reach your account, depending on your bank or payment method.',
-        ar: 'رجّعنالك ' + amount + '. ممكن ياخد لحد 14 يوم لحد ما يوصل حسابك، حسب البنك أو وسيلة الدفع.'
+        ar: 'أعدنا إليك ' + amount + '. قد يستغرق وصوله إلى حسابك حتى 14 يومًا، حسب البنك أو وسيلة الدفع.'
       },
       link: '/student/payments'
     }, { email: true });

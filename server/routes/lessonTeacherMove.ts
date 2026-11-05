@@ -230,10 +230,10 @@ export async function afterTeacherMove(client: any, move: CompletedMove, resolve
       const zone = b.student_timezone || 'Africa/Cairo';
       await notifyUser(client, { userId: account.userId }, {
         kind: 'lesson_teacher_changed',
-        title: { en: 'Your lesson has a new teacher', ar: 'حصتك بقى ليها مدرس جديد' },
+        title: { en: 'Your lesson has a new teacher', ar: 'لحصتك معلم جديد' },
         body: {
           en: `${learner}'s lesson on ${lessonWhen(b, zone, 'en-GB')} is now with ${newName}. Same time, same Zoom link, nothing else changes.`,
-          ar: `حصة ${learner} يوم ${lessonWhen(b, zone, 'ar-EG')} بقت مع ${newName}. نفس الميعاد ونفس رابط Zoom، ومفيش أي حاجة تانية اتغيرت.`
+          ar: `أصبحت حصة ${learner} يوم ${lessonWhen(b, zone, 'ar-EG')} مع ${newName}. الموعد نفسه ورابط Zoom نفسه، ولم يتغيّر شيء آخر.`
         },
         link: '/student/lessons'
       });

@@ -107,15 +107,15 @@ export type CodeRejection =
 
 /** Friendly, honest reasons shown under the code box. */
 export const CODE_REJECTION_TEXT: Record<CodeRejection, { en: string; ar: string }> = {
-  NOT_FOUND: { en: "We couldn't find this code. Check the spelling and try again.", ar: 'الكود ده مش موجود. اتأكد من كتابته وجرّب تاني.' },
-  NOT_ACTIVE: { en: 'This code is no longer active.', ar: 'الكود ده مبقاش شغال.' },
-  NOT_STARTED: { en: "This code isn't active yet.", ar: 'الكود ده لسه ما بدأش.' },
-  EXPIRED: { en: 'This code has expired.', ar: 'الكود ده انتهت مدته.' },
-  WRONG_ITEM: { en: "This code doesn't apply to this item.", ar: 'الكود ده مش للنوع ده من الحجز.' },
-  FIRST_PURCHASE_ONLY: { en: 'This code is for a first purchase only.', ar: 'الكود ده لأول شراء بس.' },
-  MIN_AMOUNT: { en: 'This code needs a larger order.', ar: 'الكود ده محتاج مبلغ أكبر.' },
-  USED_UP: { en: 'This code has been fully used.', ar: 'الكود ده خلص استخدامه.' },
-  ALREADY_USED: { en: "You've already used this code.", ar: 'انت استخدمت الكود ده قبل كده.' },
+  NOT_FOUND: { en: "We couldn't find this code. Check the spelling and try again.", ar: 'لم نجد هذا الرمز. تأكد من كتابته وحاول مرة أخرى.' },
+  NOT_ACTIVE: { en: 'This code is no longer active.', ar: 'هذا الرمز لم يعد فعّالًا.' },
+  NOT_STARTED: { en: "This code isn't active yet.", ar: 'هذا الرمز لم يبدأ بعد.' },
+  EXPIRED: { en: 'This code has expired.', ar: 'انتهت مدة هذا الرمز.' },
+  WRONG_ITEM: { en: "This code doesn't apply to this item.", ar: 'هذا الرمز لا ينطبق على هذا النوع من الحجز.' },
+  FIRST_PURCHASE_ONLY: { en: 'This code is for a first purchase only.', ar: 'هذا الرمز لأول شراء فقط.' },
+  MIN_AMOUNT: { en: 'This code needs a larger order.', ar: 'هذا الرمز يحتاج إلى مبلغ أكبر.' },
+  USED_UP: { en: 'This code has been fully used.', ar: 'استُنفد استخدام هذا الرمز.' },
+  ALREADY_USED: { en: "You've already used this code.", ar: 'لقد استخدمت هذا الرمز من قبل.' },
 };
 
 /** Maps the RPC's limit errors (raised under lock) to the same reasons. */

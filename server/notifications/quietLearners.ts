@@ -31,11 +31,11 @@ export function quietNotice(learnerName: string | null, viaParent: boolean) {
     body: who
       ? {
           en: `It has been a few weeks since ${who.en}'s last lesson. Whenever you are ready, your teacher is happy to pick up where you left off. If anything got in the way, tell us and we will help.`,
-          ar: `بقالنا كام أسبوع من آخر درس لـ${who.ar}. وقت ما تحبوا، المعلم مستني يكمّل معاكم من مكان ما وقفتوا. ولو في حاجة وقفتكم، قولولنا ونساعدكم.`
+          ar: `مرّت بضعة أسابيع منذ آخر درس لـ${who.ar}. متى أحببتم، فالمعلم ينتظر ليكمل معكم من حيث توقفتم. وإن أوقفكم شيء، أخبرونا لنساعدكم.`
         }
       : {
           en: 'It has been a few weeks since your last lesson. Whenever you are ready, your teacher is happy to pick up where you left off. If anything got in the way, tell us and we will help.',
-          ar: 'بقالنا كام أسبوع من آخر درس ليك. وقت ما تحب، معلمك مستني يكمّل معاك من مكان ما وقفت. ولو في حاجة وقفتك، قول لنا ونساعدك.'
+          ar: 'مرّت بضعة أسابيع منذ آخر درس لك. متى أحببت، فمعلمك ينتظر ليكمل معك من حيث توقفت. وإن أوقفك شيء، أخبرنا لنساعدك.'
         },
     link: '/student/book'
   };

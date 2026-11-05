@@ -219,11 +219,11 @@ function render(content: EmailContent, subject: L, lang: EmailLang = 'en'): Emai
 
 const STUDENT_REASON: L = {
   en: 'You are receiving this email because you have an account or a booking on Watazawwado.',
-  ar: 'وصلتك الرسالة دي لأن عندك حساب أو حجز على منصة وتزودوا.'
+  ar: 'وصلتك هذه الرسالة لأن لديك حسابًا أو حجزًا على منصة وتزودوا.'
 };
 const STAFF_REASON: L = {
   en: 'You are receiving this email because you are a teacher or admin on Watazawwado.',
-  ar: 'وصلتك الرسالة دي لأنك معلم أو مدير على منصة وتزودوا.'
+  ar: 'وصلتك هذه الرسالة لأنك معلم أو مدير على منصة وتزودوا.'
 };
 const ACCOUNT_BUTTON = (path = '/student') => ({ url: `${SITE_URL}${path}`, label: { en: 'Open my account', ar: 'افتح حسابي' } });
 
@@ -244,7 +244,7 @@ function zoomParts(zoomLink?: string | null) {
     url,
     note: url ? undefined : {
       en: 'Your lesson link is being prepared and will reach you before the lesson.',
-      ar: 'رابط الحصة بيتجهز وهيوصلك قبل ميعاد الدرس.'
+      ar: 'يُجهَّز رابط الحصة وسيصلك قبل موعد الدرس.'
     }
   };
 }
@@ -308,7 +308,7 @@ export function renderStudentBookingConfirmation(params: {
     ],
     note: zoom.note || {
       en: 'You can cancel up to 3 hours before (you get a lesson credit) or move it up to 1 hour before, from your account.',
-      ar: 'تقدر تلغي لحد 3 ساعات قبل الحصة (وترجع لك كرصيد)، أو تغيّر الميعاد لحد ساعة قبلها من حسابك.'
+      ar: 'يمكنك الإلغاء حتى 3 ساعات قبل الحصة (وتعود إليك رصيدًا)، أو تغيير الموعد حتى ساعة قبلها من حسابك.'
     },
     button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
@@ -341,7 +341,7 @@ export function renderStudentTrialConfirmation(params: {
     paragraphs: [
       {
         en: `You booked a free trial lesson in <strong>${service}</strong>. We will get to know your level and goal and build a plan that fits you.`,
-        ar: `حجزت حصة تجريبية مجانية في <strong>${service}</strong>. هنتعرف على مستواك وهدفك ونعمل خطة على مقاسك.`
+        ar: `حجزت حصة تجريبية مجانية في <strong>${service}</strong>. سنتعرّف على مستواك وهدفك ونضع خطة على قدرك.`
       },
       { en: 'Find a quiet spot with headphones and join a couple of minutes early.', ar: 'جهّز مكان هادي وسماعة، وادخل قبل الميعاد بدقيقتين.' }
     ],
@@ -351,7 +351,7 @@ export function renderStudentTrialConfirmation(params: {
       [LBL.length, minutes(params.durationMinutes, 30)],
       [LBL.ref, escapeHtml(params.bookingRef)]
     ],
-    note: zoom.note || { en: 'You can move your trial once, up to 1 hour before it starts.', ar: 'تقدر تغيّر ميعاد التجربة مرة واحدة لحد ساعة قبلها.' },
+    note: zoom.note || { en: 'You can move your trial once, up to 1 hour before it starts.', ar: 'يمكنك تغيير موعد الحصة التجريبية مرة واحدة حتى ساعة قبلها.' },
     button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
@@ -377,7 +377,7 @@ export function renderStudentPaymentConfirmed(params: {
     preheader: { en: `Payment received · ${Number(params.amount).toFixed(2)} ${params.currency}`, ar: `وصلنا الدفع · ${Number(params.amount).toFixed(2)} ${params.currency}` },
     title: { en: 'Payment received — thank you 🤍', ar: 'وصلنا الدفع، شكراً لك 🤍' },
     greeting: { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` },
-    paragraphs: [{ en: 'We received your payment. Please keep this email as your receipt.', ar: 'استلمنا دفعتك بنجاح. احتفظ بالرسالة دي كإيصال.' }],
+    paragraphs: [{ en: 'We received your payment. Please keep this email as your receipt.', ar: 'وصلتنا دفعتك. احتفظ بهذه الرسالة إيصالًا.' }],
     rows: [
       [{ en: 'Item', ar: 'الخدمة' }, escapeHtml(params.serviceName)],
       [LBL.amount, `${Number(params.amount).toFixed(2)} ${escapeHtml(params.currency)}`],
@@ -388,7 +388,7 @@ export function renderStudentPaymentConfirmed(params: {
     ],
     note: {
       en: 'If you cancel a paid lesson 3 hours or more before it starts, you get a lesson credit, and you can ask for a refund instead as described in the terms.',
-      ar: 'لو ألغيت حصة مدفوعة قبلها بـ 3 ساعات بترجع لك كرصيد، وتقدر تطلب الاسترداد بدل الرصيد حسب الشروط.'
+      ar: 'إن ألغيت حصة مدفوعة قبلها بـ 3 ساعات تعود إليك رصيدًا، ويمكنك طلب الاسترداد بدل الرصيد حسب الشروط.'
     },
     button: ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
@@ -411,12 +411,12 @@ export function renderStudentCancellation(params: {
 }): EmailRenderResult {
   const name = escapeHtml(params.learnerName);
   return render({
-    preheader: { en: `Lesson cancelled · ${params.date}`, ar: `الحصة اتلغت · ${params.date}` },
+    preheader: { en: `Lesson cancelled · ${params.date}`, ar: `أُلغيت الحصة · ${params.date}` },
     title: { en: 'Your lesson was cancelled', ar: 'تم إلغاء الحصة' },
     greeting: { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` },
     paragraphs: [{
       en: 'This lesson has been cancelled. If it was paid and cancelled in time, its credit is back in your account to book any time.',
-      ar: 'الحصة دي اتلغت. لو كانت مدفوعة واتلغت في الوقت المسموح، رصيدها رجع لحسابك وتقدر تحجز بيه في أي وقت.'
+      ar: 'أُلغيت هذه الحصة. إن كانت مدفوعة وأُلغيت في الوقت المسموح، فقد عاد رصيدها إلى حسابك ويمكنك الحجز به في أي وقت.'
     }],
     rows: [
       [LBL.subject, escapeHtml(params.serviceName)],
@@ -453,7 +453,7 @@ export function renderStudentReschedule(params: {
     preheader: { en: `New time · ${params.newDate} ${params.newTimeDisplay}`, ar: `ميعاد جديد · ${params.newDate} ${params.newTimeDisplay}` },
     title: { en: 'Your lesson has a new time 🗓️', ar: 'ميعاد حصتك اتغيّر 🗓️' },
     greeting: { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` },
-    paragraphs: [{ en: 'Your lesson has moved. Here are the new details:', ar: 'ميعاد حصتك اتغيّر. التفاصيل الجديدة تحت:' }],
+    paragraphs: [{ en: 'Your lesson has moved. Here are the new details:', ar: 'تغيّر موعد حصتك. التفاصيل الجديدة في الأسفل:' }],
     rows: [
       [LBL.subject, escapeHtml(params.serviceName)],
       [{ en: 'Old time', ar: 'الميعاد القديم' }, `<s>${escapeHtml(params.oldDate)} · ${escapeHtml(params.oldTimeDisplay)}</s>`],
@@ -488,21 +488,21 @@ export function renderStudent24hReminder(params: {
   return render({
     preheader: { en: `Tomorrow: ${params.serviceName} at ${params.timeDisplay}`, ar: `بكرة: ${params.serviceName} الساعة ${params.timeDisplay}` },
     title: params.isTrial
-      ? { en: 'Your free trial is tomorrow ⏰', ar: 'حصتك التجريبية بكرة ⏰' }
-      : { en: 'Your lesson is tomorrow ⏰', ar: 'حصتك بكرة ⏰' },
+      ? { en: 'Your free trial is tomorrow ⏰', ar: 'حصتك التجريبية غدًا ⏰' }
+      : { en: 'Your lesson is tomorrow ⏰', ar: 'حصتك غدًا ⏰' },
     greeting: { en: `Hi ${name},`, ar: `أهلاً ${name}،` },
-    paragraphs: [{ en: 'A friendly reminder about your lesson tomorrow.', ar: 'تذكير صغير بحصتك بكرة إن شاء الله.' }],
+    paragraphs: [{ en: 'A friendly reminder about your lesson tomorrow.', ar: 'تذكير صغير بحصتك غدًا إن شاء الله.' }],
     rows: [
       [LBL.subject, escapeHtml(params.serviceName)],
       [LBL.when, whenValue(params.date, params.timeDisplay, params.timezone)],
       [LBL.length, minutes(params.durationMinutes, 60)]
     ],
-    note: { en: 'You can still cancel up to 3 hours before or move it up to 1 hour before.', ar: 'لسه تقدر تلغي لحد 3 ساعات قبلها أو تغيّر الميعاد لحد ساعة قبلها.' },
+    note: { en: 'You can still cancel up to 3 hours before or move it up to 1 hour before.', ar: 'ما زال بإمكانك الإلغاء حتى 3 ساعات قبلها أو تغيير الموعد حتى ساعة قبلها.' },
     button: zoom.url ? { url: params.zoomLink!, label: { en: 'Lesson link', ar: 'رابط الحصة' } } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
     en: 'Reminder: your lesson is tomorrow',
-    ar: 'تذكير: حصتك بكرة'
+    ar: 'تذكير: حصتك غدًا'
   }, params.lang);
 }
 
@@ -525,7 +525,7 @@ export function renderStudent3hReminder(params: {
     greeting: { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` },
     paragraphs: [{
       en: 'A gentle reminder: your lesson is today, in about three hours. Find a quiet corner, and your teacher will be waiting for you.',
-      ar: 'تذكير لطيف: حصتك النهارده كمان حوالي ٣ ساعات. جهّز ركن هادي، ومعلمك هيكون في انتظارك.'
+      ar: 'تذكير لطيف: حصتك اليوم بعد نحو ٣ ساعات. جهّز ركنًا هادئًا، ومعلمك في انتظارك.'
     }],
     rows: [
       [LBL.subject, escapeHtml(params.serviceName)],
@@ -556,7 +556,7 @@ export function renderStudent1hReminder(params: {
     preheader: { en: `Starting in 1 hour · ${params.timeDisplay}`, ar: `كمان ساعة · ${params.timeDisplay}` },
     title: { en: 'Your lesson starts in 1 hour 🔔', ar: 'حصتك كمان ساعة 🔔' },
     greeting: { en: `Hi ${name},`, ar: `أهلاً ${name}،` },
-    paragraphs: [{ en: 'Your lesson starts in one hour. Get ready and join on time.', ar: 'حصتك هتبدأ كمان ساعة. جهّز نفسك وادخل في الميعاد.' }],
+    paragraphs: [{ en: 'Your lesson starts in one hour. Get ready and join on time.', ar: 'تبدأ حصتك بعد ساعة. استعد وادخل في الموعد.' }],
     rows: [
       [LBL.subject, escapeHtml(params.serviceName)],
       [{ en: 'Time', ar: 'الساعة' }, `${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`]
@@ -581,7 +581,7 @@ const STAFF_TITLES: Record<StaffEventType, L> = {
   new_student: { en: 'A new student chose you', ar: 'طالب جديد اختارك' },
   payment_claimed: { en: 'A student reported a payment', ar: 'طالب بلّغ عن دفع' },
   payment_confirmed: { en: 'Payment received', ar: 'وصل دفع' },
-  cancelled: { en: 'Lesson cancelled', ar: 'حصة اتلغت' },
+  cancelled: { en: 'Lesson cancelled', ar: 'أُلغيت حصة' },
   rescheduled: { en: 'Lesson moved', ar: 'حصة اتغيّر ميعادها' },
   alert: { en: 'Alert', ar: 'تنبيه' },
   new_signup: { en: 'New student signed up', ar: 'طالب جديد سجّل' },
@@ -634,19 +634,19 @@ export function renderMonthlyProgressEmail(params: {
 }): EmailRenderResult {
   const name = escapeHtml(params.name || '');
   const settings = `${SITE_URL}/student/account?tab=preferences`;
-  const title: L = { en: `Your month with us: ${params.monthLabel.en}`, ar: `شهرك معانا: ${params.monthLabel.ar}` };
+  const title: L = { en: `Your month with us: ${params.monthLabel.en}`, ar: `شهرك معنا: ${params.monthLabel.ar}` };
   return render({
     preheader: title,
     title,
     greeting: name ? { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` } : { en: 'Assalamu alaikum,', ar: 'السلام عليكم،' },
     paragraphs: [
       ...params.lines.map((l) => ({ en: escapeHtml(l.en), ar: escapeHtml(l.ar) })),
-      { en: 'The full report, with the teacher\'s notes, is in your account. You can print it or keep it.', ar: 'التقرير الكامل بملاحظات المعلم موجود في حسابك، وتقدر تطبعه أو تحتفظ بيه.' }
+      { en: 'The full report, with the teacher\'s notes, is in your account. You can print it or keep it.', ar: 'التقرير الكامل بملاحظات المعلم موجود في حسابك، ويمكنك طباعته أو الاحتفاظ به.' }
     ],
     button: { url: `${SITE_URL}${params.reportPath}`, label: { en: 'Open the monthly report', ar: 'افتح التقرير الشهري' } },
     reason: {
       en: `You get this monthly note because progress emails are on in your account. <a href="${settings}" style="color:${TEAL};">Turn them off</a> any time.`,
-      ar: `وصلتك الرسالة دي لأن إيميلات التقدّم شغّالة في حسابك. تقدر <a href="${settings}" style="color:${TEAL};">توقفها</a> في أي وقت.`
+      ar: `وصلتك هذه الرسالة لأن رسائل التقدّم مفعّلة في حسابك. يمكنك <a href="${settings}" style="color:${TEAL};">إيقافها</a> في أي وقت.`
     }
   }, title, params.lang);
 }
@@ -659,7 +659,7 @@ export function renderWeeklyDigestEmail(params: {
 }): EmailRenderResult {
   const name = escapeHtml(params.name || '');
   const settings = `${SITE_URL}/student/account?tab=preferences`;
-  const title: L = { en: 'Your week with us', ar: 'أسبوعك معانا' };
+  const title: L = { en: 'Your week with us', ar: 'أسبوعك معنا' };
   return render({
     preheader: title,
     title,
@@ -668,7 +668,7 @@ export function renderWeeklyDigestEmail(params: {
     button: { url: `${SITE_URL}/student`, label: { en: 'Open your home page', ar: 'افتح صفحتك الرئيسية' } },
     reason: {
       en: `You get this weekly note because progress emails are on in your account. <a href="${settings}" style="color:${TEAL};">Turn them off</a> any time.`,
-      ar: `وصلتك الرسالة دي لأن إيميلات التقدّم شغّالة في حسابك. تقدر <a href="${settings}" style="color:${TEAL};">توقفها</a> في أي وقت.`
+      ar: `وصلتك هذه الرسالة لأن رسائل التقدّم مفعّلة في حسابك. يمكنك <a href="${settings}" style="color:${TEAL};">إيقافها</a> في أي وقت.`
     }
   }, title, params.lang);
 }
@@ -713,15 +713,15 @@ export function renderWelcomeEmail(params: {
   const t = (en: string, arText: string) => (ar ? arText : en);
   const subject = t('Welcome to the Watazawwado family', 'أهلًا بيك في عائلة وتزودوا');
   const steps: [string, string][] = [
-    [t('Book your free trial', 'احجز حصتك التجريبية المجانية'), t('30 minutes on Zoom, at a time that suits you. No card needed.', '30 دقيقة على زووم في الوقت اللي يناسبك، من غير أي دفع.')],
-    [t('A short placement test', 'اختبار تحديد مستوى قصير'), t('About 5 minutes after booking, so your teacher prepares the lesson for your exact level.', 'حوالي 5 دقايق بعد الحجز، عشان معلمك يجهّز الحصة على قد مستواك بالظبط.')],
-    [t('Your first lesson', 'أول حصة ليك'), t('Your teacher opens the class; you join from your account or the email we send.', 'المعلم بيفتح الفصل، وانت بتدخل من حسابك أو من الإيميل اللي بيوصلك.')]
+    [t('Book your free trial', 'احجز حصتك التجريبية المجانية'), t('30 minutes on Zoom, at a time that suits you. No card needed.', '30 دقيقة على Zoom في الوقت الذي يناسبك، دون أي دفع.')],
+    [t('A short placement test', 'اختبار تحديد مستوى قصير'), t('About 5 minutes after booking, so your teacher prepares the lesson for your exact level.', 'نحو 5 دقائق بعد الحجز، ليجهّز معلمك الحصة على قدر مستواك بالضبط.')],
+    [t('Your first lesson', 'أول حصة لك'), t('Your teacher opens the class; you join from your account or the email we send.', 'يفتح المعلم الفصل، وتدخل أنت من حسابك أو من الرسالة التي تصلك.')]
   ];
   const intro = params.isFamily
     ? t(`We are honoured that you chose us for your family's learning${kids ? ` — a warm welcome to ${kids}` : ''}. From today, every lesson is one-to-one, with a teacher who knows each child by name.`,
-        `يشرفنا إنك اخترتنا لرحلة تعلّم عائلتك${kids ? ` — وأهلًا وسهلًا بـ ${kids}` : ''}. من النهارده كل حصة فردية، مع معلم بيعرف كل طفل باسمه.`)
+        `يشرّفنا أنك اخترتنا لرحلة تعلّم أسرتك${kids ? ` — وأهلًا وسهلًا بـ ${kids}` : ''}. من اليوم كل حصة فردية، مع معلم يعرف كل طفل باسمه.`)
     : t('We are honoured that you chose to begin this journey with us. From today, every lesson is one-to-one, shaped around you and your goals.',
-        'يشرفنا إنك اخترت تبدأ الرحلة دي معانا. من النهارده كل حصة فردية، ومتفصّلة على قدك وعلى أهدافك.');
+        'يشرّفنا أنك اخترت أن تبدأ هذه الرحلة معنا. من اليوم كل حصة فردية، ومصمّمة على قدرك وأهدافك.');
   // Steps sit on a gold thread: numbered medallions (the first in crimson), joined by a thin line.
   const stepRows = steps.map(([title, body], i) => `
           <tr>
@@ -737,7 +737,7 @@ export function renderWelcomeEmail(params: {
 
   const hero = `<p class="verse" dir="rtl" style="margin:20px 0 0;font-family:${SERIF_STACK};font-size:28px;line-height:1.6;color:#F6D58E;">﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
           <p style="margin:4px 0 0;font-size:12px;color:#CFE3E6;">${t('Al-Baqarah 197, the verse our name comes from', 'البقرة ١٩٧، ومنها اسمنا')}</p>`;
-  const body = `<h1 class="text" style="margin:0 0 8px;font-family:${SERIF_STACK};font-size:26px;line-height:1.35;font-weight:700;color:${INK};">${t(`Welcome to the family, ${name}`, `أهلًا بيك في العيلة يا ${name}`)}</h1>
+  const body = `<h1 class="text" style="margin:0 0 8px;font-family:${SERIF_STACK};font-size:26px;line-height:1.35;font-weight:700;color:${INK};">${t(`Welcome to the family, ${name}`, `أهلًا بك في العائلة يا ${name}`)}</h1>
           <p class="body-text" style="margin:0 0 22px;font-size:15px;line-height:1.8;color:${BODY};">${intro}</p>
           ${params.teacherName ? `<table role="presentation" class="card" width="100%" cellspacing="0" cellpadding="0" style="background:#F6F1EA;border:1px solid ${LINE};border-radius:18px;margin:0 0 24px;">
             <tr><td dir="${dir}" style="padding:14px 20px;text-align:${align};">
@@ -745,7 +745,7 @@ export function renderWelcomeEmail(params: {
               <p class="text" style="margin:2px 0 0;font-family:${SERIF_STACK};font-size:18px;font-weight:700;color:${TEAL};">${escapeHtml(params.teacherName)}</p>
             </td></tr>
           </table>` : ''}
-          <p class="text" style="margin:0 0 14px;font-size:13px;font-weight:700;color:${COPPER};">${t('What happens next', 'اللي جاي')}</p>
+          <p class="text" style="margin:0 0 14px;font-size:13px;font-weight:700;color:${COPPER};">${t('What happens next', 'ما الذي ينتظرك')}</p>
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${stepRows}</table>
           ${ctaButton(`${SITE_URL}/student/book`, t('Book my free trial', 'احجز حصتي التجريبية'))}
           <p class="muted" style="margin:0 0 18px;font-size:13px;line-height:1.7;color:${MUTED};text-align:center;">${t('Questions? Write to us in Messages in your account, or on WhatsApp', 'عندك سؤال؟ اكتبلنا في "الرسائل" في حسابك، أو على واتساب')} <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;" dir="ltr">${WHATSAPP_DISPLAY}</a></p>`;
@@ -753,7 +753,7 @@ export function renderWelcomeEmail(params: {
   const html = renderShell({
     lang,
     title: subject,
-    preheader: t('Your journey starts here. Your free trial is one click away.', 'رحلتك بتبدأ من هنا، وحصتك التجريبية على بُعد ضغطة.'),
+    preheader: t('Your journey starts here. Your free trial is one click away.', 'رحلتك تبدأ من هنا، وحصتك التجريبية على بُعد نقرة.'),
     hero,
     body,
     reason: STUDENT_REASON[lang]
@@ -762,7 +762,7 @@ export function renderWelcomeEmail(params: {
   const text = [
     subject,
     'وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ (2:197)',
-    t(`Welcome to the family, ${params.name}`, `أهلًا بيك في العيلة يا ${params.name}`),
+    t(`Welcome to the family, ${params.name}`, `أهلًا بك في العائلة يا ${params.name}`),
     intro,
     params.teacherName ? `${t('Your teacher', 'معلمك')}: ${params.teacherName}` : '',
     ...steps.map(([title, body], i) => `${i + 1}. ${title} — ${body}`),
@@ -783,7 +783,7 @@ export function renderSupabaseAuthTemplate(kind: 'confirm' | 'reset' | 'invite')
   const copy = {
     confirm: {
       subject: 'رمز تأكيد حسابك · Your Watazawwado code',
-      ar: ['رمز تأكيد حسابك', 'اكتب الرمز ده في صفحة التأكيد عشان نفتح حسابك. صالح لمدة ساعة.'],
+      ar: ['رمز تأكيد حسابك', 'اكتب هذا الرمز في صفحة التأكيد لنفتح حسابك. صالح لمدة ساعة.'],
       en: ['Your sign-up code', 'Enter this code on the confirmation page to open your account. It works for one hour.']
     },
     reset: {
@@ -793,7 +793,7 @@ export function renderSupabaseAuthTemplate(kind: 'confirm' | 'reset' | 'invite')
     },
     invite: {
       subject: 'دعوة للانضمام لفريق وتزودوا · Join the Watazawwado teachers',
-      ar: ['أهلاً بيك في فريق المعلمين', 'اتضافت كمعلم في وتزودوا. اضغط الزر عشان تختار كلمة السر وتدخل لوحة المعلم.'],
+      ar: ['أهلًا بك في فريق المعلمين', 'أُضفت معلمًا في وتزودوا. اضغط الزر لتختار كلمة السر وتدخل لوحة المعلم.'],
       en: ['Welcome to the teaching team', 'You were added as a teacher at Watazawwado. Press the button to choose your password and open the teacher dashboard.']
     }
   }[kind];
@@ -805,8 +805,8 @@ export function renderSupabaseAuthTemplate(kind: 'confirm' | 'reset' | 'invite')
             <p class="body-text" style="margin:0 0 14px;font-size:${lang === 'ar' ? 15 : 14}px;line-height:1.75;color:${BODY};">${text}</p>
           </div>`;
   const ignore = kind === 'invite'
-    ? 'لو مكنتش مستني الدعوة دي، تجاهل الرسالة.<br><span dir="ltr">If you did not expect this invitation, ignore this email.</span>'
-    : 'لو مش إنت اللي طلبت، تجاهل الرسالة وحسابك هيفضل في أمان.<br><span dir="ltr">If this was not you, ignore this email; your account stays safe.</span>';
+    ? 'إن لم تكن تنتظر هذه الدعوة، فتجاهل الرسالة.<br><span dir="ltr">If you did not expect this invitation, ignore this email.</span>'
+    : 'إن لم تكن أنت من طلب ذلك، فتجاهل الرسالة وسيبقى حسابك آمنًا.<br><span dir="ltr">If this was not you, ignore this email; your account stays safe.</span>';
   const body = `${block('ar', copy.ar)}
           ${kind === 'confirm' ? '' : action}
           <div style="height:1px;background:${LINE};margin:4px 0 18px;font-size:0;line-height:0;">&nbsp;</div>
@@ -818,7 +818,7 @@ export function renderSupabaseAuthTemplate(kind: 'confirm' | 'reset' | 'invite')
     title: copy.subject,
     preheader: copy.subject,
     body,
-    reason: 'وصلتك الرسالة دي لأن الإيميل <span dir="ltr">{{ .Email }}</span> اتسجل على وتزودوا.<br><span dir="ltr">You received this because {{ .Email }} was used on Watazawwado.</span>',
+    reason: 'وصلتك هذه الرسالة لأن البريد <span dir="ltr">{{ .Email }}</span> سُجّل على وتزودوا.<br><span dir="ltr">You received this because {{ .Email }} was used on Watazawwado.</span>',
     signature: 'وتزودوا · Watazawwado'
   });
   return { subject: copy.subject, html };

@@ -49,9 +49,9 @@ export function summaryLines(r: Pick<MonthlyRecipient, 'learners' | 'viaParent'>
     const en = `${n} lesson${n === 1 ? '' : 's'}`;
     const ar = n === 1 ? 'درس واحد' : n === 2 ? 'درسين' : n <= 10 ? `${n} دروس` : `${n} درس`;
     if (r.viaParent || r.learners.length > 1) {
-      return { en: `${l.learnerName || 'Your child'} took ${en} last month.`, ar: `حصص ${l.learnerName || 'طفلك'} الشهر اللي فات: ${ar}.` };
+      return { en: `${l.learnerName || 'Your child'} took ${en} last month.`, ar: `حصص ${l.learnerName || 'طفلك'} في الشهر الماضي: ${ar}.` };
     }
-    return { en: `You took ${en} with us last month. Well done.`, ar: `حضرت معانا ${ar} الشهر اللي فات. ما شاء الله.` };
+    return { en: `You took ${en} with us last month. Well done.`, ar: `حضرت معنا ${ar} في الشهر الماضي. ما شاء الله.` };
   });
 }
 

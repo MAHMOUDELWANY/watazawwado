@@ -60,7 +60,7 @@ export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerNa
     title: { en: `Your package${forEn} is complete`, ar: `خلصت حصص باقتك${forAr}` },
     body: {
       en: `All ${enLessons(size)} of your package${forEn} are done. You can renew the same package or book a single lesson whenever you like.`,
-      ar: `خلصت الـ ${arSize(size)} اللي في باقتك${forAr}، زادك الله. تقدر تجدد نفس الباقة أو تحجز حصة واحدة في أي وقت يناسبك.`
+      ar: `انتهت الـ ${arSize(size)} التي في باقتك${forAr}، زادك الله. يمكنك تجديد الباقة نفسها أو حجز حصة واحدة في أي وقت يناسبك.`
     },
     link
   };

@@ -45,10 +45,10 @@ export function trialFollowUpNotice(f: TrialFollowUpFacts) {
   const level = f.level ? LEVEL_NAMES[f.level] : null;
   if (level) {
     en.push(`The placement test suggests starting at the ${level.en} level.`);
-    ar.push(`اختبار تحديد المستوى بيقترح البداية من المستوى ال${level.ar}.`);
+    ar.push(`يقترح اختبار تحديد المستوى البدء من المستوى ال${level.ar}.`);
   }
   en.push('To continue, you can book a single lesson or choose a package, whichever suits you. We are here if you have any question.');
-  ar.push('عشان تكمل، تقدر تحجز حصة واحدة أو تختار باقة، اللي يناسبك. وإحنا موجودين لو عندك أي سؤال.');
+  ar.push('لتكمل، يمكنك حجز حصة واحدة أو اختيار باقة، أيهما يناسبك. ونحن هنا إن كان لديك أي سؤال.');
   return {
     kind: 'trial_follow_up',
     title: { en: 'Thank you for the trial lesson', ar: 'شكراً على الحصة التجريبية' },

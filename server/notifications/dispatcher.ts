@@ -420,7 +420,7 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             : `The lesson with ${booking.learnerName} on ${booking.date} was cancelled.`,
           summaryAr: moved
             ? `حصة ${booking.learnerName} اتنقلت لـ ${booking.date} · ${booking.timeDisplay}.`
-            : `حصة ${booking.learnerName} يوم ${booking.date} اتلغت.`,
+            : `أُلغيت حصة ${booking.learnerName} يوم ${booking.date}.`,
           details: [
             ...lessonRows(booking),
             ...(moved ? [['Previous time', 'الميعاد القديم', `${booking.oldDate || ''} ${booking.oldTimeDisplay || ''}`.trim()] as [string, string, unknown]] : [])

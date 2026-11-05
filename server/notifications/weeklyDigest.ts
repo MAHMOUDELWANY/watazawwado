@@ -51,11 +51,11 @@ export function digestParagraphs(learners: LearnerWeek[], viaParent: boolean): L
     const who = viaParent || learners.length > 1 ? (l.learnerName || null) : null;
     const t = lessonsText(l.lessons);
     out.push(who
-      ? { en: `${who} took ${t.en} this week.`, ar: `حصص ${who} الأسبوع ده: ${t.ar}.` }
-      : { en: `You took ${t.en} with us this week.`, ar: `حضرت معانا ${t.ar} الأسبوع ده.` });
+      ? { en: `${who} took ${t.en} this week.`, ar: `حصص ${who} هذا الأسبوع: ${t.ar}.` }
+      : { en: `You took ${t.en} with us this week.`, ar: `حضرت معنا ${t.ar} هذا الأسبوع.` });
     if (l.summary) out.push({ en: `From the teacher: ${l.summary}`, ar: `من المعلم: ${l.summary}` });
     if (l.homework.length) {
-      out.push({ en: `Homework for next time: ${l.homework.map((h) => h.en).join('; ')}.`, ar: `واجب الحصة الجاية: ${l.homework.map((h) => h.ar).join('، ')}.` });
+      out.push({ en: `Homework for next time: ${l.homework.map((h) => h.en).join('; ')}.`, ar: `واجب الحصة القادمة: ${l.homework.map((h) => h.ar).join('، ')}.` });
     }
   }
   return out;
@@ -136,7 +136,7 @@ export async function processWeeklyDigest(client: any, opts: { now?: DateTime; d
       const result = await send({ to: r.email, toName: r.name || undefined, ...mail, from: 'support' });
       if (r.userId) {
         await notify(client, { userId: r.userId }, {
-          kind: 'weekly_digest', title: { en: 'Your week with us', ar: 'أسبوعك معانا' },
+          kind: 'weekly_digest', title: { en: 'Your week with us', ar: 'أسبوعك معنا' },
           body: { en: paragraphs.map((p) => p.en).join(' '), ar: paragraphs.map((p) => p.ar).join(' ') }, link: '/student',
         });
       }
