@@ -25,16 +25,16 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
       const name = isAr ? `جهاز ${child.name}` : `${child.name}'s device`;
       setCode(await authedJson<Code>('/api/student/child-devices', { method: 'POST', body: JSON.stringify({ learnerId: child.id, name }) }));
     } catch (err: any) {
-      notify(err?.status === 409 ? (isAr ? 'شيل جهاز مش مستخدم الأول.' : 'Remove a device you no longer use first.') : (isAr ? 'معرفناش نطلّع كود، جرّب تاني.' : 'Could not make a code. Please try again.'), 'error');
+      notify(err?.status === 409 ? (isAr ? 'احذف جهازًا لم تعد تستخدمه أولًا.' : 'Remove a device you no longer use first.') : (isAr ? 'تعذّر إنشاء رمز، حاول مرة أخرى.' : 'Could not make a code. Please try again.'), 'error');
     } finally { setBusy(null); }
   };
 
   const remove = async (d: Device) => {
-    const ok = await confirmAction(isAr ? `نشيل "${d.name}"؟ هيبطل يفتح الحصص على طول.` : `Remove "${d.name}"? It stops opening the lessons at once.`, { confirmLabel: isAr ? 'شيله' : 'Remove', danger: true });
+    const ok = await confirmAction(isAr ? `نحذف "${d.name}"؟ سيتوقف فورًا عن فتح الحصص.` : `Remove "${d.name}"? It stops opening the lessons at once.`, { confirmLabel: isAr ? 'احذفه' : 'Remove', danger: true });
     if (!ok) return;
     setBusy(d.id);
     try { await authedJson(`/api/student/child-devices/${d.id}`, { method: 'DELETE' }); await load(); }
-    catch { notify(isAr ? 'معرفناش نشيل الجهاز، جرّب تاني.' : 'Could not remove the device. Please try again.', 'error'); }
+    catch { notify(isAr ? 'تعذّر حذف الجهاز، حاول مرة أخرى.' : 'Could not remove the device. Please try again.', 'error'); }
     finally { setBusy(null); }
   };
 
@@ -50,7 +50,7 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
       </h3>
       <p className="text-xs text-muted-foreground">
         {isAr
-          ? 'لو ابنك عنده موبايل أو تابلت أو كمبيوتر غير جهازك، يقدر يشوف عليه حصصه وواجبه ومراجعته من غير إيميل ولا باسورد. الجهاز ده مفيهوش دفع ولا حجز ولا إعدادات ولا إخواته.'
+          ? 'إن كان لدى ابنك هاتف أو جهاز لوحي أو كمبيوتر غير جهازك، يستطيع أن يرى عليه حصصه وواجبه ومراجعته دون بريد ولا كلمة سر. لا يحتوي هذا الجهاز على دفع ولا حجز ولا إعدادات ولا بيانات إخوته.'
           : 'If your child has a phone, tablet or computer other than yours, they can see their lessons, homework and review on it with no email or password. That device has no payments, booking, settings or brothers and sisters.'}
       </p>
 
@@ -68,7 +68,7 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
           <ol className="list-decimal ps-5 grid gap-1">
             <li>{isAr ? 'افتح موقعنا أو تطبيقنا وروح لصفحة الدخول.' : 'Open our website or app and go to sign in.'}</li>
             <li>{isAr ? 'اضغط «معايا كود من بابا أو ماما».' : 'Tap "I have a code from my parent".'}</li>
-            <li>{isAr ? 'اكتب الكود ده:' : 'Type this code:'}</li>
+            <li>{isAr ? 'اكتب هذا الرمز:' : 'Type this code:'}</li>
           </ol>
           <span className="text-3xl font-bold tracking-[0.3em] tabular-nums text-foreground" dir="ltr">{code.code}</span>
           {/* A copy, not a link: tapping it here would link this (the parent's) browser instead of the child's phone. */}
@@ -76,12 +76,12 @@ export function ChildPhones({ isAr, children }: { isAr: boolean; children: Array
             type="button" size="sm" variant="ghost" className="w-fit"
             onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/kid?code=${code.code}`)
               .then(() => notify(isAr ? 'اتنسخ اللينك، ابعته لجهازه.' : 'Link copied. Send it to their device.'))
-              .catch(() => notify(isAr ? 'معرفناش ننسخ، اكتب الكود على جهازه.' : 'Could not copy. Type the code on their device.', 'error'))}
+              .catch(() => notify(isAr ? 'تعذّر النسخ، اكتب الرمز على جهازه.' : 'Could not copy. Type the code on their device.', 'error'))}
           >
             {isAr ? 'أو انسخ لينك فيه الكود وابعته لجهازه' : 'or copy a link with the code to send to their device'}
           </Button>
           <span className="text-xs text-muted-foreground">
-            {isAr ? `الكود بيشتغل مرة واحدة لحد ${when(code.expiresAt)}.` : `The code works once, until ${when(code.expiresAt)}.`}
+            {isAr ? `يعمل الرمز مرة واحدة حتى ${when(code.expiresAt)}.` : `The code works once, until ${when(code.expiresAt)}.`}
           </span>
         </div>
       )}

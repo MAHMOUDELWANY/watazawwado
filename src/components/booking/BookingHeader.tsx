@@ -21,7 +21,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, 
   // Four screens (owner D4, 2026-10-28): what, length & plan, time, review & pay.
   const stepTitles = isEn
     ? ['What you will learn', 'Length and plan', 'Pick a time', 'Review and pay']
-    : ['هتتعلم إيه', 'المدة والخطة', 'اختار الميعاد', 'راجع وادفع'];
+    : ['ماذا ستتعلّم', 'المدة والخطة', 'اختر الموعد', 'راجع وادفع'];
 
   return (
     <div className="pb-5 mb-5 sm:mb-7 border-b border-border/80">

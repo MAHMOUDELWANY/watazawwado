@@ -125,11 +125,11 @@ export function InstantCheckoutModal({
     const q = await loadQuote(code, useCredit);
     setCheckingCode(false);
     if (!q) {
-      setCodeError(isAr ? 'مقدرناش نتأكد من الكود دلوقتي. جرّب تاني.' : "We couldn't check the code right now. Please try again.");
+      setCodeError(isAr ? 'تعذّر التحقق من الرمز الآن. حاول مرة أخرى.' : "We couldn't check the code right now. Please try again.");
       return;
     }
     if (q.rejection) {
-      setCodeError(q.rejectionText ? (isAr ? q.rejectionText.ar : q.rejectionText.en) : (isAr ? 'الكود ده مش شغال.' : "This code doesn't work."));
+      setCodeError(q.rejectionText ? (isAr ? q.rejectionText.ar : q.rejectionText.en) : (isAr ? 'هذا الرمز لا يعمل.' : "This code doesn't work."));
       return;
     }
     setAppliedCode(code);
@@ -259,10 +259,10 @@ export function InstantCheckoutModal({
           <div className="w-14 h-14 mx-auto rounded-2xl bg-secondary/15 flex items-center justify-center text-secondary">
             <CheckCircle2 className="w-7 h-7" />
           </div>
-          <h2 className="mt-4 text-xl font-bold font-display">{isAr ? 'تم، اتأكد الحجز' : "You're all set"}</h2>
+          <h2 className="mt-4 text-xl font-bold font-display">{isAr ? 'تمّ، تأكّد الحجز' : "You're all set"}</h2>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
             {isAr
-              ? 'الكود أو رصيدك غطّى المبلغ كله، فمش محتاج تدفع حاجة. هتلاقي التفاصيل في حسابك.'
+              ? 'غطّى الرمز أو رصيدك المبلغ كله، فلا تحتاج إلى دفع شيء. ستجد التفاصيل في حسابك.'
               : 'Your code or balance covered the full price, so there is nothing to pay. You will find the details in your account.'}
           </p>
           <button
@@ -404,7 +404,7 @@ export function InstantCheckoutModal({
                   {quote.codeCapped && quote.codeDiscount >= 0 && appliedCode && (
                     <p className="mt-2 text-xs text-muted-foreground">
                       {isAr
-                        ? 'الخصم اتظبط عشان مجموع التوفير على الطلب ده له حد أقصى.'
+                        ? 'ضُبط الخصم لأن لمجموع التوفير في هذا الطلب حدًّا أقصى.'
                         : 'The code was adjusted because total savings on one order have a limit.'}
                     </p>
                   )}

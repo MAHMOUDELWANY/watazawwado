@@ -450,7 +450,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       if (!rule) continue;
       if (rule === 3 && isAuthenticatedStudent && !needsContactDetails) {
         if (formData.audience === 'child' && linkedChildren.length > 0 && !formData.studentId) {
-          setValidationError(isAr ? 'اختار الحصة لمين.' : 'Choose who the lesson is for.');
+          setValidationError(isAr ? 'اختر لمن الحصة.' : 'Choose who the lesson is for.');
           return;
         }
         continue;
@@ -497,7 +497,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         amount: Number(json.entitlement?.price_paid ?? pkg?.price_amount ?? 0)
       });
     } catch (err: any) {
-      setValidationError(err?.message || (isAr ? 'معرفناش نجهز الباقة، جرّب تاني.' : 'Could not start the package, please try again.'));
+      setValidationError(err?.message || (isAr ? 'تعذّر تجهيز الباقة، حاول مرة أخرى.' : 'Could not start the package, please try again.'));
     } finally {
       setBuyingPackage(false);
     }
@@ -664,7 +664,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             {isAr ? 'جارٍ التحقق من نجاح الدفع وتأكيد الحجز...' : 'Verifying your payment and securing booking...'}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {isAr ? 'لحظات ونقوم بتجهيز تفاصيل الحجز وتفعيل رابط الفصل الدراسي.' : 'Please wait while we finalize your lesson details and classroom link.'}
+            {isAr ? 'لحظات ونجهّز تفاصيل الحجز ورابط الحصة.' : 'Please wait while we finalize your lesson details and classroom link.'}
           </p>
         </div>
       ) : confirmation ? (
@@ -888,7 +888,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
             {packagePaidNote && !isMultiStepFlow && showStep(5) && (
               <div role="status" className="mb-4 rounded-2xl bg-secondary/10 border border-secondary/30 p-4 text-sm text-foreground" data-testid="booking-package-paid">
-                {isAr ? 'تم دفع الباقة. اختار ميعاد أول حصة، ومش هتدفع حاجة تاني.' : 'Your package is paid. Pick the time of your first lesson; there is nothing more to pay.'}
+                {isAr ? 'دُفعت الباقة. اختر موعد أول حصة، ولن تدفع شيئًا آخر.' : 'Your package is paid. Pick the time of your first lesson; there is nothing more to pay.'}
               </div>
             )}
 
@@ -968,7 +968,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               >
                 {isMultiStepFlow && screenIndex === 1 && formData.buyPackageCatalogId
                   ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))
-                  : [isAr ? 'كمّل: المدة والخطة' : 'Continue: length and plan', isAr ? 'كمّل: اختار الميعاد' : 'Continue: pick a time', isAr ? 'كمّل: راجع وادفع' : 'Continue: review and pay'][screenIndex]}
+                  : [isAr ? 'المتابعة: المدة والخطة' : 'Continue: length and plan', isAr ? 'المتابعة: اختر الموعد' : 'Continue: pick a time', isAr ? 'المتابعة: راجع وادفع' : 'Continue: review and pay'][screenIndex]}
               </button>
             </div>
             </div>

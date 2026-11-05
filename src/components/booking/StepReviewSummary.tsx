@@ -249,12 +249,12 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             <div className="p-3.5 rounded-2xl glass-surface border border-secondary/40 text-xs sm:text-sm space-y-1">
               <div className="flex items-center gap-2 font-semibold text-primary">
                 <Sparkles className="w-4 h-4 text-accent" />
-                <span>{isEn ? 'How lesson prices work ($9–$13 an hour)' : 'إزاي بنسعّر الحصص (٩$–١٣$ للساعة)'}</span>
+                <span>{isEn ? 'How lesson prices work ($9–$13 an hour)' : 'كيف نسعّر الحصص (٩$–١٣$ للساعة)'}</span>
               </div>
               <p className="leading-relaxed text-muted-foreground text-xs sm:text-sm">
                 {isEn
                   ? 'Quran, Tajweed and the Zad Path are $9 an hour. Fusha, Egyptian Arabic and English start from $13 an hour. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see the price before you pay.'
-                  : 'القرآن والتجويد ومسار الأثر بـ ٩$ للساعة. الفصحى والعامية المصرية والإنجليزية من ١٣$ للساعة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوف السعر قبل ما تدفع.'}
+                  : 'القرآن والتجويد ومسار الأثر بـ ٩$ للساعة. الفصحى والعامية المصرية والإنجليزية من ١٣$ للساعة. وقد تكون الدراسة المتقدمة أو المكثفة أعلى سعرًا؛ يحددها المعلم بعد التقييم، وترى السعر دائمًا قبل أن تدفع.'}
               </p>
             </div>
           </div>
@@ -378,7 +378,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       {errorSlot}
       {termsHint && !pendingBookingReference && (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true)) && (
         <p role="alert" className="text-sm font-medium text-warning-ink">
-          {isEn ? 'Tick the box(es) above first, then confirm.' : 'علّم على الموافقة اللي فوق الأول، وبعدين أكّد.'}
+          {isEn ? 'Tick the box(es) above first, then confirm.' : 'ضع علامة على الموافقة في الأعلى أولًا، ثم أكّد.'}
         </p>
       )}
 

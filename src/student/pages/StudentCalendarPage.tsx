@@ -91,7 +91,7 @@ export default function StudentCalendarPage({ lang = 'ar' }: { lang?: 'en' | 'ar
   return (
     <div className="space-y-5" dir={isAr ? 'rtl' : 'ltr'}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-display font-bold text-foreground">{t('Family calendar', 'تقويم العيلة')}</h1>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t('Family calendar', 'تقويم الأسرة')}</h1>
         <div className="flex items-center gap-2">
           <div className="inline-flex rounded-xl border border-border p-1" role="group" aria-label={t('View', 'العرض')}>
             {(['week', 'month'] as const).map((v) => (
@@ -137,7 +137,7 @@ export default function StudentCalendarPage({ lang = 'ar' }: { lang?: 'en' | 'ar
               <li key={key} className={`rounded-2xl border p-2.5 ${items.length ? 'min-h-[7rem]' : 'md:min-h-[7rem]'} ${key === today ? 'border-[var(--teal)] bg-[var(--teal)]/5' : 'border-border'}`}>
                 <p className={`text-xs font-semibold text-muted-foreground ${items.length ? 'mb-2' : 'md:mb-2'} flex items-center justify-between gap-2`}>
                   <span>{d.setLocale(loc).toFormat('ccc d')}</span>
-                  {!items.length && <span className="font-normal opacity-70 md:hidden">{t('No lessons', 'مفيش حصص')}</span>}
+                  {!items.length && <span className="font-normal opacity-70 md:hidden">{t('No lessons', 'لا حصص')}</span>}
                 </p>
                 <ul className="space-y-2">
                   {items.map((l) => {
@@ -229,20 +229,20 @@ function CalendarFeed({ isAr }: { isAr: boolean }) {
 
   return (
     <section className="rounded-2xl border border-border p-4 space-y-3" aria-labelledby="calendar-feed-title">
-      <h2 id="calendar-feed-title" className="flex items-center gap-2 text-sm font-semibold text-foreground"><Link2 className="w-4 h-4 text-[var(--teal)]" aria-hidden="true" />{t('Subscribe in your calendar app', 'اشترك من تطبيق التقويم بتاعك')}</h2>
+      <h2 id="calendar-feed-title" className="flex items-center gap-2 text-sm font-semibold text-foreground"><Link2 className="w-4 h-4 text-[var(--teal)]" aria-hidden="true" />{t('Subscribe in your calendar app', 'اشترك من تطبيق التقويم لديك')}</h2>
       <p className="text-xs text-muted-foreground leading-relaxed">
         {t('A private link that keeps Google, Apple or Outlook calendar up to date with all the family’s lessons. It shows times, subjects and first names, never lesson links. Keep it to yourself; you can turn it off anytime.',
-           'لينك خاص بيخلّي تقويم Google أو Apple أو Outlook محدّث بكل حصص العيلة. بيظهر المواعيد والمادة والاسم الأول بس، من غير لينكات الحصص. خلّيه معاك بس، وتقدر تقفله في أي وقت.')}
+           'رابط خاص يُبقي تقويم Google أو Apple أو Outlook محدّثًا بكل حصص الأسرة. يُظهر المواعيد والمادة والاسم الأول فقط، دون روابط الحصص. احتفظ به لنفسك، ويمكنك إيقافه في أي وقت.')}
       </p>
       {url && (
         <div className="flex flex-wrap items-center gap-2">
-          <input readOnly value={url} aria-label={t('Your calendar link', 'لينك التقويم بتاعك')} className="flex-1 min-w-0 h-11 px-3 rounded-xl border border-border bg-surface text-xs" dir="ltr" onFocus={(e) => e.currentTarget.select()} />
+          <input readOnly value={url} aria-label={t('Your calendar link', 'رابط تقويمك')} className="flex-1 min-w-0 h-11 px-3 rounded-xl border border-border bg-surface text-xs" dir="ltr" onFocus={(e) => e.currentTarget.select()} />
           <button type="button" onClick={() => { navigator.clipboard?.writeText(url).then(() => setCopied(true)).catch(() => {}); }} className="min-h-11 px-3 rounded-xl border border-border text-sm font-semibold hover:bg-surface-subtle cursor-pointer">
             {copied ? t('Copied', 'اتنسخ') : t('Copy', 'انسخ')}
           </button>
         </div>
       )}
-      {url && <p className="text-xs text-muted-foreground">{t('This link is shown only now. If you lose it, make a new one (the old one stops working).', 'اللينك ده بيظهر دلوقتي بس. لو ضاع منك اعمل واحد جديد (القديم هيبطل يشتغل).')}</p>}
+      {url && <p className="text-xs text-muted-foreground">{t('This link is shown only now. If you lose it, make a new one (the old one stops working).', 'يظهر هذا الرابط الآن فقط. إن فقدته فأنشئ رابطًا جديدًا (ويتوقف القديم عن العمل).')}</p>}
       <div className="flex flex-wrap gap-2">
         <button type="button" onClick={create} disabled={busy || active === null} className="min-h-11 px-4 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold cursor-pointer disabled:opacity-60">
           {active ? t('Make a new link', 'اعمل لينك جديد') : t('Get my calendar link', 'هات لينك التقويم')}
@@ -253,7 +253,7 @@ function CalendarFeed({ isAr }: { isAr: boolean }) {
           </button>
         )}
       </div>
-      {failed && <p role="alert" className="text-xs text-destructive">{t('That did not work. Please try again.', 'محصلش. جرّب تاني.')}</p>}
+      {failed && <p role="alert" className="text-xs text-destructive">{t('That did not work. Please try again.', 'لم ينجح ذلك. حاول مرة أخرى.')}</p>}
     </section>
   );
 }

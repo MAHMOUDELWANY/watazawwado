@@ -39,14 +39,14 @@ export default function StaffLoginPage() {
       }
       if (role !== 'teacher' && role !== 'super_admin') {
         await signOut();
-        setError(t('This page is for teachers. Students sign in from the student area.', 'الصفحة دي للمعلمين. الطلاب بيدخلوا من صفحة الطالب.'));
+        setError(t('This page is for teachers. Students sign in from the student area.', 'هذه الصفحة للمعلمين. يدخل الطلاب من صفحة الطالب.'));
         setIsSubmitting(false);
         return;
       }
       markJustSignedIn();
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
-      setError(err.message || t('Something went wrong. Please try again.', 'حصلت مشكلة، حاول تاني.'));
+      setError(err.message || t('Something went wrong. Please try again.', 'حدثت مشكلة، حاول مرة أخرى.'));
       setIsSubmitting(false);
     }
   };
@@ -59,8 +59,8 @@ export default function StaffLoginPage() {
       return;
     }
     const { success, error: resetError } = await resetPassword(email);
-    if (success) setNotice(t('If this email belongs to a teacher, a link to set a new password is on its way.', 'لو الإيميل ده لمعلم، هيوصله رابط يحدد بيه كلمة سر جديدة.'));
-    else setError(resetError || t("Couldn't send the link. Please try again.", 'تعذر إرسال الرابط. حاول تاني.'));
+    if (success) setNotice(t('If this email belongs to a teacher, a link to set a new password is on its way.', 'إن كان هذا البريد لمعلم، فسيصله رابط لتحديد كلمة سر جديدة.'));
+    else setError(resetError || t("Couldn't send the link. Please try again.", 'تعذّر إرسال الرابط. حاول مرة أخرى.'));
   };
 
   return (
@@ -140,7 +140,7 @@ export default function StaffLoginPage() {
             </form>
 
             <p className="mt-6 pt-5 border-t border-border text-center text-sm text-muted-foreground">
-              <span>{t('Are you a student? ', 'إنت طالب؟ ')}</span>
+              <span>{t('Are you a student? ', 'أنت طالب؟ ')}</span>
               <Link to="/student" className="inline-flex items-center min-h-11 font-semibold text-[var(--teal)] hover:underline">{t('Go to the student area', 'روح لصفحة الطالب')}</Link>
             </p>
           </div>

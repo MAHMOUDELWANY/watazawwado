@@ -63,7 +63,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
             }}
             className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md cursor-pointer"
           >
-            <span>{isEn ? 'Yes, continue' : 'أيوه، كمّل'}</span>
+            <span>{isEn ? 'Yes, continue' : 'نعم، أكمل'}</span>
             <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           </button>
           <button
@@ -71,11 +71,11 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
             onClick={() => setShowAll(true)}
             className="flex-1 px-6 py-3 rounded-xl glass-card border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer"
           >
-            {isEn ? 'Choose another subject or level' : 'اختار مادة أو مستوى تاني'}
+            {isEn ? 'Choose another subject or level' : 'اختر مادة أو مستوى آخر'}
           </button>
         </div>
         <p className="text-xs text-muted-foreground">
-          {isEn ? 'You can change the level in the learner details step.' : 'تقدر تغيّر المستوى في خطوة بيانات الطالب.'}
+          {isEn ? 'You can change the level in the learner details step.' : 'يمكنك تغيير المستوى في خطوة بيانات الطالب.'}
         </p>
       </div>
     );

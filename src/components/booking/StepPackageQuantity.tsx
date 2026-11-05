@@ -62,7 +62,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
     title: isAr ? 'حصة واحدة' : 'One lesson',
     meta: isAr ? `${n(duration)} دقيقة` : `${duration} minutes`,
     perLesson: money(singleLessonFee),
-    total: isAr ? 'بتدفع الحصة دي بس' : 'You pay for this lesson only',
+    total: isAr ? 'تدفع ثمن هذه الحصة فقط' : 'You pay for this lesson only',
     features: isAr
       ? ['من غير أي التزام', 'تلغي قبلها بـ 3 ساعات وترجع لك رصيد']
       : ['No commitment', 'Cancel 3 hours before and get a lesson credit'],
@@ -82,7 +82,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
         perLesson: money(Math.round((price / pkg.lesson_count) * 100) / 100),
         total: isAr ? `${money(price)} للباقة كلها` : `${money(price)} for the package`,
         features: isAr
-          ? ['أول حصة بتتحجز بعد الدفع على طول', 'باقي الحصص تحجزها وقت ما يناسبك', 'رصيدك ظاهر في محفظتي']
+          ? ['تُحجز أول حصة فور الدفع', 'تحجز باقي الحصص متى ناسبك', 'رصيدك ظاهر في محفظتي']
           : ['Your first lesson is booked right after paying', 'Book the rest whenever it suits you', 'Your balance shows in My wallet'],
         tone: TONES[i % TONES.length],
       };
@@ -95,10 +95,10 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
   return (
     <div className="space-y-5" data-testid="booking-plan-step">
       <div>
-        <h3 className="font-display text-lg font-bold text-foreground">{isAr ? 'حصة واحدة ولا باقة؟' : 'One lesson or a package?'}</h3>
+        <h3 className="font-display text-lg font-bold text-foreground">{isAr ? 'حصة واحدة أم باقة؟' : 'One lesson or a package?'}</h3>
         <p className="text-sm text-muted-foreground mt-1">
           {isAr
-            ? `${service.arabicName} · ${n(duration)} دقيقة. الباقة بتقلل سعر الحصة.`
+            ? `${service.arabicName} · ${n(duration)} دقيقة. الباقة تخفّض سعر الحصة.`
             : `${service.name} · ${duration} minutes. A package lowers the price of each lesson.`}
         </p>
       </div>
@@ -107,7 +107,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
           phones swipe a row, larger screens show a grid. The chosen one stands out of its envelope. */}
       <div
         role="radiogroup"
-        aria-label={isAr ? 'اختار الخطة' : 'Choose a plan'}
+        aria-label={isAr ? 'اختر الخطة' : 'Choose a plan'}
         className="-mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 sm:mx-0 sm:px-0 sm:grid sm:overflow-visible sm:grid-cols-2 lg:grid-cols-3"
       >
         {plans.map((plan) => {
@@ -118,7 +118,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
                 plan={plan}
                 open={chosen}
                 onTap={() => onSelect?.(plan.catalogId)}
-                primaryLabel={chosen ? (isAr ? 'مختارة ✓' : 'Chosen ✓') : (isAr ? 'اختار دي' : 'Choose this')}
+                primaryLabel={chosen ? (isAr ? 'مختارة ✓' : 'Chosen ✓') : (isAr ? 'اختر هذه' : 'Choose this')}
                 onPrimary={() => onSelect?.(plan.catalogId)}
                 isAr={isAr}
               />
@@ -131,7 +131,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
         <div className={`rounded-2xl border p-4 space-y-3 ${acceptedTerms && acceptedEarlyStart ? 'border-border bg-surface' : 'border-amber-500/50 bg-amber-500/5'}`} data-testid="booking-package-terms">
           <p className="text-sm text-foreground">
             {isAr
-              ? `هتدفع ${money(Number(chosenPackage.price_amount))} للباقة دلوقتي، وبعدها تختار ميعاد أول حصة، وده من غير دفع تاني.`
+              ? `ستدفع ${money(Number(chosenPackage.price_amount))} للباقة الآن، ثم تختار موعد أول حصة، دون دفع إضافي.`
               : `You pay ${money(Number(chosenPackage.price_amount))} for the package now, then pick the time of your first lesson with nothing more to pay.`}
           </p>
           <label className="flex items-start gap-3 text-sm text-foreground/90 cursor-pointer">
@@ -147,7 +147,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
             <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#0A2E35]" checked={acceptedEarlyStart} onChange={(e) => onAcceptEarlyStart?.(e.target.checked)} />
             <span>
               {isAr
-                ? 'عايز الحصص تبدأ قبل ما تخلص مدة الـ 14 يوم بتاعة الرجوع.'
+                ? 'أريد أن تبدأ الحصص قبل انتهاء مهلة الـ 14 يومًا للتراجع.'
                 : 'I want lessons to start before the 14-day withdrawal period ends.'}
             </span>
           </label>
@@ -158,7 +158,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
         <ShieldCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <span className="leading-relaxed">
           {isAr
-            ? 'تقدر تلغي الحصة قبلها بـ 3 ساعات وترجع لك كرصيد، أو تغيّر موعدها لحد ساعة قبل بدايتها.'
+            ? 'يمكنك إلغاء الحصة قبل موعدها بـ 3 ساعات فتعود إليك رصيدًا، أو تغيير موعدها حتى ساعة قبل بدايتها.'
             : 'You can cancel up to 3 hours before a lesson and get it back as a credit, or move it up to 1 hour before it starts.'}{' '}
           <a href={isAr ? '/ar/terms#cancellation' : '/terms#cancellation'} target="_blank" rel="noopener noreferrer" className="underline font-semibold">
             {isAr ? 'السياسة كاملة' : 'Full policy'}

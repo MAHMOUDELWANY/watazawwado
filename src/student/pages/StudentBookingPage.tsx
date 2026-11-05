@@ -916,8 +916,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             <AlertCircle className="w-4 h-4 text-warning shrink-0" />
             <span>
               {bookingsError.toLowerCase().includes('auth') || bookingsError.includes('401')
-                ? (isAr ? 'سجّل دخولك تاني عشان نتأكد من حصصك ونقدر نحجزلك الحصة المجانية.' : 'Please sign in again so we can check your lessons and book your free trial.')
-                : (isAr ? 'معرفناش نحمّل حصصك، فالحصة المجانية مقفولة لحد ما نتأكد منها. جرّب تاني.' : 'We could not load your lessons, so the free trial stays locked until we can check them. Please try again.')}
+                ? (isAr ? 'سجّل دخولك مرة أخرى لنتأكد من حصصك ونحجز لك الحصة المجانية.' : 'Please sign in again so we can check your lessons and book your free trial.')
+                : (isAr ? 'تعذّر تحميل حصصك، فتبقى الحصة المجانية مغلقة حتى نتأكد منها. حاول مرة أخرى.' : 'We could not load your lessons, so the free trial stays locked until we can check them. Please try again.')}
             </span>
           </div>
           <button
@@ -930,7 +930,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-11 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
             {bookingsLoading ? <BrandSpinner size={14} /> : <RefreshCw className="w-3.5 h-3.5" />}
-            <span>{isAr ? 'حاول تاني' : 'Try again'}</span>
+            <span>{isAr ? 'حاول مرة أخرى' : 'Try again'}</span>
           </button>
         </div>
       )}
@@ -946,7 +946,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
           <span>
             {isAr
-              ? 'بعد حجز الحصة التجريبية هتاخد اختبار تحديد مستوى قصير (حوالي 5 دقايق) في المادة اللي اخترتها، عشان معلمك يجهّزلك الحصة على قد مستواك بالظبط.'
+              ? 'بعد حجز الحصة التجريبية تجري اختبار تحديد مستوى قصيرًا (نحو 5 دقائق) في المادة التي اخترتها، ليجهّز لك معلمك الحصة على قدر مستواك بالضبط.'
               : 'After booking your free trial you will take a short placement test (about 5 minutes) in your subject, so your teacher can prepare the lesson for your exact level.'}
           </span>
         </div>
@@ -995,7 +995,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                 <span>{isAr ? 'نفس التفاصيل' : 'Same details'}</span>
               </div>
               <span className="text-[11px] opacity-90 leading-tight">
-                {isAr ? 'اختار ميعاد جديد بس.' : 'Just choose a new date and time.'}
+                {isAr ? 'اختر موعدًا جديدًا فقط.' : 'Just choose a new date and time.'}
               </span>
             </button>
 
@@ -1010,7 +1010,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                 <span>{isAr ? 'حجز جديد' : 'New booking'}</span>
               </div>
               <span className="text-[11px] text-muted-foreground leading-tight">
-                {isAr ? 'اختار المادة والتفاصيل من الأول.' : 'Choose the lesson details again.'}
+                {isAr ? 'اختر المادة والتفاصيل من جديد.' : 'Choose the lesson details again.'}
               </span>
             </button>
           </div>
@@ -1084,7 +1084,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                 <div className="mt-5 p-5 rounded-2xl border border-primary/30 bg-primary/5 text-center space-y-3">
                   <p className="text-sm text-foreground">
                     {isAr
-                      ? 'خطوة أخيرة: اختبار تحديد مستوى قصير عشان معلمك يجهّزلك الحصة.'
+                      ? 'خطوة أخيرة: اختبار تحديد مستوى قصير ليجهّز لك معلمك الحصة.'
                       : 'One last step: a short placement test so your teacher can prepare your lesson.'}
                   </p>
                   <Link to="/student/placement" className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">

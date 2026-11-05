@@ -23,15 +23,15 @@ export default function CertificateCheckPage() {
         {state === 'loading' && <div className="py-16 flex justify-center"><BrandLoader size="md" /></div>}
         {state === 'missing' && (
           <div className="rounded-2xl border border-border p-6 text-center space-y-2" role="alert">
-            <h1 className="font-display text-xl font-bold text-foreground">{t('We could not find this certificate', 'ملقيناش الشهادة دي')}</h1>
-            <p className="text-sm text-muted-foreground">{t('Check the link, or contact us on WhatsApp.', 'اتأكد من الرابط، أو كلمنا على واتساب.')}</p>
+            <h1 className="font-display text-xl font-bold text-foreground">{t('We could not find this certificate', 'لم نجد هذه الشهادة')}</h1>
+            <p className="text-sm text-muted-foreground">{t('Check the link, or contact us on WhatsApp.', 'تأكد من الرابط، أو راسلنا على واتساب.')}</p>
           </div>
         )}
         {state === 'ok' && data && (
           <>
             <p className="flex items-center justify-center gap-2 text-sm font-semibold text-teal" data-testid="certificate-verified">
               <BadgeCheck className="w-5 h-5" aria-hidden="true" />
-              {t('This certificate was issued by Watazawwado Academy.', 'الشهادة دي صادرة من أكاديمية وتزودوا.')}
+              {t('This certificate was issued by Watazawwado Academy.', 'هذه الشهادة صادرة عن أكاديمية وتزودوا.')}
             </p>
             <CertificateSheet data={data} isAr={isAr} />
           </>

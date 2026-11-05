@@ -589,7 +589,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {isEn
             ? 'We respect your privacy. No passwords, payment cards, or sensitive documents are requested. Your information is used strictly to coordinate your lesson with your teacher.'
-            : 'نحترم خصوصيتكم التامة. لا نطلب أي بيانات بطاقات بنكية أو مستندات حساسة. تُستخدم بياناتكم حصراً للتنسيق الشخصي مع معلمك.'}
+            : 'نحترم خصوصيتكم. لا نطلب أي بيانات بطاقات بنكية أو مستندات حساسة، وتُستخدم بياناتكم فقط للتنسيق مع معلمك.'}
         </span>
       </div>
 

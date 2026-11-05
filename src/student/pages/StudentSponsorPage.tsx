@@ -50,7 +50,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
     const done = () => { setParams({}, { replace: true }); load(); };
     if (sessionId) {
       authedJson('/api/payments/stripe/verify', { method: 'POST', body: JSON.stringify({ sessionId }) })
-        .then(() => setThanks(true)).catch(() => notify(t('We are still confirming your payment. It shows here within minutes.', 'لسه بنأكد الدفع، وهيظهر هنا خلال دقايق.'))).finally(done);
+        .then(() => setThanks(true)).catch(() => notify(t('We are still confirming your payment. It shows here within minutes.', 'ما زلنا نؤكد الدفع، وسيظهر هنا خلال دقائق.'))).finally(done);
     } else {
       if (params.get('cancelled')) setParams({}, { replace: true });
       load();
@@ -86,7 +86,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
   const amountOk = Number(amount) >= data.minAmountUsd && Number(amount) <= data.maxAmountUsd;
   const statusBadge = (s: string) => s === 'approved'
     ? <Badge variant="success">{t('Lessons added', 'الحصص اتضافت')}</Badge>
-    : s === 'declined' ? <Badge variant="outline">{t('Not this time', 'مش المرة دي')}</Badge>
+    : s === 'declined' ? <Badge variant="outline">{t('Not this time', 'ليس هذه المرة')}</Badge>
     : <Badge variant="warning">{t('With our team', 'عند فريقنا')}</Badge>;
 
   return (
@@ -97,7 +97,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
           {t('A sadaqah fund for learners who cannot pay. You give to the fund; our team chooses who receives, after a request. Nobody sees who gave or who received.',
-            'صندوق صدقة للطلاب اللي مش قادرين يدفعوا. انت بتتصدّق للصندوق، وفريقنا بيختار مين ياخد بعد ما يطلب. ومحدش بيعرف مين اتصدّق ولا مين أخد.')}
+            'صندوق صدقة للطلاب غير القادرين على الدفع. تتصدّق أنت للصندوق، ويختار فريقنا من يستفيد بعد أن يطلب. ولا يعرف أحد من تصدّق ولا من أخذ.')}
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
 
       <div className="grid grid-cols-2 gap-3">
         <Card className="p-4 grid gap-1">
-          <span className="text-xs text-muted-foreground">{t('In the fund now', 'في الصندوق دلوقتي')}</span>
+          <span className="text-xs text-muted-foreground">{t('In the fund now', 'في الصندوق الآن')}</span>
           <span className="text-2xl font-bold tabular-nums">{money(data.fund.balanceUsd)}</span>
           <span className="text-xs text-muted-foreground">{t(`About ${data.fund.lessonsApprox} lessons`, `حوالي ${data.fund.lessonsApprox} حصة`)}</span>
         </Card>
@@ -142,7 +142,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
             onChange={(e) => { setAmount(e.target.value); setLessons(e.target.value ? null : 8); }}
           />
         </label>
-        <p className="text-xs text-muted-foreground">{t(`One lesson is a 30-minute lesson at ${money(data.lessonUnitUsd)}. This is sadaqah, not zakat.`, `الحصة الواحدة حصة ٣٠ دقيقة بـ ${money(data.lessonUnitUsd)}. ده صدقة، مش زكاة.`)}</p>
+        <p className="text-xs text-muted-foreground">{t(`One lesson is a 30-minute lesson at ${money(data.lessonUnitUsd)}. This is sadaqah, not zakat.`, `الحصة الواحدة حصة ٣٠ دقيقة بـ ${money(data.lessonUnitUsd)}. هذه صدقة، لا زكاة.`)}</p>
         <Button onClick={give} isLoading={busy === 'give'} disabled={!lessons && !amountOk} className="w-full sm:w-fit">
           <HandHeart className="w-4 h-4 me-2" aria-hidden="true" />
           {lessons ? t(`Give ${money(lessons * data.lessonUnitUsd)}`, `اتصدّق بـ ${money(lessons * data.lessonUnitUsd)}`) : t('Give', 'اتصدّق')}
@@ -153,7 +153,7 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
         <Card className="p-5 grid gap-4" aria-labelledby="ask-title">
           <div>
             <h2 id="ask-title" className="text-lg font-semibold">{t('Need lessons from the fund?', 'محتاج حصص من الصندوق؟')}</h2>
-            <p className="text-sm text-muted-foreground mt-1">{t('Tell us in a line or two. Only our team reads it, and nobody else ever knows.', 'قولّنا في سطر أو اتنين. فريقنا بس اللي بيقراه، ومحدش تاني هيعرف.')}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t('Tell us in a line or two. Only our team reads it, and nobody else ever knows.', 'أخبرنا في سطر أو اثنين. لا يقرؤه إلا فريقنا، ولن يعرف أحد غيره.')}</p>
           </div>
           <form onSubmit={ask} className="grid gap-3">
             {data.learners.length > 1 && (
@@ -171,11 +171,11 @@ export default function StudentSponsorPage({ lang }: { lang: 'ar' | 'en' }) {
               </Select>
             </label>
             <label className="grid gap-1.5 text-sm">
-              <span>{t('Why (only our team reads this)', 'السبب (فريقنا بس اللي بيقراه)')}</span>
+              <span>{t('Why (only our team reads this)', 'السبب (لا يقرؤه إلا فريقنا)')}</span>
               <Textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} minLength={10} maxLength={1000} required />
             </label>
             <Button type="submit" variant="outline" isLoading={busy === 'ask'} disabled={reason.trim().length < 10 || !reqLearner} className="w-full sm:w-fit">
-              {t('Send the request', 'ابعت الطلب')}
+              {t('Send the request', 'أرسل الطلب')}
             </Button>
           </form>
           {data.requests.length > 0 && (

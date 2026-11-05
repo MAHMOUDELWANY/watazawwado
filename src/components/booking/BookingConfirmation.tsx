@@ -136,7 +136,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <h2 className="font-display text-3xl sm:text-4xl font-medium text-foreground">
           {confirmation.isFreeTrial
             ? isEn ? 'Your Free Trial is Booked' : 'تم تأكيد حجز جلستك التجريبية'
-            : isEn ? 'Your Lesson is Scheduled' : 'تم تأكيد حجز درسك بنجاح'}
+            : isEn ? 'Your Lesson is Scheduled' : 'تأكّد حجز درسك'}
         </h2>
 
         <p className="text-sm text-foreground/80 dark:text-muted-foreground max-w-lg mx-auto leading-relaxed">
@@ -228,7 +228,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <p className="text-[11px] text-blue-900/70 dark:text-blue-200/70 leading-relaxed">
                 {isEn
                   ? 'Your Zoom link is being prepared. It will be emailed to you, and you can open it any time from My Lessons. Your teacher opens the class; if you arrive first, you wait a moment in the waiting room.'
-                  : 'رابط زووم بيتجهز دلوقتي. هيوصلك على الإيميل، وتقدر تفتحه في أي وقت من صفحة "الدروس". المعلم هو اللي بيفتح الفصل، ولو دخلت قبله هتستنى لحظات في غرفة الانتظار.'}
+                  : 'يُجهَّز رابط Zoom الآن. سيصلك على البريد، ويمكنك فتحه في أي وقت من صفحة "الدروس". المعلم هو من يفتح الفصل، وإن دخلت قبله ستنتظر لحظات في غرفة الانتظار.'}
               </p>
             )}
           </div>
@@ -254,12 +254,12 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             </div>
             <div className="leading-relaxed">
               <strong className="block text-emerald-900 dark:text-emerald-200 font-bold mb-0.5">
-                {isEn ? 'Payment Confirmed & Verified' : 'تم سداد الرسوم وتأكيد الحجز بنجاح'}
+                {isEn ? 'Payment Confirmed & Verified' : 'تم الدفع وتأكّد الحجز'}
               </strong>
               <span className="text-xs sm:text-sm text-emerald-700/80 dark:text-emerald-300/80">
                 {isEn
                   ? 'Your payment has been received and verified. Your classroom link and calendar invite are active.'
-                  : 'تم استلام وتأكيد سداد الرسوم بنجاح. رابط الفصل الدراسي وموعد التقويم نشط الآن.'}
+                  : 'وصلنا دفعك وتأكّد. رابط الحصة وموعدها في التقويم جاهزان الآن.'}
               </span>
             </div>
           </div>
@@ -308,7 +308,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           {confirmation.isFreeTrial
             ? isEn
               ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, your teacher will share an honest learning roadmap. There is zero obligation to commit.'
-              : 'الجلسة التجريبية فرصة هادئة للتعارف وتحديد المستوى الفعلي وتجربة أسلوب التدريس في درس مصغر. إذا شعرت بالارتياح، سيقترح معلمك خطة دراسية مناسبة دون أي إلزام مسبق.'
+              : 'الحصة التجريبية فرصة هادئة للتعارف ومعرفة مستواك الفعلي وتجربة أسلوب التدريس في درس قصير. وإن ارتحت، يقترح عليك معلمك خطة مناسبة دون أي التزام.'
             : isEn
               ? 'Please have your Mushaf or learning materials ready. We will send you a reminder 24 hours and 1 hour before your scheduled lesson.'
               : 'يرجى تحضير المصحف أو كراس الملاحظات. سيصلك تذكير قبل موعد الدرس بـ ٢٤ ساعة وساعة واحدة.'}

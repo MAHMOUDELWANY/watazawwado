@@ -31,14 +31,14 @@ export default function StaffSetPasswordPage() {
       return;
     }
     if (password !== confirm) {
-      setError(t('The two passwords are different.', 'كلمتين السر مش زي بعض.'));
+      setError(t('The two passwords are different.', 'كلمتا السر غير متطابقتين.'));
       return;
     }
     setBusy(true);
     const { success, error: err } = await updatePassword(password);
     setBusy(false);
     if (!success) {
-      setError(err || t('Could not save the password. Please try again.', 'تعذر حفظ كلمة السر. حاول تاني.'));
+      setError(err || t('Could not save the password. Please try again.', 'تعذّر حفظ كلمة السر. حاول مرة أخرى.'));
       return;
     }
     clearAuthLinkType();
@@ -49,15 +49,15 @@ export default function StaffSetPasswordPage() {
     <AuthPage isAr={isAr}>
       <AuthCard>
         <AuthPortal
-          title={t('Choose your password', 'اختار كلمة السر بتاعتك')}
-          subtitle={t('You will use it with your email to sign in from any device.', 'هتستخدمها مع إيميلك عشان تدخل من أي جهاز.')}
+          title={t('Choose your password', 'اختر كلمة السر الخاصة بك')}
+          subtitle={t('You will use it with your email to sign in from any device.', 'ستستخدمها مع بريدك للدخول من أي جهاز.')}
         />
         <div className="pt-8">
 
         {!loading && !user ? (
           <div className="space-y-4 text-center">
             <p className="text-sm text-muted-foreground">
-              {t('This invitation link has expired or was already used. Ask the admin for a new one, or use "Forgot your password?" on the sign-in page.', 'رابط الدعوة انتهى أو اتستخدم قبل كده. اطلب دعوة جديدة من الإدارة، أو استخدم "نسيت كلمة السر؟" في صفحة الدخول.')}
+              {t('This invitation link has expired or was already used. Ask the admin for a new one, or use "Forgot your password?" on the sign-in page.', 'انتهت صلاحية رابط الدعوة أو استُخدم من قبل. اطلب دعوة جديدة من الإدارة، أو استخدم "نسيت كلمة السر؟" في صفحة الدخول.')}
             </p>
             <Link to="/staff/login" className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
               {t('Go to sign in', 'روح لصفحة الدخول')}
@@ -93,7 +93,7 @@ export default function StaffSetPasswordPage() {
               </div>
             </div>
             <div>
-              <Label htmlFor="confirm-password" className="block text-sm font-semibold mb-1.5">{t('Type it again', 'اكتبها تاني')}</Label>
+              <Label htmlFor="confirm-password" className="block text-sm font-semibold mb-1.5">{t('Type it again', 'اكتبها مرة أخرى')}</Label>
               <Input
                 id="confirm-password"
                 type={show ? 'text' : 'password'}

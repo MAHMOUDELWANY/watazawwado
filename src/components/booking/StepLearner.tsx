@@ -122,7 +122,7 @@ export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, link
               </div>
             </div>
             <p className="text-xs text-muted-foreground">
-              {isAr ? 'التغيير ده للحصة دي بس. ملفك بيفضل زي ما هو.' : 'This change is for this booking only; the profile stays as it is.'}
+              {isAr ? 'هذا التغيير لهذه الحصة فقط. يبقى ملفك كما هو.' : 'This change is for this booking only; the profile stays as it is.'}
             </p>
           </div>
         )}
