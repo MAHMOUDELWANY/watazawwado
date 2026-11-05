@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pack your zaad</title>
+<style>
+/* Prototype v2. Fonts load from the repo (public/fonts); elsewhere they fall back to Georgia / system. */
+@font-face{font-family:"TS";src:url("../../../public/fonts/thmanyah/thmanyahsans-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"TS";src:url("../../../public/fonts/thmanyah/thmanyahsans-Medium.woff2") format("woff2");font-weight:500}
+@font-face{font-family:"TS";src:url("../../../public/fonts/thmanyah/thmanyahsans-Bold.woff2") format("woff2");font-weight:700}
+@font-face{font-family:"TD";src:url("../../../public/fonts/thmanyah/thmanyahserifdisplay-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"TD";src:url("../../../public/fonts/thmanyah/thmanyahserifdisplay-Medium.woff2") format("woff2");font-weight:500}
+
+:root{
+  --paper:#FAF7F2;--surface:#FFFFFF;--warm:#EFE7DC;--ink:#12100E;--muted:#5A5046;--line:#12100E1F;
+  --crimson:#C51F24;--crimson-ink:#FFFFFF;--gold:#E5A93C;--gold-soft:#F6D58E;--gold-deep:#B9782A;--copper:#8B4935;
+  --leather-1:#D2343A;--leather-2:#9E161B;--stitch:#F6D58E;--glow:#E5A93C55;--shadow:#5a2a1033;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --paper:#110F0E;--surface:#1B1816;--warm:#24201D;--ink:#FAF7F2;--muted:#C4B9AA;--line:#FAF7F21F;
+  --crimson:#E82C32;--gold:#F0B54A;--copper:#DA7960;--leather-1:#C7282E;--leather-2:#7E1015;--glow:#F0B54A66;--shadow:#00000080;color-scheme:dark}}
+:root[data-theme=dark]{
+  --paper:#110F0E;--surface:#1B1816;--warm:#24201D;--ink:#FAF7F2;--muted:#C4B9AA;--line:#FAF7F21F;
+  --crimson:#E82C32;--gold:#F0B54A;--copper:#DA7960;--leather-1:#C7282E;--leather-2:#7E1015;--glow:#F0B54A66;--shadow:#00000080;color-scheme:dark}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:"TS",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100svh;transition:background .5s,color .5s}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:10px}
+
+.app{max-width:440px;margin:0 auto;padding:18px 20px 40px;min-height:100svh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;height:40px}
+.back{font-size:14px;color:var(--muted);visibility:hidden;padding:8px 4px}
+.back.show{visibility:visible}
+.theme{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--muted);border:1px solid var(--line)}
+
+/* zipper progress: teeth close as you go */
+.zip{display:flex;gap:3px;justify-content:center;margin:6px 0 4px}
+.zip i{width:9px;height:6px;border-radius:2px;background:var(--line);transition:background .35s,transform .35s}
+.zip i.on{background:var(--gold);transform:scaleY(1.2)}
+
+/* the one bold thing: the bag */
+.stage{position:relative;height:208px;margin:6px auto 0;width:260px;transition:height .5s cubic-bezier(.2,.8,.2,1)}
+.stage.small{height:150px}
+.bag{position:absolute;left:50%;bottom:0;width:210px;transform:translateX(-50%);filter:drop-shadow(0 22px 26px var(--shadow));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.stage.small .bag{width:150px}
+.bag .flap{transform-origin:105px 70px;transition:transform .6s cubic-bezier(.3,1.3,.5,1)}
+.bag.open .flap{transform:rotateX(0) translateY(-6px) rotate(-7deg)}
+.bag.bump{animation:bump .4s ease}
+@keyframes bump{40%{transform:translateX(-50%) scale(1.035,.975)}}
+.zaadi{position:absolute;width:44px;height:44px;left:calc(50% + 70px);top:6px;filter:drop-shadow(0 0 14px var(--glow));animation:float 4s ease-in-out infinite}
+.stage.small .zaadi{left:calc(50% + 46px);top:0}
+.zaadi.hop{animation:hop .7s cubic-bezier(.3,1.7,.5,1)}
+.zaadi .spin{transform-origin:50px 50px;animation:spin 18s linear infinite}
+@keyframes float{50%{transform:translateY(-7px)}}
+@keyframes hop{35%{transform:translateY(-22px) scale(1.18)}70%{transform:translateY(2px) scale(.96)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+h1{font-family:"TD",Georgia,serif;font-weight:500;font-size:44px;line-height:1.02;letter-spacing:-.025em;text-align:center;margin-top:18px}
+h2{font-family:"TD",Georgia,serif;font-weight:500;font-size:30px;line-height:1.1;letter-spacing:-.02em;margin-top:18px}
+.lede{font-size:16px;line-height:1.55;color:var(--muted);text-align:center;margin:10px auto 0;max-width:32ch}
+.ask{font-size:15px;color:var(--muted);margin-top:26px}
+
+.step{display:none}
+.step.on{display:block;animation:in .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+
+/* one choice per screen, rows not cards */
+.list{margin-top:10px;border-top:1px solid var(--line)}
+.opt{width:100%;display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line);text-align:start;transition:background .2s}
+.opt:hover{background:color-mix(in srgb,var(--warm) 55%,transparent)}
+.opt:active{transform:scale(.99)}
+.glyph{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--warm);color:var(--copper);font-family:"TD",Georgia,serif;font-size:20px}
+.opt b{display:block;font-weight:500;font-size:18px}
+.opt small{display:block;font-size:14px;color:var(--muted);margin-top:2px}
+.opt .chev{margin-inline-start:auto;color:var(--muted);opacity:.6}
+.opt.picked{background:color-mix(in srgb,var(--gold) 14%,transparent)}
+
+.google{width:100%;margin-top:22px;display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500;font-size:15px}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px;margin:16px 0}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.field{width:100%;padding:16px 4px;border:0;border-bottom:1.5px solid var(--line);background:transparent;font:inherit;font-size:17px;color:var(--ink);transition:border-color .2s}
+.field:focus{outline:none;border-color:var(--gold)}
+.cta{width:100%;margin-top:22px;padding:16px;border-radius:999px;background:var(--crimson);color:var(--crimson-ink);font-weight:700;font-size:16px;transition:opacity .2s,transform .15s}
+.cta:disabled{opacity:.35;cursor:default}
+.cta:not(:disabled):active{transform:scale(.98)}
+.fine{font-size:13px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+
+/* end: peak moment */
+.place{font-family:"TD",Georgia,serif;font-weight:400;font-size:96px;line-height:.9;text-align:center;margin-top:10px;letter-spacing:-.04em}
+.placecap{text-align:center;color:var(--muted);font-size:15px;margin-top:8px}
+.seats{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;max-width:250px;margin:22px auto 0}
+.seats i{aspect-ratio:1;border-radius:50%;border:1.5px solid var(--line)}
+.seats i.taken{background:var(--muted);border-color:transparent;opacity:.35}
+.seats i.you{background:var(--crimson);border-color:transparent;box-shadow:0 0 0 4px color-mix(in srgb,var(--crimson) 22%,transparent)}
+.seatcap{text-align:center;font-size:13px;color:var(--muted);margin-top:10px}
+.pains{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.pains p{font-size:15px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{padding:9px 13px;border-radius:999px;border:1px solid var(--line);font-size:14px;transition:all .2s}
+.tag[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.share{width:100%;margin-top:26px;padding:15px;border-radius:999px;border:1px solid var(--line);font-weight:500}
+
+.fly{position:fixed;z-index:30;pointer-events:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:#12100E;font-family:"TD",Georgia,serif;font-size:20px;transition:transform .6s cubic-bezier(.55,0,.35,1),opacity .6s}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <button class="back" id="back">Back</button>
+    <button class="theme" id="theme" aria-label="Switch light or dark">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+  <div class="zip" id="zip" aria-hidden="true"></div>
+
+  <div class="stage" id="stage">
+    <svg class="zaadi" id="zaadi" viewBox="0 0 100 100" aria-hidden="true">
+      <defs><radialGradient id="zg" cx="50%" cy="40%"><stop offset="0" stop-color="#FFF3D1"/><stop offset=".6" stop-color="var(--gold)"/><stop offset="1" stop-color="var(--gold-deep)"/></radialGradient></defs>
+      <g class="spin"><rect x="23" y="23" width="54" height="54" rx="7" fill="url(#zg)"/><rect x="23" y="23" width="54" height="54" rx="7" fill="url(#zg)" transform="rotate(45 50 50)"/></g>
+      <circle cx="50" cy="50" r="10" fill="#FFF8E6" opacity=".9"/>
+    </svg>
+    <svg class="bag open" id="bag" viewBox="0 0 210 190" aria-hidden="true">
+      <defs>
+        <linearGradient id="lb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--leather-1)"/><stop offset="1" stop-color="var(--leather-2)"/></linearGradient>
+        <linearGradient id="lf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--leather-1)"/><stop offset="1" stop-color="var(--leather-2)"/></linearGradient>
+      </defs>
+      <path d="M70 66c0-38 70-38 70 0" fill="none" stroke="var(--leather-2)" stroke-width="10" stroke-linecap="round"/>
+      <rect x="18" y="66" width="174" height="118" rx="26" fill="url(#lb)"/>
+      <rect x="28" y="76" width="154" height="98" rx="20" fill="none" stroke="var(--stitch)" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <g class="flap">
+        <path d="M18 92c0-14 12-26 26-26h122c14 0 26 12 26 26v14c0 4-3 7-7 8l-80 18-80-18c-4-1-7-4-7-8z" fill="url(#lf)"/>
+        <path d="M30 100c0-9 7-16 16-16h118c9 0 16 7 16 16v4l-75 17-75-17z" fill="none" stroke="var(--stitch)" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <g transform="translate(105 122)">
+          <rect x="-13" y="-13" width="26" height="26" rx="4" fill="var(--gold)"/>
+          <rect x="-13" y="-13" width="26" height="26" rx="4" fill="var(--gold)" transform="rotate(45)"/>
+          <circle r="5.5" fill="var(--leather-2)"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 1. one track -->
+  <section class="step on" id="s1" aria-labelledby="h1">
+    <h1 id="h1">Pack your zaad</h1>
+    <p class="lede">Our first wave opens in early December with 20 places. Choose what you'll carry, and we'll keep your spot.</p>
+    <p class="ask">What will you carry first?</p>
+    <div class="list" id="tracks"></div>
+  </section>
+
+  <!-- 2. who -->
+  <section class="step" id="s2" aria-labelledby="h2a">
+    <h2 id="h2a">Who is this zaad for?</h2>
+    <div class="list" id="who" style="margin-top:22px"></div>
+  </section>
+
+  <!-- 3. contact -->
+  <section class="step" id="s3" aria-labelledby="h2b">
+    <h2 id="h2b">Where should we write to you?</h2>
+    <button class="google"><svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 12.7 28l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Continue with Google</button>
+    <div class="or">or</div>
+    <input class="field" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Your email" aria-label="Your email">
+    <button class="cta" id="save" disabled>Save my spot</button>
+    <p class="fine">No password and no payment. We write once your wave opens.</p>
+  </section>
+
+  <!-- 4. packed -->
+  <section class="step" id="s4" aria-live="polite">
+    <p class="placecap" style="margin-top:4px">Your zaad is packed. Your place in line:</p>
+    <p class="place">14</p>
+    <div class="seats" id="seats" aria-hidden="true"></div>
+    <p class="seatcap">Wave 1 has 20 places. Thirteen are ahead of you.</p>
+    <div class="pains">
+      <p>One tap, if you like: what was missing before?</p>
+      <div class="tags" id="tags"></div>
+    </div>
+    <button class="share">Share "I packed my zaad"</button>
+  </section>
+</main>
+
+<script>
+const TRACKS=[
+  {k:'quran',g:'ق',t:'Quran',d:'Reading, Tajweed and memorization'},
+  {k:'arabic',g:'ض',t:'Arabic',d:'Fusha, or Egyptian for the family'},
+  {k:'studies',g:'✦',t:'Islamic studies',d:'The Zad Path and the Seerah'},
+  {k:'english',g:'Aa',t:'English',d:'For children and adults'}];
+const WHO=[{k:'me',g:'◐',t:'For me',d:'I am 18 or older'},{k:'child',g:'◑',t:'For my child',d:'Ages 6 to 17'}];
+const PAINS=['A teacher who stays','A clear plan','Seeing progress','Lessons my child enjoys','Times that fit us','Clear prices'];
+const state={step:1,track:null,who:null};
+const $=id=>document.getElementById(id);
+
+// zipper: 12 teeth, closes in 4 stages; the first stage counts as done (they already opened it)
+$('zip').innerHTML='<i></i>'.repeat(12);
+function zip(n){[...$('zip').children].forEach((t,i)=>t.classList.toggle('on',i<n*3))}
+
+function rows(el,items,onPick){items.forEach(it=>{const b=document.createElement('button');b.className='opt';
+  b.innerHTML=`<span class="glyph">${it.g}</span><span><b>${it.t}</b><small>${it.d}</small></span><span class="chev">›</span>`;
+  b.onclick=()=>onPick(it,b);el.appendChild(b)})}
+rows($('tracks'),TRACKS,(it,b)=>{state.track=it.k;pick(b,it.g,()=>go(2))});
+rows($('who'),WHO,(it,b)=>{state.who=it.k;pick(b,null,()=>go(3))});
+
+function pick(b,glyph,next){
+  b.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.toggle('picked',o===b));
+  if(!glyph){hop();setTimeout(next,260);return}
+  const r=b.querySelector('.glyph').getBoundingClientRect(),bag=$('bag').getBoundingClientRect();
+  const f=document.createElement('span');f.className='fly';f.textContent=glyph;f.style.left=r.left+'px';f.style.top=r.top+'px';document.body.appendChild(f);
+  requestAnimationFrame(()=>{f.style.transform=`translate(${bag.left+bag.width/2-r.left-22}px,${bag.top+bag.height*.45-r.top}px) scale(.35)`;f.style.opacity='.2'});
+  setTimeout(()=>{f.remove();bump();hop();next()},620);
+}
+function bump(){const g=$('bag');g.classList.remove('bump');void g.getBoundingClientRect();g.classList.add('bump')}
+function hop(){const z=$('zaadi');z.classList.remove('hop');void z.getBoundingClientRect();z.classList.add('hop')}
+
+function go(n){state.step=n;
+  document.querySelectorAll('.step').forEach(s=>s.classList.toggle('on',s.id==='s'+n));
+  $('back').classList.toggle('show',n>1&&n<4);zip(n);
+  $('stage').classList.toggle('small',n>1);
+  if(n===4){$('bag').classList.remove('open');bump();setTimeout(hop,350)}
+  window.scrollTo({top:0,behavior:'smooth'})}
+$('back').onclick=()=>go(state.step-1);
+
+$('email').oninput=e=>$('save').disabled=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value);
+$('save').onclick=()=>go(4);
+document.querySelector('.google').onclick=()=>go(4);
+
+const PLACE=14;
+$('seats').innerHTML=Array.from({length:20},(_,i)=>`<i class="${i<PLACE-1?'taken':i===PLACE-1?'you':''}"></i>`).join('');
+PAINS.forEach(p=>{const b=document.createElement('button');b.className='tag';b.textContent=p;b.setAttribute('aria-pressed','false');
+  b.onclick=()=>b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');$('tags').appendChild(b)});
+
+$('theme').onclick=()=>{const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark'};
+zip(1);
+</script>
+</body>
+</html>
