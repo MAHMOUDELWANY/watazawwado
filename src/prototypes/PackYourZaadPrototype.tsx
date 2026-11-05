@@ -34,7 +34,7 @@ function Zaadi({ mood, size = 56 }: { mood: Mood; size?: number }) {
     party: { y: [0, -34, 0, -16, 0, -6, 0], rotate: [0, 360, 720], scale: [1, 1.25, 1, 1.1, 1], transition: { duration: 1.6, ease: 'easeOut' } },
   };
   return (
-    <motion.svg key={mood} viewBox="0 0 100 100" width={size} height={size} aria-hidden="true"
+    <motion.svg key={mood} viewBox="10 10 80 80" width={size} height={size} aria-hidden="true"
       animate={reduce ? undefined : moves[mood]} style={{ filter: 'drop-shadow(0 0 16px rgba(229,169,60,.55))', overflow: 'visible' }}>
       <defs>
         <radialGradient id="zaadi-g" cx="50%" cy="38%" r="65%">
@@ -43,7 +43,22 @@ function Zaadi({ mood, size = 56 }: { mood: Mood; size?: number }) {
       </defs>
       <rect x="22" y="22" width="56" height="56" rx="8" fill="url(#zaadi-g)" />
       <rect x="22" y="22" width="56" height="56" rx="8" fill="url(#zaadi-g)" transform="rotate(45 50 50)" />
-      <circle cx="50" cy="50" r="11" fill="#FFF8E8" />
+      <circle cx="50" cy="51" r="17" fill="#FFF8E8" />
+      {/* eyes: open and blinking at rest, happy arcs when cheering, closed and soft when thanking */}
+      {mood === 'idle' && (
+        <motion.g animate={reduce ? undefined : { scaleY: [1, 1, 0.1, 1, 1] }} transition={{ duration: 4.2, repeat: Infinity, times: [0, 0.9, 0.93, 0.96, 1] }}
+          style={{ originX: '50px', originY: '50px' }} fill="#2B1A12">
+          <ellipse cx="43.5" cy="50" rx="2.8" ry="4" /><ellipse cx="56.5" cy="50" rx="2.8" ry="4" />
+          <circle cx="44.4" cy="48.6" r="1" fill="#fff" /><circle cx="57.4" cy="48.6" r="1" fill="#fff" />
+        </motion.g>
+      )}
+      {(mood === 'cheer' || mood === 'party') && (
+        <g fill="none" stroke="#2B1A12" strokeWidth="2.6" strokeLinecap="round"><path d="M40 51.5 q3.5 -5 7 0" /><path d="M53 51.5 q3.5 -5 7 0" /></g>
+      )}
+      {mood === 'thanks' && (
+        <g fill="none" stroke="#2B1A12" strokeWidth="2.6" strokeLinecap="round"><path d="M40 49 q3.5 4 7 0" /><path d="M53 49 q3.5 4 7 0" /></g>
+      )}
+      <ellipse cx="38" cy="57" rx="3.2" ry="1.8" fill="#F4A3A3" opacity=".55" /><ellipse cx="62" cy="57" rx="3.2" ry="1.8" fill="#F4A3A3" opacity=".55" />
     </motion.svg>
   );
 }
@@ -160,6 +175,8 @@ export default function PackYourZaadPrototype() {
   const [bump, setBump] = useState(0);
   const [fire, setFire] = useState(0);
   const [pains, setPains] = useState<string[]>([]);
+  const [note, setNote] = useState('');
+  const [sent, setSent] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const bagRef = useRef<HTMLDivElement>(null);
   const [flyer, setFlyer] = useState<{ t: Track; x: number; y: number; dx: number; dy: number } | null>(null);
@@ -185,13 +202,14 @@ export default function PackYourZaadPrototype() {
     setStep(4); setBump((n) => n + 1); setFire((n) => n + 1);
     react('party', 'Your zaad is packed. JazakAllahu khayran for waiting with us!');
   };
-  const togglePain = (p: string) => {
-    setPains((s) => {
-      const on = !s.includes(p);
-      if (on) react('thanks', 'Thank you. We read every one of these.');
-      return on ? [...s, p] : s.filter((x) => x !== p);
-    });
-  };
+  const togglePain = (p: string) => setPains((s) => (s.includes(p) ? s.filter((x) => x !== p) : [...s, p]));
+  const sendVoice = () => { setSent(true); react('thanks', 'Got it. Your words go straight to our team. Thank you!'); };
+  // after the celebration, Zaadi invites the learner's voice
+  useEffect(() => {
+    if (step !== 4) return;
+    const t = setTimeout(() => react('idle', 'Your voice is heard here. Tell us what you missed before.'), 3200);
+    return () => clearTimeout(t);
+  }, [step]);
   const back = () => { setStep((s) => Math.max(1, s - 1)); setSay('Take your time.'); setMood('idle'); };
 
   return (
@@ -218,7 +236,7 @@ export default function PackYourZaadPrototype() {
         {/* stage: Zaadi talks, the bag is the hero */}
         <div className="relative mt-3 flex flex-col items-center">
           <div className="flex w-full items-end justify-center gap-2">
-            <Zaadi mood={mood} size={step === 4 ? 62 : 52} />
+            <Zaadi mood={mood} size={step === 4 ? 84 : 72} />
             <Bubble text={say} />
           </div>
           <div ref={bagRef} className="relative mt-1">
@@ -314,17 +332,38 @@ export default function PackYourZaadPrototype() {
               </div>
               <p className="mt-2.5 text-[13px] text-muted-foreground">Wave 1 has 20 places. Thirteen are ahead of you.</p>
 
-              <div className="mt-7 border-t border-border pt-5 text-start">
-                <p className="text-[15px]">One tap, if you like: what was missing before?</p>
-                <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-7 rounded-3xl border border-border bg-surface p-5 text-start">
+                <div className="flex items-center gap-3">
+                  <Zaadi mood={sent ? 'thanks' : 'idle'} size={38} />
+                  <div>
+                    <p className="text-[16px] font-medium leading-snug">Your voice shapes what we build</p>
+                    <p className="text-[13px] text-muted-foreground">What was missing for you before? Tap any, or tell us.</p>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-2">
                   {PAINS.map((p) => {
                     const on = pains.includes(p);
                     return (
-                      <motion.button key={p} whileTap={{ scale: 0.95 }} onClick={() => togglePain(p)} aria-pressed={on}
-                        className={`rounded-full border px-3.5 py-2 text-[14px] transition-colors ${on ? 'border-foreground bg-foreground text-background' : 'border-border'}`}>{p}</motion.button>
+                      <motion.button key={p} whileTap={{ scale: 0.96 }} onClick={() => togglePain(p)} aria-pressed={on} disabled={sent}
+                        className={`flex min-h-[48px] items-center rounded-2xl border px-3 text-start text-[14px] leading-tight transition-colors ${on ? 'border-[#E5A93C] bg-[#E5A93C]/15 font-medium' : 'border-border'}`}>
+                        {p}
+                      </motion.button>
                     );
                   })}
                 </div>
+                {sent ? (
+                  <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-[14px] text-muted-foreground">
+                    Sent to our team. We read every word.
+                  </motion.p>
+                ) : (
+                  <>
+                    <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} maxLength={500}
+                      placeholder="Or in your own words: what would make this the right place for you?" aria-label="Tell us in your own words"
+                      className="mt-3 w-full resize-none rounded-2xl border border-border bg-background px-3.5 py-3 text-[15px] outline-none focus:border-[#E5A93C]" />
+                    <motion.button whileTap={{ scale: 0.98 }} disabled={!pains.length && !note.trim()} onClick={sendVoice}
+                      className="mt-3 w-full rounded-full border border-foreground py-3 text-[15px] font-medium disabled:opacity-35">Send to the team</motion.button>
+                  </>
+                )}
               </div>
               <motion.button whileTap={{ scale: 0.98 }} onClick={() => { setShareOpen(true); react('cheer', 'Show them your bag!'); }}
                 className="mt-7 w-full rounded-full bg-primary py-4 text-[16px] font-bold text-white">Share my bag</motion.button>

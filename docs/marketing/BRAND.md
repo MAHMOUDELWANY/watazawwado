@@ -69,7 +69,7 @@ patterns stay secondary because every academy uses them.
 2. **Sound opening (~0.5 s):** a natural sound (a bag zipping shut) with a soft tone; no musical instruments
    (`RULES.md` §1.6). Recitation is never used as a branded sound.
 3. **The zaad bag:** a simple bag icon with the khatam star, in crimson, on thumbnails and on the site.
-4. **Zaadi (زادي), the companion:** an abstract animated khatam star (no face, no body) for learners and guardians,
+4. **Zaadi (زادي), the companion:** an animated khatam star with simple eyes and soft cheeks (no mouth, no body; owner 2026-11-05) for learners and guardians,
    the counterpart of Jalila for teachers. A rounder, lighter, more playful version for child accounts. Appears only
    at chosen moments (the waitlist, a welcome, the learning guide), small and light, and respects reduced motion.
    In videos it is a recurring character; the audience is guardians and adults, not children.
