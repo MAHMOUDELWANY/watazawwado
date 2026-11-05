@@ -32,7 +32,18 @@ Studio, Meta Business Suite (free scheduling for Instagram + Facebook), TikTok's
 |---|---|---|
 | 0–2 s | **Hook** | The problem or the surprise, said and written on screen at once. Start mid-sentence; no "Assalamu alaikum, today we…" (greet in the caption or at the end instead) |
 | 2–25 s | **One idea** | One letter, one rule, one tip. Show, don't describe: the mouth, the Mushaf, the screen |
-| last 3–5 s | **Payoff + one CTA** | Repeat the fix, then "Follow for one letter a day" or "Full lesson on our channel" |
+| last 3–5 s | **Payoff + one CTA** | Repeat the fix, then the one CTA ("comment ZAAD" or link in bio) |
+| last 1.5 s | **Sign-off** [Decided 2026-11-05] | "Pack your zaad." with the zipper gesture (below), then the end card |
+
+**Brand assets in every video** (`BRAND.md` §5):
+- **Sound opening:** `marketing/brand-assets/zaad-sting.mp3`, about half a second, on the first frame. Never over
+  recitation; recitation starts after it ends.
+- **Sign-off:** last line "Pack your zaad." / «جهّز زادك». Gesture: one hand closes an imaginary zipper left to right at
+  chest height, slow and calm, ending with a small nod. Same words, same gesture, every time.
+- **The bag:** `marketing/brand-assets/zaad-bag.svg` on thumbnails (bottom corner) and the end card; crimson on paper,
+  never recoloured.
+- **Zaadi:** appears in on-screen graphics at moments of joy (a right answer, a milestone, the waitlist); never in
+  videos about payment or complaints.
 
 - Captions burned in, 2–5 words at a time, large, high contrast, inside the safe zone (§4).
 - Cut every pause and breath; a cut every 2–4 s. No zoom effects that feel like trends.

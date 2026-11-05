@@ -38,5 +38,8 @@ before, so a visitor sees a good product but not "this is for me". The brand lin
    line alone.
 2. The "Sound familiar?" section on the home page: yes (recommended, it is the missing L and O) or no.
 
+**[Decided 2026-11-05]** The owner approved both: the brand line plus "for Muslim families and adults learning in
+English" under the hero headline, and the "Sound familiar?" section.
+
 Everything else is wording that follows decisions already made; it is applied together with the waitlist build, so
 the live site does not change while the owner is reviewing it. Arabic pages get the same changes in the 80/20 style.
