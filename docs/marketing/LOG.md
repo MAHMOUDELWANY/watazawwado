@@ -34,3 +34,9 @@ Change next week: <one thing>
   the academy within 12 h, Zad Lessons 1–3 approved, new series approved as ideas. Notion page "Script & Record
   Videos" built from the owner's reference video (Steps / Ideas / Post Calendar / Categories); new Status "Review";
   the 10 Week-1 scripts plus "Our Promises" and the parent-privacy post moved to Review.
+- 2026-11-05: Notion Content Hub rebuilt from scratch on the owner's request. The old Content Calendar, Weekly Numbers,
+  platform pages, Week-1 plan, research review page and "Script & Record Videos" are in Notion's Trash (restorable for
+  30 days). New: hub page on the brand strategy (`BRAND.md`), Content Calendar (Status, Date, Series, Audience, Goal,
+  Language, Platforms, CTA) with the first series of 16 items, 9 Nov to 5 Dec (10 "Building Watazawwado" episodes,
+  6 teaching), and a new Weekly Numbers (waitlist and ZAAD comments first). All items are Ideas with a brief; full
+  scripts are written item by item with `mahmoud-voice`.
