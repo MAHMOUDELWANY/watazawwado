@@ -7,7 +7,7 @@ import { hideBootSplash } from '../lib/bootSplash';
 
 /** DEV-ONLY showcase (route /prototype/zaadi): Zaadi's poses and a tiny lesson where Zaadi reacts. Nothing is saved. */
 
-const POSES: [ZaadiPose, string][] = [['idle', 'Waiting'], ['wave', 'Salam'], ['cheer', 'Celebrates'], ['point', 'Shows the way'], ['thanks', 'Thanks you'], ['sad', 'Feels it with you'], ['wow', 'Surprised'], ['peek', 'Peeks']];
+const POSES: [ZaadiPose, string][] = [['idle', 'Waiting'], ['wave', 'Salam'], ['cheer', 'Celebrates'], ['excited', 'Excited'], ['clap', 'Claps for you'], ['love', 'Loves it'], ['proud', 'Proud of you'], ['thanks', 'Thanks you'], ['dua', 'Makes dua'], ['point', 'Shows the way'], ['think', 'Thinking'], ['wow', 'Surprised'], ['shy', 'Shy'], ['sad', 'Feels it with you'], ['sleepy', 'Sleepy'], ['peek', 'Peeks']];
 const Q = [
   { ask: 'Which letter is ب?', options: ['Baa', 'Taa', 'Thaa'], right: 0 },
   { ask: 'Which letter is ت?', options: ['Baa', 'Taa', 'Noon'], right: 1 },
