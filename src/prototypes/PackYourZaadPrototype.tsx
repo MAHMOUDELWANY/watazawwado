@@ -47,7 +47,7 @@ function Zaadi({ mood, size = 56 }: { mood: Mood; size?: number }) {
       {/* eyes: open and blinking at rest, happy arcs when cheering, closed and soft when thanking */}
       {mood === 'idle' && (
         <motion.g animate={reduce ? undefined : { scaleY: [1, 1, 0.1, 1, 1] }} transition={{ duration: 4.2, repeat: Infinity, times: [0, 0.9, 0.93, 0.96, 1] }}
-          style={{ originX: '50px', originY: '50px' }} fill="#2B1A12">
+          style={{ transformBox: 'fill-box', originX: 0.5, originY: 0.5 }} fill="#2B1A12">
           <ellipse cx="43.5" cy="50" rx="2.8" ry="4" /><ellipse cx="56.5" cy="50" rx="2.8" ry="4" />
           <circle cx="44.4" cy="48.6" r="1" fill="#fff" /><circle cx="57.4" cy="48.6" r="1" fill="#fff" />
         </motion.g>
@@ -139,24 +139,84 @@ function CountUp({ to }: { to: number }) {
 }
 
 /* ---------- the share card (story 9:16) ---------- */
-function ShareCard({ track }: { track: Track }) {
+const CARD_TEXT = {
+  en: { brand: 'Watazawwado', title: ['I packed', 'my zaad'], place: (n: number) => `Number ${n} in line for wave 1`, when: 'Opening in early December', cta: 'Pack yours at', tracks: { quran: 'Quran', zad: 'The Zad Path', arabic: 'Arabic', english: 'English' } as Record<string, string> },
+  ar: { brand: 'وتزوّدوا', title: ['جهّزتُ', 'زادي'], place: (n: number) => `رقم ${n} في انتظار الدفعة الأولى`, when: 'تبدأ أوائل ديسمبر', cta: 'جهّز زادك على', tracks: { quran: 'القرآن الكريم', zad: 'مسار الزاد', arabic: 'اللغة العربية', english: 'الإنجليزية' } as Record<string, string> },
+};
+const CARD_SKIN = {
+  dark: { bg: 'radial-gradient(130% 70% at 50% 0%, #3B2219 0%, #1B1816 45%, #110F0E 75%)', ink: '#FAF7F2', soft: '#E8DCC8', line: '#F6D58E', pill: 'rgba(255,255,255,.08)', glow: 'rgba(229,169,60,.28)' },
+  light: { bg: 'radial-gradient(130% 70% at 50% 0%, #FFFFFF 0%, #FAF7F2 45%, #EFE7DC 100%)', ink: '#12100E', soft: '#5A5046', line: '#B9782A', pill: 'rgba(139,73,53,.08)', glow: 'rgba(229,169,60,.22)' },
+};
+
+/* a mihrab arch, the frame the whole card sits in */
+const ARCH = 'M8 470 V170 C8 80 70 26 135 8 C200 26 262 80 262 170 V470 Z';
+
+function ShareCard({ track, skin, lang }: { track: Track; skin: 'dark' | 'light'; lang: 'en' | 'ar' }) {
+  const s = CARD_SKIN[skin];
+  const t = CARD_TEXT[lang];
+  const ar = lang === 'ar';
   return (
-    <div className="relative mx-auto w-[270px] aspect-[9/16] overflow-hidden rounded-[28px] text-[#FAF7F2]"
-      style={{ background: 'radial-gradient(120% 60% at 50% 0%, #3B2219 0%, #110F0E 62%)' }}>
-      <div className="absolute inset-0 opacity-60" style={{ backgroundImage: 'radial-gradient(1.4px 1.4px at 18% 12%,#F6D58E,transparent),radial-gradient(1px 1px at 72% 8%,#fff9,transparent),radial-gradient(1.2px 1.2px at 86% 26%,#F6D58E,transparent),radial-gradient(1px 1px at 30% 34%,#fff7,transparent),radial-gradient(1.3px 1.3px at 9% 48%,#F6D58E,transparent)' }} />
-      <div className="relative flex h-full flex-col items-center px-6 pt-10 pb-7 text-center">
-        <p className="text-[13px] text-[#E8DCC8]">Watazawwado</p>
-        <p className="font-editorial mt-6 text-[34px] leading-[1.02] tracking-tight">I packed<br />my zaad</p>
-        <div className="relative mt-6">
-          <div className="absolute -right-6 -top-5"><Zaadi mood="idle" size={40} /></div>
-          <Bag open={false} zipped bump={0} width={150} />
+    <div dir={ar ? 'rtl' : 'ltr'} lang={lang}
+      className="relative mx-auto w-[270px] aspect-[9/16] overflow-hidden rounded-[28px] shadow-[0_30px_60px_-30px_rgba(40,20,10,.6)]"
+      style={{ background: s.bg, color: s.ink }}>
+      {/* khatam lattice, very quiet */}
+      <svg className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <defs>
+          <pattern id={`lat-${skin}`} width="34" height="34" patternUnits="userSpaceOnUse">
+            <g fill="none" stroke={s.line} strokeOpacity={skin === 'dark' ? 0.09 : 0.12} strokeWidth="0.8">
+              <rect x="10" y="10" width="14" height="14" /><rect x="10" y="10" width="14" height="14" transform="rotate(45 17 17)" />
+            </g>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#lat-${skin})`} />
+      </svg>
+      {/* the arch */}
+      <svg viewBox="0 0 270 480" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <path d={ARCH} transform="translate(0 6) scale(1 .975)" fill={skin === 'dark' ? 'rgba(17,15,14,.55)' : 'rgba(255,255,255,.55)'} stroke={s.line} strokeOpacity=".55" strokeWidth="1.2" />
+        <path d={ARCH} transform="translate(9 16) scale(.933 .94)" fill="none" stroke={s.line} strokeOpacity=".25" strokeWidth=".8" />
+      </svg>
+      {/* a soft light behind the bag */}
+      <div className="absolute left-1/2 top-[46%] h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl" style={{ background: s.glow }} />
+
+      <div className="relative flex h-full flex-col items-center px-7 pb-8 pt-12 text-center">
+        <p className={`text-[12px] ${ar ? 'font-bold' : 'tracking-wide'}`} style={{ color: s.soft }}>{t.brand}</p>
+        <p className={`mt-3 leading-[1.02] ${ar ? 'text-[38px] font-bold' : 'font-editorial text-[36px] tracking-tight'}`}>{t.title[0]}<br />{t.title[1]}</p>
+
+        <div className="relative mt-5">
+          {/* the chosen book peeks out of the bag */}
+          <div className="absolute left-[38px] top-[14px] h-[54px] w-[26px] -rotate-[10deg] rounded-[4px_4px_2px_2px]"
+            style={{ background: `linear-gradient(90deg, ${track.color}E6, ${track.color} 30%, ${track.color}C0)` }}>
+            <span className="absolute inset-x-0 top-1.5 h-[2px] bg-[#D8C6AE]/80" />
+          </div>
+          <div className="relative"><Bag open={false} zipped bump={0} width={138} /></div>
+          <div className={`absolute -top-6 ${ar ? '-left-7' : '-right-7'}`}><Zaadi mood="cheer" size={54} /></div>
         </div>
-        <div className="mt-5 flex items-center gap-2.5 rounded-full bg-white/10 py-1.5 pe-4 ps-1.5">
-          <SubjectMark subjectId={track.emblem} color={track.color} size={34} rounded="rounded-full" />
-          <span className="text-[14px] font-medium">{track.title}</span>
+
+        <div className="mt-5 flex items-center gap-2.5 rounded-full py-1.5 pe-4 ps-1.5" style={{ background: s.pill }}>
+          <SubjectMark subjectId={track.emblem} color={track.color} size={32} rounded="rounded-full" />
+          <span className={`text-[14px] ${ar ? 'font-bold' : 'font-medium'}`}>{t.tracks[track.id]}</span>
         </div>
-        <p className="mt-auto text-[13px] leading-relaxed text-[#E8DCC8]">Waiting for wave 1, early December.<br />Pack yours at watazawwado.academy</p>
+        <p className="mt-3 text-[13px]" style={{ color: s.soft }}>{t.place(PLACE)}</p>
+
+        <div className="mt-auto w-full border-t pt-3.5" style={{ borderColor: `${s.line}55` }}>
+          <p className="text-[12.5px] font-medium">{t.when}</p>
+          <p className="mt-0.5 text-[12px]" style={{ color: s.soft }}>{t.cta} <span dir="ltr">watazawwado.academy</span></p>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Segmented<T extends string>({ value, options, onChange, label }: { value: T; options: [T, string][]; onChange: (v: T) => void; label: string }) {
+  return (
+    <div role="radiogroup" aria-label={label} className="flex rounded-full border border-border p-1">
+      {options.map(([v, l]) => (
+        <button key={v} role="radio" aria-checked={value === v} onClick={() => onChange(v)}
+          className={`relative flex-1 rounded-full px-3 py-1.5 text-[13px] font-medium ${value === v ? 'text-background' : 'text-muted-foreground'}`}>
+          {value === v && <motion.span layoutId={`seg-${label}`} className="absolute inset-0 rounded-full bg-foreground" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />}
+          <span className="relative">{l}</span>
+        </button>
+      ))}
     </div>
   );
 }
@@ -165,8 +225,10 @@ function ShareCard({ track }: { track: Track }) {
 export default function PackYourZaadPrototype() {
   const reduce = useReducedMotion();
   const { theme, toggleTheme } = useTheme();
-  const [step, setStep] = useState(1);
-  const [track, setTrack] = useState<Track | null>(null);
+  // ?share opens straight on the share card (for reviewing it)
+  const jump = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('share');
+  const [step, setStep] = useState(jump ? 4 : 1);
+  const [track, setTrack] = useState<Track | null>(jump ? TRACKS[0] : null);
   const [rising, setRising] = useState<string | null>(null);
   const [who, setWho] = useState<'me' | 'child' | null>(null);
   const [email, setEmail] = useState('');
@@ -177,7 +239,9 @@ export default function PackYourZaadPrototype() {
   const [pains, setPains] = useState<string[]>([]);
   const [note, setNote] = useState('');
   const [sent, setSent] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(jump);
+  const [cardSkin, setCardSkin] = useState<'light' | 'dark'>(theme === 'dark' ? 'dark' : 'light');
+  const [cardLang, setCardLang] = useState<'en' | 'ar'>('en');
   const bagRef = useRef<HTMLDivElement>(null);
   const [flyer, setFlyer] = useState<{ t: Track; x: number; y: number; dx: number; dy: number } | null>(null);
 
@@ -392,8 +456,16 @@ export default function PackYourZaadPrototype() {
               transition={{ type: 'spring', stiffness: 320, damping: 30 }}
               className="w-full max-w-[440px] rounded-t-[32px] bg-background px-5 pb-8 pt-5 sm:rounded-[32px]">
               <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
-              <ShareCard track={track} />
-              <div className="mt-5 grid grid-cols-2 gap-3">
+              <AnimatePresence mode="wait">
+                <motion.div key={cardSkin + cardLang} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.2 }}>
+                  <ShareCard track={track} skin={cardSkin} lang={cardLang} />
+                </motion.div>
+              </AnimatePresence>
+              <div className="mt-4 grid grid-cols-2 gap-2.5">
+                <Segmented label="Card colour" value={cardSkin} onChange={setCardSkin} options={[['light', 'Light'], ['dark', 'Dark']]} />
+                <Segmented label="Card language" value={cardLang} onChange={setCardLang} options={[['en', 'English'], ['ar', 'عربي']]} />
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3">
                 <button className="rounded-full border border-border py-3.5 text-[15px] font-medium">Save image</button>
                 <button className="rounded-full bg-primary py-3.5 text-[15px] font-bold text-white">Share to story</button>
               </div>
