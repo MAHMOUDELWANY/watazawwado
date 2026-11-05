@@ -2,90 +2,99 @@ import React, { useId } from 'react';
 import { motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 
 /**
- * Zaadi with a body (prototype v2, "premium"): a burnished gold khatam with a bevel, a sheen and a rim, glossy eyes
- * that look around, feathered wings with follow-through, and sparkles when it celebrates.
- * Pure SVG + Motion, no new dependency. Every part moves around its own joint, so nothing leaves the figure.
+ * Zaadi (prototype v3): the gold khatam star with simple eyes (no mouth, no human face), now a 3D badge with
+ * depth (extruded edge, bevel, sheen, inset face) and two small arms with round hands for gestures: wave, point,
+ * clap, hand on heart, hands up. Motion is slow and relaxed: long eased loops, soft springs between poses,
+ * and arms that trail the body a little. Pure SVG + Motion, no new dependency.
  */
-export type ZaadiPose = 'idle' | 'wave' | 'cheer' | 'point' | 'thanks' | 'sad' | 'peek';
+export type ZaadiPose = 'idle' | 'wave' | 'cheer' | 'point' | 'thanks' | 'sad' | 'peek' | 'wow';
 
-const loop = { repeat: Infinity, ease: 'easeInOut' as const };
-const joint = (x: number, y: number) => ({ transformBox: 'fill-box' as const, originX: x, originY: y });
-// wings trail the body a little (follow-through), which is what makes motion feel alive
-const lag = (t: TargetAndTransition, d = 0.08): TargetAndTransition => ({ ...t, transition: { ...(t.transition as object), delay: d } });
+const ease = [0.45, 0, 0.55, 1] as const; // soft in-out
+const loop = (duration: number, extra: object = {}) => ({ duration, repeat: Infinity, ease, ...extra });
+const soft = { type: 'spring' as const, stiffness: 90, damping: 14, mass: 0.9 };
+// joints in viewBox units: the arm turns at the shoulder, the body at the feet
+// Motion owns transform-origin, so the joint goes through originX/originY (px in the view box)
+const at = (x: number, y: number) => ({ transformBox: 'view-box' as const, originX: `${x}px`, originY: `${y}px` });
 
-type Parts = { body: TargetAndTransition; wingL: TargetAndTransition; wingR: TargetAndTransition; feet: TargetAndTransition; eyes: 'open' | 'happy' | 'closed' | 'sad' };
+type Eyes = 'open' | 'happy' | 'closed' | 'sad' | 'wow';
+type Parts = { body: TargetAndTransition; armL: TargetAndTransition; armR: TargetAndTransition; feet: TargetAndTransition; eyes: Eyes };
 
 const POSES: Record<ZaadiPose, Parts> = {
   idle: {
-    body: { y: [0, -3, 0], scaleY: [1, 1.025, 1], scaleX: [1, 0.99, 1], transition: { duration: 3.4, ...loop } },
-    wingL: lag({ rotate: [0, -9, 0], transition: { duration: 3.4, ...loop } }, 0.15),
-    wingR: lag({ rotate: [0, 9, 0], transition: { duration: 3.4, ...loop } }, 0.15),
+    body: { y: [0, -2.5, 0], rotate: [0, 1.2, 0, -1.2, 0], scaleY: [1, 1.02, 1], transition: loop(4.8) },
+    armL: { rotate: [0, 6, 0], transition: loop(4.8, { delay: 0.2 }) },
+    armR: { rotate: [0, -6, 0], transition: loop(4.8, { delay: 0.2 }) },
     feet: { y: 0 }, eyes: 'open',
   },
   wave: {
-    body: { rotate: [0, 4, 0, 4, 0], transition: { duration: 1.4, ...loop, repeatDelay: 0.4 } },
-    wingL: { rotate: 0 },
-    wingR: lag({ rotate: [-20, -100, -62, -100, -62, -20], transition: { duration: 1.4, ...loop, repeatDelay: 0.4 } }),
+    body: { rotate: [0, 3, 0], y: 0, transition: loop(1.8) },
+    armL: { rotate: 4, transition: soft },
+    armR: { rotate: [-100, -135, -100], transition: loop(0.9) },
     feet: { y: 0 }, eyes: 'happy',
   },
   cheer: {
-    body: { y: [0, 7, -36, 0, 3, 0], scaleY: [1, 0.84, 1.12, 1, 0.94, 1], scaleX: [1, 1.12, 0.93, 1, 1.04, 1], rotate: [0, 0, -8, 0, 0, 0], transition: { duration: 1.15, ...loop, repeatDelay: 0.45 } },
-    wingL: lag({ rotate: [0, 40, -55, 35, -40, 0], transition: { duration: 1.15, ...loop, repeatDelay: 0.45 } }),
-    wingR: lag({ rotate: [0, -40, 55, -35, 40, 0], transition: { duration: 1.15, ...loop, repeatDelay: 0.45 } }),
-    feet: { y: [0, 0, -36, 0, 0, 0], transition: { duration: 1.15, ...loop, repeatDelay: 0.45 } },
+    body: { y: [0, 5, -30, 0, 0], scaleY: [1, 0.88, 1.08, 0.97, 1], scaleX: [1, 1.08, 0.95, 1.02, 1], transition: loop(1.5, { times: [0, 0.18, 0.45, 0.72, 1], repeatDelay: 0.35 }) },
+    armL: { rotate: [110, 135, 110], transition: loop(0.5) },
+    armR: { rotate: [-110, -135, -110], transition: loop(0.5) },
+    feet: { y: [0, 0, -30, 0, 0], transition: loop(1.5, { times: [0, 0.18, 0.45, 0.72, 1], repeatDelay: 0.35 }) },
     eyes: 'happy',
   },
   point: {
-    body: { rotate: [0, -6, -4], x: [0, -3, -2], transition: { duration: 0.5 } },
-    wingL: { rotate: [0, -6, 0], transition: { duration: 2, ...loop } },
-    wingR: { rotate: [0, -80, -70, -80], transition: { duration: 1.2, times: [0, 0.3, 0.65, 1], repeat: Infinity, repeatType: 'mirror' } },
+    body: { rotate: -4, x: -2, y: 0, transition: soft },
+    armL: { rotate: [0, 5, 0], transition: loop(3) },
+    armR: { rotate: [-46, -52, -46], transition: loop(1.6) },
     feet: { y: 0 }, eyes: 'open',
   },
   thanks: {
-    body: { rotate: [0, 0, 10, 10, 0], y: [0, 0, 4, 4, 0], transition: { duration: 2.2, ...loop, repeatDelay: 0.6 } },
-    wingL: lag({ rotate: [0, 72, 72, 72, 0], transition: { duration: 2.2, ...loop, repeatDelay: 0.6 } }),
-    wingR: lag({ rotate: [0, -10, -10, -10, 0], transition: { duration: 2.2, ...loop, repeatDelay: 0.6 } }),
+    body: { rotate: [0, 7, 7, 0], y: [0, 3, 3, 0], transition: loop(3.2, { times: [0, 0.3, 0.7, 1], repeatDelay: 0.6 }) },
+    armL: { rotate: -92, transition: soft }, // hand on the heart
+    armR: { rotate: [0, -8, 0], transition: loop(3.2) },
     feet: { y: 0 }, eyes: 'closed',
   },
   sad: {
-    body: { y: 5, scaleY: 0.95, rotate: -5, transition: { type: 'spring', stiffness: 120, damping: 12 } },
-    wingL: { rotate: 24, transition: { type: 'spring', stiffness: 110, damping: 10, delay: 0.1 } },
-    wingR: { rotate: -24, transition: { type: 'spring', stiffness: 110, damping: 10, delay: 0.1 } },
+    body: { y: 4, scaleY: 0.96, rotate: -4, transition: soft },
+    armL: { rotate: -14, transition: soft },
+    armR: { rotate: 14, transition: soft },
     feet: { y: 0 }, eyes: 'sad',
   },
   peek: {
-    body: { y: [0, -2, 0], transition: { duration: 2.4, ...loop } },
-    wingL: lag({ rotate: [0, -16, 0], transition: { duration: 2.4, ...loop } }),
-    wingR: lag({ rotate: [0, 16, 0], transition: { duration: 2.4, ...loop } }),
+    body: { y: [0, -2, 0], transition: loop(3) },
+    armL: { rotate: 70, transition: soft }, // hands on the edge
+    armR: { rotate: -70, transition: soft },
     feet: { y: 0 }, eyes: 'open',
+  },
+  wow: {
+    body: { y: [0, -6, 0], scaleY: [1, 1.05, 1], transition: { duration: 0.6, ease } },
+    armL: { rotate: 40, transition: soft },
+    armR: { rotate: -40, transition: soft },
+    feet: { y: 0 }, eyes: 'wow',
   },
 };
 
 const INK = '#2A1710';
-const STAR = 'M61 22 L72.5 33.3 L88.6 33.4 L88.7 49.5 L100 61 L88.7 72.5 L88.6 88.6 L72.5 88.7 L61 100 L49.5 88.7 L33.4 88.6 L33.3 72.5 L22 61 L33.3 49.5 L33.4 33.4 L49.5 33.3 Z';
-const STAR_IN = 'M61 31 L69.6 39.5 L81.6 39.4 L81.7 51.4 L90.2 61 L81.7 70.6 L81.6 82.6 L69.6 82.5 L61 91 L52.4 82.5 L40.4 82.6 L40.3 70.6 L31.8 61 L40.3 51.4 L40.4 39.4 L52.4 39.5 Z';
-const WING_L = 'M33 64 C21 55 8 61 7 74 C10 74 12 76 12.5 79 C15.5 79 17.5 81 18.5 84 C25.5 84.5 31.5 79 36 72 Z';
-const WING_R = 'M89 64 C101 55 114 61 115 74 C112 74 110 76 109.5 79 C106.5 79 104.5 81 103.5 84 C96.5 84.5 90.5 79 86 72 Z';
+const STAR = 'M61 20 L72.8 31.6 L89.3 31.7 L89.4 48.2 L101 60 L89.4 71.8 L89.3 88.3 L72.8 88.4 L61 100 L49.2 88.4 L32.7 88.3 L32.6 71.8 L21 60 L32.6 48.2 L32.7 31.7 L49.2 31.6 Z';
+const STAR_IN = 'M61 29 L69.8 37.9 L82.3 37.8 L82.4 50.3 L91.2 60 L82.4 69.7 L82.3 82.2 L69.8 82.1 L61 91 L52.2 82.1 L39.7 82.2 L39.6 69.7 L30.8 60 L39.6 50.3 L39.7 37.8 L52.2 37.9 Z';
 
-function Eyes({ kind, look }: { kind: Parts['eyes']; look: boolean }) {
+function EyeSet({ kind, look }: { kind: Eyes; look: boolean }) {
   const reduce = useReducedMotion();
-  if (kind === 'happy') return <g fill="none" stroke={INK} strokeWidth="3.4" strokeLinecap="round"><path d="M49.5 61 q5 -7 10 0" /><path d="M62.5 61 q5 -7 10 0" /></g>;
-  if (kind === 'closed') return <g fill="none" stroke={INK} strokeWidth="3.2" strokeLinecap="round"><path d="M49.5 58 q5 5.5 10 0" /><path d="M62.5 58 q5 5.5 10 0" /></g>;
+  if (kind === 'happy') return <g fill="none" stroke={INK} strokeWidth="3.4" strokeLinecap="round"><path d="M49.5 60 q5 -7 10 0" /><path d="M62.5 60 q5 -7 10 0" /></g>;
+  if (kind === 'closed') return <g fill="none" stroke={INK} strokeWidth="3.2" strokeLinecap="round"><path d="M49.5 57 q5 5.5 10 0" /><path d="M62.5 57 q5 5.5 10 0" /></g>;
   const sad = kind === 'sad';
+  const wow = kind === 'wow';
+  const ry = wow ? 7.4 : sad ? 5.4 : 6.4;
   return (
     <g>
-      {sad && <g stroke={INK} strokeWidth="2.4" strokeLinecap="round"><path d="M48.5 50.5 l9.5 -4.2" /><path d="M73.5 50.5 l-9.5 -4.2" /></g>}
-      <motion.g animate={reduce ? undefined : { scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: 4.6, repeat: Infinity, times: [0, 0.9, 0.93, 0.96, 1] }} style={joint(0.5, 0.5)}>
-        {/* whites */}
-        <ellipse cx="54.5" cy={sad ? 60 : 58.5} rx="5.2" ry={sad ? 5.4 : 6.4} fill="#FFFFFF" />
-        <ellipse cx="67.5" cy={sad ? 60 : 58.5} rx="5.2" ry={sad ? 5.4 : 6.4} fill="#FFFFFF" />
-        {/* irises look around now and then */}
-        <motion.g animate={reduce || !look ? undefined : { x: [0, 0, 1.6, 1.6, 0, -1.6, -1.6, 0], y: [0, 0, 0.4, 0.4, 0, 0.4, 0.4, 0] }}
-          transition={{ duration: 7, repeat: Infinity, times: [0, 0.3, 0.34, 0.5, 0.54, 0.7, 0.86, 0.9] }}>
-          <ellipse cx="55" cy={sad ? 61 : 59.5} rx="3.6" ry={sad ? 3.9 : 4.6} fill={INK} />
-          <ellipse cx="68" cy={sad ? 61 : 59.5} rx="3.6" ry={sad ? 3.9 : 4.6} fill={INK} />
-          <circle cx="56.4" cy="57.4" r="1.5" fill="#fff" /><circle cx="69.4" cy="57.4" r="1.5" fill="#fff" />
-          <circle cx="53.8" cy="61.6" r=".7" fill="#fff" opacity=".8" /><circle cx="66.8" cy="61.6" r=".7" fill="#fff" opacity=".8" />
+      {sad && <g stroke={INK} strokeWidth="2.4" strokeLinecap="round"><path d="M48.5 49.5 l9.5 -4.2" /><path d="M73.5 49.5 l-9.5 -4.2" /></g>}
+      <motion.g animate={reduce ? undefined : { scaleY: [1, 1, 0.08, 1, 1] }} transition={{ duration: 5.2, repeat: Infinity, times: [0, 0.9, 0.925, 0.95, 1] }}
+        style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}>
+        <ellipse cx="54.5" cy="57.5" rx={wow ? 6 : 5.2} ry={ry} fill="#FFFFFF" />
+        <ellipse cx="67.5" cy="57.5" rx={wow ? 6 : 5.2} ry={ry} fill="#FFFFFF" />
+        <motion.g animate={reduce || !look ? undefined : { x: [0, 0, 1.6, 1.6, 0, -1.6, -1.6, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease, times: [0, 0.3, 0.36, 0.5, 0.56, 0.7, 0.86, 0.92] }}>
+          <ellipse cx="55" cy="58.5" rx={wow ? 2.8 : 3.6} ry={wow ? 3.4 : sad ? 3.9 : 4.6} fill={INK} />
+          <ellipse cx="68" cy="58.5" rx={wow ? 2.8 : 3.6} ry={wow ? 3.4 : sad ? 3.9 : 4.6} fill={INK} />
+          <circle cx="56.4" cy="56.3" r="1.5" fill="#fff" /><circle cx="69.4" cy="56.3" r="1.5" fill="#fff" />
+          <circle cx="53.9" cy="60.6" r=".7" fill="#fff" opacity=".8" /><circle cx="66.9" cy="60.6" r=".7" fill="#fff" opacity=".8" />
         </motion.g>
       </motion.g>
     </g>
@@ -95,14 +104,29 @@ function Eyes({ kind, look }: { kind: Parts['eyes']; look: boolean }) {
 function Sparkles({ on }: { on: boolean }) {
   const reduce = useReducedMotion();
   if (!on || reduce) return null;
-  const pts = [[16, 30, 0], [106, 26, 0.25], [8, 92, 0.5], [114, 96, 0.7], [61, 6, 0.4]] as const;
+  const pts = [[14, 30, 0], [108, 24, 0.3], [8, 90, 0.55], [114, 92, 0.8], [61, 4, 0.45]] as const;
   return (
     <g>
       {pts.map(([x, y, d], i) => (
         <motion.path key={i} d={`M${x} ${y - 6} L${x + 1.6} ${y - 1.6} L${x + 6} ${y} L${x + 1.6} ${y + 1.6} L${x} ${y + 6} L${x - 1.6} ${y + 1.6} L${x - 6} ${y} L${x - 1.6} ${y - 1.6} Z`}
-          fill="#FFE7A8" style={joint(0.5, 0.5)}
-          animate={{ scale: [0, 1.2, 0], opacity: [0, 1, 0], rotate: [0, 45] }} transition={{ duration: 1.1, repeat: Infinity, delay: d, repeatDelay: 0.5 }} />
+          fill="#FFE7A8" style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}
+          animate={{ scale: [0, 1.15, 0], opacity: [0, 1, 0], rotate: [0, 45] }} transition={{ duration: 1.3, repeat: Infinity, delay: d, repeatDelay: 0.6, ease }} />
       ))}
+    </g>
+  );
+}
+
+/** a short arm with a round hand; drawn hanging down-and-out from the shoulder, then rotated */
+function Arm({ side, id }: { side: 'L' | 'R'; id: (n: string) => string }) {
+  const s = side === 'L' ? -1 : 1;
+  const sx = 61 + s * 27, sy = 68;           // shoulder
+  const hx = sx + s * 11, hy = sy + 15;      // hand
+  return (
+    <g>
+      <path d={`M${sx} ${sy} Q${sx + s * 9} ${sy + 4} ${hx} ${hy}`} fill="none" stroke="#B37A2C" strokeWidth="8.5" strokeLinecap="round" />
+      <path d={`M${sx} ${sy} Q${sx + s * 9} ${sy + 4} ${hx} ${hy}`} fill="none" stroke="#E9B652" strokeWidth="3.4" strokeLinecap="round" opacity=".75" />
+      <circle cx={hx} cy={hy} r="8.6" fill={`url(#${id('hand')})`} stroke="#9C6422" strokeWidth="1" />
+      <circle cx={hx - 2.6} cy={hy - 2.8} r="2.4" fill="#FFF4D6" opacity=".8" />
     </g>
   );
 }
@@ -111,58 +135,55 @@ export function ZaadiRig({ pose, size = 140, glow = true }: { pose: ZaadiPose; s
   const reduce = useReducedMotion();
   const p = POSES[pose];
   const a = (t: TargetAndTransition) => (reduce ? undefined : t);
-  // unique ids: a url(#id) pointing into a hidden copy of Zaadi would paint nothing
   const uid = useId().replace(/:/g, '');
   const id = (n: string) => `zr-${n}-${uid}`;
   return (
     <svg viewBox="0 0 122 124" width={size} height={size * 124 / 122} aria-hidden="true" style={{ overflow: 'visible' }}>
       <defs>
-        <radialGradient id={id('gold')} cx="38%" cy="28%" r="80%">
-          <stop offset="0" stopColor="#FFF0C2" /><stop offset=".38" stopColor="#F2BE55" /><stop offset=".75" stopColor="#D49A35" /><stop offset="1" stopColor="#9C6422" />
+        <radialGradient id={id('gold')} cx="34%" cy="24%" r="85%">
+          <stop offset="0" stopColor="#FFF3CF" /><stop offset=".35" stopColor="#F4C35C" /><stop offset=".72" stopColor="#D69B36" /><stop offset="1" stopColor="#9C6422" />
         </radialGradient>
-        <linearGradient id={id('bevel')} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF6DA" stopOpacity=".85" /><stop offset=".5" stopColor="#F6D58E" stopOpacity=".15" /><stop offset="1" stopColor="#8A561C" stopOpacity=".35" /></linearGradient>
-        <linearGradient id={id('wing')} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FFF1CC" /><stop offset=".55" stopColor="#F0C66E" /><stop offset="1" stopColor="#C88C2E" /></linearGradient>
-        <radialGradient id={id('face')} cx="45%" cy="38%" r="70%"><stop offset="0" stopColor="#FFFDF6" /><stop offset="1" stopColor="#FBEFD6" /></radialGradient>
-        <radialGradient id={id('halo')} cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#F6C25A" stopOpacity=".45" /><stop offset="1" stopColor="#F6C25A" stopOpacity="0" /></radialGradient>
+        <linearGradient id={id('edge')} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#B57A2A" /><stop offset="1" stopColor="#6E4115" /></linearGradient>
+        <linearGradient id={id('bevel')} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF6DA" stopOpacity=".9" /><stop offset=".5" stopColor="#F6D58E" stopOpacity=".12" /><stop offset="1" stopColor="#7A4A16" stopOpacity=".4" /></linearGradient>
+        <radialGradient id={id('hand')} cx="35%" cy="30%" r="75%"><stop offset="0" stopColor="#FFEDB8" /><stop offset=".6" stopColor="#EAB24B" /><stop offset="1" stopColor="#B57A2A" /></radialGradient>
+        <radialGradient id={id('face')} cx="45%" cy="35%" r="70%"><stop offset="0" stopColor="#FFFEF9" /><stop offset=".8" stopColor="#FBF0DA" /><stop offset="1" stopColor="#EED9B2" /></radialGradient>
+        <radialGradient id={id('halo')} cx="50%" cy="50%" r="50%"><stop offset="0" stopColor="#F6C25A" stopOpacity=".42" /><stop offset="1" stopColor="#F6C25A" stopOpacity="0" /></radialGradient>
         <clipPath id={id('clip')}><path d={STAR} /></clipPath>
       </defs>
 
-      {glow && <motion.circle cx="61" cy="62" r="58" fill={`url(#${id('halo')})`} animate={a({ opacity: [0.7, 1, 0.7], transition: { duration: 3.4, ...loop } })} />}
+      {glow && <motion.circle cx="61" cy="61" r="58" fill={`url(#${id('halo')})`} animate={a({ opacity: [0.65, 1, 0.65], transition: loop(4.8) })} />}
       <Sparkles on={pose === 'cheer'} />
 
-      <motion.ellipse cx="61" cy="119" rx="24" ry="4" fill="#3A1A08" opacity=".18" style={joint(0.5, 0.5)}
-        animate={a(pose === 'cheer' ? { scaleX: [1, 1.1, 0.55, 1, 1, 1], opacity: [0.18, 0.22, 0.07, 0.18, 0.18, 0.18], transition: { duration: 1.15, repeat: Infinity, repeatDelay: 0.45 } } : { scaleX: 1 })} />
+      <motion.ellipse cx="61" cy="119" rx="24" ry="4" fill="#3A1A08" opacity=".18" style={{ transformBox: 'fill-box', transformOrigin: '50% 50%' }}
+        animate={a(pose === 'cheer' ? { scaleX: [1, 1.08, 0.6, 1, 1], opacity: [0.18, 0.22, 0.08, 0.18, 0.18], transition: loop(1.5, { times: [0, 0.18, 0.45, 0.72, 1], repeatDelay: 0.35 }) } : { scaleX: 1, opacity: 0.18 })} />
 
       {/* feet */}
       <motion.g animate={a(p.feet)}>
-        <path d="M52.5 103 v8.5 M69.5 103 v8.5" stroke="#A86E26" strokeWidth="3.6" strokeLinecap="round" />
-        <ellipse cx="50.5" cy="113" rx="7.6" ry="4.3" fill="#B97A2C" /><ellipse cx="71.5" cy="113" rx="7.6" ry="4.3" fill="#B97A2C" />
-        <ellipse cx="48.5" cy="111.6" rx="3.2" ry="1.3" fill="#F6D58E" opacity=".55" /><ellipse cx="69.5" cy="111.6" rx="3.2" ry="1.3" fill="#F6D58E" opacity=".55" />
+        <path d="M53 101 v10 M69 101 v10" stroke="#A86E26" strokeWidth="3.6" strokeLinecap="round" />
+        <ellipse cx="51" cy="113" rx="7.6" ry="4.3" fill="#B97A2C" /><ellipse cx="71" cy="113" rx="7.6" ry="4.3" fill="#B97A2C" />
+        <ellipse cx="49" cy="111.6" rx="3.2" ry="1.3" fill="#F6D58E" opacity=".55" /><ellipse cx="69" cy="111.6" rx="3.2" ry="1.3" fill="#F6D58E" opacity=".55" />
       </motion.g>
 
-      <motion.g animate={a(p.body)} style={joint(0.5, 0.95)}>
-        {/* feathered wings */}
-        <motion.g animate={a(p.wingL)} style={joint(0.95, 0.25)}>
-          <path d={WING_L} fill={`url(#${id('wing')})`} stroke="#A86E26" strokeWidth="1.1" strokeLinejoin="round" />
-          <path d="M30 67 C22 66 16 69 13 75 M31 71 C25 72 21 76 19 80" fill="none" stroke="#B9782A" strokeOpacity=".45" strokeWidth="1" strokeLinecap="round" />
-        </motion.g>
-        <motion.g animate={a(p.wingR)} style={joint(0.05, 0.25)}>
-          <path d={WING_R} fill={`url(#${id('wing')})`} stroke="#A86E26" strokeWidth="1.1" strokeLinejoin="round" />
-          <path d="M92 67 C100 66 106 69 109 75 M91 71 C97 72 101 76 103 80" fill="none" stroke="#B9782A" strokeOpacity=".45" strokeWidth="1" strokeLinecap="round" />
-        </motion.g>
-
-        {/* the khatam body: gold, bevel, engraved inner star, sheen, rim */}
-        <path d={STAR} fill={`url(#${id('gold')})`} stroke="#8A561C" strokeWidth="1.4" strokeLinejoin="round" />
-        <path d={STAR_IN} fill={`url(#${id('bevel')})`} stroke="#FFF2C9" strokeOpacity=".55" strokeWidth=".9" strokeLinejoin="round" />
+      <motion.g animate={a(p.body)} style={at(61, 112)}>
+        {/* 3D badge: extruded edge, gold face, bevelled inner star, moving sheen */}
+        <path d={STAR} transform="translate(1.6 3.4)" fill={`url(#${id('edge')})`} />
+        <path d={STAR} fill={`url(#${id('gold')})`} stroke="#8A561C" strokeWidth="1.1" strokeLinejoin="round" />
+        <path d={STAR} fill="none" stroke="#FFF2C9" strokeOpacity=".7" strokeWidth="1" strokeLinejoin="round" transform="translate(-.6 -.8)" clipPath={`url(#${id('clip')})`} />
+        <path d={STAR_IN} fill={`url(#${id('bevel')})`} stroke="#FFF2C9" strokeOpacity=".5" strokeWidth=".9" strokeLinejoin="round" />
         <g clipPath={`url(#${id('clip')})`}>
-          <motion.rect x="-40" y="10" width="22" height="120" fill="#FFFFFF" opacity=".28" transform="rotate(-28 61 61)"
-            animate={a({ x: [-40, 150], transition: { duration: 2.6, repeat: Infinity, repeatDelay: 4.5, ease: 'easeInOut' } })} />
+          <motion.rect x="-40" y="0" width="20" height="130" fill="#FFFFFF" opacity=".26" transform="rotate(-28 61 61)"
+            animate={a({ x: [-40, 150], transition: { duration: 3.2, repeat: Infinity, repeatDelay: 5, ease } })} />
         </g>
 
-        {/* face */}
-        <circle cx="61" cy="62" r="20.5" fill={`url(#${id('face')})`} stroke="#E9C98B" strokeWidth="1" />
-        <Eyes kind={p.eyes} look={pose === 'idle' || pose === 'peek'} />
-        <ellipse cx="46.5" cy="69.5" rx="4.2" ry="2.3" fill="#F29C9C" opacity=".55" /><ellipse cx="75.5" cy="69.5" rx="4.2" ry="2.3" fill="#F29C9C" opacity=".55" />
+        {/* inset face */}
+        <circle cx="61.4" cy="61.6" r="21" fill="#8A561C" opacity=".35" />
+        <circle cx="61" cy="61" r="20.5" fill={`url(#${id('face')})`} />
+        <EyeSet kind={p.eyes} look={pose === 'idle' || pose === 'peek'} />
+        <ellipse cx="46.5" cy="68.5" rx="4.2" ry="2.3" fill="#F29C9C" opacity=".55" /><ellipse cx="75.5" cy="68.5" rx="4.2" ry="2.3" fill="#F29C9C" opacity=".55" />
+        {/* arms in front, so a hand can rest on the heart */}
+        <motion.g animate={a(p.armL)} style={at(34, 68)}><Arm side="L" id={id} /></motion.g>
+        <motion.g animate={a(p.armR)} style={at(88, 68)}><Arm side="R" id={id} /></motion.g>
+
       </motion.g>
     </svg>
   );
