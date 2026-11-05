@@ -13,7 +13,7 @@ const LOOP = { repeat: Infinity, repeatDelay: 2.2 };
 
 type Kind = 'teacher' | 'plan' | 'interest' | 'time';
 
-export function FamiliarIcon({ kind }: { kind: Kind }) {
+export function FamiliarIcon({ kind, large = false }: { kind: Kind; large?: boolean }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { margin: '-15% 0px' });
   const still = Boolean(useReducedMotion());
@@ -22,9 +22,12 @@ export function FamiliarIcon({ kind }: { kind: Kind }) {
     <span
       ref={ref}
       aria-hidden="true"
-      className="grid place-items-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-surface-warm/70 dark:bg-white/[0.04] ring-1 ring-border/70 text-foreground/80"
+      className={large
+        ? 'grid place-items-center w-full h-full text-foreground/85'
+        : 'grid place-items-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-surface-warm/70 dark:bg-white/[0.04] ring-1 ring-border/70 text-foreground/80'}
     >
-      <svg viewBox="5 5 38 38" className="w-9 h-9 sm:w-10 sm:h-10" fill="none" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      {/* Large: the drawing is the card's hero, so the strokes get thinner as it grows. */}
+      <svg viewBox="5 5 38 38" className={large ? 'w-3/4 h-3/4' : 'w-9 h-9 sm:w-10 sm:h-10'} fill="none" strokeWidth={large ? 1.5 : 2} strokeLinecap="round" strokeLinejoin="round">
         {kind === 'teacher' && <Teacher play={play} />}
         {kind === 'plan' && <Plan play={play} />}
         {kind === 'interest' && <Interest play={play} />}

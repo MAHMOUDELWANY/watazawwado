@@ -1,4 +1,5 @@
-import { FamiliarIcon } from './FamiliarIcons';
+import { PainCube } from './PainCube';
+import { TeacherStays } from './TeacherStays';
 import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
@@ -183,43 +184,6 @@ export function PublicHomepage() {
         </div>
       </section>
 
-      {/* ─── 3a. SOUND FAMILIAR? ─── the pain and what families tried before (CLOSER review 2026-11-05). */}
-      {/* One quiet editorial block: the question and the answer beside the list (no cards, hairlines only). */}
-      <section className="public-container py-16 lg:py-24" aria-labelledby="home-familiar">
-        <div className="max-w-5xl mx-auto grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:items-start">
-        <h2 id="home-familiar" className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground lg:sticky lg:top-28">
-          {isEn ? 'Sound familiar?' : 'هل يبدو هذا مألوفًا؟'}
-        </h2>
-        <div>
-        <ul className="divide-y divide-border/70 border-y border-border/70">
-          {(isEn ? [
-            'The teacher keeps changing, and every new one starts from zero.',
-            'Lessons happen, but nobody can tell you the plan.',
-            'Your child loved it for a month, then lost interest.',
-            'The times never fit your week.',
-          ] : [
-            'المعلّم يتغيّر كل فترة، وكل معلّم جديد يبدأ من الصفر.',
-            'الحصص مستمرة، لكن لا أحد يخبرك بالخطة.',
-            'أحبّ طفلك الدروس شهرًا، ثم فقد حماسه.',
-            'المواعيد لا تناسب أسبوعك أبدًا.',
-          ]).map((line, i) => (
-            <li key={line} className="flex items-center gap-4 sm:gap-5 py-4 text-base sm:text-lg leading-relaxed text-foreground">
-              <FamiliarIcon kind={(['teacher', 'plan', 'interest', 'time'] as const)[i]} />
-              <span>{line}</span>
-            </li>
-          ))}
-        </ul>
-        {/* The answer follows the questions. */}
-        <p className="mt-8 font-editorial text-2xl sm:text-3xl leading-snug text-foreground">
-          {isEn ? 'Here, your teacher stays.' : 'هنا، يبقى معلّمك معك.'}
-        </p>
-        <p className="mt-2 text-base text-muted-foreground leading-relaxed max-w-md">
-          {isEn ? 'Families tell us they tried YouTube, weekend classes and academies that swap teachers.' : 'تخبرنا الأسر أنها جرّبت يوتيوب، وفصول نهاية الأسبوع، وأكاديميات تبدّل المعلّمين.'}
-        </p>
-        </div>
-        </div>
-      </section>
-
       {/* ─── 3. TWO WAYS TO LEARN ─── */}
       <PublicSection>
         <div className="max-w-5xl mx-auto">
@@ -237,6 +201,12 @@ export function PublicHomepage() {
           <TwoWays isEn={isEn} />
         </div>
       </PublicSection>
+
+      {/* ─── 3a. SOUND FAMILIAR? ─── the pains on a turning cube, after the visitor has seen what we offer (owner, 2026-11-05). */}
+      <PainCube isEn={isEn} />
+
+      {/* ─── 3a'. THE ANSWER ─── the teacher lifts the child onto the carpet and they fly into the infinity together. */}
+      <TeacherStays isEn={isEn} />
 
       {/* ─── 3b. THE WEEK AROUND THE LESSON, AND WHAT FAMILIES SAY ─── */}
       <WeekWithUs isEn={isEn} />
