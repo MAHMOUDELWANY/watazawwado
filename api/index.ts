@@ -58,6 +58,7 @@ import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
+import { registerWaitlistRoutes, onboardingAllowed } from '../server/routes/waitlist.js';
 import { registerHomeworkRoutes } from '../server/routes/homework.js';
 import { registerReviewRoutes } from '../server/routes/review.js';
 import { registerFamilyReviewRoutes } from '../server/routes/reviews.js';
@@ -8014,6 +8015,14 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       return res.status(404).json({ error: 'Student profile not found.' });
     }
 
+    // Launch in waves (RULES.md §2): in waitlist mode a new learner finishes onboarding only with an invited email.
+    if (!req.studentUser?.studentProfile?.onboarding_completed) {
+      const adminClient = getSupabaseAdminClient();
+      if (adminClient && !(await onboardingAllowed(adminClient, req.studentUser?.email))) {
+        return res.status(403).json({ error: 'waitlist', message: 'New accounts open in waves. Pack your zaad to keep your place in line.' });
+      }
+    }
+
     // Validate that client cannot submit or assign privileged roles
     if (req.body && (req.body.role !== undefined || req.body.appRole !== undefined || req.body.isTeacher !== undefined || req.body.is_teacher !== undefined)) {
       return res.status(422).json({ error: 'Assignment of privileged role is strictly forbidden.' });
@@ -10218,6 +10227,8 @@ registerFunnelRoutes(app, {
   verifyTeacherAuth,
   requireSuperAdmin
 });
+
+registerWaitlistRoutes(app, { getClient: getSupabaseAdminClient, rateLimit, verifyTeacherAuth, requireSuperAdmin });
 
 registerFeedbackRoutes(app, {
   getClient: getSupabaseAdminClient,
