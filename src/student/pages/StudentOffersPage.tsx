@@ -129,7 +129,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
       </h1>
       <p className="text-muted-foreground text-sm mb-6">
         {isAr
-          ? 'العروض اللي فريقنا راجعها ووافق عليها.'
+          ? 'العروض التي راجعها فريقنا ووافق عليها.'
           : 'Offers reviewed and approved by our team.'}
       </p>
 
@@ -138,9 +138,9 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
       {offers.length === 0 && !error && (
         <EmptyState
           icon={Info}
-          title={isAr ? 'لسه مفيش عروض جاهزة' : 'No offers yet'}
+          title={isAr ? 'لا عروض جاهزة بعد' : 'No offers yet'}
           description={isAr
-            ? 'احكي للمرشد عن اللي عايز تتعلمه، وفريقنا هيجهزلك عرض يناسبك.'
+            ? 'أخبر المرشد بما تريد أن تتعلّمه، وسيجهّز لك فريقنا عرضًا يناسبك.'
             : 'Tell our guide what you want to learn, and our team will prepare an offer for you.'}
           action={
             <Link to="/student/guide" className="inline-flex items-center px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
@@ -271,12 +271,12 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                   <p className="text-muted-foreground mt-1">
                     {(isAr ? customizedNote?.ar : customizedNote?.en) ||
                       (isAr
-                        ? 'فريقنا وافق على العرض ده، لكن إتمام الدفع أونلاين بالسعر المخصص ده غير متاح حاليًا.'
+                        ? 'وافق فريقنا على هذا العرض، لكن إتمام الدفع أونلاين بهذا السعر المخصّص غير متاح حاليًا.'
                         : 'Our team approved this offer, but online purchase for this custom price is not available yet.')}
                   </p>
                   <p className="text-muted-foreground mt-1">
                     {isAr
-                      ? 'الموافقة على العرض هنا تسجيل لقبولك فقط، ومش دفع ولا تفعيل رصيد.'
+                      ? 'الموافقة على العرض هنا تسجيل لقبولك فقط، لا دفع ولا تفعيل رصيد.'
                       : 'Accepting here records your acknowledgement only — it is not payment and does not activate credits.'}
                   </p>
                 </div>

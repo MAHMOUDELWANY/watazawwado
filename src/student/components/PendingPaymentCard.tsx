@@ -55,7 +55,7 @@ export function PendingPaymentCard({ lang = 'en', handleStripeReturn = true }: {
 
   const release = async (b: any) => {
     const ok = await confirmAction(
-      isAr ? 'تسيب الميعاد ده؟ هيتفتح لغيرك ومش هتدفع حاجة.' : 'Let this time go? It opens for others again and you pay nothing.',
+      isAr ? 'تترك هذا الموعد؟ سيُفتح لغيرك ولن تدفع شيئًا.' : 'Let this time go? It opens for others again and you pay nothing.',
       { confirmLabel: isAr ? 'سيبه' : 'Let it go', danger: true }
     );
     if (!ok) return;
@@ -67,7 +67,7 @@ export function PendingPaymentCard({ lang = 'en', handleStripeReturn = true }: {
       notify(isAr ? 'اتساب الميعاد.' : 'The time was released.', 'success');
       await load();
     } catch (err: any) {
-      notify(err?.message || (isAr ? 'معرفناش نلغيه، جرّب تاني.' : 'Could not release it, please try again.'), 'error');
+      notify(err?.message || (isAr ? 'تعذّر الإلغاء، حاول مرة أخرى.' : 'Could not release it, please try again.'), 'error');
     } finally {
       setBusyId(null);
     }
@@ -92,7 +92,7 @@ export function PendingPaymentCard({ lang = 'en', handleStripeReturn = true }: {
                 <p className="font-semibold text-foreground truncate">{title}{b.learnerName ? ` · ${b.learnerName}` : ''}</p>
                 <p className="text-sm text-muted-foreground">
                   {when}
-                  {held && (isAr ? ` · الميعاد محجوز لحد ${held}` : ` · held until ${held}`)}
+                  {held && (isAr ? ` · الموعد محجوز حتى ${held}` : ` · held until ${held}`)}
                 </p>
               </div>
               <div className="flex gap-2 shrink-0">

@@ -100,7 +100,7 @@ export function MilestoneCelebration({
           {alsoNew > 0 && (
             <p className="mt-3 text-xs text-muted-foreground">
               {isAr
-                ? (alsoNew === 1 ? 'ومعاه وسام تاني على الرف' : `ومعاه ${alsoNew.toLocaleString('ar-EG')} أوسمة تانية على الرف`)
+                ? (alsoNew === 1 ? 'ومعه وسام آخر على الرف' : `ومعه ${alsoNew.toLocaleString('ar-EG')} أوسمة أخرى على الرف`)
                 : `${alsoNew === 1 ? 'One more emblem is' : `${alsoNew} more emblems are`} waiting on your shelf`}
             </p>
           )}
@@ -110,7 +110,7 @@ export function MilestoneCelebration({
             onClick={onClose}
             className="mt-6 w-full min-h-11 rounded-2xl btn-primary-material text-primary-foreground text-sm font-bold cursor-pointer"
           >
-            {isAr ? 'كمّل' : 'Continue'}
+            {isAr ? 'أكمل' : 'Continue'}
           </button>
         </motion.div>
       </div>

@@ -35,7 +35,7 @@ export function ProgramsCard({ isAr }: { isAr: boolean }) {
       await authedJson(`/api/student/programs/${p.id}/join`, { method: 'POST', body: JSON.stringify({ learnerStudentId: learnerId, leave }) });
       setData((d) => d && { ...d, programs: d.programs.map((x) => x.id !== p.id ? x : { ...x, joined: leave ? x.joined.filter((j) => j !== learnerId) : [...x.joined, learnerId] }) });
     } catch (e: any) {
-      setError(isAr ? 'معرفناش نحفظ، جرّب تاني.' : e?.message || 'Could not save.');
+      setError(isAr ? 'تعذّر الحفظ، حاول مرة أخرى.' : e?.message || 'Could not save.');
     } finally {
       setBusy(null);
     }
@@ -62,7 +62,7 @@ export function ProgramsCard({ isAr }: { isAr: boolean }) {
                   <Button key={l.id} size="sm" variant={joined ? 'outline' : 'primary'} aria-pressed={joined}
                     isLoading={busy === `${p.id}:${l.id}`} onClick={() => toggle(p, l.id)}>
                     {joined && <Check className="w-4 h-4 me-1" aria-hidden="true" />}
-                    {joined ? (learners.length > 1 ? l.name : (isAr ? 'مسجّل، دوس عشان تلغي' : 'Joined, tap to leave')) : label}
+                    {joined ? (learners.length > 1 ? l.name : (isAr ? 'مسجَّل، المس للانسحاب' : 'Joined, tap to leave')) : label}
                   </Button>
                 );
               })}

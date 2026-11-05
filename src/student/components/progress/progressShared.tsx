@@ -19,9 +19,9 @@ export function formatDayTime(iso: string | null | undefined, tz: string, isAr: 
 
 /** Weeks-in-a-row line. A pause is "resting", never "lost". */
 export function rhythmText(current: number, longest: number, isAr: boolean): string {
-  if (current > 0) return isAr ? `${current.toLocaleString('ar-EG')} أسابيع ورا بعض` : `${current} ${current === 1 ? 'week' : 'weeks'} in a row`;
+  if (current > 0) return isAr ? `${current.toLocaleString('ar-EG')} أسابيع متتالية` : `${current} ${current === 1 ? 'week' : 'weeks'} in a row`;
   if (longest > 0) return isAr ? 'في استراحة، وأي حصة ترجّعها' : 'Resting. One lesson starts it again';
-  return isAr ? 'لسه هنبدأ' : 'Not started yet';
+  return isAr ? 'لم نبدأ بعد' : 'Not started yet';
 }
 
 /** The newest teacher note shared with the family. */
@@ -35,7 +35,7 @@ export function TeacherNote({ note, tz, isAr }: { note: ProgressFamilySummaryIte
       <div className="border-s-[3px] border-gold ps-3 grid gap-1.5 text-[15px] leading-relaxed text-foreground">
         {note.family_summary && <p>{note.family_summary}</p>}
         {note.homework && <p><span className="font-semibold">{isAr ? 'الواجب: ' : 'Homework: '}</span>{note.homework}</p>}
-        {note.next_steps && <p><span className="font-semibold">{isAr ? 'الجاي: ' : 'Next: '}</span>{note.next_steps}</p>}
+        {note.next_steps && <p><span className="font-semibold">{isAr ? 'التالي: ' : 'Next: '}</span>{note.next_steps}</p>}
       </div>
     </section>
   );
@@ -52,7 +52,7 @@ export function NextLessonAction({ subject, tz, isAr }: { subject: SubjectProgre
         data-testid="progress-next-lesson"
       >
         <span className="grid">
-          <span className="text-xs font-semibold text-muted-foreground">{isAr ? 'الحصة الجاية' : 'Next lesson'}</span>
+          <span className="text-xs font-semibold text-muted-foreground">{isAr ? 'الحصة القادمة' : 'Next lesson'}</span>
           <span className="font-semibold text-foreground">{formatDayTime(next.scheduledStart, tz, isAr)}</span>
         </span>
         <span className="text-sm font-semibold text-teal underline underline-offset-4">{isAr ? 'حصصي' : 'My lessons'}</span>
@@ -65,7 +65,7 @@ export function NextLessonAction({ subject, tz, isAr }: { subject: SubjectProgre
       className="flex items-center justify-center w-full min-h-12 rounded-2xl bg-[#0A2E35] text-white font-semibold focus-ring"
       data-testid="progress-book-cta"
     >
-      {isAr ? 'احجز الحصة الجاية' : 'Book the next lesson'}
+      {isAr ? 'احجز الحصة القادمة' : 'Book the next lesson'}
     </Link>
   );
 }

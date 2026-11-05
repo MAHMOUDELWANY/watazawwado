@@ -56,7 +56,7 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
       await authedJson(`/api/student/review/${c.id}`, { method: 'POST', body: JSON.stringify({ grade: g }) });
       setDone((d) => [...d, c.id]);
     } catch (e: any) {
-      setError(isAr ? 'معرفناش نحفظ، جرّب تاني.' : e?.message || 'Could not save.');
+      setError(isAr ? 'تعذّر الحفظ، حاول مرة أخرى.' : e?.message || 'Could not save.');
     } finally {
       setBusy(null);
     }
@@ -72,7 +72,7 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
       {left.length > 0 ? (
         <>
           <p className="text-xs text-muted-foreground">
-            {isAr ? 'سمّع كل جزء من حفظك من غير المصحف، وبعدين قول لنا كان عامل إزاي.' : 'Recite each part from memory, without the mushaf, then tell us how it went.'}
+            {isAr ? 'سمّع كل جزء من حفظك دون المصحف، ثم أخبرنا كيف كان.' : 'Recite each part from memory, without the mushaf, then tell us how it went.'}
           </p>
           <ul className="space-y-3">
             {left.map((c) => (
@@ -87,7 +87,7 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
                     {isAr ? 'افتح الآيات' : 'Open the ayat'}<ExternalLink className="w-3 h-3" aria-hidden="true" />
                   </a>
                 </div>
-                <div className="grid grid-cols-3 gap-2" role="group" aria-label={isAr ? 'كان عامل إزاي؟' : 'How did it go?'}>
+                <div className="grid grid-cols-3 gap-2" role="group" aria-label={isAr ? 'كيف كان؟' : 'How did it go?'}>
                   {GRADES.map((g) => (
                     <button key={g.grade} type="button" disabled={busy === c.id} onClick={() => grade(c, g.grade)}
                       className="min-h-11 rounded-xl border border-border px-2 text-xs font-semibold text-foreground hover:bg-surface-subtle disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
@@ -104,8 +104,8 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
           <Check className="w-4 h-4 text-teal shrink-0" aria-hidden="true" />
           {done.length > 0
             ? (isAr ? 'خلّصت مراجعة النهارده، بارك الله فيك.' : 'Today’s review is done. May Allah bless your effort.')
-            : (isAr ? 'مفيش مراجعة النهارده.' : 'Nothing to review today.')}
-          {nextLabel && !done.length && <span>{isAr ? ` المراجعة الجاية: ${nextLabel}.` : ` Next review: ${nextLabel}.`}</span>}
+            : (isAr ? 'لا مراجعة اليوم.' : 'Nothing to review today.')}
+          {nextLabel && !done.length && <span>{isAr ? ` المراجعة القادمة: ${nextLabel}.` : ` Next review: ${nextLabel}.`}</span>}
         </p>
       )}
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}

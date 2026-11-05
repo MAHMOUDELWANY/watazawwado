@@ -206,7 +206,7 @@ export default function StudentPaymentsPage({ lang = 'en', embedded = false }: S
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
-              ? 'الدروس والباقات اللي مستنية دفع، وسجل اللي اتدفع.'
+              ? 'الدروس والباقات التي تنتظر الدفع، وسجل ما دُفع.'
               : 'Lessons and packages waiting for payment, and everything already paid.'}
           </p>
           </>)}

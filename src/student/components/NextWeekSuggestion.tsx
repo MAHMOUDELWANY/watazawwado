@@ -52,7 +52,7 @@ export function NextWeekSuggestion({ isAr, timezone }: { isAr: boolean; timezone
       <CalendarClock className="w-6 h-6 text-[var(--teal)] shrink-0" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <h2 id="next-week-title" className="text-sm font-semibold text-foreground">
-          {isAr ? 'نفس الميعاد الأسبوع الجاي؟' : 'Same time next week?'}
+          {isAr ? 'الموعد نفسه الأسبوع القادم؟' : 'Same time next week?'}
         </h2>
         <p className="text-xs text-muted-foreground">
           {label}
@@ -63,7 +63,7 @@ export function NextWeekSuggestion({ isAr, timezone }: { isAr: boolean; timezone
       <Link to={href} className="inline-flex items-center min-h-11 px-4 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold shrink-0">
         {isAr ? 'احجزها' : 'Book it'}
       </Link>
-      <button type="button" onClick={dismiss} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 relative w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer shrink-0">
+      <button type="button" onClick={dismiss} aria-label={isAr ? 'ليس الآن' : 'Not now'} className="tap-44 relative w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer shrink-0">
         <X className="w-4 h-4" aria-hidden="true" />
       </button>
     </section>

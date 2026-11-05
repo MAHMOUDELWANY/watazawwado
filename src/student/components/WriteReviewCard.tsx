@@ -39,7 +39,7 @@ export function WriteReviewCard({ isAr }: { isAr: boolean }) {
         <ReviewForm isAr={isAr} onSubmit={submit} />
       ) : (
         <>
-          <p className="text-sm text-muted-foreground">{isAr ? 'لو حابب، اكتب رأيك في الحصص. بننشره على موقعنا بعد موافقتك.' : 'If you like, write a few words about your lessons. We show it on our site with your permission.'}</p>
+          <p className="text-sm text-muted-foreground">{isAr ? 'إن أحببت، اكتب رأيك في الحصص. ننشره على موقعنا بعد موافقتك.' : 'If you like, write a few words about your lessons. We show it on our site with your permission.'}</p>
           <Button size="sm" variant="outline" onClick={() => setOpen(true)}>{isAr ? 'اكتب رأيك' : 'Write a review'}</Button>
         </>
       )}

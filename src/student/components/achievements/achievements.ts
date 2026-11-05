@@ -58,8 +58,8 @@ const COUNT_STEPS: Array<{ n: number; emblem: EmblemId; title: Bilingual }> = [
 ];
 
 const RHYTHM_STEPS: Array<{ n: number; emblem: EmblemId; title: Bilingual; earnBy: Bilingual }> = [
-  { n: 4, emblem: 'rhythm-4', title: { en: 'A month of rhythm', ar: 'شهر على نفس الإيقاع' }, earnBy: { en: 'At least one lesson a week for 4 weeks in a row', ar: 'حصة على الأقل كل أسبوع لمدة ٤ أسابيع ورا بعض' } },
-  { n: 12, emblem: 'rhythm-12', title: { en: 'Three steady months', ar: 'ثلاث شهور ثابتة' }, earnBy: { en: 'At least one lesson a week for 12 weeks in a row', ar: 'حصة على الأقل كل أسبوع لمدة ١٢ أسبوع ورا بعض' } },
+  { n: 4, emblem: 'rhythm-4', title: { en: 'A month of rhythm', ar: 'شهر على الإيقاع نفسه' }, earnBy: { en: 'At least one lesson a week for 4 weeks in a row', ar: 'حصة على الأقل كل أسبوع لمدة ٤ أسابيع متتالية' } },
+  { n: 12, emblem: 'rhythm-12', title: { en: 'Three steady months', ar: 'ثلاثة أشهر ثابتة' }, earnBy: { en: 'At least one lesson a week for 12 weeks in a row', ar: 'حصة على الأقل كل أسبوع لمدة ١٢ أسبوعًا متتالية' } },
   { n: 52, emblem: 'rhythm-52', title: { en: 'A full year', ar: 'سنة كاملة' }, earnBy: { en: 'At least one lesson every week for a whole year', ar: 'حصة على الأقل كل أسبوع لمدة سنة كاملة' } }
 ];
 

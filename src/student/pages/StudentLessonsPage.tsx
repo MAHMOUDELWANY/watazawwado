@@ -476,7 +476,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
                             {isAr
-                              ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا. المعلم بيفتح الفصل وانت بتستنى لحظات في غرفة الانتظار.'
+                              ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا. المعلم يفتح الفصل وتنتظر أنت لحظات في غرفة الانتظار.'
                               : 'Your Zoom link is being prepared; it will be emailed and shown here. Your teacher opens the class; you wait a moment in the waiting room.'}
                           </span>
                         </div>

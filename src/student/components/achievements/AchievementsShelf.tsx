@@ -51,7 +51,7 @@ export function AchievementsShelf({ items, isAr, highlight }: { items: ShelfItem
                     {isAr ? 'الشهادة' : 'Certificate'}
                   </Link>
                 )}
-                <span className="sr-only">{item.earned ? (isAr ? 'وسام محقَّق' : 'Earned') : (isAr ? 'لسه قدّامك' : 'Not earned yet')}</span>
+                <span className="sr-only">{item.earned ? (isAr ? 'وسام محقَّق' : 'Earned') : (isAr ? 'ما زال أمامك' : 'Not earned yet')}</span>
               </li>
             );
           })}

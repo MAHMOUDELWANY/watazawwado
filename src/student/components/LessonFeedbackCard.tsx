@@ -14,7 +14,7 @@ interface Pending {
 }
 
 const DISMISS_KEY = 'watazawwado_feedback_dismissed';
-const LABELS_AR = ['مش كويس', 'محتاج تحسين', 'كويس', 'حلو جدًا', 'ممتاز'];
+const LABELS_AR = ['غير جيد', 'يحتاج إلى تحسين', 'جيد', 'جيد جدًا', 'ممتاز'];
 const LABELS_EN = ['Poor', 'Could be better', 'Good', 'Very good', 'Excellent'];
 
 /**
@@ -58,7 +58,7 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
       setSummary(r.familySummary);
       return true;
     } catch (e: any) {
-      setError(isAr ? 'معرفناش نحفظ تقييمك، جرّب تاني.' : e?.message || 'Could not save your rating.');
+      setError(isAr ? 'تعذّر حفظ تقييمك، حاول مرة أخرى.' : e?.message || 'Could not save your rating.');
       return false;
     } finally {
       setBusy(false);
@@ -119,11 +119,11 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
       {stage === 'comment' && (
         <div className="space-y-2">
           <label htmlFor="lesson-feedback-comment" className="text-xs text-muted-foreground">
-            {isAr ? 'عايز تقول لنا حاجة كمان؟ (اختياري، بيوصل لفريقنا بس)' : 'Anything else to tell us? (optional, only our team reads it)'}
+            {isAr ? 'تريد أن تخبرنا بشيء آخر؟ (اختياري، يصل إلى فريقنا فقط)' : 'Anything else to tell us? (optional, only our team reads it)'}
           </label>
           <Textarea id="lesson-feedback-comment" value={comment} maxLength={1000} rows={3} onChange={(e) => setComment(e.target.value)} />
           <div className="flex gap-2">
-            <Button size="sm" onClick={sendComment} isLoading={busy}>{isAr ? 'ابعت' : 'Send'}</Button>
+            <Button size="sm" onClick={sendComment} isLoading={busy}>{isAr ? 'أرسل' : 'Send'}</Button>
             <Button size="sm" variant="ghost" onClick={() => setStage('done')}>{isAr ? 'لا، شكرًا' : 'No, thanks'}</Button>
           </div>
         </div>
@@ -137,7 +137,7 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
               <p className="whitespace-pre-line text-foreground">{summary}</p>
             </>
           ) : (
-            <p className="text-muted-foreground">{isAr ? 'المعلم هيكتب ملخص قصير للدرس قريب، وهتلاقيه في صفحة التقدّم.' : 'Your teacher will write a short summary soon; you will find it on the progress page.'}</p>
+            <p className="text-muted-foreground">{isAr ? 'سيكتب المعلم ملخصًا قصيرًا للدرس قريبًا، وستجده في صفحة التقدّم.' : 'Your teacher will write a short summary soon; you will find it on the progress page.'}</p>
           )}
         </div>
       )}

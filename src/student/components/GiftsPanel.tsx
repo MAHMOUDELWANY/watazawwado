@@ -63,8 +63,8 @@ export function GiftsPanel({ gifts, learners, isAr, onRedeemed, onPay }: {
       onRedeemed();
     } catch (err: any) {
       const text = err?.code === 'DISCOUNT_CODE'
-        ? (isAr ? 'ده كود خصم، مش كود هدية. اكتبه في خطوة الدفع وإنت بتحجز.' : 'This is a discount code, not a gift code. Type it on the payment step when you book.')
-        : (isAr ? 'الكود ده مش شغال. اتأكد منه، أو كلمنا على واتساب.' : err?.message || 'This code did not work.');
+        ? (isAr ? 'هذا رمز خصم، لا رمز هدية. اكتبه في خطوة الدفع عند الحجز.' : 'This is a discount code, not a gift code. Type it on the payment step when you book.')
+        : (isAr ? 'هذا الرمز لا يعمل. تأكد منه، أو راسلنا على واتساب.' : err?.message || 'This code did not work.');
       setMsg({ ok: false, text });
     } finally {
       setBusy(false);
@@ -107,7 +107,7 @@ export function GiftsPanel({ gifts, learners, isAr, onRedeemed, onPay }: {
               {g.code ? (
                 <>
                   <p className="font-mono text-lg tracking-widest text-foreground" dir="ltr" data-testid="gift-code">{g.code}</p>
-                  <p className="text-xs text-muted-foreground">{isAr ? 'ابعت الكود لصاحب الهدية. الحصص بتتفعّل عنده بس، مش في رصيدك.' : 'Send the code to the person. The lessons go to their account, not your balance.'}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? 'أرسل الرمز إلى صاحب الهدية. تُفعَّل الحصص في حسابه هو، لا في رصيدك.' : 'Send the code to the person. The lessons go to their account, not your balance.'}</p>
                   <div className="flex flex-wrap gap-2">
                     <a href={`https://wa.me/?text=${encodeURIComponent(giftShareText(g, isAr, origin))}`} target="_blank" rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 h-10 px-3 rounded-lg bg-[#25D366] text-white text-sm font-semibold">
@@ -121,7 +121,7 @@ export function GiftsPanel({ gifts, learners, isAr, onRedeemed, onPay }: {
                 </>
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-xs text-muted-foreground">{isAr ? 'الكود هيظهر هنا بعد الدفع.' : 'The code shows here once it is paid.'}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? 'سيظهر الرمز هنا بعد الدفع.' : 'The code shows here once it is paid.'}</p>
                   <Button type="button" size="sm" onClick={() => onPay(g)}>{isAr ? 'ادفع' : 'Pay'}</Button>
                 </div>
               )}

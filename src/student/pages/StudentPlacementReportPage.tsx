@@ -122,7 +122,7 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
                   <p className="text-sm font-semibold text-[#087D91]">{t(`Start from Lesson ${report.startLesson} of this level`, `البداية من الدرس ${report.startLesson} في المستوى ده`)}</p>
                 )}
                 {stated && !report.ladder && (
-                  <p className="text-xs text-[#6B5E55]">{t('Level chosen at sign-up', 'المستوى اللي اخترته في التسجيل')}: {isAr ? stated.ar : stated.en}</p>
+                  <p className="text-xs text-[#6B5E55]">{t('Level chosen at sign-up', 'المستوى الذي اخترته عند التسجيل')}: {isAr ? stated.ar : stated.en}</p>
                 )}
               </div>
             </section>
@@ -153,7 +153,7 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
               <p className="text-sm text-[#3B322D] whitespace-pre-wrap leading-relaxed">
                 {report.status === 'reviewed' && report.adminReply
                   ? report.adminReply
-                  : t('Our team is reviewing your answers and will add a note here soon. Your teacher will use this report to prepare your lesson.', 'فريقنا بيراجع إجاباتك وهيضيف ملاحظته هنا قريب. معلمك هيستخدم التقرير ده في تجهيز حصتك.')}
+                  : t('Our team is reviewing your answers and will add a note here soon. Your teacher will use this report to prepare your lesson.', 'يراجع فريقنا إجاباتك وسيضيف ملاحظته هنا قريبًا. وسيستخدم معلمك هذا التقرير في تجهيز حصتك.')}
               </p>
             </section>
 

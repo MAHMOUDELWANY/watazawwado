@@ -41,7 +41,7 @@ export function ProgressRoad({ subject, learnerName, tz, isAr }: {
   const stops: Stop[] = [
     ...levels.slice(0, idx).map((l): Stop => ({ key: `lv-${l.id}`, state: 'done', title: name(l), sub: isAr ? 'خلص' : 'Finished', levelState: 'completed' })),
     ...milestones.map((m): Stop => ({ key: `ms-${m.id}`, state: 'done', title: isAr ? m.title_ar : m.title_en, milestoneKind: m.kind })),
-    { key: `lv-${levels[idx].id}`, state: 'now', title: name(levels[idx]), sub: isAr ? 'انت هنا' : 'You are here', levelState: 'current' },
+    { key: `lv-${levels[idx].id}`, state: 'now', title: name(levels[idx]), sub: isAr ? 'أنت هنا' : 'You are here', levelState: 'current' },
     ...levels.slice(idx + 1).map((l): Stop => ({ key: `lv-${l.id}`, state: 'next', title: name(l), levelState: 'future' })),
     { key: 'goal', state: 'goal', title: isAr ? `آخر ${subject.subjectMeta.ar}` : `End of ${subject.subjectMeta.en}` },
   ];

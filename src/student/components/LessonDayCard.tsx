@@ -37,7 +37,7 @@ export function countdownLabel(startIso: string, isAr: boolean, now: Date = new 
 export function runningLateMessage(ref: string | null | undefined, learnerName: string | null | undefined, isAr: boolean): string {
   const who = learnerName ? (isAr ? ` (${learnerName})` : ` (${learnerName})`) : '';
   return isAr
-    ? `السلام عليكم، هتأخر شوية عن حصة النهارده${who}${ref ? `، رقم الحجز ${ref}` : ''}. جاي في السكة إن شاء الله.`
+    ? `السلام عليكم، سأتأخر قليلًا عن حصة اليوم${who}${ref ? `، رقم الحجز ${ref}` : ''}. أنا في الطريق إن شاء الله.`
     : `Assalamu alaikum, I'm running a few minutes late for today's lesson${who}${ref ? ` (booking ${ref})` : ''}. On my way, in sha Allah.`;
 }
 
@@ -104,8 +104,8 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
           <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-sm text-muted-foreground min-h-[44px]">
             <Video className="w-4 h-4" aria-hidden="true" />
             {hasZoom
-              ? (isAr ? `زرار الدخول بيشتغل قبل الحصة بـ ${JOIN_OPENS_MIN} دقايق` : `Join opens ${JOIN_OPENS_MIN} minutes before`)
-              : (isAr ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا' : 'The Zoom link is on its way by email and will show here')}
+              ? (isAr ? `يعمل زر الدخول قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق` : `Join opens ${JOIN_OPENS_MIN} minutes before`)
+              : (isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'The Zoom link is on its way by email and will show here')}
           </span>
         )}
         {state === 'open' && (
@@ -121,7 +121,7 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-surface-subtle min-h-[44px]"
         >
           <MessageCircle className="w-4 h-4 text-accent" />
-          {isAr ? 'هتأخر شوية' : "I'm running late"}
+          {isAr ? 'سأتأخر قليلًا' : "I'm running late"}
         </a>
       </div>
     </section>

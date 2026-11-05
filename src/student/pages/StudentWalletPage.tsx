@@ -87,7 +87,7 @@ export default function StudentWalletPage({ lang = 'en', session }: { lang?: 'en
       <WalletTiles summary={summary} isAr={isAr} />
       {summary && summary.balanceUsd > 0 && (
         <p className="text-sm text-muted-foreground">
-          {isAr ? 'رصيد حسابك بيتخصم لوحده من أي دفع جاي، وبيظهر قبل ما تدفع.' : 'Your account balance comes off your next payment automatically; you see it before you pay.'}
+          {isAr ? 'يُخصم رصيد حسابك تلقائيًا من أي دفع قادم، ويظهر قبل أن تدفع.' : 'Your account balance comes off your next payment automatically; you see it before you pay.'}
         </p>
       )}
 

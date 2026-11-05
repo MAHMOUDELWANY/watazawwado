@@ -18,14 +18,14 @@ export function ProgressCalm({ subject, learnerName, isSelf, tz, isAr }: {
   const idx = Math.min(subject.currentLevelIndex, levels.length - 1);
   const levelName = isAr ? subject.currentLevel.ar : subject.currentLevel.en;
   const subjectName = isAr ? subject.subjectMeta.ar : subject.subjectMeta.en;
-  const who = isSelf ? (isAr ? 'انت' : 'You are') : isAr ? learnerName : `${learnerName} is`;
+  const who = isSelf ? (isAr ? 'أنت' : 'You are') : isAr ? learnerName : `${learnerName} is`;
   const milestones = [...subject.milestones].sort((a, b) => b.reached_at.localeCompare(a.reached_at)).slice(0, 3);
 
   const stats = [
-    { value: subject.lessonsAttended.total, label: isAr ? 'حصة لحد دلوقتي' : 'lessons so far' },
-    { value: subject.lessonsAttended.thisMonth, label: isAr ? 'الشهر ده' : 'this month' },
+    { value: subject.lessonsAttended.total, label: isAr ? 'حصة حتى الآن' : 'lessons so far' },
+    { value: subject.lessonsAttended.thisMonth, label: isAr ? 'هذا الشهر' : 'this month' },
     subject.weeklyRhythm.current > 0
-      ? { value: subject.weeklyRhythm.current, label: isAr ? 'أسابيع ورا بعض' : 'weeks in a row' }
+      ? { value: subject.weeklyRhythm.current, label: isAr ? 'أسابيع متتالية' : 'weeks in a row' }
       : { value: 0, label: rhythmText(0, subject.weeklyRhythm.longest, isAr), raw: true },
   ];
 

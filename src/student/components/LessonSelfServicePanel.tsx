@@ -43,7 +43,7 @@ export function LessonSelfServicePanel({ booking, lang, timezone, onChanged }: L
     return (
       <p className="text-sm text-muted-foreground p-4 rounded-xl glass-surface border border-border-subtle">
         {isAr
-          ? 'فاضل أقل من ساعة على الدرس، فمش ممكن نغيّره دلوقتي. لو عندك ظرف طارئ فعلاً، '
+          ? 'بقي أقل من ساعة على الدرس، فلا يمكن تغييره الآن. وإن طرأ ظرف طارئ فعلًا، '
           : "There's less than an hour left, so this lesson can't be changed now. If it's a real emergency, "}
         <a
           href={buildWhatsAppUrl(`Emergency about my lesson ${booking.referenceCode || ''}`)}
@@ -98,7 +98,7 @@ export function LessonSelfServicePanel({ booking, lang, timezone, onChanged }: L
         text: isTrial
           ? (isAr ? 'تم إلغاء التجربة. يمكنك حجز تجربة جديدة بعد ٤٨ ساعة.' : 'Your trial is cancelled. You can book a new one after 48 hours.')
           : isPaidSingle
-          ? (isAr ? 'تم إلغاء الدرس، ورجعلك كرصيد حصة تحجز بيه في أي وقت. لو تحب استرداد الفلوس بدل كده، هتلاقي الاختيار في صفحة الباقات.' : "Your lesson is cancelled and you got a lesson credit to book any time. If you'd rather have a refund, you'll find that option on the Packages page.")
+          ? (isAr ? 'أُلغي الدرس، وعاد إليك رصيد حصة تحجز به في أي وقت. وإن فضّلت استرداد المبلغ بدلًا من ذلك، تجد الخيار في صفحة الباقات.' : "Your lesson is cancelled and you got a lesson credit to book any time. If you'd rather have a refund, you'll find that option on the Packages page.")
           : (isAr ? 'تم إلغاء الدرس وأعيد الرصيد إلى باقتك.' : 'Your lesson is cancelled and the credit is back in your package.')
       });
       onChanged();
@@ -168,7 +168,7 @@ export function LessonSelfServicePanel({ booking, lang, timezone, onChanged }: L
                 {isTrial
                   ? (isAr ? 'متأكد؟ بعد الإلغاء يمكنك حجز تجربة جديدة بعد ٤٨ ساعة.' : "Are you sure? After cancelling, you can book a new trial in 48 hours.")
                   : isPaidSingle
-                  ? (isAr ? 'متأكد؟ هيرجعلك رصيد حصة تحجز بيه بعدين.' : "Are you sure? You'll get a lesson credit to book later.")
+                  ? (isAr ? 'هل أنت متأكد؟ سيعود إليك رصيد حصة تحجز به لاحقًا.' : "Are you sure? You'll get a lesson credit to book later.")
                   : (isAr ? 'متأكد؟ سيعود الرصيد إلى باقتك.' : 'Are you sure? The credit goes back to your package.')}
               </p>
               <div className="flex gap-2">

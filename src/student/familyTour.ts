@@ -29,7 +29,7 @@ export function familyTourSteps(isAr: boolean) {
       targetId: ['child-switcher'],
       title: isAr ? 'أولادك في مكان واحد' : 'All your children in one place',
       description: isAr
-        ? 'اختار اسم الطفل من هنا وكل الصفحات تعرض دروسه وتقدّمه هو، أو اختار "كل الأسرة" تشوفهم مع بعض.'
+        ? 'اختر اسم الطفل من هنا فتعرض كل الصفحات دروسه وتقدّمه هو، أو اختر "كل الأسرة" لتراهم معًا.'
         : 'Pick a child here and every page shows their lessons and progress, or choose "Whole family" to see everyone.',
       position: 'bottom' as const,
     },
@@ -37,7 +37,7 @@ export function familyTourSteps(isAr: boolean) {
       targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
       title: isAr ? 'احجز درس' : 'Book a lesson',
       description: isAr
-        ? 'اختار الطفل والمادة والوقت المناسب ليكم، والمواعيد بتظهر بتوقيتك.'
+        ? 'اختر الطفل والمادة والوقت المناسب لكم، وتظهر المواعيد بتوقيتك.'
         : 'Choose the child, the subject and a time that suits you. Times show in your own time zone.',
       position: 'top' as const,
     },

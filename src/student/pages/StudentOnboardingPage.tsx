@@ -250,7 +250,7 @@ export default function StudentOnboardingPage({
     return isRTL ? `كمّل اسم وسن الطفل رقم (${index + 1}) الأول.` : `Please add the name and age of child #${index + 1} first.`;
   };
   const adultAgeMessage = isRTL
-    ? `الحساب الشخصي للي عندهم ${ADULT_MIN_AGE} سنة أو أكتر. لو أقل، ولي أمرك يقدر يفتح حساب عائلة ويسجّلك فيه.`
+    ? `الحساب الشخصي لمن بلغوا ${ADULT_MIN_AGE} سنة أو أكثر. إن كنت أصغر، يستطيع وليّ أمرك فتح حساب أسرة وتسجيلك فيه.`
     : `A personal account is for learners aged ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent can open a family account for you.`;
   const guardianAgeMessage = isRTL
     ? `يفتح حساب الأسرة وليّ أمر عمره ${GUARDIAN_MIN_AGE} سنة أو أكثر.`
@@ -567,7 +567,7 @@ export default function StudentOnboardingPage({
             {step === 1
               ? (isRTL ? 'من الذي سيبدأ الرحلة؟' : 'Who is starting the journey?')
               : step === 2
-              ? (isRTL ? 'اختار زادك من العلم' : 'Choose your provision of knowledge')
+              ? (isRTL ? 'اختر زادك من العلم' : 'Choose your provision of knowledge')
               : (isRTL ? 'كل شيء جاهز للانطلاق' : 'Everything is ready to set off')}
           </h1>
           <p className="mt-2 text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
@@ -665,7 +665,7 @@ export default function StudentOnboardingPage({
                       ? (learnerType === 'adult' ? adultAgeMessage : guardianAgeMessage)
                       : learnerType === 'adult'
                         ? (isRTL ? `الحساب الشخصي من ${ADULT_MIN_AGE} سنة وطالع.` : `Personal accounts are for ages ${ADULT_MIN_AGE}+.`)
-                        : (isRTL ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر، والأبناء من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة.` : `Guardians are ${GUARDIAN_MIN_AGE}+; children are ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
+                        : (isRTL ? `وليّ الأمر ${GUARDIAN_MIN_AGE} سنة أو أكثر، والأبناء من ${CHILD_MIN_AGE} إلى ${CHILD_MAX_AGE} سنة.` : `Guardians are ${GUARDIAN_MIN_AGE}+; children are ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
                     {tooYoung && learnerType === 'adult' && (
                       <button
                         type="button"
@@ -731,9 +731,9 @@ export default function StudentOnboardingPage({
                 />
               </PassField>
 
-              <PassField htmlFor="heard-about" label={isRTL ? 'عرفتونا منين؟ (اختياري)' : 'How did you hear about us? (optional)'}>
+              <PassField htmlFor="heard-about" label={isRTL ? 'كيف عرفتنا؟ (اختياري)' : 'How did you hear about us? (optional)'}>
                 <Select id="heard-about" value={heardAbout} onChange={(e) => setHeardAbout(e.target.value)}>
-                  <option value="">{isRTL ? 'اختار لو حابب' : 'Choose if you like'}</option>
+                  <option value="">{isRTL ? 'اختر إن أحببت' : 'Choose if you like'}</option>
                   {HEARD_ABOUT.map((k) => (
                     <option key={k} value={k}>{HEARD_ABOUT_LABELS[k][isRTL ? 1 : 0]}</option>
                   ))}
@@ -883,9 +883,9 @@ export default function StudentOnboardingPage({
                             : (isRTL ? `السن من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة.` : `Ages ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
                         </p>
 
-                        <PassField label={isRTL ? 'ولد ولا بنت' : 'Boy or girl'}>
+                        <PassField label={isRTL ? 'ولد أم بنت' : 'Boy or girl'}>
                           <SealChoice
-                            label={isRTL ? 'ولد ولا بنت' : 'Boy or girl'}
+                            label={isRTL ? 'ولد أم بنت' : 'Boy or girl'}
                             value={child.gender}
                             onChange={(g) => handleUpdateChild(index, {
                               gender: g,

@@ -40,7 +40,7 @@ export function HomeProgressCard({ isAr }: { isAr: boolean }) {
         <p className="text-sm font-semibold text-foreground">
           {weeks > 0
             ? isAr ? `${weeks === 1 ? 'أسبوع واحد' : weeks === 2 ? 'أسبوعين' : `${weeks.toLocaleString('ar-EG')} ${weeks <= 10 ? 'أسابيع' : 'أسبوع'}`} على نفس الإيقاع` : `${weeks} ${weeks === 1 ? 'week' : 'weeks'} in rhythm`
-            : isAr ? 'إيقاع جديد بيبدأ بحصة الأسبوع ده' : 'A new rhythm starts with a lesson this week'}
+            : isAr ? 'إيقاع جديد يبدأ بحصة هذا الأسبوع' : 'A new rhythm starts with a lesson this week'}
         </p>
         {subject && (
           <p className="text-xs text-muted-foreground truncate">

@@ -45,7 +45,7 @@ export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boole
       setData((d) => d && { ...d, open: d.open.map((x) => (x.id === hw.id ? r.homework : x)) });
       if (done) setCheer(hw.id);
     } catch (e: any) {
-      setError(isAr ? 'معرفناش نحفظ، جرّب تاني.' : e?.message || 'Could not save.');
+      setError(isAr ? 'تعذّر الحفظ، حاول مرة أخرى.' : e?.message || 'Could not save.');
     } finally {
       setBusy(null);
     }
@@ -70,7 +70,7 @@ export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boole
                   onClick={() => toggle(hw)}
                   disabled={busy === hw.id}
                   aria-pressed={done}
-                  aria-label={done ? (isAr ? 'علّمته خلصان، دوس عشان تلغي' : 'Marked done, tap to undo') : (isAr ? 'خلصت' : 'Done')}
+                  aria-label={done ? (isAr ? 'مُنجزة، المس للتراجع' : 'Marked done, tap to undo') : (isAr ? 'أنجزتها' : 'Done')}
                   className={`tap-44 relative shrink-0 w-7 h-7 mt-0.5 grid place-items-center rounded-full border-2 transition-colors cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${done ? 'bg-teal border-teal text-white' : 'border-border text-transparent hover:border-teal'}`}
                 >
                   <motion.span initial={false} animate={reduce ? undefined : { scale: done ? [0.6, 1.15, 1] : 1 }} transition={{ duration: 0.3 }}>
@@ -121,7 +121,7 @@ export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boole
 
       {!kid && !data.hasNextLesson && data.open.length > 0 && (
         <Link to="/student/book" className="block text-center rounded-xl bg-primary text-primary-foreground text-sm font-semibold py-2.5 min-h-11 focus-ring">
-          {isAr ? 'احجز حصتك الجاية' : 'Book your next lesson'}
+          {isAr ? 'احجز حصتك القادمة' : 'Book your next lesson'}
         </Link>
       )}
     </section>

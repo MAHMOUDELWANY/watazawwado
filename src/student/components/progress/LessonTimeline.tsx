@@ -84,10 +84,10 @@ export function LessonTimeline({ learnerId, isAr, timezone }: { learnerId: strin
         </div>
 
         {error && items.length === 0 ? (
-          <ErrorState isAr={isAr} onRetry={() => load(1)} message={isAr ? 'معرفناش نحمّل سجل الحصص.' : 'We could not load the lesson timeline.'} />
+          <ErrorState isAr={isAr} onRetry={() => load(1)} message={isAr ? 'تعذّر تحميل سجل الحصص.' : 'We could not load the lesson timeline.'} />
         ) : !loading && items.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {isAr ? 'أول ما تحضر أول حصة، هتلاقيها هنا ومعاها ملخص المعلم.' : 'Once you attend your first lesson, it appears here with your teacher’s summary.'}
+            {isAr ? 'حين تحضر أول حصة، ستجدها هنا ومعها ملخص المعلم.' : 'Once you attend your first lesson, it appears here with your teacher’s summary.'}
           </p>
         ) : (
           <ol className="relative space-y-4 border-s-2 border-border-subtle ps-5">
@@ -109,7 +109,7 @@ export function LessonTimeline({ learnerId, isAr, timezone }: { learnerId: strin
                   {it.familySummary ? (
                     <p className="mt-1 text-sm text-foreground/90 leading-relaxed whitespace-pre-line">{it.familySummary}</p>
                   ) : (
-                    <p className="mt-1 text-xs text-muted-foreground">{isAr ? 'المعلم لسه ماكتبش ملخص للحصة دي.' : 'No summary from the teacher for this lesson yet.'}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{isAr ? 'لم يكتب المعلم ملخصًا لهذه الحصة بعد.' : 'No summary from the teacher for this lesson yet.'}</p>
                   )}
                   {achievements.length > 0 && (
                     <ul className="mt-2 flex flex-wrap gap-1.5">
@@ -120,7 +120,7 @@ export function LessonTimeline({ learnerId, isAr, timezone }: { learnerId: strin
                   )}
                   {it.nextSteps && (
                     <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                      <span className="font-semibold text-foreground">{isAr ? 'المطلوب للحصة الجاية: ' : 'For next time: '}</span>
+                      <span className="font-semibold text-foreground">{isAr ? 'المطلوب للحصة القادمة: ' : 'For next time: '}</span>
                       {it.nextSteps}
                     </p>
                   )}
@@ -147,7 +147,7 @@ export function LessonTimeline({ learnerId, isAr, timezone }: { learnerId: strin
           <div className="flex justify-center py-6" role="status" aria-label={isAr ? 'جارٍ التحميل' : 'Loading'}><BrandSpinner size={20} /></div>
         )}
         {error && items.length > 0 && (
-          <p className="mt-3 text-xs text-destructive text-center" role="alert">{isAr ? 'معرفناش نحمّل الحصص الأقدم. جرّب تاني.' : 'Could not load older lessons. Please try again.'}</p>
+          <p className="mt-3 text-xs text-destructive text-center" role="alert">{isAr ? 'تعذّر تحميل الحصص الأقدم. حاول مرة أخرى.' : 'Could not load older lessons. Please try again.'}</p>
         )}
       </section>
     </Card>

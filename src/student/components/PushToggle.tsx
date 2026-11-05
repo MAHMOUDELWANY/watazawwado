@@ -45,7 +45,7 @@ export function PushToggle({ isAr }: { isAr: boolean }) {
       if (next) {
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
-          setMsg(isAr ? 'المتصفح رفض الإشعارات. تقدر تسمح بيها من إعدادات الموقع في المتصفح.' : 'Notifications are blocked. You can allow them in this browser\'s site settings.');
+          setMsg(isAr ? 'رفض المتصفح الإشعارات. يمكنك السماح بها من إعدادات الموقع في المتصفح.' : 'Notifications are blocked. You can allow them in this browser\'s site settings.');
           return;
         }
         const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyToBytes(key!) });
@@ -60,7 +60,7 @@ export function PushToggle({ isAr }: { isAr: boolean }) {
         setOn(false);
       }
     } catch {
-      setMsg(isAr ? 'معرفناش نغيّر الإعداد ده، جرّب تاني.' : 'Could not change this setting. Please try again.');
+      setMsg(isAr ? 'تعذّر تغيير هذا الإعداد، حاول مرة أخرى.' : 'Could not change this setting. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -72,12 +72,12 @@ export function PushToggle({ isAr }: { isAr: boolean }) {
         <p className="text-sm text-foreground flex items-start gap-2">
           <BellRing className="w-4 h-4 mt-0.5 text-accent shrink-0" aria-hidden="true" />
           {isAr
-            ? 'عشان توصلك إشعارات على الآيفون: ضيف وتزودوا للشاشة الرئيسية (زرار المشاركة ثم "إضافة إلى الشاشة الرئيسية") وافتحه من هناك.'
+            ? 'لتصلك الإشعارات على الآيفون: أضف وتزودوا إلى الشاشة الرئيسية (زر المشاركة ثم "إضافة إلى الشاشة الرئيسية") وافتحه من هناك.'
             : 'For notifications on iPhone: add Watazawwado to your Home Screen (Share, then "Add to Home Screen") and open it from there.'}
         </p>
       ) : (
         <Switch checked={on} disabled={busy} onChange={toggle}
-          hint={isAr ? 'تذكير قبل كل حصة، ومعاه الواجب لو فيه. على الجهاز ده بس.' : 'A reminder before each lesson, with your homework if there is some. This device only.'}>
+          hint={isAr ? 'تذكير قبل كل حصة، ومعه الواجب إن وُجد. على هذا الجهاز فقط.' : 'A reminder before each lesson, with your homework if there is some. This device only.'}>
           {isAr ? 'إشعارات على الموبايل' : 'Phone notifications'}
         </Switch>
       )}

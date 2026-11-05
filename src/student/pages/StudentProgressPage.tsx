@@ -834,11 +834,11 @@ export default function StudentProgressPage({
           <div className="grid gap-1.5 max-w-md">
             <h2 className="font-display text-xl font-bold text-foreground">
               {isChildLearner
-                ? (isAr ? `طريق ${learnerName} بيبدأ من أول حصة` : `${learnerName}'s road starts with the first lesson`)
-                : (isAr ? 'مسيرتك بتبدأ من أول حصة' : 'Your progress starts with the first lesson')}
+                ? (isAr ? `طريق ${learnerName} يبدأ من أول حصة` : `${learnerName}'s road starts with the first lesson`)
+                : (isAr ? 'مسيرتك تبدأ من أول حصة' : 'Your progress starts with the first lesson')}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {isAr ? 'بعد كل حصة هيظهر هنا المستوى، والمحطات، وكلمة المعلم.' : 'After each lesson you will see the level, milestones and a note from the teacher here.'}
+              {isAr ? 'بعد كل حصة يظهر هنا المستوى، والمحطات، وكلمة المعلم.' : 'After each lesson you will see the level, milestones and a note from the teacher here.'}
             </p>
           </div>
           <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-[#0A2E35] text-white font-semibold focus-ring">

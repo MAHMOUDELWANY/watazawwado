@@ -43,14 +43,14 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
         method: 'POST',
         body: JSON.stringify({ name, age: Number(age), gender, learningInterest: subject, currentLevel: level, teacherGenderPreference: teacherPref })
       });
-      setMessage({ ok: true, text: isAr ? `اتضاف ${name}. تقدر تحجزله دلوقتي.` : `${name} has been added. You can book for them now.` });
+      setMessage({ ok: true, text: isAr ? `أُضيف ${name}. يمكنك الحجز له الآن.` : `${name} has been added. You can book for them now.` });
       setName('');
       setAge('');
       setOpen(false);
       onAdded();
       window.dispatchEvent(new Event(PROFILE_CHANGED_EVENT));
     } catch (err: any) {
-      setMessage({ ok: false, text: err?.message || (isAr ? 'حصلت مشكلة، حاول تاني.' : 'Something went wrong. Please try again.') });
+      setMessage({ ok: false, text: err?.message || (isAr ? 'حدثت مشكلة، حاول مرة أخرى.' : 'Something went wrong. Please try again.') });
     } finally {
       setBusy(false);
     }
@@ -110,7 +110,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
           {age && !ageOk && (
             <p className="text-xs text-warning">
               {isAr
-                ? `السن لازم يكون من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE}. من ${CHILD_MAX_AGE + 1} سنة وطالع، المتعلم يفتح حسابه بنفسه.`
+                ? `يجب أن يكون العمر من ${CHILD_MIN_AGE} إلى ${CHILD_MAX_AGE}. ومن ${CHILD_MAX_AGE + 1} سنة فأكثر يفتح المتعلّم حسابه بنفسه.`
                 : `The age must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}. From ${CHILD_MAX_AGE + 1}, learners open their own account.`}
             </p>
           )}

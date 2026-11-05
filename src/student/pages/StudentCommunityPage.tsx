@@ -59,9 +59,9 @@ export default function StudentCommunityPage({ lang, kid = false }: { lang: 'ar'
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مجتمعنا' : 'Our community'}</h1>
         <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
           {kid
-            ? (isAr ? 'المجتمع ده لأسر وطلاب وتزودوا بس، ومحدش من برّه بيشوفه. دي لوحة الشرف بتاعة طلابنا.' : 'This community is for Watazawwado families and students only; nobody outside can see it. Here is our students’ Hall of Honor.')
+            ? (isAr ? 'هذا المجتمع لأسر وتزودوا وطلابها فقط، ولا يراه أحد من الخارج. هذه لوحة الشرف لطلابنا.' : 'This community is for Watazawwado families and students only; nobody outside can see it. Here is our students’ Hall of Honor.')
             : isAr
-            ? 'المجتمع ده لأسر وطلاب وتزودوا بس، ومحدش من برّه بيشوفه. هنا بتختاروا إيه يظهر من إنجازاتكم، وبتشوفوا لوحة الشرف.'
+            ? 'هذا المجتمع لأسر وتزودوا وطلابها فقط، ولا يراه أحد من الخارج. هنا تختارون ما يظهر من إنجازاتكم، وترون لوحة الشرف.'
             : 'This community is for Watazawwado families and students only; nobody outside can see it. Here you choose what to share of your achievements and see the Hall of Honor.'}
         </p>
       </header>
@@ -85,13 +85,13 @@ export default function StudentCommunityPage({ lang, kid = false }: { lang: 'ar'
           <Card className="p-6 text-center grid gap-2 justify-items-center">
             <AchievementEmblem id="juz" earned={false} className="w-14 h-14" />
             <p className="font-display text-lg font-bold text-foreground">
-              {failed ? (isAr ? 'مقدرناش نحمّل اللوحة دلوقتي' : 'We could not load the hall right now') : (isAr ? 'أول الأسماء في الطريق' : 'The first names are on their way')}
+              {failed ? (isAr ? 'تعذّر تحميل اللوحة الآن' : 'We could not load the hall right now') : (isAr ? 'أول الأسماء في الطريق' : 'The first names are on their way')}
             </p>
             <p className="text-sm text-muted-foreground max-w-md">
               {failed
-                ? (isAr ? 'جرّبوا تاني بعد شوية.' : 'Please try again in a little while.')
+                ? (isAr ? 'حاولوا مرة أخرى بعد قليل.' : 'Please try again in a little while.')
                 : (isAr
-                  ? 'لما طالب يختم جزء أو سورة طويلة أو يخلّص مستوى أو كتاب، بنسأل أسرته الأول، ولو وافقت بنحتفل بيه هنا.'
+                  ? 'حين يختم طالب جزءًا أو سورة طويلة أو ينهي مستوى أو كتابًا، نسأل أسرته أولًا، وإن وافقت نحتفل به هنا.'
                   : 'When a student finishes a juz, a long surah, a level or a book, we ask the family first, and if they agree we celebrate it here.')}
             </p>
           </Card>

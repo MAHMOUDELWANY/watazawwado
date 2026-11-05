@@ -22,7 +22,7 @@ export default function StudentLessonRoomPage({ lang = 'ar', backTo = '/student/
   }, [id]);
 
   if (failed) {
-    return <p role="alert" className="text-sm text-destructive">{isAr ? 'غرفة الحصة دي مش متاحة.' : 'This lesson room is not available.'}</p>;
+    return <p role="alert" className="text-sm text-destructive">{isAr ? 'غرفة هذه الحصة غير متاحة.' : 'This lesson room is not available.'}</p>;
   }
   return (
     <div className="space-y-4" data-testid="lesson-room-learner" data-room-page={state ? `${state.page}:${state.step}` : ''} dir={isAr ? 'rtl' : 'ltr'}>
@@ -37,7 +37,7 @@ export default function StudentLessonRoomPage({ lang = 'ar', backTo = '/student/
       ) : (
         <div className="py-16 grid justify-items-center gap-3 text-center">
           <BrandLoader size="md" />
-          <p className="text-sm text-muted-foreground">{isAr ? 'أول ما المعلم يفتح الدرس هيظهر هنا. الفيديو زي ما هو على زووم.' : 'The lesson shows here as soon as your teacher opens it. Video stays on Zoom.'}</p>
+          <p className="text-sm text-muted-foreground">{isAr ? 'يظهر الدرس هنا حين يفتحه المعلم. والفيديو يبقى على Zoom.' : 'The lesson shows here as soon as your teacher opens it. Video stays on Zoom.'}</p>
         </div>
       )}
       <Link to={backTo} className="text-sm text-teal underline underline-offset-4">{isAr ? 'حصصي' : 'My lessons'}</Link>

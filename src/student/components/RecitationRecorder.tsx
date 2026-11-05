@@ -50,7 +50,7 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent }: { le
       setSeconds(0); setState('recording');
       timer.current = window.setInterval(() => setSeconds((s) => { if (s + 1 >= MAX_SECONDS) stop(); return s + 1; }), 1000);
     } catch {
-      setError(isAr ? 'محتاجين إذن الميكروفون عشان نسجّل. اسمح بيه من إعدادات المتصفح.' : 'We need microphone access to record. Allow it in your browser settings.');
+      setError(isAr ? 'نحتاج إلى إذن الميكروفون للتسجيل. اسمح به من إعدادات المتصفح.' : 'We need microphone access to record. Allow it in your browser settings.');
     }
   };
 
@@ -68,7 +68,7 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent }: { le
       onSent?.();
     } catch {
       setState('review');
-      setError(isAr ? 'معرفناش نبعت التسجيل، جرّب تاني.' : 'Could not send the recording. Please try again.');
+      setError(isAr ? 'تعذّر إرسال التسجيل، حاول مرة أخرى.' : 'Could not send the recording. Please try again.');
     }
   };
 
@@ -90,11 +90,11 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent }: { le
           <audio controls src={url} className="w-full h-10" />
           <div className="flex flex-wrap gap-2">
             <Button type="button" size="sm" onClick={send} isLoading={state === 'sending'}><Send className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'ابعته للمعلم' : 'Send to your teacher'}</Button>
-            <Button type="button" size="sm" variant="ghost" onClick={() => { setState('idle'); setBlob(null); }} disabled={state === 'sending'}><RotateCcw className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'سجّل تاني' : 'Record again'}</Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => { setState('idle'); setBlob(null); }} disabled={state === 'sending'}><RotateCcw className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'سجّل مرة أخرى' : 'Record again'}</Button>
           </div>
         </div>
       )}
-      {state === 'sent' && <p role="status" className="text-xs text-teal">{isAr ? 'وصل للمعلم، وهيرد عليك قبل الحصة الجاية بإذن الله.' : 'Sent. Your teacher will reply before the next lesson, in sha Allah.'}</p>}
+      {state === 'sent' && <p role="status" className="text-xs text-teal">{isAr ? 'وصل إلى المعلم، وسيردّ عليك قبل الحصة القادمة بإذن الله.' : 'Sent. Your teacher will reply before the next lesson, in sha Allah.'}</p>}
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
     </div>
   );

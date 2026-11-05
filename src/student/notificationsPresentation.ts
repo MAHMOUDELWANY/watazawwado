@@ -217,11 +217,11 @@ export function buildStudentNotifications(
         title: `Your teacher asked to move: ${titleEn}`,
         titleAr: `المعلم طلب تغيير ميعاد: ${titleAr}`,
         description: `Please pick a new time for this lesson from My lessons.${note}`,
-        descriptionAr: `من فضلك اختار ميعاد جديد للحصة دي من صفحة حصصي.${note}`,
+        descriptionAr: `من فضلك اختر موعدًا جديدًا لهذه الحصة من صفحة حصصي.${note}`,
         timestamp: b.rescheduleRequestedAt,
         actionUrl: '/student/lessons',
         actionLabel: 'Pick a new time',
-        actionLabelAr: 'اختار ميعاد جديد'
+        actionLabelAr: 'اختر موعدًا جديدًا'
       });
     }
 

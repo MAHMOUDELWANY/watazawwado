@@ -50,9 +50,9 @@ export function NotificationPreferences({ isAr }: { isAr: boolean }) {
   return (
     <section className="space-y-3" aria-labelledby="email-prefs-title" data-testid="notification-preferences">
       <div>
-        <h3 id="email-prefs-title" className="text-sm font-semibold text-foreground">{isAr ? 'الإيميلات اللي تحب توصلك' : 'Emails you would like'}</h3>
+        <h3 id="email-prefs-title" className="text-sm font-semibold text-foreground">{isAr ? 'الرسائل التي تحب أن تصلك' : 'Emails you would like'}</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          {isAr ? 'إيميلات الحجز والتذكير بالحصص والدفع بتوصل دايماً.' : 'Booking, lesson reminder and payment emails always arrive.'}
+          {isAr ? 'تصل دائمًا رسائل الحجز والتذكير بالحصص والدفع.' : 'Booking, lesson reminder and payment emails always arrive.'}
         </p>
       </div>
       <ul className="divide-y divide-border rounded-xl border border-border">
@@ -81,8 +81,8 @@ export function NotificationPreferences({ isAr }: { isAr: boolean }) {
         })}
       </ul>
       <p className="text-xs min-h-4" aria-live="polite">
-        {status === 'saved' && <span className="text-success">{isAr ? 'اتحفظ.' : 'Saved.'}</span>}
-        {status === 'error' && <span className="text-destructive">{isAr ? 'معرفناش نحفظ. جرّب تاني.' : 'Could not save. Please try again.'}</span>}
+        {status === 'saved' && <span className="text-success">{isAr ? 'حُفظ.' : 'Saved.'}</span>}
+        {status === 'error' && <span className="text-destructive">{isAr ? 'تعذّر الحفظ. حاول مرة أخرى.' : 'Could not save. Please try again.'}</span>}
       </p>
     </section>
   );
