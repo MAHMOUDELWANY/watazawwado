@@ -15,7 +15,7 @@ describe('Phase C: the learner picks the teacher at sign-up (owner D1, 2026-10-2
   it('the teacher list carries a short bio but never the email', () => {
     const api = read('api/index.ts');
     assert.match(api, /select\('id, email, bio'\)/);
-    assert.match(api, /res\.json\(\{ teachers: teachers\.map\(\(\{ email: _email, \.\.\.t \}\) => t\) \}\)/);
+    assert.match(api, /res\.json\(\{ teachers: teachers\.map\(\(\{ email: _email, \.\.\.t \}, i\) => \(\{ \.\.\.t, available: available\[i\] \}\)\) \}\)/);
   });
 
   it('the admin gets the full details by email; teachers do not get contact details', () => {

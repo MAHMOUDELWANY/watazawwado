@@ -33,8 +33,8 @@ describe('NX-09 web push', () => {
     }
   });
 
-  it('only lesson reminders, gift notes and recitation replies buzz a phone', () => {
-    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_in_12h', 'lesson_in_2h', 'recitation_reply']);
+  it('only lesson reminders, gift notes, recitation replies and the quiet-learner nudge buzz a phone', () => {
+    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_in_12h', 'lesson_in_2h', 'quiet_learner', 'recitation_reply']);
   });
 
   it('sends nothing without keys, and removes a device the push service says is gone', async () => {
@@ -49,9 +49,9 @@ describe('NX-09 web push', () => {
       sentPayloads.push(JSON.parse(payload));
     }) as any);
     assert.strictEqual(n, 1);
-    assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h' });
+    assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/zaadi-notification-192.png' });
     assert.deepStrictEqual(client.deleted.sort(), ['s2', 's3'], 'gone device removed; a stored non-push address is dropped, never called');
-    assert.strictEqual(await sendPushToUser(client, 'u1', { ...notice, kind: 'quiet_learner' }, 'ar', (async () => { throw new Error('no'); }) as any), 0);
+    assert.strictEqual(await sendPushToUser(client, 'u1', { ...notice, kind: 'summary_due' }, 'ar', (async () => { throw new Error('no'); }) as any), 0);
   });
 
   it('turns the VAPID key into bytes and the service worker shows and opens notifications', () => {

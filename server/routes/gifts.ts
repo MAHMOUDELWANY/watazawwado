@@ -67,6 +67,7 @@ export function registerGiftRoutes(app: express.Express, deps: {
         await notifyUser(client, { userId: ent.metadata.gift.bought_by }, {
           kind: 'gift_redeemed',
           title: { en: 'Your gift was received', ar: 'هديتك وصلت' },
+          push: { body: { en: 'Your gift reached its family. That is the best kind of zaad.', ar: 'هديتك وصلت لأصحابها. ده أحلى زاد.' } },
           body: { en: 'The lessons you gave were redeemed. Jazakum Allah khayran.', ar: 'الحصص اللي أهديتها اتفعّلت عند صاحبها. جزاكم الله خيرًا.' },
           link: '/student/wallet',
         });

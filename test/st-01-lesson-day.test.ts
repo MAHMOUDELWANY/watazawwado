@@ -12,12 +12,12 @@ describe('ST-01 lesson-day card', () => {
     assert.strictEqual(isLessonDay(iso(new Date(2026, 9, 22, 9)), at(23, 50)), false);
   });
 
-  it('Join opens 10 minutes before and closes when the lesson ends', () => {
+  it('Join opens 5 minutes before and closes when the lesson ends', () => {
     const start = iso(at(18));
     const end = iso(at(18, 45));
-    assert.strictEqual(JOIN_OPENS_MIN, 10);
-    assert.strictEqual(joinState(start, end, at(17, 49)), 'early');
-    assert.strictEqual(joinState(start, end, at(17, 50)), 'open');
+    assert.strictEqual(JOIN_OPENS_MIN, 5);
+    assert.strictEqual(joinState(start, end, at(17, 54)), 'early');
+    assert.strictEqual(joinState(start, end, at(17, 55)), 'open');
     assert.strictEqual(joinState(start, end, at(18, 30)), 'open');
     assert.strictEqual(joinState(start, end, at(18, 45)), 'ended');
   });

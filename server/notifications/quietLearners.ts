@@ -37,7 +37,8 @@ export function quietNotice(learnerName: string | null, viaParent: boolean) {
           en: 'It has been a few weeks since your last lesson. Whenever you are ready, your teacher is happy to pick up where you left off. If anything got in the way, tell us and we will help.',
           ar: 'مرّت بضعة أسابيع منذ آخر درس لك. متى أحببت، فمعلمك ينتظر ليكمل معك من حيث توقفت. وإن أوقفك شيء، أخبرنا لنساعدك.'
         },
-    link: '/student/book'
+    link: '/student/book',
+    push: { body: { en: "I've been waiting by your zaad bag... Ready to pick up where you left off?", ar: 'أنا قاعد جنب شنطة الزاد مستنيك... نكمّل من حيث وقفنا؟' } }
   };
 }
 

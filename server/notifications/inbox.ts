@@ -43,6 +43,8 @@ export interface InboxNotice {
   body: L;
   /** Path on the site, e.g. /student/messages */
   link?: string;
+  /** Shorter phone-notification text in Zaadi's voice; the title and body above when absent. */
+  push?: { body: L };
 }
 
 export async function notifyUser(

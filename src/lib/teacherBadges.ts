@@ -1,7 +1,7 @@
 /**
  * Quick words a family can tap after a good lesson (owner, 2026-11-06, in the spirit of Preply). A word becomes a
- * badge on the teacher's card only when BADGE_MIN_LEARNERS different learners chose it, so no single family's
- * feedback can be read from the card. Teachers never type these themselves.
+ * badge on the teacher's card only when BADGE_MIN_FAMILIES different family accounts chose it, counting only
+ * finished calendar months (the server filters), so no single family's feedback can be read from the card. Teachers never type these themselves.
  */
 export const FEEDBACK_TAGS = [
   { id: 'patient', en: 'Patient', ar: 'صبور' },
@@ -14,7 +14,7 @@ export const FEEDBACK_TAGS = [
 
 export type FeedbackTagId = (typeof FEEDBACK_TAGS)[number]['id'];
 export const MAX_TAGS_PER_LESSON = 3;
-export const BADGE_MIN_LEARNERS = 3;
+export const BADGE_MIN_FAMILIES = 3;
 export const MAX_BADGES_ON_CARD = 2;
 
 const IDS = new Set<string>(FEEDBACK_TAGS.map((t) => t.id));
@@ -24,19 +24,19 @@ export const tagLabel = (id: string, isAr: boolean) => {
   return t ? (isAr ? t.ar : t.en) : id;
 };
 
-/** Badges from (learner, tags) rows: tags chosen by at least BADGE_MIN_LEARNERS learners, most chosen first. */
-export function badgesFrom(rows: Array<{ student_id: string | null; tags: string[] | null }>): FeedbackTagId[] {
+/** Badges from (family account, tags) rows: tags chosen by at least BADGE_MIN_FAMILIES accounts, most chosen first. */
+export function badgesFrom(rows: Array<{ submitted_by: string | null; tags: string[] | null }>): FeedbackTagId[] {
   const learnersByTag = new Map<string, Set<string>>();
   for (const r of rows) {
-    if (!r.student_id) continue;
+    if (!r.submitted_by) continue;
     for (const tag of r.tags || []) {
       if (!isFeedbackTag(tag)) continue;
       if (!learnersByTag.has(tag)) learnersByTag.set(tag, new Set());
-      learnersByTag.get(tag)!.add(r.student_id);
+      learnersByTag.get(tag)!.add(r.submitted_by);
     }
   }
   return [...learnersByTag.entries()]
-    .filter(([, s]) => s.size >= BADGE_MIN_LEARNERS)
+    .filter(([, s]) => s.size >= BADGE_MIN_FAMILIES)
     .sort((a, b) => b[1].size - a[1].size)
     .slice(0, MAX_BADGES_ON_CARD)
     .map(([tag]) => tag as FeedbackTagId);

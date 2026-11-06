@@ -152,6 +152,7 @@ export function registerRecitationRoutes(app: express.Express, deps: {
       await notifyUser(client, { userId }, {
         kind: 'recitation_reply',
         title: { en: 'Your teacher replied to your recitation', ar: 'المعلم رد على تلاوتك' },
+        push: { body: { en: 'Your teacher listened to your recitation and wrote back. Come and see!', ar: 'معلمك سمع تلاوتك وردّ عليك. تعالَ شوف!' } },
         body: { en: text.slice(0, 200), ar: text.slice(0, 200) },
         link: '/student',
       });

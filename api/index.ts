@@ -2002,7 +2002,9 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
   });
   const teacherIds = [...idByEmail.values()];
   const { data: feedback } = teacherIds.length
-    ? await supabaseAdmin.from('lesson_feedback').select('teacher_id, student_id, tags').in('teacher_id', teacherIds).limit(5000)
+    // Finished months only, so a badge never appears right after one family's feedback.
+    ? await supabaseAdmin.from('lesson_feedback').select('teacher_id, submitted_by, tags').in('teacher_id', teacherIds)
+        .lt('created_at', DateTime.utc().startOf('month').toISO()).limit(5000)
     : { data: [] as any[] };
   return pool
     .map((a: any) => {

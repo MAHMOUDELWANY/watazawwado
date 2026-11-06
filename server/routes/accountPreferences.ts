@@ -21,9 +21,11 @@ export function registerAccountPreferenceRoutes(app: express.Express, deps: {
       const { data } = token ? await supabase.auth.getUser(token) : { data: null as any };
       const user = data?.user;
       if (!user?.id || !user.email) return res.status(401).json({ error: 'Please sign in.' });
-      const { error } = await supabase
-        .from('user_language_preferences')
-        .upsert({ user_id: user.id, email: user.email.toLowerCase(), language, updated_at: new Date().toISOString() });
+      const row = { user_id: user.id, email: user.email.toLowerCase(), language, updated_at: new Date().toISOString() };
+      // ifUnset: the language the site was shown in, kept only when the account has not chosen one.
+      const { error } = req.body?.ifUnset === true
+        ? await supabase.from('user_language_preferences').upsert(row, { onConflict: 'user_id', ignoreDuplicates: true })
+        : await supabase.from('user_language_preferences').upsert(row);
       if (error) throw error;
       res.json({ success: true, language });
     } catch (err) {

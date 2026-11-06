@@ -23,8 +23,17 @@ function writeCookie(name: string, value: string) {
  * arrive in that language. If nobody is signed in yet, it is saved at the next sign-in.
  */
 export async function syncChosenLanguage(): Promise<void> {
-  const chosen = readCookie(LANG_CHOSEN_COOKIE);
-  if (chosen !== 'ar' && chosen !== 'en') return;
+  let chosen = readCookie(LANG_CHOSEN_COOKIE);
+  // No explicit pick: the language the family has been reading the site in becomes the account's language,
+  // but only if the account has none yet (owner 2026-11-06: emails in the language chosen at the start).
+  let ifUnset = false;
+  if (chosen !== 'ar' && chosen !== 'en') {
+    let shown: string | null = null;
+    try { shown = window.localStorage.getItem(LANGUAGE_STORAGE_KEY); } catch { /* storage blocked */ }
+    if (shown !== 'ar' && shown !== 'en') return;
+    chosen = shown;
+    ifUnset = true;
+  }
   try {
     const { getFreshAccessToken } = await import('./auth');
     const token = await getFreshAccessToken();
@@ -32,7 +41,7 @@ export async function syncChosenLanguage(): Promise<void> {
     await fetch('/api/me/language', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ language: chosen })
+      body: JSON.stringify({ language: chosen, ifUnset })
     });
   } catch {
     // Best effort: emails fall back to English.

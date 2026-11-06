@@ -42,7 +42,7 @@ self.addEventListener('push', (event) => {
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
   event.waitUntil(self.registration.showNotification(data.title || 'وتزودوا · Watazawwado', {
     body: data.body || '',
-    icon: '/android-chrome-192x192.png',
+    icon: data.icon || '/android-chrome-192x192.png',
     badge: '/favicon-48x48.png',
     tag: data.tag || undefined,
     data: { url: data.url || '/student' },

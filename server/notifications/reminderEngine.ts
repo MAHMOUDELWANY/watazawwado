@@ -345,7 +345,16 @@ export async function processDueReminders(): Promise<{
             en: `${b.contact_name || 'Your lesson'}: ${dateStr}, ${timeStr} (${studentTz}).${soon ? ' Get your things ready and join a minute early.' : homeworkLine.en}`,
             ar: `${b.contact_name || 'حصتك'}: ${dateStr}، ${timeStr} (${studentTz}).${soon ? ' جهّز حاجتك وادخل قبل الميعاد بدقيقة.' : homeworkLine.ar}`
           },
-          link: '/student/lessons'
+          link: '/student/lessons',
+          push: soon
+            ? { body: {
+                en: `Two hours to go! Find a quiet corner, get your Mushaf or notebook ready, and I'll see you there. (${timeStr})`,
+                ar: `فاضل ساعتين! دوّر على ركن هادي، وجهّز مصحفك أو كشكولك، وأشوفك هناك. (${timeStr})`
+              } }
+            : { body: {
+                en: `Your lesson is on its way: ${dateStr}, ${timeStr}. I've packed your zaad bag and checked it twice.${homeworkLine.en ? ' Your homework is waiting too!' : ''}`,
+                ar: `حصتك جاية: ${dateStr}، ${timeStr}. جهّزت شنطة الزاد وراجعتها مرتين.${homeworkLine.ar ? ' وواجبك مستنيك كمان!' : ''}`
+              } }
         });
         await finalizeReminderState(item.id, claimToken, 'sent');
         sentSite++;

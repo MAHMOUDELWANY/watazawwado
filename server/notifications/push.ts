@@ -5,7 +5,10 @@ import { parse as legacyParse } from 'node:url';
  * NX-09: web push (free, standard Web Push with VAPID keys VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY). Opt-in per device;
  * only the kinds below are pushed, so a phone buzzes for things worth it (lesson soon, homework waiting), nothing else.
  */
-export const PUSH_KINDS = new Set(['lesson_in_12h', 'lesson_in_2h', 'gift_redeemed', 'recitation_reply']);
+export const PUSH_KINDS = new Set(['lesson_in_12h', 'lesson_in_2h', 'gift_redeemed', 'recitation_reply', 'quiet_learner']);
+
+/** Phone notifications speak as Zaadi, the academy's companion (owner, 2026-11-06), with Zaadi's picture. */
+export const ZAADI = { name: { en: 'Zaadi', ar: 'زادي' }, icon: '/zaadi-notification-192.png' };
 
 let configured: boolean | null = null;
 export function pushConfigured(env: Record<string, string | undefined> = process.env): boolean {
@@ -48,7 +51,7 @@ export function parseSubscription(raw: any): PushSubscriptionInput | null {
 export async function sendPushToUser(
   client: any,
   userId: string,
-  notice: { kind: string; title: { en: string; ar: string }; body: { en: string; ar: string }; link?: string | null },
+  notice: { kind: string; title: { en: string; ar: string }; body: { en: string; ar: string }; link?: string | null; push?: { body: { en: string; ar: string } } },
   lang: 'ar' | 'en' = 'ar',
   send: typeof webpush.sendNotification = webpush.sendNotification.bind(webpush),
 ): Promise<number> {
@@ -56,7 +59,9 @@ export async function sendPushToUser(
   try {
     const { data: subs } = await client.from('push_subscriptions').select('id, endpoint, p256dh, auth').eq('user_id', userId).limit(10);
     let sent = 0;
-    const payload = JSON.stringify({ title: notice.title[lang], body: notice.body[lang], url: notice.link || '/student', tag: notice.kind });
+    const payload = notice.push
+      ? JSON.stringify({ title: ZAADI.name[lang], body: notice.push.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAADI.icon })
+      : JSON.stringify({ title: notice.title[lang], body: notice.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAADI.icon });
     for (const s of subs || []) {
       if (!isAllowedPushEndpoint(s.endpoint)) { await client.from('push_subscriptions').delete().eq('id', s.id); continue; }
       try {

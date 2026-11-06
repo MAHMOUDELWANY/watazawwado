@@ -62,7 +62,7 @@ test('Task 0.58-B: Repeat Last Booking Dashboard Integration & Deep-Linking Work
       'StudentHomePage must extract raw Zoom link'
     );
     assert(
-      homeCode.includes("const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));"),
+      homeCode.includes("const hasZoomLink = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));") && homeCode.includes('const hasValidZoomUrl = hasZoomLink && zoomOpen;'),
       'StudentHomePage must validate that Zoom URL strictly starts with https:// or http://'
     );
     assert(

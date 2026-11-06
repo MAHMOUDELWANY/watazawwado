@@ -55,7 +55,7 @@ export interface TeacherCard {
   id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null; bio?: string | null;
   /** Subjects the teacher is licensed for (empty on the neutral fallback cards = any subject). */
   subjects?: string[];
-  /** Quick words chosen by 3+ different learners (src/lib/teacherBadges.ts). */
+  /** Quick words chosen by 3+ different families (src/lib/teacherBadges.ts). */
   badges?: string[];
   /** False when the teacher has no free slot in the next two weeks. */
   available?: boolean;
