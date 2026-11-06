@@ -75,6 +75,7 @@ import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
 import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
+import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath } from '../server/routes/attendance.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
 import { registerNextWeekSuggestionRoutes } from '../server/routes/nextWeekSuggestion.js';
@@ -2217,6 +2218,7 @@ app.get('/api/dashboard/bookings/:id/zoom-host-url', verifyTeacherAuth, async (r
     }
     const url = await getZoomStartUrl(meetingId);
     if (!url) return res.status(502).json({ error: 'Zoom did not return a host link. Please try again.' });
+    await recordLinkOpened(supabase, booking.id, 'teacher');
     res.json({ url });
   } catch (err) {
     console.error('[GET /api/dashboard/bookings/:id/zoom-host-url]', err);
@@ -9051,7 +9053,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         parentName: b.parent_name || null,
         notes: b.notes || null,
         feeAmountUsd: b.fee_amount_usd,
-        zoomMeetingLink: zoomUrl,
+        zoomMeetingLink: studentJoinPath(b.id, zoomUrl),
         packageEntitlementId: b.package_entitlement_id || null,
         teacherId: b.teacher_id || null,
         teacherName: isUpcoming && b.teacher_id ? teacherNameById.get(b.teacher_id) || null : null,
@@ -9067,7 +9069,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         // Harmonized contract aliases for UI compatibility
         lesson_date: b.scheduled_start,
         duration: b.duration_minutes,
-        zoom_join_url: zoomUrl,
+        zoom_join_url: studentJoinPath(b.id, zoomUrl),
         services: {
           title: serviceTitle,
           arabic_title: s?.arabic_title || ''
@@ -10438,6 +10440,12 @@ registerAccountPreferenceRoutes(app, {
 registerIntakeRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyStudentAuth,
+  rateLimit
+});
+
+registerAttendanceRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
   rateLimit
 });
 

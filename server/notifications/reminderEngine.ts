@@ -13,6 +13,7 @@ import { DateTime } from 'luxon';
 import { createClient } from '@supabase/supabase-js';
 import { dispatchNotification } from './dispatcher.js';
 import { notifyUser, resolveLearnerAccount } from './inbox.js';
+import { studentJoinPath } from '../routes/attendance.js';
 import { isServerSupabaseConfigured } from '../integrations/availabilityEngine.js';
 
 function getServerSupabase() {
@@ -378,7 +379,8 @@ export async function processDueReminders(): Promise<{
           timeDisplay: timeStr,
           timezone: studentTz,
           durationMinutes: Number(b.duration_minutes),
-          zoomLink: b.zoom_meeting_link,
+          // Through our site so the click is logged in lesson attendance.
+          zoomLink: studentJoinPath(b.id, b.zoom_meeting_link),
           cairoTimeDisplay,
           isTrial: b.booking_type === 'trial'
         }

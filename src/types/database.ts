@@ -1019,6 +1019,11 @@ export interface Database {
         Insert: Partial<ChildDeviceRow> & Pick<ChildDeviceRow, 'owner_user_id' | 'learner_id' | 'name'>;
         Update: Partial<ChildDeviceRow>;
       };
+      lesson_attendance_events: {
+        Row: LessonAttendanceEventRow;
+        Insert: Partial<LessonAttendanceEventRow> & Pick<LessonAttendanceEventRow, 'booking_id' | 'source' | 'event' | 'occurred_at' | 'dedupe_key'>;
+        Update: Partial<LessonAttendanceEventRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -1034,6 +1039,18 @@ export interface Database {
 
 // NX-01 daily review (migration 20261101000005): server only, via server/routes/review.ts.
 /** NX-16: a phone linked to one learner with a one-time code; hashes only. */
+export interface LessonAttendanceEventRow {
+  id: string;
+  booking_id: string;
+  source: 'site' | 'zoom';
+  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined';
+  role: 'teacher' | 'student' | 'unknown';
+  participant_name: string | null;
+  occurred_at: string;
+  dedupe_key: string;
+  created_at: string;
+}
+
 export interface ChildDeviceRow {
   id: string;
   owner_user_id: string;
