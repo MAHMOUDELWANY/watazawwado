@@ -708,7 +708,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'active_student')}
-              className="px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded-xl bg-success dark:bg-[#087D91] hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{t('Continuing student', 'هيكمل معانا')}</span>

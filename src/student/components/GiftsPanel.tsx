@@ -110,7 +110,7 @@ export function GiftsPanel({ gifts, learners, isAr, onRedeemed, onPay }: {
                   <p className="text-xs text-muted-foreground">{isAr ? 'أرسل الرمز إلى صاحب الهدية. تُفعَّل الحصص في حسابه هو، لا في رصيدك.' : 'Send the code to the person. The lessons go to their account, not your balance.'}</p>
                   <div className="flex flex-wrap gap-2">
                     <a href={`https://wa.me/?text=${encodeURIComponent(giftShareText(g, isAr, origin))}`} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 h-10 px-3 rounded-lg bg-teal text-white text-sm font-semibold">
+                      className="inline-flex items-center gap-1.5 h-10 px-3 rounded-lg bg-teal dark:bg-[#087D91] text-white text-sm font-semibold">
                       <WhatsAppIcon className="w-4 h-4" />{isAr ? 'ابعتها واتساب' : 'Send on WhatsApp'}
                     </a>
                     <Button type="button" variant="outline" size="sm" onClick={() => copy(g)} className="h-10">

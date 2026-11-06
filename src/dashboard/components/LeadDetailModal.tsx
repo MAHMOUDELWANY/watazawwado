@@ -291,7 +291,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
+                  className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success dark:bg-[#087D91] hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>{t('WhatsApp', 'واتساب')}</span>
@@ -458,7 +458,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 type="button"
                 disabled={saving}
                 onClick={() => handleUpdate('active_student')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success dark:bg-[#087D91] hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{t('Mark as studying', 'اعتبره بيدرس')}</span>

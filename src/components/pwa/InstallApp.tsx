@@ -140,7 +140,7 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
               {done ? (
                 <div className="px-6 pt-6">
                   <div className="mx-auto w-14 h-14 rounded-full bg-success/12 text-success grid place-items-center"><Check className="w-7 h-7" /></div>
-                  <button type="button" onClick={onClose} className="mt-6 w-full h-12 rounded-full bg-[var(--teal)] text-white font-bold cursor-pointer focus-ring">{isAr ? 'تمام' : 'Done'}</button>
+                  <button type="button" onClick={onClose} className="mt-6 w-full h-12 rounded-full bg-[var(--teal)] dark:bg-[#087D91] text-white font-bold cursor-pointer focus-ring">{isAr ? 'تمام' : 'Done'}</button>
                 </div>
               ) : (
                 <>
@@ -155,7 +155,7 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
 
                   <div className="px-6 pt-6">
                     {s.canPrompt ? (
-                      <button type="button" onClick={install} className="w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--teal)] hover:bg-[var(--teal-hover)] text-white font-bold transition-colors cursor-pointer focus-ring">
+                      <button type="button" onClick={install} className="w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--teal)] dark:bg-[#087D91] hover:bg-[var(--teal-hover)] text-white font-bold transition-colors cursor-pointer focus-ring">
                         <Download className="w-4.5 h-4.5" aria-hidden="true" />
                         {isAr ? 'ثبّت التطبيق' : 'Install the app'}
                       </button>
@@ -171,7 +171,7 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
                           ))}
                         </ol>
                         {s.platform === 'samsung' && (
-                          <a href={chromeIntentUrl(window.location.href)} className="mt-5 w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--teal)] hover:bg-[var(--teal-hover)] text-white font-bold transition-colors cursor-pointer focus-ring">
+                          <a href={chromeIntentUrl(window.location.href)} className="mt-5 w-full h-12 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--teal)] dark:bg-[#087D91] hover:bg-[var(--teal-hover)] text-white font-bold transition-colors cursor-pointer focus-ring">
                             {isAr ? 'افتح في Chrome' : 'Open in Chrome'}
                           </a>
                         )}
@@ -232,7 +232,7 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
         <div className="min-w-0 flex-1">
           <h2 id="install-card-title" className="text-sm font-bold text-foreground pe-6">{isAr ? 'اجعل وتزودوا تطبيقًا على جهازك' : 'Keep Watazawwado as an app'}</h2>
           <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{isAr ? 'يفتح بلمسة من غير ما تدوّر في المتصفح.' : 'One tap to open, no hunting through browser tabs.'}</p>
-          <button type="button" onClick={openSheet} className="mt-3 inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-[var(--teal)] hover:bg-[var(--teal-hover)] text-white text-sm font-bold transition-colors cursor-pointer focus-ring">
+          <button type="button" onClick={openSheet} className="mt-3 inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-[var(--teal)] dark:bg-[#087D91] hover:bg-[var(--teal-hover)] text-white text-sm font-bold transition-colors cursor-pointer focus-ring">
             {isAr ? 'ثبّت التطبيق' : 'Install the app'}
             <ArrowRight className="w-3.5 h-3.5 rtl:-scale-x-100" aria-hidden="true" />
           </button>
@@ -303,7 +303,7 @@ export function InstallAppNudge({ isAr }: Lang) {
               <p className="text-[0.7rem] text-muted-foreground/80 mt-0.5" dir="ltr">watazawwado.academy</p>
             </div>
             {s.platform !== 'in-app' && (
-              <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring active:scale-[0.97] transition-transform">
+              <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] dark:bg-[#087D91] text-white text-sm font-bold cursor-pointer focus-ring active:scale-[0.97] transition-transform">
                 {isAr ? 'ثبّت' : 'Install'}
               </button>
             )}

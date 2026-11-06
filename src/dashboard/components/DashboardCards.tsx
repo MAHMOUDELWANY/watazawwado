@@ -43,7 +43,7 @@ export function CompactCalendar({ timezone }: { timezone?: string }) {
               aria-current={isToday ? 'date' : undefined}
               className={`h-8 rounded-lg text-xs font-semibold flex items-center justify-center tabular-nums ${
                 isToday
-                  ? 'bg-teal text-white shadow-sm shadow-teal/30'
+                  ? 'bg-teal dark:bg-[#087D91] text-white shadow-sm shadow-teal/30'
                   : isPast
                   ? 'text-muted-foreground/60'
                   : 'bg-surface-subtle/70 text-foreground'

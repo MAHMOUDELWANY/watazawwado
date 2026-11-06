@@ -393,7 +393,7 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
                           <div
                             className={`relative max-w-[82%] sm:max-w-[72%] px-3.5 pt-2 pb-1.5 text-[15px] leading-relaxed whitespace-pre-wrap break-words shadow-[0_1px_2px_rgba(5,54,63,0.08)] ${
                               m.mine
-                                ? `bg-[var(--teal)] text-white rounded-2xl ${joinsNext ? '' : 'rounded-ee-md'}`
+                                ? `bg-[var(--teal)] dark:bg-[#087D91] text-white rounded-2xl ${joinsNext ? '' : 'rounded-ee-md'}`
                                 : `bg-surface text-foreground border border-border/70 rounded-2xl ${joinsNext ? '' : 'rounded-es-md'}`
                             }`}
                           >

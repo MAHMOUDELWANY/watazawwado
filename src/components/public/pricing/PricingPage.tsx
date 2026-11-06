@@ -138,7 +138,7 @@ export function PricingPage() {
                     role="radio"
                     aria-checked={on}
                     onClick={() => pick(s.id)}
-                    className={`min-h-11 px-4 rounded-full border text-sm font-bold transition-colors cursor-pointer focus-ring ${on ? 'bg-[var(--teal)] border-[var(--teal)] text-white' : 'bg-surface border-border text-foreground hover:border-[var(--teal)]'}`}
+                    className={`min-h-11 px-4 rounded-full border text-sm font-bold transition-colors cursor-pointer focus-ring ${on ? 'bg-[var(--teal)] dark:bg-[#087D91] border-[var(--teal)] text-white' : 'bg-surface border-border text-foreground hover:border-[var(--teal)]'}`}
                   >
                     {SHORT[s.id]?.[isEn ? 0 : 1] ?? (isEn ? s.name : (s.arabicName || s.name))}
                   </button>

@@ -249,7 +249,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
       <ul className="space-y-2">
         {[tr('Read Al-Mulk 1–5 twice', 'اقرا الملك ١–٥ مرتين'), tr('Write 3 new words', 'اكتب ٣ كلمات جديدة'), tr('Record your recitation', 'سجّل تلاوتك')].map((x, i) => (
           <li key={x} className="flex items-center gap-2.5 rounded-xl bg-surface-subtle p-2.5 text-[13px] text-foreground">
-            <span className={`week-tick grid place-items-center w-5 h-5 rounded-full shrink-0 ${i < 2 ? 'bg-[var(--teal)] text-white' : 'border-2 border-border'}`} style={{ animationDelay: `${0.15 + i * 0.2}s` }}>
+            <span className={`week-tick grid place-items-center w-5 h-5 rounded-full shrink-0 ${i < 2 ? 'bg-[var(--teal)] dark:bg-[#087D91] text-white' : 'border-2 border-border'}`} style={{ animationDelay: `${0.15 + i * 0.2}s` }}>
               {i < 2 && <Check className="w-3 h-3" strokeWidth={3} />}
             </span>
             <span className={i < 2 ? 'line-through text-muted-foreground' : ''}>{x}</span>
@@ -329,7 +329,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
       <ol className="space-y-2">
         {[tr('Letters and sounds', 'الحروف ومخارجها'), tr('Noon and meem rules', 'أحكام النون والميم'), tr('The madd', 'المدود')].map((x, i) => (
           <li key={x} style={{ animationDelay: `${i * 0.12}s` }} className={`week-rise flex items-center gap-2.5 rounded-xl p-2.5 text-[13px] ${i === 1 ? 'bg-[var(--teal)]/12 font-semibold text-foreground' : 'bg-surface-subtle text-muted-foreground'}`}>
-            <span className={`grid place-items-center w-5 h-5 rounded-full text-[10px] font-bold shrink-0 ${i === 0 ? 'bg-[var(--teal)] text-white' : 'border-2 border-border'}`}>
+            <span className={`grid place-items-center w-5 h-5 rounded-full text-[10px] font-bold shrink-0 ${i === 0 ? 'bg-[var(--teal)] dark:bg-[#087D91] text-white' : 'border-2 border-border'}`}>
               {i === 0 ? <Check className="w-3 h-3" strokeWidth={3} /> : i + 1}
             </span>
             {x}

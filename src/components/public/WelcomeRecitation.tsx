@@ -71,7 +71,7 @@ export function WelcomeMuteButton({ isAr }: { isAr: boolean }) {
             exit={{ opacity: 0, scale: 0.6 }}
             whileTap={{ scale: 0.94 }}
             transition={{ type: 'spring', damping: 24, stiffness: 340 }}
-            className="pointer-events-auto absolute end-1 top-[22%] w-14 h-14 grid place-items-center rounded-full bg-[var(--teal)] text-white touch-none cursor-grab active:cursor-grabbing shadow-[0_12px_28px_-10px_rgba(5,54,63,0.7)] ring-1 ring-[#E5A93C]/50 focus-ring"
+            className="pointer-events-auto absolute end-1 top-[22%] w-14 h-14 grid place-items-center rounded-full bg-[var(--teal)] dark:bg-[#087D91] text-white touch-none cursor-grab active:cursor-grabbing shadow-[0_12px_28px_-10px_rgba(5,54,63,0.7)] ring-1 ring-[#E5A93C]/50 focus-ring"
             aria-label={label}
             title={label}
           >

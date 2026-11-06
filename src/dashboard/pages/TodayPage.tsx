@@ -446,7 +446,7 @@ function WeekStrip({ lessons, activeTz, locale, t }: { lessons: DashboardLesson[
         {days.map((d, i) => {
           const n = counts.get(d.toFormat('yyyy-MM-dd')) || 0;
           return (
-            <li key={i} aria-label={`${d.toFormat('cccc d')}: ${n}`} className={`rounded-xl py-2 ${i === 0 ? 'bg-teal text-white shadow-sm shadow-teal/30' : 'bg-surface-subtle/70 text-foreground'}`}>
+            <li key={i} aria-label={`${d.toFormat('cccc d')}: ${n}`} className={`rounded-xl py-2 ${i === 0 ? 'bg-teal dark:bg-[#087D91] text-white shadow-sm shadow-teal/30' : 'bg-surface-subtle/70 text-foreground'}`}>
               <span className={`block text-[10px] font-semibold ${i === 0 ? 'text-white/80' : 'text-muted-foreground'}`}>{d.toFormat(locale === 'ar' ? 'ccccc' : 'ccc')}</span>
               <span className="block text-sm font-bold tabular-nums">{d.toFormat('d')}</span>
               <span className="mt-1 flex justify-center gap-0.5 h-1.5" aria-hidden="true">

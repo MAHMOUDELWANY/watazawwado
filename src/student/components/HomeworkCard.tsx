@@ -71,7 +71,7 @@ export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boole
                   disabled={busy === hw.id}
                   aria-pressed={done}
                   aria-label={done ? (isAr ? 'مُنجزة، المس للتراجع' : 'Marked done, tap to undo') : (isAr ? 'أنجزتها' : 'Done')}
-                  className={`tap-44 relative shrink-0 w-7 h-7 mt-0.5 grid place-items-center rounded-full border-2 transition-colors cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${done ? 'bg-teal border-teal text-white' : 'border-border text-transparent hover:border-teal'}`}
+                  className={`tap-44 relative shrink-0 w-7 h-7 mt-0.5 grid place-items-center rounded-full border-2 transition-colors cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${done ? 'bg-teal dark:bg-[#087D91] border-teal text-white' : 'border-border text-transparent hover:border-teal'}`}
                 >
                   <motion.span initial={false} animate={reduce ? undefined : { scale: done ? [0.6, 1.15, 1] : 1 }} transition={{ duration: 0.3 }}>
                     <Check className="w-4 h-4" aria-hidden="true" />

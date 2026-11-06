@@ -101,7 +101,7 @@ export function ProgressRoad({ subject, learnerName, tz, isAr }: {
                         <MilestoneEmblemByKind kind={s.milestoneKind as any} className="w-8 h-8" />
                       </span>
                     ) : s.state === 'done' ? (
-                      <span className="grid place-items-center w-10 h-10 rounded-full bg-teal text-white"><Check className="w-5 h-5" strokeWidth={3} aria-hidden="true" /></span>
+                      <span className="grid place-items-center w-10 h-10 rounded-full bg-teal dark:bg-[#087D91] text-white"><Check className="w-5 h-5" strokeWidth={3} aria-hidden="true" /></span>
                     ) : s.state === 'now' ? (
                       <span className={`grid place-items-center w-14 h-14 rounded-full bg-gold/25 ring-4 ring-gold ${reduceMotion ? '' : 'animate-pulse'}`}>
                         <KhatamStarMilestoneEmblem className="w-10 h-10" />

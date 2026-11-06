@@ -374,7 +374,7 @@ html.dark {
 
   /* 4 Heritage Architectural Colors (Luminous Dark Mode variants) */
   --teal: #12A4BC;
-  --teal-foreground: #FFFFFF;
+  --teal-foreground: #110F0E; /* espresso on the bright night teal: 7:1 */
   --teal-hover: #22BBD4;
   --teal-light: rgba(18, 164, 188, 0.18);
   --teal-border: rgba(18, 164, 188, 0.38);
@@ -405,11 +405,11 @@ html.dark {
   
   /* Secondary & Interactive - Luminous Sacred Teal */
   --secondary: #12A4BC;
-  --secondary-foreground: #FFFFFF;
+  --secondary-foreground: #110F0E; /* espresso on the bright night teal: 7:1 */
   --secondary-hover: #22BBD4;
 
   --interactive: #12A4BC;
-  --interactive-foreground: #FFFFFF;
+  --interactive-foreground: #110F0E; /* espresso on the bright night teal: 7:1 */
   --interactive-hover: #22BCD4;
 
   /* Accent - Luminous Terracotta Copper */
@@ -426,12 +426,12 @@ html.dark {
   --destructive-foreground: #1A0B0B;
   /* Night status colours from the brand (2026-11-06): teal for success (no green), gold for warnings. */
   --success: #12A4BC;
-  --success-foreground: #FFFFFF;
+  --success-foreground: #110F0E; /* espresso on the bright night teal: 7:1 */
   --warning: #F0B54A;
   --warning-foreground: #1C1817;
   --warning-ink: #F6C76A;
   --info: #12A4BC;
-  --info-foreground: #FFFFFF;
+  --info-foreground: #110F0E; /* espresso on the bright night teal: 7:1 */
   --focus: #12A4BC;
 }
 

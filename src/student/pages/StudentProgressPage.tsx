@@ -819,7 +819,7 @@ export default function StudentProgressPage({
                 type="button"
                 onClick={() => handleSelectLearner(item.id)}
                 aria-pressed={isSelected}
-                className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${isSelected ? 'bg-teal text-white' : 'bg-surface text-foreground border border-border'}`}
+                className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${isSelected ? 'bg-teal dark:bg-[#087D91] text-white' : 'bg-surface text-foreground border border-border'}`}
               >
                 {item.name}
               </button>
