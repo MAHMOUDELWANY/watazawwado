@@ -208,9 +208,9 @@ export function FirstStepEmblem({ className }: EmblemProps) {
       <rect x="37" y="50" width="22" height="28" rx="2" fill={PAPER} fillOpacity="0.75" />
       <rect x="60" y="36" width="22" height="42" rx="2" fill={PAPER} fillOpacity="0.5" />
       <g className="ve-grow">
-        <path d="M25 64 V50" stroke="#3FA36B" strokeWidth="2.2" strokeLinecap="round" />
-        <path d="M25 54 C18 54 15 49 15 45 C21 45 25 48 25 54 Z" fill="#4DB37A" />
-        <path d="M25 51 C31 51 35 46 35 41 C29 41 25 45 25 51 Z" fill="#6CC892" />
+        <path d="M25 64 V50" stroke="#0E93A8" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M25 54 C18 54 15 49 15 45 C21 45 25 48 25 54 Z" fill="#2FA6B8" />
+        <path d="M25 51 C31 51 35 46 35 41 C29 41 25 45 25 51 Z" fill="#74C4CF" />
       </g>
       <g className="emblem-twinkle"><Khatam x={71} y={24} size={10} fill={`url(#${id.gold})`} /></g>
     </Svg>

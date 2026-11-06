@@ -319,7 +319,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(60% 50% at 50% 40%, rgba(16,185,129,0.22), transparent 70%)' }}
+        style={{ background: 'radial-gradient(60% 50% at 50% 40%, rgba(8,125,145,0.22), transparent 70%)' }}
         initial={false}
         animate={{ opacity: success ? 1 : 0 }}
         transition={{ duration: 0.6 }}
@@ -511,7 +511,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                 <div
                   className={`relative w-full h-full rounded-2xl border flex items-center justify-center backdrop-blur-md transition-colors duration-300 ${
                     success
-                      ? 'border-emerald-500 bg-emerald-500/15 shadow-[0_0_32px_rgba(16,185,129,0.45)]'
+                      ? 'border-emerald-500 bg-emerald-500/15 shadow-[0_0_32px_rgba(8,125,145,0.45)]'
                       : 'border-[#C99130] dark:border-[#E5A93C] bg-white/70 dark:bg-white/[0.06]'
                   }`}
                 >

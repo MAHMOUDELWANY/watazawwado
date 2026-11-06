@@ -240,16 +240,17 @@
   --radius-3xl: 40px;
 
   /* Tailwind's stock palettes mapped to the brand (owner, 2026-11-06): every bg-emerald-*, text-blue-*, slate-*
-     and so on in the dashboard and portal now draws from teal, success green, gold, crimson, copper or the warm
-     paper-to-espresso neutrals, in both themes. Blue, indigo and sky read as teal (our info colour). */
+     and so on in the dashboard and portal now draws from teal, gold, crimson, copper or the warm paper-to-espresso
+     neutrals, in both themes. There is no green in our identity: green, emerald and lime read as teal (success),
+     and so do blue, indigo and sky (info). */
   --color-teal-50: #EEF8F9; --color-teal-100: #D5EEF1; --color-teal-200: #ABDDE4; --color-teal-300: #74C4CF; --color-teal-400: #2FA6B8; --color-teal-500: #0E93A8; --color-teal-600: #087D91; --color-teal-700: #066474; --color-teal-800: #0A515C; --color-teal-900: #0D434C; --color-teal-950: #062A30;
   --color-cyan-50: #EEF8F9; --color-cyan-100: #D5EEF1; --color-cyan-200: #ABDDE4; --color-cyan-300: #74C4CF; --color-cyan-400: #2FA6B8; --color-cyan-500: #0E93A8; --color-cyan-600: #087D91; --color-cyan-700: #066474; --color-cyan-800: #0A515C; --color-cyan-900: #0D434C; --color-cyan-950: #062A30;
   --color-sky-50: #EEF8F9; --color-sky-100: #D5EEF1; --color-sky-200: #ABDDE4; --color-sky-300: #74C4CF; --color-sky-400: #2FA6B8; --color-sky-500: #0E93A8; --color-sky-600: #087D91; --color-sky-700: #066474; --color-sky-800: #0A515C; --color-sky-900: #0D434C; --color-sky-950: #062A30;
   --color-blue-50: #EEF8F9; --color-blue-100: #D5EEF1; --color-blue-200: #ABDDE4; --color-blue-300: #74C4CF; --color-blue-400: #2FA6B8; --color-blue-500: #0E93A8; --color-blue-600: #087D91; --color-blue-700: #066474; --color-blue-800: #0A515C; --color-blue-900: #0D434C; --color-blue-950: #062A30;
   --color-indigo-50: #EEF8F9; --color-indigo-100: #D5EEF1; --color-indigo-200: #ABDDE4; --color-indigo-300: #74C4CF; --color-indigo-400: #2FA6B8; --color-indigo-500: #0E93A8; --color-indigo-600: #087D91; --color-indigo-700: #066474; --color-indigo-800: #0A515C; --color-indigo-900: #0D434C; --color-indigo-950: #062A30;
-  --color-emerald-50: #EFF8F2; --color-emerald-100: #D7EFE0; --color-emerald-200: #AFDDC1; --color-emerald-300: #7CC59B; --color-emerald-400: #4BA874; --color-emerald-500: #2E8F5A; --color-emerald-600: #237A4B; --color-emerald-700: #1D623D; --color-emerald-800: #1A4F33; --color-emerald-900: #16412B; --color-emerald-950: #0B2517;
-  --color-green-50: #EFF8F2; --color-green-100: #D7EFE0; --color-green-200: #AFDDC1; --color-green-300: #7CC59B; --color-green-400: #4BA874; --color-green-500: #2E8F5A; --color-green-600: #237A4B; --color-green-700: #1D623D; --color-green-800: #1A4F33; --color-green-900: #16412B; --color-green-950: #0B2517;
-  --color-lime-50: #EFF8F2; --color-lime-100: #D7EFE0; --color-lime-200: #AFDDC1; --color-lime-300: #7CC59B; --color-lime-400: #4BA874; --color-lime-500: #2E8F5A; --color-lime-600: #237A4B; --color-lime-700: #1D623D; --color-lime-800: #1A4F33; --color-lime-900: #16412B; --color-lime-950: #0B2517;
+  --color-emerald-50: #EEF8F9; --color-emerald-100: #D5EEF1; --color-emerald-200: #ABDDE4; --color-emerald-300: #74C4CF; --color-emerald-400: #2FA6B8; --color-emerald-500: #0E93A8; --color-emerald-600: #087D91; --color-emerald-700: #066474; --color-emerald-800: #0A515C; --color-emerald-900: #0D434C; --color-emerald-950: #062A30;
+  --color-green-50: #EEF8F9; --color-green-100: #D5EEF1; --color-green-200: #ABDDE4; --color-green-300: #74C4CF; --color-green-400: #2FA6B8; --color-green-500: #0E93A8; --color-green-600: #087D91; --color-green-700: #066474; --color-green-800: #0A515C; --color-green-900: #0D434C; --color-green-950: #062A30;
+  --color-lime-50: #EEF8F9; --color-lime-100: #D5EEF1; --color-lime-200: #ABDDE4; --color-lime-300: #74C4CF; --color-lime-400: #2FA6B8; --color-lime-500: #0E93A8; --color-lime-600: #087D91; --color-lime-700: #066474; --color-lime-800: #0A515C; --color-lime-900: #0D434C; --color-lime-950: #062A30;
   --color-amber-50: #FDF8EC; --color-amber-100: #FAEDCC; --color-amber-200: #F6D58E; --color-amber-300: #F0BF63; --color-amber-400: #E5A93C; --color-amber-500: #D38F25; --color-amber-600: #B9782A; --color-amber-700: #965A12; --color-amber-800: #7A4710; --color-amber-900: #653B11; --color-amber-950: #3A1F06;
   --color-yellow-50: #FDF8EC; --color-yellow-100: #FAEDCC; --color-yellow-200: #F6D58E; --color-yellow-300: #F0BF63; --color-yellow-400: #E5A93C; --color-yellow-500: #D38F25; --color-yellow-600: #B9782A; --color-yellow-700: #965A12; --color-yellow-800: #7A4710; --color-yellow-900: #653B11; --color-yellow-950: #3A1F06;
   --color-orange-50: #FDF8EC; --color-orange-100: #FAEDCC; --color-orange-200: #F6D58E; --color-orange-300: #F0BF63; --color-orange-400: #E5A93C; --color-orange-500: #D38F25; --color-orange-600: #B9782A; --color-orange-700: #965A12; --color-orange-800: #7A4710; --color-orange-900: #653B11; --color-orange-950: #3A1F06;
@@ -343,7 +344,7 @@
   /* Semantic Status */
   --destructive: #C51F24;
   --destructive-foreground: #FFFFFF;
-  --success: #237A4B;
+  --success: #087D91; /* no green in our identity: success is teal */
   --success-foreground: #FFFFFF;
   --warning: #C26300;
   --warning-foreground: #FFFFFF;
@@ -423,9 +424,9 @@ html.dark {
   /* QA-02: error text reaches 4.5:1 on the dark background and surfaces; dark text on the red fill. */
   --destructive: #EC4046;
   --destructive-foreground: #1A0B0B;
-  /* Night status colours from the brand scales (2026-11-06), not Google green or stock amber. */
-  --success: #4BA874;
-  --success-foreground: #0B2517;
+  /* Night status colours from the brand (2026-11-06): teal for success (no green), gold for warnings. */
+  --success: #12A4BC;
+  --success-foreground: #FFFFFF;
   --warning: #F0B54A;
   --warning-foreground: #1C1817;
   --warning-ink: #F6C76A;
@@ -1309,16 +1310,16 @@ h3, .text-heading-lg {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: #25D366;
+    background-color: #087D91;
     color: #ffffff !important;
     font-weight: 700;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease-in-out;
   }
   .btn-whatsapp-solid:hover {
-    background-color: #1fbe58;
+    background-color: #066474;
     color: #ffffff !important;
-    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+    box-shadow: 0 4px 10px rgba(8, 125, 145, 0.2);
     transform: translateY(-1px);
   }
 
@@ -1327,22 +1328,22 @@ h3, .text-heading-lg {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: rgba(37, 211, 102, 0.1);
-    color: #15803d !important;
-    border: 1.5px solid #25D366;
+    background-color: rgba(8, 125, 145, 0.1);
+    color: #066474 !important;
+    border: 1.5px solid #087D91;
     font-weight: 600;
     transition: all 0.2s ease-in-out;
   }
   .dark .btn-whatsapp-outline {
-    background-color: rgba(37, 211, 102, 0.15);
-    color: #25D366 !important;
-    border: 1.5px solid #25D366;
+    background-color: rgba(18, 164, 188, 0.15);
+    color: #12A4BC !important;
+    border: 1.5px solid #12A4BC;
   }
   .btn-whatsapp-outline:hover, .dark .btn-whatsapp-outline:hover {
-    background-color: #25D366;
+    background-color: #087D91;
     color: #ffffff !important;
-    border-color: #25D366;
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    border-color: #087D91;
+    box-shadow: 0 4px 12px rgba(8, 125, 145, 0.3);
   }
 
   .badge-whatsapp {
@@ -1351,16 +1352,16 @@ h3, .text-heading-lg {
     gap: 0.375rem;
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
-    background-color: #25D366;
+    background-color: #087D91;
     color: #ffffff !important;
     font-size: 0.75rem;
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.35);
+    box-shadow: 0 2px 8px rgba(8, 125, 145, 0.35);
   }
   .dark .badge-whatsapp {
-    background-color: #25D366;
+    background-color: #087D91;
     color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.45);
+    box-shadow: 0 2px 8px rgba(8, 125, 145, 0.45);
   }
 
   /* ============================================================

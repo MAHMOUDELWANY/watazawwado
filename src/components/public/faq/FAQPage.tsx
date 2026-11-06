@@ -67,7 +67,7 @@ export function FAQPage() {
                 rel="noopener noreferrer"
                 className="inline-flex w-full sm:w-auto items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-[#FAF7F2]/35 bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#F6D58E]"
               >
-                <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#25D366]" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#12A4BC]" />
                 <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
               </a>
             </div>
