@@ -6,21 +6,24 @@ commit, and log it in [LOG.md](LOG.md) as usual.
 
 Order: data clean-up first, then the sign-up path (it decides who reaches a teacher), then lessons, then messages.
 
-## A. Data clean-up before launch (owner asked 2026-11-06; waits for a final yes on the exact list)
+## A. Data clean-up before launch (owner asked 2026-11-06)
 
-1. **Delete every student account and all of its data.** All 12 students are test accounts. This covers bookings,
+1. **Done 2026-11-06. Delete every student account and all of its data.** All 12 students are test accounts. This covers bookings,
    payments, packages and credits, notes, homework, recitations, messages, leads and sign-in accounts.
-2. **Delete the teachers Ali Fayed and Mirek** with their sign-in accounts and availability. Keep Ustadh Mahmoud
+2. **Done 2026-11-06. Delete the teachers Ali Fayed and Mirek** with their sign-in accounts and availability. Keep Ustadh Mahmoud
    (teacher account `mhmwdlwany4222@gmail.com`), Ustadha Afnan, and both Ahmed accounts.
 3. **The super admin is the academy, not a teacher.** `mahmoudelwany98@gmail.com` keeps the admin role and still
    sees the curriculum, the teachers' materials and everything teachers send for review. It is no longer named
    "Ustadh Mahmoud", has no teacher photo, is never offered to families as a teacher, and gets no teaching tools
    (schedule, lessons, availability). Needs a code check of every place that lists teachers.
 
+   Items 1 and 2 left 5 sign-in accounts: the super admin, Ustadh Mahmoud, Ustadha Afnan and both Ahmeds. A backup of
+   every deleted row is on the owner's Desktop in `watazawwado-backups/` (not in the repo: it holds personal data).
+
 ## B. Sign-up and choosing a teacher
 
 4. **Account deletion requests are hard to find.** A student's request does reach the super admin, but the list sits
-   at the bottom of the Analytics page. One request from 2026-11-01 is still open there. Move it somewhere the
+   at the bottom of the Analytics page. (The one open test request was removed with the clean-up.) Move it somewhere the
    owner will see it, with a count badge and an email to the admin when a request comes in.
 5. **Subject first, then teacher, in onboarding.** The family picks the subject first, then sees only the teachers
    who teach it. Subjects are shown as big blocks with the detail underneath, for example **Quran**: reading
