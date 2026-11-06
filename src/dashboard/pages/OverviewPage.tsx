@@ -21,6 +21,7 @@ import { useT } from '../../lib/language';
 import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
 import { FollowUpsCard } from '../components/FollowUps';
 import { ActionItems } from '../components/ActionItems';
+import { AdminPrivacyRequests } from '../components/AdminPrivacyRequests';
 
 export default function OverviewPage() {
   const { t } = useT();
@@ -98,6 +99,9 @@ export default function OverviewPage() {
           <span>{t('Refresh', 'تحديث')}</span>
         </button>
       </div>
+
+      {/* Waiting account deletion requests come first: they have a one-month deadline. */}
+      <AdminPrivacyRequests onlyOpen />
 
       <ActionItems />
 

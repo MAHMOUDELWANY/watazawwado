@@ -131,7 +131,7 @@ export function registerPrivacyRoutes(app: express.Express, deps: {
         kind: 'privacy_request',
         title: { en: 'Account deletion request', ar: 'طلب حذف حساب' },
         body: { en: `${name || email} asked us to delete their account. Answer within one month.`, ar: `${name || email} طلب حذف حسابه. لازم نرد خلال شهر.` },
-        link: '/dashboard/analytics'
+        link: '/dashboard'
       });
       await deps.emailPrivacyTeam(
         'Account deletion request',
@@ -166,5 +166,42 @@ export function registerPrivacyRoutes(app: express.Express, deps: {
     if (error) return res.status(500).json({ error: 'Could not update the request.' });
     if (!data) return res.status(404).json({ error: 'Request not found or already handled.' });
     return res.json({ done: true });
+  });
+
+  // Super admin: carry out an open request. Recording files go first (Storage API), then one database
+  // function deletes the account and its learners and keeps payment rows unlinked (privacy policy).
+  app.post('/api/dashboard/admin/privacy-requests/:id/delete-account', deps.verifyTeacherAuth, deps.requireSuperAdmin, async (req: any, res: any) => {
+    const client = deps.getClient();
+    if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(404).json({ error: 'Request not found.' });
+    const { data: request } = await client.from('privacy_requests').select('id, user_id, status').eq('id', req.params.id).maybeSingle();
+    if (!request || request.status !== 'open') return res.status(404).json({ error: 'Request not found or already handled.' });
+    try {
+      const { data: auth } = await client.auth.admin.getUserById(request.user_id);
+      const email = String(auth?.user?.email || '').toLowerCase();
+      const { data: own } = await client.from('students').select('id').eq('auth_user_id', request.user_id);
+      const { data: kids } = email ? await client.from('guardians').select('student_id, parent_email').ilike('parent_email', email) : { data: [] as any[] };
+      const kidIds = (kids || []).map((g: any) => g.student_id);
+      const { data: otherGuardians } = kidIds.length ? await client.from('guardians').select('student_id, parent_email').in('student_id', kidIds) : { data: [] as any[] };
+      const shared = new Set((otherGuardians || []).filter((g: any) => String(g.parent_email || '').toLowerCase() !== email).map((g: any) => g.student_id));
+      const learnerIds = [...(own || []).map((s: any) => s.id), ...kidIds.filter((id: string) => !shared.has(id))];
+      if (learnerIds.length) {
+        const { data: recs } = await client.from('recitation_recordings').select('storage_path').in('student_id', learnerIds);
+        const paths = (recs || []).map((r: any) => r.storage_path).filter(Boolean);
+        if (paths.length) {
+          const { error: rmErr } = await client.storage.from('recitations').remove(paths);
+          if (rmErr) console.warn('[delete-account] recordings not removed:', rmErr.message);
+        }
+      }
+      const { data: summary, error } = await client.rpc('delete_family_account', { p_user_id: request.user_id });
+      if (error) {
+        console.error('[delete-account]', error.code, error.message);
+        return res.status(error.code === '42501' ? 400 : 500).json({ error: error.code === '42501' ? 'Staff accounts cannot be deleted here.' : 'Could not delete the account.' });
+      }
+      return res.json({ deleted: true, summary });
+    } catch (err: any) {
+      console.error('[delete-account]', err?.message);
+      return res.status(500).json({ error: 'Could not delete the account.' });
+    }
   });
 }

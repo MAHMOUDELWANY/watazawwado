@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
+import { joinState, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
 import {
   CalendarClock,
   Calendar,
@@ -51,6 +52,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   const { session } = useTeacherAuth();
   const [bookings, setBookings] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
+  const now = useNowTick();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<LessonFilter>('all');
@@ -315,7 +317,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           <AnimatePresence mode="popLayout">
             {displayedBookings.map((b, index) => {
               const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
-              const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+              const hasZoomLink = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+              const zoomStart = b.scheduledStart || b.scheduled_start;
+              const hasValidZoomUrl = hasZoomLink && Boolean(zoomStart) && joinState(zoomStart, b.scheduledEnd || b.scheduled_end, now) === 'open';
               
               const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
               const studentTz = getActiveWorkingTimezone(b.studentTimezone || 'UTC');
@@ -475,7 +479,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
-                            {isAr
+                            {hasZoomLink
+                              ? (isAr ? `زر الدخول يظهر قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق.` : `The Join button appears ${JOIN_OPENS_MIN} minutes before the lesson.`)
+                              : isAr
                               ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا. المعلم يفتح الفصل وتنتظر أنت لحظات في غرفة الانتظار.'
                               : 'Your Zoom link is being prepared; it will be emailed and shown here. Your teacher opens the class; you wait a moment in the waiting room.'}
                           </span>

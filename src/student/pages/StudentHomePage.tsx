@@ -30,7 +30,7 @@ import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
 import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { PackageBalance } from '../components/PackageBalance';
-import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
+import { LessonDayCard, isLessonDay, joinState, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
 import { HomeworkCard } from '../components/HomeworkCard';
@@ -53,6 +53,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // Core profile & bookings
   const [profile, setProfile] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const now = useNowTick();
   const [coreLoading, setCoreLoading] = useState(true);
   const [coreError, setCoreError] = useState<string | null>(null);
 
@@ -274,7 +275,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   // Validate zoom link using tested invariant
   const rawZoom = (nextBooking?.zoomMeetingLink || nextBooking?.zoom_join_url || '').trim();
-  const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+  const hasZoomLink = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+  const nextStart = nextBooking?.scheduledStart || nextBooking?.scheduled_start;
+  const zoomOpen = Boolean(nextStart) && joinState(nextStart, nextBooking?.scheduledEnd || nextBooking?.scheduled_end, now) === 'open';
+  const hasValidZoomUrl = hasZoomLink && zoomOpen;
 
   const studentFirstName = profile?.name ? profile.name.split(' ')[0] : '';
 
@@ -688,7 +692,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-sm min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
-                        {isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here'}
+                        {hasZoomLink
+                          ? (isAr ? `زر الدخول يظهر قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق` : `The Join button appears ${JOIN_OPENS_MIN} minutes before the lesson`)
+                          : (isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here')}
                       </span>
                     </div>
                   )}

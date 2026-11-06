@@ -4,7 +4,18 @@ import { Clock, ExternalLink, MessageCircle, NotebookPen, Video } from 'lucide-r
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 /** Join opens 10 minutes before the start (ST-01). */
-export const JOIN_OPENS_MIN = 10;
+// The Zoom link is shown only from 5 minutes before the start, on every page (owner, 2026-11-06).
+export const JOIN_OPENS_MIN = 5;
+
+/** Re-renders every interval so join buttons open on time without a reload. */
+export function useNowTick(ms = 30_000): Date {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), ms);
+    return () => window.clearInterval(id);
+  }, [ms]);
+  return now;
+}
 
 /** True when the lesson starts on the viewer's own calendar day (their device time zone). */
 export function isLessonDay(startIso: string, now: Date = new Date()): boolean {
@@ -42,15 +53,11 @@ export function runningLateMessage(ref: string | null | undefined, learnerName: 
 }
 
 /**
- * ST-01: on lesson day the home page leads with this card: countdown, teacher, subject, Join (from 10 minutes
+ * ST-01: on lesson day the home page leads with this card: countdown, teacher, subject, Join (from 5 minutes
  * before), what to prepare (the teacher's last "next steps") and a "running late" WhatsApp message to the team.
  */
 export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }) {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const id = window.setInterval(() => setNow(new Date()), 30_000);
-    return () => window.clearInterval(id);
-  }, []);
+  const now = useNowTick();
 
   const start = booking.scheduledStart || booking.scheduled_start;
   const end = booking.scheduledEnd || booking.scheduled_end;

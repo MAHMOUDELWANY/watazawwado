@@ -8,8 +8,9 @@ import { confirmAction } from '../../components/ui/Feedback';
 
 interface PrivacyRequest { id: string; status: string; reason: string | null; created_at: string; resolved_at: string | null; name: string | null; email: string | null; studentId: string | null }
 
-/** ST-06: account deletion requests. The deletion itself is done by hand; this only tracks the answer (one month). */
-export function AdminPrivacyRequests() {
+/** ST-06: account deletion requests. "Delete the account" carries one out (payments are kept, unlinked, for tax).
+ *  onlyOpen: the admin home shows the card only while a request waits. */
+export function AdminPrivacyRequests({ onlyOpen = false }: { onlyOpen?: boolean } = {}) {
   const { t, isAr } = useT();
   const [items, setItems] = useState<PrivacyRequest[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -23,12 +24,21 @@ export function AdminPrivacyRequests() {
     try { await dashboardFetch(`/api/dashboard/admin/privacy-requests/${id}/done`, { method: 'POST' }); load(); } catch { setFailed(true); }
   };
 
+  const deleteAccount = async (r: PrivacyRequest) => {
+    if (!await confirmAction(t(
+      `Delete ${r.name || r.email || 'this account'} now? Their account, learners, lessons, homework, recordings and messages are deleted for good. Payment records stay, without their name, for 5 years (tax law).`,
+      `تحذف ${r.name || r.email || 'الحساب ده'} دلوقتي؟ الحساب والطلاب والحصص والواجبات والتسجيلات والرسائل هتتمسح نهائي. سجلات الدفع بتفضل من غير اسمه 5 سنين (قانون الضرائب).`
+    ))) return;
+    try { await dashboardFetch(`/api/dashboard/admin/privacy-requests/${r.id}/delete-account`, { method: 'POST' }); load(); } catch { setFailed(true); }
+  };
+
   const open = (items || []).filter((r) => r.status === 'open');
+  if (onlyOpen && !open.length) return null;
   return (
     <section className="p-6 rounded-2xl glass-card space-y-4" aria-labelledby="privacy-requests-title" data-testid="admin-privacy-requests">
       <div>
         <h2 id="privacy-requests-title" className="text-lg font-display font-bold text-foreground">{t('Account deletion requests', 'طلبات حذف الحسابات')}</h2>
-        <p className="text-sm text-muted-foreground">{t('Answer within one month (privacy policy). Nothing is deleted automatically.', 'لازم نرد خلال شهر (سياسة الخصوصية). مفيش حاجة بتتحذف لوحدها.')}</p>
+        <p className="text-sm text-muted-foreground">{t('Answer within one month (privacy policy). Nothing is deleted until you press Delete.', 'لازم نرد خلال شهر (سياسة الخصوصية). مفيش حاجة بتتحذف غير لما تدوس احذف.')}</p>
       </div>
       {failed && <p className="text-sm text-destructive" role="alert">{t('Could not load the requests.', 'معرفناش نحمّل الطلبات.')}</p>}
       {items && items.length === 0 && <p className="text-sm text-muted-foreground">{t('No requests.', 'مفيش طلبات.')}</p>}
@@ -44,6 +54,7 @@ export function AdminPrivacyRequests() {
                   {r.status === 'open' ? t(`Open · due ${due.setLocale(isAr ? 'ar' : 'en').toFormat('d LLL')}`, `مفتوح · آخر ميعاد ${due.setLocale('ar').toFormat('d LLL')}`) : t('Handled', 'اتنفّذ')}
                 </span>
                 {r.studentId && <Link to={`/dashboard/students/${r.studentId}`} className="text-primary text-xs underline min-h-11 inline-flex items-center">{t('Open the student', 'افتح الطالب')}</Link>}
+                {r.status === 'open' && <Button size="sm" variant="primary" onClick={() => deleteAccount(r)}>{t('Delete the account', 'احذف الحساب')}</Button>}
                 {r.status === 'open' && <Button size="sm" variant="ghost" onClick={() => markDone(r.id)}>{t('Mark handled', 'اتنفّذ')}</Button>}
                 {r.reason && <p className="w-full text-muted-foreground whitespace-pre-line">{r.reason}</p>}
               </li>
