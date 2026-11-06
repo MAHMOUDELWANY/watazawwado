@@ -4,7 +4,7 @@ import { Star, BadgeCheck } from 'lucide-react';
 type Review = { id: string; verified: boolean; rating: number; body: string; lang: 'ar' | 'en'; display_name: string; reviewer_role: 'parent' | 'adult_learner'; country: string | null; created_at: string };
 type Proof = { id: string; url: string; captionEn: string | null; captionAr: string | null };
 
-/** Shown only with real published reviews: at least this many, so a lone review is never presented as a "wall". */
+/** The section shows from the first published review (owner 2026-11-06); the average and count wait for this many. */
 export const MIN_REVIEWS = 3;
 const FIRST_SHOWN = 6;
 
@@ -28,7 +28,7 @@ export function FamilyVoices({ isEn }: { isEn: boolean }) {
     fetch('/api/reviews').then((r) => (r.ok ? r.json() : null)).then(setData).catch(() => {});
   }, []);
 
-  const enough = data && (data.count >= MIN_REVIEWS || data.proofs.length >= MIN_REVIEWS);
+  const enough = data && (data.count > 0 || data.proofs.length >= MIN_REVIEWS);
   if (!enough) return null;
   const shown = all ? data.reviews : data.reviews.slice(0, FIRST_SHOWN);
   const L = (en: string, ar: string) => (isEn ? en : ar);
@@ -51,7 +51,7 @@ export function FamilyVoices({ isEn }: { isEn: boolean }) {
             'كتبتها الأسر بنفسها، وننشرها كما هي. نعرض كل رأي حقيقي، إيجابيًا كان أو سلبيًا، ولا نقدّم أي مقابل لأي رأي.')}
         </p>
 
-        {data.count >= MIN_REVIEWS && (
+        {data.count > 0 && (
           <ul className="mt-10 columns-1 sm:columns-2 lg:columns-3 gap-5 [&>li]:mb-5">
             {shown.map((r) => (
               <li key={r.id} className="break-inside-avoid rounded-2xl border border-border bg-surface p-5 space-y-3">
