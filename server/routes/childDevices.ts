@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import express from 'express';
 import { notifyUser } from '../notifications/inbox.js';
+import { studentJoinPath } from './attendance.js';
 import { isUuid } from './progress.js';
 
 /**
@@ -200,7 +201,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
         return {
           id: b.id, start: b.scheduled_start, end: b.scheduled_end, minutes: b.duration_minutes,
           title: s?.title || 'Lesson', titleAr: s?.arabic_title || '',
-          zoomUrl: typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim() ? b.zoom_meeting_link.trim() : null,
+          zoomUrl: studentJoinPath(b.id, typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim() ? b.zoom_meeting_link.trim() : null),
         };
       }),
     });

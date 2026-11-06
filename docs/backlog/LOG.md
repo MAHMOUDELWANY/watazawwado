@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Lesson attendance from Zoom and the site (2026-11-06)
+- Owner: see when the student and the teacher opened the link, joined and left, and when the lesson ended, for trust.
+- `POST /api/zoom/webhook` (signed with `ZOOM_WEBHOOK_SECRET_TOKEN`, answers Zoom's URL validation) stores meeting started/ended, joined/left and waiting-room events per booking. The Zoom host is the teacher; anyone else is the student.
+- The student's join link (portal, child device, progress card, reminder emails) now goes through `/api/join/:bookingId`, which logs the click and redirects to Zoom (Zoom hosts only). The teacher's "start as host" route logs the teacher's click; the lesson modal's start button now uses it.
+- Lesson details modal shows an Attendance timeline (teacher of the lesson and super admin). Privacy policy line added.
+- Files: `server/routes/attendance.ts`, `api/index.ts`, `reminderEngine.ts`, `childDevices.ts`, `progress.ts`, `LessonAttendance.tsx`, `BookingDetailModal.tsx`, `PrivacyPolicyPage.tsx`, `database.ts`, migration `20261106000001_lesson_attendance_events.sql` (applied to production).
+- Checks: tsc, build, new unit test (signature, event parsing, join link), full suite (7 failures, the same 7 fail on clean main). Waiting on the owner: Secret Token in Vercel, then Event Subscriptions in the Zoom app. Not checked: a real Zoom event end to end.
+
 ### Sign-in room: the star's ring counts finished fields; no sign-in window over a signed-in account (2026-11-04)
 - Owner: make the ring around the star clearer and exact (light only when a field is fully entered); and with a saved session the sign-in window opened over the account, so a click beside it landed inside.
 - Ring: one arc per visible field (code boxes one each; the "I am 18 or older" checkbox via `data-ring-mark`). An arc lights in crimson only when its field is filled and valid by its own rules (required, minLength, min, pattern, an email with a dot in its domain); when all are lit the arcs turn gold and a ring of light spreads out. Arcs run in the reading direction. Re-counted on input, autofill, paste and view changes.

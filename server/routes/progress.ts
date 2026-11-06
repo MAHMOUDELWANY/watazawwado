@@ -23,6 +23,7 @@ import {
   levelsFor,
   type SubjectLevel,
 } from '../../src/components/onboarding/subjects.js';
+import { studentJoinPath } from './attendance.js';
 import { parseHomework, insertHomework } from './homework.js';
 
 type Mw = (req: any, res: any, next: any) => any;
@@ -359,7 +360,7 @@ export function sanitizeNextBookingForProgress(row: any, teacherName?: string | 
     studentTimezone: row.student_timezone ?? null,
     status: row.status ?? null,
     teacherName: teacherName || null,
-    zoomMeetingLink: zoomUrl,
+    zoomMeetingLink: studentJoinPath(row.id, zoomUrl),
   };
 }
 

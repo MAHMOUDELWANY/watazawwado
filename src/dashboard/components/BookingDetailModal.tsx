@@ -25,7 +25,8 @@ import {
   Send
 } from 'lucide-react';
 import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
-import { dashboardFetch } from '../lib/dashboardApi';
+import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
+import { LessonAttendance } from './LessonAttendance';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { RecordPaymentModal } from './RecordPaymentModal';
 import { MoveTeacherControl } from './MoveTeacherControl';
@@ -625,7 +626,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     {booking.zoom_host_url && (
-                      <a href={booking.zoom_host_url} target="_blank" rel="noreferrer" className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]">
+                      <a href={booking.zoom_host_url} target="_blank" rel="noreferrer" onClick={(e) => openZoomAsHost(e, booking.id, booking.zoom_host_url || '')} className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]">
                         <Video className="w-3.5 h-3.5" />
                         {t('Start as host', 'ابدأ كمضيف')}
                       </a>
@@ -642,6 +643,8 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   </div>
                 </div>
               </div>
+
+              <LessonAttendance bookingId={booking.id} />
 
               {/* Payments: super admin only (RULES.md §1) */}
               {isSuperAdmin && (
