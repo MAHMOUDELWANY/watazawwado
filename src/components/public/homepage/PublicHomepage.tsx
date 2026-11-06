@@ -208,9 +208,8 @@ export function PublicHomepage() {
       {/* ─── 3a'. THE ANSWER ─── the teacher lifts the child onto the carpet and they fly into the infinity together. */}
       <TeacherStays isEn={isEn} />
 
-      {/* ─── 3b. THE WEEK AROUND THE LESSON, AND WHAT FAMILIES SAY ─── */}
+      {/* ─── 3b. THE WEEK AROUND THE LESSON ─── */}
       <WeekWithUs isEn={isEn} />
-      <FamilyVoices isEn={isEn} />
 
       {/* ─── 4. WHY WE EXIST ─── */}
       <section className="khatam-field relative">
@@ -274,6 +273,9 @@ export function PublicHomepage() {
           </nav>
         </div>
       </PublicSection>
+
+      {/* ─── 5a. WHAT FAMILIES SAY ─── after the doors, before the questions (owner, 2026-11-06). */}
+      <FamilyVoices isEn={isEn} />
 
       {/* ─── 5b. THE FIRST QUESTIONS FAMILIES ASK ─── */}
       <section className="public-container pb-16 lg:pb-20" aria-labelledby="home-faq">

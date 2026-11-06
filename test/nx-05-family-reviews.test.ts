@@ -36,6 +36,8 @@ describe('NX-05 family reviews: what a writer sends', () => {
   it('the home page shows reviews only with real published ones, and says we never reward reviews', () => {
     const src = fs.readFileSync('src/components/public/homepage/FamilyVoices.tsx', 'utf8');
     assert.match(src, /MIN_REVIEWS = 3/);
+    assert.match(src, /data\.count > 0 \|\|/); // section shows from the first published review
+    assert.match(src, /data\.count >= MIN_REVIEWS && data\.average/); // the average waits for 3
     assert.match(src, /never reward reviews/);
   });
 });
