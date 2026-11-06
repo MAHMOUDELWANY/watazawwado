@@ -10433,7 +10433,9 @@ registerOpsRoutes(app, {
 
 // Last stop for any error a handler threw or rejected: a clear 500 instead of a hung request.
 app.use((err: any, req: any, res: any, next: any) => {
-  console.error(`[API] Unhandled error on ${req.method} ${req.path}:`, err);
+  // Never log the error object itself: body-parser errors carry the raw request body (passwords, emails).
+  const parseError = err?.type === 'entity.parse.failed' || err?.type === 'entity.too.large';
+  console.error('[API] Unhandled error', req.method, req.path, err?.type ?? err?.name, parseError ? '' : err?.message, parseError ? '' : err?.stack);
   if (res.headersSent) return next(err);
   if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'Request too large.' });
   if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON body.' });
