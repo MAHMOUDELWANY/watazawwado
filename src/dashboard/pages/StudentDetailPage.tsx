@@ -374,7 +374,7 @@ export default function StudentDetailPage() {
           {!isSuperAdmin && studentDetail.chat_thread_id && (
             <Link
               to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-[#0A2E35] text-white hover:opacity-90 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-foreground text-background hover:opacity-90 transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>{t('Message the family', 'كلّم الأسرة')}</span>

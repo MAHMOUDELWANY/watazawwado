@@ -334,7 +334,7 @@ function QuestionStepper({ isAr, locked, ladder, questions, answers, setAnswer, 
               disabled={i < locked}
               aria-label={isAr ? `اذهب للسؤال ${i + 1}` : `Go to question ${i + 1}`}
               className={`h-2 flex-1 rounded-full transition-colors duration-200 cursor-pointer ${
-                answers[i] >= 0 ? 'bg-[linear-gradient(90deg,#087D91,#0A9DB5)]' : 'bg-surface-subtle'
+                answers[i] >= 0 ? 'bg-[linear-gradient(90deg,#087D91,#12A4BC)]' : 'bg-surface-subtle'
               } ${i === index ? 'ring-2 ring-primary/50 ring-offset-2 ring-offset-background' : ''}`}
             />
           ))}

@@ -24,9 +24,9 @@ export function isTabActive(path: string, pathname: string, root: string): boole
   return path === root ? clean === root : clean === path || clean.startsWith(`${path}/`);
 }
 
-const BAR = '#101B22';
+const BAR = '#1F1A17';
 // Liquid Glass (iPadOS 26 reference, docs/design/INSPIRATION.md): the pill lets the page show through, softly blurred.
-const GLASS = 'rgba(16, 27, 34, 0.84)';
+const GLASS = 'rgba(31, 26, 23, 0.86)';
 
 /**
  * Compact while the person reads down a page, full again as soon as they scroll up, reach the top, or the page is
@@ -105,7 +105,7 @@ export function MobileTabBar({ tabs, label, hidden }: { tabs: MobileTab[]; label
                   {!tab.active && tab.primary && <span aria-hidden="true" className="absolute h-9 w-9 rounded-full ring-2 ring-[#E5A93C]/80" />}
                   <Icon className={`h-[22px] w-[22px] ${tab.active ? 'text-white' : tab.primary ? 'text-[#F6D58E]' : 'text-white/60 group-hover:text-white'}`} strokeWidth={tab.active ? 2.4 : 2} />
                   {tab.badge ? (
-                    <span className="absolute -top-1.5 -end-3 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E5A93C] px-1 text-[10px] font-bold text-[#1E1410] ring-2 ring-[#101B22]">
+                    <span className="absolute -top-1.5 -end-3 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E5A93C] px-1 text-[10px] font-bold text-[#1E1410] ring-2 ring-[#1F1A17]">
                       {tab.badge > 9 ? '9+' : tab.badge}
                     </span>
                   ) : null}

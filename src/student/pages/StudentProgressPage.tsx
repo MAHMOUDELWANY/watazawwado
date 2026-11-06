@@ -841,7 +841,7 @@ export default function StudentProgressPage({
               {isAr ? 'بعد كل حصة يظهر هنا المستوى، والمحطات، وكلمة المعلم.' : 'After each lesson you will see the level, milestones and a note from the teacher here.'}
             </p>
           </div>
-          <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-[#0A2E35] text-white font-semibold focus-ring">
+          <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-foreground text-background font-semibold focus-ring">
             {isAr ? 'احجز أول حصة' : 'Book your first lesson'}
           </Link>
         </section>
@@ -858,7 +858,7 @@ export default function StudentProgressPage({
                     role="tab"
                     aria-selected={active}
                     onClick={() => setSelectedSubjectId(s.subject)}
-                    className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${active ? 'bg-[#0A2E35] text-white' : 'bg-surface text-foreground border border-border'}`}
+                    className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${active ? 'bg-foreground text-background' : 'bg-surface text-foreground border border-border'}`}
                   >
                     {isAr ? s.subjectMeta.ar : s.subjectMeta.en}
                   </button>

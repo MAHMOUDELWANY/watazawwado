@@ -59,7 +59,7 @@ export function TimezoneCheck({ isAr, onUse }: { isAr: boolean; onUse?: (tz: str
           : <>Your device is on <b>{label(device)}</b> time; lessons are shown in <b>{label(active)}</b> time.</>}
       </p>
       <div className="flex gap-2 shrink-0">
-        <button type="button" onClick={use} disabled={busy} className="flex-1 sm:flex-none min-h-11 px-4 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold cursor-pointer focus-ring disabled:opacity-60">
+        <button type="button" onClick={use} disabled={busy} className="flex-1 sm:flex-none min-h-11 px-4 rounded-xl bg-foreground text-background text-sm font-semibold cursor-pointer focus-ring disabled:opacity-60">
           {isAr ? 'استخدم توقيت جهازي' : 'Use my device time'}
         </button>
         <button type="button" onClick={keep} className="flex-1 sm:flex-none min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground cursor-pointer focus-ring">

@@ -445,7 +445,7 @@ export default function StudentOnboardingPage({
         <JourneyBackdrop />
         {/* The closing moment: the verse the site is named after, revealed word by word. */}
         <div className="mb-8" dir="rtl" lang="ar">
-          <p className="font-display text-3xl sm:text-5xl leading-[1.7] text-[#087D91] dark:text-[#5FC3D3]">
+          <p className="font-display text-3xl sm:text-5xl leading-[1.7] text-[#087D91] dark:text-[#12A4BC]">
             {'﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾'.split(' ').map((w, i) => (
               <motion.span
                 key={i}
@@ -959,7 +959,7 @@ export default function StudentOnboardingPage({
                         <button
                           type="button"
                           onClick={() => finishChild(index)}
-                          className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#087D91] hover:bg-[#06697A] text-white font-bold text-sm cursor-pointer transition-colors"
+                          className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#087D91] hover:bg-[#066474] text-white font-bold text-sm cursor-pointer transition-colors"
                         >
                           <Check className="w-4 h-4" />
                           {isRTL ? `تمام، احفظ تذكرة ${child.name.trim() || 'الطفل'}` : `Done — save ${child.name.trim() || 'this'} ticket`}

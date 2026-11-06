@@ -107,7 +107,7 @@ export function PendingPaymentCard({ lang = 'en', handleStripeReturn = true }: {
                 <button
                   type="button"
                   onClick={() => setPaying(b)}
-                  className="flex-1 sm:flex-none min-h-11 px-5 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold cursor-pointer focus-ring"
+                  className="flex-1 sm:flex-none min-h-11 px-5 rounded-xl bg-foreground text-background text-sm font-semibold cursor-pointer focus-ring"
                 >
                   {isAr ? `ادفع $${b.feeAmountUsd}` : `Pay $${b.feeAmountUsd}`}
                 </button>

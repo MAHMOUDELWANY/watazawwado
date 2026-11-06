@@ -964,7 +964,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 onClick={handleNext}
                 disabled={buyingPackage}
                 data-testid="booking-continue"
-                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold cursor-pointer focus-ring"
+                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-foreground text-background text-sm font-semibold cursor-pointer focus-ring"
               >
                 {isMultiStepFlow && screenIndex === 1 && formData.buyPackageCatalogId
                   ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))

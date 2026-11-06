@@ -54,7 +54,7 @@ export function MilestoneCelebration({
         data-testid="milestone-celebration"
         data-age-group={ageGroup}
       >
-        <div className="absolute inset-0 bg-[#05363F]/55 dark:bg-black/65 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
+        <div className="absolute inset-0 bg-[#12100E]/55 dark:bg-black/65 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
 
         {playful && <Confetti />}
 

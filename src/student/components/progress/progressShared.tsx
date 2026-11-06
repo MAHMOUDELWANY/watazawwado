@@ -62,7 +62,7 @@ export function NextLessonAction({ subject, tz, isAr }: { subject: SubjectProgre
   return (
     <Link
       to="/student/book"
-      className="flex items-center justify-center w-full min-h-12 rounded-2xl bg-[#0A2E35] text-white font-semibold focus-ring"
+      className="flex items-center justify-center w-full min-h-12 rounded-2xl bg-foreground text-background font-semibold focus-ring"
       data-testid="progress-book-cta"
     >
       {isAr ? 'احجز الحصة القادمة' : 'Book the next lesson'}

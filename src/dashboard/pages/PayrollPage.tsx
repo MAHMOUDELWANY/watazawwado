@@ -92,7 +92,7 @@ function TeacherPay({ row, month, isPast, isAr, reload }: { row: any; month: str
             <input className={field} aria-label={isAr ? 'طريقة التحويل' : 'Transfer method'} placeholder={isAr ? 'الطريقة (إنستاباي، بنك، Wise…)' : 'Method (Instapay, bank, Wise…)'} value={method} onChange={(e) => setMethod(e.target.value)} />
             <input className={field} aria-label={isAr ? 'رقم العملية' : 'Transfer reference'} placeholder={isAr ? 'رقم العملية (اختياري)' : 'Reference (optional)'} value={reference} onChange={(e) => setReference(e.target.value)} />
           </div>
-          <button type="button" disabled={busy || method.trim().length < 2 || st.hourlyRate === null} onClick={recordPayout} className="w-full sm:w-auto min-h-12 px-6 rounded-xl bg-[#0A2E35] text-white font-semibold text-sm cursor-pointer disabled:opacity-50">
+          <button type="button" disabled={busy || method.trim().length < 2 || st.hourlyRate === null} onClick={recordPayout} className="w-full sm:w-auto min-h-12 px-6 rounded-xl bg-foreground text-background font-semibold text-sm cursor-pointer disabled:opacity-50">
             {isAr ? `سجّل ${fmtMoney(st.total, st.currency)} واتبعت الإيصال` : `Record ${fmtMoney(st.total, st.currency)} and send the payslip`}
           </button>
         </div>

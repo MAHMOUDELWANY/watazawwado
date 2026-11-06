@@ -62,11 +62,11 @@ export function FeedbackHost() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="pointer-events-auto max-w-md w-full sm:w-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-[#0A2E35] text-white text-sm font-medium shadow-lg"
+              className="pointer-events-auto max-w-md w-full sm:w-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-foreground text-background text-sm font-medium shadow-lg"
             >
               {t.tone === 'error'
                 ? <AlertCircle className="w-4 h-4 shrink-0 text-[#F2A7A0]" aria-hidden="true" />
-                : <CheckCircle2 className="w-4 h-4 shrink-0 text-[#8FD6C2]" aria-hidden="true" />}
+                : <CheckCircle2 className="w-4 h-4 shrink-0 text-[#F6D58E]" aria-hidden="true" />}
               <span>{t.text}</span>
             </motion.div>
           ))}

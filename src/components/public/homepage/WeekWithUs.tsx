@@ -140,7 +140,7 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
                 <div
                   key={x.title.en}
                   ref={(el) => { cards.current[i] = el; }}
-                  className={`week-card absolute inset-0 rounded-[2rem] p-[6px] bg-[#101B22] shadow-[0_30px_60px_-30px_rgba(16,27,34,0.7)] ${i === active ? 'is-on' : ''}`}
+                  className={`week-card absolute inset-0 rounded-[2rem] p-[6px] bg-[#1F1A17] shadow-[0_30px_60px_-30px_rgba(16,27,34,0.7)] ${i === active ? 'is-on' : ''}`}
                 >
                   <div className="h-full w-full overflow-hidden rounded-[1.65rem] bg-background">
                     <div className="flex items-center justify-between px-4 pt-3 text-[11px] font-semibold text-muted-foreground" dir="ltr">
@@ -228,7 +228,7 @@ function Screen({ step, isEn }: { step: number; isEn: boolean }) {
   if (step === 0) return (
     <div>
       {title(tr('Live lesson', 'الحصة المباشرة'))}
-      <div className="relative rounded-2xl bg-[#101B22] p-4 text-center text-white">
+      <div className="relative rounded-2xl bg-[#1F1A17] p-4 text-center text-white">
         <span className="absolute top-2.5 start-2.5 inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-bold tracking-wider">
           <span className="week-live w-1.5 h-1.5 rounded-full bg-[#E82C32]" />{tr('LIVE', 'مباشر')}
         </span>

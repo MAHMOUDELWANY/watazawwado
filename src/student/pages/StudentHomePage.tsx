@@ -978,7 +978,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
             <Link
               to="/student/messages"
-              className="flex items-center justify-center gap-2 w-full min-h-11 px-4 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold focus-ring"
+              className="flex items-center justify-center gap-2 w-full min-h-11 px-4 rounded-xl bg-foreground text-background text-sm font-semibold focus-ring"
             >
               <MessageCircle className="w-4 h-4 shrink-0" />
               <span>{isAr ? 'راسل معلمك' : 'Message your teacher'}</span>

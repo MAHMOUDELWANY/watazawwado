@@ -30,7 +30,7 @@ interface StepLearnerProps {
 
 const chip = (active: boolean) =>
   `min-h-11 px-4 rounded-xl border text-sm font-semibold cursor-pointer focus-ring transition-colors ${
-    active ? 'border-[#0A2E35] bg-[#0A2E35] text-white dark:border-teal dark:bg-teal/20 dark:text-foreground' : 'border-border bg-surface text-foreground hover:border-foreground/40'
+    active ? 'border-foreground bg-foreground text-background dark:border-teal dark:bg-teal/20 dark:text-foreground' : 'border-border bg-surface text-foreground hover:border-foreground/40'
   }`;
 
 export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, linkedChildren = [], canBookForChild = false, studentName, lang }) => {

@@ -135,7 +135,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
               : `You pay ${money(Number(chosenPackage.price_amount))} for the package now, then pick the time of your first lesson with nothing more to pay.`}
           </p>
           <label className="flex items-start gap-3 text-sm text-foreground/90 cursor-pointer">
-            <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#0A2E35]" checked={acceptedTerms} onChange={(e) => onAcceptTerms?.(e.target.checked)} />
+            <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#087D91]" checked={acceptedTerms} onChange={(e) => onAcceptTerms?.(e.target.checked)} />
             <span>
               {isAr ? 'قريت ووافقت على ' : 'I have read and accept the '}
               <a href={isAr ? '/ar/terms' : '/terms'} target="_blank" rel="noopener noreferrer" className="underline font-semibold">
@@ -144,7 +144,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
             </span>
           </label>
           <label className="flex items-start gap-3 text-sm text-foreground/90 cursor-pointer">
-            <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#0A2E35]" checked={acceptedEarlyStart} onChange={(e) => onAcceptEarlyStart?.(e.target.checked)} />
+            <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#087D91]" checked={acceptedEarlyStart} onChange={(e) => onAcceptEarlyStart?.(e.target.checked)} />
             <span>
               {isAr
                 ? 'أريد أن تبدأ الحصص قبل انتهاء مهلة الـ 14 يومًا للتراجع.'

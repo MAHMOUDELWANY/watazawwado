@@ -123,7 +123,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                   <h2 className="text-sm font-bold text-[#087D91] mb-2">{t('Where things stand', 'أين يقف الطالب')}</h2>
                   <ul className="flex flex-wrap gap-2">
                     {data.subjects.map((s) => (
-                      <li key={s.id} className="px-3 py-1.5 rounded-full text-xs bg-[#087D91]/10 text-[#05363F]">
+                      <li key={s.id} className="px-3 py-1.5 rounded-full text-xs bg-[#087D91]/10 text-[#066474] dark:text-[#12A4BC]">
                         {isAr ? `${s.ar}: ${s.level.ar}` : `${s.en}: ${s.level.en}`}
                       </li>
                     ))}

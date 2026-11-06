@@ -78,7 +78,7 @@ export default function StudentWalletPage({ lang = 'en', session }: { lang?: 'en
             {isAr ? 'رصيدك، باقاتك، وأي دفع مستني منك، في مكان واحد.' : 'Your balance, your packages and anything waiting to be paid, in one place.'}
           </p>
         </div>
-        <Link to="/student/book" className="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold focus-ring w-full sm:w-auto">
+        <Link to="/student/book" className="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-foreground text-background text-sm font-semibold focus-ring w-full sm:w-auto">
           {isAr ? 'احجز حصة' : 'Book a lesson'}
         </Link>
       </div>
@@ -99,7 +99,7 @@ export default function StudentWalletPage({ lang = 'en', session }: { lang?: 'en
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`min-h-11 px-4 -mb-px border-b-2 text-sm font-semibold cursor-pointer focus-ring ${tab === t.id ? 'border-[#0A2E35] text-foreground dark:border-teal' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`min-h-11 px-4 -mb-px border-b-2 text-sm font-semibold cursor-pointer focus-ring ${tab === t.id ? 'border-foreground text-foreground dark:border-teal' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             {t.label}
           </button>

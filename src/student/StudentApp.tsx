@@ -459,7 +459,7 @@ export default function StudentApp() {
   const displayName = profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student');
   const studentInitial = (profile?.name || user?.email || 'S').charAt(0).toUpperCase();
   const spaceLabel = isFamilyAccount(profile) ? (isAr ? 'مساحة العيلة' : 'Family space') : (isAr ? 'مساحة الطالب' : 'Student space');
-  const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
+  const INK = 'bg-[#1F1A17]/92 dark:bg-[#1B1816]/90';
   const iconButton = 'tap-44 relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const pill = 'rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs';
 
@@ -496,9 +496,9 @@ export default function StudentApp() {
               >
                 {active && <motion.span layoutId="student-rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
                 <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
-                {item.badge ? <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#0A2E35]" /> : null}
+                {item.badge ? <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#1F1A17]" /> : null}
                 {/* A visible name on hover/focus, so nobody has to guess an icon. */}
-                <span className="pointer-events-none absolute start-[calc(100%+14px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#0A2E35] px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <span className="pointer-events-none absolute start-[calc(100%+14px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#1F1A17] px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
                   {item.name}
                 </span>
               </Link>

@@ -248,7 +248,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                 onClick={() => onChangeDuration(d.length)}
                 className={`min-h-16 px-2 py-3 rounded-2xl border text-center transition-colors cursor-pointer focus-ring disabled:opacity-40 disabled:cursor-not-allowed ${
                   isSelected
-                    ? 'border-[#0A2E35] bg-[#0A2E35] text-white dark:border-teal dark:bg-teal/20 dark:text-foreground'
+                    ? 'border-foreground bg-foreground text-background dark:border-teal dark:bg-teal/20 dark:text-foreground'
                     : 'border-border bg-surface text-foreground hover:border-foreground/40'
                 }`}
               >

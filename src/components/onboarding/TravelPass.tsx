@@ -74,7 +74,7 @@ export function PassCard({ name, isAr, children }: { name: string; isAr: boolean
           </p>
         </div>
         <span className="ms-auto hidden sm:block text-end text-[11px] leading-tight text-[#8B4935] dark:text-[#D8C6AE]" aria-hidden="true">
-          <span className="block font-display text-lg text-[#087D91] dark:text-[#5FC3D3]">وتزودوا</span>
+          <span className="block font-display text-lg text-[#087D91] dark:text-[#12A4BC]">وتزودوا</span>
           WATAZAWWADO
         </span>
       </div>
@@ -182,7 +182,7 @@ export function FoldedPass({ name, age, subjectId, subjectName, subjectColor, le
       <div className="relative flex flex-col items-center justify-center gap-0.5 px-3 sm:px-4 border-s-2 border-dashed border-[#D8C6AE]/80">
         <span className="absolute -top-2.5 -start-2.5 w-5 h-5 rounded-full bg-background" aria-hidden="true" />
         <span className="absolute -bottom-2.5 -start-2.5 w-5 h-5 rounded-full bg-background" aria-hidden="true" />
-        <button type="button" onClick={onEdit} className="text-xs font-bold text-[#087D91] dark:text-[#5FC3D3] hover:underline cursor-pointer px-2 py-2">
+        <button type="button" onClick={onEdit} className="text-xs font-bold text-[#087D91] dark:text-[#12A4BC] hover:underline cursor-pointer px-2 py-2">
           {isAr ? 'تعديل' : 'Edit'}
         </button>
         {onRemove && (

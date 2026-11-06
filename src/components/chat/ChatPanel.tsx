@@ -48,7 +48,7 @@ const MAX_LEN = 2000;
 // Messages from the same person within this gap read as one group (one label, tight spacing).
 const GROUP_GAP_MS = 5 * 60 * 1000;
 // Initials take one of the brand colours, steady per name.
-const AVATAR_TONES = ['#087D91', '#C51F24', '#A06E14', '#8B4935', '#05363F'];
+const AVATAR_TONES = ['#087D91', '#C51F24', '#A06E14', '#8B4935', '#5E544A'];
 
 const toneFor = (name: string) => AVATAR_TONES[[...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % AVATAR_TONES.length];
 

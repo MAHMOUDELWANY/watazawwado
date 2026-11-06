@@ -88,7 +88,7 @@ import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 type NavItem = { name: string; path: string; icon: typeof Clock; group?: string };
 
 /** Dark ink glass used by the rail and the active top tab. */
-const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
+const INK = 'bg-[#1F1A17]/92 dark:bg-[#1B1816]/90';
 
 export function DashboardApp() {
   const { isTeacherAuthenticated, user, signOut, teacherRole, loading, userRole } = useTeacherAuth();
@@ -378,7 +378,7 @@ export function DashboardApp() {
                 {active && <motion.span layoutId="rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
                 <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
                 {item.path === '/dashboard/notifications' && unreadNotifications > 0 && (
-                  <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#0A2E35]" />
+                  <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#1F1A17]" />
                 )}
               </Link>
               </React.Fragment>

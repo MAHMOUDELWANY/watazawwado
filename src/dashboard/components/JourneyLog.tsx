@@ -60,7 +60,7 @@ export function JourneyLog({ detail, tz, isAr, onNoteSaved }: { detail: Dashboar
 
       <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${WEEKS}, minmax(0, 1fr))` }} role="img" aria-label={isAr ? 'الحضور في آخر 12 أسبوع، الأقدم الأول' : 'Attendance over the last 12 weeks, oldest first'}>
         {weeks.map((n, i) => (
-          <span key={i} className={`aspect-square max-w-full rounded ${n >= 2 ? 'bg-[#0A2E35] dark:bg-teal' : n === 1 ? 'bg-teal/70' : 'bg-border'}`} title={String(n)} />
+          <span key={i} className={`aspect-square max-w-full rounded ${n >= 2 ? 'bg-foreground dark:bg-teal' : n === 1 ? 'bg-teal/70' : 'bg-border'}`} title={String(n)} />
         ))}
       </div>
 

@@ -60,7 +60,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, 
 
       <div className="mt-4 grid gap-1.5" style={{ gridTemplateColumns: `repeat(${totalSteps}, minmax(0, 1fr))` }} aria-hidden="true">
         {Array.from({ length: totalSteps }, (_, i) => (
-          <span key={i} className={`h-1.5 rounded-full transition-colors duration-300 ${i < step ? 'bg-[#0A2E35] dark:bg-teal' : 'bg-border'}`} />
+          <span key={i} className={`h-1.5 rounded-full transition-colors duration-300 ${i < step ? 'bg-foreground dark:bg-teal' : 'bg-border'}`} />
         ))}
       </div>
     </div>

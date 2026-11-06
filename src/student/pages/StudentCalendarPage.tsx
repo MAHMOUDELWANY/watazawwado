@@ -22,7 +22,7 @@ interface Lesson {
 }
 
 /** One colour per child, in the brand palette, stable by the family's learner order. */
-export const LEARNER_COLORS = ['#087D91', '#C51F24', '#8B4935', '#B9782A', '#5B7A68', '#6D4C8B'];
+export const LEARNER_COLORS = ['#087D91', '#C51F24', '#8B4935', '#B9782A', '#B4552F', '#5E544A'];
 export function colorFor(learnerIds: string[], id: string): string {
   const i = learnerIds.indexOf(id);
   return LEARNER_COLORS[(i < 0 ? 0 : i) % LEARNER_COLORS.length];

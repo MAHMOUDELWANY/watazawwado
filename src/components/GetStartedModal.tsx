@@ -45,7 +45,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-[#05363F]/45 dark:bg-black/60 backdrop-blur-md"
+          className="fixed inset-0 bg-[#12100E]/45 dark:bg-black/60 backdrop-blur-md"
         />
 
         <motion.div
