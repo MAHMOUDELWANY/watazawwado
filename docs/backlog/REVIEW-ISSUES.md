@@ -32,8 +32,8 @@ Order: data clean-up first, then the sign-up path (it decides who reaches a teac
 5. **Done. Subject first, then teacher.** Adults and each child pick the subject (the shelf already groups Quran,
    the Zad Path and Languages with the detail underneath), then choose among the teachers who teach it.
 6. **Done. Who teaches what** lives in the University page licences (`teacher_subjects`), editable by the admin.
-   Ustadha Afnan no longer holds Quran reading, Tajweed or memorization; Ustadh Mahmoud holds all. **Open:** both
-   Ahmed accounts still hold every subject until the owner decides.
+   Ustadha Afnan no longer holds Quran reading, Tajweed or memorization; Ustadh Mahmoud and both Ahmed accounts
+   teach every subject (owner, 2026-11-06).
 7. **Done. Teacher introduction.** Teachers write it in Settings ("Your introduction for families"); the first
    sentence shows on their card. The copy-paste placeholder bio was removed from every account. **Open:** each
    teacher writes theirs.
