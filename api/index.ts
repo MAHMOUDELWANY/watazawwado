@@ -1901,11 +1901,11 @@ export async function resolveSmartTeacherRouting(
   const isFemale = gender === 'female';
   const targetGender = isFemale ? 'female' : 'male';
   const defaultName = isFemale ? 'المعلمة (بانتظار التعيين)' : 'الأستاذ محمود';
-  const defaultEmail = isFemale ? '' : 'mahmoudelwany98@gmail.com';
+  const defaultEmail = isFemale ? '' : 'mhmwdlwany4222@gmail.com';
 
   if (!supabaseAdmin) {
     return {
-      id: isFemale ? null : 'd7d1e5b4-f2e6-41f8-ac40-3b3b8e862b76',
+      id: isFemale ? null : '9cd86044-eb13-4547-88e4-567c4f6a57d8',
       name: defaultName,
       email: defaultEmail
     };
@@ -1917,7 +1917,9 @@ export async function resolveSmartTeacherRouting(
       .from('teacher_accounts')
       .select('email, display_name, gender')
       .eq('gender', targetGender)
+      .eq('role', 'teacher')
       .eq('is_active', true)
+      .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle();
 
@@ -1961,8 +1963,8 @@ export async function resolveSmartTeacherRouting(
 export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null };
 
 /**
- * Teachers a new student can choose at onboarding: every active account with the 'teacher' role
- * (the super admin only when no teacher exists yet). id is the auth user id stored in
+ * Teachers a new student can choose at onboarding: every active account with the 'teacher' role.
+ * The super admin is the academy, never a teacher a family can pick (owner, 2026-11-06). id is the auth user id stored in
  * students.assigned_teacher_id. email stays on the server (never sent to the browser).
  */
 export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeacher[]> {
@@ -1973,8 +1975,7 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
     .eq('is_active', true)
     .order('created_at', { ascending: true });
   if (error || !accounts?.length) return [];
-  const teachers = accounts.filter((a: any) => a.role === 'teacher');
-  const pool = teachers.length ? teachers : accounts.filter((a: any) => a.role === 'super_admin');
+  const pool = accounts.filter((a: any) => a.role === 'teacher');
   const emails = pool.map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
   const idByEmail = new Map<string, string>();
   const bioById = new Map<string, string>();
@@ -2011,10 +2012,10 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
     .filter((t: PublicTeacher) => t.id);
 }
 
-/** Every active teaching account (teachers and the super admin) with its auth user id, for payroll. */
+/** Every active teacher with its auth user id, for payroll. The super admin is not paid as a teacher. */
 async function listStaffAccounts(supabaseAdmin: any): Promise<StaffAccount[]> {
   if (!supabaseAdmin) return [];
-  const { data: accounts } = await supabaseAdmin.from('teacher_accounts').select('email, display_name, role').eq('is_active', true).order('created_at');
+  const { data: accounts } = await supabaseAdmin.from('teacher_accounts').select('email, display_name, role').eq('is_active', true).eq('role', 'teacher').order('created_at');
   const emails = (accounts || []).map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
   if (!emails.length) return [];
   const idByEmail = new Map<string, string>();

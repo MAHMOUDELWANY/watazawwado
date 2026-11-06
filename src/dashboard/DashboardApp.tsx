@@ -260,7 +260,6 @@ export function DashboardApp() {
     { name: L('Programs', 'البرامج الموسمية'), path: '/dashboard/programs', icon: CalendarHeart, group: G.academy },
     { name: L('Reviews', 'آراء الأهالي'), path: '/dashboard/reviews', icon: MessageSquareHeart, group: G.academy },
     { name: L('Class board', 'لوحة الحلقة'), path: '/dashboard/class-board', icon: Trophy, group: G.academy },
-    { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock, group: G.academy },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp, group: G.academy },
     { name: L('Health', 'صحة النظام'), path: '/dashboard/health', icon: Activity, group: G.system },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings, group: G.system },
@@ -630,7 +629,8 @@ export function DashboardApp() {
                 <Route path="/students/:id" element={<StudentDetailPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
                 <Route path="/analytics" element={isSuperAdmin ? <AnalyticsPage /> : <Navigate to="/dashboard" replace />} />
-                <Route path="/availability" element={<AvailabilityPage />} />
+                {/* The super admin is the academy, not a teacher: no teaching hours (owner, 2026-11-06). */}
+                <Route path="/availability" element={isSuperAdmin ? <Navigate to="/dashboard" replace /> : <AvailabilityPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/month" replace />} />

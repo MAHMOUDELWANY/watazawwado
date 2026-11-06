@@ -12,7 +12,9 @@ Order: data clean-up first, then the sign-up path (it decides who reaches a teac
    payments, packages and credits, notes, homework, recitations, messages, leads and sign-in accounts.
 2. **Done 2026-11-06. Delete the teachers Ali Fayed and Mirek** with their sign-in accounts and availability. Keep Ustadh Mahmoud
    (teacher account `mhmwdlwany4222@gmail.com`), Ustadha Afnan, and both Ahmed accounts.
-3. **The super admin is the academy, not a teacher.** `mahmoudelwany98@gmail.com` keeps the admin role and still
+3. **Done 2026-11-06. The super admin is the academy, not a teacher.** Now named "Watazawwado Admin" /
+   "إدارة وتزودوا", no photo, no subjects; left out of the family teacher list, automatic teacher routing,
+   payroll and teacher load; no "My hours" page. Was: `mahmoudelwany98@gmail.com` keeps the admin role and still
    sees the curriculum, the teachers' materials and everything teachers send for review. It is no longer named
    "Ustadh Mahmoud", has no teacher photo, is never offered to families as a teacher, and gets no teaching tools
    (schedule, lessons, availability). Needs a code check of every place that lists teachers.

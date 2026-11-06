@@ -37,7 +37,7 @@ export function registerTeacherLoadRoutes(app: express.Express, deps: { getClien
       const weekEnd = weekStart.plus({ weeks: 1 });
       const since30 = now.minus({ days: 30 });
 
-      const { data: accounts } = await client.from('teacher_accounts').select('email, role').eq('is_active', true);
+      const { data: accounts } = await client.from('teacher_accounts').select('email, role').eq('is_active', true).eq('role', 'teacher');
       const emails = (accounts || []).map((a: any) => String(a.email).toLowerCase());
       const { data: profiles } = emails.length ? await client.from('profiles').select('id, email, display_name').in('email', emails) : { data: [] as any[] };
       const teachers = profiles || [];
