@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { User, Users, Check } from 'lucide-react';
+import { User, Users, Check, Star } from 'lucide-react';
+import { tagLabel } from '../../lib/teacherBadges';
 import { SubjectMark } from './SubjectMark';
 
 /**
@@ -204,7 +205,7 @@ export const teacherColor = (gender: 'male' | 'female' | undefined, index = 0) =
  * (photo, name, a short line about them). The pick is assigned at once; the admin can change it later.
  */
 export function GuideChoice({ teachers, value, onChange, isAr }: {
-  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null; bio?: string | null }[];
+  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null; bio?: string | null; badges?: string[] }[];
   value: string;
   onChange: (id: string) => void;
   isAr: boolean;
@@ -262,7 +263,16 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
               <TeacherAvatar name={name} photo={t.photo} color={color} />
               <span className="flex-1 min-w-0">
                 <span className="block font-bold text-sm text-foreground">{name}</span>
-                {t.bio && <span className="block text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">{t.bio}</span>}
+                {t.badges && t.badges.length > 0 && (
+                  <span className="flex flex-wrap gap-1 mt-1" aria-label={isAr ? 'رأي الأسر' : 'What families say'}>
+                    {t.badges.map((b) => (
+                      <span key={b} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gold/15 text-foreground">
+                        <Star className="w-3 h-3 fill-gold text-gold" aria-hidden="true" />{tagLabel(b, isAr)}
+                      </span>
+                    ))}
+                  </span>
+                )}
+                {t.bio && <span className="block text-xs text-muted-foreground leading-snug mt-1 line-clamp-3">{t.bio}</span>}
               </span>
               {selected && <Check className="w-4 h-4 shrink-0 mt-1" style={{ color }} aria-hidden="true" />}
             </button>

@@ -1,4 +1,5 @@
 import express from 'express';
+import { isFeedbackTag, MAX_TAGS_PER_LESSON } from '../../src/lib/teacherBadges.js';
 import { DateTime } from 'luxon';
 import { normalizeSubjectSlug, resolveSubjectMeta } from './progress.js';
 
@@ -24,13 +25,15 @@ export function canRate(b: { status: string; scheduled_start: string; scheduled_
   return end.isValid && end <= now && end >= now.minus({ days: FEEDBACK_WINDOW_DAYS });
 }
 
-export function parseFeedback(body: any): { rating: number; comment: string | null } | { error: string } {
+export function parseFeedback(body: any): { rating: number; comment: string | null; tags: string[] } | { error: string } {
   const rating = Number(body?.rating);
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) return { error: 'Choose a rating from 1 to 5.' };
   if (body?.comment != null && typeof body.comment !== 'string') return { error: 'The comment must be text.' };
   const comment = typeof body?.comment === 'string' ? body.comment.trim() : '';
   if (comment.length > 1000) return { error: 'Please keep the comment under 1000 characters.' };
-  return { rating, comment: comment || null };
+  // Quick words count only on a good lesson (4 or 5 stars), at most 3, from the fixed list.
+  const tags = rating >= 4 && Array.isArray(body?.tags) ? [...new Set(body.tags.filter(isFeedbackTag))].slice(0, MAX_TAGS_PER_LESSON) as string[] : [];
+  return { rating, comment: comment || null, tags };
 }
 
 /** Average to one decimal, hidden below the minimum count. */
@@ -164,6 +167,7 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
         submitted_by: userId,
         rating: parsed.rating,
         comment: parsed.comment,
+        tags: parsed.tags,
         updated_at: new Date().toISOString()
       };
       const { error } = existing

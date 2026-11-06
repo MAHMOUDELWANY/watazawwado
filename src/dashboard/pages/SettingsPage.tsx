@@ -19,6 +19,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { notify } from '../../components/ui/Feedback';
 import { Switch } from '../../components/ui/Switch';
+import { TeacherIntroCard } from '../components/TeacherIntroCard';
 
 interface Setting {
   key: string;
@@ -207,6 +208,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex-1 space-y-6">
+          {!isSuperAdmin && <TeacherIntroCard />}
           {isSuperAdmin && activeTab === 'Profile' && (
             <div className="glass-card rounded-2xl border border-border p-6 space-y-4 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">{t('Profile & contact', 'البيانات والتواصل')}</h2>

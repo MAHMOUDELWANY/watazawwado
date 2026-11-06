@@ -196,7 +196,9 @@ export function registerPrivacyRoutes(app: express.Express, deps: {
       const { data: summary, error } = await client.rpc('delete_family_account', { p_user_id: request.user_id });
       if (error) {
         console.error('[delete-account]', error.code, error.message);
-        return res.status(error.code === '42501' ? 400 : 500).json({ error: error.code === '42501' ? 'Staff accounts cannot be deleted here.' : 'Could not delete the account.' });
+        if (error.code === '42501') return res.status(400).json({ error: 'Staff accounts cannot be deleted here.' });
+        if (error.code === 'P0003') return res.status(409).json({ error: 'This account paid for a package for a child shared with another parent. Settle that package first, then delete.' });
+        return res.status(500).json({ error: 'Could not delete the account.' });
       }
       return res.json({ deleted: true, summary });
     } catch (err: any) {

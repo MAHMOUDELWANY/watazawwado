@@ -87,6 +87,7 @@ import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLes
 import { registerHonorRoutes } from '../server/routes/honor.js';
 import { registerCommunityLaterRoutes } from '../server/routes/communityLater.js';
 import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
+import { badgesFrom } from '../src/lib/teacherBadges.js';
 import { registerUniversityRoutes, canTeach, subjectFor, NOT_LICENSED } from '../server/routes/university.js';
 import { registerSponsorshipRoutes, confirmDonationSession } from '../server/routes/sponsorship.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
@@ -1960,7 +1961,7 @@ export async function resolveSmartTeacherRouting(
   }
 }
 
-export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null };
+export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null; subjects: string[]; badges: string[] };
 
 /**
  * Teachers a new student can choose at onboarding: every active account with the 'teacher' role.
@@ -1992,15 +1993,29 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
       });
     } catch {}
   }
+  // What each teacher is licensed to teach (Faculty / University page), and badges from family feedback.
+  const subjectsByEmail = new Map<string, string[]>();
+  const { data: licensed } = await supabaseAdmin.from('teacher_subjects').select('teacher_email, subject').in('teacher_email', emails).eq('status', 'licensed');
+  (licensed || []).forEach((r: any) => {
+    const e = String(r.teacher_email).toLowerCase();
+    subjectsByEmail.set(e, [...(subjectsByEmail.get(e) || []), r.subject]);
+  });
+  const teacherIds = [...idByEmail.values()];
+  const { data: feedback } = teacherIds.length
+    ? await supabaseAdmin.from('lesson_feedback').select('teacher_id, student_id, tags').in('teacher_id', teacherIds).limit(5000)
+    : { data: [] as any[] };
   return pool
     .map((a: any) => {
       const email = String(a.email || '').toLowerCase().trim();
+      const id = idByEmail.get(email) || '';
       const gender: 'male' | 'female' = a.gender === 'female' ? 'female' : 'male';
       // "Ustadh Mahmoud (Super Admin)" -> "Ustadh Mahmoud"
       const nameEn = String(a.display_name || '').replace(/\s*\(.*\)\s*$/, '').trim() || (gender === 'female' ? 'Ustadha' : 'Ustadh');
       return {
-        id: idByEmail.get(email) || '',
+        id,
         email,
+        subjects: subjectsByEmail.get(email) || [],
+        badges: id ? badgesFrom((feedback || []).filter((f: any) => f.teacher_id === id)) : [],
         nameEn,
         nameAr: String(a.display_name_ar || '').trim() || nameEn,
         gender,
@@ -8022,11 +8037,37 @@ app.get('/api/student-auth-diagnostic', verifyStudentAuth, (req: any, res: any) 
   });
 });
 
+// A teacher's own introduction, shown to families on the teacher card at onboarding (owner, 2026-11-06).
+const TEACHER_INTRO_MAX = 600;
+app.get('/api/dashboard/me/intro', verifyTeacherAuth, async (req: any, res: any) => {
+  const client = getSupabaseAdminClient();
+  if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+  const { data } = await client.from('profiles').select('bio').eq('id', req.teacherUser?.id).maybeSingle();
+  res.json({ intro: data?.bio || '', max: TEACHER_INTRO_MAX });
+});
+app.put('/api/dashboard/me/intro', rateLimit, verifyTeacherAuth, async (req: any, res: any) => {
+  const client = getSupabaseAdminClient();
+  if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+  if (typeof req.body?.intro !== 'string') return res.status(400).json({ error: 'The introduction must be text.' });
+  const intro = req.body.intro.trim();
+  if (intro.length > TEACHER_INTRO_MAX) return res.status(400).json({ error: `Please keep it under ${TEACHER_INTRO_MAX} characters.` });
+  const { error } = await client.from('profiles').update({ bio: intro || null }).eq('id', req.teacherUser?.id);
+  if (error) return res.status(500).json({ error: 'Could not save your introduction.' });
+  res.json({ intro });
+});
+
 // GET /api/student/teachers - Teachers a student can choose at onboarding (no emails).
 app.get('/api/student/teachers', verifyStudentAuth, async (_req: any, res: any) => {
   try {
     const teachers = await listPublicTeachers(getSupabaseAdminClient());
-    res.json({ teachers: teachers.map(({ email: _email, ...t }) => t) });
+    // A teacher with no free 30-minute slot in the next 14 days is marked full; onboarding hides them.
+    const available = await Promise.all(teachers.map(async (t) => {
+      try {
+        const days = await computeAvailableSlots('UTC', 14, 30, t.id);
+        return days.some((d) => d.slots?.length);
+      } catch { return true; }
+    }));
+    res.json({ teachers: teachers.map(({ email: _email, ...t }, i) => ({ ...t, available: available[i] })) });
   } catch (err) {
     console.error('[GET /api/student/teachers Error]', err);
     res.json({ teachers: [] });
@@ -8125,18 +8166,19 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const supabaseAdmin = getSupabaseAdminClient();
 
     // Routing: the teacher the learner picked (must be an active teacher), else by preferred gender.
-    let publicTeachers = await listPublicTeachers(supabaseAdmin);
-    // NX-15: route only to teachers licensed for the chosen subject (when at least one is).
-    const routingSubject = subjectFor(learningInterest);
-    if (routingSubject && supabaseAdmin && publicTeachers.length) {
-      const { data: licensed } = await supabaseAdmin.from('teacher_subjects').select('teacher_email').eq('subject', routingSubject).eq('status', 'licensed');
-      const allowed = new Set((licensed || []).map((r: any) => String(r.teacher_email).toLowerCase()));
-      const fit = publicTeachers.filter(t => allowed.has(t.email));
-      if (fit.length) publicTeachers = fit;
-    }
-    const pickTeacher = (id: unknown) => (typeof id === 'string' ? publicTeachers.find(t => t.id === id) : undefined) || null;
-    const routeTeacher = async (chosenId: unknown, targetGender: 'male' | 'female') => {
-      const chosen = pickTeacher(chosenId) || publicTeachers.find(t => t.gender === targetGender);
+    const allPublicTeachers = await listPublicTeachers(supabaseAdmin);
+    // NX-15 / owner 2026-11-06: each learner goes only to a teacher licensed for that learner's subject
+    // (when at least one is), so a child's Quran and a parent's English can go to different teachers.
+    const teachersForSubject = (interest: unknown) => {
+      const subject = subjectFor(typeof interest === 'string' ? interest : '');
+      const fit = subject ? allPublicTeachers.filter(t => t.subjects.includes(subject)) : [];
+      return fit.length ? fit : allPublicTeachers;
+    };
+    const publicTeachers = teachersForSubject(learningInterest);
+    const pickTeacher = (id: unknown, pool = publicTeachers) => (typeof id === 'string' ? pool.find(t => t.id === id) : undefined) || null;
+    const routeTeacher = async (chosenId: unknown, targetGender: 'male' | 'female', interest: unknown = learningInterest) => {
+      const pool = teachersForSubject(interest);
+      const chosen = pickTeacher(chosenId, pool) || pool.find(t => t.gender === targetGender) || pool[0];
       return chosen ? { id: chosen.id, name: chosen.nameEn, email: chosen.email } : resolveSmartTeacherRouting(targetGender, supabaseAdmin);
     };
     const chosenAdultTeacher = pickTeacher(teacherId);
@@ -8279,8 +8321,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           const childTeacherPref = child.teacherGenderPreference === 'female_teacher'
             ? 'female_teacher'
             : (child.teacherGenderPreference === 'male_teacher' ? 'male_teacher' : 'no_preference');
-          const childTargetGender = pickTeacher(child.teacherId)?.gender || (childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male')));
-          const childRoutedTeacher = await routeTeacher(child.teacherId, childTargetGender);
+          const childPool = teachersForSubject(child.learningInterest);
+          const childTargetGender = pickTeacher(child.teacherId, childPool)?.gender || (childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male')));
+          const childRoutedTeacher = await routeTeacher(child.teacherId, childTargetGender, child.learningInterest);
 
           // A client-supplied child id is only honored if this parent is already its guardian;
           // otherwise any student could attach themselves to someone else's child.
@@ -8439,7 +8482,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           teacherId: updatedStudent.assigned_teacher_id || null
         });
       }
-      const teacherContacts = publicTeachers.length ? publicTeachers : await listPublicTeachers(supabaseAdmin);
+      const teacherContacts = allPublicTeachers.length ? allPublicTeachers : await listPublicTeachers(supabaseAdmin);
       waitUntil(announceNewStudent(
         supabaseAdmin,
         {
@@ -8603,7 +8646,11 @@ app.post('/api/student/children', rateLimit, verifyStudentAuth, async (req: any,
     }
     if (childIds.length >= 10) return res.status(422).json({ error: 'A family account can have up to 10 children.' });
 
-    const publicTeachers = await listPublicTeachers(supabaseAdmin);
+    const allTeachers = await listPublicTeachers(supabaseAdmin);
+    // Only teachers licensed for this child's subject (when at least one is).
+    const childSubject = subjectFor(subject);
+    const licensedForSubject = childSubject ? allTeachers.filter(t => t.subjects.includes(childSubject)) : [];
+    const publicTeachers = licensedForSubject.length ? licensedForSubject : allTeachers;
     const picked = typeof req.body?.teacherId === 'string' ? publicTeachers.find(t => t.id === req.body.teacherId) : undefined;
     const targetGender: 'male' | 'female' = picked?.gender || (teacherPref === 'female_teacher' ? 'female' : teacherPref === 'male_teacher' ? 'male' : gender);
     const fallback = publicTeachers.find(t => t.gender === targetGender);

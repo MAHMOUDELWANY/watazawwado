@@ -21,8 +21,10 @@ describe('ST-02 who can rate what', () => {
   });
 
   it('accepts a whole rating 1-5 and a short optional comment', () => {
-    assert.deepStrictEqual(parseFeedback({ rating: 5 }), { rating: 5, comment: null });
-    assert.deepStrictEqual(parseFeedback({ rating: '4', comment: '  great  ' }), { rating: 4, comment: 'great' });
+    assert.deepStrictEqual(parseFeedback({ rating: 5 }), { rating: 5, comment: null, tags: [] });
+    assert.deepStrictEqual(parseFeedback({ rating: 5, tags: ['patient', 'x', 'patient', 'fun', 'clear', 'kids'] }), { rating: 5, comment: null, tags: ['patient', 'fun', 'clear'] });
+    assert.deepStrictEqual(parseFeedback({ rating: 3, tags: ['patient'] }), { rating: 3, comment: null, tags: [] });
+    assert.deepStrictEqual(parseFeedback({ rating: '4', comment: '  great  ' }), { rating: 4, comment: 'great', tags: [] });
     for (const bad of [{}, { rating: 0 }, { rating: 6 }, { rating: 3.5 }, { rating: 3, comment: 5 }, { rating: 3, comment: 'x'.repeat(1001) }]) {
       assert.ok('error' in parseFeedback(bad), JSON.stringify(bad).slice(0, 40));
     }

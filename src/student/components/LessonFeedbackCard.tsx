@@ -5,6 +5,7 @@ import { authedJson } from '../../lib/authedJson';
 import { useActiveLearner } from '../activeLearner';
 import { Button } from '../../components/ui/Button';
 import { Textarea } from '../../components/ui/Textarea';
+import { FEEDBACK_TAGS, MAX_TAGS_PER_LESSON } from '../../lib/teacherBadges';
 
 interface Pending {
   bookingId: string;
@@ -26,6 +27,7 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
   const [pending, setPending] = useState<Pending | null>(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [stage, setStage] = useState<'rate' | 'comment' | 'done'>('rate');
   const [summary, setSummary] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -33,7 +35,7 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
 
   useEffect(() => {
     let cancelled = false;
-    setPending(null); setStage('rate'); setRating(0); setComment(''); setError('');
+    setPending(null); setStage('rate'); setRating(0); setComment(''); setTags([]); setError('');
     const q = activeId ? `?learnerId=${encodeURIComponent(activeId)}` : '';
     authedJson<{ pending: Pending | null }>(`/api/student/lesson-feedback/pending${q}`)
       .then((d) => {
@@ -48,12 +50,12 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
 
   if (!pending) return null;
 
-  const send = async (value: number, text: string | null) => {
+  const send = async (value: number, text: string | null, words: string[] = []) => {
     setBusy(true); setError('');
     try {
       const r = await authedJson<{ familySummary: string | null }>(`/api/student/bookings/${pending.bookingId}/feedback`, {
         method: 'POST',
-        body: JSON.stringify({ rating: value, comment: text })
+        body: JSON.stringify({ rating: value, comment: text, tags: words })
       });
       setSummary(r.familySummary);
       return true;
@@ -70,8 +72,10 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
     if (await send(value, null)) setStage('comment');
   };
   const sendComment = async () => {
-    if (!comment.trim() || await send(rating, comment.trim())) setStage('done');
+    if ((!comment.trim() && !tags.length) || await send(rating, comment.trim() || null, tags)) setStage('done');
   };
+  const toggleTag = (id: string) =>
+    setTags((cur) => (cur.includes(id) ? cur.filter((t) => t !== id) : cur.length < MAX_TAGS_PER_LESSON ? [...cur, id] : cur));
   const dismiss = () => {
     try { window.localStorage.setItem(DISMISS_KEY, pending.bookingId); } catch { /* storage blocked */ }
     setPending(null);
@@ -118,13 +122,36 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
 
       {stage === 'comment' && (
         <div className="space-y-2">
+          {rating >= 4 && (
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground">
+                {isAr ? `إيه أكتر حاجة عجبتك في المعلم؟ (لحد ${MAX_TAGS_PER_LESSON})` : `What stood out about the teacher? (up to ${MAX_TAGS_PER_LESSON})`}
+              </p>
+              <div role="group" aria-label={isAr ? 'كلمات سريعة' : 'Quick words'} className="flex flex-wrap gap-1.5">
+                {FEEDBACK_TAGS.map((t) => {
+                  const on = tags.includes(t.id);
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => toggleTag(t.id)}
+                      className={`min-h-9 px-3 rounded-full text-xs font-semibold border transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${on ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-foreground hover:bg-surface-subtle'}`}
+                    >
+                      {isAr ? t.ar : t.en}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <label htmlFor="lesson-feedback-comment" className="text-xs text-muted-foreground">
             {isAr ? 'تريد أن تخبرنا بشيء آخر؟ (اختياري، يصل إلى فريقنا فقط)' : 'Anything else to tell us? (optional, only our team reads it)'}
           </label>
           <Textarea id="lesson-feedback-comment" value={comment} maxLength={1000} rows={3} onChange={(e) => setComment(e.target.value)} />
           <div className="flex gap-2">
             <Button size="sm" onClick={sendComment} isLoading={busy}>{isAr ? 'أرسل' : 'Send'}</Button>
-            <Button size="sm" variant="ghost" onClick={() => setStage('done')}>{isAr ? 'لا، شكرًا' : 'No, thanks'}</Button>
+            <Button size="sm" variant="ghost" onClick={() => (tags.length ? sendComment() : setStage('done'))}>{isAr ? 'لا، شكرًا' : 'No, thanks'}</Button>
           </div>
         </div>
       )}

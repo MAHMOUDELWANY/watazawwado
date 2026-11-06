@@ -51,7 +51,27 @@ interface StudentOnboardingPageProps {
   onOpenBookingModal?: () => void;
 }
 
-export interface TeacherCard { id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null; bio?: string | null }
+export interface TeacherCard {
+  id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null; bio?: string | null;
+  /** Subjects the teacher is licensed for (empty on the neutral fallback cards = any subject). */
+  subjects?: string[];
+  /** Quick words chosen by 3+ different learners (src/lib/teacherBadges.ts). */
+  badges?: string[];
+  /** False when the teacher has no free slot in the next two weeks. */
+  available?: boolean;
+}
+
+/**
+ * Subject first, then teacher (owner, 2026-11-06): only the teachers who teach the chosen subject, and among them
+ * only those with free time (a fully booked teacher is hidden: fewer choices help a family decide). If that would
+ * leave nobody, fall back step by step so the family always has someone to pick.
+ */
+export function teachersFor(all: TeacherCard[], subject: string): TeacherCard[] {
+  const teaching = all.filter((t) => !t.subjects?.length || t.subjects.includes(subject));
+  const pool = teaching.length ? teaching : all;
+  const free = pool.filter((t) => t.available !== false);
+  return free.length ? free : pool;
+}
 
 /**
  * Shown only until the real list arrives (GET /api/student/teachers): neutral cards, no real teacher's name or photo
@@ -155,11 +175,12 @@ export default function StudentOnboardingPage({
   const [teacherGenderPreference, setTeacherGenderPreference] = useState<'male' | 'female'>(
     currentProfile?.teacherGenderPreference === 'female_teacher' || currentProfile?.gender === 'female' ? 'female' : 'male'
   );
-  const adultTeacher = resolveTeacherCard(teachers, teacherId, teacherGenderPreference);
+  const [learningInterest, setLearningInterest] = useState(currentProfile?.learningInterest || 'quran-reading');
+  const adultTeachers = teachersFor(teachers, learningInterest);
+  const adultTeacher = resolveTeacherCard(adultTeachers, teacherId, teacherGenderPreference);
   const teacherName = (t: TeacherCard) => (isRTL ? t.nameAr : t.nameEn);
   const childTeacher = (c: ChildOnboardingForm) =>
-    resolveTeacherCard(teachers, c.teacherId, c.teacherGenderPreference === 'auto' ? c.gender : c.teacherGenderPreference === 'female_teacher' ? 'female' : 'male');
-  const [learningInterest, setLearningInterest] = useState(currentProfile?.learningInterest || 'quran-reading');
+    resolveTeacherCard(teachersFor(teachers, c.learningInterest), c.teacherId, c.teacherGenderPreference === 'auto' ? c.gender : c.teacherGenderPreference === 'female_teacher' ? 'female' : 'male');
   const [currentLevel, setCurrentLevel] = useState(currentProfile?.currentLevel || 'beginner');
   const [learningGoal, setLearningGoal] = useState(currentProfile?.learningGoal || '');
   const [age, setAge] = useState<string>(currentProfile?.age ? String(currentProfile.age) : '');
@@ -693,17 +714,6 @@ export default function StudentOnboardingPage({
                     />
                   </PassField>
 
-                  <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
-                    <p className="text-xs text-muted-foreground mb-2.5">
-                      {isRTL ? 'اخترناه لك حسب الجنس، ويمكنك تغييره بلمسة. يصله تسجيلك وتُفتح بينكما محادثة.' : 'Suggested by gender; change it with one tap. Your teacher gets your sign-up and a chat opens between you.'}
-                    </p>
-                    <GuideChoice
-                      teachers={teachers}
-                      value={adultTeacher.id}
-                      onChange={handleTeacherSelect}
-                      isAr={isRTL}
-                    />
-                  </PassField>
                 </>
               )}
 
@@ -899,20 +909,6 @@ export default function StudentOnboardingPage({
                           />
                         </PassField>
 
-                        <PassField label={isRTL ? 'مرشده في الرحلة' : 'Their guide on the journey'}>
-                          <GuideChoice
-                            teachers={teachers}
-                            value={guideOfChild.id}
-                            onChange={(id) => {
-                              const t = teachers.find((x) => x.id === id);
-                              handleUpdateChild(index, {
-                                teacherId: id,
-                                teacherGenderPreference: t?.gender === 'female' ? 'female_teacher' : 'male_teacher'
-                              });
-                            }}
-                            isAr={isRTL}
-                          />
-                        </PassField>
 
                         {/* Subject & Level for this child */}
                         <div className="space-y-4 pt-1">
@@ -943,6 +939,21 @@ export default function StudentOnboardingPage({
                             />
                           </div>
                         </div>
+
+                        <PassField label={isRTL ? 'مرشده في الرحلة' : 'Their guide on the journey'}>
+                          <GuideChoice
+                            teachers={teachersFor(teachers, child.learningInterest)}
+                            value={guideOfChild.id}
+                            onChange={(id) => {
+                              const t = teachers.find((x) => x.id === id);
+                              handleUpdateChild(index, {
+                                teacherId: id,
+                                teacherGenderPreference: t?.gender === 'female' ? 'female_teacher' : 'male_teacher'
+                              });
+                            }}
+                            isAr={isRTL}
+                          />
+                        </PassField>
 
                         {/* Notes for child */}
                         <div>
@@ -998,6 +1009,16 @@ export default function StudentOnboardingPage({
                     </p>
                   )}
                   <JourneyPath name="adult-level" subject={learningInterest} value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
+                </div>
+
+                <div>
+                  <p className="block text-sm font-semibold text-foreground mb-1">
+                    {isRTL ? 'اختار معلمك' : 'Choose your teacher'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-2.5">
+                    {isRTL ? 'دول المعلمين اللي بيدرّسوا المادة دي ووقتهم فاضي. يصله تسجيلك وتُفتح بينكما محادثة.' : 'These teachers teach this subject and have free time. Your teacher gets your sign-up and a chat opens between you.'}
+                  </p>
+                  <GuideChoice teachers={adultTeachers} value={adultTeacher.id} onChange={handleTeacherSelect} isAr={isRTL} />
                 </div>
 
                 <div>
