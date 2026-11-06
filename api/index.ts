@@ -117,6 +117,21 @@ dotenv.config();
 
 const app = express();
 
+// Express 4 does not catch rejected promises from async handlers: an unexpected throw would leave the
+// request hanging until the function timeout. Route every rejection to the error handler at the end.
+for (const method of ['get', 'post', 'put', 'patch', 'delete', 'all'] as const) {
+  const original = (app as any)[method].bind(app);
+  (app as any)[method] = (...args: any[]) => original(...args.map((h) =>
+    typeof h === 'function' && h.length < 4
+      ? (req: any, res: any, next: any) => {
+          try {
+            const out = h(req, res, next);
+            if (out && typeof out.catch === 'function') out.catch(next);
+          } catch (err) { next(err); }
+        }
+      : h));
+}
+
 export function getSupabaseAdminClient() {
   const rawUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
   const cleanUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
@@ -250,7 +265,8 @@ function getClientIp(req: express.Request): string {
 }
 
 function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const ip = getClientIp(req);
+  // One bucket per route, so a family on one Wi-Fi using the portal normally never trips another action's limit.
+  const ip = `${getClientIp(req)}|${req.method}|${req.route?.path ?? req.path}`;
   const now = Date.now();
 
   if (rateLimitStore.size > 10000) {
@@ -1480,6 +1496,22 @@ const devStudentProfiles: Record<string, any> = {
   }
 };
 
+// Verified sessions, kept briefly so a page that fires several API calls checks the token with Supabase once.
+// shortcut: a signed-out token stays usable here for up to 30 s; role and is_active are still read fresh each request.
+const sessionCache = new Map<string, { user: any; until: number }>();
+async function getVerifiedUser(client: any, token: string): Promise<any | null> {
+  const now = Date.now();
+  const hit = sessionCache.get(token);
+  if (hit && hit.until > now) return hit.user;
+  const { data, error } = await client.auth.getUser(token);
+  if (error || !data?.user) { sessionCache.delete(token); return null; }
+  let expMs = now + 30_000;
+  try { expMs = Math.min(expMs, JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString()).exp * 1000); } catch { /* keep 30 s */ }
+  if (sessionCache.size > 5000) sessionCache.clear();
+  sessionCache.set(token, { user: data.user, until: expMs });
+  return data.user;
+}
+
 async function verifyStudentAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
@@ -1529,8 +1561,8 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       const supabaseAdmin = getSupabaseAdminClient();
       if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
-      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-      if (error || !user) return res.status(401).json({ error: 'Invalid or expired session token.' });
+      const user = await getVerifiedUser(supabaseAdmin, token);
+      if (!user) return res.status(401).json({ error: 'Invalid or expired session token.' });
 
       // Check if it's a teacher trying to access the student portal (active or inactive)
       const userEmail = (user.email || '').toLowerCase().trim();
@@ -1719,9 +1751,9 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
       return res.status(503).json({ error: 'Database integration is not properly configured.', diagnosticStage: stage });
     }
 
-    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+    const user = await getVerifiedUser(supabaseAdmin, token);
 
-    if (error || !user) {
+    if (!user) {
       const stage = 'SUPABASE_TOKEN_REJECTED';
       res.setHeader('x-auth-diagnostic-stage', stage);
       return res.status(401).json({ error: 'Invalid or expired session token.', diagnosticStage: stage });
@@ -10397,6 +10429,15 @@ registerOpsRoutes(app, {
   verifyTeacherAuth,
   requireSuperAdmin,
   placementBeforeBooking: PLACEMENT_BEFORE_BOOKING
+});
+
+// Last stop for any error a handler threw or rejected: a clear 500 instead of a hung request.
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error(`[API] Unhandled error on ${req.method} ${req.path}:`, err);
+  if (res.headersSent) return next(err);
+  if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'Request too large.' });
+  if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON body.' });
+  res.status(500).json({ error: 'Something went wrong. Please try again.' });
 });
 
 export {

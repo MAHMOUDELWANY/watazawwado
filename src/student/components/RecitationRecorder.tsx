@@ -27,6 +27,14 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent }: { le
   const supported = typeof window !== 'undefined' && 'MediaRecorder' in window && !!navigator.mediaDevices?.getUserMedia;
 
   useEffect(() => () => { if (timer.current) window.clearInterval(timer.current); if (url) URL.revokeObjectURL(url); }, [url]);
+  // Leaving the page mid-recording must release the microphone, or the browser keeps it on.
+  useEffect(() => () => {
+    const r = rec.current;
+    if (!r) return;
+    r.onstop = null;
+    if (r.state !== 'inactive') r.stop();
+    r.stream.getTracks().forEach((t) => t.stop());
+  }, []);
   if (!supported) return null;
 
   const stop = () => { if (rec.current?.state === 'recording') rec.current.stop(); };
