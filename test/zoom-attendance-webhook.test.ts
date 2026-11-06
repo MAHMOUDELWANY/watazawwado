@@ -1,7 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert';
 import { createHmac } from 'crypto';
-import { isValidZoomSignature, parseZoomAttendanceEvent, studentJoinPath } from '../server/routes/attendance';
+import { isValidZoomSignature, parseZoomAttendanceEvent, studentJoinPath, LINK_SCANNER_UA } from '../server/routes/attendance';
+
+test('Join link: mail scanners and previews are not counted as the student', () => {
+  assert.ok(LINK_SCANNER_UA.test('Mozilla/5.0 (compatible; Microsoft Office SafeLinks)'));
+  assert.ok(LINK_SCANNER_UA.test('WhatsApp/2.23.20.0'));
+  assert.ok(LINK_SCANNER_UA.test('Googlebot/2.1'));
+  assert.ok(!LINK_SCANNER_UA.test('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1'));
+  assert.ok(!LINK_SCANNER_UA.test('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0 Safari/537.36'));
+});
 
 test('Zoom webhook signature: accepts valid, rejects tampered, wrong-secret and stale calls', () => {
   const secret = 'zoom_test_secret';

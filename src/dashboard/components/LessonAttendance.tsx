@@ -31,7 +31,7 @@ export function LessonAttendance({ bookingId }: { bookingId: string }) {
 
   const label = (e: AttendanceEvent) => {
     switch (e.event) {
-      case 'link_opened': return t(`${who(e)} opened the lesson link`, `${who(e)} فتح رابط الحصة`);
+      case 'link_opened': return t(`${who(e)} clicked the lesson link`, `${who(e)} ضغط على رابط الحصة`);
       case 'meeting_started': return t('Meeting started', 'الحصة بدأت');
       case 'meeting_ended': return t('Meeting ended', 'الحصة خلصت');
       case 'joined': return t(`${who(e)} joined Zoom`, `${who(e)} دخل Zoom`);

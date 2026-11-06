@@ -20,6 +20,8 @@ type AttendanceRow = {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_CLOCK_SKEW_MS = 5 * 60 * 1000;
+// shortcut: user-agent list catches the common scanners, not ones posing as a browser; Zoom's join time stays the reliable record.
+export const LINK_SCANNER_UA = /bot|crawl|spider|preview|scan|safelinks|proofpoint|mimecast|barracuda|slurp|facebookexternalhit|whatsapp|telegram|slack|discord|skype|curl|wget|python|go-http|java\//i;
 
 const hmacHex = (secret: string, message: string) => crypto.createHmac('sha256', secret).update(message).digest('hex');
 
@@ -137,7 +139,10 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
     const { data: booking } = await supabase.from('bookings').select('id, zoom_meeting_link').eq('id', id).maybeSingle();
     const url = booking?.zoom_meeting_link;
     if (!booking || !isZoomUrl(url)) return res.redirect(302, '/student/lessons');
-    await recordLinkOpened(supabase, booking.id, 'student');
+    // Mail scanners and link previews open email links on their own; don't log those as the student.
+    const ua = String(req.headers['user-agent'] || '');
+    const automated = req.method === 'HEAD' || !ua || LINK_SCANNER_UA.test(ua);
+    if (!automated) await recordLinkOpened(supabase, booking.id, 'student');
     res.redirect(302, String(url).trim());
   });
 
