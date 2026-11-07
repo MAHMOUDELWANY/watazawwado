@@ -19,7 +19,8 @@ function moneyKeys(value: unknown, path = ''): string[] {
 describe('TE-02 student card for teachers', () => {
   it('the card shows goals, placement, milestones, lesson history and a chat shortcut', () => {
     const page = fs.readFileSync('src/dashboard/pages/StudentDetailPage.tsx', 'utf8');
-    for (const s of ['goals', 'studentDetail.placement', 'studentDetail.milestones', "t('Lesson history', 'سجل الحصص')", '/dashboard/messages?thread=${studentDetail.chat_thread_id}']) {
+    // The placement result moved into PlacementLevelCard (owner review 2026-11-07).
+    for (const s of ['goals', '<PlacementLevelCard studentId={student.id}', 'studentDetail.milestones', "t('Lesson history', 'سجل الحصص')", '/dashboard/messages?thread=${studentDetail.chat_thread_id}']) {
       assert.ok(page.includes(s), `missing ${s}`);
     }
   });

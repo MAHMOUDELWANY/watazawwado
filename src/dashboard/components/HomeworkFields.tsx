@@ -20,8 +20,10 @@ export function homeworkPayload(rows: HomeworkDraft[]) {
 }
 
 /** NX-02: "For next lesson" in the post-lesson summary. 1-3 tasks, saved with the summary. */
-export function HomeworkFields({ value, onChange, studentId, privateNotes, subject }: {
+export function HomeworkFields({ value, onChange, studentId, privateNotes, subject, legend, noSuggest = false }: {
   value: HomeworkDraft[]; onChange: (rows: HomeworkDraft[]) => void; studentId: string; privateNotes: string; subject: string;
+  /** The Homework page sets tasks outside a lesson summary: its own title, no Jalila draft (it needs lesson notes). */
+  legend?: string; noSuggest?: boolean;
 }) {
   const { t, isAr } = useT();
   const [drafting, setDrafting] = useState(false);
@@ -50,7 +52,7 @@ export function HomeworkFields({ value, onChange, studentId, privateNotes, subje
 
   return (
     <fieldset className="space-y-2" data-testid="homework-fields">
-      <legend className="text-xs font-semibold text-foreground mb-1">{t('Homework for next lesson (optional)', 'واجب للحصة الجاية (اختياري)')}</legend>
+      <legend className="text-xs font-semibold text-foreground mb-1">{legend || t('Homework for next lesson (optional)', 'واجب للحصة الجاية (اختياري)')}</legend>
       {value.map((row, i) => {
         const surah = SURAHS.find((s) => s.n === row.surah);
         return (
@@ -101,10 +103,12 @@ export function HomeworkFields({ value, onChange, studentId, privateNotes, subje
             <Plus className="w-4 h-4 me-1" />{t('Add a task', 'ضيف مهمة')}
           </Button>
         )}
-        <Button type="button" variant="ghost" size="sm" onClick={suggest} disabled={!privateNotes.trim() || drafting} isLoading={drafting}>
-          <Sparkles className="w-4 h-4 me-1" />{t('Suggest with Jalila', 'اقترح مع جليلة')}
-        </Button>
-        {!privateNotes.trim() && <span className="text-[11px] text-muted-foreground">{t('Jalila needs your private notes.', 'جليلة محتاجة ملاحظاتك الخاصة.')}</span>}
+        {!noSuggest && (
+          <Button type="button" variant="ghost" size="sm" onClick={suggest} disabled={!privateNotes.trim() || drafting} isLoading={drafting}>
+            <Sparkles className="w-4 h-4 me-1" />{t('Suggest with Jalila', 'اقترح مع جليلة')}
+          </Button>
+        )}
+        {!noSuggest && !privateNotes.trim() && <span className="text-[11px] text-muted-foreground">{t('Jalila needs your private notes.', 'جليلة محتاجة ملاحظاتك الخاصة.')}</span>}
         {draftError && <span role="alert" className="text-[11px] text-destructive w-full">{draftError}</span>}
       </div>
     </fieldset>

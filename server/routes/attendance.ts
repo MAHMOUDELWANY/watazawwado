@@ -84,6 +84,35 @@ export async function recordLinkOpened(supabase: any, bookingId: string, role: '
   if (error) console.error('[attendance] link_opened', error.message);
 }
 
+export type AttendanceSummary = { teacher: boolean; student: boolean };
+
+/**
+ * Owner review 2026-11-07: who showed up, from what we know (the teacher pressing "Start", the student opening
+ * the link, and Zoom's join events when Zoom sends them). It is a sign, not proof: the teacher still records it.
+ */
+export function summarizeAttendance(events: Array<{ event: string; role: string }>): AttendanceSummary {
+  const sum: AttendanceSummary = { teacher: false, student: false };
+  for (const e of events) {
+    if (e.event === 'meeting_started') sum.teacher = true;
+    if (!['link_opened', 'joined', 'waiting_room_joined'].includes(e.event)) continue;
+    if (e.role === 'teacher') sum.teacher = true;
+    else if (e.role === 'student') sum.student = true;
+  }
+  return sum;
+}
+
+/** Adds `attendance` to each lesson that has started (one query for all of them). */
+export async function attachAttendance<T extends { id: string; scheduled_start: string }>(supabase: any, lessons: T[]): Promise<Array<T & { attendance?: AttendanceSummary }>> {
+  const now = Date.now();
+  const started = lessons.filter((l) => new Date(l.scheduled_start).getTime() - 10 * 60 * 1000 <= now).map((l) => l.id);
+  if (!started.length) return lessons;
+  const { data, error } = await supabase.from('lesson_attendance_events').select('booking_id, event, role').in('booking_id', started).limit(2000);
+  if (error) return lessons;
+  const byLesson = new Map<string, any[]>();
+  for (const row of data || []) byLesson.set(row.booking_id, [...(byLesson.get(row.booking_id) || []), row]);
+  return lessons.map((l) => (started.includes(l.id) ? { ...l, attendance: summarizeAttendance(byLesson.get(l.id) || []) } : l));
+}
+
 const siteOrigin = () => {
   try { return new URL(process.env.APP_URL || 'https://watazawwado.academy').origin; } catch { return 'https://watazawwado.academy'; }
 };

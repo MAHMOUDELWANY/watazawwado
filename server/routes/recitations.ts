@@ -26,9 +26,10 @@ export const pathBelongsTo = (path: string, studentId: string) =>
   typeof path === 'string' && new RegExp(`^${studentId}/[0-9a-f-]{36}\\.(webm|ogg|m4a|mp3|aac)$`).test(path);
 
 type Middleware = (req: any, res: any, next: any) => any;
+export const RECITATION_COLUMNS = 'id, student_id, homework_id, storage_path, duration_sec, teacher_reply, replied_at, created_at';
 const COLUMNS = 'id, student_id, homework_id, storage_path, duration_sec, teacher_reply, replied_at, created_at';
 
-async function withPlayLinks(client: any, rows: any[]) {
+export async function withPlayLinks(client: any, rows: any[]) {
   if (!rows.length) return [];
   const { data: links } = await client.storage.from(BUCKET).createSignedUrls(rows.map((r) => r.storage_path), PLAY_LINK_SECONDS);
   const byPath = new Map((links || []).map((l: any) => [l.path, l.signedUrl]));

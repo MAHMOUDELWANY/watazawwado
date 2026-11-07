@@ -547,8 +547,9 @@ export async function createGoogleCalendarEvent(
     `• Student Local Time: ${booking.studentTimezone}`,
     `• Cairo Time: ${booking.cairoTimeDisplay || 'Africa/Cairo'}`,
     ``,
-    `🔗 Live Zoom Classroom:`,
-    `${booking.zoomMeetingLink}`,
+    // The teacher must open Zoom as host from the dashboard; the join link here would make them a guest.
+    `🔗 Start the lesson (as host) from your dashboard:`,
+    `https://watazawwado.academy/dashboard/today`,
     ``,
     `📞 Student Contact:`,
     `• Email: ${booking.contactEmail}`,

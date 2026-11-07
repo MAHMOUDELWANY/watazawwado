@@ -194,10 +194,15 @@ export function registerPayrollRoutes(app: express.Express, deps: {
     const reason = req.body?.reason;
     if (reason !== 'teacher_absent' && reason !== 'technical') return res.status(400).json({ error: 'Pick what happened.' });
     const isAdmin = req.teacherUser?.role === 'super_admin';
-    const { data: booking } = await client.from('bookings').select('id, teacher_id, reference_code, contact_name').eq('id', req.params.id).maybeSingle();
+    const { data: booking } = await client.from('bookings').select('id, teacher_id, reference_code, contact_name, scheduled_start').eq('id', req.params.id).maybeSingle();
     if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-    if (!isAdmin && (reason === 'teacher_absent' || booking.teacher_id !== req.teacherUser.id)) {
-      return res.status(403).json({ error: 'Only the admin can record this.' });
+    // A teacher may report their own lesson (a technical problem, or that they could not attend: then it is unpaid).
+    if (!isAdmin && booking.teacher_id !== req.teacherUser.id) {
+      return res.status(403).json({ error: 'This lesson is not yours.' });
+    }
+    // Teachers don't cancel upcoming lessons (RULES.md §2): "could not attend" is only for a lesson whose time has come.
+    if (!isAdmin && reason === 'teacher_absent' && new Date(booking.scheduled_start).getTime() > Date.now() + 15 * 60 * 1000) {
+      return res.status(400).json({ error: 'You can report this from the lesson time on. To move an upcoming lesson, ask the student to reschedule.' });
     }
     const { data, error } = await client.rpc('record_lesson_not_held', { p_booking_id: booking.id, p_reason: reason });
     if (error) return res.status(400).json({ error: error.message || 'Could not record it.' });
@@ -214,10 +219,13 @@ export function registerPayrollRoutes(app: express.Express, deps: {
       }
     }
     if (!isAdmin) {
+      const absent = reason === 'teacher_absent';
       await notifySuperAdmins(client, {
         kind: 'lesson_not_held',
-        title: { en: 'Lesson not held: technical problem', ar: 'حصة ما اتعملتش: مشكلة تقنية' },
-        body: { en: `${booking.contact_name || 'A lesson'} (${booking.reference_code}) was marked as a technical problem by the teacher.`, ar: `${booking.contact_name || 'حصة'} (${booking.reference_code}) المعلم سجّلها مشكلة تقنية.` },
+        title: absent ? { en: 'Lesson not held: teacher could not attend', ar: 'حصة ما اتعملتش: المعلم ماقدرش يحضر' } : { en: 'Lesson not held: technical problem', ar: 'حصة ما اتعملتش: مشكلة تقنية' },
+        body: absent
+          ? { en: `${booking.contact_name || 'A lesson'} (${booking.reference_code}): the teacher reported they could not attend.`, ar: `${booking.contact_name || 'حصة'} (${booking.reference_code}): المعلم سجّل إنه ماقدرش يحضر.` }
+          : { en: `${booking.contact_name || 'A lesson'} (${booking.reference_code}) was marked as a technical problem by the teacher.`, ar: `${booking.contact_name || 'حصة'} (${booking.reference_code}) المعلم سجّلها مشكلة تقنية.` },
         link: '/dashboard/bookings'
       });
     }

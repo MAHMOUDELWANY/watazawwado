@@ -78,6 +78,7 @@ export function FeedbackHost() {
         onClose={() => answer(false)}
         maxWidth="sm"
         hideCloseButton
+        layerClassName="z-[80]"
         footer={
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 w-full">
             <Button variant="outline" className="w-full sm:w-auto" onClick={() => answer(false)}>{isAr ? 'رجوع' : 'Go back'}</Button>

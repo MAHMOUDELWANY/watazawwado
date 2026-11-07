@@ -76,7 +76,7 @@ import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
 import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
-import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath } from '../server/routes/attendance.js';
+import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath, attachAttendance } from '../server/routes/attendance.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
 import { registerNextWeekSuggestionRoutes } from '../server/routes/nextWeekSuggestion.js';
@@ -863,6 +863,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         .select('updated_at')
         .eq('booking_type', 'trial')
         .in('status', ['cancelled', 'no_show'])
+        .is('not_held_reason', null) // a trial our side could not hold costs the student nothing
         .gte('updated_at', cooldownStart)
         .or(trialOwnerFilter)
         .order('updated_at', { ascending: false })
@@ -882,6 +883,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         .select('id', { count: 'exact', head: true })
         .eq('booking_type', 'trial')
         .in('status', ['cancelled', 'no_show'])
+        .is('not_held_reason', null)
         .or(accountFilter);
       if ((lostTrials || 0) >= MAX_LOST_TRIALS) {
         return res.status(400).json({
@@ -2114,6 +2116,12 @@ app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) 
   });
 });
 
+/** The lesson's Zoom join link, or null while it is still being made ("pending", fallback ids). */
+const lessonJoinUrl = (b: any): string | null => {
+  const url = [b?.zoom_meeting_link, b?.sync_metadata?.zoomJoinUrl].find((u) => typeof u === 'string' && /^https:\/\//.test(u.trim()));
+  return url ? String(url).trim() : null;
+};
+
 function transformBookingToDashboardLesson(b: any) {
   const scheduledStart = b.scheduled_start;
   const scheduledEnd = b.scheduled_end || (scheduledStart && b.duration_minutes
@@ -2160,9 +2168,10 @@ function transformBookingToDashboardLesson(b: any) {
     duration_minutes: b.duration_minutes !== null && b.duration_minutes !== undefined ? Number(b.duration_minutes) : null,
     status: status,
     is_free_trial: b.booking_type === 'trial',
-    zoom_meeting_link: b.zoom_host_url || b.zoom_join_url || null,
-    zoom_host_url: b.zoom_host_url || null,
-    zoom_join_url: b.zoom_join_url || null,
+    // bookings has only zoom_meeting_link (the join link); the teacher's host link is fetched fresh on "Start".
+    zoom_meeting_link: lessonJoinUrl(b),
+    zoom_host_url: null,
+    zoom_join_url: lessonJoinUrl(b),
     zoom_meeting_id: b.zoom_meeting_id || null,
     google_calendar_event_id: b.google_calendar_event_id || null,
     integration_status: integrationStatus,
@@ -2344,7 +2353,7 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
       return res.status(500).json({ error: 'Failed to load today\'s lessons.' });
     }
 
-    const lessons = (data || []).map(transformBookingToDashboardLesson);
+    const lessons = await attachAttendance(supabase, (data || []).map(transformBookingToDashboardLesson));
 
     // Compute operational summary metrics
     const nowUtc = nowCairo.toUTC();
@@ -2619,7 +2628,7 @@ app.get('/api/dashboard/upcoming', verifyTeacherAuth, async (req: any, res: any)
       return res.status(500).json({ error: 'Failed to load upcoming lessons.' });
     }
 
-    const lessons = (data || []).map(transformBookingToDashboardLesson);
+    const lessons = await attachAttendance(supabase, (data || []).map(transformBookingToDashboardLesson));
 
     res.json({ lessons, range_days: rangeDays });
   } catch (err) {
@@ -4356,9 +4365,9 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
           cancellation_reason: b.cancellation_reason,
           notes: b.notes,
           fee_amount_usd: reconciliation.expected_amount,
-          zoom_meeting_link: b.zoom_host_url || b.zoom_join_url || b.zoom_meeting_link || null,
-          zoom_host_url: b.zoom_host_url || null,
-          zoom_join_url: b.zoom_join_url || null,
+          zoom_meeting_link: lessonJoinUrl(b),
+          zoom_host_url: null,
+          zoom_join_url: lessonJoinUrl(b),
           google_calendar_event_id: b.google_calendar_event_id || null,
           integration_status: b.integration_status || 'pending',
           created_at: b.created_at,
@@ -4419,9 +4428,9 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
           cancellation_reason: b.cancellation_reason,
           notes: b.notes,
           fee_amount_usd: reconciliation.expected_amount,
-          zoom_meeting_link: b.zoom_host_url || b.zoom_join_url || b.zoom_meeting_link || null,
-          zoom_host_url: b.zoom_host_url || null,
-          zoom_join_url: b.zoom_join_url || null,
+          zoom_meeting_link: lessonJoinUrl(b),
+          zoom_host_url: null,
+          zoom_join_url: lessonJoinUrl(b),
           google_calendar_event_id: b.google_calendar_event_id || null,
           integration_status: b.integration_status || 'pending',
           created_at: b.created_at,
@@ -6058,7 +6067,15 @@ app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async
     const isTrial = booking.booking_type === 'trial';
     const reason = typeof req.body?.reason === 'string' && req.body.reason.trim() ? req.body.reason.trim().slice(0, 500) : 'Cancelled by student';
 
-    const isPaidSingle = !isTrial && !booking.package_entitlement_id && booking.payment_plan !== 'pay_later';
+    let isPaidSingle = !isTrial && !booking.package_entitlement_id && booking.payment_plan !== 'pay_later';
+    // A lesson paid entirely from the balance (an invite gift, say) has no payment to turn into a lesson credit:
+    // it is cancelled normally and the balance it used goes back (owner review 2026-11-07, item 31).
+    let paidFromBalance = false;
+    if (isPaidSingle && Number(booking.fee_amount_usd || 0) === 0) {
+      const { count: paidCount } = await supabase.from('payments').select('id', { count: 'exact', head: true })
+        .eq('booking_id', booking.id).eq('status', 'confirmed');
+      if (!paidCount) { isPaidSingle = false; paidFromBalance = true; }
+    }
     if (isPaidSingle) {
       const { data: result, error: rpcErr } = await supabase.rpc('student_cancel_paid_lesson_to_credit', {
         p_booking_id: booking.id,
@@ -6086,6 +6103,7 @@ app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async
       .maybeSingle();
     if (error) throw error;
     if (!cancelled) return res.status(409).json({ error: 'This lesson was just changed. Please refresh.' });
+    if (paidFromBalance) await reverseCheckoutDiscount(supabase, 'booking', booking.id);
 
     await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('booking_id', booking.id).eq('status', 'pending');
     const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: booking.id, job_type: 'booking_cancel', status: 'pending' });

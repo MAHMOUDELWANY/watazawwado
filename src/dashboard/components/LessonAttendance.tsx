@@ -72,3 +72,34 @@ export function LessonAttendance({ bookingId }: { bookingId: string }) {
     </div>
   );
 }
+
+/**
+ * Owner review 2026-11-07: before a lesson is recorded as done, say plainly when our records show nobody
+ * (or only one side) came, so a lesson nobody attended is not marked "completed" by habit.
+ */
+export function AttendanceHint({ bookingId }: { bookingId: string }) {
+  const { t } = useT();
+  const [seen, setSeen] = useState<{ teacher: boolean; student: boolean } | null>(null);
+  useEffect(() => {
+    let alive = true;
+    dashboardFetch<{ events: AttendanceEvent[] }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/attendance`)
+      .then(r => {
+        if (!alive) return;
+        const ev = r?.events || [];
+        const came = (role: string) => ev.some(e => e.role === role && ['link_opened', 'joined', 'waiting_room_joined'].includes(e.event));
+        setSeen({ teacher: came('teacher') || ev.some(e => e.event === 'meeting_started'), student: came('student') });
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [bookingId]);
+  if (!seen || (seen.teacher && seen.student)) return null;
+  const text = !seen.teacher && !seen.student
+    ? t('Our records show nobody opened this lesson: not you (Start) and not the student. If the lesson did not happen, choose No-show, Technical problem or "I could not attend" instead.',
+        'سجلاتنا بتقول إن محدش فتح الحصة دي: لا إنت (زرار ابدأ) ولا الطالب. لو الحصة ما اتعملتش، اختار غياب أو مشكلة تقنية أو "ماقدرتش أحضر".')
+    : !seen.student
+      ? t('Our records show the student never opened the lesson link. If they did not come, choose No-show instead.',
+          'سجلاتنا بتقول إن الطالب ما فتحش رابط الحصة. لو ما حضرش، اختار غياب.')
+      : t('Our records show you did not start this lesson from the site. If you were there, carry on.',
+          'سجلاتنا بتقول إنك ما بدأتش الحصة من الموقع. لو كنت موجود كمّل عادي.');
+  return <p role="status" className="text-sm rounded-xl border border-warning/30 bg-warning/10 text-warning-ink p-3">{text}</p>;
+}

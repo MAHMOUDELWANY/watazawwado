@@ -4,6 +4,20 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Owner UX review fixes, part 2: items 23-36 (2026-11-07)
+
+- Homework page for teachers (list, recordings, review, set homework any time); `GET /api/dashboard/homework`, `POST /api/dashboard/students/:id/homework`.
+- Zoom: teacher pages now read `zoom_meeting_link` (the old `zoom_host_url`/`zoom_join_url` columns never existed), so "Start" shows and opens Zoom as host; teacher emails and calendar events link to the dashboard instead of the join link.
+- Attendance: lesson lists carry who opened the lesson (`attachAttendance`); Today labels and an attendance warning before "completed"; teachers may report "I could not attend" from lesson time; the family survey only after `completed`.
+- Lesson-ended state in the student lesson card and Booking details.
+- Confirm dialogs above modals (`Modal.layerClassName`).
+- Trials: not-held trials skip the 48-hour wait and the lost-trial count; trial error messages translated by meaning.
+- Referral reward needs a real payment of at least the reward; balance-paid lessons cancel and refund the balance.
+- Teacher unread dot on Messages (`/api/me/notifications` unreadChats).
+- Placement: teacher notice, "Placement and level" card, `GET /api/dashboard/students/:id/placement`, `POST /api/dashboard/students/:id/level`, retake; migration `20261107000001_student_level_set_by` (applied).
+- Family Learning Track shows each child; Manar moved to Ustadh Ahmed (owner's wish).
+- Checks: tsc, full suite, build; new test `review-2026-11-07-part2`. Not checked on the live site with real accounts.
+
 ### Owner UX review fixes, items 16-22 (2026-11-07)
 - Teacher lesson emails moved from hr@ to support@ (they were sent but never arrived); teachers also get site/phone notices for booked, moved and cancelled lessons and a 2-hour reminder (`worker.ts`, `reminderEngine.ts`, `dispatcher.ts`, `push.ts`, `lessonTeacherMove.ts`).
 - "Download my data" is a readable bilingual HTML page (`privacy.ts`, `PrivacyRequests.tsx`).

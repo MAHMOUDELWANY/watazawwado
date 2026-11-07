@@ -34,6 +34,7 @@ import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { isFamilyAccount } from '../familyTour';
+import { useActiveLearner } from '../activeLearner';
 import { AddChildForm } from '../components/AddChildForm';
 import { ChildPhones } from '../components/ChildPhones';
 import { PrivacyRequests } from '../components/PrivacyRequests';
@@ -93,6 +94,9 @@ export default function StudentProfilePage({
     profile?.bookingPreference === 'child'
   );
   const linkedChildren = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
+  // Owner review 2026-11-07: a family's Learning Track shows its children (the one picked in the header, or all).
+  const { activeId } = useActiveLearner();
+  const trackChildren = activeId ? linkedChildren.filter((c: any) => c.id === activeId) : linkedChildren;
   // A family account manages children; an adult who learns for themselves sees no family controls (owner 2026-10-28).
   const isFamily = linkedChildren.length > 0 || profile?.bookingPreference === 'child' || profile?.learnerType === 'child';
   const [showAddChild, setShowAddChild] = useState(false);
@@ -665,7 +669,24 @@ export default function StudentProfilePage({
               </div>
               )}
 
+              {isFamilyAccount(profile) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-testid="family-learning-track">
+                  {(trackChildren.length ? trackChildren : linkedChildren).map((child: any) => (
+                    <div key={child.id} className="p-4 rounded-2xl glass-surface border border-border space-y-2 text-sm">
+                      <p className="font-display font-bold text-foreground text-base">{child.name}</p>
+                      <p className="flex justify-between gap-2"><span className="text-muted-foreground">{isAr ? 'المادة' : 'Subject'}</span><span className="font-semibold text-foreground">{child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لم تُحدَّد بعد' : 'Not set yet')}</span></p>
+                      <p className="flex justify-between gap-2"><span className="text-muted-foreground">{isAr ? 'المستوى' : 'Level'}</span><span className="font-semibold text-primary">{LEVEL_LABELS[child.currentLevel]?.[isAr ? 'ar' : 'en'] || child.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}</span></p>
+                      <p className="flex justify-between gap-2"><span className="text-muted-foreground">{isAr ? 'المعلم' : 'Teacher'}</span><span className="font-semibold text-foreground">{child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher')}</span></p>
+                      <Link to={`/student/placement?learner=${child.id}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline">
+                        {isAr ? 'اختبار تحديد المستوى' : 'Placement test'}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Learning Track Details */}
+              {!isFamilyAccount(profile) && (
               <div className="space-y-3.5 divide-y divide-border">
                 <div className="flex items-center justify-between pt-1 pb-3">
                   <span className="text-sm sm:text-sm text-muted-foreground">
@@ -683,8 +704,17 @@ export default function StudentProfilePage({
                     {isAr ? 'المستوى الحالي' : 'Current Level'}
                   </span>
                   <Badge variant="secondary" className="capitalize text-primary font-medium text-sm">
-                    {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
+                    {LEVEL_LABELS[profile?.currentLevel]?.[isAr ? 'ar' : 'en'] || profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
                   </Badge>
+                </div>
+
+                <div className="flex items-center justify-between py-3">
+                  <span className="text-sm sm:text-sm text-muted-foreground">
+                    {isAr ? 'اختبار تحديد المستوى' : 'Placement test'}
+                  </span>
+                  <Link to="/student/placement" className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:underline">
+                    {isAr ? 'اعرض النتيجة أو اعمله تاني' : 'See the result or take it again'}
+                  </Link>
                 </div>
 
                 <div className="flex items-center justify-between py-3">
@@ -716,6 +746,7 @@ export default function StudentProfilePage({
                   </div>
                 )}
               </div>
+              )}
 
             </div>
           )}

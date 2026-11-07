@@ -32,8 +32,10 @@ describe('Teacher pay routes (launch plan D)', () => {
     assert.match(routes, /eventType: 'payslip'/);
   });
 
-  it('teacher absent is admin only; a technical problem by the lesson\'s own teacher or admin', () => {
-    assert.match(routes, /if \(!isAdmin && \(reason === 'teacher_absent' \|\| booking\.teacher_id !== req\.teacherUser\.id\)\)/);
+  // Owner review 2026-11-07: a teacher may also report that they could not attend their own lesson, from lesson time.
+  it('not held: only the lesson\'s own teacher or the admin; a teacher reports their absence only from lesson time', () => {
+    assert.match(routes, /if \(!isAdmin && booking\.teacher_id !== req\.teacherUser\.id\)/);
+    assert.match(routes, /if \(!isAdmin && reason === 'teacher_absent' && new Date\(booking\.scheduled_start\)\.getTime\(\) > Date\.now\(\) \+ 15 \* 60 \* 1000\)/);
     const sql = read('supabase/migrations/20261028000000_teacher_pay.sql');
     assert.match(sql, /GRANT EXECUTE ON FUNCTION public\.record_lesson_not_held\(UUID, TEXT\) TO service_role;/);
     assert.match(sql, /REVOKE ALL ON FUNCTION public\.record_lesson_not_held\(UUID, TEXT\) FROM authenticated;/);

@@ -13,7 +13,7 @@ describe('ST-02 who can rate what', () => {
   it('only lessons that ended, within 7 days, and were not cancelled or missed', () => {
     assert.strictEqual(canRate(lesson('completed', '2026-10-21T10:00:00Z'), now), true);
     assert.strictEqual(canRate(lesson('confirmed', '2026-10-21T11:30:00Z'), now), false, 'still running until 12:15');
-    assert.strictEqual(canRate(lesson('confirmed', '2026-10-21T11:00:00Z'), now), true);
+    assert.strictEqual(canRate(lesson('confirmed', '2026-10-21T11:00:00Z'), now), false, 'not recorded as held yet');
     assert.strictEqual(canRate(lesson('cancelled', '2026-10-21T10:00:00Z'), now), false);
     assert.strictEqual(canRate(lesson('no_show', '2026-10-21T10:00:00Z'), now), false);
     assert.strictEqual(canRate(lesson('completed', '2026-10-13T10:00:00Z'), now), false, 'older than 7 days');

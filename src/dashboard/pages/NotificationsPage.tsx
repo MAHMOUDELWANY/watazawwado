@@ -51,6 +51,25 @@ export function useUnreadDashboardNotifications(enabled: boolean): number {
 }
 
 /**
+ * Unread conversations for the Messages tab dot (owner review 2026-11-07: a student's message had no sign).
+ * Re-checked every minute and whenever the page changes, so opening a conversation clears it.
+ */
+export function useUnreadDashboardChats(enabled: boolean, pathname: string): number {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!enabled) return;
+    let alive = true;
+    const load = () => dashboardFetch<{ unreadChats?: number }>('/api/me/notifications')
+      .then((r) => { if (alive) setCount(Number(r?.unreadChats || 0)); })
+      .catch(() => {});
+    load();
+    const timer = setInterval(load, 60000);
+    return () => { alive = false; clearInterval(timer); };
+  }, [enabled, pathname]);
+  return count;
+}
+
+/**
  * Teacher / admin on-site notifications: lessons booked, moved or cancelled in the last 14 days.
  * Never shows payment information (RULES.md §1).
  */

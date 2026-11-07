@@ -32,6 +32,15 @@ import { JalilaBrief } from '../components/JalilaBrief';
 
 type T = (en: string, ar: string) => string;
 
+
+/** Lesson time has started: say who is actually there instead of a flat "in progress" (owner review 2026-11-07). */
+function liveLabel(seen: DashboardLesson['attendance'], t: (en: string, ar: string) => string): string {
+  if (!seen) return t('In progress', 'شغالة دلوقتي');
+  if (seen.teacher) return t('In progress', 'شغالة دلوقتي');
+  if (seen.student) return t('The student is waiting for you', 'الطالب مستنيك');
+  return t('Lesson time: nobody has joined yet', 'وقت الحصة: محدش دخل لسه');
+}
+
 export default function TodayPage() {
   const { t, isAr } = useT();
   const locale = isAr ? 'ar' : 'en';
@@ -124,12 +133,15 @@ export default function TodayPage() {
       return { type: 'no_show', label: t('No-show', 'غياب') };
     }
 
+    const seen = lesson.attendance;
     if (nowActive > endLesson) {
+      if (seen && !seen.teacher && !seen.student) return { type: 'needs_outcome', label: t('Nobody joined: record what happened', 'محدش دخل: سجّل اللي حصل') };
+      if (seen && !seen.student) return { type: 'needs_outcome', label: t('Student did not join: record it', 'الطالب ما دخلش: سجّل اللي حصل') };
       return { type: 'needs_outcome', label: t('Needs outcome', 'محتاجة تسجيل نتيجة') };
     }
 
     if (nowActive >= startLesson && nowActive <= endLesson) {
-      return { type: 'in_progress', label: t('In progress', 'شغالة دلوقتي') };
+      return { type: 'in_progress', label: liveLabel(seen, t) };
     }
 
     const diffMinutes = Math.round(startLesson.diff(nowActive, 'minutes').minutes);
@@ -503,7 +515,7 @@ function NextLessonSpotlight({
             {isInProgress ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-sm font-bold bg-success text-success-foreground animate-pulse">
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                {t('In progress', 'شغالة دلوقتي')}
+                {liveLabel(lesson.attendance, t)}
               </span>
             ) : diffMinutes <= 45 && diffMinutes > 0 ? (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-warning/15 text-warning-ink border border-warning/30">
@@ -672,7 +684,7 @@ function TodayLessonRow({
 
           {isInProgress && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-success text-success-foreground">
-              {t('In progress', 'شغالة دلوقتي')}
+              {liveLabel(lesson.attendance, t)}
             </span>
           )}
 

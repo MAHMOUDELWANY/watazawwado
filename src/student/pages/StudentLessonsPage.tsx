@@ -319,7 +319,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
               const hasZoomLink = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
               const zoomStart = b.scheduledStart || b.scheduled_start;
-              const hasValidZoomUrl = hasZoomLink && Boolean(zoomStart) && joinState(zoomStart, b.scheduledEnd || b.scheduled_end, now) === 'open';
+              const lessonJoin = zoomStart ? joinState(zoomStart, b.scheduledEnd || b.scheduled_end, now) : 'early';
+              const hasValidZoomUrl = hasZoomLink && lessonJoin === 'open';
+              const lessonEnded = lessonJoin === 'ended';
               
               const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
               const studentTz = getActiveWorkingTimezone(b.studentTimezone || 'UTC');
@@ -464,6 +466,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <span>{isAr ? 'تم إلغاء هذا الدرس' : 'This lesson has been cancelled.'}</span>
                         </div>
+                      ) : lessonEnded ? (
+                        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
+                          <Clock className="w-3.5 h-3.5 shrink-0" />
+                          <span>{isAr ? 'وقت الحصة خلص.' : 'This lesson time has ended.'}</span>
+                        </div>
                       ) : hasValidZoomUrl ? (
                         <a
                           href={rawZoom}
@@ -522,6 +529,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                             feeAmountUsd: Number(b.feeAmountUsd || 0),
                             isFreeTrial: b.bookingType === 'trial',
                             packageEntitlementId: b.packageEntitlementId || undefined,
+                            lessonEnded,
                             zoomDetails: { platform: 'Zoom', meetingLinkPlaceholder: hasValidZoomUrl ? rawZoom : '', instructions: [] },
                           })}
                           className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"

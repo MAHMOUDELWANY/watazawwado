@@ -17,6 +17,7 @@ import type express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { parseModelJson } from '../intake/intakeService.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
+import { canTeacherAccessStudent } from './progress.js';
 import { BANKS, LEVELS, LADDERS, buildPlacementTest, rungQuestions, ladderClimb, suggestLevel, skillSummary, normalizeQuestions, type Level, type TestQuestion } from '../placement/index.js';
 
 type Mw = (req: any, res: any, next: any) => any;
@@ -414,7 +415,8 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       if (state.status === 'not_yet') {
         return res.status(409).json({ error: 'The placement test opens after you book your free trial.', code: 'BOOK_TRIAL_FIRST' });
       }
-      if (state.status === 'submitted' || state.status === 'reviewed') {
+      // Owner review 2026-11-07: the student may take it again (a new test; the teacher sees the latest).
+      if ((state.status === 'submitted' || state.status === 'reviewed') && req.body?.retake !== true) {
         return res.status(409).json({ error: 'You already took the placement test for this subject.', code: 'ALREADY_TAKEN', testId: state.testId });
       }
       if (state.status === 'in_progress' && state.testId) {
@@ -487,6 +489,18 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
         .eq('id', test.id)
         .eq('status', 'in_progress');
       if (error) throw error;
+      // The learner's teacher sees the result and sets the level (owner review 2026-11-07).
+      if (test.learner_student_id) {
+        const { data: st } = await client.from('students').select('assigned_teacher_id').eq('id', test.learner_student_id).maybeSingle();
+        if (st?.assigned_teacher_id) {
+          await notifyUser(client, { userId: st.assigned_teacher_id }, {
+            kind: 'placement_submitted',
+            title: { en: `${test.learner_name || 'Your student'} took the placement test`, ar: `${test.learner_name || 'طالبك'} عمل اختبار تحديد المستوى` },
+            body: { en: `${summary} Open the student to set the level.`, ar: `${score}/${questions.length} إجابة صحيحة. المستوى المقترح: ${suggested}. افتح صفحة الطالب عشان تحدد مستواه.` },
+            link: `/dashboard/students/${test.learner_student_id}`
+          });
+        }
+      }
       // On-site only (owner decision 2026-10-16).
       await notifySuperAdmins(client, {
         kind: 'placement_submitted',
@@ -547,6 +561,82 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
     } catch (err) {
       console.error('[GET /api/dashboard/placement-tests]', err);
       res.status(500).json({ error: 'Could not load placement tests.' });
+    }
+  });
+
+  // Teacher: the student's placement results and level (owner review 2026-11-07, item 34).
+  app.get('/api/dashboard/students/:id/placement', verifyTeacherAuth, async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+      const studentId = String(req.params.id || '');
+      const access = await canTeacherAccessStudent(client, req.teacherUser, studentId);
+      if (!access.exists) return res.status(404).json({ error: 'Student record not found.' });
+      if (!access.allowed) return res.status(403).json({ error: 'This is not your student.' });
+      const [{ data: st }, { data: tests }] = await Promise.all([
+        client.from('students').select('current_level, level_set_at, level_set_by').eq('id', studentId).maybeSingle(),
+        client.from('placement_tests').select('*').eq('learner_student_id', studentId).neq('status', 'in_progress').order('submitted_at', { ascending: false }).limit(5),
+      ]);
+      let setByName: string | null = null;
+      if (st?.level_set_by) {
+        const { data: who } = await client.from('profiles').select('display_name').eq('id', st.level_set_by).maybeSingle();
+        setByName = who?.display_name || null;
+      }
+      res.json({
+        currentLevel: st?.current_level || null,
+        levelSetAt: st?.level_set_at || null,
+        levelSetByMe: Boolean(st?.level_set_by && st.level_set_by === req.teacherUser?.id),
+        levelSetByName: setByName,
+        tests: (tests || []).map((t: any) => ({
+          id: t.id, serviceId: t.service_id, status: t.status, statedLevel: t.stated_level,
+          suggestedLevel: t.suggested_level, chosenLevel: t.admin_level, score: t.score, maxScore: t.max_score,
+          submittedAt: t.submitted_at, startLesson: startLesson(t), summary: t.ai_summary
+        }))
+      });
+    } catch (err) {
+      console.error('[GET student placement]', err);
+      res.status(500).json({ error: 'Could not load the placement results.' });
+    }
+  });
+
+  // Teacher: set the student's level (from a placement result or their own judgement); the family is told.
+  app.post('/api/dashboard/students/:id/level', rateLimit, verifyTeacherAuth, async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+      const studentId = String(req.params.id || '');
+      const level = LEVELS.includes(req.body?.level) ? (req.body.level as Level) : null;
+      if (!level) return res.status(400).json({ error: 'Choose a level.' });
+      const access = await canTeacherAccessStudent(client, req.teacherUser, studentId);
+      if (!access.exists) return res.status(404).json({ error: 'Student record not found.' });
+      if (!access.allowed) return res.status(403).json({ error: 'This is not your student.' });
+      const now = new Date().toISOString();
+      const { error } = await client.from('students').update({ current_level: level, level_set_at: now, level_set_by: req.teacherUser?.id || null, updated_at: now }).eq('id', studentId);
+      if (error) throw error;
+      const testId = typeof req.body?.testId === 'string' ? req.body.testId : '';
+      let test: any = null;
+      if (testId) {
+        const { data } = await client.from('placement_tests').select('id, status, auth_user_id, learner_student_id').eq('id', testId).maybeSingle();
+        if (data && data.learner_student_id === studentId) {
+          test = data;
+          await client.from('placement_tests').update({ status: 'reviewed', admin_level: level, reviewed_by: req.teacherUser?.id || null, reviewed_at: now }).eq('id', data.id);
+        }
+      }
+      const { data: acct } = await client.from('students').select('auth_user_id, name').eq('id', studentId).maybeSingle();
+      const familyUser = test?.auth_user_id || acct?.auth_user_id || null;
+      const LV: Record<Level, [string, string]> = { beginner: ['Beginner', 'مبتدئ'], elementary: ['Elementary', 'أساسي'], intermediate: ['Intermediate', 'متوسط'], advanced: ['Advanced', 'متقدم'] };
+      if (familyUser) {
+        await notifyUser(client, { userId: familyUser }, {
+          kind: 'placement_reviewed',
+          title: { en: 'Your level was set', ar: 'مستواك اتحدد' },
+          body: { en: `Your teacher set the level of ${acct?.name || 'your learner'} to ${LV[level][0]}. The learning path follows it now.`, ar: `المعلم حدد مستوى ${acct?.name || ''} على: ${LV[level][1]}. المسار التعليمي ماشي عليه دلوقتي.` },
+          link: test ? `/student/placement/report/${test.id}` : '/student/progress'
+        });
+      }
+      res.json({ success: true, level, levelSetAt: now });
+    } catch (err) {
+      console.error('[POST student level]', err);
+      res.status(500).json({ error: 'Could not save the level.' });
     }
   });
 

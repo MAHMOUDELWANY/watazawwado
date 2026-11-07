@@ -2,6 +2,8 @@ import express from 'express';
 import { SURAHS } from '../../src/lib/surahs.js';
 import { canTeacherAccessStudent, canFamilyReadLearner, isUuid, normalizeSubjectSlug } from './progress.js';
 import { firstName } from './summaryDraft.js';
+import { notifyUser, resolveLearnerAccount } from '../notifications/inbox.js';
+import { withPlayLinks, RECITATION_COLUMNS } from './recitations.js';
 
 /**
  * NX-02: homework between lessons (design: docs/superpowers/specs/2026-11-01-homework-design.md).
@@ -128,6 +130,95 @@ export function registerHomeworkRoutes(app: express.Express, deps: {
     } catch (err: any) {
       console.error('[GET dashboard homework]', err?.message || err);
       return res.status(500).json({ error: 'Could not load homework.' });
+    }
+  });
+
+  // Owner review 2026-11-07: the Homework page. Every task of the teacher's own students (the admin sees all):
+  // open ones first, then the last 60 days, each with the student's name, its lesson and any recording sent.
+  app.get('/api/dashboard/homework', deps.verifyTeacherAuth, async (req: any, res: any) => {
+    const client = deps.getClient();
+    if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+    try {
+      const isAdmin = req.teacherUser?.role === 'super_admin';
+      let studentsQ = client.from('students').select('id, name').limit(500);
+      if (!isAdmin) studentsQ = studentsQ.eq('assigned_teacher_id', req.teacherUser?.id || '00000000-0000-0000-0000-000000000000');
+      const { data: students, error: sErr } = await studentsQ;
+      if (sErr) throw new Error(sErr.message);
+      const ids = (students || []).map((s: any) => s.id);
+      if (!ids.length) return res.json({ students: [], homework: [] });
+      const since = new Date(Date.now() - 60 * 24 * 3600 * 1000).toISOString();
+      const { data: rows, error } = await client.from('lesson_homework').select(HOMEWORK_COLUMNS)
+        .in('student_id', ids).or(`review.is.null,created_at.gte.${since}`)
+        .order('created_at', { ascending: false }).limit(300);
+      if (error) throw new Error(error.message);
+      const hw = rows || [];
+      const bookingIds = [...new Set(hw.map((h: any) => h.booking_id).filter(Boolean))];
+      const day = 24 * 3600 * 1000;
+      const [{ data: lessons }, { data: recs }, { data: nearby }] = await Promise.all([
+        bookingIds.length ? client.from('bookings').select('id, scheduled_start').in('id', bookingIds) : Promise.resolve({ data: [] }),
+        hw.length ? client.from('recitation_recordings').select(RECITATION_COLUMNS).in('homework_id', hw.map((h: any) => h.id)) : Promise.resolve({ data: [] }),
+        // Lessons a new task can be tied to: the last and next two weeks.
+        client.from('bookings').select('id, student_id, scheduled_start').in('student_id', ids)
+          .in('status', ['confirmed', 'rescheduled', 'completed'])
+          .gte('scheduled_start', new Date(Date.now() - 14 * day).toISOString())
+          .lte('scheduled_start', new Date(Date.now() + 14 * day).toISOString())
+          .order('scheduled_start', { ascending: false }).limit(300),
+      ]);
+      const recordings = await withPlayLinks(client, recs || []);
+      const names = new Map((students || []).map((s: any) => [s.id, s.name]));
+      const when = new Map((lessons || []).map((b: any) => [b.id, b.scheduled_start]));
+      return res.json({
+        students: (students || []).map((s: any) => ({
+          id: s.id, name: s.name,
+          lessons: (nearby || []).filter((b: any) => b.student_id === s.id).map((b: any) => ({ id: b.id, start: b.scheduled_start })),
+        })),
+        homework: hw.map((h: any) => ({
+          ...h,
+          student_name: names.get(h.student_id) || null,
+          lesson_start: h.booking_id ? when.get(h.booking_id) || null : null,
+          recordings: recordings.filter((r: any) => r.homework_id === h.id),
+        })),
+      });
+    } catch (err: any) {
+      console.error('[GET dashboard homework list]', err?.message || err);
+      return res.status(500).json({ error: 'Could not load homework.' });
+    }
+  });
+
+  // Teacher: set homework at any time, for one of the student's lessons or on its own.
+  app.post('/api/dashboard/students/:id/homework', deps.rateLimit, deps.verifyTeacherAuth, async (req: any, res: any) => {
+    const client = deps.getClient();
+    if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+    const studentId = String(req.params.id || '');
+    const parsed = parseHomework(req.body?.items);
+    if (parsed.ok === false) return res.status(400).json({ error: parsed.error });
+    if (!parsed.value.length) return res.status(400).json({ error: 'Write at least one task.' });
+    const bookingId = typeof req.body?.bookingId === 'string' && req.body.bookingId ? req.body.bookingId : null;
+    if (bookingId && !isUuid(bookingId)) return res.status(400).json({ error: 'Unknown lesson.' });
+    try {
+      const access = await canTeacherAccessStudent(client, req.teacherUser, studentId);
+      if (!access.exists) return res.status(404).json({ error: 'Student record not found.' });
+      if (!access.allowed) return res.status(403).json({ error: 'You can only set homework for your own students.' });
+      let subject = typeof req.body?.subject === 'string' ? req.body.subject.trim().slice(0, 60) || null : null;
+      if (bookingId) {
+        const { data: b } = await client.from('bookings').select('id, student_id, service_id').eq('id', bookingId).maybeSingle();
+        if (!b || b.student_id !== studentId) return res.status(400).json({ error: "That lesson is not this student's." });
+        subject = subject || b.service_id || null;
+      }
+      const saved = await insertHomework(client, { studentId, teacherId: req.teacherUser?.id || null, bookingId, noteId: null, subject, items: parsed.value });
+      const userId = (await resolveLearnerAccount(client, studentId)).userId;
+      if (userId) {
+        await notifyUser(client, { userId }, {
+          kind: 'homework_set',
+          title: { en: 'New homework from your teacher', ar: 'واجب جديد من معلمك' },
+          body: { en: `${saved.length} new task${saved.length > 1 ? 's' : ''}. Open your home page to see ${saved.length > 1 ? 'them' : 'it'}.`, ar: `عندك ${saved.length > 1 ? `${saved.length} مهام جديدة` : 'مهمة جديدة'}. افتح الصفحة الرئيسية عشان تشوف.` },
+          link: '/student',
+        });
+      }
+      return res.status(201).json({ homework: saved });
+    } catch (err: any) {
+      console.error('[POST dashboard homework]', err?.message || err);
+      return res.status(500).json({ error: 'Could not save the homework.' });
     }
   });
 

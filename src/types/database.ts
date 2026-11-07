@@ -300,6 +300,8 @@ export interface Database {
           country: string | null;
           timezone: string;
           current_level: StudentProficiency;
+          level_set_at: string | null;
+          level_set_by: string | null;
           notes: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;
@@ -320,6 +322,8 @@ export interface Database {
           country?: string | null;
           timezone?: string;
           current_level?: StudentProficiency;
+          level_set_at?: string | null;
+          level_set_by?: string | null;
           notes?: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;
@@ -340,6 +344,8 @@ export interface Database {
           country?: string | null;
           timezone?: string;
           current_level?: StudentProficiency;
+          level_set_at?: string | null;
+          level_set_by?: string | null;
           notes?: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;

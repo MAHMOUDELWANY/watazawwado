@@ -47,9 +47,11 @@ import {
   CalendarHeart,
   MessageSquareHeart,
   Trophy,
+  BookOpenCheck,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
+import HomeworkPage from './pages/HomeworkPage';
 import UpcomingPage from './pages/UpcomingPage';
 import TrialsPage from './pages/TrialsPage';
 import LeadsPage from './pages/LeadsPage';
@@ -63,7 +65,7 @@ import IntakeReviewPage from './pages/IntakeReviewPage';
 import TeachersPage from './pages/TeachersPage';
 import DiscountsPage from './pages/DiscountsPage';
 import AvailabilityPage from './pages/AvailabilityPage';
-import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
+import NotificationsPage, { useUnreadDashboardNotifications, useUnreadDashboardChats } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
 import HonorPage from './pages/HonorPage';
@@ -101,6 +103,7 @@ export function DashboardApp() {
   // Same language as the rest of the site (cookie + account preference), RULES.md §6.
   const { lang, toggleLanguage } = useAppLanguage();
   const unreadNotifications = useUnreadDashboardNotifications(isTeacherAuthenticated);
+  const unreadChats = useUnreadDashboardChats(isTeacherAuthenticated, location.pathname);
 
   const isSuperAdmin = teacherRole === 'super_admin';
 
@@ -243,6 +246,7 @@ export function DashboardApp() {
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     { name: L('Students', 'الطلاب'), path: '/dashboard/students', icon: Users, group: G.people },
+    { name: L('Homework', 'الواجبات'), path: '/dashboard/homework', icon: BookOpenCheck, group: G.people },
     { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus, group: G.people },
     { name: L('Waitlist', 'قائمة الانتظار'), path: '/dashboard/waitlist', icon: UserPlus, group: G.people },
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck, group: G.people },
@@ -270,6 +274,7 @@ export function DashboardApp() {
     { name: L('Schedule', 'الجدول'), path: '/dashboard/upcoming', icon: Calendar },
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
     { name: L('Students', 'طلابي'), path: '/dashboard/students', icon: Users },
+    { name: L('Homework', 'الواجبات'), path: '/dashboard/homework', icon: BookOpenCheck },
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     // Schedule = what is coming; All lessons = past and future, where summaries are written.
@@ -291,11 +296,11 @@ export function DashboardApp() {
   const byPath = (list: NavItem[], paths: string[]) => paths.map((p) => list.find((i) => i.path === p)!).filter(Boolean);
   const topTabs: NavItem[] = isSuperAdmin
     ? byPath(superAdminNavigation, ['/dashboard', '/dashboard/bookings', '/dashboard/students', '/dashboard/messages'])
-    : byPath(teacherNavigation, ['/dashboard', '/dashboard/upcoming', '/dashboard/students', '/dashboard/messages']);
+    : byPath(teacherNavigation, ['/dashboard', '/dashboard/upcoming', '/dashboard/students', '/dashboard/homework', '/dashboard/messages']);
 
   // Phones show the same main sections as the desktop tabs, so a page never moves between screen sizes.
   const mobileTabs: MobileTab[] = [
-    ...topTabs.map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path) })),
+    ...topTabs.map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path), badge: item.path === '/dashboard/messages' ? unreadChats : null })),
     { key: 'more', id: 'teacher-more-btn', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
   ];
 
@@ -535,6 +540,9 @@ export function DashboardApp() {
                     {active && <motion.span layoutId="top-tab-active" className={`absolute inset-0 rounded-full ${INK}`} transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
                     <item.icon className="relative w-4 h-4" aria-hidden="true" />
                     <span className="relative">{item.name}</span>
+                    {item.path === '/dashboard/messages' && unreadChats > 0 && (
+                      <span className="relative w-2 h-2 rounded-full bg-[#E5A93C]" role="status" aria-label={L(`${unreadChats} unread`, `${unreadChats} رسالة جديدة`)} />
+                    )}
                   </Link>
                 );
               })}
@@ -626,6 +634,7 @@ export function DashboardApp() {
                 <Route path="/intakes" element={isSuperAdmin ? <IntakeReviewPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/teachers" element={isSuperAdmin ? <TeachersPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/students" element={<StudentsPage />} />
+                <Route path="/homework" element={<HomeworkPage />} />
                 <Route path="/students/:id" element={<StudentDetailPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
                 <Route path="/analytics" element={isSuperAdmin ? <AnalyticsPage /> : <Navigate to="/dashboard" replace />} />

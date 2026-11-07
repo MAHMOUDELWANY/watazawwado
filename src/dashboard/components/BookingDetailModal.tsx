@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
-import { LessonAttendance } from './LessonAttendance';
+import { LessonAttendance, AttendanceHint } from './LessonAttendance';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { RecordPaymentModal } from './RecordPaymentModal';
 import { MoveTeacherControl } from './MoveTeacherControl';
@@ -36,7 +36,7 @@ import { JalilaBrief } from './JalilaBrief';
 import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
 import { HomeworkReviewPanel } from './HomeworkReviewPanel';
 import { RecitationInbox } from './RecitationInbox';
-import { confirmAction } from '../../components/ui/Feedback';
+import { notify, confirmAction } from '../../components/ui/Feedback';
 
 interface BookingDetailModalProps {
   bookingId: string | null;
@@ -229,13 +229,16 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     const ok = await confirmAction(
       reason === 'technical'
         ? t('The lesson did not happen because of a technical problem on our side? The student gets the lesson back and the admin is told.', 'الحصة ما اتعملتش بسبب مشكلة تقنية من عندنا؟ الطالب هترجعله الحصة والإدارة هتعرف.')
-        : t('The teacher could not attend? The student gets the lesson back and the teacher is not paid for it.', 'المعلم ما حضرش؟ الطالب هترجعله الحصة والمعلم مش هياخد أجرها.'),
+        : isSuperAdmin
+          ? t('The teacher could not attend? The student gets the lesson back and the teacher is not paid for it.', 'المعلم ما حضرش؟ الطالب هترجعله الحصة والمعلم مش هياخد أجرها.')
+          : t('You could not attend this lesson? The student gets the lesson back, the admin is told, and the lesson is not paid.', 'ماقدرتش تحضر الحصة دي؟ الطالب هترجعله الحصة والإدارة هتعرف، والحصة مش هتتحسب في أجرك.'),
       { confirmLabel: t('Record it', 'سجّل'), danger: true }
     );
     if (!ok) return;
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}/not-held`, { method: 'POST', body: JSON.stringify({ reason }) });
       setActionMessage({ type: 'success', text: t('Recorded. The student has the lesson back.', 'اتسجّل. الحصة رجعت للطالب.') });
+      notify(t('Recorded. The student has the lesson back.', 'اتسجّل. الحصة رجعت للطالب.'), 'success');
       refresh();
     } catch (err: any) {
       setActionMessage({ type: 'error', text: err?.message || t("Couldn't record it.", 'تعذر التسجيل.') });
@@ -936,6 +939,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       {t('Back', 'رجوع')}
                     </button>
                   </div>
+                  <AttendanceHint bookingId={booking.id} />
                   <div>
                     <label className="block text-[11px] font-medium text-foreground mb-1" htmlFor="bdm-covered">
                       {t('What was covered', 'اللي اتشرح')} <span className="text-muted-foreground font-normal">({t('surah / ayahs, page, topics', 'سورة / آيات، صفحة، موضوعات')})</span>
@@ -1104,14 +1108,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       >
                         {t('Technical problem', 'مشكلة تقنية')}
                       </button>
-                      {isSuperAdmin && (
-                        <button
-                          onClick={() => handleNotHeld('teacher_absent')}
-                          className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors cursor-pointer min-h-[40px]"
-                        >
-                          {t('Teacher absent', 'المعلم ما حضرش')}
-                        </button>
-                      )}
+                      <button
+                        onClick={() => handleNotHeld('teacher_absent')}
+                        disabled={!isSuperAdmin && notStartedYet}
+                        className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
+                      >
+                        {isSuperAdmin ? t('Teacher absent', 'المعلم ما حضرش') : t('I could not attend', 'ماقدرتش أحضر')}
+                      </button>
                     </>
                   )}
 

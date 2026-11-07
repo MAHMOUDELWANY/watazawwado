@@ -115,6 +115,8 @@ export interface BookingConfirmationData {
   isFreeTrial: boolean;
   packageEntitlementId?: string;
   integrationStatus?: 'synced' | 'pending' | 'failed';
+  /** The lesson's end time has passed: show that instead of the Zoom room. */
+  lessonEnded?: boolean;
   zoomDetails: {
     platform: 'Zoom';
     meetingLinkPlaceholder: string;

@@ -316,7 +316,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
     ['Cairo time', 'بتوقيت القاهرة', b.cairoTimeDisplay || ''],
     ['Length', 'المدة', `${b.durationMinutes} min`],
     ['Booking ref', 'رقم الحجز', b.referenceCode],
-    ['Zoom link', 'رابط Zoom', b.zoomLink || '']
+    // Not the join link: that makes the teacher a guest and both wait for a host. "Start" on the dashboard opens Zoom as host.
+    ['Start the lesson', 'ابدأ الحصة', 'https://watazawwado.academy/dashboard/today']
   ];
 
   try {

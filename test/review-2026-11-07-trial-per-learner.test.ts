@@ -26,7 +26,9 @@ describe('Free trial per learner', () => {
   it('the server checks a child on its own and keeps the 5-lost-trials limit account-wide', () => {
     const src = fs.readFileSync('api/index.ts', 'utf8');
     assert.ok(src.includes('const trialOwnerFilter = childLesson ? `student_id.eq.${pgrstValue(linkedStudentId!)}` : accountFilter;'));
-    assert.ok(/in\('status', \['cancelled', 'no_show'\]\)\s*\.or\(accountFilter\);/.test(src));
+    assert.ok(/in\('status', \['cancelled', 'no_show'\]\)\s*\.is\('not_held_reason', null\)\s*\.or\(accountFilter\);/.test(src));
+    // A trial our side could not hold (technical problem) never blocks a new one (owner review item 30).
+    assert.strictEqual((src.match(/\.is\('not_held_reason', null\)/g) || []).length >= 2, true);
     assert.ok(src.includes('const MAX_FAMILY_TRIALS = 5;') && src.includes('(familyTrials || 0) >= MAX_FAMILY_TRIALS'), 'family-wide cap');
   });
 });

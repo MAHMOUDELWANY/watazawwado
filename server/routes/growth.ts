@@ -276,18 +276,22 @@ export async function qualifyReferralForBooking(client: any, booking: { id: stri
     if (!booking.student_id || booking.booking_type === 'trial') return;
     // Paid means money actually received: a confirmed payment for this lesson, or a package bought with one
     // (a lesson credit from a cancelled paid lesson counts). A lesson fully covered by a code or balance does not.
+    // Owner review 2026-11-07: the friend must have paid at least the inviter's reward in real money, so a lesson
+    // mostly covered by the welcome gift ($1.50 paid on top of $5) cannot earn the inviter $5.
+    const settings = await loadGrowthSettings(client);
+    const minPaid = Math.max(0.01, Number(settings.referrer_credit_usd) || 0);
     let paid = false;
     if (booking.package_entitlement_id) {
-      const { data: ent } = await client.from('package_entitlements').select('id, metadata').eq('id', booking.package_entitlement_id).maybeSingle();
-      if (ent?.metadata?.source === 'cancellation_credit') paid = true;
+      const { data: ent } = await client.from('package_entitlements').select('id, metadata, price_paid').eq('id', booking.package_entitlement_id).maybeSingle();
+      if (ent?.metadata?.source === 'cancellation_credit') paid = Number(ent.price_paid || 0) >= minPaid;
       else if (ent) {
         const { count } = await client.from('payments').select('id', { count: 'exact', head: true })
-          .eq('entitlement_id', ent.id).eq('status', 'confirmed').gt('amount', 0);
+          .eq('entitlement_id', ent.id).eq('status', 'confirmed').gte('amount', minPaid);
         paid = (count || 0) > 0;
       }
     } else {
       const { count } = await client.from('payments').select('id', { count: 'exact', head: true })
-        .eq('booking_id', booking.id).eq('status', 'confirmed').gt('amount', 0);
+        .eq('booking_id', booking.id).eq('status', 'confirmed').gte('amount', minPaid);
       paid = (count || 0) > 0;
     }
     if (!paid) return;
@@ -296,7 +300,6 @@ export async function qualifyReferralForBooking(client: any, booking: { id: stri
     const { data: ref } = await client.from('referrals').select('id').eq('referred_user_id', account.userId).eq('status', 'signed_up').maybeSingle();
     if (!ref) return;
 
-    const settings = await loadGrowthSettings(client);
     const { data, error } = await client.rpc('qualify_referral', {
       p_referred_user_id: account.userId,
       p_booking_id: booking.id,

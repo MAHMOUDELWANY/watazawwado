@@ -212,7 +212,7 @@ export default function StudentInvitePage({ lang }: { lang: 'ar' | 'en' }) {
         <summary className="cursor-pointer font-semibold text-foreground">{isAr ? 'الشروط باختصار' : 'The terms, briefly'}</summary>
         <ul className="mt-3 space-y-1.5 text-muted-foreground leading-relaxed list-disc ps-5">
           <li>{isAr ? 'الهدية للحسابات الجديدة بس، ومرة واحدة لكل حساب.' : 'The gift is for new accounts only, once per account.'}</li>
-          <li>{isAr ? 'تُضاف مكافأتك بعد أن يحضر صديقك أول حصة مدفوعة. الحصة التجريبية المجانية لا تُحتسب.' : 'Your reward is added after your friend attends their first paid lesson. The free trial does not count.'}</li>
+          <li>{isAr ? 'تُضاف مكافأتك بعد أن يحضر صديقك أول حصة دفع فيها من فلوسه مبلغًا لا يقل عن مكافأتك. الحصة التجريبية المجانية، والحصة المدفوعة بهدية الترحيب، لا تُحتسبان.' : 'Your reward is added after your friend attends their first lesson they paid for with their own money, at least as much as your reward. The free trial and lessons paid with the welcome gift do not count.'}</li>
           <li>{isAr ? 'يُخصم الرصيد من الحصص والباقات، ولا يتحوّل إلى نقود.' : 'Balance comes off lessons and packages; it cannot be cashed out.'}</li>
           <li>{isAr ? 'لا يمكنك دعوة نفسك أو إنشاء حسابات إضافية. وإن أسيء استخدام البرنامج، قد تلغي الأكاديمية المكافأة.' : "You can't invite yourself or make extra accounts. If the program is misused, the academy may cancel a reward."}</li>
           <li>{isAr ? 'إن استُرد حجز دُفع جزء منه بالرصيد، يعود هذا الجزء إلى رصيدك.' : 'If a booking paid partly with balance is refunded, that part goes back to your balance.'}</li>

@@ -14,6 +14,8 @@ export interface ModalProps {
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
   className?: string;
   hideCloseButton?: boolean;
+  /** Stacking layer; a dialog opened from inside another window needs a higher one. */
+  layerClassName?: string;
 }
 
 export function Modal({
@@ -25,6 +27,7 @@ export function Modal({
   maxWidth = 'md',
   className,
   hideCloseButton = false,
+  layerClassName = 'z-50',
 }: ModalProps) {
   // Close on Escape
   useEffect(() => {
@@ -63,7 +66,7 @@ export function Modal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className={cn('fixed inset-0 flex items-center justify-center p-4 sm:p-6 overflow-y-auto', layerClassName)}>
           {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}

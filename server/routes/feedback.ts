@@ -10,7 +10,8 @@ import { normalizeSubjectSlug, resolveSubjectMeta } from './progress.js';
  */
 export const TEACHER_MIN_RATINGS = 5;
 export const FEEDBACK_WINDOW_DAYS = 7;
-const RATEABLE_STATUSES = ['completed', 'confirmed', 'rescheduled'];
+// Only a lesson the teacher recorded as held: no survey for a lesson nobody came to (owner review 2026-11-07).
+const RATEABLE_STATUSES = ['completed'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function lessonEnd(b: { scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null }): DateTime {

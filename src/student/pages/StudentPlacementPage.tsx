@@ -51,7 +51,9 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
       setLearners(d.learners);
       setLadders(d.ladders || []);
       setTestMode(!!d.testMode);
-      setLearnerId((cur) => cur || d.learners.find((l) => l.status === 'take_now' || l.status === 'in_progress')?.id || d.learners[0]?.id || '');
+      // ?learner= (from the Learning Track card) opens that child's test.
+      const asked = new URLSearchParams(window.location.search).get('learner');
+      setLearnerId((cur) => cur || d.learners.find((l) => l.id === asked)?.id || d.learners.find((l) => l.status === 'take_now' || l.status === 'in_progress')?.id || d.learners[0]?.id || '');
     } catch (err: any) {
       setError(err.message);
       setLoadFailed(true);
@@ -63,13 +65,13 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
     load();
   }, [load]);
 
-  const start = async () => {
+  const start = async (retake = false) => {
     setBusy(true);
     setError(null);
     try {
       const d = await authedJson<{ test: Test }>('/api/placement/start', {
         method: 'POST',
-        body: JSON.stringify({ learnerStudentId: learnerId || undefined, lang, ...(testMode ? { serviceId: trySubject || undefined, level: tryLevel || undefined } : {}) })
+        body: JSON.stringify({ learnerStudentId: learnerId || undefined, lang, retake, ...(testMode ? { serviceId: trySubject || undefined, level: tryLevel || undefined } : {}) })
       });
       setTest(d.test);
       setAnswers(answersFor(d.test));
@@ -196,7 +198,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
               </label>}
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <Button onClick={start} isLoading={busy}>{isAr ? 'ابدأ اختبار تجريبي' : 'Start a trial test'}</Button>
+              <Button onClick={() => start()} isLoading={busy}>{isAr ? 'ابدأ اختبار تجريبي' : 'Start a trial test'}</Button>
               {learner.testId && (learner.status === 'submitted' || learner.status === 'reviewed') && (
                 <Link to={`/student/placement/report/${learner.testId}`} className="text-sm font-semibold text-primary hover:underline">
                   {isAr ? 'آخر تقرير' : 'Latest report'}
@@ -219,12 +221,18 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
               <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'أنهيت اختبار هذه المادة' : 'You took the test for this subject'}</h2>
               <p className="text-sm text-muted-foreground">
                 {learner.status === 'reviewed'
-                  ? (isAr ? 'فريقنا راجع نتيجتك وكتبلك رأيه.' : 'Our team reviewed your result and wrote you a note.')
-                  : (isAr ? 'يراجع فريقنا نتيجتك وسيصلك إشعار.' : 'Our team is reviewing your result; you will get a notification.')}
+                  ? (isAr ? 'المعلم شاف نتيجتك وحدد مستواك، ومسارك التعليمي ماشي عليه.' : 'Your teacher saw your result and set your level; your learning path follows it.')
+                  : (isAr ? 'المعلم هيشوف نتيجتك ويحدد مستواك، وهيوصلك إشعار.' : 'Your teacher will look at your result and set your level; you will get a notification.')}
               </p>
-              <Link to={`/student/placement/report/${learner.testId}`} className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
-                {isAr ? 'عرض تقرير النتيجة' : 'View the result report'}
-              </Link>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link to={`/student/placement/report/${learner.testId}`} className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+                  {isAr ? 'عرض تقرير النتيجة' : 'View the result report'}
+                </Link>
+                <Button variant="outline" onClick={() => start(true)} isLoading={busy}>
+                  {isAr ? 'اعمل الاختبار تاني' : 'Take the test again'}
+                </Button>
+              </div>
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             </>
           ) : learner.status === 'not_yet' ? (
             <>
@@ -253,7 +261,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
                   ? '8 أسئلة اختيار من متعدد (نحو 5 دقائق) حسب المادة والمستوى اللذين اخترتهما. لا نجاح ولا رسوب، أجب بقدر ما تعرف، وتظهر لك النتيجة فورًا.'
                   : '8 multiple-choice questions (about 5 minutes) based on the subject and level you chose. There is no pass or fail — answer what you can, and you see your result right away.'}
               </p>
-              <Button onClick={start} isLoading={busy} className="w-full sm:w-auto">
+              <Button onClick={() => start()} isLoading={busy} className="w-full sm:w-auto">
                 {learner.status === 'in_progress' ? (isAr ? 'أكمل الاختبار' : 'Continue the test') : (isAr ? 'ابدأ الاختبار' : 'Start the test')}
               </Button>
             </>

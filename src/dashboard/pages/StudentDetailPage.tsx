@@ -36,6 +36,7 @@ import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
 import { RecitationInbox } from '../components/RecitationInbox';
+import { PlacementLevelCard } from '../components/PlacementLevelCard';
 import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
 import { useT } from '../../lib/language';
@@ -707,28 +708,16 @@ export default function StudentDetailPage() {
             </div>
           )}
 
-          {/* TE-02: placement result and a one-tap chat with the family. */}
-          {(studentDetail.placement || studentDetail.chat_thread_id) && (
-            <div className="glass-card rounded-2xl p-5 border border-border shadow-2xs flex flex-wrap items-center justify-between gap-3">
-              {studentDetail.placement ? (
-                <div className="text-sm space-y-0.5">
-                  <div className="font-semibold text-foreground">{t('Placement test', 'اختبار تحديد المستوى')}</div>
-                  <div className="text-muted-foreground">
-                    {studentDetail.placement.level ? <span className="capitalize">{placementLevelLabel(studentDetail.placement.service_id, studentDetail.placement.level, t)}</span> : null}
-                    {studentDetail.placement.start_lesson ? ` · ${t(`from Lesson ${studentDetail.placement.start_lesson}`, `من الدرس ${studentDetail.placement.start_lesson}`)}` : ''}
-                    {studentDetail.placement.score != null && studentDetail.placement.max_score ? ` · ${studentDetail.placement.score}/${studentDetail.placement.max_score}` : ''}
-                    {' · '}{studentDetail.placement.reviewed ? t('reviewed', 'اتراجع') : t('waiting for review', 'مستني مراجعة')}
-                  </div>
-                </div>
-              ) : <span className="text-sm text-muted-foreground">{t('No placement test yet.', 'لسه معملش اختبار مستوى.')}</span>}
-              {isSuperAdmin && studentDetail.chat_thread_id && (
-                <Link
-                  to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle"
-                >
-                  {t('Message the family', 'كلّم الأسرة')}
-                </Link>
-              )}
+          {/* Owner review 2026-11-07: the placement result and the level the teacher sets. */}
+          <PlacementLevelCard studentId={student.id} serviceId={studentDetail.primary_service_id || null} />
+          {isSuperAdmin && studentDetail.chat_thread_id && (
+            <div className="flex justify-end">
+              <Link
+                to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle"
+              >
+                {t('Message the family', 'كلّم الأسرة')}
+              </Link>
             </div>
           )}
 

@@ -186,7 +186,14 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </div>
         </div>
 
-        {/* Zoom Classroom Room Box */}
+        {confirmation.lessonEnded ? (
+          <div className="p-3.5 rounded-2xl bg-surface-subtle border border-border text-sm text-foreground/80">
+            {isEn
+              ? 'This lesson time has ended. Your teacher writes the lesson report, and you will find it under Progress.'
+              : 'وقت الحصة دي خلص. المعلم بيكتب تقرير الحصة، وهتلاقيه في صفحة التقدّم.'}
+          </div>
+        ) : (
+        /* Zoom Classroom Room Box */
         <div className="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-semibold text-blue-900 dark:text-blue-200">
@@ -233,6 +240,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             )}
           </div>
         </div>
+        )}
 
         {/* Automated Reminders Note */}
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-sm text-foreground/80 dark:text-muted-foreground/80">

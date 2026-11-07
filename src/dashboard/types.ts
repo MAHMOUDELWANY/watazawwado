@@ -29,6 +29,8 @@ export interface DashboardLesson {
   cairo_time_display?: string;
   fee_amount_usd?: number | null;
   notes?: string;
+  /** Who showed up so far (teacher pressed Start / student opened the link / Zoom joins); only once it started. */
+  attendance?: { teacher: boolean; student: boolean };
 }
 
 export interface DashboardSummary {
