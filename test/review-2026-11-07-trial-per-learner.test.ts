@@ -27,5 +27,6 @@ describe('Free trial per learner', () => {
     const src = fs.readFileSync('api/index.ts', 'utf8');
     assert.ok(src.includes('const trialOwnerFilter = childLesson ? `student_id.eq.${pgrstValue(linkedStudentId!)}` : accountFilter;'));
     assert.ok(/in\('status', \['cancelled', 'no_show'\]\)\s*\.or\(accountFilter\);/.test(src));
+    assert.ok(src.includes('const MAX_FAMILY_TRIALS = 5;') && src.includes('(familyTrials || 0) >= MAX_FAMILY_TRIALS'), 'family-wide cap');
   });
 });

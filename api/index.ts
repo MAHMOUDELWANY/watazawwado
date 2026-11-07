@@ -217,6 +217,8 @@ function clientErrorMessage(err: any, fallback: string): string {
 const PAYMENT_HOLD_MINUTES = 35;
 // RULES.md §2/§5 (decided 2026-10-14).
 const MAX_LOST_TRIALS = 5;
+/** Free trials (booked or held) per family account across all its children (owner review 2026-11-07). */
+const MAX_FAMILY_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
 const TERMS_VERSION = '2026-10-28.1';
@@ -837,6 +839,21 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         return res.status(400).json({
           error: 'You already have a free trial on this account. Each student gets one free trial, but you can book a regular lesson any time.'
         });
+      }
+      // A family's children each get one, but made-up children must not mean endless free lessons.
+      if (childLesson) {
+        const { count: familyTrials } = await supabaseAdmin
+          .from('bookings')
+          .select('id', { count: 'exact', head: true })
+          .eq('booking_type', 'trial')
+          .in('status', ['pending', 'confirmed', 'rescheduled', 'completed'])
+          .or(accountFilter);
+        if ((familyTrials || 0) >= MAX_FAMILY_TRIALS) {
+          return res.status(400).json({
+            error: `A family account can have up to ${MAX_FAMILY_TRIALS} free trials. You are always welcome to book a regular lesson, or message us if you need another.`,
+            code: 'FAMILY_TRIAL_LIMIT'
+          });
+        }
       }
 
       // RULES.md §2: after a cancelled or missed trial, wait 48 hours before booking again.
