@@ -183,7 +183,7 @@ async function emailTeacher(t: Teacher | null, eventType: 'new_booking' | 'cance
       ],
       lang
     });
-    await sendEmail({ to: t.email, toName: t.display_name || undefined, ...mail, from: 'hr' });
+    await sendEmail({ to: t.email, toName: t.display_name || undefined, ...mail });
   } catch (err) {
     console.warn('[move-teacher] teacher email failed', err);
   }

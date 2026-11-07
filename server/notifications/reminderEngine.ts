@@ -222,6 +222,7 @@ export async function processDueReminders(): Promise<{
         bookings (
           id,
           student_id,
+          teacher_id,
           reference_code,
           contact_name,
           contact_email,
@@ -357,6 +358,20 @@ export async function processDueReminders(): Promise<{
                 ar: `حصتك جاية: ${dateStr}، ${timeStr}. جهّزت شنطة الزاد وراجعتها مرتين.${homeworkLine.ar ? ' وواجبك مستنيك كمان!' : ''}`
               } }
         });
+        // The teacher gets the 2-hour notice too, on the site and by email, in Cairo time.
+        if (soon && b.teacher_id) {
+          const { data: tp } = await supabase.from('profiles').select('email, display_name').eq('id', b.teacher_id).maybeSingle();
+          const cairo = DateTime.fromISO(b.scheduled_start, { zone: 'Africa/Cairo' }).toFormat('h:mm a');
+          await notifyUser(supabase, { userId: b.teacher_id, email: tp?.email || null, name: tp?.display_name || null, staff: true }, {
+            kind: 'teacher_lesson_in_2h',
+            title: { en: 'Your lesson is in 2 hours', ar: 'عندك حصة كمان ساعتين' },
+            body: {
+              en: `${b.contact_name || 'A student'} at ${cairo} Cairo time.`,
+              ar: `مع ${b.contact_name || 'طالب'} الساعة ${cairo} بتوقيت القاهرة.`
+            },
+            link: '/dashboard/upcoming'
+          }, { email: true });
+        }
         await finalizeReminderState(item.id, claimToken, 'sent');
         sentSite++;
         continue;

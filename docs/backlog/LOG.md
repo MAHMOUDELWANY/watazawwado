@@ -4,6 +4,16 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Owner UX review fixes, items 16-22 (2026-11-07)
+- Teacher lesson emails moved from hr@ to support@ (they were sent but never arrived); teachers also get site/phone notices for booked, moved and cancelled lessons and a 2-hour reminder (`worker.ts`, `reminderEngine.ts`, `dispatcher.ts`, `push.ts`, `lessonTeacherMove.ts`).
+- "Download my data" is a readable bilingual HTML page (`privacy.ts`, `PrivacyRequests.tsx`).
+- Teacher photo and ID card upload in Settings (`teacherFiles.ts`, `TeacherFilesCard.tsx`, Teachers page ID button, checklist link); migration `20261107000000_teacher_photo_and_id_card.sql` applied to production.
+- One combined family tour (`familyTour.ts`, `StudentHomePage.tsx`).
+- Add-child form offers the subject's teachers; booking follows the selected child's teacher; family pages show each child's teacher (`AddChildForm.tsx`, `teachers.ts`, `BookingFlow.tsx`, `StudentProfilePage.tsx`, `StudentHomePage.tsx`).
+- Free trial per learner (`api/index.ts`, `StudentBookingPage.tsx`, `BookingFlow.tsx`, `bookingRepository.ts`, RULES.md §2 clarified).
+- Google Calendar block is Google Cloud config (Testing mode test users), written up for the owner in REVIEW-ISSUES item 22.
+- Checks: tsc, full suite, build; new tests for the readable export and trial per learner. Not checked on the live site with a real family: the add-child picker, a second child's trial booking, and a teacher upload.
+
 ### Lesson attendance from Zoom and the site (2026-11-06)
 - Owner: see when the student and the teacher opened the link, joined and left, and when the lesson ended, for trust.
 - `POST /api/zoom/webhook` (signed with `ZOOM_WEBHOOK_SECRET_TOKEN`, answers Zoom's URL validation) stores meeting started/ended, joined/left and waiting-room events per booking. The Zoom host is the teacher; anyone else is the student.

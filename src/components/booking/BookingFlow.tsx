@@ -75,6 +75,8 @@ interface BookingFlowProps {
   initialStep?: number;
   trialDisabled?: boolean;
   trialDisabledReason?: string;
+  /** Learners whose free trial is used; a family's other children can still have theirs. */
+  trialUsedLearnerIds?: string[];
   cardClassName?: string;
   doneLabel?: string;
   onDone?: () => void;
@@ -102,8 +104,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   initialMode = 'trial',
   initialData,
   initialStep = 1,
-  trialDisabled = false,
+  trialDisabled: trialDisabledForAccount = false,
   trialDisabledReason,
+  trialUsedLearnerIds = [],
   cardClassName,
   doneLabel,
   onDone,
@@ -170,7 +173,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       // Fallback
     }
 
-    const effectiveMode = (trialDisabled && initialMode === 'trial') ? 'regular' : (initialMode || 'trial');
+    const effectiveMode = (trialDisabledForAccount && initialMode === 'trial') ? 'regular' : (initialMode || 'trial');
 
     const isChildAuthorized = Boolean(isAuthenticatedStudent && canBookForChild && linkedChildren && linkedChildren.length > 0);
     const preferChild = Boolean(isChildAuthorized && (bookingPreference === 'child' || initialData?.audience === 'child'));
@@ -427,10 +430,26 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   });
 
+  // One free trial per learner: the trial closes only for a child who already had theirs.
+  const trialDisabled = trialDisabledForAccount || Boolean(formData.studentId && trialUsedLearnerIds.includes(formData.studentId));
+  useEffect(() => {
+    if (trialDisabled && formData.mode === 'trial') setFormData((prev) => ({ ...prev, mode: 'regular', duration: 45, date: '', timeSlot: null }));
+  }, [trialDisabled, formData.mode]);
+
   const updateFormData = (fields: Partial<BookingFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
     setValidationError(null);
   };
+
+  // A child is taught by their own teacher (owner review 2026-11-07): picking a child switches the lesson, the free
+  // times and the server request to that child's teacher, never the account holder's.
+  useEffect(() => {
+    const child = formData.studentId ? linkedChildren.find((c: any) => c?.id === formData.studentId) : null;
+    const childTeacher = child ? (child.assignedTeacherId || child.assigned_teacher_id || undefined) : undefined;
+    const want = child ? childTeacher : (initialData?.teacherId || teacherId);
+    setFormData((prev) => (prev.teacherId === want ? prev : { ...prev, teacherId: want, date: '', timeSlot: null }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.studentId, linkedChildren]);
 
   const currentService = BOOKING_SERVICES.find((s) => s.id === formData.serviceId);
 

@@ -70,6 +70,7 @@ import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
+import { registerTeacherFileRoutes } from '../server/routes/teacherFiles.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
@@ -765,6 +766,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     let authUserId: string | null = null;
     let authUserEmail = '';
     let assignedTeacherId: string | null = null;
+    let ownStudentId: string | null = null;
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
@@ -780,6 +782,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
             .maybeSingle();
           if (st?.id) {
             linkedStudentId = st.id;
+            ownStudentId = st.id;
             assignedTeacherId = st.assigned_teacher_id || null;
           }
         }
@@ -812,11 +815,15 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     cleanEmail = authUserEmail;
 
     if (isTrial) {
-      const trialOwnerFilter = [
+      // One free trial per learner (RULES.md §2, owner review 2026-11-07): a family's child is checked on its own;
+      // the account holder's own lesson keeps the wider email/WhatsApp check.
+      const childLesson = Boolean(linkedStudentId && ownStudentId && linkedStudentId !== ownStudentId);
+      const accountFilter = [
         `contact_email.eq.${pgrstValue(cleanEmail)}`,
         ...(cleanWhatsapp ? [`contact_whatsapp.eq.${pgrstValue(cleanWhatsapp)}`] : []),
         ...(authorizedLearnerIds.length ? [`student_id.in.(${authorizedLearnerIds.map(pgrstValue).join(',')})`] : [])
       ].join(',');
+      const trialOwnerFilter = childLesson ? `student_id.eq.${pgrstValue(linkedStudentId!)}` : accountFilter;
 
       // One free trial per student: a trial that is booked, confirmed or completed uses it.
       const { data: activeTrials } = await supabaseAdmin
@@ -858,7 +865,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         .select('id', { count: 'exact', head: true })
         .eq('booking_type', 'trial')
         .in('status', ['cancelled', 'no_show'])
-        .or(trialOwnerFilter);
+        .or(accountFilter);
       if ((lostTrials || 0) >= MAX_LOST_TRIALS) {
         return res.status(400).json({
           error: 'This account has used up its free trials. You are always welcome to book a regular lesson.',
@@ -2538,7 +2545,7 @@ app.get('/api/dashboard/onboarding-checklist', verifyTeacherAuth, async (req: an
     const teacherId = req.teacherUser?.id;
     const email = String(req.teacherUser?.email || '').toLowerCase();
     const [account, hours, calendar, zoom] = await Promise.all([
-      supabase.from('teacher_accounts').select('agreement_version, photo_url').eq('email', email).maybeSingle(),
+      supabase.from('teacher_accounts').select('agreement_version, photo_url, id_card_path').eq('email', email).maybeSingle(),
       supabase.from('availability').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).eq('is_active', true),
       supabase.from('calendar_connections').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).eq('provider', 'google_calendar').eq('is_active', true),
       supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).like('zoom_meeting_link', 'http%')
@@ -2548,7 +2555,7 @@ app.get('/api/dashboard/onboarding-checklist', verifyTeacherAuth, async (req: an
       { key: 'agreement', done: isAdmin || account.data?.agreement_version === TEACHER_AGREEMENT_VERSION, link: '/staff/agreement' },
       { key: 'hours', done: (hours.count || 0) > 0, link: '/dashboard/availability' },
       { key: 'calendar', done: (calendar.count || 0) > 0, link: '/dashboard/settings' },
-      { key: 'photo', done: Boolean(account.data?.photo_url), link: '/dashboard/messages' },
+      { key: 'photo', done: Boolean(account.data?.photo_url && account.data?.id_card_path), link: '/dashboard/settings#teacher-files' },
       { key: 'zoom', done: (zoom.count || 0) > 0, link: '/dashboard/upcoming' }
     ];
     return res.json({ items, allDone: items.every(i => i.done) });
@@ -3658,6 +3665,8 @@ app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, a
         upcoming_lessons_count: (upcomingCountByTeacher.get(countKey) || 0) + (upcomingCountByTeacher.get(emailLower) || 0),
         completed_lessons_count: (completedCountByTeacher.get(countKey) || 0) + (completedCountByTeacher.get(emailLower) || 0),
         agreement_accepted_at: t.agreement_version === TEACHER_AGREEMENT_VERSION ? t.agreement_accepted_at : null,
+        photo_url: t.photo_url || null,
+        id_card_uploaded_at: t.id_card_uploaded_at || null,
         created_at: t.created_at
       };
     });
@@ -10324,6 +10333,7 @@ registerFeedbackRoutes(app, {
   teacherName: resolveTeacherMetadata
 });
 
+registerTeacherFileRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit });
 registerPrivacyRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyStudentAuth,

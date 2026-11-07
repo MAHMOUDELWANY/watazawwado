@@ -347,6 +347,9 @@ export interface TeacherAccountItem {
   completed_lessons_count: number;
   /** When the teacher accepted the current teacher agreement; null if not yet. */
   agreement_accepted_at?: string | null;
+  photo_url?: string | null;
+  /** When the teacher uploaded their ID card in Settings; null if not yet. */
+  id_card_uploaded_at?: string | null;
   created_at?: string;
 }
 

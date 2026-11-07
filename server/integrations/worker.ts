@@ -9,6 +9,7 @@ import { createClient } from '@supabase/supabase-js';
 import { syncBookingIntegrations, syncCancelledBooking, syncRescheduledBooking } from './syncEngine.js';
 import { scheduleBookingReminders, cancelBookingReminders, rescheduleBookingReminders } from '../notifications/reminderEngine.js';
 import { dispatchNotification } from '../notifications/dispatcher.js';
+import { notifyUser } from '../notifications/inbox.js';
 import { DateTime } from 'luxon';
 
 function sanitizeErrorMessage(msg: string): string {
@@ -39,6 +40,23 @@ async function getTeacherContact(teacherId: string | null | undefined): Promise<
   } catch {
     return { teacherEmail: null, teacherName: null };
   }
+}
+
+/** On-site notice for the lesson's teacher (the email goes out through dispatchNotification). Never throws. */
+async function notifyTeacherOnSite(
+  teacherId: string | null | undefined,
+  kind: 'lesson_booked' | 'lesson_cancelled' | 'lesson_rescheduled',
+  learnerName: string,
+  when: string
+) {
+  const supabase = getAdminSupabase();
+  if (!teacherId || !supabase) return;
+  const text = {
+    lesson_booked: { title: { en: 'New lesson booked', ar: 'حصة جديدة اتحجزت' }, body: { en: `${learnerName} booked a lesson on ${when}.`, ar: `${learnerName} حجز حصة يوم ${when}.` } },
+    lesson_cancelled: { title: { en: 'Lesson cancelled', ar: 'حصة اتلغت' }, body: { en: `The lesson with ${learnerName} on ${when} was cancelled.`, ar: `حصة ${learnerName} يوم ${when} اتلغت.` } },
+    lesson_rescheduled: { title: { en: 'Lesson moved', ar: 'حصة اتنقلت' }, body: { en: `The lesson with ${learnerName} moved to ${when}.`, ar: `حصة ${learnerName} اتنقلت ليوم ${when}.` } }
+  }[kind];
+  await notifyUser(supabase, { userId: teacherId, staff: true }, { kind, ...text, link: '/dashboard/upcoming' });
 }
 
 export async function processIntegrationJobs(batchSize = 5, clientOverride?: any, targetBookingId?: string): Promise<number> {
@@ -207,6 +225,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                       zoomLink: null
                     }
                   });
+                  await notifyTeacherOnSite(booking.teacher_id, 'lesson_cancelled', booking.student_name || booking.contact_name || 'Student', startLuxon.setZone('Africa/Cairo').toFormat('cccc d LLL, h:mm a') + ' (Cairo)');
               }
            } catch (notifErr) {
               console.error('[Integration Worker] Notification Dispatch Error for Cancel', notifErr);
@@ -284,6 +303,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                       zoomLink: booking.zoom_meeting_link?.startsWith('http') ? booking.zoom_meeting_link : null
                     }
                   });
+                  await notifyTeacherOnSite(booking.teacher_id, 'lesson_rescheduled', booking.student_name || booking.contact_name || 'Student', newStartLuxon.setZone('Africa/Cairo').toFormat('cccc d LLL, h:mm a') + ' (Cairo)');
               }
            } catch (notifErr) {
               console.error('[Integration Worker] Notification Dispatch Error for Reschedule', notifErr);
@@ -404,6 +424,7 @@ async function notifyBookingConfirmed(booking: any, zoomLink: string | null) {
         isPackageLesson: Boolean(booking.package_entitlement_id)
       }
     });
+    await notifyTeacherOnSite(booking.teacher_id, 'lesson_booked', booking.student_name || booking.contact_name || 'Student', startLuxon.setZone('Africa/Cairo').toFormat('cccc d LLL, h:mm a') + ' (Cairo)');
   } catch (notifErr) {
     console.error('[Integration Worker] Notification Dispatch Error', notifErr);
   }

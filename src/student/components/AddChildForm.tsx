@@ -7,10 +7,13 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { PROFILE_CHANGED_EVENT } from '../activeLearner';
+import { GuideChoice } from '../../components/onboarding/TravelPass';
+import { teachersFor, type TeacherCard } from '../../components/onboarding/teachers';
 
 /**
- * PA-02: a parent adds another child after onboarding (name, age 6-17, subject, level, teacher preference).
- * The server checks the age and picks the teacher; this form only collects the choice.
+ * PA-02: a parent adds another child after onboarding (name, age 6-17, subject, level, teacher).
+ * Subject first, then the teachers who teach it, as at sign-up (owner review 2026-11-07). The server checks the age
+ * and that the picked teacher teaches the subject.
  */
 export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => void }) {
   const [open, setOpen] = useState(false);
@@ -19,7 +22,8 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [subject, setSubject] = useState('quran-reading');
   const [level, setLevel] = useState<string>(firstLevel('quran-reading'));
-  const [teacherPref, setTeacherPref] = useState('no_preference');
+  const [allTeachers, setAllTeachers] = useState<TeacherCard[]>([]);
+  const [teacherId, setTeacherId] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -30,7 +34,20 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
     requestAnimationFrame(() => document.getElementById('add-child')?.scrollIntoView({ block: 'center' }));
   }, []);
 
+  useEffect(() => {
+    if (!open || allTeachers.length) return;
+    authedJson<{ teachers: TeacherCard[] }>('/api/student/teachers')
+      .then((d) => setAllTeachers((d.teachers || []).filter((t) => t?.id && t?.nameEn)))
+      .catch(() => {});
+  }, [open, allTeachers.length]);
+
   const subjects = useMemo(() => SUBJECT_FAMILIES.flatMap((f) => f.subjects), []);
+  const teachers = useMemo(() => teachersFor(allTeachers, subject), [allTeachers, subject]);
+  // Keep a valid pick: a teacher of this subject, preferring one matching the child (a girl starts on a female teacher).
+  useEffect(() => {
+    if (!teachers.length || teachers.some((t) => t.id === teacherId)) return;
+    setTeacherId((teachers.find((t) => t.gender === gender) || teachers[0]).id);
+  }, [teachers, teacherId, gender]);
   const levels = levelsFor(subject);
   const ageOk = isChildAge(age);
 
@@ -41,7 +58,8 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
     try {
       await authedJson('/api/student/children', {
         method: 'POST',
-        body: JSON.stringify({ name, age: Number(age), gender, learningInterest: subject, currentLevel: level, teacherGenderPreference: teacherPref })
+        body: JSON.stringify({ name, age: Number(age), gender, learningInterest: subject, currentLevel: level,
+          ...(teacherId ? { teacherId, teacherGenderPreference: teachers.find((t) => t.id === teacherId)?.gender === 'female' ? 'female_teacher' : 'male_teacher' } : {}) })
       });
       setMessage({ ok: true, text: isAr ? `أُضيف ${name}. يمكنك الحجز له الآن.` : `${name} has been added. You can book for them now.` });
       setName('');
@@ -85,14 +103,6 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
               </Select>
             </label>
             <label className="space-y-1 text-sm text-foreground">
-              <span>{isAr ? 'المعلم' : 'Teacher'}</span>
-              <Select value={teacherPref} onChange={(e) => setTeacherPref(e.target.value)}>
-                <option value="no_preference">{isAr ? 'أي معلم' : 'No preference'}</option>
-                <option value="male_teacher">{isAr ? 'معلم' : 'A male teacher'}</option>
-                <option value="female_teacher">{isAr ? 'معلمة' : 'A female teacher'}</option>
-              </Select>
-            </label>
-            <label className="space-y-1 text-sm text-foreground">
               <span>{isAr ? 'المادة' : 'Subject'}</span>
               <Select value={subject} onChange={(e) => { setSubject(e.target.value); setLevel(firstLevel(e.target.value)); }}>
                 {subjects.map((s) => <option key={s.id} value={s.id}>{isAr ? s.ar : s.en}</option>)}
@@ -107,6 +117,15 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
               </label>
             )}
           </div>
+          {teachers.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-sm font-semibold text-foreground">{isAr ? 'اختار المعلم' : 'Choose the teacher'}</p>
+              <p className="text-xs text-muted-foreground">
+                {isAr ? 'دول المعلمين اللي بيدرّسوا المادة دي ووقتهم فاضي.' : 'These teachers teach this subject and have free time.'}
+              </p>
+              <GuideChoice key={`${subject}-${teacherId ? 1 : 0}`} teachers={teachers} value={teacherId} onChange={setTeacherId} isAr={isAr} />
+            </div>
+          )}
           {age && !ageOk && (
             <p className="text-xs text-warning">
               {isAr

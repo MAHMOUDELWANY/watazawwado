@@ -300,7 +300,7 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
     }
     attemptedSends++;
     const email = build(await resolveEmailLanguage(to));
-    const from = role === 'teacher' ? 'hr' : role === 'student' && eventType.startsWith('PAYMENT_') ? 'finance' : 'support';
+    const from = role === 'student' && eventType.startsWith('PAYMENT_') ? 'finance' : 'support';
     const res = await sendEmail({ to, toName, subject: email.subject, html: email.html, text: email.text, from });
     if (role === 'student') studentEmailSent = res.success; else teacherEmailSent = teacherEmailSent || res.success;
     await finalizeNotification(key, claim.claimToken, res.success, res.error ? [res.error] : undefined, res.messageId);

@@ -99,7 +99,9 @@ export const bookingRepository = {
       return { success: false, error: 'Please select an available lesson time slot.' };
     }
 
-    if (isTrial) {
+    // A family's child is checked on its own by the server (one free trial per learner); the email check here
+    // would wrongly count a brother's or sister's trial.
+    if (isTrial && !(data.audience === 'child' && data.studentId)) {
       const eligibility = await this.checkTrialEligibility(contactEmail, contactWhatsapp);
       if (!eligibility.eligible) {
         return { success: false, error: eligibility.reason || 'One free trial allowed per new student.' };

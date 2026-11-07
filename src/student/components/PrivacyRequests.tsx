@@ -29,7 +29,7 @@ export function PrivacyRequests({ isAr }: { isAr: boolean }) {
       const url = URL.createObjectURL(await res.blob());
       const a = document.createElement('a');
       a.href = url;
-      a.download = `watazawwado-my-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `watazawwado-my-data-${new Date().toISOString().slice(0, 10)}.html`;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch {
@@ -62,8 +62,8 @@ export function PrivacyRequests({ isAr }: { isAr: boolean }) {
         <h3 className="text-sm font-semibold text-foreground">{isAr ? 'نزّل نسخة من بياناتك' : 'Download a copy of your data'}</h3>
         <p className="text-sm text-muted-foreground">
           {isAr
-            ? 'ملف واحد فيه بيانات حسابك وأطفالك: الدروس والمدفوعات والرسائل والتقييمات وملاحظات المعلم للأسرة.'
-            : 'One file with your account and your children\'s data: lessons, payments, messages, ratings and the teacher\'s notes for the family.'}
+            ? 'ملف واحد فيه بيانات حسابك وأطفالك: الدروس والمدفوعات والرسائل والتقييمات وملاحظات المعلم للأسرة. يفتح في أي متصفح، وتقدر تطبعه أو تحفظه PDF.'
+            : 'One file with your account and your children\'s data: lessons, payments, messages, ratings and the teacher\'s notes for the family. It opens in any browser, and you can print it or save it as a PDF.'}
         </p>
         <Button size="sm" variant="outline" onClick={download} isLoading={downloading}>
           <Download className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'نزّل بياناتي' : 'Download my data'}

@@ -10,10 +10,10 @@ const memory = () => {
 const family = { id: 'p1', onboardingCompleted: true, linkedChildren: [{ id: 'c1' }] };
 
 describe('PA-05 family tour', () => {
-  it('has four steps (children, booking, progress, chat) in both languages', () => {
+  it('has one combined tour (home, children, booking, progress, chat) in both languages', () => {
     for (const isAr of [true, false]) {
       const steps = familyTourSteps(isAr);
-      assert.deepStrictEqual(steps.map((s) => s.targetId[0]), ['child-switcher', 'nav-book-link', 'student-progress', 'student-messages']);
+      assert.deepStrictEqual(steps.map((s) => s.targetId[0]), ['onboarding-welcome', 'child-switcher', 'nav-book-link', 'student-progress', 'student-messages']);
       for (const s of steps) assert.ok(s.title && s.description);
     }
     assert.ok(/[؀-ۿ]/.test(familyTourSteps(true)[0].title));
@@ -24,6 +24,7 @@ describe('PA-05 family tour', () => {
     assert.strictEqual(shouldAutoOpenFamilyTour(family, store), true);
     markFamilyTourSeen(family, store);
     assert.strictEqual(store.getItem(FAMILY_TOUR_SEEN_PREFIX + 'p1'), '1');
+    assert.strictEqual(store.getItem('watazawwado_onboarding_seen'), 'true', 'the home tour does not follow it');
     assert.strictEqual(shouldAutoOpenFamilyTour(family, store), false, 'not twice');
     assert.strictEqual(shouldAutoOpenFamilyTour({ ...family, id: 'p2' }, store), true, 'per account');
   });

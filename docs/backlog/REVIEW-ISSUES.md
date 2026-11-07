@@ -70,3 +70,22 @@ Order: data clean-up first, then the sign-up path (it decides who reaches a teac
     grants, analytics caps and 54 indexes (migration `20261106000000`, applied by the owner in the SQL editor),
     and the Vercel firewall rate limit now covers bookings, payments and portal writes (30 POSTs a minute per IP,
     Stripe webhook excluded). The free Vercel plan allows only this one rate-limit rule.
+
+## F. User-experience review (owner, 2026-11-07)
+
+16. **Done 2026-11-07. Teachers get no lesson emails or notifications.** Cause: the emails were sent from hr@, which does not reach the inbox (support@, used by "A new student chose you", does). They now come from support@, and the teacher also gets a site notice (bell + phone) for booked, moved and cancelled lessons and a 2-hour reminder by notice and email. Was: A booked lesson emails the student, but the teacher only
+    ever gets "A new student chose you". Every lesson event (booked, rescheduled, cancelled, reminders) must reach
+    the teacher too.
+17. **Done 2026-11-07. "Download your data" gives an unreadable JSON file.** Now a bilingual page that opens in any browser and prints or saves as PDF (`?format=json` still gives the raw copy). Was: It opens as raw text in Notepad or not at all. Families
+    need a file they can read.
+18. **Done 2026-11-07.** Settings now has "Your photo and ID card": the photo goes on the teacher's card at once, the ID card is private and the admin opens it from the Teachers page. The task links there and ticks when both are in (migration `20261107000000`, applied). Was: **Teacher task "Add your photo and ID card" opens the chat with the admin** instead of the page where the
+    teacher uploads the photo and ID.
+19. **Done 2026-11-07.** A family account gets one tour (home, children, booking, progress, messages); the learner home tour no longer opens for it. Was: **Two welcome tours on top of each other in a new family account** (the site tour and the family-account
+    tour). They must run one after the other, as one tour.
+20. **Done 2026-11-07.** Adding a child in Settings now shows the teachers of the chosen subject (male/female tabs, as at sign-up). Booking for a child uses that child's own teacher (it used the account holder's, Ustadh Mahmoud); "Learning Track & Teacher" and the home card show each child's teacher. Existing children keep their teacher; the admin can change one on the student page. Was: **Teacher choice after sign-up is broken.** Adding a child from Settings shows "Choose a teacher" but gives
+    no choice and puts the default teacher. A child signed up with Ustadh Ahmed shows Ustadh Mahmoud on the learning
+    path and in booking. A daughter who chose a female teacher sees her only in messages, not on the path or in
+    booking.
+21. **Done 2026-11-07.** Each child gets their own free trial (server, booking page and form); the 5-lost-trials limit stays per account. Was: **One free trial per family.** A family with several children gets one trial lesson in total; each learner
+    must get their own.
+22. **Open, owner action in Google Cloud.** **Connecting Google Calendar fails** with Google's "Access blocked: authorization error". The site's link is the same one that connected both of the owner's Gmail accounts in September; Google blocks other accounts because the app is in Testing mode (only listed test users may connect). Fix in Google Cloud Console, APIs & Services, OAuth consent screen, Audience: add each teacher's Gmail under Test users (or Publish the app). Also check that Authorized redirect URIs lists `https://watazawwado.academy/api/integrations/google-calendar/callback`.

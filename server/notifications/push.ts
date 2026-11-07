@@ -5,7 +5,7 @@ import { parse as legacyParse } from 'node:url';
  * NX-09: web push (free, standard Web Push with VAPID keys VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY). Opt-in per device;
  * only the kinds below are pushed, so a phone buzzes for things worth it (lesson soon, homework waiting), nothing else.
  */
-export const PUSH_KINDS = new Set(['lesson_in_12h', 'lesson_in_2h', 'gift_redeemed', 'recitation_reply', 'quiet_learner']);
+export const PUSH_KINDS = new Set(['lesson_in_12h', 'lesson_in_2h', 'gift_redeemed', 'recitation_reply', 'quiet_learner', 'lesson_booked', 'lesson_cancelled', 'lesson_rescheduled', 'teacher_lesson_in_2h']);
 
 /** Phone notifications speak as Zaadi, the academy's companion (owner, 2026-11-06), with Zaadi's picture. */
 export const ZAADI = { name: { en: 'Zaadi', ar: 'زادي' }, icon: '/zaadi-notification-192.png' };

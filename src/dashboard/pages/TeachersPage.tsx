@@ -311,6 +311,25 @@ export default function TeachersPage() {
                 <span>{t('Their students', 'طلابه')}</span>
               </Link>
 
+              {tc.id_card_uploaded_at && (
+                <button
+                  onClick={async () => {
+                    // Opened before the request so phone browsers don't block it as a popup.
+                    const win = window.open('', '_blank');
+                    try {
+                      const d = await dashboardFetch<{ url: string }>(`/api/dashboard/admin/teachers/${encodeURIComponent(tc.email)}/id-card`);
+                      if (win) win.location.href = d.url; else window.location.href = d.url;
+                    } catch (e: any) {
+                      win?.close();
+                      notify(e?.message || t('Could not open the ID card.', 'معرفناش نفتح البطاقة.'), 'error');
+                    }
+                  }}
+                  className="tap-44 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold glass-surface glass-hover border-none text-foreground cursor-pointer"
+                >
+                  <span>{t('ID card', 'البطاقة')}</span>
+                </button>
+              )}
+
               {tc.role !== 'super_admin' && (
                 <button
                   onClick={() => handleToggleActive(tc.email, tc.is_active)}

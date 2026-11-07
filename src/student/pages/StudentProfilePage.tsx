@@ -33,6 +33,7 @@ import { StudentPageBack } from '../components/StudentPageBack';
 import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { isFamilyAccount } from '../familyTour';
 import { AddChildForm } from '../components/AddChildForm';
 import { ChildPhones } from '../components/ChildPhones';
 import { PrivacyRequests } from '../components/PrivacyRequests';
@@ -636,7 +637,8 @@ export default function StudentProfilePage({
                 </p>
               </div>
 
-              {/* Teacher Relationship Banner */}
+              {/* Teacher Relationship Banner: a family account is not a learner; each child's teacher shows on their card below. */}
+              {!isFamilyAccount(profile) && (
               <div className="p-4 rounded-2xl glass-surface border border-border flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-display font-bold text-lg shrink-0 mt-0.5 select-none">
                   {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
@@ -661,6 +663,7 @@ export default function StudentProfilePage({
                   </div>
                 </div>
               </div>
+              )}
 
               {/* Learning Track Details */}
               <div className="space-y-3.5 divide-y divide-border">

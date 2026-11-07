@@ -20,11 +20,23 @@ export function shouldAutoOpenFamilyTour(profile: any, storage: Pick<Storage, 'g
 
 export function markFamilyTourSeen(profile: any, storage: Pick<Storage, 'setItem'> | null): void {
   if (!profile?.id || !storage) return;
-  try { storage.setItem(FAMILY_TOUR_SEEN_PREFIX + profile.id, '1'); } catch { /* private mode: it may show again */ }
+  try {
+    storage.setItem(FAMILY_TOUR_SEEN_PREFIX + profile.id, '1');
+    // The family tour already covers the home page; the learner home tour must not follow it.
+    storage.setItem('watazawwado_onboarding_seen', 'true');
+  } catch { /* private mode: it may show again */ }
 }
 
 export function familyTourSteps(isAr: boolean) {
   return [
+    {
+      targetId: ['onboarding-welcome'],
+      title: isAr ? 'مساحة أسرتك' : 'Your family space',
+      description: isAr
+        ? 'هنا كل ما يخص دروس أولادك مع معلميهم: الحصص القادمة والحجوزات والمتابعة.'
+        : "Everything about your children's lessons with their teachers: upcoming lessons, bookings and follow-up.",
+      position: 'bottom' as const,
+    },
     {
       targetId: ['child-switcher'],
       title: isAr ? 'أولادك في مكان واحد' : 'All your children in one place',

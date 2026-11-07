@@ -23,7 +23,7 @@ export function TeacherChecklist() {
     agreement: { title: t('Accept the teacher agreement', 'وافق على اتفاقية المعلم'), how: t('Read it and accept.', 'اقراها ووافق عليها.') },
     hours: { title: t('Set your weekly hours', 'حدد مواعيدك الأسبوعية'), how: t('Families can only book the hours you open.', 'الأسر بتحجز بس في المواعيد اللي تفتحها.') },
     calendar: { title: t('Connect Google Calendar', 'اربط تقويم جوجل'), how: t('Settings, then Integrations.', 'من الإعدادات، وبعدين الربط.') },
-    photo: { title: t('Add your photo and card', 'ضيف صورتك وبطاقتك'), how: t('Send your photo to the admin in Messages.', 'ابعت صورتك للإدارة في الرسائل.') },
+    photo: { title: t('Add your photo and card', 'ضيف صورتك وبطاقتك'), how: t('Upload both in Settings.', 'ارفعهم من الإعدادات.') },
     zoom: { title: t('Test your Zoom host link', 'جرّب لينك زووم كمضيف'), how: t('Ticks itself once a lesson has a Zoom link; open it with "Start lesson".', 'بتتعلّم لوحدها أول ما حصة يبقى ليها لينك زووم؛ افتحه من "ابدأ الحصة".') }
   };
   const done = items.filter((i) => i.done).length;

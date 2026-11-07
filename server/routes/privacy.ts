@@ -2,7 +2,7 @@ import express from 'express';
 
 /**
  * ST-06: self-service privacy requests (privacy policy: answered within one month).
- * - Download my data: a JSON copy of the signed-in account's own data and its children's. Internal fields (tokens,
+ * - Download my data: a readable HTML page (or JSON with ?format=json) of the signed-in account's own data and its children's. Internal fields (tokens,
  *   calendar/Zoom ids, teachers' private notes) are left out; the file says how to ask privacy@ for anything else.
  * - Delete my account: records a request for the super admin and tells privacy@. Nothing is deleted automatically.
  */
@@ -28,6 +28,60 @@ export const EXPORT_COLUMNS = {
 export const NEVER_EXPORTED = ['management_token', 'management_token_hash', 'zoom_meeting_link', 'zoom_meeting_id', 'google_calendar_event_id', 'sync_metadata', 'private_notes', 'observations', 'payment_reference', 'questions', 'answers', 'ai_summary'];
 
 type Middleware = (req: any, res: any, next: any) => any;
+
+const SECTIONS: Array<[string, string, string]> = [
+  ['account', 'Account', 'الحساب'], ['learners', 'Learners', 'المتعلمون'], ['guardians', 'Parents', 'أولياء الأمور'],
+  ['goals', 'Goals', 'الأهداف'], ['lessons', 'Lessons', 'الحصص'], ['payments', 'Payments', 'المدفوعات'],
+  ['packages', 'Packages', 'الباقات'], ['teacherNotesForFamily', 'Teacher notes for the family', 'ملاحظات المعلم للأسرة'],
+  ['placementTests', 'Placement tests', 'اختبارات تحديد المستوى'], ['lessonRatings', 'Lesson ratings', 'تقييمات الحصص'],
+  ['conversations', 'Messages', 'الرسائل'], ['siteNotifications', 'Site notifications', 'إشعارات الموقع'],
+  ['emailPreferences', 'Email preferences', 'تفضيلات الإيميل'], ['language', 'Language', 'اللغة']
+];
+
+const esc = (v: unknown) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+const cell = (v: unknown): string => {
+  if (v === null || v === undefined || v === '') return '—';
+  if (typeof v === 'boolean') return v ? 'Yes / نعم' : 'No / لا';
+  if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) return esc(v.slice(0, 16).replace('T', ' ') + ' UTC');
+  if (typeof v === 'object') return esc(JSON.stringify(v));
+  return esc(v);
+};
+const label = (k: string) => esc(k.replace(/_/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2'));
+const table = (rows: any[]): string => {
+  if (!rows.length) return '<p class="empty">Nothing here. / لا يوجد.</p>';
+  const cols = [...new Set(rows.flatMap((r) => Object.keys(r)))];
+  return `<div class="wrap"><table><thead><tr>${cols.map((c) => `<th>${label(c)}</th>`).join('')}</tr></thead><tbody>${
+    rows.map((r) => `<tr>${cols.map((c) => `<td>${cell(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+};
+
+/** The export as a page anyone can open in a browser (and print or save as PDF). */
+export function renderExportHtml(payload: Record<string, any>): string {
+  const body = SECTIONS.map(([key, en, ar]) => {
+    const v = payload[key];
+    let inner: string;
+    if (key === 'conversations') {
+      inner = (v || []).length
+        ? (v as any[]).map((t) => `<h3>${esc(t.kind || 'chat')} · ${cell(t.created_at)}</h3>${table(t.messages || [])}`).join('')
+        : table([]);
+    } else {
+      inner = table(Array.isArray(v) ? v : v ? [v] : []);
+    }
+    return `<section><h2>${esc(en)} <span>${esc(ar)}</span></h2>${inner}</section>`;
+  }).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watazawwado: my data</title><style>
+body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;margin:0;padding:24px 16px;color:#2b211c;background:#faf6f0;line-height:1.5}
+main{max-width:1100px;margin:0 auto}h1{margin:0 0 4px}h2{margin:32px 0 8px;font-size:1.15rem;border-bottom:2px solid #c9a35b;padding-bottom:4px}
+h2 span{color:#7a6a5c;font-weight:500;margin-inline-start:8px}h3{font-size:.95rem;margin:16px 0 6px}.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.85rem;background:#fff}th,td{border:1px solid #e6dccd;padding:6px 8px;text-align:start;vertical-align:top}
+th{background:#f1e8da;text-transform:capitalize;white-space:nowrap}td{unicode-bidi:plaintext}.empty{color:#7a6a5c;font-size:.9rem}.note{color:#5c4d42}
+@media print{body{background:#fff}}</style></head><body><main>
+<h1>Watazawwado Academy · أكاديمية وتزودوا</h1>
+<p class="note">${esc(payload.about || '')}</p>
+<p class="note">نسخة من البيانات الشخصية التي تحفظها الأكاديمية لهذا الحساب وأطفاله. لأي شيء غير موجود هنا راسلنا على privacy@watazawwado.academy.</p>
+<p class="note">Exported / تاريخ التصدير: ${cell(payload.exportedAt)}</p>
+${body}</main></body></html>`;
+}
 
 export function registerPrivacyRoutes(app: express.Express, deps: {
   getClient: () => any;
@@ -86,10 +140,17 @@ export function registerPrivacyRoutes(app: express.Express, deps: {
         conversations: (threads || []).map((t: any) => ({ ...t, messages: (messages.data || []).filter((m: any) => m.thread_id === t.id).map(({ thread_id, ...m }: any) => m) })),
         siteNotifications: notifications.data, emailPreferences: prefs.data?.[0] || null, language: lang.data?.[0] || null
       };
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename="watazawwado-my-data-${new Date().toISOString().slice(0, 10)}.json"`);
+      const day = new Date().toISOString().slice(0, 10);
       res.setHeader('Cache-Control', 'no-store');
-      return res.send(JSON.stringify(payload, null, 2));
+      // A readable page by default; ?format=json keeps the machine-readable copy (data portability).
+      if (req.query?.format === 'json') {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="watazawwado-my-data-${day}.json"`);
+        return res.send(JSON.stringify(payload, null, 2));
+      }
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="watazawwado-my-data-${day}.html"`);
+      return res.send(renderExportHtml(payload));
     } catch (err) {
       console.error('[GET /api/student/privacy/export]', err);
       return res.status(500).json({ error: 'Could not prepare your data.' });

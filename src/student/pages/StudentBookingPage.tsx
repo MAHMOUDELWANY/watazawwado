@@ -23,6 +23,8 @@ export interface StudentBookingPageProps {
 export interface TrialEligibilityResult {
   canBookTrial: boolean;
   hasUsedTrial: boolean;
+  /** Learners (student ids) whose free trial is booked or done. */
+  trialUsedLearnerIds?: string[];
   trialDisabledReason?: string;
 }
 
@@ -96,7 +98,9 @@ export class BookingErrorBoundary extends Component<BookingErrorBoundaryProps, B
  */
 export function calculateTrialEligibility(
   bookings: any[] | null,
-  bookingsError: string | null
+  bookingsError: string | null,
+  /** A family's children: each one gets their own free trial (owner review 2026-11-07). */
+  childIds: string[] = []
 ): TrialEligibilityResult {
   if (bookingsError) {
     return {
@@ -114,14 +118,20 @@ export function calculateTrialEligibility(
     };
   }
 
-  const hasUsedTrial = bookings.some(
+  const trials = bookings.filter(
     (b) => (b.booking_type === 'trial' || b.bookingType === 'trial') && b.status !== 'cancelled'
   );
+  const hasUsedTrial = trials.length > 0;
+  const trialUsedLearnerIds = [...new Set(trials.map((b) => b.student_id || b.studentId).filter(Boolean))] as string[];
+  // A family can still book a trial while any child has not had one; the booking form checks the child picked.
+  const anyChildLeft = childIds.some((id) => !trialUsedLearnerIds.includes(id));
+  const canBookTrial = childIds.length ? anyChildLeft : !hasUsedTrial;
 
   return {
-    canBookTrial: !hasUsedTrial,
+    canBookTrial,
     hasUsedTrial,
-    trialDisabledReason: hasUsedTrial
+    trialUsedLearnerIds,
+    trialDisabledReason: !canBookTrial
       ? 'You have already scheduled or completed your complimentary trial lesson.'
       : undefined
   };
@@ -629,7 +639,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   }, [accessToken]);
 
   // Derived computations safe with null/empty states
-  const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
+  const childIds = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren.map((c: any) => c.id).filter(Boolean) : [];
+  const { canBookTrial, trialDisabledReason, trialUsedLearnerIds } = calculateTrialEligibility(bookings, bookingsError, childIds);
   const queryChildId = searchParams.get('studentId') || searchParams.get('childId') || undefined;
   const { initialData: standardInitialData, matchedServiceId: standardServiceId, initialMode: standardMode } =
     profile
@@ -1063,6 +1074,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               initialData={currentInitialData}
               initialStep={flowStep}
               trialDisabled={!canBookTrial}
+              trialUsedLearnerIds={trialUsedLearnerIds}
               trialDisabledReason={trialDisabledReason}
               cardClassName="w-full py-6"
               doneLabel={isAr ? 'تم، العودة لبوابة الطالب' : 'Done & Return to Student Portal'}

@@ -3,9 +3,20 @@ import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
 import app from '../api/index.js';
-import { EXPORT_COLUMNS, NEVER_EXPORTED } from '../server/routes/privacy.js';
+import { EXPORT_COLUMNS, NEVER_EXPORTED, renderExportHtml } from '../server/routes/privacy.js';
 
 describe('ST-06 privacy requests', () => {
+  it('the download is a readable page with escaped values', () => {
+    const html = renderExportHtml({
+      exportedAt: '2026-11-07T10:00:00.000Z',
+      learners: [{ name: '<b>Sara</b>', onboarding_completed: true }],
+      conversations: [{ kind: 'teacher', created_at: '2026-11-01T09:00:00Z', messages: [{ body: 'Salam', sender_role: 'parent' }] }]
+    });
+    assert.ok(html.startsWith('<!doctype html>'));
+    assert.ok(html.includes('&lt;b&gt;Sara&lt;/b&gt;') && !html.includes('<b>Sara</b>'));
+    assert.ok(html.includes('2026-11-07 10:00 UTC') && html.includes('Salam') && html.includes('المتعلمون'));
+  });
+
   it('the export never includes tokens, meeting ids, teachers\' private notes or payment references', () => {
     for (const [table, cols] of Object.entries(EXPORT_COLUMNS)) {
       const list = cols.split(',').map((c) => c.trim());

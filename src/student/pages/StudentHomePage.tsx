@@ -27,6 +27,7 @@ import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBook
 import { Badge } from '../../components/ui/Badge';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
+import { isFamilyAccount } from '../familyTour';
 import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { PackageBalance } from '../components/PackageBalance';
@@ -200,13 +201,15 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   
   useEffect(() => {
     // Show onboarding for new users automatically once
-    const hasSeen = localStorage.getItem('watazawwado_onboarding_seen');
-    if (!hasSeen && !coreLoading && bookings.length === 0) {
+    let hasSeen: string | null = '1';
+    try { hasSeen = localStorage.getItem('watazawwado_onboarding_seen'); } catch { /* blocked storage: never auto-open */ }
+    // A family account gets one combined tour from the portal shell (familyTour.ts), never this one on top of it.
+    if (!hasSeen && !coreLoading && profile && !isFamilyAccount(profile) && bookings.length === 0) {
       // Small delay to let UI render fully
       const timer = setTimeout(() => setShowOnboarding(true), 1000);
       return () => clearTimeout(timer);
     }
-  }, [coreLoading, bookings.length]);
+  }, [coreLoading, bookings.length, profile]);
 
   if (coreLoading) {
     return (
@@ -307,7 +310,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // status 'confirmed'.
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
-    localStorage.setItem('watazawwado_onboarding_seen', 'true');
+    try { localStorage.setItem('watazawwado_onboarding_seen', 'true'); } catch { /* private mode */ }
   };
 
   const onboardingSteps: OnboardingStep[] = [
@@ -960,8 +963,23 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </div>
           )}
 
-          {/* 4. TEACHER RELATIONSHIP NOTE */}
+          {/* 4. TEACHER RELATIONSHIP NOTE: a family sees each child's own teacher, not the account holder's. */}
           <div className="rounded-2xl border border-secondary/50 bg-secondary/20 p-5 space-y-3 text-start">
+            {isFamilyAccount(profile) ? (
+              <ul className="space-y-2">
+                {profile.linkedChildren.map((c: any) => (
+                  <li key={c.id} className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-[15px]">
+                      {(c.assignedTeacherName || 'و').charAt(0)}
+                    </div>
+                    <div>
+                      <span className="text-sm font-semibold text-foreground block">{c.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}</span>
+                      <span className="text-sm text-muted-foreground block">{isAr ? `معلم ${c.name}` : `${c.name}'s teacher`}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-[15px]">
                 {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'و'}
@@ -975,6 +993,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </span>
               </div>
             </div>
+            )}
 
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
