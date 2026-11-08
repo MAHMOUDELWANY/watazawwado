@@ -74,7 +74,7 @@ test('Workflow 03-E Availability Engine Validations', async (t) => {
         const endUtc = baseDate.set({ hour: 10, minute: 15 }).toUTC().toISO()!;
         const result = await validateSlotAvailability(startUtc, endUtc);
         assert.strictEqual(result.isAvailable, false);
-        assert.strictEqual(result.conflictReason, 'This time slot is outside the teacher\'s available working hours.');
+        assert.strictEqual(result.conflictReason, 'This time slot is no longer in the teacher\'s working hours. Please choose another time.');
     });
 
     await t.test('Case 5 — Outside availability / Gaps between multiple intervals remain unavailable', async () => {

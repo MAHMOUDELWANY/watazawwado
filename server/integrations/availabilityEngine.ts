@@ -82,6 +82,26 @@ async function getTeacherDbAvailability(teacherId: string): Promise<any[]> {
   }
 }
 
+/**
+ * A teacher's windows on one weekday as minutes from midnight, with touching or overlapping windows joined
+ * (12:30-13:00 + 13:00-13:30 = 12:30-13:30). An end of 23:59 counts as midnight.
+ */
+export function mergeDayBlocks(rows: any[], weekday: number): { start: number; end: number }[] {
+  const toMin = (t: string) => { const [h, m] = String(t).split(':').map(Number); return h * 60 + (m || 0); };
+  const blocks = rows
+    .filter((a: any) => a.weekday === weekday)
+    .map((a: any) => { const end = toMin(a.end_time); return { start: toMin(a.start_time), end: end === 1439 ? 1440 : end }; })
+    .filter((b) => b.end > b.start)
+    .sort((a, b) => a.start - b.start);
+  const merged: { start: number; end: number }[] = [];
+  for (const b of blocks) {
+    const last = merged[merged.length - 1];
+    if (last && b.start <= last.end) last.end = Math.max(last.end, b.end);
+    else merged.push({ ...b });
+  }
+  return merged;
+}
+
 async function getSupabaseBookedIntervals(startUtcIso: string, endUtcIso: string, teacherId?: string | null): Promise<{ start: string; end: string }[]> {
   const supabase = getServerSupabase();
   if (!supabase) return [];
@@ -238,12 +258,9 @@ export async function computeAvailableSlots(
   // 2. Fetch Supabase booked intervals
   const dbBusyIntervals = await getSupabaseBookedIntervals(startWindowUtc, endWindowUtc, cleanTeacherId);
 
-  // Combine busy intervals with 10-min buffer
-  const allBusy = [...googleBusyIntervals, ...dbBusyIntervals].map((interval) => {
-    const start = DateTime.fromISO(interval.start, { zone: 'utc' }).minus({ minutes: 5 });
-    const end = DateTime.fromISO(interval.end, { zone: 'utc' }).plus({ minutes: 5 });
-    return Interval.fromDateTimes(start, end);
-  });
+  // Owner review 2026-11-08: no buffer around a lesson; the slots right before and after it stay free.
+  const allBusy = [...googleBusyIntervals, ...dbBusyIntervals].map((interval) =>
+    Interval.fromDateTimes(DateTime.fromISO(interval.start, { zone: 'utc' }), DateTime.fromISO(interval.end, { zone: 'utc' })));
 
   // Standard Cairo working hours (09:00 AM to 10:00 PM Cairo)
   // Fetch DB availability
@@ -298,26 +315,9 @@ export async function computeAvailableSlots(
     const currentDayIndex = currentDayOfWeekMap[dayOfWeek];
 
     // Find all availability blocks for this day
-    const dayBlocks = dbAvailability.filter((a: any) => a.weekday === currentDayIndex);
-
-    for (const block of dayBlocks) {
-      // block.start_time is like "09:00:00"
-      const [startHour, startMinute] = block.start_time.split(':').map(Number);
-      const [endHour, endMinute] = block.end_time.split(':').map(Number);
-
-      const blockStartCairo = targetDateCairo.set({
-        hour: startHour,
-        minute: startMinute,
-        second: 0,
-        millisecond: 0
-      });
-
-      const blockEndCairo = targetDateCairo.set({
-        hour: endHour,
-        minute: endMinute,
-        second: 0,
-        millisecond: 0
-      });
+    for (const block of mergeDayBlocks(dbAvailability, currentDayIndex)) {
+      const blockStartCairo = targetDateCairo.startOf('day').plus({ minutes: block.start });
+      const blockEndCairo = targetDateCairo.startOf('day').plus({ minutes: block.end });
 
       // Generate slots within this block based on durationMinutes
       let currentSlotStart = blockStartCairo;
@@ -445,37 +445,15 @@ export async function validateSlotAvailability(
       currentDayIndex = currentDayOfWeekMap[reqStartCairo.toFormat('ccc')];
     }
 
-    const dayBlocks = dbAvailability.filter((a: any) => a.weekday === currentDayIndex);
-    let isWithinBlock = false;
-
-    for (const block of dayBlocks) {
-      const [startHour, startMinute] = block.start_time.split(':').map(Number);
-      const [endHour, endMinute] = block.end_time.split(':').map(Number);
-
-      const blockStartCairo = reqStartCairo.set({
-        hour: startHour,
-        minute: startMinute,
-        second: 0,
-        millisecond: 0
-      });
-
-      const blockEndCairo = reqStartCairo.set({
-        hour: endHour,
-        minute: endMinute,
-        second: 0,
-        millisecond: 0
-      });
-
-      if (reqStartCairo >= blockStartCairo && reqEndCairo <= blockEndCairo) {
-        isWithinBlock = true;
-        break;
-      }
-    }
+    // Same merged windows as computeAvailableSlots, so every slot we show is a slot we accept.
+    const dayStart = reqStartCairo.startOf('day');
+    const isWithinBlock = mergeDayBlocks(dbAvailability, currentDayIndex).some((block) =>
+      reqStartCairo >= dayStart.plus({ minutes: block.start }) && reqEndCairo <= dayStart.plus({ minutes: block.end }));
 
     const isTestEnv = process.env.NODE_ENV !== 'production' && typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function';
 
     if (!isWithinBlock && dbAvailability.length > 0) {
-      return { isAvailable: false, conflictReason: 'This time slot is outside the teacher\'s available working hours.' };
+      return { isAvailable: false, conflictReason: 'This time slot is no longer in the teacher\'s working hours. Please choose another time.' };
     }
 
     if (dbAvailability.length === 0 && !isTestEnv) {

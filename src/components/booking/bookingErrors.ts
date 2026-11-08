@@ -11,7 +11,7 @@ const AR: Array<[RegExp, string]> = [
   [/valid contact email/i, 'نحتاج إلى بريد صحيح نتواصل معك عليه.'],
   [/student.s name/i, 'اكتب اسم الطالب.'],
   [/parent or guardian name/i, 'اكتب اسم ولي الأمر.'],
-  [/select an available lesson time|time slot is no longer available|slot is no longer available/i, 'هذا الموعد لم يعد متاحًا. اختر موعدًا آخر.'],
+  [/select an available lesson time|no longer available|no longer in the teacher|outside the teacher|just been booked/i, 'هذا الموعد لم يعد متاحًا. اختر موعدًا آخر.'],
   // Specific trial messages first: the general one below used to swallow all of them.
   [/last free trial was cancelled or missed/i, 'آخر حصة تجريبية اتلغت أو فاتت، فتقدر تحجز تجربة جديدة بعد ٤٨ ساعة من إلغائها. الحصص العادية متاحة في أي وقت.'],
   [/family account can have up to/i, 'حساب الأسرة له ٥ حصص تجريبية بحد أقصى. تقدر تحجز حصة عادية في أي وقت، أو كلّمنا لو محتاج تجربة زيادة.'],
