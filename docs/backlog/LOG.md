@@ -703,6 +703,8 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: esbuild syntax pass on every changed file; type check with stubbed libraries shows no new errors; source tests qa-02, qa-04, phase-d, retired-subject-copy pass; screenshots of the sign-in dialog (phone/desktop, ar/en), install sheet, /student door and Today (phone/desktop, empty/full, dark) checked in a stubbed preview
 - Not checked / risks: full `npm test`, `tsc` and `npm run build` could not run in the cloud session (npm registry blocked); run them before pushing. No service worker added (ST-07 rule kept).
 
+- Same day, owner asked for a real popup on first open: the Zaadi question is now a centered dialog (Modal) instead of an inline card. Its "Allow" tap opens the phone's own Allow/Block dialog (browsers only show that from a tap). "Not now" or the close button hides it for good on that device.
+
 ## 2026-10-27 — Owner feedback on the app/auth branch
 - Sign-in dialog, desktop: a two-panel window. On one side, a gold mihrab drawn line by line with the khatam turning in its crown, the verse inside and three promises underneath. On the other, the form, which fits the window with no scroll (name and email side by side). Arabic and English, light and dark checked.
 - Phones: the sheet scrolls by touch and the page behind is locked while it is open.

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BellRing, X } from 'lucide-react';
+import { BellRing } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { Switch } from '../../components/ui/Switch';
 import { Button } from '../../components/ui/Button';
+import { Modal } from '../../components/ui/Modal';
 
 /** VAPID public key (base64url) → the bytes pushManager.subscribe expects. */
 export function keyToBytes(base64url: string): Uint8Array {
@@ -115,7 +116,7 @@ export function PushToggle({ isAr, role = 'student' }: { isAr: boolean; role?: P
 }
 
 /**
- * First open after sign-in: Zaadi asks once whether to send lesson reminders to this device. The browser's own
+ * First open after sign-in: a Zaadi popup asks once whether to send lesson reminders to this device. The browser's own
  * permission dialog opens only from the "Allow" tap (Chrome hides prompts that appear by themselves).
  * Shown only while this device has no subscription, the browser has not blocked notifications, and the person has not
  * said "not now". A device that is already subscribed is re-saved quietly, in case the server dropped it.
@@ -144,8 +145,6 @@ export function PushPrompt({ isAr, role }: { isAr: boolean; role: PushRole }) {
     return () => { alive = false; };
   }, [role]);
 
-  if (!show) return null;
-
   const close = () => { dismissPrompt(); setShow(false); };
   const allow = async () => {
     setBusy(true); setMsg('');
@@ -159,29 +158,25 @@ export function PushPrompt({ isAr, role }: { isAr: boolean; role: PushRole }) {
     }
   };
 
+  // A popup, not an inline card: the owner expects the question to greet him on first open (2026-11-09).
   return (
-    <section data-testid="push-prompt" aria-labelledby="push-prompt-title" className="relative flex items-start gap-3 p-4 rounded-2xl glass-card border border-border">
-      <img src="/zaadi-notification-192.png" alt="" width={44} height={44} className="w-11 h-11 rounded-full shrink-0" />
-      <div className="min-w-0 flex-1 space-y-2">
-        <div className="pe-6">
-          <h2 id="push-prompt-title" className="text-sm font-semibold text-foreground">
-            {isAr ? 'تحب نفكّرك قبل كل حصة؟' : 'Want a reminder before each lesson?'}
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            {role === 'teacher'
-              ? (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة، ولما حصة تتحجز أو تتلغي أو يتغيّر ميعادها، حتى لو التطبيق مقفول.' : 'This device gets a notice before your lessons, and when one is booked, cancelled or moved, even with the app closed.')
-              : (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة ومعاه الواجب، حتى لو التطبيق مقفول.' : 'This device gets a notice before each lesson, with any homework, even with the app closed.')}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" onClick={allow} isLoading={busy} disabled={busy}>{isAr ? 'سماح بالإشعارات' : 'Allow notifications'}</Button>
-          <Button size="sm" variant="ghost" onClick={close} disabled={busy}>{isAr ? 'مش دلوقتي' : 'Not now'}</Button>
+    <Modal isOpen={show} onClose={close} maxWidth="sm" layerClassName="z-[60]">
+      <div data-testid="push-prompt" className="flex flex-col items-center text-center gap-3 pt-2">
+        <img src="/zaadi-notification-192.png" alt="" width={72} height={72} className="w-18 h-18 rounded-full" />
+        <h2 className="text-lg font-semibold text-foreground font-display">
+          {isAr ? 'تحب نفكّرك قبل كل حصة؟' : 'Want a reminder before each lesson?'}
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {role === 'teacher'
+            ? (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة، ولما حصة تتحجز أو تتلغي أو يتغيّر ميعادها، حتى لو التطبيق مقفول.' : 'This device gets a notice before your lessons, and when one is booked, cancelled or moved, even with the app closed.')
+            : (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة ومعاه الواجب، حتى لو التطبيق مقفول.' : 'This device gets a notice before each lesson, with any homework, even with the app closed.')}
+        </p>
+        <div className="flex flex-col w-full gap-2 pt-1">
+          <Button onClick={allow} isLoading={busy} disabled={busy} className="w-full">{isAr ? 'سماح بالإشعارات' : 'Allow notifications'}</Button>
+          <Button variant="ghost" onClick={close} disabled={busy} className="w-full">{isAr ? 'مش دلوقتي' : 'Not now'}</Button>
         </div>
         {msg && <p role="alert" className="text-xs text-destructive">{msg}</p>}
       </div>
-      <button type="button" onClick={close} aria-label={isAr ? 'إغلاق' : 'Close'} className="absolute top-2 end-2 p-1.5 rounded-full text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-        <X className="w-4 h-4" aria-hidden="true" />
-      </button>
-    </section>
+    </Modal>
   );
 }

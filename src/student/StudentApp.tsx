@@ -686,11 +686,7 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
-            {profile?.id && (
-              <div className="mb-4 empty:hidden">
-                <PushPrompt isAr={isAr} role="student" />
-              </div>
-            )}
+            {profile?.id && <PushPrompt isAr={isAr} role="student" />}
             {profile?.id && (
               <div className="mb-4">
                 <TimezoneCheck
