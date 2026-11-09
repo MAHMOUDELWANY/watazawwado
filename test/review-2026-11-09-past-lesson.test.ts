@@ -14,14 +14,14 @@ describe('Owner review 2026-11-09: past lesson', () => {
       { booking_id: 'b1', event: 'link_opened', role: 'teacher', occurred_at: '2026-11-09T10:32:18Z' },
       { booking_id: 'b1', event: 'joined', role: 'teacher', occurred_at: '2026-11-09T10:32:34Z' },
     ]), [lesson]);
-    assert.deepStrictEqual(out.attendance, { teacher: false, student: false });
+    assert.deepStrictEqual({ teacher: out.attendance?.teacher, student: out.attendance?.student }, { teacher: false, student: false });
   });
 
   it('joining during the lesson counts', async () => {
     const [out] = await attachAttendance(fakeDb([
       { booking_id: 'b1', event: 'joined', role: 'teacher', occurred_at: '2026-11-09T09:31:00Z' },
     ]), [lesson]);
-    assert.deepStrictEqual(out.attendance, { teacher: true, student: false });
+    assert.deepStrictEqual({ teacher: out.attendance?.teacher, student: out.attendance?.student }, { teacher: true, student: false });
   });
 
   it('the student sees a finished lesson as waiting for the teacher, not "Rescheduled"', () => {

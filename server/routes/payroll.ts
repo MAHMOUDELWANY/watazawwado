@@ -4,6 +4,7 @@ import { sendEmail } from '../notifications/emailService.js';
 import { renderTeacherNotification } from '../notifications/emailTemplates.js';
 import { resolveEmailLanguage } from '../notifications/dispatcher.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
+import { loadAttendanceAnalysis } from './attendance.js';
 
 /**
  * Teacher pay routes (launch plan D, owner decisions 2026-10-28).
@@ -194,7 +195,7 @@ export function registerPayrollRoutes(app: express.Express, deps: {
     const reason = req.body?.reason;
     if (reason !== 'teacher_absent' && reason !== 'technical') return res.status(400).json({ error: 'Pick what happened.' });
     const isAdmin = req.teacherUser?.role === 'super_admin';
-    const { data: booking } = await client.from('bookings').select('id, teacher_id, reference_code, contact_name, scheduled_start').eq('id', req.params.id).maybeSingle();
+    const { data: booking } = await client.from('bookings').select('id, teacher_id, reference_code, contact_name, scheduled_start, scheduled_end, duration_minutes').eq('id', req.params.id).maybeSingle();
     if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
     // A teacher may report their own lesson (a technical problem, or that they could not attend: then it is unpaid).
     if (!isAdmin && booking.teacher_id !== req.teacherUser.id) {
@@ -203,6 +204,13 @@ export function registerPayrollRoutes(app: express.Express, deps: {
     // Teachers don't cancel upcoming lessons (RULES.md §2): "could not attend" is only for a lesson whose time has come.
     if (!isAdmin && reason === 'teacher_absent' && new Date(booking.scheduled_start).getTime() > Date.now() + 15 * 60 * 1000) {
       return res.status(400).json({ error: 'You can report this from the lesson time on. To move an upcoming lesson, ask the student to reschedule.' });
+    }
+    // Owner review 2026-11-09: Zoom shows the lesson was held, so the teacher can't mark it "not held".
+    if (!isAdmin) {
+      const seen = await loadAttendanceAnalysis(client, booking);
+      if (seen?.held) {
+        return res.status(409).json({ code: 'LESSON_HELD', error: `Zoom shows this lesson was held (${seen.togetherMinutes} minutes together). If something went wrong, message the admin.` });
+      }
     }
     const { data, error } = await client.rpc('record_lesson_not_held', { p_booking_id: booking.id, p_reason: reason });
     if (error) return res.status(400).json({ error: error.message || 'Could not record it.' });

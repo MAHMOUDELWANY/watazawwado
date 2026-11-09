@@ -76,7 +76,7 @@ import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
 import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
-import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath, attachAttendance } from '../server/routes/attendance.js';
+import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath, attachAttendance, loadAttendanceAnalysis, inRoomNow } from '../server/routes/attendance.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
 import { registerNextWeekSuggestionRoutes } from '../server/routes/nextWeekSuggestion.js';
@@ -90,6 +90,7 @@ import { registerHonorRoutes } from '../server/routes/honor.js';
 import { registerCommunityLaterRoutes } from '../server/routes/communityLater.js';
 import { registerChildDeviceRoutes, authenticateChildDevice, KID_TOKEN_PREFIX } from '../server/routes/childDevices.js';
 import { badgesFrom } from '../src/lib/teacherBadges.js';
+import { lessonJoinState } from '../src/lib/lessonWindow.js';
 import { registerUniversityRoutes, canTeach, subjectFor, NOT_LICENSED } from '../server/routes/university.js';
 import { registerSponsorshipRoutes, confirmDonationSession } from '../server/routes/sponsorship.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
@@ -2240,10 +2241,18 @@ app.get('/api/dashboard/bookings/:id/zoom-host-url', verifyTeacherAuth, async (r
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
-    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, zoom_meeting_id').eq('id', req.params.id).maybeSingle();
+    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, zoom_meeting_id, scheduled_start, scheduled_end, duration_minutes, status').eq('id', req.params.id).maybeSingle();
     if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
     if (req.teacherUser?.role !== 'super_admin' && booking.teacher_id !== req.teacherUser?.id) {
       return res.status(403).json({ error: 'This lesson is not yours.' });
+    }
+    // Owner review 2026-11-09: the host link works only during the lesson (from 10 minutes before to its end).
+    const joinState = booking.status === 'cancelled' ? 'ended' : lessonJoinState(booking, 'teacher');
+    if (joinState !== 'open') {
+      return res.status(409).json({
+        code: joinState === 'ended' ? 'lesson_over' : 'too_early',
+        error: joinState === 'ended' ? 'The lesson time is over.' : 'The lesson link opens 10 minutes before the start.',
+      });
     }
     const meetingId = String(booking.zoom_meeting_id || '');
     if (!meetingId || meetingId.startsWith('fallback-') || meetingId.startsWith('room-')) {
@@ -4651,6 +4660,18 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
     }
     const rescheduleReason = typeof req.body?.reschedule_reason === 'string' ? req.body.reschedule_reason.trim().slice(0, 500) : '';
 
+    // Owner review 2026-11-09: a lesson the teacher and student held together (Zoom times) is done: the teacher
+    // can't move it or mark it as a no-show. The super admin still can, after looking at the attendance.
+    if (!isAdminActor && (scheduled_start || status === 'no_show') && new Date(existingBooking.scheduled_start).getTime() <= Date.now()) {
+      const seen = await loadAttendanceAnalysis(supabase, existingBooking);
+      if (seen?.held) {
+        return res.status(409).json({
+          code: 'LESSON_HELD',
+          error: `This lesson was held: you and the student were together for ${seen.togetherMinutes} minutes on Zoom. Please write its report instead.`,
+        });
+      }
+    }
+
     // Moving a lesson that is over or cancelled would revive it (the reschedule RPC sets status='rescheduled').
     if (scheduled_start && ['cancelled', 'completed', 'no_show'].includes(existingBooking.status)) {
       return res.status(400).json({ error: `Cannot reschedule a ${String(existingBooking.status).replace('_', '-')} booking.` });
@@ -5952,6 +5973,23 @@ app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAd
 });
 
 // Student: reschedule a lesson. Trials: once, at least 1 hour before. Regular: at least 3 hours before.
+// Owner review 2026-11-09: what is happening in the lesson room right now, for the student's lesson card.
+app.get('/api/student/bookings/:id/live', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
+    if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
+    const state = lessonJoinState(booking, 'student');
+    if (state !== 'open') return res.json({ state, teacherIn: false, studentIn: false });
+    const { data } = await supabase.from('lesson_attendance_events').select('event, role, occurred_at').eq('booking_id', booking.id).order('occurred_at', { ascending: true }).limit(500);
+    res.json({ state, ...inRoomNow(data || []) });
+  } catch (err) {
+    console.error('[GET /api/student/bookings/:id/live]', err);
+    res.status(500).json({ error: 'Could not load the lesson status.' });
+  }
+});
+
 app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();

@@ -17,11 +17,12 @@ export function LessonAttendance({ bookingId }: { bookingId: string }) {
   const { t, isAr } = useT();
   const [events, setEvents] = useState<AttendanceEvent[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const [summary, setSummary] = useState<{ held: boolean; togetherMinutes: number; requiredMinutes: number; joins: { teacher: number; student: number }; unstable: string | null } | null>(null);
 
   useEffect(() => {
     let alive = true;
-    dashboardFetch<{ events: AttendanceEvent[] }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/attendance`)
-      .then(r => { if (alive) setEvents(r?.events || []); })
+    dashboardFetch<{ events: AttendanceEvent[]; summary?: any }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/attendance`)
+      .then(r => { if (alive) { setEvents(r?.events || []); setSummary(r?.summary || null); } })
       .catch(() => { if (alive) setFailed(true); });
     return () => { alive = false; };
   }, [bookingId]);
@@ -50,6 +51,15 @@ export function LessonAttendance({ bookingId }: { bookingId: string }) {
           {t('Attendance', 'الحضور')}
         </span>
       </div>
+      {summary && (events?.length || 0) > 0 && (
+        <p className={`text-sm rounded-lg px-3 py-2 border ${summary.held ? 'border-success/30 bg-success/10' : 'border-warning/30 bg-warning/10 text-warning-ink'}`}>
+          {summary.held
+            ? t(`Held: together ${summary.togetherMinutes} min (needs ${summary.requiredMinutes}).`, `اتعملت: مع بعض ${summary.togetherMinutes} دقيقة (المطلوب ${summary.requiredMinutes}).`)
+            : t(`Not held yet: together ${summary.togetherMinutes} of ${summary.requiredMinutes} min.`, `لسه ما اتحسبتش: مع بعض ${summary.togetherMinutes} من ${summary.requiredMinutes} دقيقة.`)}
+          {' '}{t(`Joins: teacher ${summary.joins.teacher}, student ${summary.joins.student}.`, `مرات الدخول: المعلم ${summary.joins.teacher}، الطالب ${summary.joins.student}.`)}
+          {summary.unstable && <strong>{' '}{t('Unstable connection.', 'اتصال غير مستقر.')}</strong>}
+        </p>
+      )}
       {failed ? (
         <p className="text-sm text-muted-foreground">{t('Could not load attendance.', 'مقدرناش نحمّل الحضور.')}</p>
       ) : events === null ? (
@@ -82,13 +92,8 @@ export function AttendanceHint({ bookingId }: { bookingId: string }) {
   const [seen, setSeen] = useState<{ teacher: boolean; student: boolean } | null>(null);
   useEffect(() => {
     let alive = true;
-    dashboardFetch<{ events: AttendanceEvent[] }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/attendance`)
-      .then(r => {
-        if (!alive) return;
-        const ev = r?.events || [];
-        const came = (role: string) => ev.some(e => e.role === role && ['link_opened', 'joined', 'waiting_room_joined'].includes(e.event));
-        setSeen({ teacher: came('teacher') || ev.some(e => e.event === 'meeting_started'), student: came('student') });
-      })
+    dashboardFetch<{ summary?: { teacher: boolean; student: boolean } }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/attendance`)
+      .then(r => { if (alive && r?.summary) setSeen({ teacher: r.summary.teacher, student: r.summary.student }); })
       .catch(() => {});
     return () => { alive = false; };
   }, [bookingId]);

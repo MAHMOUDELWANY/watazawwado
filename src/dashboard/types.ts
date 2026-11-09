@@ -30,7 +30,7 @@ export interface DashboardLesson {
   fee_amount_usd?: number | null;
   notes?: string;
   /** Who showed up so far (teacher pressed Start / student opened the link / Zoom joins); only once it started. */
-  attendance?: { teacher: boolean; student: boolean };
+  attendance?: { teacher: boolean; student: boolean; teacherIn?: boolean; studentIn?: boolean; held?: boolean; togetherMinutes?: number; unstable?: 'teacher' | 'student' | 'both' | null };
 }
 
 export interface DashboardSummary {

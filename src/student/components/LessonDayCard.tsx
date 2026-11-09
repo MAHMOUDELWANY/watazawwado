@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Clock, ExternalLink, MessageCircle, NotebookPen, Video } from 'lucide-react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
+import { authedJson } from '../../lib/authedJson';
 
 /** Join opens 10 minutes before the start (ST-01). */
 // The Zoom link is shown only from 5 minutes before the start, on every page (owner, 2026-11-06).
@@ -52,6 +53,45 @@ export function runningLateMessage(ref: string | null | undefined, learnerName: 
     : `Assalamu alaikum, I'm running a few minutes late for today's lesson${who}${ref ? ` (booking ${ref})` : ''}. On my way, in sha Allah.`;
 }
 
+type Live = { teacherIn: boolean; studentIn: boolean };
+
+/** Owner review 2026-11-09: who is in the lesson room now; asked every 30 s while the lesson link is open. */
+export function useLessonLive(bookingId: string | undefined, enabled: boolean): Live | null {
+  const [live, setLive] = useState<Live | null>(null);
+  useEffect(() => {
+    if (!bookingId || !enabled) { setLive(null); return; }
+    let stop = false;
+    const load = () => authedJson<Live>(`/api/student/bookings/${encodeURIComponent(bookingId)}/live`).then((r) => { if (!stop) setLive(r); }).catch(() => {});
+    load();
+    const id = window.setInterval(load, 30_000);
+    return () => { stop = true; window.clearInterval(id); };
+  }, [bookingId, enabled]);
+  return live;
+}
+
+/** The line Zaadi says about the lesson room, or null when there is nothing to say yet. */
+export function liveLine(live: Live | null, started: boolean, isAr: boolean): { text: string; tone: 'waiting' | 'live' | 'calm' } | null {
+  if (!live) return null;
+  if (live.teacherIn && !live.studentIn) return { text: isAr ? 'معلمك دخل ومستنيك، يلا ادخل!' : 'Your teacher is in and waiting for you. Jump in!', tone: 'waiting' };
+  if (live.teacherIn && live.studentIn) return { text: isAr ? 'الحصة شغالة دلوقتي' : 'Your lesson is live', tone: 'live' };
+  if (live.studentIn) return { text: isAr ? 'إنت في الغرفة، ومعلمك جاي حالًا' : "You're in. Your teacher is on the way", tone: 'calm' };
+  if (started) return { text: isAr ? 'الحصة بدأت، ومعلمك لسه ما دخلش' : "The lesson has started; your teacher hasn't joined yet", tone: 'calm' };
+  return null;
+}
+
+export function LiveLessonPill({ line }: { line: NonNullable<ReturnType<typeof liveLine>> }) {
+  const tone = line.tone === 'waiting'
+    ? 'bg-accent/15 border-accent/50 text-foreground'
+    : line.tone === 'live' ? 'bg-success/15 border-success/40 text-foreground' : 'glass-surface border-border-subtle text-muted-foreground';
+  return (
+    <div role="status" aria-live="polite" className={`inline-flex items-center gap-2.5 ps-1 pe-3.5 py-1 rounded-full border text-sm font-semibold ${tone}`}>
+      <img src="/zaadi-notification-192.png" alt="" aria-hidden="true" className={`w-8 h-8 rounded-full ${line.tone === 'waiting' ? 'motion-safe:animate-bounce' : ''}`} />
+      {line.tone !== 'calm' && <span className="relative flex w-2 h-2"><span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-60 motion-safe:animate-ping" /><span className="relative inline-flex w-2 h-2 rounded-full bg-current" /></span>}
+      <span>{line.text}</span>
+    </div>
+  );
+}
+
 /**
  * ST-01: on lesson day the home page leads with this card: countdown, teacher, subject, Join (from 5 minutes
  * before), what to prepare (the teacher's last "next steps") and a "running late" WhatsApp message to the team.
@@ -62,7 +102,9 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
   const start = booking.scheduledStart || booking.scheduled_start;
   const end = booking.scheduledEnd || booking.scheduled_end;
   const state = joinState(start, end, now);
+  const live = useLessonLive(booking.id, state === 'open');
   if (state === 'ended') return null;
+  const line = liveLine(live, now.getTime() >= new Date(start).getTime(), isAr);
   const zoom = String(booking.zoomMeetingLink || booking.zoom_join_url || '').trim();
   const hasZoom = /^https?:\/\//.test(zoom);
   const subject = isAr && booking.serviceArabicTitle ? booking.serviceArabicTitle : booking.serviceTitle;
@@ -89,6 +131,8 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
           <div className="text-lg font-semibold text-primary" aria-live="polite">{countdownLabel(start, isAr, now)}</div>
         </div>
       </div>
+
+      {line && <LiveLessonPill line={line} />}
 
       {booking.prepareNote && (
         <div className="flex items-start gap-2 p-3 rounded-xl glass-surface border border-border-subtle text-sm">

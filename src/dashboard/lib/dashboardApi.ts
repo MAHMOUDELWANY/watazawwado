@@ -280,8 +280,18 @@ export function openZoomAsHost(event: { preventDefault: () => void }, bookingId:
   const tab = window.open('about:blank', '_blank');
   dashboardFetch<{ url?: string }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/zoom-host-url`)
     .then(r => r?.url || fallbackUrl)
-    .catch(() => fallbackUrl)
+    .catch((err) => {
+      // Owner review 2026-11-09: outside the lesson time the server refuses; never fall back to the plain link then.
+      const code = err instanceof DashboardApiError ? err.data?.code : null;
+      if (code !== 'lesson_over' && code !== 'too_early') return fallbackUrl;
+      const ar = document.documentElement.lang === 'ar';
+      window.alert(code === 'lesson_over'
+        ? (ar ? 'انتهى وقت الحصة، والرابط يعمل أثناء الحصة فقط.' : 'The lesson time is over. The link works only during the lesson.')
+        : (ar ? 'رابط الحصة يفتح قبل موعدها بـ10 دقائق.' : 'The lesson link opens 10 minutes before the start.'));
+      return null;
+    })
     .then(url => {
+      if (!url) { tab?.close(); return; }
       if (tab) tab.location.href = url;
       else window.location.href = url;
     });

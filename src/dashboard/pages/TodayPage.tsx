@@ -21,6 +21,7 @@ import { BookingDetailModal } from '../components/BookingDetailModal';
 import { TeacherChecklist } from '../components/TeacherChecklist';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
+import { StartLessonButton } from '../components/StartLessonButton';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { serviceLabel, zoneCity } from '../lib/labels';
@@ -34,10 +35,15 @@ type T = (en: string, ar: string) => string;
 
 
 /** Lesson time has started: say who is actually there instead of a flat "in progress" (owner review 2026-11-07). */
+/** Owner review 2026-11-09: what is happening in the lesson room, from Zoom's join and leave times. */
 function liveLabel(seen: DashboardLesson['attendance'], t: (en: string, ar: string) => string): string {
-  if (!seen) return t('In progress', 'شغالة دلوقتي');
-  if (seen.teacher) return t('In progress', 'شغالة دلوقتي');
+  if (!seen) return t('Lesson time: nobody has joined yet', 'وقت الحصة: محدش دخل لسه');
+  if (seen.unstable) return t('Connection keeps dropping', 'الاتصال بيقطع كتير');
+  if (seen.studentIn && !seen.teacherIn) return t('The student is waiting for you', 'الطالب مستنيك');
+  if (seen.teacherIn && seen.studentIn) return t('Live: the student is with you', 'شغالة: الطالب معاك');
+  if (seen.teacherIn) return seen.student ? t('The student left the room', 'الطالب خرج من الغرفة') : t("The student hasn't joined yet", 'الطالب لسه ما دخلش');
   if (seen.student) return t('The student is waiting for you', 'الطالب مستنيك');
+  if (seen.teacher) return t('In progress', 'شغالة دلوقتي');
   return t('Lesson time: nobody has joined yet', 'وقت الحصة: محدش دخل لسه');
 }
 
@@ -137,6 +143,7 @@ export default function TodayPage() {
     if (nowActive > endLesson) {
       if (seen && !seen.teacher && !seen.student) return { type: 'needs_outcome', label: t('Nobody joined: record what happened', 'محدش دخل: سجّل اللي حصل') };
       if (seen && !seen.student) return { type: 'needs_outcome', label: t('Student did not join: record it', 'الطالب ما دخلش: سجّل اللي حصل') };
+      if (seen?.held) return { type: 'needs_outcome', label: t(`Held (${seen.togetherMinutes} min together): write the report`, `اتعملت (${seen.togetherMinutes} دقيقة مع بعض): اكتب التقرير`) };
       return { type: 'needs_outcome', label: t('Needs outcome', 'محتاجة تسجيل نتيجة') };
     }
 
@@ -563,24 +570,8 @@ function NextLessonSpotlight({
 
         {/* Action Controls */}
         <div className="flex items-center gap-3 shrink-0">
-          {hasStartLink ? (
-            <a
-              href={startLink}
-              onClick={(e) => openZoomAsHost(e, lesson.id, startLink)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-all duration-base shadow-xs"
-            >
-              <Video className="w-4 h-4" />
-              <span>{t('Start lesson', 'ابدأ الحصة')}</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-            </a>
-          ) : (
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-surface text-muted-foreground rounded-xl text-sm font-medium border border-border-subtle">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{t('Link on the way', 'الرابط بيتجهز')}</span>
-            </div>
-          )}
+          {/* Owner review 2026-11-09: Start works only during the lesson. */}
+          <StartLessonButton lesson={lesson} t={t} />
 
           <button
             onClick={onSelect}
@@ -739,17 +730,7 @@ function TodayLessonRow({
       <div className="flex items-center gap-2 shrink-0 sm:ps-4 sm:border-s border-border-subtle">
         {/* Owner review 2026-11-09: no Start after the lesson time; the student can no longer join then. */}
         {!isPast && !isNeedsOutcome && !isCancelled && hasStartLink && (
-          <a
-            href={startLink}
-            onClick={(e) => openZoomAsHost(e, lesson.id, startLink)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
-            title={t('Start lesson as host', 'ابدأ الحصة كمضيف')}
-          >
-            <Video className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">{t('Start', 'ابدأ')}</span>
-          </a>
+          <StartLessonButton lesson={lesson} t={t} label={t('Start', 'ابدأ')} compact />
         )}
 
         {(isCompleted || isNeedsOutcome || isInProgress) &&

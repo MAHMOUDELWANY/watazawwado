@@ -1,5 +1,7 @@
 import express from 'express';
 import crypto from 'node:crypto';
+import { lessonJoinState } from '../../src/lib/lessonWindow.js';
+import { handleLiveLessonEvent } from '../notifications/lessonLive.js';
 
 /**
  * Lesson attendance: what Zoom reports (meeting started/ended, who joined/left, waiting room) plus when the
@@ -84,7 +86,27 @@ export async function recordLinkOpened(supabase: any, bookingId: string, role: '
   if (error) console.error('[attendance] link_opened', error.message);
 }
 
-export type AttendanceSummary = { teacher: boolean; student: boolean };
+export type AttendanceSummary = {
+  teacher: boolean;
+  student: boolean;
+  /** In the Zoom room right now (last Zoom event for that side is a join). */
+  teacherIn?: boolean;
+  studentIn?: boolean;
+  held?: boolean;
+  togetherMinutes?: number;
+  unstable?: 'teacher' | 'student' | 'both' | null;
+};
+
+/** Who is in the Zoom room now: the last Zoom join/leave of each side. */
+export function inRoomNow(events: Array<{ event: string; role: string; occurred_at?: string }>): { teacherIn: boolean; studentIn: boolean } {
+  const last: Record<string, string> = {};
+  const sorted = [...events].sort((a, b) => new Date(a.occurred_at || 0).getTime() - new Date(b.occurred_at || 0).getTime());
+  for (const e of sorted) {
+    if (e.event === 'joined' || e.event === 'left') last[e.role] = e.event;
+    if (e.event === 'meeting_ended') { last.teacher = 'left'; last.student = 'left'; }
+  }
+  return { teacherIn: last.teacher === 'joined', studentIn: last.student === 'joined' };
+}
 
 /**
  * Owner review 2026-11-07: who showed up, from what we know (the teacher pressing "Start", the student opening
@@ -101,8 +123,82 @@ export function summarizeAttendance(events: Array<{ event: string; role: string 
   return sum;
 }
 
+/**
+ * Owner review 2026-11-09: when a lesson counts as held, from Zoom's join/leave times. A 30-minute lesson needs the
+ * teacher and the student together for 20 minutes; a 45- or 60-minute lesson for 30. Held lessons can't be moved,
+ * marked as a no-show or as "not held" by the teacher (the super admin still can).
+ */
+export const requiredTogetherMinutes = (durationMin: number | null | undefined) => ((Number(durationMin) || 30) <= 30 ? 20 : 30);
+/** Joining this many times in one lesson (3+ drops) means the connection is not stable: we ask both sides. */
+export const UNSTABLE_JOINS = 4;
+
+export type AttendanceAnalysis = {
+  teacherFirstJoin: string | null;
+  studentFirstJoin: string | null;
+  togetherMinutes: number;
+  requiredMinutes: number;
+  held: boolean;
+  joins: { teacher: number; student: number };
+  unstable: 'teacher' | 'student' | 'both' | null;
+};
+
+type Ev = { event: string; role: string; occurred_at: string; participant_name?: string | null };
+
+/** Time spans each side was in the Zoom room, cut to the lesson time. */
+function presence(events: Ev[], role: 'teacher' | 'student', from: number, to: number): Array<[number, number]> {
+  const spans: Array<[number, number]> = [];
+  let open: number | null = null;
+  for (const e of events) {
+    if (e.role !== role) continue;
+    const t = new Date(e.occurred_at).getTime();
+    if (e.event === 'joined' && open === null) open = t;
+    else if (e.event === 'left' && open !== null) { spans.push([open, t]); open = null; }
+  }
+  if (open !== null) spans.push([open, Math.min(Date.now(), to)]);
+  return spans.map(([a, b]) => [Math.max(a, from), Math.min(b, to)] as [number, number]).filter(([a, b]) => b > a);
+}
+
+export function analyzeAttendance(
+  rawEvents: Ev[],
+  lesson: { scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null },
+): AttendanceAnalysis {
+  const events = [...rawEvents].sort((a, b) => new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime());
+  const from = new Date(lesson.scheduled_start).getTime() - 10 * 60_000;
+  const to = lesson.scheduled_end ? new Date(lesson.scheduled_end).getTime() : new Date(lesson.scheduled_start).getTime() + (Number(lesson.duration_minutes) || 60) * 60_000;
+  const teacher = presence(events, 'teacher', from, to);
+  const student = presence(events, 'student', from, to);
+  let together = 0;
+  for (const [a1, b1] of teacher) for (const [a2, b2] of student) together += Math.max(0, Math.min(b1, b2) - Math.max(a1, a2));
+  const joins = { teacher: 0, student: 0 };
+  for (const e of events) {
+    const t = new Date(e.occurred_at).getTime();
+    if (e.event === 'joined' && t >= from && t <= to && (e.role === 'teacher' || e.role === 'student')) joins[e.role] += 1;
+  }
+  const first = (role: string) => events.find((e) => e.role === role && (e.event === 'joined' || e.event === 'link_opened'))?.occurred_at || null;
+  const togetherMinutes = Math.floor(together / 60_000);
+  const requiredMinutes = requiredTogetherMinutes(lesson.duration_minutes);
+  const tU = joins.teacher >= UNSTABLE_JOINS;
+  const sU = joins.student >= UNSTABLE_JOINS;
+  return {
+    teacherFirstJoin: first('teacher'),
+    studentFirstJoin: first('student'),
+    togetherMinutes,
+    requiredMinutes,
+    held: togetherMinutes >= requiredMinutes,
+    joins,
+    unstable: tU && sU ? 'both' : tU ? 'teacher' : sU ? 'student' : null,
+  };
+}
+
+/** Loads one lesson's events and analyses them. */
+export async function loadAttendanceAnalysis(supabase: any, booking: { id: string; scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null }): Promise<AttendanceAnalysis | null> {
+  const { data, error } = await supabase.from('lesson_attendance_events').select('event, role, occurred_at').eq('booking_id', booking.id).order('occurred_at', { ascending: true }).limit(500);
+  if (error) return null;
+  return analyzeAttendance(data || [], booking);
+}
+
 /** Adds `attendance` to each lesson that has started (one query for all of them). */
-export async function attachAttendance<T extends { id: string; scheduled_start: string; scheduled_end?: string | null }>(supabase: any, lessons: T[]): Promise<Array<T & { attendance?: AttendanceSummary }>> {
+export async function attachAttendance<T extends { id: string; scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null }>(supabase: any, lessons: T[]): Promise<Array<T & { attendance?: AttendanceSummary }>> {
   const now = Date.now();
   const started = lessons.filter((l) => new Date(l.scheduled_start).getTime() - 10 * 60 * 1000 <= now).map((l) => l.id);
   if (!started.length) return lessons;
@@ -115,7 +211,12 @@ export async function attachAttendance<T extends { id: string; scheduled_start: 
     if (new Date(row.occurred_at).getTime() > (endOf.get(row.booking_id) ?? Infinity)) continue;
     byLesson.set(row.booking_id, [...(byLesson.get(row.booking_id) || []), row]);
   }
-  return lessons.map((l) => (started.includes(l.id) ? { ...l, attendance: summarizeAttendance(byLesson.get(l.id) || []) } : l));
+  return lessons.map((l) => {
+    if (!started.includes(l.id)) return l;
+    const evs = byLesson.get(l.id) || [];
+    const a = analyzeAttendance(evs, l);
+    return { ...l, attendance: { ...summarizeAttendance(evs), ...inRoomNow(evs), held: a.held, togetherMinutes: a.togetherMinutes, unstable: a.unstable } };
+  });
 }
 
 const siteOrigin = () => {
@@ -153,12 +254,15 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
     const supabase = deps.getClient();
     if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
     try {
-      const { data: booking } = await supabase.from('bookings').select('id').eq('zoom_meeting_id', parsed.meetingId).maybeSingle();
+      const { data: booking } = await supabase.from('bookings')
+        .select('id, student_id, teacher_id, scheduled_start, scheduled_end, duration_minutes, reference_code, contact_name')
+        .eq('zoom_meeting_id', parsed.meetingId).maybeSingle();
       if (!booking) return res.json({ ok: true });
       const { error } = await supabase
         .from('lesson_attendance_events')
         .upsert({ ...parsed.row, booking_id: booking.id }, { onConflict: 'dedupe_key', ignoreDuplicates: true });
       if (error) throw error;
+      await handleLiveLessonEvent(supabase, booking, parsed.row.event);
       res.json({ ok: true });
     } catch (err) {
       console.error('[POST /api/zoom/webhook]', err);
@@ -170,9 +274,12 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
     const id = String(req.params.id || '');
     const supabase = deps.getClient();
     if (!UUID_RE.test(id) || !supabase) return res.redirect(302, '/student/lessons');
-    const { data: booking } = await supabase.from('bookings').select('id, zoom_meeting_link').eq('id', id).maybeSingle();
+    const { data: booking } = await supabase.from('bookings').select('id, zoom_meeting_link, scheduled_start, scheduled_end, duration_minutes, status').eq('id', id).maybeSingle();
     const url = booking?.zoom_meeting_link;
     if (!booking || !isZoomUrl(url)) return res.redirect(302, '/student/lessons');
+    // Owner review 2026-11-09: the link works only during the lesson (from 5 minutes before to its end).
+    const state = booking.status === 'cancelled' ? 'ended' : lessonJoinState(booking, 'student');
+    if (state !== 'open') return res.redirect(302, `/student/lessons?lesson=${booking.id}&join=${state}`);
     // Mail scanners and link previews open email links on their own; don't log those as the student.
     const ua = String(req.headers['user-agent'] || '');
     const automated = req.method === 'HEAD' || !ua || LINK_SCANNER_UA.test(ua);
@@ -183,9 +290,10 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
   app.get('/api/dashboard/bookings/:id/attendance', deps.verifyTeacherAuth, async (req: any, res: any) => {
     const supabase = deps.getClient();
     if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
-    const { data: booking } = await supabase.from('bookings').select('id, teacher_id').eq('id', req.params.id).maybeSingle();
+    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, scheduled_start, scheduled_end, duration_minutes').eq('id', req.params.id).maybeSingle();
     if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-    if (req.teacherUser?.role !== 'super_admin' && booking.teacher_id !== req.teacherUser?.id) {
+    const isAdmin = req.teacherUser?.role === 'super_admin';
+    if (!isAdmin && booking.teacher_id !== req.teacherUser?.id) {
       return res.status(403).json({ error: 'This lesson is not yours.' });
     }
     const { data, error } = await supabase
@@ -195,6 +303,9 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
       .order('occurred_at', { ascending: true })
       .limit(200);
     if (error) return res.status(500).json({ error: 'Could not load attendance.' });
-    res.json({ events: data || [] });
+    const a = analyzeAttendance(data || [], booking);
+    const summary = { ...summarizeAttendance(data || []), held: a.held, togetherMinutes: a.togetherMinutes, requiredMinutes: a.requiredMinutes, joins: a.joins, unstable: a.unstable };
+    // Owner review 2026-11-09: exact click and join times are for the super admin; the teacher gets the summary only.
+    res.json({ events: isAdmin ? data || [] : [], summary });
   });
 }

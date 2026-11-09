@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { DashboardTrial, TrialAssessment, LeadStatus } from '../types';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
+import { StartLessonButton } from './StartLessonButton';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { useT } from '../../lib/language';
 
@@ -396,17 +397,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             {/* Zoom Controls */}
             <div className="pt-2 flex flex-wrap items-center gap-2">
               {hostUrl ? (
-                <a
-                  href={hostUrl}
-                  onClick={(e) => openZoomAsHost(e, trial.id, hostUrl)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-primary-material text-primary-foreground text-sm font-semibold shadow-2xs transition-colors"
-                >
-                  <Video className="w-3.5 h-3.5" />
-                  <span>{t('Start as host', 'ابدأ كمضيف')}</span>
-                  <ExternalLink className="w-3 h-3 ms-0.5 opacity-80" />
-                </a>
+                <StartLessonButton lesson={{ ...(trial as any), zoom_host_url: hostUrl }} t={t} label={t('Start as host', 'ابدأ كمضيف')} compact />
               ) : (
                 <div className="text-sm text-warning font-medium flex items-center gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5" />
