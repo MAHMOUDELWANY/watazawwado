@@ -43,7 +43,7 @@ export async function prepareHomeworkSet(client: any, generateJson: GenerateJson
       kind: 'homework_new',
       title: isLesson ? { en: 'Homework on the whole lesson is ready', ar: 'واجب الدرس كامل جاهز' } : { en: 'New homework is ready', ar: 'واجب جديد جاهز' },
       body: { en: `${lesson.title}: a few short questions on what you took today.`, ar: `${lesson.titleAr}: أسئلة قصيرة على اللي خدته النهارده.` },
-      push: { body: { en: 'Zaadi has a few questions for you on today’s lesson. Ready?', ar: 'زادي عنده كام سؤال على درس النهارده. جاهز؟' } },
+      push: { body: { en: 'Zad has a few questions for you on today’s lesson. Ready?', ar: 'زاد عنده كام سؤال على درس النهارده. جاهز؟' } },
       link: `/student/homework?set=${row.id}`,
     });
   }

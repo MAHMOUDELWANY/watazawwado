@@ -69,7 +69,7 @@ export function useLessonLive(bookingId: string | undefined, enabled: boolean): 
   return live;
 }
 
-/** The line Zaadi says about the lesson room, or null when there is nothing to say yet. */
+/** The line Zad says about the lesson room, or null when there is nothing to say yet. */
 export function liveLine(live: Live | null, started: boolean, isAr: boolean): { text: string; tone: 'waiting' | 'live' | 'calm' } | null {
   if (!live) return null;
   if (live.teacherIn && !live.studentIn) return { text: isAr ? 'معلمك دخل ومستنيك، يلا ادخل!' : 'Your teacher is in and waiting for you. Jump in!', tone: 'waiting' };
@@ -85,7 +85,7 @@ export function LiveLessonPill({ line }: { line: NonNullable<ReturnType<typeof l
     : line.tone === 'live' ? 'bg-success/15 border-success/40 text-foreground' : 'glass-surface border-border-subtle text-muted-foreground';
   return (
     <div role="status" aria-live="polite" className={`inline-flex items-center gap-2.5 ps-1 pe-3.5 py-1 rounded-full border text-sm font-semibold ${tone}`}>
-      <img src="/zaadi-notification-192.png" alt="" aria-hidden="true" className={`w-8 h-8 rounded-full ${line.tone === 'waiting' ? 'motion-safe:animate-bounce' : ''}`} />
+      <img src="/zad-notification-192.png" alt="" aria-hidden="true" className={`w-8 h-8 rounded-full ${line.tone === 'waiting' ? 'motion-safe:animate-bounce' : ''}`} />
       {line.tone !== 'calm' && <span className="relative flex w-2 h-2"><span className="absolute inline-flex h-full w-full rounded-full bg-current opacity-60 motion-safe:animate-ping" /><span className="relative inline-flex w-2 h-2 rounded-full bg-current" /></span>}
       <span>{line.text}</span>
     </div>

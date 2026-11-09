@@ -116,12 +116,13 @@ export function PushToggle({ isAr, role = 'student' }: { isAr: boolean; role?: P
 }
 
 /**
- * First open after sign-in: a Zaadi popup asks once whether to send lesson reminders to this device. The browser's own
+ * First open after sign-in: a Zad popup asks once whether to send lesson reminders to this device. The browser's own
  * permission dialog opens only from the "Allow" tap (Chrome hides prompts that appear by themselves).
  * Shown only while this device has no subscription, the browser has not blocked notifications, and the person has not
  * said "not now". A device that is already subscribed is re-saved quietly, in case the server dropped it.
  */
-export function PushPrompt({ isAr, role }: { isAr: boolean; role: PushRole }) {
+/** `hold` keeps it closed while something else greets the person first (Zad's tour). */
+export function PushPrompt({ isAr, role, hold = false }: { isAr: boolean; role: PushRole; hold?: boolean }) {
   const [key, setKey] = useState<string | null>(null);
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -160,9 +161,9 @@ export function PushPrompt({ isAr, role }: { isAr: boolean; role: PushRole }) {
 
   // A popup, not an inline card: the owner expects the question to greet him on first open (2026-11-09).
   return (
-    <Modal isOpen={show} onClose={close} maxWidth="sm" layerClassName="z-[60]">
+    <Modal isOpen={show && !hold} onClose={close} maxWidth="sm" layerClassName="z-[60]">
       <div data-testid="push-prompt" className="flex flex-col items-center text-center gap-3 pt-2">
-        <img src="/zaadi-notification-192.png" alt="" width={72} height={72} className="w-18 h-18 rounded-full" />
+        <img src="/zad-notification-192.png" alt="" width={72} height={72} className="w-18 h-18 rounded-full" />
         <h2 className="text-lg font-semibold text-foreground font-display">
           {isAr ? 'تحب نفكّرك قبل كل حصة؟' : 'Want a reminder before each lesson?'}
         </h2>

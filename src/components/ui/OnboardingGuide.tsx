@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { X, ChevronRight, Compass } from 'lucide-react';
-import { BrandGlassCard } from './BrandGlassCard';
+import { X, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ZadRig, type ZadPose } from '../zad/ZadRig';
 
 export interface OnboardingStep {
-  targetId: string | string[]; // The DOM element ID or data-tour to highlight
+  targetId: string | string[]; // data-tour / id to highlight; empty = a centred card
   title: string;
   description: string;
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
-  icon?: React.ReactNode;
+  /** Zad presents every step; defaults: wave first, cheer last, point between. */
+  pose?: ZadPose;
 }
 
 interface OnboardingGuideProps {
@@ -34,6 +35,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<TargetGeometry | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const [cardHeight, setCardHeight] = useState(220);
   const rafIdRef = useRef<number | null>(null);
 
@@ -59,6 +61,10 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
       if (h > 60) setCardHeight(h);
     }
   }, [currentStepIndex, isOpen]);
+
+  useEffect(() => {
+    if (isOpen) nextRef.current?.focus({ preventScroll: true });
+  }, [isOpen, currentStepIndex]);
 
   // Robust target element finder by data-tour, id, or css selector
   const findTargetElement = useCallback((): HTMLElement | null => {
@@ -145,7 +151,9 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
       if (!found && attempts < maxAttempts) {
         attempts++;
         rafIdRef.current = requestAnimationFrame(resolveTarget);
-      } else if (found) {
+      } else if (!found) {
+        setTargetRect(null); // hidden on this screen: a centred card, never the previous step's highlight
+      } else {
         const el = findTargetElement();
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -205,6 +213,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   const currentStep = steps[currentStepIndex] || steps[0];
   const isLast = currentStepIndex === steps.length - 1;
   const isFirst = currentStepIndex === 0;
+  const pose: ZadPose = currentStep.pose || (isFirst ? 'wave' : isLast ? 'cheer' : 'point');
 
   const nextStep = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -280,7 +289,10 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     <div
       className="fixed inset-0 z-[99998] select-none"
       dir={isAr ? 'rtl' : 'ltr'}
-      onClick={() => onClose()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tour-step-title"
+      aria-describedby="tour-step-body"
     >
       {/* 1. SVG SPOTLIGHT MASK WITH HARDWARE-ACCELERATED SPRING MORPHING */}
       <svg
@@ -373,58 +385,60 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
           style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
         >
           <div className="p-5 flex flex-col gap-3 relative bg-surface">
-            
-            {/* Top Bar: Skip button & Close button */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer px-1.5 py-0.5 rounded-md hover:bg-surface-subtle"
-              >
-                {isAr ? 'تخطي الجولة' : 'Skip Tour'}
-              </button>
-
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-8 h-8 -me-1 -mt-1 flex items-center justify-center rounded-full hover:bg-surface-subtle text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label={isAr ? 'إغلاق' : 'Close'}
-              >
-                <X className="w-4 h-4" />
-              </button>
+            {/* Zad presents the step; the counter says how far along the tour is */}
+            <div className="flex items-start gap-3.5">
+              <div className="shrink-0 w-16 h-16 grid place-items-center rounded-2xl bg-sand-light ring-1 ring-border/60 overflow-visible">
+                <ZadRig pose={pose} size={50} glow={false} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-primary">
+                    {isAr ? `زاد · ${currentStepIndex + 1} من ${steps.length}` : `Zad · ${currentStepIndex + 1} of ${steps.length}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-8 h-8 -me-2 -mt-1.5 flex items-center justify-center rounded-full hover:bg-surface-subtle text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label={isAr ? 'إغلاق الجولة' : 'Close the tour'}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={currentStepIndex}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
+                    className="space-y-1.5 min-h-[64px]"
+                  >
+                    <h3 id="tour-step-title" className="text-base font-bold text-foreground font-display tracking-tight leading-snug">
+                      {currentStep.title}
+                    </h3>
+                    <p id="tour-step-body" className="text-sm text-muted-foreground leading-relaxed">
+                      {currentStep.description}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
 
-            {/* Step Content: Smooth Morphing Animation (Fade + Slide) */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStepIndex}
-                initial={{ opacity: 0, x: isAr ? 12 : -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: isAr ? -12 : 12 }}
-                transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
-                className="space-y-2 min-h-[70px]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 shadow-xs">
-                    {currentStep.icon || <Compass className="w-4 h-4 text-primary" />}
-                  </div>
-                  <h3 className="text-base font-bold text-foreground font-display tracking-tight">
-                    {currentStep.title}
-                  </h3>
-                </div>
-
-                <p className="text-sm text-muted-foreground leading-relaxed ps-10.5">
-                  {currentStep.description}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-
             {/* Bottom Controls & Animated Progress Dots */}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/70">
-              {/* Progress Dots with Animated Active Pill */}
+            <div className="flex items-center justify-between gap-2 mt-1 pt-3 border-t border-border/70">
+              <div className="flex items-center gap-3 min-w-0">
+              {!isLast && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="h-9 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer px-1.5 -ms-1.5 rounded-md hover:bg-surface-subtle"
+                >
+                  {isAr ? 'تخطي' : 'Skip'}
+                </button>
+              )}
               <div
+                aria-hidden="true"
                 className="flex items-center gap-1.5"
-                aria-label={`Step ${currentStepIndex + 1} of ${steps.length}`}
               >
                 {steps.map((_, idx) => (
                   <motion.span
@@ -438,6 +452,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
                   />
                 ))}
               </div>
+              </div>
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
@@ -445,20 +460,21 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-lg cursor-pointer transition-colors"
+                    className="inline-flex items-center justify-center h-9 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-lg cursor-pointer transition-colors"
                   >
                     {isAr ? 'السابق' : 'Back'}
                   </button>
                 )}
 
                 <button
+                  ref={nextRef}
                   type="button"
                   onClick={nextStep}
-                  className="inline-flex items-center justify-center gap-1 px-4 py-1.5 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary-hover rounded-lg cursor-pointer transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center justify-center gap-1 h-9 px-4 text-sm font-bold bg-primary text-primary-foreground hover:bg-primary-hover rounded-lg cursor-pointer transition-all shadow-sm active:scale-95"
                 >
                   <span>
                     {isLast
-                      ? (isAr ? 'ابدأ الاستكشاف' : 'Get Started')
+                      ? (isAr ? 'يلا نبدأ' : "Let's start")
                       : (isAr ? 'التالي' : 'Next')}
                   </span>
                   {!isLast && (

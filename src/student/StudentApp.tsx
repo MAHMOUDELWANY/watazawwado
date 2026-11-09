@@ -61,7 +61,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
 import { ActiveLearnerProvider, ChildSwitcher, PROFILE_CHANGED_EVENT } from './activeLearner';
-import { familyTourSteps, isFamilyAccount, markFamilyTourSeen, shouldAutoOpenFamilyTour } from './familyTour';
+import { familyTourSteps, isFamilyAccount, learnerTourSteps, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
@@ -228,15 +228,17 @@ export default function StudentApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, profileVersion]);
 
-  // PA-05: a family account sees its short tour once, after onboarding, when no sign-in modal is open.
+  // Zad's tour opens once per account on this browser, after onboarding, when no sign-in modal is open.
+  // A family gets the family tour, a learner the learner tour (src/lib/tours.ts).
+  const tourKey = profile?.id && profile.onboardingCompleted !== false ? tourSeenKey(isFamilyAccount(profile) ? 'family' : 'learner', profile.id) : null;
   useEffect(() => {
     if (authModalOpen) return;
     let storage: Storage | null = null;
     try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
-    if (!storage || !shouldAutoOpenFamilyTour(profile, storage)) return;
+    if (!shouldAutoOpenTour(tourKey, storage)) return;
     const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
     return () => window.clearTimeout(timer);
-  }, [profile, authModalOpen]);
+  }, [tourKey, authModalOpen]);
 
   // Unread badge: refreshed in the background on page changes, never blocks the page.
   useEffect(() => {
@@ -427,38 +429,6 @@ export default function StudentApp() {
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-  const globalTourSteps = [
-    {
-      targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
-      title: isAr ? 'حجز الدروس' : 'Book Lessons',
-      description: isAr ? 'من هنا يمكنك حجز مواعيد حصصك الفردية المباشرة بكل سهولة.' : 'Schedule your personalized 1-on-1 sessions at your preferred times.',
-      position: 'top' as const,
-    },
-    {
-      targetId: ['nav-lessons-link', 'nav-lessons-link-desktop', 'student-lessons'],
-      title: isAr ? 'جدول الدروس' : 'My Lessons',
-      description: isAr ? 'متابعة جميع حصصك القادمة والسابقة وروابط زووم المباشرة.' : 'Review your upcoming schedule, past sessions, and direct Zoom links.',
-      position: 'top' as const,
-    },
-    {
-      targetId: ['nav-account-link', 'nav-account-link-desktop', 'student-account'],
-      title: isAr ? 'إدارة الحساب' : 'Account & Profile',
-      description: isAr ? 'تعديل بياناتك، متابعة رصيدك، وضبط أهدافك التعليمية.' : 'Manage your profile, track active credits, and adjust preferences.',
-      position: 'top' as const,
-    },
-    {
-      targetId: ['student-notifications', 'header-notification-btn'],
-      title: isAr ? 'التنبيهات' : 'Notifications',
-      description: isAr ? 'إشعارات فورية بمواعيد الجلسات وتأكيدات الدفع والتحديثات.' : 'Instant alerts for lesson timings, payment confirmations, and updates.',
-      position: 'bottom' as const,
-    },
-    {
-      targetId: ['student-header-tour-btn', 'header-lang-btn', 'language-toggle'],
-      title: isAr ? 'اللغة والإعدادات' : 'Language & Settings',
-      description: isAr ? 'التبديل بين العربية والإنجليزية، وتغيير المظهر الليلي والنهاري.' : 'Switch between Arabic & English, or toggle between light and dark modes.',
-      position: 'bottom' as const,
-    }
-  ];
 
   const displayName = profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student');
   const studentInitial = (profile?.name || user?.email || 'S').charAt(0).toUpperCase();
@@ -689,7 +659,7 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
-            {profile?.id && <PushPrompt isAr={isAr} role="student" />}
+            {profile?.id && <PushPrompt isAr={isAr} role="student" hold={showGlobalTour} />}
             {profile?.id && (
               <div className="mb-4">
                 <TimezoneCheck
@@ -774,13 +744,11 @@ export default function StudentApp() {
       {/* Global Onboarding Guide */}
       <FeedbackHost />
       <OnboardingGuide
-        steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : globalTourSteps}
+        steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : learnerTourSteps(isAr)}
         isOpen={showGlobalTour}
         onClose={() => {
           setShowGlobalTour(false);
-          if (isFamilyAccount(profile)) {
-            try { markFamilyTourSeen(profile, window.localStorage); } catch { /* blocked storage */ }
-          }
+          try { markTourSeen(tourKey, window.localStorage); } catch { /* blocked storage */ }
         }}
         isAr={isAr}
       />

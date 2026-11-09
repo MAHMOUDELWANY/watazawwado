@@ -8,7 +8,7 @@ import { AuthPage, AuthCard } from '../components/auth/AuthFrame';
 import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { BrandLoader } from '../components/ui/BrandLoader';
-import { ZaadiRig } from '../components/zaadi/ZaadiRig';
+import { ZadRig } from '../components/zad/ZadRig';
 import { Card } from '../components/ui/Card';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { FeedbackHost, confirmAction, notify } from '../components/ui/Feedback';
@@ -260,7 +260,7 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
   return (
     <div className="grid gap-5" data-testid="kid-home">
       <div className="flex items-center gap-3">
-        <ZaadiRig pose="wave" size={72} />
+        <ZadRig pose="wave" size={72} />
         <h1 className="text-2xl sm:text-3xl font-display font-bold">{isAr ? `أهلًا يا ${me.learner.name}` : `Assalamu alaykum, ${me.learner.name}`}</h1>
       </div>
 

@@ -33,7 +33,7 @@ import { StudentPageBack } from '../components/StudentPageBack';
 import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
-import { isFamilyAccount } from '../familyTour';
+import { isFamilyAccount } from '../../lib/tours';
 import { useActiveLearner } from '../activeLearner';
 import { AddChildForm } from '../components/AddChildForm';
 import { ChildPhones } from '../components/ChildPhones';

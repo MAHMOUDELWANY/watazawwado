@@ -51,7 +51,7 @@ describe('NX-09 web push', () => {
       sentPayloads.push(JSON.parse(payload));
     }) as any);
     assert.strictEqual(n, 1);
-    assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/zaadi-notification-192.png' });
+    assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/zad-notification-192.png' });
     assert.deepStrictEqual(client.deleted.sort(), ['s2', 's3'], 'gone device removed; a stored non-push address is dropped, never called');
     assert.strictEqual(await sendPushToUser(client, 'u1', { ...notice, kind: 'summary_due' }, 'ar', (async () => { throw new Error('no'); }) as any), 0);
   });

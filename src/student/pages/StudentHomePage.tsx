@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isCoordinationAllowed } from '../lessonsPresentation';
 import { authedJson } from '../../lib/authedJson';
+import { isFamilyAccount } from '../../lib/tours';
 import { DateTime } from 'luxon';
 import {
   Calendar,
@@ -26,9 +27,6 @@ import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
-import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
-import { isFamilyAccount } from '../familyTour';
-import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { PackageBalance } from '../components/PackageBalance';
 import { LessonDayCard, isLessonDay, joinState, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
@@ -196,21 +194,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       .catch(() => {});
   }, []);
 
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  
-  useEffect(() => {
-    // Show onboarding for new users automatically once
-    let hasSeen: string | null = '1';
-    try { hasSeen = localStorage.getItem('watazawwado_onboarding_seen'); } catch { /* blocked storage: never auto-open */ }
-    // A family account gets one combined tour from the portal shell (familyTour.ts), never this one on top of it.
-    if (!hasSeen && !coreLoading && profile && !isFamilyAccount(profile) && bookings.length === 0) {
-      // Small delay to let UI render fully
-      const timer = setTimeout(() => setShowOnboarding(true), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [coreLoading, bookings.length, profile]);
-
   if (coreLoading) {
     return (
       <BrandLoader 
@@ -308,38 +291,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // NO 'verified' value, so we never test for one. Booking-linked payments reuse
   // getBookingPaymentSummary; package/unlinked payments use the real server
   // status 'confirmed'.
-  const handleCloseOnboarding = () => {
-    setShowOnboarding(false);
-    try { localStorage.setItem('watazawwado_onboarding_seen', 'true'); } catch { /* private mode */ }
-  };
-
-  const onboardingSteps: OnboardingStep[] = [
-    {
-      targetId: 'onboarding-welcome',
-      title: isAr ? 'مساحتك التعليمية' : 'Your Learning Home',
-      description: isAr ? 'هنا تجد كل ما يخص دروسك مع معلمك، من حجوزات ومتابعة وتفاصيل.' : 'This is your central hub for all your lessons with your teacher.',
-      position: 'bottom'
-    },
-    {
-      targetId: ['nav-book-link-desktop', 'nav-book-link'],
-      title: isAr ? 'حجز درس جديد' : 'Book a New Lesson',
-      description: isAr ? 'اضغط هنا في أي وقت لحجز جلسة جديدة وتحديد الموعد المناسب.' : 'Tap here anytime to schedule a new 1-on-1 session.',
-      position: 'top'
-    },
-    {
-      targetId: 'onboarding-next-lesson',
-      title: isAr ? 'متابعة دروسك' : 'Track Your Lessons',
-      description: isAr ? 'هنا سيظهر درسك القادم، ويمكنك الانضمام إليه مباشرة.' : 'Your next scheduled lesson will appear here so you can easily join.',
-      position: 'bottom'
-    },
-    {
-      targetId: ['nav-account-link-desktop', 'nav-account-link'],
-      title: isAr ? 'حسابك وإعداداتك' : 'Your Account',
-      description: isAr ? 'تابع باقاتك، مدفوعاتك، وإعدادات منطقتك الزمنية من هنا.' : 'Manage your active packages, verified payments, and timezone settings.',
-      position: 'top'
-    }
-  ];
-
   const showsLessonDayCard = Boolean(nextBooking && ['confirmed', 'rescheduled'].includes(nextBooking.status) && isLessonDay(nextBooking.scheduledStart || nextBooking.scheduled_start));
   const statusLabel = (status: string) => ({
     confirmed: isAr ? 'مؤكدة' : 'Confirmed',
@@ -1029,7 +980,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           }}
         />
       )}
-      <OnboardingGuide steps={onboardingSteps} isOpen={showOnboarding} onClose={handleCloseOnboarding} isAr={isAr} />
     </div>
   );
 }

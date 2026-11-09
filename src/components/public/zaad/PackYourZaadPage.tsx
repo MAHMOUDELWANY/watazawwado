@@ -6,18 +6,18 @@ import { useTheme } from '../../ThemeProvider';
 import { hideBootSplash } from '../../../lib/bootSplash';
 import { useT } from '../../../lib/language';
 import { supabase } from '../../../lib/supabase';
-import { ZaadiRig, type ZaadiPose } from '../../zaadi/ZaadiRig';
+import { ZadRig, type ZadPose } from '../../zad/ZadRig';
 import { markInvited } from '../../../lib/launch';
 import FocusTrap from '../../FocusTrap';
 import { Button } from '../../ui/Button';
 
 /**
  * "Pack your zaad": the waitlist (RULES.md §2 "Launch in waves", BRAND.md §5–8). One track, who it is for, an email
- * or Google, then an honest place in line, the "your voice" card and a share card. Zaadi reacts at each step.
+ * or Google, then an honest place in line, the "your voice" card and a share card. Zad reacts at each step.
  * Spec: docs/superpowers/specs/2026-11-05-pack-your-zaad-waitlist-design.md
  */
 
-type Mood = ZaadiPose | 'party';
+type Mood = ZadPose | 'party';
 type Track = { id: string; emblem: string; color: string; spine: string; spineAr: string; title: string; titleAr: string; line: string; lineAr: string; cheer: string; cheerAr: string };
 
 const TRACKS: Track[] = [
@@ -36,11 +36,11 @@ const PAINS = [
   { key: 'clear_prices', en: 'Clear prices', ar: 'أسعار واضحة' },
 ];
 
-/* ---------- Zaadi: an abstract khatam star that shows feeling through motion only (no face) ---------- */
-function Zaadi({ mood, size = 56 }: { mood: Mood; size?: number }) {
+/* ---------- Zad: an abstract khatam star that shows feeling through motion only (no face) ---------- */
+function Zad({ mood, size = 56 }: { mood: Mood; size?: number }) {
   // the premium rig; party is a cheer, the greeting is a wave
-  const pose: ZaadiPose = mood === 'party' ? 'cheer' : mood;
-  return <ZaadiRig pose={pose} size={size} />;
+  const pose: ZadPose = mood === 'party' ? 'cheer' : mood;
+  return <ZadRig pose={pose} size={size} />;
 }
 
 function Bubble({ text }: { text: string }) {
@@ -169,7 +169,7 @@ function ShareCard({ track, skin, lang, place, inWave }: { track: Track; skin: '
             <span className="absolute inset-x-0 top-1.5 h-[2px] bg-[#D8C6AE]/80" />
           </div>
           <div className="relative"><Bag open={false} zipped bump={0} width={138} /></div>
-          <div className={`absolute -top-6 ${ar ? '-left-7' : '-right-7'}`}><Zaadi mood="wave" size={58} /></div>
+          <div className={`absolute -top-6 ${ar ? '-left-7' : '-right-7'}`}><Zad mood="wave" size={58} /></div>
         </div>
 
         <div className="mt-5 flex items-center gap-2.5 rounded-full py-1.5 pe-4 ps-1.5" style={{ background: s.pill }}>
@@ -231,7 +231,7 @@ export default function PackYourZaadPage() {
   const [error, setError] = useState<string | null>(null);
   const [entry, setEntry] = useState<Entry | null>(null);
   const [mood, setMood] = useState<Mood>('wave');
-  const [say, setSay] = useState(t("Assalamu alaikum, I'm Zaadi. Pick one, and I'll pack it for you.", 'السلام عليكم، أنا زادي. اختر شيئًا، وسأجهّزه لك.'));
+  const [say, setSay] = useState(t("Assalamu alaikum, I'm Zad. Pick one, and I'll pack it for you.", 'السلام عليكم، أنا زاد. اختر شيئًا، وسأجهّزه لك.'));
   const [bump, setBump] = useState(0);
   const [fire, setFire] = useState(0);
   const [pains, setPains] = useState<string[]>([]);
@@ -375,7 +375,7 @@ export default function PackYourZaadPage() {
 
         <div className="relative mt-3 flex flex-col items-center">
           <div className="flex w-full items-end justify-center gap-2">
-            <Zaadi mood={mood} size={step === 4 ? 104 : 92} />
+            <Zad mood={mood} size={step === 4 ? 104 : 92} />
             <Bubble text={say} />
           </div>
           <div ref={bagRef} className="relative mt-1">
@@ -501,7 +501,7 @@ export default function PackYourZaadPage() {
 
               <div className="mt-7 rounded-3xl border border-border bg-surface p-5 text-start">
                 <div className="flex items-center gap-3">
-                  <Zaadi mood={sent ? 'love' : 'think'} size={50} />
+                  <Zad mood={sent ? 'love' : 'think'} size={50} />
                   <div>
                     <p className="text-[16px] font-medium leading-snug">{t('Your voice shapes what we build', 'صوتك يشكّل ما نبنيه')}</p>
                     <p className="text-[13px] text-muted-foreground">{t('What was missing for you before? Tap any, or tell us.', 'ما الذي كان ينقصك من قبل؟ اختر أو اكتب.')}</p>

@@ -7,8 +7,8 @@ import { parse as legacyParse } from 'node:url';
  */
 export const PUSH_KINDS = new Set(['lesson_in_12h', 'lesson_in_2h', 'gift_redeemed', 'recitation_reply', 'quiet_learner', 'lesson_booked', 'lesson_cancelled', 'lesson_rescheduled', 'teacher_lesson_in_2h', 'lesson_waiting', 'lesson_unstable', 'homework_new']);
 
-/** Phone notifications speak as Zaadi, the academy's companion (owner, 2026-11-06), with Zaadi's picture. */
-export const ZAADI = { name: { en: 'Zaadi', ar: 'زادي' }, icon: '/zaadi-notification-192.png' };
+/** Phone notifications speak as Zad, the academy's companion (owner, 2026-11-06), with Zad's picture. */
+export const ZAD = { name: { en: 'Zad', ar: 'زاد' }, icon: '/zad-notification-192.png' };
 
 let configured: boolean | null = null;
 export function pushConfigured(env: Record<string, string | undefined> = process.env): boolean {
@@ -60,8 +60,8 @@ export async function sendPushToUser(
     const { data: subs } = await client.from('push_subscriptions').select('id, endpoint, p256dh, auth').eq('user_id', userId).limit(10);
     let sent = 0;
     const payload = notice.push
-      ? JSON.stringify({ title: ZAADI.name[lang], body: notice.push.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAADI.icon })
-      : JSON.stringify({ title: notice.title[lang], body: notice.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAADI.icon });
+      ? JSON.stringify({ title: ZAD.name[lang], body: notice.push.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAD.icon })
+      : JSON.stringify({ title: notice.title[lang], body: notice.body[lang], url: notice.link || '/student', tag: notice.kind, icon: ZAD.icon });
     for (const s of subs || []) {
       if (!isAllowedPushEndpoint(s.endpoint)) { await client.from('push_subscriptions').delete().eq('id', s.id); continue; }
       try {

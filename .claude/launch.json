@@ -44,6 +44,15 @@
         "set ALLOW_DEV_AUTH=true&& npx tsx --env-file=../../../.env server.ts"
       ],
       "port": 3000
+    },
+    {
+      "name": "dev-worktree-3011",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set ALLOW_DEV_AUTH=true&& set PORT=3011&& set DISABLE_HMR=true&& set VITE_SUPABASE_URL=https://fmwxqyroyxgigvpahpri.supabase.co&& set VITE_SUPABASE_ANON_KEY=sb_publishable_UDlT-RtZL9GEg_nC9rUgYg_n5GbgdqL&& npx tsx --env-file=../../../.env server.ts"
+      ],
+      "port": 3011
     }
   ]
 }

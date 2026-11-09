@@ -6,7 +6,7 @@ import { BrandLoader } from '../../components/ui/BrandLoader';
 import { ErrorState } from '../../components/ErrorState';
 import { authedJson } from '../../lib/authedJson';
 import { CertificateSheet, type CertificateData } from '../../components/certificate/CertificateSheet';
-import { ZaadiRig } from '../../components/zaadi/ZaadiRig';
+import { ZadRig } from '../../components/zad/ZadRig';
 
 /** NX-04: the family's printable certificate for one teacher-recorded milestone. */
 export default function StudentCertificatePage({ lang = 'ar' }: { lang?: 'en' | 'ar' }) {
@@ -25,7 +25,7 @@ export default function StudentCertificatePage({ lang = 'ar' }: { lang?: 'en' | 
       <div className="flex flex-wrap items-center justify-end gap-2 print:hidden">
         {data && (
           <div className="me-auto flex items-center gap-2">
-            <ZaadiRig pose="proud" size={64} />
+            <ZadRig pose="proud" size={64} />
             <span className="font-display text-lg font-bold">{isAr ? 'مبارك! نحن فخورون بك.' : 'Mabrook! We are proud of you.'}</span>
           </div>
         )}

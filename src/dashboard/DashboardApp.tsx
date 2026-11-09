@@ -83,6 +83,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { CommandSearch } from './components/CommandSearch';
 import { useAppLanguage } from '../lib/language';
+import { adminTourSteps, dashTourId, markTourSeen, shouldAutoOpenTour, teacherTourSteps, tourSeenKey } from '../lib/tours';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { FeedbackHost } from '../components/ui/Feedback';
 import { TimezoneCheck } from '../components/ui/TimezoneCheck';
@@ -130,6 +131,22 @@ export function DashboardApp() {
 
   // The welcome greets a signed-in person; a visitor without a session sees the plain brand loader.
   const showWelcome = useWelcomeGate((loading && Boolean(user)) || (isTeacherAuthenticated && !meLoaded));
+
+  // Zad's tour opens once per account on this browser, after the welcome and the teacher agreement.
+  const tourKey = isTeacherAuthenticated && meLoaded && !agreementRequired && user?.id && teacherRole
+    ? tourSeenKey(isSuperAdmin ? 'admin' : 'teacher', user.id) : null;
+  useEffect(() => {
+    if (showWelcome) return;
+    let storage: Storage | null = null;
+    try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
+    if (!shouldAutoOpenTour(tourKey, storage)) return;
+    const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
+    return () => window.clearTimeout(timer);
+  }, [tourKey, showWelcome]);
+  const closeTour = () => {
+    setShowGlobalTour(false);
+    try { markTourSeen(tourKey, window.localStorage); } catch { /* blocked storage */ }
+  };
 
   // Manage body scroll lock and focus when mobile drawer opens/closes
   useEffect(() => {
@@ -301,7 +318,7 @@ export function DashboardApp() {
 
   // Phones show the same main sections as the desktop tabs, so a page never moves between screen sizes.
   const mobileTabs: MobileTab[] = [
-    ...topTabs.map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path), badge: item.path === '/dashboard/messages' ? unreadChats : null })),
+    ...topTabs.map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, tour: dashTourId(item.path), active: isActive(item.path), badge: item.path === '/dashboard/messages' ? unreadChats : null })),
     { key: 'more', id: 'teacher-more-btn', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
   ];
 
@@ -311,26 +328,7 @@ export function DashboardApp() {
   const drawerItems = navigation.filter((item) => item.path !== '/dashboard/notifications' && !mobileTabs.some((tab) => tab.to === item.path));
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const globalTourSteps = [
-    {
-      targetId: ['teacher-rail', 'teacher-sidebar', 'teacher-more-btn'],
-      title: L('Workspace Navigation', 'القائمة الرئيسية'),
-      description: L('Easily navigate between sessions, schedule, student roster, and workspace controls.', 'التنقل بين الدروس، جدول المواعيد، قائمة الطلاب، وإدارة المنصة.'),
-      position: 'bottom' as const,
-    },
-    {
-      targetId: ['teacher-header-tour-btn', 'teacher-lang-btn', 'language-toggle'],
-      title: L('Language & Display', 'تغيير اللغة والعرض'),
-      description: L('Toggle teacher workspace between Arabic and English with one tap.', 'تبديل واجهة المعلم بين العربية والإنجليزية بلمسة واحدة.'),
-      position: 'bottom' as const,
-    },
-    {
-      targetId: ['teacher-account-dropdown', 'teacher-logout'],
-      title: L('Account & Access', 'الحساب وتسجيل الخروج'),
-      description: L('Manage account details and securely sign out when done.', 'إدارة تفاصيل الحساب وتسجيل الخروج بأمان عند الانتهاء.'),
-      position: 'bottom' as const,
-    }
-  ];
+  const globalTourSteps = isSuperAdmin ? adminTourSteps(ar) : teacherTourSteps(ar);
 
   // Search jumps to a page by its name.
   const onSearch = (e: React.FormEvent) => {
@@ -375,6 +373,7 @@ export function DashboardApp() {
               {startsGroup && <span className="shrink-0 w-6 h-px my-1 bg-white/15" aria-hidden="true" />}
               <Link
                 to={item.path}
+                data-tour={dashTourId(item.path)}
                 title={item.group ? `${item.group} · ${item.name}` : item.name}
                 aria-label={item.name}
                 aria-current={active ? 'page' : undefined}
@@ -449,6 +448,7 @@ export function DashboardApp() {
               {startsGroup && <p className="px-4 pt-4 pb-1 text-xs font-semibold text-muted-foreground">{item.group}</p>}
               <Link
                 to={item.path}
+                data-tour={dashTourId(item.path)}
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-current={active ? 'page' : undefined}
                 className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
@@ -535,6 +535,7 @@ export function DashboardApp() {
                   <Link
                     key={item.path}
                     to={item.path}
+                    data-tour={dashTourId(item.path)}
                     aria-current={active ? 'page' : undefined}
                     className={`relative flex items-center gap-2 px-4 h-9 rounded-full text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${active ? 'text-white' : 'text-muted-foreground hover:text-foreground'}`}
                   >
@@ -570,6 +571,7 @@ export function DashboardApp() {
                 <button
                   type="button"
                   onClick={() => setCommandOpen(true)}
+                  data-tour="admin-search"
                   aria-label={L('Search everything (Ctrl K)', 'ابحث في كل حاجة (Ctrl K)')}
                   title={L('Search everything (Ctrl K)', 'ابحث في كل حاجة (Ctrl K)')}
                   className="w-10 h-10 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
@@ -621,7 +623,7 @@ export function DashboardApp() {
             <TeacherAuthDiagnosticPanel />
             <FeedbackHost />
             <TimezoneCheck isAr={ar} />
-            <PushPrompt isAr={ar} role="teacher" />
+            <PushPrompt isAr={ar} role="teacher" hold={showGlobalTour} />
             {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
             <ErrorBoundary>
               <Routes>
@@ -673,7 +675,7 @@ export function DashboardApp() {
         <MobileTabBar tabs={mobileTabs} label={L('Quick mobile navigation', 'التنقل السريع')} hidden={isMobileMenuOpen} isAr={ar} />
       </main>
       {/* Global Onboarding Guide */}
-      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={ar} />
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={closeTour} isAr={ar} />
     </div>
   );
 }

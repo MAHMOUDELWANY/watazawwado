@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { BrandSpinner } from './BrandLoader';
-import { ZaadiRig } from '../zaadi/ZaadiRig';
+import { ZadRig, type ZadPose } from '../zad/ZadRig';
 
 export type WelcomeRole = 'student' | 'teacher' | 'admin';
 export type WelcomeGender = 'male' | 'female' | null | undefined;
@@ -75,52 +75,8 @@ export function useWelcomeGate(loading: boolean): boolean {
   return loading || holding;
 }
 
-const RIBBON = ['#C51F24', '#8B4935', '#E5A93C', '#087D91'];
-
-function RibbonGradient({ id }: { id: string }) {
-  return (
-    <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-      {RIBBON.map((c, i) => <stop key={c} offset={`${(i / (RIBBON.length - 1)) * 100}%`} stopColor={c} />)}
-    </linearGradient>
-  );
-}
-
-/** Teacher: a mihrab arch with a lantern glowing inside. */
-function MihrabLantern({ still }: { still: boolean }) {
-  return (
-    <svg viewBox="0 0 120 140" className="w-32 h-36" aria-hidden="true">
-      <defs>
-        <radialGradient id="welcome-lantern-glow">
-          <stop offset="0%" stopColor="#E5A93C" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#E5A93C" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <motion.circle cx="60" cy="74" r="34" fill="url(#welcome-lantern-glow)" animate={still ? undefined : { opacity: [0.45, 1, 0.45], scale: [0.92, 1.05, 0.92] }} transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }} style={{ transformOrigin: '60px 74px' }} />
-      <path d="M14 134 V58 C14 30 36 12 60 6 C84 12 106 30 106 58 V134" fill="none" stroke="var(--teal)" strokeWidth="3" strokeLinecap="round" />
-      <path d="M26 134 V62 C26 40 42 25 60 20 C78 25 94 40 94 62 V134" fill="none" stroke="#8B4935" strokeOpacity="0.5" strokeWidth="1.5" />
-      <line x1="60" y1="20" x2="60" y2="56" stroke="#8B4935" strokeWidth="1.5" />
-      <path d="M52 60 H68 L72 70 L66 92 H54 L48 70 Z" fill="#E5A93C" fillOpacity="0.25" stroke="#E5A93C" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M50 56 H70 L68 60 H52 Z" fill="#8B4935" />
-      <circle cx="60" cy="76" r="4" fill="#E5A93C" />
-    </svg>
-  );
-}
-
-/** Admin: the logo ribbon unfurls under the wordmark. */
-function LogoRibbon({ still, isAr }: { still: boolean; isAr: boolean }) {
-  return (
-    <div className="flex flex-col items-center gap-3" aria-hidden="true">
-      <span className="font-editorial text-4xl sm:text-5xl font-bold text-ribbon leading-tight">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
-      <svg viewBox="0 0 200 24" className="w-52 h-6">
-        <defs><RibbonGradient id="welcome-ribbon-band" /></defs>
-        <motion.path d="M4 12 C40 0 60 24 100 12 C140 0 160 24 196 12" fill="none" stroke="url(#welcome-ribbon-band)" strokeWidth="5" strokeLinecap="round"
-          initial={{ pathLength: still ? 1 : 0 }} animate={still ? { pathLength: 1 } : { pathLength: [0, 1, 1] }}
-          transition={still ? undefined : { duration: 2.2, times: [0, 0.75, 1], repeat: Infinity, ease: 'easeInOut' }}
-          style={isAr ? { transform: 'scaleX(-1)', transformOrigin: 'center' } : undefined} />
-      </svg>
-    </div>
-  );
-}
+/** Zad greets every account in its own way: a wave for learners and families, a hand on the heart for teachers, calm for the admin. */
+const WELCOME_POSE: Record<WelcomeRole, ZadPose> = { student: 'wave', teacher: 'thanks', admin: 'idle' };
 
 export interface WelcomeLoaderProps {
   role: WelcomeRole;
@@ -129,7 +85,7 @@ export interface WelcomeLoaderProps {
   gender?: WelcomeGender;
 }
 
-/** Full-screen welcome shown while the account loads after sign-in. Each role has its own figure. */
+/** Full-screen welcome shown while the account loads after sign-in, with Zad. */
 export function WelcomeLoader({ role, lang, name, gender }: WelcomeLoaderProps) {
   const still = Boolean(useReducedMotion());
   const isAr = lang === 'ar';
@@ -143,7 +99,7 @@ export function WelcomeLoader({ role, lang, name, gender }: WelcomeLoaderProps) 
       className="fixed inset-0 z-[70] isolate bg-background text-foreground khatam-field brand-lights flex flex-col items-center justify-center gap-7 px-6 text-center"
     >
       <motion.div initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        {role === 'student' ? <ZaadiRig pose="wave" size={132} /> : role === 'teacher' ? <MihrabLantern still={still} /> : <LogoRibbon still={still} isAr={isAr} />}
+        <ZadRig pose={WELCOME_POSE[role]} size={132} />
       </motion.div>
       <motion.div className="space-y-2 max-w-md" initial={still ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}>
         <h1 className="font-editorial text-3xl sm:text-4xl font-bold leading-snug">{title}</h1>

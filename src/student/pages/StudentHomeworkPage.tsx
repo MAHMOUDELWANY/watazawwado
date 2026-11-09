@@ -8,7 +8,7 @@ import FocusTrap from '../../components/FocusTrap';
 /**
  * Owner review 2026-11-09: the Homework tab. Sets come from the curriculum pages the teacher marked after a lesson.
  * New / retry → answer; below the pass mark it waits for the teacher; passed and accepted sets are done.
- * Look per age version: kids playful with Zaadi, teens game-like, adults calm (docs/design/ACCOUNT-VOICE.md).
+ * Look per age version: kids playful with Zad, teens game-like, adults calm (docs/design/ACCOUNT-VOICE.md).
  */
 
 type L = { en: string; ar: string };
@@ -26,7 +26,7 @@ type HwSet = {
 type Badge = { id: string; title: L };
 type Learner = { id: string; name: string; badges: Badge[] };
 
-const ZAADI = '/zaadi-notification-192.png';
+const ZAD = '/zad-notification-192.png';
 
 function useL(lang: 'ar' | 'en') {
   const ar = lang === 'ar';
@@ -109,7 +109,7 @@ function BadgeUnlock({ badges, onClose, pick, t }: { badges: Badge[]; onClose: (
           </svg>
           {!reduce && <motion.div className="absolute inset-0 rounded-t-full" style={{ clipPath: 'inset(0 round 999px 999px 10px 10px)' }}><motion.div className="absolute inset-0" style={{ background: 'linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)' }} initial={{ x: '-120%' }} animate={{ x: '120%' }} transition={{ duration: 1.6, delay: 1.1, repeat: Infinity, repeatDelay: 2.4 }} /></motion.div>}
         </motion.div>
-        <motion.img src={ZAADI} alt="" aria-hidden="true" className="absolute end-[calc(50%-7rem)] -top-2 w-14 h-14 rounded-full" initial={reduce ? false : { scale: 0, y: 30 }} animate={{ scale: 1, y: [30, -8, 0] }} transition={{ delay: 0.9, duration: 0.6 }} />
+        <motion.img src={ZAD} alt="" aria-hidden="true" className="absolute end-[calc(50%-7rem)] -top-2 w-14 h-14 rounded-full" initial={reduce ? false : { scale: 0, y: 30 }} animate={{ scale: 1, y: [30, -8, 0] }} transition={{ delay: 0.9, duration: 0.6 }} />
         <motion.div initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="mt-5 space-y-1 text-white">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F6D58E]">{t('New badge', 'وسام جديد')}</p>
           <p className="font-display text-2xl font-bold">{badges.map((b) => pick(b.title)).join(' · ')}</p>
@@ -148,7 +148,7 @@ function Player({ set, lang, onDone }: { set: HwSet; lang: 'ar' | 'en'; onDone: 
     return (
       <div className="space-y-5">
         <div className="text-center space-y-3">
-          <motion.img src={ZAADI} alt="" aria-hidden="true" className="mx-auto w-20 h-20 rounded-full" initial={reduce ? false : { scale: 0.4, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 12 }} />
+          <motion.img src={ZAD} alt="" aria-hidden="true" className="mx-auto w-20 h-20 rounded-full" initial={reduce ? false : { scale: 0.4, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 12 }} />
           <div className="font-display text-4xl font-bold text-foreground tabular-nums">{result.score}/{result.total}</div>
           <p className="text-base text-foreground">
             {result.passed
@@ -182,7 +182,7 @@ function Player({ set, lang, onDone }: { set: HwSet; lang: 'ar' | 'en'; onDone: 
 
   return (
     <div className="space-y-5">
-      {/* Progress: kids see Zaadi walking along, teens a bold bar, adults a quiet counter. */}
+      {/* Progress: kids see Zad walking along, teens a bold bar, adults a quiet counter. */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>{t(`Question ${i + 1} of ${set.questions.length}`, `سؤال ${i + 1} من ${set.questions.length}`)}</span>
@@ -190,7 +190,7 @@ function Player({ set, lang, onDone }: { set: HwSet; lang: 'ar' | 'en'; onDone: 
         </div>
         <div className={`relative w-full rounded-full bg-surface-subtle ${teens ? 'h-3' : 'h-2'}`}>
           <motion.div className={`h-full rounded-full ${teens ? 'bg-gradient-to-r from-crimson to-[var(--gold)]' : 'bg-teal'}`} animate={{ width: `${((i + (q && answered(q) ? 1 : 0)) / set.questions.length) * 100}%` }} transition={{ type: 'spring', stiffness: 200, damping: 26 }} />
-          {kids && <motion.img src={ZAADI} alt="" aria-hidden="true" className="absolute -top-4 w-9 h-9 rounded-full" animate={{ insetInlineStart: `calc(${(i / set.questions.length) * 100}% - 8px)` }} transition={{ type: 'spring', stiffness: 180, damping: 18 }} />}
+          {kids && <motion.img src={ZAD} alt="" aria-hidden="true" className="absolute -top-4 w-9 h-9 rounded-full" animate={{ insetInlineStart: `calc(${(i / set.questions.length) * 100}% - 8px)` }} transition={{ type: 'spring', stiffness: 180, damping: 18 }} />}
         </div>
       </div>
 
@@ -294,7 +294,7 @@ export default function StudentHomeworkPage({ lang }: { lang: 'ar' | 'en' }) {
   return (
     <div className="space-y-6 pb-16">
       <header className="flex items-center gap-3">
-        <img src={ZAADI} alt="" aria-hidden="true" className="w-12 h-12 rounded-full" />
+        <img src={ZAD} alt="" aria-hidden="true" className="w-12 h-12 rounded-full" />
         <div>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{t('Homework', 'الواجبات')}</h1>
           <p className="text-sm text-muted-foreground">{t('A few questions on what you took, so it stays with you all week.', 'كام سؤال على اللي خدته، عشان يفضل معاك طول الأسبوع.')}</p>
@@ -315,7 +315,7 @@ export default function StudentHomeworkPage({ lang }: { lang: 'ar' | 'en' }) {
       {!data && !error && <p className="text-sm text-muted-foreground">{t('Loading…', 'بنحمّل…')}</p>}
       {data && data.sets.length === 0 && (
         <div className="rounded-3xl border border-dashed border-border p-8 text-center space-y-2">
-          <img src={ZAADI} alt="" aria-hidden="true" className="mx-auto w-16 h-16 rounded-full opacity-90" />
+          <img src={ZAD} alt="" aria-hidden="true" className="mx-auto w-16 h-16 rounded-full opacity-90" />
           <p className="text-foreground font-semibold">{t('No homework yet', 'لسه مفيش واجبات')}</p>
           <p className="text-sm text-muted-foreground">{t('After each lesson your homework shows up here.', 'بعد كل حصة واجبك هيظهر هنا.')}</p>
         </div>

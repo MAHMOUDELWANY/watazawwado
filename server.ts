@@ -9,7 +9,7 @@ import apiRouter from './api/index.js'; // Use .js for TSX/Node resolution
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000; // PORT lets a second worktree run beside another dev server
 
   // Mount API router
   app.use(apiRouter);
