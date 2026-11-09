@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Phone notifications actually reach phones (2026-11-09)
+
+- Problem (owner test): no permission request after installing the app, and no notifications outside it. Production had 0 push subscriptions: the only way in was the switch on the student Notifications page, and teachers could not subscribe at all, so `teacher_lesson_in_2h` and teacher booking notices never reached a device.
+- First open after sign-in (student portal and teacher dashboard): a Zaadi card "Want a reminder before each lesson?" with "Allow notifications" / "Not now". The browser dialog opens only from the tap. Hidden when this device is already subscribed (then re-saved quietly), notifications are blocked, or the person said "not now" / switched them off.
+- Teachers: `POST /api/teacher/push/subscribe|unsubscribe` (verifyTeacherAuth, same validation as the student routes) and the "Phone notifications" switch on the dashboard Notifications page.
+- Subscribing now waits for the service worker to be active (a worker registered on the spot made `subscribe()` fail).
+- Files: `server/routes/push.ts`, `api/index.ts`, `src/student/components/PushToggle.tsx`, `src/student/StudentApp.tsx`, `src/dashboard/DashboardApp.tsx`, `src/dashboard/pages/NotificationsPage.tsx`, `test/nx-09-push.test.ts`.
+- Checks: tsc clean; build passes; full suite 2773 pass / 9 fail, the 9 in booking/migration/OAuth tests that fail the same without this change; card seen locally on phone (375) and desktop (1280) for student and teacher, with test VAPID keys. Not checked: the real subscribe and delivery on a phone (the test browsers have no push service; the Chrome extension was not connected).
+
 ### Owner UX review fixes, part 2: items 23-36 (2026-11-07)
 
 - Homework page for teachers (list, recordings, review, set homework any time); `GET /api/dashboard/homework`, `POST /api/dashboard/students/:id/homework`.

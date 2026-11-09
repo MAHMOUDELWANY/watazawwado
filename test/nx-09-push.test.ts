@@ -77,4 +77,15 @@ describe('NX-09 endpoints', () => {
     if (dev.status !== 401) assert.strictEqual(dev.status, 403);
     assert.strictEqual((await fetch(`${base}/api/push/public-key`)).status, 200);
   });
+
+  // 2026-11-09: teachers had no way to subscribe, so their lesson reminders never reached a phone.
+  it('teachers can subscribe their own device; students cannot use the teacher route', async () => {
+    const post = (headers: any, subscription: any = goodSub) => fetch(`${base}/api/teacher/push/subscribe`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify({ subscription }) });
+    assert.strictEqual((await post({})).status, 401);
+    const student = await post({ Authorization: 'Bearer dev-student-token' });
+    if (student.status !== 401) assert.strictEqual(student.status, 403);
+    // A bad subscription stops at validation (no row written); with dev auth off the token is refused first.
+    const teacher = await post({ Authorization: 'Bearer dev-teacher-token' }, { endpoint: 'https://evil.example/x', keys: { p256dh: 'a', auth: 'b' } });
+    assert.ok([400, 401].includes(teacher.status), String(teacher.status));
+  });
 });

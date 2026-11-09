@@ -5,6 +5,7 @@ import { Bell, CalendarPlus, CalendarX, CalendarClock, Sparkles, Loader2 } from 
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { serviceLabel } from '../lib/labels';
+import { PushToggle } from '../../student/components/PushToggle';
 
 interface DashboardNotification {
   id: string;
@@ -104,6 +105,8 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6">
+      {/* NX-09: phone notifications for this device (opt-in). */}
+      <PushToggle isAr={isAr} role="teacher" />
       <InboxList lang={isAr ? 'ar' : 'en'} />
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">

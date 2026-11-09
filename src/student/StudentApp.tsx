@@ -72,6 +72,7 @@ import { FeedbackHost } from '../components/ui/Feedback';
 import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 import { setActiveWorkingTimezone } from '../lib/countryTimezones';
 import { authedJson } from '../lib/authedJson';
+import { PushPrompt } from './components/PushToggle';
 import { DateTime } from 'luxon';
 import StudentWalletPage from './pages/StudentWalletPage';
 
@@ -685,6 +686,11 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
+            {profile?.id && (
+              <div className="mb-4 empty:hidden">
+                <PushPrompt isAr={isAr} role="student" />
+              </div>
+            )}
             {profile?.id && (
               <div className="mb-4">
                 <TimezoneCheck

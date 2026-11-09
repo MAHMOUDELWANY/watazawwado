@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { BellRing } from 'lucide-react';
+import { BellRing, X } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { Switch } from '../../components/ui/Switch';
+import { Button } from '../../components/ui/Button';
 
 /** VAPID public key (base64url) → the bytes pushManager.subscribe expects. */
 export function keyToBytes(base64url: string): Uint8Array {
@@ -10,27 +11,58 @@ export function keyToBytes(base64url: string): Uint8Array {
   return Uint8Array.from(raw, (c) => c.charCodeAt(0));
 }
 
+export type PushRole = 'student' | 'teacher';
+
 const isIos = () => /iPad|iPhone|iPod/.test(navigator.userAgent);
 const isStandalone = () => window.matchMedia?.('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+const pushSupported = () => typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
+/** Set when the person said "not now" or switched notifications off, so the first-open card never nags again. */
+const PROMPT_DISMISSED_KEY = 'wz.pushPrompt.dismissed';
+const promptDismissed = () => { try { return localStorage.getItem(PROMPT_DISMISSED_KEY) === '1'; } catch { return false; } };
+const dismissPrompt = () => { try { localStorage.setItem(PROMPT_DISMISSED_KEY, '1'); } catch { /* storage blocked */ } };
+
+/** subscribe() needs an active worker, so a worker registered just now is awaited until it activates. */
 async function registration(): Promise<ServiceWorkerRegistration> {
-  return (await navigator.serviceWorker.getRegistration()) || navigator.serviceWorker.register('/sw.js');
+  if (!(await navigator.serviceWorker.getRegistration())) await navigator.serviceWorker.register('/sw.js');
+  return navigator.serviceWorker.ready;
 }
+
+async function publicKey(): Promise<string | null> {
+  const d = await fetch('/api/push/public-key').then((r) => r.json()).catch(() => ({}));
+  return d?.key || null;
+}
+
+/**
+ * Asks the browser (must run from a tap), subscribes this device and saves it on the server.
+ * Returns 'blocked' when the person or the browser refused.
+ */
+async function subscribeThisDevice(role: PushRole, key: string): Promise<'on' | 'blocked'> {
+  const reg = await registration();
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') return 'blocked';
+  const sub = (await reg.pushManager.getSubscription()) || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyToBytes(key) });
+  await authedJson(`/api/${role}/push/subscribe`, { method: 'POST', body: JSON.stringify({ subscription: sub.toJSON() }) });
+  return 'on';
+}
+
+const BLOCKED = { ar: 'المتصفح مانع الإشعارات. تقدر تسمح بيها من إعدادات الموقع في المتصفح.', en: 'Notifications are blocked. You can allow them in this browser\'s site settings.' };
+const FAILED = { ar: 'تعذّر تغيير هذا الإعداد، حاول مرة أخرى.', en: 'Could not change this setting. Please try again.' };
 
 /**
  * NX-09: phone notifications for this device (opt-in): a lesson is coming up, homework waiting. Hidden where the browser
  * cannot do it or the server has no keys yet. On iPhone it works only from the installed app, so we say that instead.
  */
-export function PushToggle({ isAr }: { isAr: boolean }) {
+export function PushToggle({ isAr, role = 'student' }: { isAr: boolean; role?: PushRole }) {
   const [key, setKey] = useState<string | null>(null);
   const [on, setOn] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
-  const supported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const supported = pushSupported();
 
   useEffect(() => {
     if (!supported) return;
-    fetch('/api/push/public-key').then((r) => r.json()).then((d) => setKey(d.key || null)).catch(() => {});
+    publicKey().then(setKey);
     navigator.serviceWorker.getRegistration().then((reg) => reg?.pushManager.getSubscription()).then((s) => setOn(Boolean(s))).catch(() => {});
   }, [supported]);
 
@@ -41,26 +73,20 @@ export function PushToggle({ isAr }: { isAr: boolean }) {
   const toggle = async (next: boolean) => {
     setBusy(true); setMsg('');
     try {
-      const reg = await registration();
       if (next) {
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-          setMsg(isAr ? 'رفض المتصفح الإشعارات. يمكنك السماح بها من إعدادات الموقع في المتصفح.' : 'Notifications are blocked. You can allow them in this browser\'s site settings.');
-          return;
-        }
-        const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyToBytes(key!) });
-        await authedJson('/api/student/push/subscribe', { method: 'POST', body: JSON.stringify({ subscription: sub.toJSON() }) });
+        if ((await subscribeThisDevice(role, key!)) === 'blocked') { setMsg(isAr ? BLOCKED.ar : BLOCKED.en); return; }
         setOn(true);
       } else {
-        const sub = await reg.pushManager.getSubscription();
+        const sub = await (await registration()).pushManager.getSubscription();
         if (sub) {
-          await authedJson('/api/student/push/unsubscribe', { method: 'POST', body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
+          await authedJson(`/api/${role}/push/unsubscribe`, { method: 'POST', body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
           await sub.unsubscribe();
         }
+        dismissPrompt();
         setOn(false);
       }
     } catch {
-      setMsg(isAr ? 'تعذّر تغيير هذا الإعداد، حاول مرة أخرى.' : 'Could not change this setting. Please try again.');
+      setMsg(isAr ? FAILED.ar : FAILED.en);
     } finally {
       setBusy(false);
     }
@@ -77,11 +103,85 @@ export function PushToggle({ isAr }: { isAr: boolean }) {
         </p>
       ) : (
         <Switch checked={on} disabled={busy} onChange={toggle}
-          hint={isAr ? 'تذكير قبل كل حصة، ومعه الواجب إن وُجد. على هذا الجهاز فقط.' : 'A reminder before each lesson, with your homework if there is some. This device only.'}>
+          hint={role === 'teacher'
+            ? (isAr ? 'تذكير قبل كل حصة بساعتين، وخبر لما حصة تتحجز أو تتلغي أو يتغيّر ميعادها. على هذا الجهاز فقط.' : 'A reminder 2 hours before each lesson, and a note when a lesson is booked, cancelled or moved. This device only.')
+            : (isAr ? 'تذكير قبل كل حصة، ومعه الواجب إن وُجد. على هذا الجهاز فقط.' : 'A reminder before each lesson, with your homework if there is some. This device only.')}>
           {isAr ? 'إشعارات على الموبايل' : 'Phone notifications'}
         </Switch>
       )}
       {msg && <p role="alert" className="text-xs text-destructive">{msg}</p>}
+    </section>
+  );
+}
+
+/**
+ * First open after sign-in: Zaadi asks once whether to send lesson reminders to this device. The browser's own
+ * permission dialog opens only from the "Allow" tap (Chrome hides prompts that appear by themselves).
+ * Shown only while this device has no subscription, the browser has not blocked notifications, and the person has not
+ * said "not now". A device that is already subscribed is re-saved quietly, in case the server dropped it.
+ */
+export function PushPrompt({ isAr, role }: { isAr: boolean; role: PushRole }) {
+  const [key, setKey] = useState<string | null>(null);
+  const [show, setShow] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    if (!pushSupported() || Notification.permission === 'denied') return;
+    let alive = true;
+    (async () => {
+      const k = await publicKey();
+      if (!alive || !k) return;
+      const sub = await navigator.serviceWorker.getRegistration().then((reg) => reg?.pushManager.getSubscription()).catch(() => null);
+      if (sub) {
+        authedJson(`/api/${role}/push/subscribe`, { method: 'POST', body: JSON.stringify({ subscription: sub.toJSON() }) }).catch(() => {});
+        return;
+      }
+      if (promptDismissed()) return;
+      setKey(k);
+      setShow(true);
+    })();
+    return () => { alive = false; };
+  }, [role]);
+
+  if (!show) return null;
+
+  const close = () => { dismissPrompt(); setShow(false); };
+  const allow = async () => {
+    setBusy(true); setMsg('');
+    try {
+      if ((await subscribeThisDevice(role, key!)) === 'blocked') { setMsg(isAr ? BLOCKED.ar : BLOCKED.en); dismissPrompt(); return; }
+      setShow(false);
+    } catch {
+      setMsg(isAr ? FAILED.ar : FAILED.en);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section data-testid="push-prompt" aria-labelledby="push-prompt-title" className="relative flex items-start gap-3 p-4 rounded-2xl glass-card border border-border">
+      <img src="/zaadi-notification-192.png" alt="" width={44} height={44} className="w-11 h-11 rounded-full shrink-0" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="pe-6">
+          <h2 id="push-prompt-title" className="text-sm font-semibold text-foreground">
+            {isAr ? 'تحب نفكّرك قبل كل حصة؟' : 'Want a reminder before each lesson?'}
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            {role === 'teacher'
+              ? (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة، ولما حصة تتحجز أو تتلغي أو يتغيّر ميعادها، حتى لو التطبيق مقفول.' : 'This device gets a notice before your lessons, and when one is booked, cancelled or moved, even with the app closed.')
+              : (isAr ? 'هيوصلك إشعار على الجهاز ده قبل الحصة ومعاه الواجب، حتى لو التطبيق مقفول.' : 'This device gets a notice before each lesson, with any homework, even with the app closed.')}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" onClick={allow} isLoading={busy} disabled={busy}>{isAr ? 'سماح بالإشعارات' : 'Allow notifications'}</Button>
+          <Button size="sm" variant="ghost" onClick={close} disabled={busy}>{isAr ? 'مش دلوقتي' : 'Not now'}</Button>
+        </div>
+        {msg && <p role="alert" className="text-xs text-destructive">{msg}</p>}
+      </div>
+      <button type="button" onClick={close} aria-label={isAr ? 'إغلاق' : 'Close'} className="absolute top-2 end-2 p-1.5 rounded-full text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+        <X className="w-4 h-4" aria-hidden="true" />
+      </button>
     </section>
   );
 }

@@ -10418,7 +10418,7 @@ registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudent
 registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 
 // NX-09: phone notifications (web push), opt-in per device.
-registerPushRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit });
+registerPushRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit });
 
 // NX-08: seasonal programs (admin creates, families sign a learner up).
 registerProgramRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent });
