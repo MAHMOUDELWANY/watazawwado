@@ -3,7 +3,8 @@ import assert from 'node:assert';
 import http from 'node:http';
 import fs from 'node:fs';
 import app from '../api/index.js';
-import { parseSubscription, sendPushToUser, pushConfigured, PUSH_KINDS } from '../server/notifications/push.js';
+import { parseSubscription, sendPushToUser, pushConfigured, pushPayload, PUSH_KINDS } from '../server/notifications/push.js';
+import { threadGroup } from '../server/routes/community.js';
 import { keyToBytes } from '../src/student/components/PushToggle.js';
 
 const goodSub = { endpoint: 'https://fcm.googleapis.com/fcm/send/abc', keys: { p256dh: 'BNc', auth: 'xyz' } };
@@ -33,10 +34,21 @@ describe('NX-09 web push', () => {
     }
   });
 
-  // Owner review 2026-11-09: also 'waiting for you' and an unstable lesson connection.
-  // Owner review 2026-11-07: a teacher's phone also buzzes for a lesson booked, moved or cancelled, and 2 hours before.
-  it('only lesson reminders and changes, gift notes, recitation replies and the quiet-learner nudge buzz a phone', () => {
-    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'homework_new', 'lesson_booked', 'lesson_cancelled', 'lesson_in_12h', 'lesson_in_2h', 'lesson_rescheduled', 'lesson_unstable', 'lesson_waiting', 'quiet_learner', 'recitation_reply', 'teacher_lesson_in_2h']);
+  // Owner review 2026-11-09: every account type gets its own phone notices, chat messages included.
+  it('pushes what each account needs, and keeps the quiet news in the bell', () => {
+    for (const k of ['lesson_in_2h', 'homework_set', 'recitation_reply', 'lesson_booked', 'new_student', 'payslip', 'intake_submitted', 'sponsorship_request', 'chat_message', 'lesson_waiting', 'lesson_unstable', 'homework_new']) assert.ok(PUSH_KINDS.has(k), k);
+    for (const k of ['honor_photo_ok', 'family_achievement', 'teacher_photo', 'summary_due']) assert.ok(!PUSH_KINDS.has(k), k);
+  });
+
+  it('lays a notice out like the reference: emoji title, one line, Zaadi or a photo, one button', () => {
+    const n = { kind: 'lesson_in_2h', title: { en: 'Lesson soon', ar: 'حصتك قرّبت' }, body: { en: 'b', ar: 'ب' }, link: '/student/lessons' };
+    assert.deepStrictEqual(pushPayload(n, 'ar'), { title: '⏰ حصتك قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/push/zaadi-point.png', badge: '/push/badge-96.png', action: 'افتح' });
+    const chat = pushPayload({ kind: 'chat_message', title: { en: 'Ustadha Afnan', ar: 'أ. عفنان' }, body: { en: 'Hi', ar: 'Hi' }, image: 'https://x.supabase.co/a.jpg', tag: 'chat-1' }, 'en');
+    assert.strictEqual(chat.icon, 'https://x.supabase.co/a.jpg');
+    assert.strictEqual(chat.tag, 'chat-1');
+    assert.strictEqual(chat.action, 'Reply');
+    for (const k of PUSH_KINDS) assert.ok(fs.existsSync('public' + pushPayload({ kind: k, title: n.title, body: n.body }, 'ar').icon), k);
+    assert.ok(fs.existsSync('public/push/badge-96.png'));
   });
 
   it('sends nothing without keys, and removes a device the push service says is gone', async () => {
@@ -51,7 +63,7 @@ describe('NX-09 web push', () => {
       sentPayloads.push(JSON.parse(payload));
     }) as any);
     assert.strictEqual(n, 1);
-    assert.deepStrictEqual(sentPayloads[0], { title: 'قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/zaadi-notification-192.png' });
+    assert.deepStrictEqual(sentPayloads[0], { title: '⏰ قرّبت', body: 'ب', url: '/student/lessons', tag: 'lesson_in_2h', icon: '/push/zaadi-point.png', badge: '/push/badge-96.png', action: 'افتح' });
     assert.deepStrictEqual(client.deleted.sort(), ['s2', 's3'], 'gone device removed; a stored non-push address is dropped, never called');
     assert.strictEqual(await sendPushToUser(client, 'u1', { ...notice, kind: 'summary_due' }, 'ar', (async () => { throw new Error('no'); }) as any), 0);
   });
@@ -61,7 +73,21 @@ describe('NX-09 web push', () => {
     const sw = fs.readFileSync('public/sw.js', 'utf8');
     assert.match(sw, /addEventListener\('push'/);
     assert.match(sw, /addEventListener\('notificationclick'/);
+    assert.match(sw, /actions:/);
     assert.match(fs.readFileSync('supabase/migrations/20261101000003_push_subscriptions.sql', 'utf8'), /REVOKE ALL ON public\.push_subscriptions FROM anon, authenticated/);
+  });
+});
+
+describe('Inbox sections', () => {
+  it('puts each conversation in the section the owner asked for', () => {
+    const fam = new Set(['parent1']);
+    assert.strictEqual(threadGroup({ kind: 'support', owner_role: 'teacher', owner_user_id: 't1' }, { role: 'admin' }, fam), 'teachers');
+    assert.strictEqual(threadGroup({ kind: 'support', owner_role: 'student', owner_user_id: 'parent1' }, { role: 'admin' }, fam), 'families');
+    assert.strictEqual(threadGroup({ kind: 'support', owner_role: 'student', owner_user_id: 'visitor' }, { role: 'admin' }, fam), 'support');
+    assert.strictEqual(threadGroup({ kind: 'lesson', owner_role: 'student', owner_user_id: 'parent1' }, { role: 'admin' }, fam), 'lessons');
+    assert.strictEqual(threadGroup({ kind: 'lesson', owner_role: 'student', owner_user_id: 'p' }, { role: 'student' }, fam), 'teachers');
+    assert.strictEqual(threadGroup({ kind: 'lesson', owner_role: 'student', owner_user_id: 'p' }, { role: 'teacher' }, fam), 'families');
+    assert.strictEqual(threadGroup({ kind: 'support', owner_role: 'teacher', owner_user_id: 't' }, { role: 'teacher' }, fam), 'team');
   });
 });
 

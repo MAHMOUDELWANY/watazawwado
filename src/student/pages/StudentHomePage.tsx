@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
+import { TeacherFace } from '../../components/TeacherFace';
 import { Link, useNavigate } from 'react-router-dom';
 import { isCoordinationAllowed } from '../lessonsPresentation';
 import { authedJson } from '../../lib/authedJson';
@@ -969,9 +970,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <ul className="space-y-2">
                 {profile.linkedChildren.map((c: any) => (
                   <li key={c.id} className="flex items-center gap-2.5">
+                    <TeacherFace name={c.assignedTeacherName} size={32}>
                     <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-[15px]">
                       {(c.assignedTeacherName || 'و').charAt(0)}
                     </div>
+                    </TeacherFace>
                     <div>
                       <span className="text-sm font-semibold text-foreground block">{c.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}</span>
                       <span className="text-sm text-muted-foreground block">{isAr ? `معلم ${c.name}` : `${c.name}'s teacher`}</span>
@@ -981,9 +984,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </ul>
             ) : (
             <div className="flex items-center gap-2.5">
+              <TeacherFace name={profile?.assignedTeacherName} size={32}>
               <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-[15px]">
                 {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'و'}
               </div>
+              </TeacherFace>
               <div>
                 <span className="text-sm font-semibold text-foreground block">
                   {profile?.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}

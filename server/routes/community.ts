@@ -17,6 +17,8 @@ import type express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { parseModelJson } from '../intake/intakeService.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
+import { sendPushToUser } from '../notifications/push.js';
+import { resolveEmailLanguage } from '../notifications/dispatcher.js';
 import { canTeacherAccessStudent } from './progress.js';
 import { BANKS, LEVELS, LADDERS, buildPlacementTest, rungQuestions, ladderClimb, suggestLevel, skillSummary, normalizeQuestions, type Level, type TestQuestion } from '../placement/index.js';
 
@@ -139,19 +141,54 @@ function isUnreadFor(thread: any, actor: Actor): boolean {
   return !thread[col] || new Date(thread.last_message_at) > new Date(thread[col]);
 }
 
+/** The inbox section a conversation sits in (owner review 2026-11-09: sections instead of one "Support" pile). */
+export function threadGroup(t: { kind: string; owner_role: string; owner_user_id: string }, actor: { role: string }, withTeacher: Set<string>): 'teachers' | 'families' | 'support' | 'lessons' | 'team' {
+  if (actor.role === 'admin') {
+    if (t.kind === 'lesson') return 'lessons';
+    if (t.owner_role === 'teacher') return 'teachers';
+    return withTeacher.has(t.owner_user_id) ? 'families' : 'support';
+  }
+  if (t.kind === 'support') return 'team';
+  return actor.role === 'teacher' ? 'families' : 'teachers';
+}
+
 async function describeThreads(client: any, threads: any[], actor: Actor) {
   const teacherIds = [...new Set(threads.map(t => t.teacher_id).filter(Boolean))];
   const ownerIds = [...new Set(threads.map(t => t.owner_user_id))];
   // The last message of each conversation, for the list preview (matched by thread and its last_message_at).
   const lastTimes = [...new Set(threads.map(t => t.last_message_at).filter(Boolean))];
-  const [{ data: teachers }, { data: owners }, { data: staffOwners }, { data: lastMessages }] = await Promise.all([
-    teacherIds.length ? client.from('profiles').select('id, display_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
+  const unreadThreads = threads.filter((t) => isUnreadFor(t, actor));
+  const [{ data: teachers }, { data: owners }, { data: staffOwners }, { data: lastMessages }, { data: unreadRows }] = await Promise.all([
+    teacherIds.length ? client.from('profiles').select('id, display_name, email').in('id', teacherIds) : Promise.resolve({ data: [] }),
     ownerIds.length ? client.from('students').select('id, auth_user_id, name').in('auth_user_id', ownerIds) : Promise.resolve({ data: [] }),
-    ownerIds.length ? client.from('profiles').select('id, display_name').in('id', ownerIds) : Promise.resolve({ data: [] }),
+    ownerIds.length ? client.from('profiles').select('id, display_name, email').in('id', ownerIds) : Promise.resolve({ data: [] }),
     lastTimes.length
       ? client.from('chat_messages').select('thread_id, body, sender_user_id, created_at').in('thread_id', threads.map(t => t.id)).in('created_at', lastTimes)
+      : Promise.resolve({ data: [] }),
+    // WhatsApp-style counts: the other side's messages since this caller last opened each unread conversation.
+    unreadThreads.length
+      ? client.from('chat_messages').select('thread_id, sender_user_id, created_at').in('thread_id', unreadThreads.map(t => t.id)).neq('sender_user_id', actor.userId)
+          .gt('created_at', unreadThreads.map(t => t[readColumn(t, actor) || ''] || '1970-01-01').sort()[0]).order('created_at', { ascending: false }).limit(1000)
       : Promise.resolve({ data: [] })
   ]);
+  // Teachers' own photos (teacher_accounts.photo_url, uploaded in Settings) for every staff face in the list.
+  const staffEmails = [...new Set([...(teachers || []), ...(staffOwners || [])].map((p: any) => String(p.email || '').toLowerCase()).filter(Boolean))];
+  const { data: staffAccounts } = staffEmails.length
+    ? await client.from('teacher_accounts').select('email, photo_url').in('email', staffEmails)
+    : { data: [] };
+  const photoByEmail = new Map<string, string>((staffAccounts || []).filter((a: any) => /^(\/|https:\/\/)/.test(String(a.photo_url || ''))).map((a: any) => [String(a.email).toLowerCase(), a.photo_url as string] as [string, string]));
+  const photoById = new Map<string, string>();
+  for (const p of [...(teachers || []), ...(staffOwners || [])]) {
+    const photo = photoByEmail.get(String(p.email || '').toLowerCase());
+    if (photo) photoById.set(String(p.id), photo);
+  }
+  const unreadCount = new Map<string, number>();
+  for (const t of unreadThreads) {
+    const since = t[readColumn(t, actor) || ''] || '1970-01-01';
+    unreadCount.set(t.id, (unreadRows || []).filter((m: any) => m.thread_id === t.id && m.created_at > since).length || 1);
+  }
+  // Admin: has this family a teacher yet? Accounts with no lesson conversation are still at the support stage.
+  const withTeacher = new Set(threads.filter(t => t.kind === 'lesson').map(t => t.owner_user_id));
   const lastByThread = new Map<string, any>();
   for (const m of lastMessages || []) {
     const cur = lastByThread.get(m.thread_id);
@@ -178,11 +215,17 @@ async function describeThreads(client: any, threads: any[], actor: Actor) {
     // When the other side last opened this conversation: the sender's own messages up to then show as seen.
     otherReadAt: t.owner_user_id === actor.userId ? t.staff_last_read_at || null : t.owner_last_read_at || null,
     unread: isUnreadFor(t, actor),
+    unreadCount: unreadCount.get(t.id) || 0,
+    group: threadGroup(t, actor, withTeacher),
+    // The face for this conversation: the teacher's photo, or a teacher-owner's own photo in the admin's list.
+    photo: (t.kind === 'lesson' && actor.role !== 'teacher' ? photoById.get(t.teacher_id) : null)
+      || (actor.role === 'admin' && t.owner_role === 'teacher' ? photoById.get(t.owner_user_id) : null)
+      || null,
     ...(actor.role === 'admin' ? { ownerStudentId: ownerStudentId.get(t.owner_user_id) || null } : {})
   }));
 }
 
-export async function postChatMessage(client: any, thread: any, sender: { userId: string; role: 'student' | 'teacher' | 'admin' }, body: string) {
+export async function postChatMessage(client: any, thread: any, sender: { userId: string; role: 'student' | 'teacher' | 'admin'; name?: string }, body: string) {
   const now = new Date().toISOString();
   const { data, error } = await client
     .from('chat_messages')
@@ -192,7 +235,44 @@ export async function postChatMessage(client: any, thread: any, sender: { userId
   if (error) throw error;
   const senderCol = thread.owner_user_id === sender.userId ? 'owner_last_read_at' : 'staff_last_read_at';
   await client.from('chat_threads').update({ last_message_at: now, last_sender_role: sender.role, [senderCol]: now }).eq('id', thread.id);
+  await pushChatMessage(client, thread, sender, body);
   return data;
+}
+
+/**
+ * Owner review 2026-11-09: a new chat message buzzes the other side's phone (sender's name, the first line, their
+ * photo), one notification per conversation that updates instead of piling up. Never throws.
+ */
+async function pushChatMessage(client: any, thread: any, sender: { userId: string; role: 'student' | 'teacher' | 'admin'; name?: string }, body: string) {
+  try {
+    const recipients: Array<{ userId: string; staff: boolean }> = [];
+    if (thread.owner_user_id !== sender.userId) recipients.push({ userId: thread.owner_user_id, staff: thread.owner_role === 'teacher' });
+    if (thread.kind === 'lesson' && thread.teacher_id && thread.teacher_id !== sender.userId) recipients.push({ userId: thread.teacher_id, staff: true });
+    if (thread.kind === 'support' && thread.owner_user_id === sender.userId) {
+      const { data: admins } = await client.from('teacher_accounts').select('email').eq('role', 'super_admin').eq('is_active', true);
+      const emails = (admins || []).map((a: any) => String(a.email || '').toLowerCase()).filter(Boolean);
+      const { data: ps } = emails.length ? await client.from('profiles').select('id').in('email', emails) : { data: [] };
+      for (const p of ps || []) if (p.id !== sender.userId) recipients.push({ userId: p.id, staff: true });
+    }
+    if (!recipients.length) return;
+    const { data: me } = await client.from('profiles').select('email, display_name').eq('id', sender.userId).maybeSingle();
+    const { data: acct } = sender.role === 'student' || !me?.email ? { data: null } : await client.from('teacher_accounts').select('photo_url, display_name').eq('email', String(me.email).toLowerCase()).maybeSingle();
+    const team = sender.role === 'admin';
+    const who = team ? null : (acct?.display_name || sender.name || me?.display_name || '').replace(/\s*\(.*\)\s*$/, '').trim();
+    const title = team ? { en: 'Watazawwado team', ar: 'فريق وتزودوا' } : { en: who || 'New message', ar: who || 'رسالة جديدة' };
+    const text = body.replace(/\s+/g, ' ').trim();
+    const line = text.length > 110 ? `${text.slice(0, 107)}…` : text;
+    const photo = /^(\/|https:\/\/)/.test(String(acct?.photo_url || '')) ? acct.photo_url : team ? '/android-chrome-192x192.png' : null;
+    for (const r of recipients) {
+      const { data: rp } = await client.from('profiles').select('email').eq('id', r.userId).maybeSingle();
+      await sendPushToUser(client, r.userId, {
+        kind: 'chat_message', title, body: { en: line, ar: line }, image: photo, tag: `chat-${thread.id}`,
+        link: `${r.staff ? '/dashboard' : '/student'}/messages?thread=${thread.id}`,
+      }, rp?.email ? await resolveEmailLanguage(rp.email) : 'ar');
+    }
+  } catch (err: any) {
+    console.warn('[Chat push] failed:', err?.message || err);
+  }
 }
 
 /** Puts an admin message in the account's support thread (used by intake "request more info"). */
@@ -361,7 +441,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
     if (body.length > MAX_MESSAGE) return res.status(400).json({ error: `Messages can be up to ${MAX_MESSAGE} characters.` });
     const { data: thread } = await client.from('chat_threads').select('*').eq('id', req.params.id).maybeSingle();
     if (!canAccessThread(thread, actor)) return res.status(404).json({ error: 'Conversation not found.' });
-    const message = await postChatMessage(client, thread, { userId: actor.userId, role: actor.role }, body);
+    const message = await postChatMessage(client, thread, { userId: actor.userId, role: actor.role, name: actor.name }, body);
     res.status(201).json({ message: { ...message, mine: true, sender_user_id: undefined } });
   }));
 

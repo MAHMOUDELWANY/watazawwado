@@ -49,6 +49,6 @@ describe('AD-03 admin inbox', () => {
     assert.ok(src.includes("...(actor.role === 'admin' ? { ownerStudentId: ownerStudentId.get(t.owner_user_id) || null } : {})"));
     const panel = fs.readFileSync('src/components/chat/ChatPanel.tsx', 'utf8');
     assert.ok(panel.includes('isAdmin && active.ownerStudentId'));
-    assert.ok(panel.includes('const shown = isAdmin ? filterThreads(threads, filter) : threads;'), 'families and teachers keep their order');
+    assert.ok(panel.includes('const shown = filterThreads(threads, filter, { sort: isAdmin });'), 'families and teachers keep their order');
   });
 });

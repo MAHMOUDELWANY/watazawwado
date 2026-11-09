@@ -8185,6 +8185,31 @@ app.get('/api/student/teachers', verifyStudentAuth, async (_req: any, res: any) 
   }
 });
 
+// GET /api/teacher-photos - Each teacher's own photo (uploaded in Settings) with their names, so every place that shows
+// a teacher can show their face (owner review 2026-11-09). Photos are already public; no emails leave the server.
+app.get('/api/teacher-photos', async (_req: any, res: any) => {
+  try {
+    const client = getSupabaseAdminClient();
+    if (!client) return res.json({ teachers: [] });
+    const { data: accounts } = await client.from('teacher_accounts').select('email, display_name, display_name_ar, photo_url').eq('is_active', true);
+    const withPhoto = (accounts || []).filter((a: any) => /^(\/|https:\/\/)/.test(String(a.photo_url || '')));
+    const emails = withPhoto.map((a: any) => String(a.email || '').toLowerCase());
+    const { data: profiles } = emails.length ? await client.from('profiles').select('id, email').in('email', emails) : { data: [] };
+    const idByEmail = new Map((profiles || []).map((p: any) => [String(p.email || '').toLowerCase(), p.id]));
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.json({
+      teachers: withPhoto.map((a: any) => ({
+        id: idByEmail.get(String(a.email || '').toLowerCase()) || null,
+        names: [a.display_name, String(a.display_name || '').replace(/\s*\(.*\)\s*$/, '').trim(), a.display_name_ar].filter(Boolean),
+        photo: a.photo_url
+      }))
+    });
+  } catch (err) {
+    console.error('[GET /api/teacher-photos Error]', err);
+    res.json({ teachers: [] });
+  }
+});
+
 // GET /api/geo - Country of the visitor from the hosting edge (used only to pre-fill onboarding).
 app.get('/api/geo', (req: any, res: any) => {
   const raw = String(req.headers['x-vercel-ip-country'] || '').trim().toUpperCase();

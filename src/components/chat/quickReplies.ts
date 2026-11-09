@@ -39,15 +39,20 @@ export function saveCustomReplies(storage: Pick<Storage, 'setItem'> | null, repl
 /** Arabic letters in the text → an Arabic reply. */
 export const replyLang = (text: string): 'ar' | 'en' => (/[؀-ۿ]/.test(text) ? 'ar' : 'en');
 
-export function filterThreads<T extends { kind: string; ownerName: string | null; teacherName: string | null; unread: boolean; lastMessageAt: string | null }>(
+export function filterThreads<T extends { kind: string; ownerName: string | null; teacherName: string | null; unread: boolean; lastMessageAt: string | null; group?: string }>(
   threads: T[],
-  f: { query: string; teacher: string; kind: 'all' | 'support' | 'lesson' }
+  f: { query: string; teacher: string; kind: 'all' | 'support' | 'lesson'; group?: string },
+  opts: { sort?: boolean } = { sort: true }
 ): T[] {
   const q = f.query.trim().toLowerCase();
-  return threads
+  const out = threads
     .filter((t) => f.kind === 'all' || t.kind === f.kind)
+    // Inbox sections (owner review 2026-11-09): 'unread', or one of the server's groups.
+    .filter((t) => !f.group || f.group === 'all' || (f.group === 'unread' ? t.unread : t.group === f.group))
     .filter((t) => !f.teacher || t.teacherName === f.teacher)
-    .filter((t) => !q || `${t.ownerName || ''} ${t.teacherName || ''}`.toLowerCase().includes(q))
+    .filter((t) => !q || `${t.ownerName || ''} ${t.teacherName || ''}`.toLowerCase().includes(q));
+  if (opts.sort === false) return out;
+  return out
     .slice()
     .sort((a, b) => Number(b.unread) - Number(a.unread) || String(b.lastMessageAt || '').localeCompare(String(a.lastMessageAt || '')));
 }

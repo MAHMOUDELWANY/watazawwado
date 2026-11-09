@@ -42,6 +42,7 @@ function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<
 // Dev-only design prototype; import.meta.env.DEV is false in production builds, so the chunk is dropped there.
 const PackYourZaadPage = lazyWithReload(() => import('./components/public/zaad/PackYourZaadPage'));
 const ZaadiShowcase = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/ZaadiShowcase')) : null;
+const MessagesPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/MessagesPrototype')) : null;
 const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
 const LearningPage = lazyWithReload(() => import('./components/public/learning/LearningPage').then((m) => ({ default: m.LearningPage })));
 const HowItWorksPage = lazyWithReload(() => import('./components/public/how-it-works/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })));
@@ -106,6 +107,7 @@ export function AppRoutes() {
           <Route path="/zaad" element={<PackYourZaadPage />} />
           <Route path="/ar/zaad" element={<PackYourZaadPage />} />
           {ZaadiShowcase && <Route path="/prototype/zaadi" element={<ZaadiShowcase />} />}
+          {MessagesPrototype && <Route path="/prototype/messages" element={<MessagesPrototype />} />}
           {/* Public Routes with Shared Layout */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<PublicHomepage />} />

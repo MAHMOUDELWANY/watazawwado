@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { TeacherFace } from '../../components/TeacherFace';
 import { LEVEL_LABELS } from '../../components/booking/StepServiceSelect';
 import { NotificationPreferences } from '../components/NotificationPreferences';
 import { subjectLabel as subjectName } from '../../components/onboarding/subjects';
@@ -644,9 +645,11 @@ export default function StudentProfilePage({
               {/* Teacher Relationship Banner: a family account is not a learner; each child's teacher shows on their card below. */}
               {!isFamilyAccount(profile) && (
               <div className="p-4 rounded-2xl glass-surface border border-border flex items-start gap-4">
+                <TeacherFace name={profile?.assignedTeacherName} size={48} className="mt-0.5">
                 <div className="w-12 h-12 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-display font-bold text-lg shrink-0 mt-0.5 select-none">
                   {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
                 </div>
+                </TeacherFace>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-display font-bold text-foreground text-base">
