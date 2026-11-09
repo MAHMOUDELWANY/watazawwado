@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Award, Check, ChevronLeft, ChevronRight, ClipboardCheck, Clock, RotateCcw, Sparkles, X } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
+import FocusTrap from '../../components/FocusTrap';
 
 /**
  * Owner review 2026-11-09: the Homework tab. Sets come from the curriculum pages the teacher marked after a lesson.
@@ -76,6 +77,7 @@ function BadgeUnlock({ badges, onClose, pick, t }: { badges: Badge[]; onClose: (
   const reduce = useReducedMotion();
   return (
     <motion.div className="fixed inset-0 z-[70] grid place-items-center bg-[#1E1410]/80 backdrop-blur-sm p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} role="dialog" aria-modal="true" aria-label={t('New badge', 'وسام جديد')}>
+      <FocusTrap onEscape={onClose}>
       <div className="relative text-center" onClick={(e) => e.stopPropagation()}>
         {!reduce && (
           <>
@@ -105,15 +107,16 @@ function BadgeUnlock({ badges, onClose, pick, t }: { badges: Badge[]; onClose: (
               <circle r="7" fill="#F6D58E" />
             </g>
           </svg>
-          {!reduce && <motion.div className="absolute inset-0 rounded-t-full" style={{ background: 'linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)' }} initial={{ x: '-120%' }} animate={{ x: '120%' }} transition={{ duration: 1.6, delay: 1.1, repeat: Infinity, repeatDelay: 2.4 }} />}
+          {!reduce && <motion.div className="absolute inset-0 rounded-t-full" style={{ clipPath: 'inset(0 round 999px 999px 10px 10px)' }}><motion.div className="absolute inset-0" style={{ background: 'linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)' }} initial={{ x: '-120%' }} animate={{ x: '120%' }} transition={{ duration: 1.6, delay: 1.1, repeat: Infinity, repeatDelay: 2.4 }} /></motion.div>}
         </motion.div>
-        <motion.img src={ZAADI} alt="" aria-hidden="true" className="absolute -end-10 bottom-16 w-16 h-16 rounded-full" initial={reduce ? false : { scale: 0, y: 30 }} animate={{ scale: 1, y: [30, -8, 0] }} transition={{ delay: 0.9, duration: 0.6 }} />
+        <motion.img src={ZAADI} alt="" aria-hidden="true" className="absolute end-[calc(50%-7rem)] -top-2 w-14 h-14 rounded-full" initial={reduce ? false : { scale: 0, y: 30 }} animate={{ scale: 1, y: [30, -8, 0] }} transition={{ delay: 0.9, duration: 0.6 }} />
         <motion.div initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="mt-5 space-y-1 text-white">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F6D58E]">{t('New badge', 'وسام جديد')}</p>
           <p className="font-display text-2xl font-bold">{badges.map((b) => pick(b.title)).join(' · ')}</p>
           <button type="button" onClick={onClose} className="mt-4 rounded-full bg-[#F6D58E] text-[#1E1410] font-bold px-6 py-2.5 min-h-[44px]">{t('Yay!', 'يا سلام!')}</button>
         </motion.div>
       </div>
+      </FocusTrap>
     </motion.div>
   );
 }
@@ -329,6 +332,7 @@ export default function StudentHomeworkPage({ lang }: { lang: 'ar' | 'en' }) {
       <AnimatePresence>
         {open && (
           <motion.div className="fixed inset-0 z-[60] bg-background/95 backdrop-blur-sm overflow-y-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} role="dialog" aria-modal="true" aria-label={pick(open.title)}>
+            <FocusTrap onEscape={close}>
             <div className="max-w-xl mx-auto px-4 py-6 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-semibold text-foreground truncate">{pick(open.title)}</p>
@@ -336,6 +340,7 @@ export default function StudentHomeworkPage({ lang }: { lang: 'ar' | 'en' }) {
               </div>
               <Player set={open} lang={lang} onDone={(r) => { close(); if (r.newBadges.length) setBadges(r.newBadges); load(); }} />
             </div>
+            </FocusTrap>
           </motion.div>
         )}
       </AnimatePresence>

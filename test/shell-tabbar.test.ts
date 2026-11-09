@@ -25,9 +25,9 @@ test('tab bars point at existing routes for every role', () => {
   }
   assert.match(student, /setSidebarOpen\(true\)/, '"More" opens the sheet');
   // One place per screen size: header tabs and rail share no page; bottom bar and the More sheet share none.
-  assert.match(student, /const topTabs = \[home, lessons, book, curriculum\];/);
+  assert.match(student, /const topTabs = \[home, lessons, book, curriculum, homework\];/);
   assert.match(student, /const railItems = \[messages, wallet, calendar, progress, community, guide, invite, sponsor\];/);
-  assert.match(student, /const moreItems = \[curriculum, wallet, calendar, progress, community, guide, invite, sponsor\];/);
+  assert.match(student, /const moreItems = \[homework, curriculum, wallet, calendar, progress, community, guide, invite, sponsor\];/);
 });
 
 test('welcome loader is wired after sign-in for staff and students', () => {
