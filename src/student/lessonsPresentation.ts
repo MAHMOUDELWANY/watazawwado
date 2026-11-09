@@ -148,6 +148,13 @@ export function getLessonDisplayStatus(
 ): LessonStatusPresentation {
   const status = booking?.status;
 
+  // Owner review 2026-11-09: a lesson whose time is over is not "Rescheduled" or "Confirmed" any more; it waits
+  // for the teacher to record what happened (held, missed, or not held for a reason that keeps the credit).
+  const endMs = new Date(booking?.scheduled_end || booking?.scheduledEnd || '').getTime();
+  if ((status === 'confirmed' || status === 'rescheduled') && Number.isFinite(endMs) && endMs < Date.now()) {
+    return { label: isAr ? 'بانتظار تسجيل المعلم' : "Awaiting the teacher's record", variant: 'secondary' };
+  }
+
   switch (status) {
     case 'completed':
       return { label: isAr ? 'مكتمل' : 'Completed', variant: 'success' };

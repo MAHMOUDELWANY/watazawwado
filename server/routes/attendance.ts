@@ -102,14 +102,19 @@ export function summarizeAttendance(events: Array<{ event: string; role: string 
 }
 
 /** Adds `attendance` to each lesson that has started (one query for all of them). */
-export async function attachAttendance<T extends { id: string; scheduled_start: string }>(supabase: any, lessons: T[]): Promise<Array<T & { attendance?: AttendanceSummary }>> {
+export async function attachAttendance<T extends { id: string; scheduled_start: string; scheduled_end?: string | null }>(supabase: any, lessons: T[]): Promise<Array<T & { attendance?: AttendanceSummary }>> {
   const now = Date.now();
   const started = lessons.filter((l) => new Date(l.scheduled_start).getTime() - 10 * 60 * 1000 <= now).map((l) => l.id);
   if (!started.length) return lessons;
-  const { data, error } = await supabase.from('lesson_attendance_events').select('booking_id, event, role').in('booking_id', started).limit(2000);
+  const { data, error } = await supabase.from('lesson_attendance_events').select('booking_id, event, role, occurred_at').in('booking_id', started).limit(2000);
   if (error) return lessons;
+  // Owner review 2026-11-09: joining after the lesson time does not count as attending it.
+  const endOf = new Map(lessons.map((l) => [l.id, l.scheduled_end ? new Date(l.scheduled_end).getTime() : Infinity]));
   const byLesson = new Map<string, any[]>();
-  for (const row of data || []) byLesson.set(row.booking_id, [...(byLesson.get(row.booking_id) || []), row]);
+  for (const row of data || []) {
+    if (new Date(row.occurred_at).getTime() > (endOf.get(row.booking_id) ?? Infinity)) continue;
+    byLesson.set(row.booking_id, [...(byLesson.get(row.booking_id) || []), row]);
+  }
   return lessons.map((l) => (started.includes(l.id) ? { ...l, attendance: summarizeAttendance(byLesson.get(l.id) || []) } : l));
 }
 

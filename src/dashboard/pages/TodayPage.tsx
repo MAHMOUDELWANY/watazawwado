@@ -708,7 +708,7 @@ function TodayLessonRow({
 
           {isNeedsOutcome && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/15 text-warning-ink border border-warning/40">
-              {t('Needs outcome', 'محتاجة تسجيل نتيجة')}
+              {timeContext.label}
             </span>
           )}
 
@@ -737,7 +737,8 @@ function TodayLessonRow({
 
       {/* Action Buttons Column */}
       <div className="flex items-center gap-2 shrink-0 sm:ps-4 sm:border-s border-border-subtle">
-        {!isPast && !isCancelled && hasStartLink && (
+        {/* Owner review 2026-11-09: no Start after the lesson time; the student can no longer join then. */}
+        {!isPast && !isNeedsOutcome && !isCancelled && hasStartLink && (
           <a
             href={startLink}
             onClick={(e) => openZoomAsHost(e, lesson.id, startLink)}
