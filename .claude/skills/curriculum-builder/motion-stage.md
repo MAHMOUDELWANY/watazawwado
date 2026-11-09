@@ -65,5 +65,5 @@ something (into Madinah, down under the building of Islam), never to drift.
 ## Versions
 - Adults: the reference above.
 - Kids and Teens: same system and the same rules for text and meaning; their own tone (Kids brighter, playful,
-  characters from the library; Teens bolder, faster). Prototype 2–3 pages in the version's tone, send a video, get the
+  characters from the library; Teens bolder, faster). Prototype 2–3 pages in the version's tone, ship them to the live site for review (no videos), get the
   owner's yes before rolling the lesson out.
