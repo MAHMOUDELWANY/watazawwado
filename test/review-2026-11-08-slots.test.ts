@@ -24,6 +24,12 @@ describe('Owner review 2026-11-08: slots', () => {
     assert.strictEqual(src.split('mergeDayBlocks(dbAvailability, currentDayIndex)').length - 1, 2);
   });
 
+  // 2026-11-09: the browser pre-check sent no teacher, so every slot was checked against another teacher's hours.
+  it('the browser slot pre-check sends the lesson teacher', () => {
+    const src = fs.readFileSync('src/lib/bookingRepository.ts', 'utf8');
+    assert.match(src, /JSON\.stringify\(\{ scheduledStartUtc, scheduledEndUtc, teacherId:/);
+  });
+
   it('the working-hours error reads as "pick another time" in Arabic', () => {
     assert.match(bookingErrorText("This time slot is no longer in the teacher's working hours. Please choose another time.", false), /لم يعد متاحًا/);
   });

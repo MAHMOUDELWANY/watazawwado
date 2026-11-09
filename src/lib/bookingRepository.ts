@@ -131,7 +131,8 @@ export const bookingRepository = {
       const valRes = await fetch('/api/integrations/validate-slot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scheduledStartUtc, scheduledEndUtc })
+        // The lesson's own teacher: without it the server checked another teacher's hours (owner review 2026-11-09).
+        body: JSON.stringify({ scheduledStartUtc, scheduledEndUtc, teacherId: (data as any).teacherId || undefined })
       });
       if (valRes.ok) {
         const valData = await valRes.json();
