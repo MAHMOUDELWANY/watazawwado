@@ -7,6 +7,7 @@ import { StudentMap, type MapSubject } from '../../curriculum/StudentMap';
 import { Button } from '../../components/ui/Button';
 import { Select } from '../../components/ui/Select';
 import { Textarea } from '../../components/ui/Textarea';
+import { clearPendingCurriculum } from './AfterLessonFlow';
 
 type Mark = 'strong' | 'reinforce' | null;
 
@@ -17,14 +18,17 @@ interface Props {
   firstPage: number;
   lastPage: number;
   gameResult: GameResult | null;
+  /** Owner review 2026-11-09: opened from the after-lesson window for this learner and lesson. */
+  initialStudentId?: string | null;
+  bookingId?: string | null;
 }
 
 /** After class: pages covered + evaluation + game result → saved report and the student's map (PLAN §4.1). */
-export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameResult }: Props) {
+export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameResult, initialStudentId, bookingId }: Props) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
   const [students, setStudents] = useState<Array<{ id: string; name: string }>>([]);
-  const [studentId, setStudentId] = useState('');
+  const [studentId, setStudentId] = useState(initialStudentId || '');
   const [fromPage, setFromPage] = useState(firstPage);
   const [toPage, setToPage] = useState(lastPage);
   const [marks, setMarks] = useState<Record<string, Mark>>({});
@@ -32,6 +36,8 @@ export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameR
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [map, setMap] = useState<MapSubject | null>(null);
+  const lastResponse = React.useRef<any>(null);
+  useEffect(() => { if (initialStudentId) loadMap(initialStudentId); }, [initialStudentId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     dashboardFetch('/api/dashboard/students')
@@ -63,7 +69,7 @@ export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameR
     setBusy(true);
     setMessage(null);
     try {
-      await dashboardFetch('/api/dashboard/curriculum/reports', {
+      lastResponse.current = await dashboardFetch('/api/dashboard/curriculum/reports', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -76,9 +82,14 @@ export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameR
           toReinforce: Object.keys(marks).filter((o) => marks[o] === 'reinforce'),
           note,
           gameResult,
+          bookingId: bookingId || undefined,
         }),
       });
-      setMessage({ ok: true, text: L('Report saved. The pages are now in the student’s map.', 'التقرير اتحفظ، والصفحات اتضافت لخريطة الطالب.') });
+      const res: any = await Promise.resolve(lastResponse.current);
+      clearPendingCurriculum(bookingId, studentId);
+      setMessage({ ok: true, text: res?.homework
+        ? L('Saved. The pages are open for the student, and their homework on these pages is ready.', 'اتحفظ. الصفحات اتفتحت للطالب، وواجبه على الصفحات دي جاهز.')
+        : L('Report saved. The pages are now in the student’s map.', 'التقرير اتحفظ، والصفحات اتضافت لخريطة الطالب.') });
       setNote('');
       setMarks({});
       loadMap(studentId);
@@ -94,6 +105,11 @@ export function CurriculumReportPanel({ lesson, lang, firstPage, lastPage, gameR
   return (
     <section className="glass-2 rounded-[var(--r-3,20px)] p-5 space-y-4" aria-labelledby="report-title">
       <h2 id="report-title" className="font-display text-xl font-bold text-foreground">{L('Lesson report', 'تقرير الحصة')}</h2>
+      {bookingId && (
+        <p role="status" className="text-sm rounded-xl border border-[var(--gold)]/40 bg-[var(--gold)]/10 p-3 text-foreground">
+          {L('Mark the pages you covered in this lesson and save. They open for the student, and their homework is made from them.', 'حدد الصفحات اللي خدتوها في الحصة واحفظ. هتتفتح للطالب، والواجب هيتعمل منها.')}
+        </p>
+      )}
 
       <label className="block space-y-1.5">
         <span className="text-sm font-semibold text-foreground">{L('Student', 'الطالب')}</span>

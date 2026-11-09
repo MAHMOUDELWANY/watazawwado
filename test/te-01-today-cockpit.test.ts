@@ -11,7 +11,9 @@ describe('TE-01 Today page as a cockpit', () => {
     const spotlight = page.indexOf('<NextLessonSpotlight');
     assert.ok(spotlight > 0 && spotlight < page.indexOf('{/* Summary Row */}'));
     assert.ok(page.includes('context={summary.next_lesson_context || null}'));
-    assert.ok(page.includes('openZoomAsHost(e, lesson.id, startLink)'), 'Start as host stays');
+    // Owner review 2026-11-09: Start lives in StartLessonButton, which opens Zoom as host only during the lesson.
+    assert.ok(page.includes('<StartLessonButton lesson={lesson} t={t} />'), 'Start as host stays');
+    assert.ok(fs.readFileSync('src/dashboard/components/StartLessonButton.tsx', 'utf8').includes('openZoomAsHost(e, lesson.id, link)'));
   });
 
   it('shows age, level, last family summary and next steps, and lists summaries still to write', () => {

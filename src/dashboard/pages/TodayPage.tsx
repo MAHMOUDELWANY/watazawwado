@@ -22,6 +22,7 @@ import { TeacherChecklist } from '../components/TeacherChecklist';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import { StartLessonButton } from '../components/StartLessonButton';
+import { AfterLessonFlow, lessonNeedsReport, readPendingCurriculum } from '../components/AfterLessonFlow';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { serviceLabel, zoneCity } from '../lib/labels';
@@ -178,8 +179,13 @@ export default function TodayPage() {
   const completedToday = summary?.completed_today ?? 0;
   const nextBooked = upcoming[0] || null;
 
+  // Owner review 2026-11-09: a held lesson asks for its report (then the curriculum pages) before anything else.
+  const reportLesson = isSuperAdmin ? null : lessons.find((l) => lessonNeedsReport(l)) || null;
+  const pendingCurriculum = isSuperAdmin || reportLesson ? null : readPendingCurriculum()[0] || null;
+
   return (
     <div className="pb-12">
+      <AfterLessonFlow lesson={reportLesson} pending={pendingCurriculum} onDone={() => fetchTodayLessons(false)} />
       {/* Header: the day, the time zone, one quiet refresh */}
       <header className="flex items-end justify-between gap-4 mb-5 sm:mb-6">
         <div className="min-w-0">

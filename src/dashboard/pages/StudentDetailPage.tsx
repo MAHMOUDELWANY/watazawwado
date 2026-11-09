@@ -34,7 +34,6 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { JourneyLog } from '../components/JourneyLog';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
-import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
 import { RecitationInbox } from '../components/RecitationInbox';
 import { PlacementLevelCard } from '../components/PlacementLevelCard';
 import { FamilyTimeline } from '../components/FamilyTimeline';
@@ -906,25 +905,7 @@ export default function StudentDetailPage() {
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             {/* NX-03: the student's recitations to listen to and answer (the notice links here). */}
             <RecitationInbox studentId={student.id} />
-            {/* Post-lesson Summary, Achievements, Milestones & Private Notes Editor (PR-06) */}
-            <PostLessonSummaryEditor
-              studentId={student.id}
-              studentName={student.name}
-              bookingId={last_lesson?.id || next_lesson?.id || null}
-              subjectHint={primary_service_name || studentDetail.primary_service_id || student.notes}
-              onSaved={({ note, milestone }) => {
-                setStudentDetail((prev) => {
-                  if (!prev) return null;
-                  return {
-                    ...prev,
-                    notes: note ? [note, ...(prev.notes || [])] : prev.notes,
-                    milestones: milestone
-                      ? [milestone, ...(prev.milestones || [])]
-                      : prev.milestones,
-                  };
-                });
-              }}
-            />
+            {/* Owner review 2026-11-09: reports are written right after each lesson (the after-lesson window), not here. */}
 
             {/* Recorded Milestones List */}
             {studentDetail.milestones && studentDetail.milestones.length > 0 && (

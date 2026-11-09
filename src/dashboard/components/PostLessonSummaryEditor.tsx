@@ -15,6 +15,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import type { StudentNote, StudentMilestoneItem } from '../types';
 import { confirmAction } from '../../components/ui/Feedback';
 import { HomeworkFields, homeworkPayload, type HomeworkDraft } from './HomeworkFields';
+import { reportProfile, audienceOf, messageLabel, messageStarters } from '../../lib/subjectReport';
 
 export type SubjectQuickMode = 'memorization' | 'tajweed' | 'reading' | 'general';
 
@@ -156,6 +157,11 @@ export interface PostLessonSummaryEditorProps {
   bookingId?: string | null;
   subjectHint?: string | null;
   compact?: boolean;
+  /** Owner review 2026-11-09: the learner's age and type decide who the message is written to. */
+  learnerAge?: number | null;
+  learnerType?: string | null;
+  /** The mandatory after-lesson flow names its own button and requires the message. */
+  submitLabel?: string;
   /**
    * When true, submitting this editor only prepares values for the parent (e.g. inside "Mark completed"),
    * or when false (default), saves directly via POST `/api/dashboard/students/:id/post-lesson-summary`.
@@ -170,20 +176,21 @@ export function PostLessonSummaryEditor({
   subjectHint,
   compact = false,
   onSaved,
+  learnerAge,
+  learnerType,
+  submitLabel,
 }: PostLessonSummaryEditorProps) {
   const { t, isAr } = useT();
-  const detected = detectSubjectQuickMode(subjectHint);
-
-  const [quickMode, setQuickMode] = useState<SubjectQuickMode>(
-    detected.mode === 'general' ? 'memorization' : detected.mode
-  );
-  const [subjectSlug, setSubjectSlug] = useState<string>(detected.subjectSlug);
-
-  useEffect(() => {
-    const next = detectSubjectQuickMode(subjectHint);
-    setQuickMode(next.mode === 'general' ? 'memorization' : next.mode);
-    setSubjectSlug(next.subjectSlug);
-  }, [subjectHint]);
+  // Owner review 2026-11-09: the report follows the lesson's subject; Quran pickers only for Quran lessons.
+  const profile = reportProfile(subjectHint);
+  const quickMode: SubjectQuickMode = profile.family === 'memorization' || profile.family === 'tajweed' || profile.family === 'reading' ? profile.family : 'general';
+  const subjectSlug = profile.slug === 'general' ? detectSubjectQuickMode(subjectHint).subjectSlug : profile.slug;
+  const audience = audienceOf(learnerAge, learnerType);
+  const firstName = (studentName || '').trim().split(/\s+/)[0] || t('the student', 'الطالب');
+  const msg = messageLabel(audience, firstName);
+  const L = (x: { en: string; ar: string }) => (isAr ? x.ar : x.en);
+  const [focus, setFocus] = useState<'great' | 'good' | 'support' | null>(null);
+  const FOCUS = { great: { en: 'Focus: excellent', ar: 'التركيز: ممتاز' }, good: { en: 'Focus: good', ar: 'التركيز: كويس' }, support: { en: 'Focus: needs support', ar: 'التركيز: محتاج دعم' } } as const;
 
   // Fields
   const [privateNotes, setPrivateNotes] = useState('');
@@ -213,9 +220,9 @@ export function PostLessonSummaryEditor({
   };
 
   // Memorization quick-pickers
-  const [selectedSurah, setSelectedSurah] = useState<string>(SURAH_QUICK_OPTIONS[8].ar); // Al-Mulk
-  const [fromAyah, setFromAyah] = useState<string>('1');
-  const [toAyah, setToAyah] = useState<string>('15');
+  const [selectedSurah, setSelectedSurah] = useState<string>('');
+  const [fromAyah, setFromAyah] = useState<string>('');
+  const [toAyah, setToAyah] = useState<string>('');
 
   // Reading quick-pickers
   const [selectedReadingStage, setSelectedReadingStage] = useState<AchievementChip>(
@@ -228,9 +235,9 @@ export function PostLessonSummaryEditor({
 
   // Milestone toggle & fields
   const [markMilestone, setMarkMilestone] = useState(false);
-  const [milestoneKind, setMilestoneKind] = useState<StudentMilestoneItem['kind']>('surah_memorized');
-  const [milestoneTitleAr, setMilestoneTitleAr] = useState('إتمام حفظ سورة الملك');
-  const [milestoneTitleEn, setMilestoneTitleEn] = useState('Memorized Surah Al-Mulk');
+  const [milestoneKind, setMilestoneKind] = useState<StudentMilestoneItem['kind']>(profile.milestones[0].kind);
+  const [milestoneTitleAr, setMilestoneTitleAr] = useState(profile.milestones[0].title.ar);
+  const [milestoneTitleEn, setMilestoneTitleEn] = useState(profile.milestones[0].title.en);
 
   // Submission state
   const [saving, setSaving] = useState(false);
@@ -248,6 +255,7 @@ export function PostLessonSummaryEditor({
   };
 
   const handleAddMemorizationRange = () => {
+    if (!selectedSurah) return;
     const surahObj =
       SURAH_QUICK_OPTIONS.find((s) => s.ar === selectedSurah || s.en === selectedSurah) || {
         ar: selectedSurah.trim() || 'الملك',
@@ -310,6 +318,12 @@ export function PostLessonSummaryEditor({
 
   const handleSelectMilestoneKind = (kind: StudentMilestoneItem['kind']) => {
     setMilestoneKind(kind);
+    const own = profile.milestones.find((m) => m.kind === kind);
+    if (own && kind !== 'surah_memorized' && kind !== 'rule_mastered') {
+      setMilestoneTitleAr(own.title.ar);
+      setMilestoneTitleEn(own.title.en);
+      return;
+    }
     const preset = MILESTONE_KIND_OPTIONS.find((m) => m.kind === kind);
     if (!preset) return;
 
@@ -347,6 +361,12 @@ export function PostLessonSummaryEditor({
     const hasNext = nextSteps.trim().length > 0;
     const hasHomework = homework.some((r) => r.kind === 'recite' || r.body.trim());
 
+    if (!hasFamily && submitLabel) {
+      setErrorMsg(audience === 'child'
+        ? t('Write a short note to the parent first.', 'اكتب رسالة قصيرة لولي الأمر الأول.')
+        : t(`Write a short note to ${firstName} first.`, `اكتب رسالة قصيرة لـ${firstName} الأول.`));
+      return;
+    }
     if (!hasPrivate && !hasFamily && !hasAch && !hasNext && !hasHomework && !markMilestone) {
       setErrorMsg(
         t(
@@ -374,7 +394,7 @@ export function PostLessonSummaryEditor({
         private_notes: privateNotes.trim(),
         family_summary: familySummary.trim() || null,
         next_steps: nextSteps.trim() || null,
-        achievements: achievements.length > 0 ? achievements : null,
+        achievements: focus ? [...achievements, { kind: 'focus', ...FOCUS[focus] }] : achievements.length > 0 ? achievements : null,
         homework: homeworkPayload(homework),
         subject: subjectSlug,
       };
@@ -410,6 +430,7 @@ export function PostLessonSummaryEditor({
       setNextSteps('');
       setHomework([]);
       setAchievements([]);
+      setFocus(null);
       setMarkMilestone(false);
 
       if (onSaved) {
@@ -437,11 +458,11 @@ export function PostLessonSummaryEditor({
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-accent shrink-0" />
           <h3 className="text-sm font-semibold text-foreground">
-            {t('After-lesson summary & milestones', 'ملخص ما بعد الحصة والأوسمة')}
+            {t(`${profile.name.en} lesson report`, `تقرير حصة ${profile.name.ar}`)}
           </h3>
         </div>
         <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary/40 text-primary border border-secondary/60">
-          {t('Quick 30-sec log', 'تسجيل سريع في 30 ثانية')}
+          {t('About a minute', 'حوالي دقيقة')}
         </span>
       </div>
 
@@ -465,50 +486,33 @@ export function PostLessonSummaryEditor({
         </div>
       )}
 
-      {/* 1. Subject Quick-Pick Achievements */}
+      {/* 1. What went well today, in this subject's words */}
       <div className="space-y-2.5 p-3.5 rounded-xl glass-card border border-border-subtle">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-primary" />
-            {t('Quick-pick achievements for this lesson', 'إنجازات الحصة السريعة (حسب المادة)')}
-          </span>
-
-          {/* Subject mode tabs: Memorization / Tajweed / Reading */}
-          <div
-            className="inline-flex items-center rounded-lg bg-secondary/25 p-0.5 border border-border-subtle"
-            role="tablist"
-            aria-label={t('Subject achievement mode', 'نوع المادة')}
-          >
-            {(
-              [
-                ['memorization', 'quran-memorization', t('Memorization', 'الحفظ')],
-                ['tajweed', 'tajweed', t('Tajweed', 'التجويد')],
-                ['reading', 'quran-reading', t('Reading', 'القراءة')],
-              ] as const
-            ).map(([modeKey, slug, label]) => {
-              const active = quickMode === modeKey;
-              return (
-                <button
-                  key={modeKey}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  data-testid={`quick-mode-${modeKey}`}
-                  onClick={() => {
-                    setQuickMode(modeKey);
-                    setSubjectSlug(slug);
-                  }}
-                  className={`px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors cursor-pointer ${
-                    active
-                      ? 'bg-primary text-primary-foreground shadow-2xs'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+        <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
+          {t('What went well today', 'إيه اللي كان حلو النهارده')}
+        </span>
+        <div className="flex flex-wrap gap-1.5" data-testid="subject-skill-chips">
+          {profile.skills.map((sk) => {
+            const chip = { ...sk, kind: 'skill' };
+            const selected = achievements.some((a) => a.ar === chip.ar);
+            return (
+              <button key={sk.en} type="button" aria-pressed={selected} onClick={() => toggleAchievementChip(chip)}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors cursor-pointer ${selected ? 'bg-primary text-primary-foreground border-primary' : 'glass-surface text-muted-foreground border-border-subtle hover:text-foreground'}`}>
+                {selected && <Check className="w-3 h-3" />}
+                <span>{L(sk)}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 pt-1" role="radiogroup" aria-label={t('Focus today', 'التركيز النهارده')}>
+          <span className="text-[11px] text-muted-foreground me-1">{t('Focus today:', 'التركيز النهارده:')}</span>
+          {([['great', t('Excellent', 'ممتاز')], ['good', t('Good', 'كويس')], ['support', t('Needs support', 'محتاج دعم')]] as const).map(([k, label]) => (
+            <button key={k} type="button" role="radio" aria-checked={focus === k} onClick={() => setFocus(focus === k ? null : k)}
+              className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border cursor-pointer ${focus === k ? 'bg-teal text-white border-teal' : 'glass-surface text-muted-foreground border-border-subtle'}`}>
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Mode A: Memorization (Surah + Ayah range) */}
@@ -526,6 +530,7 @@ export function PostLessonSummaryEditor({
                   onChange={(e) => setSelectedSurah(e.target.value)}
                   className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground"
                 >
+                  <option value="">{t('Choose the surah', 'اختار السورة')}</option>
                   {SURAH_QUICK_OPTIONS.map((s) => (
                     <option key={s.en} value={s.ar}>
                       {isAr ? `سورة ${s.ar}` : `Surah ${s.en} (${s.ar})`}
@@ -569,6 +574,7 @@ export function PostLessonSummaryEditor({
                 type="button"
                 data-testid="add-memorization-achievement"
                 onClick={handleAddMemorizationRange}
+                disabled={!selectedSurah}
                 className="tap-44 relative w-full inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/30 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -733,35 +739,17 @@ export function PostLessonSummaryEditor({
             className="text-xs font-semibold text-foreground flex items-center gap-1.5"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>{t('For the family (summary)', 'ملخص للأسرة (يظهر في صفحة مسيرة الطالب)')}</span>
+            <span>{L(msg.title)}</span>
           </label>
           <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-medium">
-            {t('Shared with student & family', 'مشترك مع الطالب والأسرة')}
+            {L(msg.hint)}
           </span>
         </div>
 
         {/* One-tap warm starter phrases */}
         <div className="flex flex-wrap gap-1.5 pb-1">
-          {[
-            {
-              ar: `ما شاء الله، أدّى ${nameDisplay} اليوم حصة ممتازة وهادئة مع تركيز واضح.`,
-              en: `Masha'Allah, ${nameDisplay} had a calm, focused lesson today with steady progress.`,
-              chipAr: '+ إشادة هادئة',
-              chipEn: '+ Warm praise',
-            },
-            {
-              ar: 'أتقن مخارج الحروف المطلوبة وتلا الآيات بتأنٍّ وخشوع.',
-              en: 'Practiced the articulation points carefully and recited the ayahs with composure.',
-              chipAr: '+ إتقان التلاوة',
-              chipEn: '+ Recitation mastery',
-            },
-            {
-              ar: 'ثبّتنا المحفوظ الجديد وربطناه بالمراجعة السابقة بنجاح.',
-              en: 'Consolidated the new memorization and connected it smoothly with past revision.',
-              chipAr: '+ تثبيت ومراجعة',
-              chipEn: '+ Hifz & revision',
-            },
-          ].map((starter) => (
+          {messageStarters(profile.family, audience, firstName).map((st) => ({ ar: st.text.ar, en: st.text.en, chipAr: st.chip.ar, chipEn: st.chip.en }))
+.map((starter) => (
             <button
               key={starter.chipEn}
               type="button"
@@ -779,10 +767,9 @@ export function PostLessonSummaryEditor({
           rows={2}
           value={familySummary}
           onChange={(e) => setFamilySummary(e.target.value)}
-          placeholder={t(
-            'Write 1–2 warm sentences for the family about what was covered today…',
-            'اكتب جملة أو جملتين للأسرة عن ما تم إنجازه في حصة اليوم…'
-          )}
+          placeholder={audience === 'child'
+            ? t('1–2 warm sentences for the parent about today…', 'جملة أو جملتين لولي الأمر عن حصة النهارده…')
+            : t(`1–2 warm sentences to ${firstName} about today…`, `جملة أو جملتين لـ${firstName} عن حصة النهارده…`)}
           className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <div className="flex flex-wrap items-center gap-2 mt-1.5">
@@ -820,8 +807,8 @@ export function PostLessonSummaryEditor({
           value={nextSteps}
           onChange={(e) => setNextSteps(e.target.value)}
           placeholder={t(
-            'e.g. Next lesson we start the rules of noon sakinah',
-            'مثلاً: الحصة الجاية نبدأ أحكام النون الساكنة'
+            'e.g. Next lesson we finish this lesson and start the next one',
+            'مثلاً: الحصة الجاية نكمّل الدرس ونبدأ اللي بعده'
           )}
           className="w-full px-3 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />
@@ -874,7 +861,7 @@ export function PostLessonSummaryEditor({
             }`}
           >
             <Award className="w-4 h-4 text-[#E5A93C]" />
-            <span>{t('Mark a milestone', 'تسجيل وسام إنجاز (Milestone)')}</span>
+            <span>{t('Mark a milestone', 'سجّل وسام إنجاز')}</span>
             {markMilestone && <Check className="w-3.5 h-3.5 text-primary" />}
           </button>
         </div>
@@ -885,7 +872,7 @@ export function PostLessonSummaryEditor({
             data-testid="milestone-editor-panel"
           >
             <div className="flex flex-wrap gap-1.5">
-              {MILESTONE_KIND_OPTIONS.map((opt) => {
+              {MILESTONE_KIND_OPTIONS.filter((opt) => profile.milestones.some((m) => m.kind === opt.kind)).map((opt) => {
                 const active = milestoneKind === opt.kind;
                 return (
                   <button
@@ -951,9 +938,11 @@ export function PostLessonSummaryEditor({
           <span>
             {saving
               ? t('Saving…', 'جارٍ الحفظ…')
-              : markMilestone
-                ? t('Save summary & milestone', 'حفظ الملخص والوسام')
-                : t('Save lesson summary', 'حفظ ملخص الحصة')}
+              : submitLabel
+                ? submitLabel
+                : markMilestone
+                  ? t('Save report & milestone', 'احفظ التقرير والوسام')
+                  : t('Save lesson report', 'احفظ تقرير الحصة')}
           </span>
         </button>
       </div>

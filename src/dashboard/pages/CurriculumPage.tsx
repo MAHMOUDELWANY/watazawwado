@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useAppLanguage } from '../../lib/language';
@@ -139,6 +139,7 @@ export function CurriculumTrackPage() {
 
 export function CurriculumLessonPage() {
   const { group, track, number } = useParams();
+  const [params] = useSearchParams();
   const { ar, L } = useL();
   const lesson = findLesson(track, Number(number));
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
@@ -162,7 +163,7 @@ export function CurriculumLessonPage() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{lesson.title}</h1>
       </div>
       <LessonPlayer lesson={lesson} lang={ar ? 'ar' : 'en'} teacher onPageChange={onPageChange} onGameResult={(_page, r) => setGameResult(r)} />
-      <CurriculumReportPanel lesson={lesson} lang={ar ? 'ar' : 'en'} firstPage={visited.first} lastPage={visited.last} gameResult={gameResult} />
+      <CurriculumReportPanel lesson={lesson} lang={ar ? 'ar' : 'en'} firstPage={visited.first} lastPage={visited.last} gameResult={gameResult} initialStudentId={params.get('student')} bookingId={params.get('booking')} />
     </div>
   );
 }

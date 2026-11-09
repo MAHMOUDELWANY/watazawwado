@@ -33,9 +33,10 @@ describe('NX-09 web push', () => {
     }
   });
 
+  // Owner review 2026-11-09: also 'waiting for you' and an unstable lesson connection.
   // Owner review 2026-11-07: a teacher's phone also buzzes for a lesson booked, moved or cancelled, and 2 hours before.
   it('only lesson reminders and changes, gift notes, recitation replies and the quiet-learner nudge buzz a phone', () => {
-    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_booked', 'lesson_cancelled', 'lesson_in_12h', 'lesson_in_2h', 'lesson_rescheduled', 'quiet_learner', 'recitation_reply', 'teacher_lesson_in_2h']);
+    assert.deepStrictEqual([...PUSH_KINDS].sort(), ['gift_redeemed', 'lesson_booked', 'lesson_cancelled', 'lesson_in_12h', 'lesson_in_2h', 'lesson_rescheduled', 'lesson_unstable', 'lesson_waiting', 'quiet_learner', 'recitation_reply', 'teacher_lesson_in_2h']);
   });
 
   it('sends nothing without keys, and removes a device the push service says is gone', async () => {
