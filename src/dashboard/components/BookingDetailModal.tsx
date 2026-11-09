@@ -36,6 +36,7 @@ import { useT } from '../../lib/language';
 import { JalilaBrief } from './JalilaBrief';
 import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
 import { HomeworkReviewPanel } from './HomeworkReviewPanel';
+import { HomeworkSetsPanel } from './HomeworkSetsPanel';
 import { RecitationInbox } from './RecitationInbox';
 import { notify, confirmAction } from '../../components/ui/Feedback';
 
@@ -1047,6 +1048,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </a>
               )}
               {booking.student_id && <HomeworkReviewPanel studentId={String(booking.student_id)} bookingId={booking.id} />}
+              {booking.student_id && <HomeworkSetsPanel studentId={String(booking.student_id)} />}
               {booking.student_id && <RecitationInbox studentId={String(booking.student_id)} />}
               {(booking.status === 'completed' || isMarkingCompleted || openSummaryEditor) && booking.student_id && (
                 <PostLessonSummaryEditor

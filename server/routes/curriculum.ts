@@ -7,6 +7,7 @@
  */
 import type express from 'express';
 import { validateReport, buildStudentMap, type ReportRow } from '../curriculum/reports.js';
+import { createHomeworkFromReport, type GenerateJson } from './homeworkSets.js';
 
 type Mw = (req: any, res: any, next: any) => any;
 
@@ -16,6 +17,8 @@ export interface CurriculumDeps {
   verifyStudentAuth: Mw;
   verifyTeacherAuth: Mw;
   getLearners: (client: any, req: any) => Promise<Array<{ id: string; name: string; learnerType: string; isPrimary: boolean }>>;
+  /** Writes homework questions (owner review 2026-11-09); absent in tests that don't need it. */
+  generateJson?: GenerateJson;
 }
 
 const REPORT_COLUMNS = 'subject, lesson_number, from_page, to_page, strengths, to_reinforce, note, game_result, created_at';
@@ -30,7 +33,7 @@ async function teacherMayTeach(client: any, teacher: any, studentId: string): Pr
 }
 
 export function registerCurriculumRoutes(app: express.Express, deps: CurriculumDeps) {
-  const { getClient, rateLimit, verifyStudentAuth, verifyTeacherAuth, getLearners } = deps;
+  const { getClient, rateLimit, verifyStudentAuth, verifyTeacherAuth, getLearners, generateJson } = deps;
 
   app.post('/api/dashboard/curriculum/reports', verifyTeacherAuth, rateLimit, async (req: any, res: any) => {
     const client = getClient();
@@ -57,7 +60,19 @@ export function registerCurriculumRoutes(app: express.Express, deps: CurriculumD
       console.error('[Curriculum report] insert failed:', error.message);
       return res.status(500).json({ error: 'Could not save the report.' });
     }
-    return res.status(201).json({ success: true });
+    // Owner review 2026-11-09: every report gives the learner homework on exactly these pages.
+    const bookingId = typeof req.body?.bookingId === 'string' && /^[0-9a-f-]{36}$/i.test(req.body.bookingId) ? req.body.bookingId : null;
+    let homework = null;
+    if (generateJson) {
+      try {
+        homework = await createHomeworkFromReport(client, generateJson, {
+          studentId: r.studentId, teacherId: req.teacherUser?.id || null, bookingId, track: r.subject, lessonNumber: r.lessonNumber, fromPage: r.fromPage, toPage: r.toPage,
+        });
+      } catch (err) {
+        console.warn('[Curriculum report] homework failed:', err);
+      }
+    }
+    return res.status(201).json({ success: true, homework });
   });
 
   app.get('/api/dashboard/curriculum/students/:id', verifyTeacherAuth, async (req: any, res: any) => {

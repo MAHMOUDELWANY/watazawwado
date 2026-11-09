@@ -29,6 +29,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Users,
   MonitorSmartphone,
   HeartHandshake,
+  ClipboardCheck,
 } from 'lucide-react';
 import { isLinkedKidDevice } from '../lib/kidDevice';
 import { useTeacherAuth } from '../lib/auth';
@@ -55,6 +56,7 @@ import StudentProgressReportPage from './pages/StudentProgressReportPage';
 import StudentCertificatePage from './pages/StudentCertificatePage';
 import StudentLessonRoomPage from './pages/StudentLessonRoomPage';
 import StudentCalendarPage from './pages/StudentCalendarPage';
+import StudentHomeworkPage from './pages/StudentHomeworkPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
@@ -407,6 +409,7 @@ export default function StudentApp() {
   const home: NavItem = { name: isAr ? 'الرئيسية' : 'Home', path: '/student', icon: BookOpen, tour: 'student-home' };
   const lessons: NavItem = { name: isAr ? 'الدروس' : 'Lessons', path: '/student/lessons', icon: Calendar, tour: 'student-lessons' };
   const book: NavItem = { name: isAr ? 'احجز' : 'Book', path: '/student/book', icon: Plus, tour: 'student-book' };
+  const homework: NavItem = { name: isAr ? 'الواجبات' : 'Homework', path: '/student/homework', icon: ClipboardCheck, tour: 'student-homework' };
   const curriculum: NavItem = { name: isAr ? 'منهجي' : 'My curriculum', path: '/student/curriculum', icon: Library, tour: 'student-curriculum' };
   const messages: NavItem = { name: isAr ? 'الرسائل' : 'Messages', path: '/student/messages', icon: MessageCircle, badge: unreadChats || null, tour: 'student-messages' };
   const calendar: NavItem = { name: isAr ? 'تقويم العيلة' : 'Calendar', path: '/student/calendar', icon: CalendarDays, tour: 'student-calendar' };
@@ -416,10 +419,10 @@ export default function StudentApp() {
   const community: NavItem = { name: isAr ? 'مجتمعنا' : 'Community', path: '/student/community', icon: Users, tour: 'student-community' };
   const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
 
-  const topTabs = [home, lessons, book, curriculum];
+  const topTabs = [home, lessons, book, curriculum, homework];
   const sponsor: NavItem = { name: isAr ? 'اكفل طالب' : 'Sponsor a learner', path: '/student/sponsor', icon: HeartHandshake, tour: 'student-sponsor' };
   const railItems = [messages, wallet, calendar, progress, community, guide, invite, sponsor];
-  const moreItems = [curriculum, wallet, calendar, progress, community, guide, invite, sponsor];
+  const moreItems = [homework, curriculum, wallet, calendar, progress, community, guide, invite, sponsor];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
@@ -720,6 +723,7 @@ export default function StudentApp() {
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
               <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
+              <Route path="/homework" element={<StudentHomeworkPage lang={lang} />} />
               <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
               <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />

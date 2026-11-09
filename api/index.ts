@@ -84,6 +84,7 @@ import { registerIntakeRoutes } from '../server/routes/intake.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
+import { registerHomeworkSetRoutes, processHomeworkCron } from '../server/routes/homeworkSets.js';
 import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooking, reverseCheckoutDiscount, settleCheckoutRedemptions } from '../server/routes/growth.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { registerHonorRoutes } from '../server/routes/honor.js';
@@ -2116,6 +2117,24 @@ app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) 
     stage: 'AUTHORIZED'
   });
 });
+
+/** Gemini with a JSON schema (homework questions). Tries the newer model, then the one already in use elsewhere. */
+async function geminiJson(prompt: string, schema: object): Promise<any> {
+  if (!process.env.GEMINI_API_KEY) throw new Error('missing GEMINI_API_KEY');
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  let lastErr: unknown = null;
+  for (const model of ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: { temperature: 0.6, responseMimeType: 'application/json', responseSchema: schema as any },
+      });
+      return JSON.parse(response.text || '{}');
+    } catch (err) { lastErr = err; }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error('Gemini failed');
+}
 
 /** The lesson's Zoom join link, or null while it is still being made ("pending", fallback ids). */
 const lessonJoinUrl = (b: any): string | null => {
@@ -7783,6 +7802,11 @@ app.all('/api/cron/process-reminders', async (req, res) => {
 
     const cronClient = getSupabaseAdminClient();
     if (cronClient) await releaseExpiredPaymentHolds(cronClient);
+    // Owner review 2026-11-09: finish homework still being written, and add the 7- and 21-day reviews.
+    let homework = { prepared: 0, reviews: 0 };
+    if (cronClient) {
+      try { homework = await processHomeworkCron(cronClient, geminiJson); } catch (err) { console.warn('[Cron] homework failed:', err); }
+    }
 
     const integrationsProcessed = await processIntegrationJobs();
 
@@ -7816,6 +7840,7 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     }
     await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest, recitationsPurged });
     res.json({
+      homework,
       success: true,
       timestamp: new Date().toISOString(),
       summary,
@@ -10360,7 +10385,18 @@ registerCurriculumRoutes(app, {
   rateLimit,
   verifyStudentAuth,
   verifyTeacherAuth,
-  getLearners: getAuthorizedLearnersForStudent
+  getLearners: getAuthorizedLearnersForStudent,
+  generateJson: geminiJson
+});
+
+// Owner review 2026-11-09: homework made from the curriculum pages taught, checked automatically.
+registerHomeworkSetRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  getLearners: getAuthorizedLearnersForStudent,
+  generateJson: geminiJson
 });
 
 registerProgressRoutes(app, {

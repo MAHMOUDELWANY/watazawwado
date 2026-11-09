@@ -35,6 +35,7 @@ import { JourneyLog } from '../components/JourneyLog';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { RecitationInbox } from '../components/RecitationInbox';
+import { HomeworkSetsPanel } from '../components/HomeworkSetsPanel';
 import { PlacementLevelCard } from '../components/PlacementLevelCard';
 import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
@@ -906,6 +907,7 @@ export default function StudentDetailPage() {
             {/* NX-03: the student's recitations to listen to and answer (the notice links here). */}
             <RecitationInbox studentId={student.id} />
             {/* Owner review 2026-11-09: reports are written right after each lesson (the after-lesson window), not here. */}
+            <HomeworkSetsPanel studentId={student.id} focusId={new URLSearchParams(window.location.search).get('homework')} />
 
             {/* Recorded Milestones List */}
             {studentDetail.milestones && studentDetail.milestones.length > 0 && (
