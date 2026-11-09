@@ -40,7 +40,7 @@ Follow [motion-stage.md](motion-stage.md): one graphic per page in `src/curricul
 sentence per build step: *what the learner sees move, and what that movement means*. If a step's motion has no meaning,
 redesign it. People are articulated SVG figures (`Figure`, `Person` in `kit.tsx`), modern and faceless; **the Prophet ﷺ,
 the companions and Jibril are never drawn**: show them as words, points of light, or the same manners in a person today.
-A new version or a new look: prototype 2–3 pages, send a video, wait for the owner's yes, then roll out.
+A new version or a new look: prototype 2–3 pages, ship them to the live site for the owner to check there (no videos), wait for the owner's yes, then roll out.
 
 Use: `brainstorming` (before a new lesson or look), `apple-design`, `animate`, `emil-design-eng`, `review-animations`,
 `impeccable`, `taste-skill`, `humanizer`, `verification-before-completion`. Owner's reference videos: read them frame by
@@ -55,7 +55,7 @@ frame with ffmpeg (`fps=2,tile=6x6`).
 3. Check each sheet against the bug list in [owner-feedback.md](owner-feedback.md) (overlaps, covered graphics,
    detached heads, empty stages, black screens, text over the chapter bar). Fix and re-shoot until clean.
 4. Interactions (reviews, clues, choices): click through them; confirm in real time, not only with the manual clock.
-5. Larger changes: record a video (`scripts/curriculum/cast.mjs` + ffmpeg) and send it with `SendUserFile`.
+5. Larger changes: send screenshots of the key steps with `SendUserFile`; the owner checks the lesson on the live site, never a video.
 
 ## 5. Ship and report
 - Code: commit, push to `main` after tsc + tests + build (owner's standing approval, RULES §7); confirm it is live.

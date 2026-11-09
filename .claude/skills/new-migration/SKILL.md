@@ -55,4 +55,4 @@ Start the file with the same banner the other migrations use:
 
 ## 5. Applying
 
-Do not apply the migration to the remote database yourself. Tell the user the file is ready and let them apply it (Supabase CLI `supabase db push`, or the SQL editor).
+Apply the migration to production Supabase yourself in the same release as the code that needs it (owner's standing approval, RULES.md §7), after the type check, tests and build pass; then smoke-test production.
