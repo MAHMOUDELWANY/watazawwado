@@ -11,6 +11,10 @@ password, and wipe its data, from the repo alone.
 ## Build
 1. **Server check.** Start `dev-worktree-env` from a fresh worktree; confirm `/api/health` and that the main
    checkout `.env` is read. Fix the launch config if it fails, and document the exact steps in RULES.md.
+   Make the port selectable (RULES.md gives each project its own): a launch entry per port `qa-p1`...`qa-p5`, or
+   one that reads `PORT`; `run_tests.js` and `npm run test-only` must accept a base URL/port instead of assuming
+   3000, so parallel sessions don't refuse to start or hit each other's server. Run `npx playwright install
+   chromium` once.
 2. **`scripts/qa/create-accounts.ts <project>`**: with the service role, creates confirmed auth users (random
    password nobody types) and the matching rows for each role: student (adult), parent with 2 children (one kid,
    one teen), teacher (male, female, with availability), super_admin. Follow how the app itself creates each role
@@ -22,7 +26,7 @@ password, and wipe its data, from the repo alone.
    (bookings, payments, packages, homework, chat, notifications, CRM, curriculum progress...). Dry-run by default,
    `--yes` to delete. Find all referencing tables from `supabase/migrations/`; test it on one account first.
 5. **Playwright** as a dev dependency (`@playwright/test`), `e2e/` folder, `playwright.config.ts` with projects
-   for phone/desktop x ar/en, base URL `http://localhost:3000`, and a fixture that signs in a role via
+   for phone/desktop x ar/en, base URL from `PORT` (default the project port), and a fixture that signs in a role via
    `session.ts`. One smoke spec per role proving sign-in works. Script: `npm run e2e`.
 6. **`docs/testing/FLOWS.md`**: the inventory. Build it from the routes in `src/App.tsx`, `src/student`,
    `src/dashboard`, the endpoints in `api/index.ts`, `docs/owner-test-checklist.md` and `docs/workflows/`.

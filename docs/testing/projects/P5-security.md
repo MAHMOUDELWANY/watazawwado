@@ -6,7 +6,7 @@ Authorized by the owner (2026-11-10) against our own app. Read first: `docs/test
 P2/P3 findings. QA accounts: `qa-p5` (two of each role, to attack each other).
 
 ## Rules of engagement
-- Attack `localhost:3000` (same code, same production database). Never the live domain: no scans, floods or
+- Attack `localhost:3005` (same code, same production database). Never the live domain: no scans, floods or
   brute force there. One read-only check of live headers/CSP/TLS is fine.
 - No denial-of-service. Rate-limit tests stay small (enough to prove the limit exists).
 - Do not touch non-QA data; prove access with QA accounts only. Never print or commit secrets you find; report

@@ -19,6 +19,9 @@ redesign of a screen or flow, with the reason.
 - **Server**: `preview_start` name `dev-worktree-env`. It runs `server.ts` from the worktree with
   `--env-file=../../../.env` (the main checkout's `.env`) and `ALLOW_DEV_AUTH=true`. Never read, print or copy `.env`.
   If the main checkout has no `.env`, stop and tell the owner; do not invent values.
+- **One port per project**, because P2, P3 and P4 run at the same time: P1 3001, P2 3002, P3 3003, P4 3004,
+  P5 3005. Set `PORT` and `APP_URL` to it, and run tests against it, never against another session's server.
+  (Port 3000 stays free for the owner and for plain `npm test`.)
 - **Database**: the production Supabase project (`fmwxqyroyxgigvpahpri`). Owner allows test writes and deletes.
 - **Live site** `watazawwado.academy`: read-only smoke checks only (open pages, read). No sign-up, no password, no
   attack traffic, no request loops (they trigger Vercel's challenge on the owner's IP). Everything else runs on
