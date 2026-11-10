@@ -32,6 +32,13 @@ describe('P1 testing foundation (docs/testing/findings/p1.md)', () => {
     assert.strictEqual(levelLabel('beginner', true), 'مبتدئ');
   });
 
+  it('P1-002: a parent who only follows their children gets no teacher at onboarding', () => {
+    const onboarding = api.slice(api.indexOf("app.post('/api/student/onboarding'"), api.indexOf("app.post('/api/student/children'"));
+    assert.ok(onboarding.includes("const selfLearner = resolvedLearnerType === 'adult' || guardianLearns;"));
+    assert.ok(onboarding.includes('if (selfLearner && routedTeacher.id && !req.studentUser?.studentProfile?.assigned_teacher_id)'));
+    assert.ok(!onboarding.includes('assignedTeacherId: updatedStudent.assigned_teacher_id || routedTeacher.id,'), 'response must not report a routed teacher for a following parent');
+  });
+
   it('QA teachers never reach the live site', () => {
     const fn = api.slice(api.indexOf('export async function listPublicTeachers'), api.indexOf('export async function listPublicTeachers') + 1500);
     assert.ok(fn.includes("process.env.VERCEL_ENV === 'production'") && fn.includes('+qa-'), 'listPublicTeachers hides +qa- teachers on production');

@@ -8431,7 +8431,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       studentUpdate.age = Number(age);
     }
     // Auto-route only on first assignment; never override a teacher an admin already assigned.
-    if (routedTeacher.id && !req.studentUser?.studentProfile?.assigned_teacher_id) {
+    // A parent who only follows their children is not a learner: no teacher (owner, 2026-11-10, P1-002).
+    const selfLearner = resolvedLearnerType === 'adult' || guardianLearns;
+    if (selfLearner && routedTeacher.id && !req.studentUser?.studentProfile?.assigned_teacher_id) {
       studentUpdate.assigned_teacher_id = routedTeacher.id;
     }
     if (country) studentUpdate.country = String(country).trim();
@@ -8725,8 +8727,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     return res.json({
       success: true,
       onboardingCompleted: true,
-      assignedTeacherId: updatedStudent.assigned_teacher_id || routedTeacher.id,
-      assignedTeacherName: assignedTeacherName || routedTeacher.name,
+      assignedTeacherId: updatedStudent.assigned_teacher_id || (selfLearner ? routedTeacher.id : null),
+      assignedTeacherName: assignedTeacherName || (selfLearner ? routedTeacher.name : null),
       teacherAssignmentStatus: (updatedStudent as any).teacher_assignment_status || 'pending_review',
       profile: {
         id: updatedStudent.id,
@@ -8738,8 +8740,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         currentLevel: updatedStudent.current_level,
         gender: (updatedStudent as any).gender || resolvedGender,
         teacherGenderPreference: (updatedStudent as any).teacher_gender_preference || resolvedTeacherPref,
-        assignedTeacherId: updatedStudent.assigned_teacher_id || routedTeacher.id,
-        assignedTeacherName: assignedTeacherName || routedTeacher.name,
+        assignedTeacherId: updatedStudent.assigned_teacher_id || (selfLearner ? routedTeacher.id : null),
+        assignedTeacherName: assignedTeacherName || (selfLearner ? routedTeacher.name : null),
         teacherAssignmentStatus: (updatedStudent as any).teacher_assignment_status || 'pending_review',
         onboardingCompleted: true,
         learningInterest: updatedStudent.learning_interest,

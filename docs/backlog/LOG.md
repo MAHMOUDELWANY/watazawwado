@@ -19,8 +19,10 @@ accounts in every role, sign in without a password and wipe them, from the repo 
 - `docs/testing/FLOWS.md` (78 flows + all 280 endpoints), `docs/testing/findings/p1.md`, RULES.md (exact commands),
   CLAUDE.md commands.
 - Fixed: P1-001 real accounts got mock data on local servers; P1-003 child cards showed subject ids; P1-005 admin
-  student list showed "TEACHER" for every teacher (failing query). Open: P1-002 parent row routed to a teacher
-  (product call), P1-004 display zone shared across accounts in one browser. QA teachers are hidden on production.
+  student list showed "TEACHER" for every teacher (failing query); P1-002 (owner decided: no teacher) a parent who
+  only follows their children is no longer routed to a teacher; the one such row in production ("noor khan", was
+  Ustadh Mahmoud) was cleared. Open: P1-004 display zone shared across accounts in one browser. QA teachers are
+  hidden on production.
 - Four migration-reading tests (task-0.50, 0.50.1, 0.61-b, 03-bc) failed on every Windows checkout (CRLF); they now
   normalise line endings, so `npm test` is green on Windows: 2818 tests, 0 failures.
 - Checks: tsc, new `test/p1-testing-foundation.test.ts`, `PORT=3010 npm test` (0 failures), build, e2e 16/16, purge

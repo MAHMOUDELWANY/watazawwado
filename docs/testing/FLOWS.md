@@ -14,7 +14,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
 | AUTH-01 | Sign up with email OTP, adult (18+) | V→S | | age-rules-signup, otp-logic, phase7-student-auth | src/components/StudentAuthModal.tsx, src/lib/ageRules.ts, `/api/student/onboarding` | untested |
-| AUTH-02 | Family sign-up: guardian 18+, children 6-17, up to 10 | V→P | | age-rules-signup, pa-02-add-child | StudentOnboardingPage.tsx, `/api/student/onboarding`, `/api/student/children` | untested |
+| AUTH-02 | Family sign-up: guardian 18+, children 6-17, up to 10; a following parent gets no teacher | V→P | | age-rules-signup, pa-02-add-child, p1-testing-foundation | StudentOnboardingPage.tsx, `/api/student/onboarding`, `/api/student/children` | fail→fixed (P1-002) |
 | AUTH-03 | Age rules refuse under-18 adult, 18+ child, under-6 child | V | | age-rules-signup | src/lib/ageRules.ts, api/index.ts onboarding | untested |
 | AUTH-04 | Sign in (student OTP), sign out, session refresh | S P | e2e/smoke.spec.ts (session only) | student-e2e-session-hardening | src/lib/auth.ts, src/lib/supabase.ts | smoke |
 | AUTH-05 | Staff login + set password from invite | T A | | phase5g-security, task-0.55.4-a | /staff/login, /staff/set-password | untested |

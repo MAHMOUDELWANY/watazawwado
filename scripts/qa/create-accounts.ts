@@ -99,7 +99,6 @@ export async function createAccounts(project: string, log: (s: string) => void =
   const parent = await onboard(parentEmail, `QA Parent ${tag}`, {
     name: `QA Parent ${tag}`, parentName: `QA Parent ${tag}`, learnerType: 'child', guardianAge: 40, gender: 'female',
     country: 'United States', timezone: 'America/New_York', parentWhatsapp: '+12025550101', heardAbout: 'search',
-    teacherId: teacherIds.female, // the parent row is routed too (P1-002); keep QA data away from real teachers
     children: [
       { name: `QA Kid ${tag}`, age: 8, gender: 'female', learningInterest: 'quran-reading', currentLevel: 'beginner', teacherId: teacherIds.female, teacherGenderPreference: 'female_teacher' },
       { name: `QA Teen ${tag}`, age: 14, gender: 'male', learningInterest: 'zad-essentials', currentLevel: 'beginner', teacherId: teacherIds.male, teacherGenderPreference: 'male_teacher' },
