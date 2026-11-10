@@ -4,6 +4,27 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Sign-up, onboarding and family review fixes, teacher change system (2026-11-10)
+
+Owner review 2026-11-10, seven issues, all approved as proposed.
+- Onboarding no longer re-asks "alone / family" (one line with Change). Family onboarding asks "And you?" before the
+  children; learning parents get their own ticket, following parents never appear in booking.
+- Subject note opens under its own shelf as Zad's speech bubble. Teacher cards get "More about" (popup: introduction,
+  studies, certificates, experience, languages; teachers fill it in Settings).
+- Family home: no repeated red "Book for" buttons; header child switcher removed (did nothing on home), in-page chips
+  on Lessons and Community instead.
+- Tour engine: steps open the More sheet or the page they explain, phone/desktop targets of their own, sheet card on
+  phones, highlight follows inner scrolls. New learner and family steps.
+- Teacher change (docs/policies/TEACHER-CHANGE.md, RULES.md "Changing teacher"): family request, teacher hand-over,
+  admin page /dashboard/teacher-changes; approval cancels lessons >3h away into credit (not counted toward the refund
+  limit), closes the old chat, neutral notices. Migration `20261110000000_teacher_profiles_and_change_requests.sql`
+  (run by the owner in the SQL Editor; the MCP apply was auto-declined three times).
+- Checks: tsc, build, all non-server tests (23 failures identical on untouched main), new tests
+  `teacher-change.test.ts`, updated `zad-tours`, `pa-01`. Phone screenshots of home, lessons chips, onboarding card,
+  shelf bubble, tour steps.
+- Not checked in a browser: My teacher card, admin Teacher changes page, teacher hand-over card, the About popup, the
+  tour on desktop. About page still uses its static teacher text.
+
 ### Zad: new name, brand colours, welcome and tours for every account (2026-11-10)
 
 Owner, 2026-11-09: "Zadi everywhere it should appear for every account type at sign-in, the tour everywhere it should be,
