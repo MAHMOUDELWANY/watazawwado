@@ -18,9 +18,11 @@ describe('PA-01 child switcher', () => {
     assert.strictEqual(ACTIVE_LEARNER_STORAGE_KEY, LAST_OPENED_CHILD_STORAGE_KEY);
   });
 
-  it('lessons, progress, packages and booking follow the switcher', () => {
+  it('lessons, progress, packages and booking follow the chosen learner; home always shows everyone', () => {
     const read = (p: string) => fs.readFileSync(p, 'utf8');
-    assert.ok(read('src/student/StudentApp.tsx').includes('<ChildSwitcher'));
+    assert.ok(!read('src/student/StudentApp.tsx').includes('<ChildSwitcher'), 'no header switcher (owner review 2026-11-10)');
+    assert.ok(read('src/student/StudentApp.tsx').includes('<AllLearnersScope><StudentHomePage'));
+    assert.ok(read('src/student/pages/StudentLessonsPage.tsx').includes('<LearnerChips'));
     assert.ok(read('src/student/StudentApp.tsx').includes('<ActiveLearnerProvider profile={profile}>'));
     assert.ok(read('src/student/pages/StudentLessonsPage.tsx').includes('b.studentId === activeId'));
     assert.ok(read('src/student/pages/StudentProgressPage.tsx').includes("nextParams.set('learnerId', activeId)"));

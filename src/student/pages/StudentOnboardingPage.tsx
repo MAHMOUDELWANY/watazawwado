@@ -28,7 +28,7 @@ import { ZadRig } from '../../components/zad/ZadRig';
 import { Select } from '../../components/ui/Select';
 import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch, readReferral } from '../../lib/leadSource';
 import { BookShelf } from '../../components/onboarding/BookShelf';
-import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
+import { TravelModeChoice, TravelModeSummary, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
 import { subjectLabel, findSubject, levelsFor, asksLevel } from '../../components/onboarding/subjects';
@@ -118,6 +118,7 @@ export default function StudentOnboardingPage({
       // Google sign-up carries no metadata: use the choice saved by the sign-up form on this device.
       const saved = JSON.parse(localStorage.getItem(SIGNUP_CHOICE_KEY) || 'null');
       if (saved?.accountType === 'family') return { account_type: 'family', guardian_age: saved.guardianAge };
+      if (saved?.accountType === 'self') return { account_type: 'self' };
     } catch {}
     return meta;
   })();
@@ -126,6 +127,8 @@ export default function StudentOnboardingPage({
   const [learnerType, setLearnerType] = useState<'adult' | 'child'>(
     currentProfile?.learnerType === 'child' || currentProfile?.canBookForChild || signupMeta.account_type === 'family' ? 'child' : 'adult'
   );
+  // Asked on the sign-up form already: show it as one line with "Change" instead of asking again.
+  const [askMode, setAskMode] = useState(!signupMeta.account_type);
   const [guardianAge, setGuardianAge] = useState<string>(() => {
     const fromSignup = parseAge(signupMeta.guardian_age);
     if (fromSignup) return String(fromSignup);
@@ -600,7 +603,9 @@ export default function StudentOnboardingPage({
             className="space-y-6"
           >
             {/* How you travel: alone or as a family caravan */}
-            <TravelModeChoice value={learnerType} onChange={setLearnerType} isAr={isRTL} />
+            {askMode
+              ? <TravelModeChoice value={learnerType} onChange={setLearnerType} isAr={isRTL} />
+              : <TravelModeSummary value={learnerType} onChange={() => setAskMode(true)} isAr={isRTL} />}
 
             {/* The traveller's ticket */}
             <PassCard name={learnerType === 'child' ? parentName : studentName} isAr={isRTL}>

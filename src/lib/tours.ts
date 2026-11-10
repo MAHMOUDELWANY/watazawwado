@@ -135,15 +135,6 @@ export function familyTourSteps(isAr: boolean): TourStep[] {
       position: 'bottom',
     },
     {
-      targetId: ['child-switcher'],
-      title: t('All your children in one place', 'أولادك في مكان واحد'),
-      description: t(
-        'Pick a child here and every page shows their lessons and progress, or choose "Whole family" to see everyone.',
-        'اختار اسم الطفل من هنا فتعرض كل الصفحات دروسه وتقدّمه هو، أو اختار «كل الأسرة» تشوفهم مع بعض.',
-      ),
-      position: 'bottom',
-    },
-    {
       targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
       title: t('Book a lesson', 'احجز درس'),
       description: t(

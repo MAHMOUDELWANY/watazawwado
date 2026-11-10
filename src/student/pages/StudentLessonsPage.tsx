@@ -40,7 +40,7 @@ import {
   type LessonFilter
 } from '../lessonsPresentation';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
-import { useActiveLearner } from '../activeLearner';
+import { useActiveLearner, LearnerChips } from '../activeLearner';
 import { PendingPaymentCard } from '../components/PendingPaymentCard';
 
 export interface StudentLessonsPageProps {
@@ -154,6 +154,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           lang={lang}
         />
       </div>
+
+      {/* Family: which learner's lessons, in sight on the page (owner review 2026-11-10). */}
+      <LearnerChips isAr={isAr} />
 
       {/* 1. Header & Primary CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">

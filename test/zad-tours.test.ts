@@ -25,7 +25,7 @@ describe('Zad tours (one per account type)', () => {
       assert.ok(/[؀-ۿ]/.test(steps(true)[1].title), `${kind}: Arabic copy`);
     }
     assert.deepStrictEqual(familyTourSteps(false).map((s) => s.targetId[0]).slice(1, 6),
-      ['onboarding-welcome', 'child-switcher', 'nav-book-link', 'student-progress', 'student-messages']);
+      ['onboarding-welcome', 'nav-book-link', 'student-progress', 'student-messages', 'student-header-tour-btn']);
   });
 
   it('opens once per account and kind on this browser', () => {
@@ -49,7 +49,6 @@ describe('Zad tours (one per account type)', () => {
   it('every target exists in the portal and the dashboard', () => {
     const app = fs.readFileSync('src/student/StudentApp.tsx', 'utf8');
     const dash = fs.readFileSync('src/dashboard/DashboardApp.tsx', 'utf8');
-    assert.ok(fs.readFileSync('src/student/activeLearner.tsx', 'utf8').includes('data-tour="child-switcher"'));
     assert.ok(app.includes("tour: 'student-messages'") && app.includes('data-tour={item.tour}'));
     assert.ok(app.includes('data-tour="student-header-tour-btn"'));
     assert.ok(app.includes('markTourSeen(tourKey'));

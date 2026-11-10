@@ -49,6 +49,26 @@ export function TravelModeChoice({ value, onChange, isAr }: { value: 'adult' | '
   );
 }
 
+/** The choice already made on the sign-up form, shown as one line so the journey does not ask it again. */
+export function TravelModeSummary({ value, onChange, isAr }: { value: 'adult' | 'child'; onChange: () => void; isAr: boolean }) {
+  const family = value === 'child';
+  const Icon = family ? Users : User;
+  const color = family ? '#8B4935' : '#087D91';
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border px-4 py-3" style={{ borderColor: `${color}40`, background: `${color}0D` }}>
+      <span className="grid place-items-center w-10 h-10 rounded-full shrink-0" style={{ background: `${color}1F`, color }} aria-hidden="true">
+        <Icon className="w-5 h-5 dark:brightness-150" />
+      </span>
+      <span className="flex-1 min-w-0 text-sm font-bold text-foreground">
+        {family ? (isAr ? 'حساب لأسرتك' : 'A family account') : (isAr ? 'حساب لك أنت' : 'An account for you')}
+      </span>
+      <button type="button" onClick={onChange} className="min-h-11 px-2 text-sm font-semibold text-primary underline underline-offset-4 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg">
+        {isAr ? 'تغيير' : 'Change'}
+      </button>
+    </div>
+  );
+}
+
 /** Boarding-pass card: a stub with the traveller's initial seal, cut-out edges, then the fields. */
 export function PassCard({ name, isAr, children }: { name: string; isAr: boolean; children: React.ReactNode }) {
   const initial = name.trim().charAt(0).toUpperCase();

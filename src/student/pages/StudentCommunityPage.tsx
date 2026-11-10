@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card } from '../../components/ui/Card';
 import { authedJson } from '../../lib/authedJson';
-import { useActiveLearner } from '../activeLearner';
+import { useActiveLearner, LearnerChips } from '../activeLearner';
 import { AchievementEmblem } from '../components/achievements/AchievementEmblems';
 import { emblemForKind } from '../components/achievements/achievements';
 import { CommunityPanel } from '../components/community/CommunityPanel';
@@ -40,7 +40,7 @@ export default function StudentCommunityPage({ lang, kid = false }: { lang: 'ar'
   }, []);
   useEffect(loadHall, [loadHall]);
 
-  // A notice links here with ?learnerId=; otherwise the header's child switcher decides, or the whole family.
+  // A notice links here with ?learnerId=; otherwise the learner chips above decide, or the whole family.
   const linked = params.get('learnerId') || '';
   const panelIds: Array<string | undefined> = learners.length === 0
     ? [undefined]
@@ -66,6 +66,7 @@ export default function StudentCommunityPage({ lang, kid = false }: { lang: 'ar'
         </p>
       </header>
 
+      {!kid && <LearnerChips isAr={isAr} />}
       {!kid && <FamilyAchievements isAr={isAr} onChanged={loadHall} />}
       {!kid && panelIds.map((id) => <CommunityPanel key={id || 'self'} learnerId={id} isAr={isAr} onChanged={loadHall} />)}
 

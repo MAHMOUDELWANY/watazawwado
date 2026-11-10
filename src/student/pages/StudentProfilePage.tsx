@@ -35,7 +35,6 @@ import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { isFamilyAccount } from '../../lib/tours';
-import { useActiveLearner } from '../activeLearner';
 import { AddChildForm } from '../components/AddChildForm';
 import { ChildPhones } from '../components/ChildPhones';
 import { PrivacyRequests } from '../components/PrivacyRequests';
@@ -96,8 +95,8 @@ export default function StudentProfilePage({
   );
   const linkedChildren = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
   // Owner review 2026-11-07: a family's Learning Track shows its children (the one picked in the header, or all).
-  const { activeId } = useActiveLearner();
-  const trackChildren = activeId ? linkedChildren.filter((c: any) => c.id === activeId) : linkedChildren;
+  // The account page always lists every child (no hidden filter from another page).
+  const trackChildren = linkedChildren;
   // A family account manages children; an adult who learns for themselves sees no family controls (owner 2026-10-28).
   const isFamily = linkedChildren.length > 0 || profile?.bookingPreference === 'child' || profile?.learnerType === 'child';
   const [showAddChild, setShowAddChild] = useState(false);

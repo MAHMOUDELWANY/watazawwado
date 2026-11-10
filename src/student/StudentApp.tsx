@@ -61,7 +61,7 @@ import StudentHomeworkPage from './pages/StudentHomeworkPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
-import { ActiveLearnerProvider, ChildSwitcher, PROFILE_CHANGED_EVENT } from './activeLearner';
+import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT } from './activeLearner';
 import { familyTourSteps, isFamilyAccount, learnerTourSteps, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
@@ -626,9 +626,8 @@ export default function StudentApp() {
               })}
             </nav>
 
-            {/* End: child, tour, notifications, language, theme, account */}
+            {/* End: tour, notifications, language, theme, account */}
             <div className="flex items-center gap-1.5 shrink-0">
-              <ChildSwitcher isAr={isAr} />
               <div className={`flex items-center gap-1 p-1 ${pill}`}>
                 <button
                   type="button"
@@ -689,7 +688,7 @@ export default function StudentApp() {
             )}
             <ErrorBoundary>
               <Routes>
-              <Route path="/" element={<StudentHomePage lang={lang} />} />
+              <Route path="/" element={<AllLearnersScope><StudentHomePage lang={lang} /></AllLearnersScope>} />
               <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
               <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
               <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />

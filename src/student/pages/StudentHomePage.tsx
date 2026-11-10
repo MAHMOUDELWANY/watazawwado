@@ -356,52 +356,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* 2. QUICK ACTIONS (Role-aware: individualized for children of parents) */}
-      {/* ========================================================================= */}
-      {(() => {
-        const isParent = profile?.learnerType === 'child' || profile?.bookingPreference === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0);
-        const children = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
-
-        // Book, lessons and payments are already in the app bar; only parents get per-child booking shortcuts here.
-        if (!isParent || children.length === 0) return null;
-        return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {children.length > 1 ? (
-              // Case: Parent with multiple children — show dedicated button for each child
-              children.map((child: any) => (
-                <Link
-                  key={child.id}
-                  to={`/student/book?studentId=${child.id}&forChild=true`}
-                  className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl btn-primary-material text-white transition-all shadow-xs group cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <Calendar className="w-4 h-4 shrink-0" />
-                    <span className="text-sm sm:text-[15px] font-bold truncate">
-                      {isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}
-                    </span>
-                  </div>
-                  <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
-                </Link>
-              ))
-            ) : children.length === 1 ? (
-              // Case: Parent with single child — show named booking button
-              <Link
-                to={`/student/book?studentId=${children[0].id}&forChild=true`}
-                className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl btn-primary-material text-white transition-all shadow-xs group cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <Calendar className="w-4 h-4 shrink-0" />
-                  <span className="text-sm sm:text-[15px] font-bold truncate">
-                    {isAr ? `احجز درس لـ ${children[0].name}` : `Book for ${children[0].name}`}
-                  </span>
-                </div>
-                <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
-              </Link>
-            ) : null}
-      </div>
-    );
-  })()}
 
       {/* ST-01: on lesson day, the first thing on home is that lesson (and the next-lesson card below steps aside). */}
       {showsLessonDayCard && <LessonDayCard booking={nextBooking} isAr={isAr} />}
@@ -450,6 +404,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               profile.linkedChildren.map((child: any) => {
                 const childBookings = bookings.filter(b => b.student_id === child.id || b.studentId === child.id);
                 const teacherName = child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher');
+                // upcomingBookings is already sorted soonest first.
+                const childNext = upcomingBookings.find(b => b.student_id === child.id || b.studentId === child.id);
+                const childNextAt = childNext ? DateTime.fromISO(childNext.scheduledStart || childNext.scheduled_start || childNext.lesson_date) : null;
 
                 return (
                   <div
@@ -488,14 +445,22 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       </div>
                     </div>
 
-                    <div className="pt-1 flex items-center gap-2">
-                      <Link
-                        to={`/student/book?studentId=${child.id}&forChild=true`}
-                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl btn-primary-material text-primary-foreground font-semibold text-xs transition-all shadow-xs"
-                      >
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}</span>
-                      </Link>
+                    {/* One quiet line, never a row of red "Book for" buttons (owner review 2026-11-10). */}
+                    <div className="pt-1 flex items-center gap-2 text-xs">
+                      <Calendar className="w-3.5 h-3.5 text-accent shrink-0" aria-hidden="true" />
+                      {childNextAt?.isValid ? (
+                        <span className="text-muted-foreground">
+                          {isAr ? 'الحصة الجاية: ' : 'Next lesson: '}
+                          <span className="font-semibold text-foreground">{childNextAt.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {isAr ? 'مفيش حصة محجوزة. ' : 'Nothing booked yet. '}
+                          <Link to={`/student/book?studentId=${child.id}&forChild=true`} className="font-semibold text-primary underline underline-offset-4">
+                            {isAr ? 'اختار ميعاد' : 'Pick a time'}
+                          </Link>
+                        </span>
+                      )}
                     </div>
                   </div>
                 );

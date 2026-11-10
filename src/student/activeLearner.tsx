@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { Users } from 'lucide-react';
-import { Select } from '../components/ui/Select';
 
 /**
  * PA-01: one "which child" choice for the whole family portal. null = all children.
@@ -55,22 +54,44 @@ export function ActiveLearnerProvider({ profile, children }: { profile: any; chi
 
 export const useActiveLearner = () => useContext(Ctx);
 
-/** Header control; renders nothing for an account without children. */
-export function ChildSwitcher({ isAr }: { isAr: boolean }) {
+/**
+ * Home always shows the whole family: a child picked on another page must not quietly filter it
+ * (owner review 2026-11-10, the old header switcher looked like it did nothing on home).
+ */
+export function AllLearnersScope({ children }: { children: React.ReactNode }) {
+  const outer = useActiveLearner();
+  const value = useMemo(() => ({ ...outer, activeId: null }), [outer]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/**
+ * "Whole family / each child" chips, placed inside the pages that filter by learner (lessons, homework,
+ * community), so the filter is always in sight. Renders nothing for an account without children.
+ */
+export function LearnerChips({ isAr, className = '' }: { isAr: boolean; className?: string }) {
   const { learners, activeId, setActiveId } = useActiveLearner();
   if (learners.length === 0) return null;
+  const options: Array<{ id: string | null; name: string }> = [{ id: null, name: isAr ? 'كل الأسرة' : 'Whole family' }, ...learners];
   return (
-    <div className="flex items-center gap-1.5 min-w-0" data-tour="child-switcher">
-      <Users className="w-4 h-4 text-accent shrink-0 hidden sm:block" aria-hidden="true" />
-      <Select
-        aria-label={isAr ? 'عرض بيانات' : 'Show'}
-        value={activeId || ''}
-        onChange={(e) => setActiveId(e.target.value || null)}
-        className="h-9 text-xs sm:text-sm max-w-[9.5rem] sm:max-w-[12rem]"
-      >
-        <option value="">{isAr ? 'كل الأسرة' : 'Whole family'}</option>
-        {learners.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
-      </Select>
+    <div role="radiogroup" aria-label={isAr ? 'عرض بيانات' : 'Show'} className={`flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none ${className}`}>
+      <Users className="w-4 h-4 text-accent shrink-0" aria-hidden="true" />
+      {options.map((o) => {
+        const selected = (activeId || null) === o.id;
+        return (
+          <button
+            key={o.id || 'all'}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            onClick={() => setActiveId(o.id)}
+            className={`shrink-0 min-h-11 px-4 rounded-full text-sm font-semibold border transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+              selected ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface border-border text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            {o.name}
+          </button>
+        );
+      })}
     </div>
   );
 }
