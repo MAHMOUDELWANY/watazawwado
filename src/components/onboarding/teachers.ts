@@ -5,6 +5,9 @@ export interface TeacherCard {
   subjects?: string[];
   /** Quick words chosen by 3+ different families (src/lib/teacherBadges.ts). */
   badges?: string[];
+  /** The whole introduction and profile, for "About this teacher" (owner review 2026-11-10). */
+  about?: string | null;
+  profile?: { studies?: string | null; credentials?: string[]; experienceYears?: number | null; languages?: string[] } | null;
   /** False when the teacher has no free slot in the next two weeks. */
   available?: boolean;
 }

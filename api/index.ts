@@ -78,6 +78,7 @@ import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
 import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath, attachAttendance, loadAttendanceAnalysis, inRoomNow } from '../server/routes/attendance.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
+import { registerTeacherChangeRoutes, sanitizeProfile, type PublicProfile } from '../server/routes/teacherChange.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
 import { registerNextWeekSuggestionRoutes } from '../server/routes/nextWeekSuggestion.js';
 import { registerIntakeRoutes } from '../server/routes/intake.js';
@@ -1990,7 +1991,7 @@ export async function resolveSmartTeacherRouting(
   }
 }
 
-export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null; subjects: string[]; badges: string[] };
+export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null; about: string | null; profile: PublicProfile; subjects: string[]; badges: string[] };
 
 /**
  * Teachers a new student can choose at onboarding: every active account with the 'teacher' role.
@@ -2052,7 +2053,10 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
         gender,
         photo: typeof a.photo_url === 'string' && /^(\/|https:\/\/)/.test(a.photo_url) ? a.photo_url : null,
         // A short line for the onboarding card (owner D1): the first sentence of the teacher's own bio.
-        bio: (() => { const b = bioById.get(idByEmail.get(email) || ''); return b ? b.split(/(?<=[.!؟?])\s/)[0].slice(0, 160) : null; })()
+        bio: (() => { const b = bioById.get(idByEmail.get(email) || ''); return b ? b.split(/(?<=[.!؟?])\s/)[0].slice(0, 160) : null; })(),
+        // The whole introduction and the profile, for the "About this teacher" popup (owner review 2026-11-10).
+        about: bioById.get(idByEmail.get(email) || '') || null,
+        profile: sanitizeProfile(a.public_profile)
       };
     })
     .filter((t: PublicTeacher) => t.id);
@@ -6216,7 +6220,8 @@ app.post('/api/student/credits/:id/refund-request', rateLimit, verifyStudentAuth
       .from('package_entitlements')
       .select('id, metadata')
       .eq('purchaser_account_id', credit.purchaser_account_id);
-    const refundedSoFar = (accountCredits || []).filter((c: any) => c.metadata?.source === 'cancellation_credit' && c.metadata?.refunded === true).length;
+    // Credits from lessons the academy cancelled (a teacher change) never count toward the limit (RULES.md §5).
+    const refundedSoFar = (accountCredits || []).filter((c: any) => c.metadata?.source === 'cancellation_credit' && c.metadata?.refunded === true && !c.metadata?.platform_cancel).length;
     if (refundedSoFar >= MAX_STUDENT_REFUNDED_LESSONS) {
       return res.status(400).json({
         error: `Refunds are limited to ${MAX_STUDENT_REFUNDED_LESSONS} lessons per account, and this account has reached that limit. Your credit stays valid for a future lesson.`,
@@ -10609,6 +10614,20 @@ registerLessonTeacherMoveRoutes(app, {
   verifyTeacherAuth,
   requireSuperAdmin,
   resolveTeacher: resolveTeacherMetadata
+});
+
+// Teacher change requests and teacher public profiles (docs/policies/TEACHER-CHANGE.md, owner 2026-11-10).
+registerTeacherChangeRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  resolveTeacher: resolveTeacherMetadata,
+  listPublicTeachers,
+  subjectFor: (interest: string) => subjectFor(interest),
+  reverseCheckoutDiscount,
+  processIntegrationJobs
 });
 
 registerExportRoutes(app, {

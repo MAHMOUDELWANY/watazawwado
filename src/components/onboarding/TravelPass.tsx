@@ -4,6 +4,7 @@ import { User, Users, Check, Star } from 'lucide-react';
 import { tagLabel } from '../../lib/teacherBadges';
 import { SubjectMark } from './SubjectMark';
 import { ZadRig } from '../zad/ZadRig';
+import { TeacherProfileModal, type TeacherProfileData } from './TeacherProfile';
 
 /**
  * Step one of the onboarding journey as a traveller's ticket: choose how you travel (alone or as a
@@ -274,7 +275,7 @@ export const teacherColor = (gender: 'male' | 'female' | undefined, index = 0) =
  * (photo, name, a short line about them). The pick is assigned at once; the admin can change it later.
  */
 export function GuideChoice({ teachers, value, onChange, isAr }: {
-  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null; bio?: string | null; badges?: string[] }[];
+  teachers: (TeacherProfileData & { gender?: 'male' | 'female' })[];
   value: string;
   onChange: (id: string) => void;
   isAr: boolean;
@@ -283,6 +284,8 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
   const [tab, setTab] = useState<'male' | 'female'>(selectedGender || 'male');
   const genders = (['male', 'female'] as const).filter((g) => teachers.some((t) => t.gender === g));
   const shown = genders.length > 1 ? teachers.filter((t) => t.gender === tab) : teachers;
+  const [aboutId, setAboutId] = useState<string | null>(null);
+  const about = teachers.find((t) => t.id === aboutId) || null;
 
   const pickGender = (g: 'male' | 'female') => {
     setTab(g);
@@ -318,16 +321,19 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
           const name = isAr ? t.nameAr : t.nameEn;
           const color = teacherColor(t.gender, i);
           return (
-            <button
+            <div
               key={t.id}
+              className={`flex flex-col rounded-2xl border-2 transition-colors ${
+                selected ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-[#D8C6AE]/15 hover:bg-[#D8C6AE]/25'
+              }`}
+              style={selected ? { borderColor: color } : undefined}
+            >
+            <button
               type="button"
               role="radio"
               aria-checked={selected}
               onClick={() => onChange(t.id)}
-              className={`flex items-start gap-3 p-3 rounded-2xl border-2 text-start cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
-                selected ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-[#D8C6AE]/15 hover:bg-[#D8C6AE]/25'
-              }`}
-              style={selected ? { borderColor: color } : undefined}
+              className="flex items-start gap-3 p-3 pb-1 rounded-2xl text-start cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary"
             >
               <TeacherAvatar name={name} photo={t.photo} color={color} />
               <span className="flex-1 min-w-0">
@@ -345,9 +351,26 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
               </span>
               {selected && <Check className="w-4 h-4 shrink-0 mt-1" style={{ color }} aria-hidden="true" />}
             </button>
+            {/* Their studies, certificates and experience, in a popup so the journey stays open (owner review 2026-11-10). */}
+            <button
+              type="button"
+              onClick={() => setAboutId(t.id)}
+              className="self-end min-h-11 px-3 me-1 text-xs font-semibold text-primary underline underline-offset-4 cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              {isAr ? `اعرف أكتر عن ${name}` : `More about ${name}`}
+            </button>
+            </div>
           );
         })}
       </div>
+      <TeacherProfileModal
+        teacher={about}
+        isOpen={Boolean(about)}
+        onClose={() => setAboutId(null)}
+        onChoose={about ? () => onChange(about.id) : undefined}
+        selected={about?.id === value}
+        isAr={isAr}
+      />
     </div>
   );
 }

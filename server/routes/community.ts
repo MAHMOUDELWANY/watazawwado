@@ -442,6 +442,8 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
     if (body.length > MAX_MESSAGE) return res.status(400).json({ error: `Messages can be up to ${MAX_MESSAGE} characters.` });
     const { data: thread } = await client.from('chat_threads').select('*').eq('id', req.params.id).maybeSingle();
     if (!canAccessThread(thread, actor)) return res.status(404).json({ error: 'Conversation not found.' });
+    // After a teacher change the chat with the previous teacher is read-only (the admin can still write).
+    if (thread.closed_at && actor.role !== 'admin') return res.status(403).json({ error: 'This conversation is closed. Write to the current teacher or to our team.' });
     const message = await postChatMessage(client, thread, { userId: actor.userId, role: actor.role, name: actor.name }, body);
     res.status(201).json({ message: { ...message, mine: true, sender_user_id: undefined } });
   }));

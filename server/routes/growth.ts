@@ -230,7 +230,7 @@ function quoteResponse(q: QuoteResult) {
 }
 
 /** Every learner an account pays for: its own students row(s) and the children linked to its email. */
-async function accountLearnerIds(client: any, userId: string): Promise<string[]> {
+export async function accountLearnerIds(client: any, userId: string): Promise<string[]> {
   const { data: own } = await client.from('students').select('id, email').eq('auth_user_id', userId);
   const ids = new Set<string>((own || []).map((s: any) => s.id));
   const emails: string[] = [...new Set<string>((own || []).map((s: any) => String(s.email || '').toLowerCase()).filter(Boolean))];
