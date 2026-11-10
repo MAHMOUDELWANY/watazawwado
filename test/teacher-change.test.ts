@@ -36,6 +36,12 @@ describe('Teacher change', () => {
     assert.deepStrictEqual(p, { studies: 'Al-Azhar', credentials: ['Ijazah in Hafs'], experienceYears: null, languages: ['Arabic', 'English'] });
   });
 
+  it('families never see a request their teacher started; profiles save by exact email', () => {
+    const src = fs.readFileSync('server/routes/teacherChange.ts', 'utf8');
+    assert.strictEqual((src.match(/\.eq\('initiator', 'family'\)/g) || []).length, 2, 'family list and withdraw');
+    assert.ok(!src.includes(".ilike('email'"), 'no LIKE match on teacher email');
+  });
+
   it('the old chat closes and academy-cancelled credits never count toward the refund limit', () => {
     assert.ok(fs.readFileSync('server/routes/community.ts', 'utf8').includes("thread.closed_at && actor.role !== 'admin'"));
     assert.ok(fs.readFileSync('api/index.ts', 'utf8').includes('!c.metadata?.platform_cancel'));

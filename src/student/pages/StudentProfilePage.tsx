@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { MyTeacherCard } from '../components/MyTeacherCard';
 import { TeacherFace } from '../../components/TeacherFace';
 import { LEVEL_LABELS } from '../../components/booking/StepServiceSelect';
 import { NotificationPreferences } from '../components/NotificationPreferences';
@@ -640,6 +641,9 @@ export default function StudentProfilePage({
                     : 'Your 1-on-1 teaching relationship, current level, and target goals'}
                 </p>
               </div>
+
+              {/* Owner review 2026-11-10: each learner's teacher and "Ask to change". */}
+              <MyTeacherCard isAr={isAr} />
 
               {/* Teacher Relationship Banner: a family account is not a learner; each child's teacher shows on their card below. */}
               {!isFamilyAccount(profile) && (

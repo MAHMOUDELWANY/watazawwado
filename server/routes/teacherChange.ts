@@ -98,6 +98,9 @@ async function teacherNames(deps: TeacherChangeDeps, client: any, ids: string[])
   return map;
 }
 
+/** Exact match only (never a LIKE pattern), so one teacher can never write another's row. */
+const ownEmail = (req: any) => String(req.teacherUser?.email || '').toLowerCase().trim();
+
 export function registerTeacherChangeRoutes(app: express.Express, deps: TeacherChangeDeps) {
   const { rateLimit, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin } = deps;
 
@@ -105,14 +108,16 @@ export function registerTeacherChangeRoutes(app: express.Express, deps: TeacherC
   app.get('/api/dashboard/me/profile', verifyTeacherAuth, async (req: any, res: any) => {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
-    const { data } = await client.from('teacher_accounts').select('public_profile').ilike('email', String(req.teacherUser?.email || '')).maybeSingle();
+    const { data } = await client.from('teacher_accounts').select('public_profile').eq('email', ownEmail(req)).maybeSingle();
     res.json({ profile: sanitizeProfile(data?.public_profile) });
   });
   app.put('/api/dashboard/me/profile', rateLimit, verifyTeacherAuth, async (req: any, res: any) => {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
     const profile = sanitizeProfile(req.body?.profile);
-    const { error } = await client.from('teacher_accounts').update({ public_profile: profile }).ilike('email', String(req.teacherUser?.email || ''));
+    const email = ownEmail(req);
+    if (!email) return res.status(401).json({ error: 'Please sign in again.' });
+    const { error } = await client.from('teacher_accounts').update({ public_profile: profile }).eq('email', email);
     if (error) return res.status(500).json({ error: 'Could not save your profile.' });
     res.json({ profile });
   });
@@ -128,7 +133,7 @@ export function registerTeacherChangeRoutes(app: express.Express, deps: TeacherC
       if (!ids.length) return res.json({ learners: [], teachers: [] });
       const [{ data: rows }, { data: requests }] = await Promise.all([
         client.from('students').select('id, name, auth_user_id, booking_preference, learning_interest, assigned_teacher_id').in('id', ids),
-        client.from('teacher_change_requests').select('id, student_id, status, reason_type, admin_message, created_at, decided_at, to_teacher_id').in('student_id', ids).order('created_at', { ascending: false })
+        client.from('teacher_change_requests').select('id, student_id, status, reason_type, admin_message, created_at, decided_at, to_teacher_id').in('student_id', ids).eq('initiator', 'family').order('created_at', { ascending: false })
       ]);
       // A parent who only follows their children is not a learner.
       const learners = (rows || []).filter((s: any) => !(s.auth_user_id === userId && s.booking_preference === 'child'));
@@ -200,7 +205,7 @@ export function registerTeacherChangeRoutes(app: express.Express, deps: TeacherC
     const ids = await accountLearnerIds(client, userId);
     const { data, error } = await client.from('teacher_change_requests')
       .update({ status: 'withdrawn', updated_at: new Date().toISOString() })
-      .eq('id', req.params.id).in('student_id', ids.length ? ids : ['00000000-0000-0000-0000-000000000000']).in('status', OPEN).select('id');
+      .eq('id', req.params.id).eq('initiator', 'family').in('student_id', ids.length ? ids : ['00000000-0000-0000-0000-000000000000']).in('status', OPEN).select('id');
     if (error) return res.status(500).json({ error: 'Could not withdraw the request.' });
     if (!data?.length) return res.status(404).json({ error: 'Request not found.' });
     res.json({ success: true });
@@ -302,7 +307,7 @@ export function registerTeacherChangeRoutes(app: express.Express, deps: TeacherC
               ? { en: `About ${student.name}'s teacher`, ar: `بخصوص معلم ${student.name}` }
               : { en: `We are finding the right teacher for ${student.name}`, ar: `بندوّر على المعلم المناسب لـ${student.name}` },
             body: { en: message, ar: message },
-            link: '/student/account?tab=teacher'
+            link: '/student/account?tab=learning'
           }));
         }
         return res.json({ success: true });
