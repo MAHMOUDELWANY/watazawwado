@@ -8,6 +8,7 @@ const baseURL = (process.env.QA_BASE_URL || `http://localhost:${port}`).replace(
 
 const phone = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, userAgent: devices['iPhone 13'].userAgent };
 const desktop = { viewport: { width: 1440, height: 900 } };
+const API_SPECS = /\.api\.spec\.ts$/;
 
 export default defineConfig({
   testDir: './e2e',
@@ -24,10 +25,13 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     browserName: 'chromium',
   },
+  // `*.api.spec.ts` drive the server and check the database with no browser, so they run once (project `api`),
+  // before the browser projects, which run every other spec on phone/desktop x Arabic/English.
   projects: [
-    { name: 'desktop-ar', use: { ...desktop, locale: 'ar' } },
-    { name: 'desktop-en', use: { ...desktop, locale: 'en' } },
-    { name: 'phone-ar', use: { ...phone, locale: 'ar' } },
-    { name: 'phone-en', use: { ...phone, locale: 'en' } },
+    { name: 'api', testMatch: API_SPECS },
+    { name: 'desktop-ar', testIgnore: API_SPECS, dependencies: ['api'], use: { ...desktop, locale: 'ar' } },
+    { name: 'desktop-en', testIgnore: API_SPECS, dependencies: ['api'], use: { ...desktop, locale: 'en' } },
+    { name: 'phone-ar', testIgnore: API_SPECS, dependencies: ['api'], use: { ...phone, locale: 'ar' } },
+    { name: 'phone-en', testIgnore: API_SPECS, dependencies: ['api'], use: { ...phone, locale: 'en' } },
   ],
 });

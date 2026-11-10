@@ -54,6 +54,8 @@ describe('NX-09 web push', () => {
   it('sends nothing without keys, and removes a device the push service says is gone', async () => {
     const notice = { kind: 'lesson_in_2h', title: { en: 'Soon', ar: 'قرّبت' }, body: { en: 'b', ar: 'ب' }, link: '/student/lessons' };
     assert.strictEqual(pushConfigured({}), false);
+    // P2-002: a malformed key switches push off instead of throwing into notifyUser (which then skipped its email).
+    assert.strictEqual(pushConfigured({ VAPID_PUBLIC_KEY: 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U', VAPID_PRIVATE_KEY: '[SENSITIVE]' }), false);
     process.env.VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
     process.env.VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || 'UUxI4O8-FbRouAevSmBQ6o18hgE4nSG3qwvJTfKc-ls';
     const client = fakeClient([{ id: 's1', endpoint: 'https://fcm.googleapis.com/a', p256dh: 'k', auth: 'a' }, { id: 's2', endpoint: 'https://fcm.googleapis.com/b', p256dh: 'k', auth: 'a' }, { id: 's3', endpoint: 'https://169.254.169.254/x', p256dh: 'k', auth: 'a' }]);

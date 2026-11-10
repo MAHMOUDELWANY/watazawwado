@@ -228,6 +228,18 @@ const TERMS_VERSION = '2026-10-28.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
 const TEACHER_AGREEMENT_VERSION = '2026-10-28.1';
 
+/** True when the learner already has a lesson (held, confirmed or moved) overlapping this time, with any teacher (P2-004). */
+async function learnerHasLessonAt(client: any, studentId: string | null, startIso: string, endIso: string, exceptBookingId?: string): Promise<boolean> {
+  if (!studentId) return false;
+  let q = client.from('bookings').select('id', { count: 'exact', head: true })
+    .eq('student_id', studentId).in('status', ['pending', 'confirmed', 'rescheduled'])
+    .lt('scheduled_start', endIso).gt('scheduled_end', startIso);
+  if (exceptBookingId) q = q.neq('id', exceptBookingId);
+  const { count } = await q;
+  return (count || 0) > 0;
+}
+const LEARNER_BUSY = { error: 'This learner already has a lesson at that time. Please choose another time.', code: 'LEARNER_BUSY' };
+
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
   try {
@@ -969,6 +981,9 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     if (slotValidation.isAvailable === false) {
       return res.status(409).json({ error: slotValidation.conflictReason || 'This time slot is no longer available. Please select another slot.' });
     }
+    if (await learnerHasLessonAt(supabaseAdmin, linkedStudentId, scheduledStartUtc, scheduledEndUtc)) {
+      return res.status(409).json(LEARNER_BUSY);
+    }
 
     // Resolve service rate and calculate authoritative fee
     const { data: srv } = await supabaseAdmin
@@ -1150,6 +1165,11 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       .single();
 
     if (bErr || !newBooking) {
+      // Two requests in the same instant pass the checks above; the database decides (P2-003).
+      if (bErr?.code === '23P01') return res.status(409).json({ error: 'This time was just taken. Please choose another one.' });
+      if (bErr?.code === '23505' && /one_trial/.test(bErr.message || '')) {
+        return res.status(400).json({ error: 'You already have a free trial on this account. Each student gets one free trial, but you can book a regular lesson any time.' });
+      }
       console.error('[Create Booking Insert Error]', bErr);
       return res.status(500).json({ error: 'Failed to create booking reservation. Please try again.' });
     }
@@ -6057,6 +6077,9 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
     const slot = await validateSlotAvailability(newStart.toISO()!, newEnd.toISO()!, booking.teacher_id || undefined);
     if (slot.isAvailable === false) {
       return res.status(409).json({ error: slot.conflictReason || 'This time is no longer available. Please choose another one.' });
+    }
+    if (await learnerHasLessonAt(supabase, booking.student_id, newStart.toISO()!, newEnd.toISO()!, booking.id)) {
+      return res.status(409).json(LEARNER_BUSY);
     }
 
     const { data: moved, error: moveErr } = await supabase

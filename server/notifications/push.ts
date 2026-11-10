@@ -77,8 +77,14 @@ export function pushPayload(notice: PushNotice, lang: 'ar' | 'en') {
 let configured: boolean | null = null;
 export function pushConfigured(env: Record<string, string | undefined> = process.env): boolean {
   if (configured !== null && env === process.env) return configured;
-  const ok = Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY);
-  if (ok) webpush.setVapidDetails('mailto:support@watazawwado.academy', env.VAPID_PUBLIC_KEY!, env.VAPID_PRIVATE_KEY!);
+  let ok = Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY);
+  // A malformed key must only switch push off: a throw here used to abort notifyUser before its email (P2-002).
+  try {
+    if (ok) webpush.setVapidDetails('mailto:support@watazawwado.academy', env.VAPID_PUBLIC_KEY!, env.VAPID_PRIVATE_KEY!);
+  } catch (err: any) {
+    console.warn('[Push] VAPID keys are not valid, push is off:', err?.message);
+    ok = false;
+  }
   if (env === process.env) configured = ok;
   return ok;
 }
