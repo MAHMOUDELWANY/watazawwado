@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
 import {
-  adminTourSteps, dashTourId, familyTourSteps, isFamilyAccount, learnerTourSteps, markTourSeen, shouldAutoOpenTour,
+  adminTourSteps, dashTourId, familyTourSteps, isFamilyAccount, isTourHome, learnerTourSteps, markTourSeen, shouldAutoOpenTour,
   teacherTourSteps, tourSeenKey,
 } from '../src/lib/tours.js';
 
@@ -13,6 +13,11 @@ const memory = () => {
 const TOURS = { learner: learnerTourSteps, family: familyTourSteps, teacher: teacherTourSteps, admin: adminTourSteps };
 
 describe('Zad tours (one per account type)', () => {
+  it('opens by itself only on the home page, never over a lesson room, a booking or the return from checkout (P2-007)', () => {
+    for (const home of ['/student', '/student/', '/dashboard', '/dashboard/today', '/dashboard/overview']) assert.ok(isTourHome(home), home);
+    for (const deep of ['/student/book', '/student/room/abc', '/student/wallet', '/student/lessons', '/dashboard/room/abc', '/dashboard/students', '/']) assert.ok(!isTourHome(deep), deep);
+  });
+
   it('every tour opens with Zad in the centre, ends on the replay button, and has both languages', () => {
     for (const [kind, steps] of Object.entries(TOURS)) {
       for (const isAr of [true, false]) {

@@ -84,7 +84,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { CommandSearch } from './components/CommandSearch';
 import { useAppLanguage } from '../lib/language';
-import { adminTourSteps, dashTourId, markTourSeen, shouldAutoOpenTour, teacherTourSteps, tourSeenKey } from '../lib/tours';
+import { adminTourSteps, dashTourId, isTourHome, markTourSeen, shouldAutoOpenTour, teacherTourSteps, tourSeenKey } from '../lib/tours';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { FeedbackHost } from '../components/ui/Feedback';
 import { TimezoneCheck } from '../components/ui/TimezoneCheck';
@@ -140,10 +140,10 @@ export function DashboardApp() {
     if (showWelcome) return;
     let storage: Storage | null = null;
     try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
-    if (!shouldAutoOpenTour(tourKey, storage)) return;
+    if (!isTourHome(location.pathname) || !shouldAutoOpenTour(tourKey, storage)) return;
     const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
     return () => window.clearTimeout(timer);
-  }, [tourKey, showWelcome]);
+  }, [tourKey, showWelcome, location.pathname]);
   const closeTour = () => {
     setShowGlobalTour(false);
     try { markTourSeen(tourKey, window.localStorage); } catch { /* blocked storage */ }

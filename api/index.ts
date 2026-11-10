@@ -4740,15 +4740,44 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     // 1. Transactional Cancellation Path
     if (status === 'cancelled') {
-      const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_cancel_booking', {
-        p_booking_id: id,
-        p_reason: cancellation_reason || 'Cancelled by teacher',
-        p_notes: notes || null
-      });
-
-      if (rpcErr) {
-        console.error('[Teacher Cancel RPC Error]', rpcErr);
-        return res.status(500).json({ error: clientErrorMessage(rpcErr, 'Failed to cancel booking.') });
+      // P2-009: the database functions this route used (teacher_cancel_booking / teacher_reschedule_booking) are
+      // not in the production database, so both actions answered 500. The work is done here instead.
+      const reason = String(cancellation_reason || 'Cancelled by the academy').slice(0, 500);
+      const { count: paidCount } = await supabase.from('payments').select('id', { count: 'exact', head: true })
+        .eq('booking_id', id).eq('status', 'confirmed');
+      const paidSingle = existingBooking.booking_type !== 'trial' && !existingBooking.package_entitlement_id
+        && existingBooking.payment_plan !== 'pay_later' && ['confirmed', 'rescheduled'].includes(existingBooking.status) && Boolean(paidCount);
+      const account = paidSingle ? await resolveLearnerAccount(supabase, existingBooking.student_id) : null;
+      if (paidSingle && account?.userId) {
+        // RULES.md §2/§5: a paid lesson the academy cancels comes back as a lesson credit that never counts
+        // toward the family's refund limit (the same step a teacher change uses).
+        const { data: result, error: creditErr } = await supabase.rpc('student_cancel_paid_lesson_to_credit', {
+          p_booking_id: id, p_purchaser_account_id: account.userId, p_reason: reason
+        });
+        if (creditErr) {
+          console.error('[Admin Cancel -> credit]', creditErr);
+          return res.status(500).json({ error: clientErrorMessage(creditErr, 'Failed to cancel booking.') });
+        }
+        if (result?.creditId) {
+          const { data: ent } = await supabase.from('package_entitlements').select('metadata').eq('id', result.creditId).maybeSingle();
+          await supabase.from('package_entitlements').update({ metadata: { ...(ent?.metadata || {}), platform_cancel: true } }).eq('id', result.creditId);
+        }
+      } else {
+        const { data: done, error: cancelErr } = await supabase.from('bookings')
+          .update({ status: 'cancelled', cancellation_reason: reason, ...(notes ? { notes } : {}), updated_at: new Date().toISOString() })
+          .eq('id', id).in('status', ['pending', 'confirmed', 'rescheduled']).select('id');
+        if (cancelErr) {
+          console.error('[Admin Cancel Error]', cancelErr);
+          return res.status(500).json({ error: 'Failed to cancel booking.' });
+        }
+        if (!done?.length) return res.status(409).json({ error: 'This lesson is no longer upcoming. Refresh and check it.' });
+        // A lesson paid from the family's balance gets that balance back.
+        if (!paidCount && Number(existingBooking.fee_amount_usd || 0) === 0 && existingBooking.booking_type !== 'trial' && !existingBooking.package_entitlement_id) {
+          await reverseCheckoutDiscount(supabase, 'booking', id);
+        }
+        await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('booking_id', id).eq('status', 'pending');
+        const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: id, job_type: 'booking_cancel', status: 'pending' });
+        if (jobErr && jobErr.code !== '23505') console.warn('[Admin Cancel] job enqueue failed:', jobErr.message);
       }
 
       // Best-effort fast path worker trigger AFTER commit
@@ -4783,16 +4812,31 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         }
       }
 
-      const { error: rpcErr } = await supabase.rpc('teacher_reschedule_booking', {
-        p_booking_id: id,
-        p_new_start: newStart.toISO(),
-        p_new_end: newEnd.toISO(),
-        p_cairo_time_display: newStart.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a'),
-        p_notes: notes || null
-      });
+      if (await learnerHasLessonAt(supabase, existingBooking.student_id, newStart.toISO()!, newEnd.toISO()!, id)) {
+        return res.status(409).json(LEARNER_BUSY);
+      }
+      // P2-009: done here, not through the missing teacher_reschedule_booking function.
+      const { data: movedRows, error: moveErr } = await supabase.from('bookings')
+        .update({
+          status: 'rescheduled',
+          scheduled_start: newStart.toISO(),
+          scheduled_end: newEnd.toISO(),
+          cairo_time_display: newStart.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a'),
+          reschedule_requested_at: null,
+          reschedule_request_note: null,
+          ...(notes ? { notes } : {}),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id).in('status', ['confirmed', 'rescheduled']).select('id');
+      const rpcErr: any = moveErr || (!movedRows?.length ? { message: 'This lesson is not confirmed, so it cannot be moved.', code: 'P0004' } : null);
+      if (!rpcErr) {
+        const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: id, job_type: 'booking_reschedule', status: 'pending' });
+        if (jobErr && jobErr.code !== '23505') console.warn('[Teacher Reschedule] job enqueue failed:', jobErr.message);
+      }
 
       if (rpcErr) {
         if ((rpcErr as any).code === '23P01') return res.status(409).json({ error: 'This time was just taken. Please choose another one.' });
+        if ((rpcErr as any).code === 'P0004') return res.status(400).json({ error: rpcErr.message });
         console.error('[Teacher Reschedule RPC Error]', rpcErr);
         return res.status(500).json({ error: clientErrorMessage(rpcErr, 'Failed to reschedule booking.') });
       }
@@ -4997,6 +5041,83 @@ app.get('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (
   }
 });
 
+/** After a payment is confirmed: the lesson's meeting and reminders, then the "payment received" notice. Never throws. */
+async function afterPaymentConfirmed(supabase: any, updated: any): Promise<void> {
+  try {
+    if (updated.booking_id) {
+      await enqueueAndRunBookingSync(supabase, updated.booking_id);
+    }
+
+    // Dispatch payment confirmed notification asynchronously
+    try {
+      let learnerName = 'Student';
+      let contactEmail: string | undefined = undefined;
+      let contactWhatsapp: string | undefined = undefined;
+      let reference = updated.payment_reference || updated.id;
+      let serviceName = '1-on-1 Teaching';
+
+      // The payment is already confirmed at this point; nothing below may turn that into an error response.
+      if (updated.booking_id) {
+        const { data: b } = await supabase
+          .from('bookings')
+          .select('reference_code, contact_name, contact_email, contact_whatsapp, service_id')
+          .eq('id', updated.booking_id)
+          .maybeSingle();
+
+        if (b) {
+          learnerName = b.contact_name || learnerName;
+          contactEmail = b.contact_email;
+          contactWhatsapp = b.contact_whatsapp;
+          reference = b.reference_code || reference;
+          if (b.service_id) {
+            const { data: srv } = await supabase.from('services').select('title').eq('id', b.service_id).maybeSingle();
+            serviceName = srv?.title || serviceName;
+          }
+        }
+      } else if (updated.student_id) {
+        const { data: st } = await supabase
+          .from('students')
+          .select('name, email, whatsapp')
+          .eq('id', updated.student_id)
+          .maybeSingle();
+
+        if (st) {
+          learnerName = st.name || learnerName;
+          contactEmail = st.email;
+          contactWhatsapp = st.whatsapp;
+        }
+      }
+
+      await dispatchNotification({
+        eventType: 'PAYMENT_CONFIRMED',
+        payment: {
+          id: updated.id,
+          amount: Number(updated.amount),
+          currency: updated.currency || 'USD',
+          paymentMethod: updated.payment_method,
+          paymentReference: updated.payment_reference,
+          notes: updated.notes
+        },
+        booking: {
+          referenceCode: reference,
+          serviceName,
+          learnerName,
+          contactEmail: contactEmail || '',
+          contactWhatsapp: contactWhatsapp || null,
+          date: '',
+          timeDisplay: '',
+          timezone: 'Africa/Cairo',
+          durationMinutes: 60
+        }
+      });
+    } catch (notifErr) {
+      console.error('[Payment Confirmation Notification Error]', notifErr);
+    }
+  } catch (err) {
+    console.error('[afterPaymentConfirmed]', err);
+  }
+}
+
 // 16e. DASHBOARD: Record manual payment directly
 app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
@@ -5066,7 +5187,15 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       }
     }
 
-    const isConfirmed = status === 'confirmed';
+    // P2-005: "received" for a lesson that still waits for payment must confirm the lesson too, through the same
+    // atomic step as the Confirm button. Otherwise the money is on record and the unpaid hold still expires.
+    let confirmsLesson = false;
+    if (status === 'confirmed' && booking_id) {
+      const { data: target } = await supabase.from('bookings').select('status').eq('id', booking_id).maybeSingle();
+      if (!target) return res.status(404).json({ error: 'Booking not found.' });
+      confirmsLesson = target.status === 'pending';
+    }
+    const isConfirmed = status === 'confirmed' && !confirmsLesson;
     const insertPayload = {
       booking_id: booking_id || null,
       student_id: finalStudentId,
@@ -5074,7 +5203,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       currency: finalCurrency,
       payment_method,
       payment_reference: payment_reference ? String(payment_reference).trim() : null,
-      status,
+      status: confirmsLesson ? 'pending' : status,
       confirmed_at: isConfirmed ? new Date().toISOString() : null,
       notes: notes ? String(notes).trim() : null
     };
@@ -5088,6 +5217,18 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
     if (insertErr) {
       console.error('[Record Payment Error]', insertErr);
       return res.status(500).json({ error: 'Failed to record payment.', code: 'PAYMENT_RECORD_FAILED' });
+    }
+
+    if (confirmsLesson) {
+      const { error: rpcErr } = await supabase.rpc('verify_payment_atomic', { p_payment_id: newPayment.id });
+      if (rpcErr) {
+        // The lesson stopped waiting meanwhile (hold ended, cancelled): keep nothing half-recorded.
+        await supabase.from('payments').delete().eq('id', newPayment.id).eq('status', 'pending');
+        return res.status(409).json({ error: 'This lesson is no longer waiting for payment, so the payment was not recorded. Refresh and check the lesson.', code: 'PAYMENT_CONFIRM_FAILED' });
+      }
+      const { data: confirmed } = await supabase.from('payments').select('*').eq('id', newPayment.id).single();
+      await afterPaymentConfirmed(supabase, confirmed || newPayment);
+      return res.status(201).json({ success: true, payment: confirmed || newPayment, lessonConfirmed: true });
     }
 
     res.status(201).json({ success: true, payment: newPayment });
@@ -5123,75 +5264,7 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, requireSuperA
        return res.status(404).json({ error: 'Payment not found.' });
     }
 
-    if (updated.booking_id) {
-      await enqueueAndRunBookingSync(supabase, updated.booking_id);
-    }
-
-    // Dispatch payment confirmed notification asynchronously
-    try {
-      let learnerName = 'Student';
-      let contactEmail: string | undefined = undefined;
-      let contactWhatsapp: string | undefined = undefined;
-      let reference = updated.payment_reference || id;
-      let serviceName = '1-on-1 Teaching';
-
-      // The payment is already confirmed at this point; nothing below may turn that into an error response.
-      if (updated.booking_id) {
-        const { data: b } = await supabase
-          .from('bookings')
-          .select('reference_code, contact_name, contact_email, contact_whatsapp, service_id')
-          .eq('id', updated.booking_id)
-          .maybeSingle();
-
-        if (b) {
-          learnerName = b.contact_name || learnerName;
-          contactEmail = b.contact_email;
-          contactWhatsapp = b.contact_whatsapp;
-          reference = b.reference_code || reference;
-          if (b.service_id) {
-            const { data: srv } = await supabase.from('services').select('title').eq('id', b.service_id).maybeSingle();
-            serviceName = srv?.title || serviceName;
-          }
-        }
-      } else if (updated.student_id) {
-        const { data: st } = await supabase
-          .from('students')
-          .select('name, email, whatsapp')
-          .eq('id', updated.student_id)
-          .maybeSingle();
-
-        if (st) {
-          learnerName = st.name || learnerName;
-          contactEmail = st.email;
-          contactWhatsapp = st.whatsapp;
-        }
-      }
-
-      await dispatchNotification({
-        eventType: 'PAYMENT_CONFIRMED',
-        payment: {
-          id: updated.id,
-          amount: Number(updated.amount),
-          currency: updated.currency || 'USD',
-          paymentMethod: updated.payment_method,
-          paymentReference: updated.payment_reference,
-          notes: updated.notes
-        },
-        booking: {
-          referenceCode: reference,
-          serviceName,
-          learnerName,
-          contactEmail: contactEmail || '',
-          contactWhatsapp: contactWhatsapp || null,
-          date: '',
-          timeDisplay: '',
-          timezone: 'Africa/Cairo',
-          durationMinutes: 60
-        }
-      });
-    } catch (notifErr) {
-      console.error('[Payment Confirmation Notification Error]', notifErr);
-    }
+    await afterPaymentConfirmed(supabase, updated);
 
     res.json({ success: true, message: 'Payment confirmed successfully.', payment: updated });
   } catch (err) {

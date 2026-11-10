@@ -41,6 +41,14 @@ export function shouldAutoOpenTour(key: string | null, storage: Pick<Storage, 'g
   }
 }
 
+/**
+ * The tour opens by itself only on the area's own home page. A first visit that lands on a lesson room, the booking
+ * page or the return from checkout must not be covered by the tour and sent to the home page (P2-007).
+ */
+export function isTourHome(pathname: string): boolean {
+  return /^\/(student|dashboard(\/(today|overview))?)\/?$/.test(pathname);
+}
+
 export function markTourSeen(key: string | null, storage: Pick<Storage, 'setItem'> | null): void {
   if (!key || !storage) return;
   try { storage.setItem(key, '1'); } catch { /* private mode: it may show again */ }

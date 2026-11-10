@@ -62,7 +62,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
 import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT } from './activeLearner';
-import { familyTourSteps, isFamilyAccount, learnerTourSteps, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
+import { familyTourSteps, isFamilyAccount, learnerTourSteps, isTourHome, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
@@ -237,10 +237,10 @@ export default function StudentApp() {
     if (authModalOpen) return;
     let storage: Storage | null = null;
     try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
-    if (!shouldAutoOpenTour(tourKey, storage)) return;
+    if (!isTourHome(location.pathname) || !shouldAutoOpenTour(tourKey, storage)) return;
     const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
     return () => window.clearTimeout(timer);
-  }, [tourKey, authModalOpen]);
+  }, [tourKey, authModalOpen, location.pathname]);
 
   // Unread badge: refreshed in the background on page changes, never blocks the page.
   useEffect(() => {

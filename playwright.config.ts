@@ -15,7 +15,8 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,
-  workers: 2,
+  // One worker: every spec acts as the same few QA accounts, and two at once undo each other's bookings.
+  workers: 1,
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   globalSetup: './e2e/global-setup.ts',
