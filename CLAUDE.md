@@ -14,6 +14,8 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **Pre-launch backlog:** [docs/backlog/BACKLOG.md](docs/backlog/BACKLOG.md) (order of work at the top); log each finished task in [docs/backlog/LOG.md](docs/backlog/LOG.md). Claude does all of it (owner, 2026-10-20).
 
+**Pre-launch testing (any test, QA, E2E, UX review or security work): read [docs/testing/RULES.md](docs/testing/RULES.md) first**, then your brief in `docs/testing/projects/`. It fixes the server, QA accounts and cleanup so testing works the same on every Claude account.
+
 ## Skills (use these first)
 
 Owner's priority skills in `.claude/skills`. Reach for them before generic approaches, and always in curriculum work:
