@@ -279,7 +279,7 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
         </div>
         <div className="px-3 pb-2 space-y-2.5 border-b border-border/60" data-testid="admin-inbox-filters">
           <div className="relative">
-            <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 start-3.5 text-muted-foreground pointer-events-none" aria-hidden="true" />
+            <Search className="w-4 h-4 absolute z-10 top-1/2 -translate-y-1/2 start-3.5 text-muted-foreground pointer-events-none" aria-hidden="true" />
             <Input
               value={filter.query}
               onChange={(e) => setFilter((f) => ({ ...f, query: e.target.value }))}

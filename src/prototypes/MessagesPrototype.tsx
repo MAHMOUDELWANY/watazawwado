@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, BellRing, Check, CheckCheck, ChevronUp, Mic, Paperclip, Search, Send, Smile } from 'lucide-react';
 import { ZaadiRig, type ZaadiPose } from '../components/zaadi/ZaadiRig';
 import { hideBootSplash } from '../lib/bootSplash';
+import { ChatPanel } from '../components/chat/ChatPanel';
 
 /**
  * DEV-ONLY prototype (route /prototype/messages), owner review 2026-11-09: phone notifications in the Duolingo layout
@@ -193,6 +194,8 @@ export default function MessagesPrototype() {
   useEffect(() => { hideBootSplash(); }, []);
   useEffect(() => setOpen(null), [role]);
   if (assets) return <PushAssets />;
+  // ?live: the real chat screen (the review script feeds it sample conversations).
+  if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('live')) return <div className="min-h-[100svh] bg-background p-3" dir="rtl"><ChatPanel lang="ar" /></div>;
 
   return (
     <div className="min-h-[100svh] bg-background text-foreground" dir="rtl" lang="ar">

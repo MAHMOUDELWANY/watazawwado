@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 import { Clock, ExternalLink, MessageCircle, NotebookPen, Video } from 'lucide-react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { authedJson } from '../../lib/authedJson';
+import { TeacherFace } from '../../components/TeacherFace';
 
 /** Join opens 10 minutes before the start (ST-01). */
 // The Zoom link is shown only from 5 minutes before the start, on every page (owner, 2026-11-06).
@@ -119,7 +120,8 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
             {subject || (isAr ? 'حصتك' : 'Your lesson')}
             {booking.learnerName ? <span className="text-muted-foreground font-normal"> · {booking.learnerName}</span> : null}
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground flex items-center gap-2">
+            {booking.teacherName && <TeacherFace name={booking.teacherName} size={24}>{null}</TeacherFace>}
             {booking.teacherName ? (isAr ? `مع ${booking.teacherName}` : `with ${booking.teacherName}`) : (isAr ? 'مع معلمك' : 'with your teacher')}
           </p>
         </div>
