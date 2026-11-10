@@ -16,6 +16,7 @@ import {
   computeAvailableSlots,
   validateSlotAvailability
 } from '../server/integrations/availabilityEngine.js';
+const TEST_BASE = process.env.TEST_BASE_URL || 'http://localhost:3000';
 
 describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Audit', () => {
 
@@ -139,7 +140,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
   // =========================================================================
   describe('4. Availability HTTP Routes', () => {
     it('4.1: GET /api/integrations/availability works without teacherId', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30');
+      const res = await fetch(`${TEST_BASE}/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30`);
       assert.strictEqual(res.status, 200, 'Endpoint should return 200 without teacherId');
       const data = await res.json() as any;
       assert.strictEqual(data.success, true);
@@ -147,7 +148,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     });
 
     it('4.2: GET /api/integrations/availability works with explicit teacherId query parameter', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30&teacherId=9cd86044-eb13-4547-88e4-567c4f6a57d8');
+      const res = await fetch(`${TEST_BASE}/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30&teacherId=9cd86044-eb13-4547-88e4-567c4f6a57d8`);
       assert.strictEqual(res.status, 200, 'Endpoint should return 200 with teacherId query parameter');
       const data = await res.json() as any;
       assert.strictEqual(data.success, true);
@@ -157,7 +158,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     it('4.3: POST /api/integrations/validate-slot works without teacherId in request body', async () => {
       const start = new Date(Date.now() + 86400000).toISOString();
       const end = new Date(Date.now() + 88200000).toISOString();
-      const res = await fetch('http://localhost:3000/api/integrations/validate-slot', {
+      const res = await fetch(`${TEST_BASE}/api/integrations/validate-slot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scheduledStartUtc: start, scheduledEndUtc: end })
@@ -170,7 +171,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     it('4.4: POST /api/integrations/validate-slot works with explicit teacherId in request body', async () => {
       const start = new Date(Date.now() + 86400000).toISOString();
       const end = new Date(Date.now() + 88200000).toISOString();
-      const res = await fetch('http://localhost:3000/api/integrations/validate-slot', {
+      const res = await fetch(`${TEST_BASE}/api/integrations/validate-slot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

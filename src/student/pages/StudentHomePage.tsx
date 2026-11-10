@@ -25,6 +25,7 @@ import {
   CalendarClock,
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
+import { levelLabel, serviceLabel } from '../../dashboard/lib/labels';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
@@ -421,7 +422,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                           </h3>
                         </div>
                         <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 shrink-0 capitalize">
-                          {child.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
+                          {levelLabel(child.currentLevel || 'beginner', isAr)}
                         </span>
                       </div>
 
@@ -433,7 +434,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         {child.learningInterest && (
                           <div className="flex items-center justify-between text-muted-foreground">
                             <span>{isAr ? 'المسار:' : 'Track:'}</span>
-                            <span className="font-medium text-foreground truncate max-w-[130px]">{child.learningInterest}</span>
+                            <span className="font-medium text-foreground truncate max-w-[130px]">{serviceLabel({ service_id: child.learningInterest }, isAr)}</span>
                           </div>
                         )}
                         <div className="flex items-center justify-between text-muted-foreground pt-0.5 border-t border-border/40">

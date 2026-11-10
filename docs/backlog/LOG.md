@@ -4,6 +4,29 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Pre-launch testing P1: testing foundation (2026-11-10)
+
+Brief: docs/testing/projects/P1-foundation.md. Any Claude account can now start a server per project, get real QA
+accounts in every role, sign in without a password and wipe them, from the repo alone.
+- Server: launch entries `qa-p1`...`qa-p5` (ports 3001-3005) load the main checkout's `.env.vercel` then `.env`
+  (.env wins) and force dev mode; `run_tests.js` takes `PORT`, tests take `TEST_BASE_URL`; a worktree's `npm test`
+  uses the main checkout's `.env`.
+- `scripts/qa/`: `create-accounts.ts` (admin, male + female teacher, adult student, parent with kid 8 + teen 14,
+  through the app's own API), `session.ts` (server-minted session, localStorage snippet, refuses non-QA emails),
+  `purge.ts` (dry run by default; follows the live foreign keys, storage files and notices).
+- Playwright: `@playwright/test`, `playwright.config.ts` (phone/desktop x ar/en), `e2e/fixtures.ts` (`signInAs`),
+  `e2e/smoke.spec.ts`, `npm run e2e`: 16/16 pass.
+- `docs/testing/FLOWS.md` (78 flows + all 280 endpoints), `docs/testing/findings/p1.md`, RULES.md (exact commands),
+  CLAUDE.md commands.
+- Fixed: P1-001 real accounts got mock data on local servers; P1-003 child cards showed subject ids; P1-005 admin
+  student list showed "TEACHER" for every teacher (failing query). Open: P1-002 parent row routed to a teacher
+  (product call), P1-004 display zone shared across accounts in one browser. QA teachers are hidden on production.
+- Four migration-reading tests (task-0.50, 0.50.1, 0.61-b, 03-bc) failed on every Windows checkout (CRLF); they now
+  normalise line endings, so `npm test` is green on Windows: 2818 tests, 0 failures.
+- Checks: tsc, new `test/p1-testing-foundation.test.ts`, `PORT=3010 npm test` (0 failures), build, e2e 16/16, purge
+  on a single account, then full `p1` purge (0 rows left). Screenshots in `docs/testing/findings/shots/p1/`.
+- Not checked: emails' content (they were sent), Google/Zoom side effects (none created: no bookings in P1).
+
 ### Sign-up, onboarding and family review fixes, teacher change system (2026-11-10)
 
 Owner review 2026-11-10, seven issues, all approved as proposed.

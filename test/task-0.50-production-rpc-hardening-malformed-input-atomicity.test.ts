@@ -5,9 +5,9 @@ import path from 'path';
 
 describe('Task 0.50 — Production RPC Hardening: Malformed Input, Atomicity & Deployment Gate', () => {
   const migration05Path = path.resolve('supabase/migrations/20260908000005_fix_booking_rpc_service_id_text.sql');
-  const migration05Content = fs.existsSync(migration05Path) ? fs.readFileSync(migration05Path, 'utf8') : '';
+  const migration05Content = fs.existsSync(migration05Path) ? fs.readFileSync(migration05Path, 'utf8').replace(/\r\n/g, '\n') : '';
   const bookingRepoPath = path.resolve('src/lib/bookingRepository.ts');
-  const bookingRepoContent = fs.existsSync(bookingRepoPath) ? fs.readFileSync(bookingRepoPath, 'utf8') : '';
+  const bookingRepoContent = fs.existsSync(bookingRepoPath) ? fs.readFileSync(bookingRepoPath, 'utf8').replace(/\r\n/g, '\n') : '';
 
   it('1. Static Migration Gate: Verifies 000005 has no raw unsafe casts and strictly enforces canonical schema', () => {
     // Service ID must be TEXT

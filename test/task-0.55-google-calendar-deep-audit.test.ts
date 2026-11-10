@@ -24,6 +24,7 @@ import {
   getGoogleOAuthCredentials
 } from '../server/integrations/googleCalendar.js';
 import { processIntegrationJobs } from '../server/integrations/worker.js';
+const TEST_BASE = process.env.TEST_BASE_URL || 'http://localhost:3000';
 
 // Tests 1-2 sign OAuth state that the dev server on :3000 must accept, so this process needs the
 // server's signing key in its environment. Without it they cannot pass and are skipped.
@@ -47,7 +48,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
       const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
       // Simulate callback without Google code error
-      const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=mock-code&state=${state}`, {
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-code&state=${state}`, {
         headers: {
           'Cookie': `oauth_state=${state}`
         }
@@ -66,7 +67,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
       const signature = hmac.digest('hex');
       const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
-      const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=mock-code&state=${state}`, {
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-code&state=${state}`, {
         headers: {
           'Cookie': `oauth_state=${state}`
         }
@@ -89,7 +90,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
       const tamperedPayload = Buffer.from(`${teacherId}:${nonce}-tampered`).toString('base64');
       const tamperedState = `${tamperedPayload}.${signature}`;
 
-      const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=mock-code&state=${tamperedState}`, {
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-code&state=${tamperedState}`, {
         headers: {
           'Cookie': `oauth_state=${tamperedState}`
         }
@@ -98,7 +99,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('4. State teacher override attempt in cookie vs param is rejected with 403', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/google-calendar/callback?code=mock-code&state=legit.state', {
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-code&state=legit.state`, {
         headers: {
           'Cookie': 'oauth_state=mismatched.state'
         }
@@ -107,7 +108,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('5. Replay protection: missing oauth_state cookie is strictly rejected with 403', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/google-calendar/callback?code=mock-code&state=already-used.state');
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-code&state=already-used.state`);
       assert.strictEqual(res.status, 403, 'Callback without oauth_state cookie must fail CSRF check with 403');
     });
   });
@@ -326,7 +327,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
   // =========================================================================
   describe('Category 8: Token Secrecy & Payload Safety', () => {
     it('27. API responses and status endpoints NEVER expose tokens', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/status', {
+      const res = await fetch(`${TEST_BASE}/api/integrations/status`, {
         headers: {
           'Authorization': 'Bearer dev-teacher-token'
         }
@@ -339,7 +340,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('28. Error payloads from calendar endpoints do not leak decrypted tokens', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/google-calendar/callback?code=mock-fail&state=invalid');
+      const res = await fetch(`${TEST_BASE}/api/integrations/google-calendar/callback?code=mock-fail&state=invalid`);
       const text = await res.text();
       assert.ok(!text.includes('ya29.'), 'Must never leak google access tokens');
       assert.ok(!text.includes('refresh_token'), 'Must never leak refresh tokens');

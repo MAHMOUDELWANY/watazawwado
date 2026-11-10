@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 
 test('Phase 5G - Final Security Micro-Fix Verification', async (t) => {
   const isProd = true; // We want to test production behavior endpoints
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = process.env.TEST_BASE_URL || 'http://localhost:3000';
   
   // An unknown zone falls back to Africa/Cairo on purpose (b891ab8); only a missing zone is a 400.
   await t.test('Integration Availability - invalid timezone falls back instead of failing', async () => {

@@ -16,16 +16,38 @@ redesign of a screen or flow, with the reason.
 
 ## Environment (same for every account)
 - **Code**: your worktree, rebased on `origin/main`.
-- **Server**: `preview_start` name `dev-worktree-env`. It runs `server.ts` from the worktree with
-  `--env-file=../../../.env` (the main checkout's `.env`) and `ALLOW_DEV_AUTH=true`. Never read, print or copy `.env`.
-  If the main checkout has no `.env`, stop and tell the owner; do not invent values.
+- **Server**: `preview_start` name `qa-p<N>` (your project's entry in `.claude/launch.json`). It runs `server.ts`
+  from the worktree with the main checkout's env files, `--env-file-if-exists=../../../.env.vercel` then
+  `--env-file=../../../.env` (`.env` wins: its Stripe/Supabase keys are the local test ones; `.env.vercel` fills in
+  Gemini, Brevo, Zoom, Google, cron, VAPID...), and forces `ALLOW_DEV_AUTH=true`, `NODE_ENV=development`,
+  `VERCEL_ENV=development`, `PORT`/`APP_URL`/`GOOGLE_REDIRECT_URI` to the project port. Never read, print or copy
+  `.env*`. If the main checkout has no `.env`, stop and tell the owner; do not invent values. `.env.vercel` comes
+  from `npx vercel env pull .env.vercel --environment=production` in the main checkout (owner).
+  Still empty locally (2026-11-10): `LESSON_ROOM_SECRET`, `NOTIFICATION_ADMIN_EMAIL` (optional, has a fallback),
+  `LEARNER_SIGNUP_MODE` (unset = open), `VITE_TEACHER_AUTH_DIAGNOSTIC` (optional).
 - **One port per project**, because P2, P3 and P4 run at the same time: P1 3001, P2 3002, P3 3003, P4 3004,
-  P5 3005. Set `PORT` and `APP_URL` to it, and run tests against it, never against another session's server.
+  P5 3005. Run tests against it, never against another session's server.
   (Port 3000 stays free for the owner and for plain `npm test`.)
+- HMR and file watching are off on `qa-p<N>` (parallel Vite servers fight over the HMR port): **restart the server
+  (`preview_stop` + `preview_start`) after editing code**, or the browser keeps the old code.
+
+## First steps in a brand-new worktree (exact commands)
+```bash
+cp ../../../package-lock.json . && npm ci        # package-lock.json is gitignored; the main checkout has one
+npx playwright install chromium                   # once per machine
+```
+Then `preview_start` `qa-p<N>`, wait for `curl http://localhost:300N/api/health` to return `{"status":"ok"}`, and:
+```bash
+npx tsx scripts/qa/create-accounts.ts p<N>        # idempotent; needs the qa-p<N> server running
+QA_PROJECT=p<N> npm run e2e                        # smoke: every role signs in (phone/desktop x ar/en)
+PORT=300N npm test                                 # unit/API tests on your own port (starts its own server)
+TEST_BASE_URL=http://localhost:300N npm run test-only   # same tests against a server you already run
+npx tsx scripts/qa/purge.ts p<N>                  # dry run; add --yes to delete
+```
 - **Database**: the production Supabase project (`fmwxqyroyxgigvpahpri`). Owner allows test writes and deletes.
 - **Live site** `watazawwado.academy`: read-only smoke checks only (open pages, read). No sign-up, no password, no
   attack traffic, no request loops (they trigger Vercel's challenge on the owner's IP). Everything else runs on
-  `localhost:3000`, which is the same code and the same database.
+  your project's `localhost:300N`, which is the same code and the same database.
 - **No Chrome** (owner, 2026-11-10): use the built-in browser pane and Playwright only. If a live-site check needs
   a signed-in account, ask the owner to sign in himself in the pane, then continue.
 - **Payment**: do not pay. Go through checkout up to the Stripe/PayPal page and stop. Test paid-booking logic by
@@ -34,10 +56,29 @@ redesign of a screen or flow, with the reason.
 ## Accounts
 - Real QA accounts are made by `scripts/qa/` (built in P1). Never type a password anywhere: sessions are minted
   server-side with the service role and injected into the browser.
+- `create-accounts.ts p<N>` makes, through the app's own API: `admin-1` (super_admin "QA Admin PN"; the only direct
+  write, a `teacher_accounts` row, since the app has no API for a first admin), `teacher-1` (male "QA Ustadh PN") and
+  `teacher-2` (female "QA Ustadha PN"), both added by the QA admin, licensed for all 8 subjects, agreement accepted,
+  hours 06:00-23:00 Cairo every day; `student-1` (adult, 30, UK, Quran reading, teacher-1); `parent-1` (guardian 40,
+  US, children "QA Kid PN" 8 girl / Quran reading / teacher-2 and "QA Teen PN" 14 boy / Zad / teacher-1).
+- Sign in a role in the **browser pane**: `npx tsx scripts/qa/session.ts <qa-email>` prints a
+  `localStorage.setItem(...)` snippet; open `http://localhost:300N/student/login` (any page of the app), run it with
+  the javascript tool, it reloads signed in. Language is the `watazawwado_lang_chosen` cookie (`ar`/`en`), not
+  localStorage. In **Playwright** use the `signInAs(role)` fixture from `e2e/fixtures.ts` (`lang` follows the project).
+  `session.ts` refuses any email without `+qa-`.
+- QA teachers are hidden from the live site (`listPublicTeachers` drops `+qa-` emails when
+  `VERCEL_ENV=production`), so real families never see or get routed to them. Always pass a QA `teacherId` when a
+  QA learner onboards, or routing picks a real teacher (P1-002).
 - Email pattern: `mahmoudelwany98+qa-<project>-<role>-<n>@gmail.com` (for example `+qa-p2-student-1`). Emails really
   arrive, so a session can check them with the Gmail tools. Display names start with `QA `.
 - Each project uses only its own `qa-<project>` accounts, so parallel sessions never touch each other's data.
-- Cleanup: `scripts/qa/purge.ts <project|all>` deletes only accounts whose email contains `+qa-` and their rows.
+- Cleanup: `scripts/qa/purge.ts <project|all>` deletes only accounts whose email contains `+qa-` and their rows
+  (dry run by default, `--yes` deletes, then it prints what is left). It follows the live foreign keys: explicit
+  deletes for RESTRICT / SET NULL / key-less tables (payments, package ledger and entitlements, referrals, credit,
+  chat, notifications, teacher changes, CRM, placement, homework sets, honor, leads, waitlist, guardians, students,
+  teacher_accounts), storage files (recitations, honor photos, teacher documents/photos), in-app notices naming a
+  QA person, then the auth users (profiles, availability, preferences cascade). Not undone: events already sent to
+  Google Calendar, Zoom, Stripe or Brevo. A child is deleted only if every guardian is a QA account.
   Never run `scripts/db_purge_accounts.ts` (it deletes every non-whitelisted account).
 - Mock dev tokens (`dev-student-token` and the rest) are for quick UI looks only, never as proof a flow works.
 

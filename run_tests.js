@@ -2,14 +2,27 @@ import { spawn, spawnSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
+import fs from 'fs';
+import { parseEnv } from 'util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const isWindows = process.platform === 'win32';
+// Parallel testing sessions each use their own port (docs/testing/RULES.md): PORT=3001 npm test.
+const PORT = String(process.env.PORT || 3000);
+const BASE_URL = `http://localhost:${PORT}`;
+
+// A worktree (.claude/worktrees/<name>) has no .env of its own: use the main checkout's, never overriding the shell.
+function envFromMainCheckout() {
+  if (fs.existsSync(path.join(__dirname, '.env'))) return {};
+  const i = __dirname.indexOf(path.join('.claude', 'worktrees'));
+  const file = i >= 0 ? path.join(__dirname.slice(0, i), '.env') : null;
+  return file && fs.existsSync(file) ? parseEnv(fs.readFileSync(file, 'utf8')) : {};
+}
 
 async function checkPort() {
   return new Promise((resolve) => {
-    http.get('http://127.0.0.1:3000/api/health', (res) => {
+    http.get(`http://127.0.0.1:${PORT}/api/health`, (res) => {
       res.resume();
       resolve(res.statusCode === 200);
     }).on('error', () => {
@@ -39,20 +52,22 @@ function killTree(child) {
 }
 
 async function run() {
-  // Otherwise the tests would silently run against whatever is already on :3000,
+  // Otherwise the tests would silently run against whatever is already on that port,
   // which may lack ALLOW_DEV_AUTH or use a different .env.
   if (await checkPort()) {
-    console.error('Port 3000 is already serving /api/health. Stop that server first, or use `npm run test-only` against it.');
+    console.error(`Port ${PORT} is already serving /api/health. Stop that server first, or run \`TEST_BASE_URL=${BASE_URL} npm run test-only\` against it.`);
     process.exit(1);
   }
 
-  console.log('Starting local dev server for tests...');
+  console.log(`Starting local dev server for tests on ${BASE_URL}...`);
 
   const env = {
+    ...envFromMainCheckout(),
     ...process.env,
-    PORT: '3000',
+    PORT,
     ALLOW_DEV_AUTH: 'true',
-    APP_URL: 'http://localhost:3000'
+    APP_URL: BASE_URL,
+    TEST_BASE_URL: BASE_URL
   };
 
   const server = npmRun('dev', { env, stdio: ['ignore', 'pipe', 'pipe'], detached: !isWindows });
@@ -87,7 +102,7 @@ async function run() {
   if (!serverStarted) {
     console.error(serverExited
       ? 'Test server exited before it was ready.'
-      : 'Test server failed to start on port 3000 within timeout.');
+      : `Test server failed to start on port ${PORT} within timeout.`);
     console.error(serverLog);
     process.exit(1);
   }

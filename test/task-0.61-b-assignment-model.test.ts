@@ -12,7 +12,7 @@ const migrationPath = path.join(rootDir, 'supabase/migrations/20260917000001_stu
 describe('Task 0.61-B-X: Student -> Teacher assignment model', () => {
   it('adds the authoritative assigned_teacher_id field to students', () => {
     assert.ok(fs.existsSync(migrationPath), 'Migration should exist');
-    const sql = fs.readFileSync(migrationPath, 'utf-8');
+    const sql = fs.readFileSync(migrationPath, 'utf-8').replace(/\r\n/g, '\n');
 
     assert.ok(sql.includes('ADD COLUMN IF NOT EXISTS assigned_teacher_id UUID'), 'Migration must add assigned_teacher_id to students');
     assert.ok(sql.includes('REFERENCES auth.users(id)'), 'assigned_teacher_id must reference canonical auth.users identity');
@@ -20,7 +20,7 @@ describe('Task 0.61-B-X: Student -> Teacher assignment model', () => {
   });
 
   it('resolves authenticated student bookings from assigned_teacher_id instead of calendar connection count', () => {
-    const sql = fs.readFileSync(migrationPath, 'utf-8');
+    const sql = fs.readFileSync(migrationPath, 'utf-8').replace(/\r\n/g, '\n');
 
     assert.ok(sql.includes('WHERE auth_user_id = auth.uid()'), 'Student lookup must remain auth.uid() based');
     assert.ok(sql.includes('SELECT assigned_teacher_id INTO v_assigned_teacher_id'), 'Student branch must resolve assigned_teacher_id');
@@ -29,7 +29,7 @@ describe('Task 0.61-B-X: Student -> Teacher assignment model', () => {
   });
 
   it('keeps teacher and guest flows separate and fail-closed for unassigned students', () => {
-    const sql = fs.readFileSync(migrationPath, 'utf-8');
+    const sql = fs.readFileSync(migrationPath, 'utf-8').replace(/\r\n/g, '\n');
 
     assert.ok(sql.includes('Authenticated student is not assigned to a teacher.'), 'Unassigned student must fail closed with clear error');
     assert.ok(sql.includes('auth.uid() IS NOT NULL'), 'Teacher and student flows must still evaluate auth.uid()');

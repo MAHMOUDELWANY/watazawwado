@@ -5,9 +5,9 @@ import path from 'path';
 
 describe('Task 0.50.1 — Production RPC Hardening Correction: Cast Safety, Overflow Guard & Structured Diagnostics', () => {
   const migration05Path = path.resolve('supabase/migrations/20260908000005_fix_booking_rpc_service_id_text.sql');
-  const migration05Content = fs.existsSync(migration05Path) ? fs.readFileSync(migration05Path, 'utf8') : '';
+  const migration05Content = fs.existsSync(migration05Path) ? fs.readFileSync(migration05Path, 'utf8').replace(/\r\n/g, '\n') : '';
   const bookingRepoPath = path.resolve('src/lib/bookingRepository.ts');
-  const bookingRepoContent = fs.existsSync(bookingRepoPath) ? fs.readFileSync(bookingRepoPath, 'utf8') : '';
+  const bookingRepoContent = fs.existsSync(bookingRepoPath) ? fs.readFileSync(bookingRepoPath, 'utf8').replace(/\r\n/g, '\n') : '';
 
   it('1. Duration Integer Overflow Guard: Verifies migration 000005 rejects oversized and malformed durations without raw cast errors', () => {
     // Audit length check and regex in migration 000005

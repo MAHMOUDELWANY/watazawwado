@@ -40,6 +40,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
 
 - `npm run dev` — Express + Vite middleware on http://localhost:3000 (`server.ts`). Dev auth tokens (`dev-teacher-token`, etc.) only work with `ALLOW_DEV_AUTH=true`, never on a production deployment.
 - `npm test` — starts the dev server (with `ALLOW_DEV_AUTH=true`), then runs `test/*.test.ts`. It uses the real `.env`, so integration tests hit the configured Supabase project. Use `npm run test-only` when the server is already running.
+- `npm run e2e` — Playwright smoke specs in `e2e/` against a running `qa-p<N>` server (`QA_PROJECT=p2 npm run e2e`), signed in as real QA accounts from `scripts/qa/create-accounts.ts`. `PORT=3002 npm test` runs the unit/API tests on another port. Setup and accounts: docs/testing/RULES.md.
 - `npm run build` — Vite build + esbuild bundle of `server.ts` to `build/server.cjs` (kept out of `dist/`, which is served publicly).
 - Type check: `node node_modules/typescript/bin/tsc --noEmit` (`npx tsc` does not resolve in this repo). A Stop hook reports type errors in files you changed.
 

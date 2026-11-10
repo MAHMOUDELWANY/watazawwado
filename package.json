@@ -11,7 +11,11 @@
     "test": "node run_tests.js",
     "test-only": "tsx --test test/*.test.ts",
     "clean": "rm -rf dist server.js",
-    "indexnow": "tsx scripts/indexnow.ts"
+    "indexnow": "tsx scripts/indexnow.ts",
+    "e2e": "playwright test",
+    "qa:accounts": "tsx scripts/qa/create-accounts.ts",
+    "qa:session": "tsx scripts/qa/session.ts",
+    "qa:purge": "tsx scripts/qa/purge.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -41,6 +45,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.14.5",
+    "@playwright/test": "^1.56.1",
     "@testing-library/react": "^16.3.3",
     "@types/express": "^4.17.21",
     "@types/jsdom": "^30.0.0",

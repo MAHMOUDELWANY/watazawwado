@@ -22,3 +22,7 @@ package-lock.json
 # oh-my-claudecode session state
 .omc/
 **/.omc/
+
+# Playwright (npm run e2e)
+test-results/
+playwright-report/

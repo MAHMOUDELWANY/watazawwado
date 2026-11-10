@@ -1527,6 +1527,14 @@ const devStudentProfiles: Record<string, any> = {
   }
 };
 
+// A dev student token (mock profile, nothing in the database). Real accounts on a local server must read and write
+// the database like production, or QA accounts would only ever see mock data (P1-001).
+function isDevStudentRequest(req: any): boolean {
+  const auth = req.headers?.authorization;
+  const token = typeof auth === 'string' && auth.startsWith('Bearer ') ? auth.substring(7) : null;
+  return !devAuthDisabled() && !!token && !!devStudentProfiles[token];
+}
+
 // Verified sessions, kept briefly so a page that fires several API calls checks the token with Supabase once.
 // shortcut: a signed-out token stays usable here for up to 30 s; role and is_active are still read fresh each request.
 const sessionCache = new Map<string, { user: any; until: number }>();
@@ -2006,7 +2014,9 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
     .eq('is_active', true)
     .order('created_at', { ascending: true });
   if (error || !accounts?.length) return [];
-  const pool = accounts.filter((a: any) => a.role === 'teacher');
+  // QA teachers (docs/testing/RULES.md) share the production database; the live site never shows or routes to them.
+  const hideQa = process.env.VERCEL_ENV === 'production';
+  const pool = accounts.filter((a: any) => a.role === 'teacher' && !(hideQa && /\+qa-/i.test(String(a.email || ''))));
   const emails = pool.map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
   const idByEmail = new Map<string, string>();
   const bioById = new Map<string, string>();
@@ -2729,8 +2739,13 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
         .order('scheduled_start', { ascending: true }),
       supabase.from('lesson_notes').select('id, student_id').in('student_id', studentIds),
       supabase.from('services').select('id, title, arabic_title'),
-      supabase.from('teacher_accounts').select('id, email, display_name')
+      supabase.from('teacher_accounts').select('email, display_name')
     ]);
+    // students.assigned_teacher_id is the teacher's auth id; teacher_accounts is keyed by email (P1-005).
+    const teacherEmails = (teachersRes.data || []).map((t: any) => String(t.email || '').toLowerCase().trim()).filter(Boolean);
+    const { data: teacherProfiles } = teacherEmails.length
+      ? await supabase.from('profiles').select('id, email').in('email', teacherEmails)
+      : { data: [] as any[] };
 
     const serviceMap = new Map<string, string>();
     if (servicesRes.data) {
@@ -2741,9 +2756,12 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
 
     // Map teacher display names by id (students.assigned_teacher_id is the teacher account id) and by email for older rows.
     const teacherNameMap = new Map<string, string>();
-    (teachersRes.data || []).forEach(t => {
-      if (t.id) teacherNameMap.set(String(t.id).toLowerCase().trim(), t.display_name || 'Teacher');
+    (teachersRes.data || []).forEach((t: any) => {
       if (t.email) teacherNameMap.set(t.email.toLowerCase().trim(), t.display_name || 'Teacher');
+    });
+    (teacherProfiles || []).forEach((p: any) => {
+      const name = teacherNameMap.get(String(p.email || '').toLowerCase().trim());
+      if (p.id && name) teacherNameMap.set(String(p.id).toLowerCase().trim(), name);
     });
     // Teachers reach families through the site chat; contact details stay with the admin (audit 2026-10-28).
     const showContact = req.teacherUser?.role === 'super_admin';
@@ -7878,7 +7896,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
 
-    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+    if (!supabaseAdmin || isDevStudentRequest(req)) {
       const mockProfile = req.studentUser?.studentProfile || {
         id: studentId,
         name: req.studentUser?.name || 'Student',
@@ -8330,7 +8348,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const routingTargetGender = chosenAdultTeacher?.gender || (resolvedTeacherPref === 'female_teacher' ? 'female' : (resolvedTeacherPref === 'male_teacher' ? 'male' : (resolvedGender === 'female' ? 'female' : 'male')));
     const routedTeacher = await routeTeacher(teacherId, routingTargetGender);
 
-    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+    if (!supabaseAdmin || isDevStudentRequest(req)) {
       if (req.studentUser?.studentProfile) {
         req.studentUser.studentProfile.name = name.trim();
         req.studentUser.studentProfile.learner_type = resolvedLearnerType;
@@ -8940,7 +8958,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       // Same eligibility rule as GET /api/student/me: a child with a guardian, or a parent with linked children.
       if (rawBookingPref === 'child') {
         let canBookForChild = false;
-        if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+        if (!supabaseAdmin || isDevStudentRequest(req)) {
           const mp = req.studentUser?.studentProfile;
           canBookForChild = mp?.canBookForChild ?? (
             mp?.learner_type === 'child' ||
@@ -8967,7 +8985,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       updatePayload.booking_preference = rawBookingPref;
     }
 
-    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+    if (!supabaseAdmin || isDevStudentRequest(req)) {
       if (req.studentUser?.studentProfile) {
         if (updatePayload.name) req.studentUser.studentProfile.name = updatePayload.name;
         if (updatePayload.timezone) req.studentUser.studentProfile.timezone = updatePayload.timezone;
@@ -9079,7 +9097,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
 
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
-    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+    if (!supabaseAdmin || isDevStudentRequest(req)) {
       if (req.studentUser?.studentBookings) {
         return res.json(req.studentUser.studentBookings);
       }
