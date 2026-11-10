@@ -24,6 +24,8 @@ interface StepLearnerProps {
   linkedChildren?: any[];
   /** The account may book for its children (family). */
   canBookForChild?: boolean;
+  /** The account holder learns too; a parent who only follows their children is never offered (owner, 2026-11-10). */
+  selfLearns?: boolean;
   studentName?: string;
   lang: Language;
 }
@@ -33,7 +35,7 @@ const chip = (active: boolean) =>
     active ? 'border-foreground bg-foreground text-background dark:border-teal dark:bg-teal/20 dark:text-foreground' : 'border-border bg-surface text-foreground hover:border-foreground/40'
   }`;
 
-export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, linkedChildren = [], canBookForChild = false, studentName, lang }) => {
+export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, linkedChildren = [], canBookForChild = false, selfLearns = true, studentName, lang }) => {
   const isAr = lang === 'ar';
   const [editing, setEditing] = useState(false);
   const isChild = formData.audience === 'child';
@@ -70,9 +72,11 @@ export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, link
                 </button>
               );
             })}
-            <button type="button" role="radio" aria-checked={!isChild} onClick={pickSelf} className={chip(!isChild)}>
-              {selfName}
-            </button>
+            {selfLearns && (
+              <button type="button" role="radio" aria-checked={!isChild} onClick={pickSelf} className={chip(!isChild)}>
+                {selfName}
+              </button>
+            )}
           </div>
         </div>
       )}

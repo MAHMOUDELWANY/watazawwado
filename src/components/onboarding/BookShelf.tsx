@@ -1,25 +1,37 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { SUBJECT_FAMILIES, findSubject, subjectTagline } from './subjects';
 import { SubjectMark } from './SubjectMark';
+import { ZadRig, type ZadPose } from '../zad/ZadRig';
 
 /**
  * "Choose your provision": the 14 subjects are books on three shelves (Quran, Islamic studies,
  * languages), each family bound in one brand colour with the subject's animated emblem (the same
  * hand-drawn SVGs as the Subjects page) on the spine.
- * The chosen book slides up out of the shelf with a ribbon, and its description opens below.
+ * The chosen book slides up out of the shelf with a ribbon, and Zad tells you about it right under that shelf
+ * (owner review 2026-11-10: on a phone the description used to sit below all three shelves, out of sight).
  * Keyboard: radio group with arrow keys.
  */
 
 const HEIGHTS = [180, 196, 172, 188, 182];
+/** Zad's face per shelf: wonder for the Quran, pride for our own path, thinking for languages. */
+const POSE_BY_FAMILY: Record<string, ZadPose> = { quran: 'wow', zad: 'proud', languages: 'think' };
 
 export function BookShelf({ value, onChange, isAr, name }: { value: string; onChange: (id: string) => void; isAr: boolean; name: string }) {
   const reduce = useReducedMotion();
   const all = SUBJECT_FAMILIES.flatMap((f) => f.subjects.map((s) => s.id));
   const chosen = findSubject(value);
+  // Bring Zad's note into view after a tap (not on first render, so the page doesn't jump on load).
+  const noteRef = useRef<HTMLDivElement>(null);
+  const touched = useRef(false);
+  useEffect(() => {
+    if (!touched.current) return;
+    noteRef.current?.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+  }, [value, reduce]);
+  const pick = (id: string) => { touched.current = true; onChange(id); };
   const move = (dir: number) => {
     const next = all[(Math.max(0, all.indexOf(value)) + dir + all.length) % all.length];
-    onChange(next);
+    pick(next);
     document.getElementById(`${name}-${next}`)?.focus();
   };
 
@@ -43,7 +55,7 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
                     aria-checked={selected}
                     aria-label={isAr ? s.ar : s.en}
                     tabIndex={selected || (!chosen && s.id === all[0]) ? 0 : -1}
-                    onClick={() => onChange(s.id)}
+                    onClick={() => pick(s.id)}
                     onKeyDown={(e) => {
                       const next = isAr ? 'ArrowLeft' : 'ArrowRight';
                       const prev = isAr ? 'ArrowRight' : 'ArrowLeft';
@@ -94,30 +106,38 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
               })}
             </div>
             <div className="h-3 rounded-full bg-[linear-gradient(180deg,#D8C6AE,#8B4935)] shadow-[0_8px_14px_-6px_rgba(139,73,53,.55)]" aria-hidden="true" />
+            <AnimatePresence mode="wait">
+              {chosen?.family.key === family.key && (
+                <motion.div
+                  key={chosen.subject.id}
+                  ref={noteRef}
+                  initial={reduce ? false : { opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25 }}
+                  className="mt-3 flex items-end gap-2 scroll-mt-24 scroll-mb-24"
+                  aria-live="polite"
+                >
+                  <div
+                    className="relative flex-1 min-w-0 flex items-start gap-3 rounded-2xl rounded-ee-sm border p-3.5 sm:p-4"
+                    style={{ borderColor: `${chosen.family.color}55`, background: `${chosen.family.color}12` }}
+                  >
+                    <span className="hidden sm:block shrink-0"><SubjectMark subjectId={chosen.subject.id} color={chosen.family.color} size={48} /></span>
+                    <div className="min-w-0">
+                      <p className="font-display text-base sm:text-lg font-bold text-foreground">{isAr ? chosen.subject.ar : chosen.subject.en}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{subjectTagline(chosen.subject.id, isAr)}</p>
+                    </div>
+                  </div>
+                  <div className="shrink-0 -mb-1" aria-hidden="true">
+                    <ZadRig pose={POSE_BY_FAMILY[family.key] || 'point'} size={64} glow={false} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
-        {chosen && (
-          <motion.div
-            key={chosen.subject.id}
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.25 }}
-            className="mt-6 flex items-start gap-4 rounded-2xl border p-4 sm:p-5"
-            style={{ borderColor: `${chosen.family.color}55`, background: `${chosen.family.color}0F` }}
-            aria-live="polite"
-          >
-            <SubjectMark subjectId={chosen.subject.id} color={chosen.family.color} size={64} />
-            <div className="min-w-0">
-              <p className="font-display text-lg font-bold text-foreground">{isAr ? chosen.subject.ar : chosen.subject.en}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{subjectTagline(chosen.subject.id, isAr)}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

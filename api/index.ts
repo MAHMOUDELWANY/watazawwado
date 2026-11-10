@@ -8287,6 +8287,10 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const validLevels = ['beginner', 'elementary', 'intermediate', 'advanced'];
     const resolvedLevel = validLevels.includes(currentLevel) ? currentLevel : 'beginner';
     const resolvedLearnerType = learnerType === 'child' ? 'child' : 'adult';
+    // Owner review 2026-11-10: a parent can learn alongside their children in the same account. Then the parent row
+    // is a learner too (booking_preference 'self', its own subject, level and teacher); otherwise it only follows them.
+    const guardianLearns = resolvedLearnerType === 'child' && req.body?.guardianLearns === true
+      && typeof learningInterest === 'string' && learningInterest.trim().length > 0;
     const resolvedGender = ['male', 'female', 'undisclosed'].includes(gender) ? gender : 'undisclosed';
     const rawTeacherPref = teacherGenderPreference || teacher_gender_preference;
     const resolvedTeacherPref = ['no_preference', 'male_teacher', 'female_teacher'].includes(rawTeacherPref) ? rawTeacherPref : 'no_preference';
@@ -8352,7 +8356,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
             status: 'active'
           }));
           req.studentUser.studentProfile.canBookForChild = true;
-          req.studentUser.studentProfile.bookingPreference = 'child';
+          req.studentUser.studentProfile.bookingPreference = guardianLearns ? 'self' : 'child';
         }
       }
       return res.json({
@@ -8379,7 +8383,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           learningGoal: learningGoal || null,
           learningNeeds: learningNeeds || null,
           canBookForChild: resolvedLearnerType === 'child',
-          bookingPreference: resolvedLearnerType === 'child' ? 'child' : 'self',
+          bookingPreference: resolvedLearnerType === 'child' && !guardianLearns ? 'child' : 'self',
           linkedChildren: req.studentUser?.studentProfile?.linkedChildren || []
         }
       });
@@ -8397,8 +8401,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       updated_at: new Date().toISOString()
     };
     if (resolvedLearnerType === 'child') {
-      studentUpdate.booking_preference = 'child';
-      // The parent row is not a learner: its age is the guardian's (checked 18+ above).
+      studentUpdate.booking_preference = guardianLearns ? 'self' : 'child';
+      // The parent row's age is the guardian's (checked 18+ above).
       studentUpdate.age = parseAge(guardianAge);
     } else {
       studentUpdate.age = Number(age);
@@ -8410,7 +8414,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (country) studentUpdate.country = String(country).trim();
     if (whatsapp) studentUpdate.whatsapp = String(whatsapp).trim();
     if (parentWhatsapp && resolvedLearnerType === 'child') studentUpdate.whatsapp = String(parentWhatsapp).trim();
-    if (learningInterest) studentUpdate.learning_interest = String(learningInterest).trim();
+    if (learningInterest && (resolvedLearnerType === 'adult' || guardianLearns)) studentUpdate.learning_interest = String(learningInterest).trim();
     if (learningGoal) studentUpdate.learning_goal = String(learningGoal).trim();
     if (learningNeeds) studentUpdate.learning_needs = String(learningNeeds).trim();
     if (isHeardAbout(heardAbout)) studentUpdate.heard_about = heardAbout;
@@ -8606,10 +8610,10 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     // New student: their teacher(s) get an email and an on-site notice with the onboarding details,
     // a lesson chat opens with each teacher, and the super admin is told (owner decision 2026-10-16).
     if (!req.studentUser?.studentProfile?.onboarding_completed) {
-      if (resolvedLearnerType === 'adult') {
+      if (resolvedLearnerType === 'adult' || guardianLearns) {
         newLearners.push({
           name: String(updatedStudent.name || name).trim(),
-          age: parseAge(age),
+          age: parseAge(guardianLearns ? guardianAge : age),
           gender: resolvedGender,
           subject: updatedStudent.learning_interest || null,
           level: resolvedLevel,

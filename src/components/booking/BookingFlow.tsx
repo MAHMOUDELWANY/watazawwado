@@ -727,6 +727,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   update={updateFormData}
                   linkedChildren={linkedChildren}
                   canBookForChild={canBookForChild}
+                  selfLearns={bookingPreference !== 'child'}
                   studentName={studentName}
                   lang={lang}
                 />

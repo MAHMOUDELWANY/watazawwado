@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { User, Users, Check, Star } from 'lucide-react';
 import { tagLabel } from '../../lib/teacherBadges';
 import { SubjectMark } from './SubjectMark';
+import { ZadRig } from '../zad/ZadRig';
 
 /**
  * Step one of the onboarding journey as a traveller's ticket: choose how you travel (alone or as a
@@ -66,6 +67,54 @@ export function TravelModeSummary({ value, onChange, isAr }: { value: 'adult' | 
         {isAr ? 'تغيير' : 'Change'}
       </button>
     </div>
+  );
+}
+
+/**
+ * Family accounts, before the children (owner review 2026-11-10): does the parent learn too? Many parents and older
+ * siblings learn alongside the children; asking here keeps them in one account instead of a second, confusing one.
+ */
+export function LearnAlongChoice({ value, onChange, isAr }: { value: boolean | null; onChange: (v: boolean) => void; isAr: boolean }) {
+  const options = [
+    { id: true, title: isAr ? 'أيوه، هتعلم معاهم' : "Yes, I'll learn too", sub: isAr ? 'حصصك وتقدّمك في نفس الحساب' : 'Your lessons and progress in the same account', color: '#087D91' },
+    { id: false, title: isAr ? 'لأ، هتابعهم بس' : "No, I'll follow them", sub: isAr ? 'وتقدر تضيف نفسك بعدين من حسابك' : 'You can add yourself later from your account', color: '#8B4935' }
+  ];
+  return (
+    <section aria-labelledby="learn-along-title" className="rounded-3xl border border-[#D8C6AE]/60 bg-[#D8C6AE]/10 p-4 sm:p-6">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <div className="shrink-0 -my-2"><ZadRig pose={value === true ? 'cheer' : value === false ? 'love' : 'think'} size={76} glow={false} /></div>
+        <div className="min-w-0">
+          <h3 id="learn-along-title" className="font-display text-lg sm:text-xl font-bold text-foreground">{isAr ? 'وانت كمان؟' : 'And you?'}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+            {isAr
+              ? 'أهالي كتير بيتعلموا جنب أولادهم، كل واحد مع معلمه وفي حصته. تحب نجهزلك مكانك في نفس الحساب؟'
+              : 'Many parents learn alongside their children, each with their own teacher and lessons. Shall we keep a place for you in this account?'}
+          </p>
+        </div>
+      </div>
+      <div role="radiogroup" aria-labelledby="learn-along-title" className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {options.map((o) => {
+          const selected = value === o.id;
+          return (
+            <button
+              key={String(o.id)}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(o.id)}
+              className={`relative text-start rounded-2xl border-2 p-4 cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
+                selected ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-surface hover:bg-surface-subtle'
+              }`}
+              style={selected ? { borderColor: o.color } : undefined}
+            >
+              <span className="block font-bold text-sm sm:text-base text-foreground">{o.title}</span>
+              <span className="block text-xs text-muted-foreground mt-1">{o.sub}</span>
+              {selected && <Check className="absolute top-3 end-3 w-4 h-4" style={{ color: o.color }} aria-hidden="true" />}
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 

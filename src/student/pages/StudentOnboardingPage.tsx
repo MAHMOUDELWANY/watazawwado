@@ -28,7 +28,7 @@ import { ZadRig } from '../../components/zad/ZadRig';
 import { Select } from '../../components/ui/Select';
 import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch, readReferral } from '../../lib/leadSource';
 import { BookShelf } from '../../components/onboarding/BookShelf';
-import { TravelModeChoice, TravelModeSummary, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
+import { TravelModeChoice, TravelModeSummary, LearnAlongChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
 import { subjectLabel, findSubject, levelsFor, asksLevel } from '../../components/onboarding/subjects';
@@ -171,7 +171,10 @@ export default function StudentOnboardingPage({
   const [age, setAge] = useState<string>(currentProfile?.age ? String(currentProfile.age) : '');
   const [learningNeeds, setLearningNeeds] = useState(currentProfile?.learningNeeds || '');
 
-  // Parent / Family details
+  // Parent / Family details. null = not answered yet ("And you?", asked before the children).
+  const [guardianLearns, setGuardianLearns] = useState<boolean | null>(
+    currentProfile?.linkedChildren?.length ? currentProfile?.bookingPreference !== 'child' : null
+  );
   const [parentName, setParentName] = useState(currentProfile?.guardian?.parentName || currentProfile?.name || '');
   const [children, setChildren] = useState<ChildOnboardingForm[]>(() => {
     if (Array.isArray(currentProfile?.linkedChildren) && currentProfile.linkedChildren.length > 0) {
@@ -273,6 +276,9 @@ export default function StudentOnboardingPage({
         : (isRTL ? 'اكتب سنك بالأرقام (مثال: 24).' : 'Please enter your age in numbers (e.g. 24).');
     }
     if (learnerType === 'child' && !isGuardianAge(guardianAge)) return guardianAgeMessage;
+    if (learnerType === 'child' && guardianLearns === null) {
+      return isRTL ? 'قولنا الأول: هتتعلم معاهم ولا هتتابعهم بس؟' : 'First tell us: will you learn too, or follow them?';
+    }
     if (!whatsapp.trim() || !isPhoneValid) {
       return isRTL ? 'اكتب رقم واتساب صحيح لدولتك.' : 'Please enter a valid WhatsApp number for your country.';
     }
@@ -402,6 +408,13 @@ export default function StudentOnboardingPage({
         payload.parentName = parentName.trim();
         payload.parentWhatsapp = whatsapp.trim();
         payload.guardianAge = Number(guardianAge);
+        payload.guardianLearns = guardianLearns === true;
+        if (guardianLearns) {
+          payload.teacherGenderPreference = adultTeacher.gender === 'female' ? 'female_teacher' : 'male_teacher';
+          if (!isFallbackTeacherId(adultTeacher.id)) payload.teacherId = adultTeacher.id;
+          payload.learningInterest = learningInterest;
+          payload.currentLevel = currentLevel;
+        }
         payload.children = children.map(c => {
           const t = childTeacher(c);
           return {
@@ -738,6 +751,8 @@ export default function StudentOnboardingPage({
               </PassField>
             </PassCard>
 
+            {learnerType === 'child' && <LearnAlongChoice value={guardianLearns} onChange={(v) => { setGuardianLearns(v); setError(null); }} isAr={isRTL} />}
+
             {/* Next Button */}
             <div className="pt-4 flex sm:justify-end">
               <button
@@ -775,6 +790,23 @@ export default function StudentOnboardingPage({
             {/* PARENT WORKFLOW: MULTI-CHILD MANAGEMENT */}
             {learnerType === 'child' ? (
               <div className="space-y-6">
+                {guardianLearns && (
+                  <PassCard name={parentName} isAr={isRTL}>
+                    <span className="-mt-2 text-xs font-bold text-[#087D91] dark:text-[#12A4BC]">{isRTL ? 'تذكرتك أنت' : 'Your own ticket'}</span>
+                    <div>
+                      <p className="text-xs font-semibold text-foreground mb-2">{isRTL ? 'المادة اللي هتدرسها' : 'What you will study'}</p>
+                      <BookShelf name="guardian-subject" value={learningInterest} onChange={setLearningInterest} isAr={isRTL} />
+                    </div>
+                    <div>
+                      {asksLevel(learningInterest) && <p className="text-xs font-semibold text-foreground mb-2">{isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}</p>}
+                      <JourneyPath name="guardian-level" subject={learningInterest} value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
+                    </div>
+                    <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
+                      <GuideChoice teachers={adultTeachers} value={adultTeacher.id} onChange={handleTeacherSelect} isAr={isRTL} />
+                    </PassField>
+                  </PassCard>
+                )}
+
                 <div className="flex items-center justify-between pb-2 border-b border-border/70">
                   <div>
                     <h3 className="text-base font-bold text-foreground flex items-center gap-2">
