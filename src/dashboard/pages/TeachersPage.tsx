@@ -254,9 +254,13 @@ export default function TeachersPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
+                {tc.photo_url ? (
+                  <img src={tc.photo_url} alt="" width={40} height={40} loading="lazy" className="w-10 h-10 shrink-0 rounded-full object-cover object-top bg-[#D8C6AE]" />
+                ) : (
                 <div className="w-10 h-10 shrink-0 rounded-full bg-secondary/30 text-accent font-display font-bold text-base flex items-center justify-center">
                   {tc.display_name.charAt(0)}
                 </div>
+                )}
                 <div className="min-w-0">
                   <h3 className="text-sm font-display font-semibold text-foreground">
                     {tc.display_name}

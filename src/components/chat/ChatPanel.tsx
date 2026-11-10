@@ -32,8 +32,22 @@ interface Thread {
   /** When the other side last opened the conversation; my messages up to then show as seen. */
   otherReadAt?: string | null;
   unread: boolean;
+  /** How many of the other side's messages are new (WhatsApp-style count). */
+  unreadCount?: number;
+  /** Inbox section, from the server: teachers, families, support, lessons (admin) or team. */
+  group?: 'teachers' | 'families' | 'support' | 'lessons' | 'team';
+  /** The teacher's own photo, when this conversation's face is a teacher. */
+  photo?: string | null;
   ownerStudentId?: string | null; // admin only
 }
+
+type Section = 'all' | 'unread' | NonNullable<Thread['group']>;
+/** Inbox sections per account type (owner review 2026-11-09), each a chip with its unread count. */
+const SECTIONS: Record<'student' | 'teacher' | 'admin', Array<{ key: Section; ar: string; en: string }>> = {
+  student: [{ key: 'all', ar: 'الكل', en: 'All' }, { key: 'unread', ar: 'غير مقروءة', en: 'Unread' }, { key: 'teachers', ar: 'معلميني', en: 'My teachers' }, { key: 'team', ar: 'الإدارة', en: 'Our team' }],
+  teacher: [{ key: 'all', ar: 'الكل', en: 'All' }, { key: 'unread', ar: 'غير مقروءة', en: 'Unread' }, { key: 'families', ar: 'طلابي', en: 'My students' }, { key: 'team', ar: 'الإدارة', en: 'Our team' }],
+  admin: [{ key: 'all', ar: 'الكل', en: 'All' }, { key: 'unread', ar: 'غير مقروءة', en: 'Unread' }, { key: 'teachers', ar: 'المعلمين', en: 'Teachers' }, { key: 'families', ar: 'الطلاب والأهالي', en: 'Families' }, { key: 'support', ar: 'الدعم', en: 'Support' }, { key: 'lessons', ar: 'محادثات الحصص', en: 'Lesson chats' }],
+};
 
 interface Message {
   id: string;
@@ -52,7 +66,10 @@ const AVATAR_TONES = ['#087D91', '#C51F24', '#A06E14', '#8B4935', '#5E544A'];
 
 const toneFor = (name: string) => AVATAR_TONES[[...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % AVATAR_TONES.length];
 
-function Avatar({ name, team, size = 40 }: { name: string; team?: boolean; size?: number }) {
+function Avatar({ name, team, photo, size = 40 }: { name: string; team?: boolean; photo?: string | null; size?: number }) {
+  if (photo) {
+    return <img src={photo} alt="" width={size} height={size} loading="lazy" decoding="async" className="shrink-0 rounded-full object-cover object-top bg-[#D8C6AE] ring-1 ring-black/5" style={{ width: size, height: size }} />;
+  }
   if (team) {
     return (
       <span className="shrink-0 rounded-full grid place-items-center bg-[#F9F7F1] dark:bg-[#EDE7DC] ring-1 ring-[#E5A93C]/50 shadow-[0_2px_6px_-2px_rgba(5,54,63,0.35)]" style={{ width: size, height: size }} aria-hidden="true">
@@ -93,7 +110,7 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
   // Messages already on screen when a conversation opens do not animate in; only new ones do.
   const settledRef = useRef(false);
   // AD-03: admin inbox filters and quick replies.
-  const [filter, setFilter] = useState<{ query: string; teacher: string; kind: 'all' | 'support' | 'lesson' }>({ query: '', teacher: '', kind: 'all' });
+  const [filter, setFilter] = useState<{ query: string; teacher: string; kind: 'all' | 'support' | 'lesson'; group: Section }>({ query: '', teacher: '', kind: 'all', group: 'all' });
   const [customReplies, setCustomReplies] = useState<QuickReply[]>(() => loadCustomReplies(safeStorage()));
   const updateCustom = (next: QuickReply[]) => { setCustomReplies(next); saveCustomReplies(safeStorage(), next); };
 
@@ -106,9 +123,14 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
     if (role === 'teacher') return t.ownerName || (isAr ? 'طالب' : 'Student');
     return `${t.ownerName || '?'} ↔ ${t.teacherName || '?'}`;
   };
-  const threadSubtitle = (t: Thread) => t.kind === 'support'
-    ? (role === 'admin' ? (isAr ? 'دعم ومتابعة' : 'Support') : (isAr ? 'الإدارة، لأي سؤال' : 'Our admin team, for any question'))
-    : (isAr ? 'محادثة الحصص' : 'Lessons');
+  const threadSubtitle = (t: Thread) => {
+    if (t.kind === 'support' && role !== 'admin') return isAr ? 'الإدارة، لأي سؤال' : 'Our admin team, for any question';
+    if (t.group === 'teachers' && role === 'admin') return isAr ? 'معلم في الأكاديمية' : 'Teacher';
+    if (t.group === 'families') return role === 'teacher' ? (isAr ? 'طالب عندك' : 'Your student') : (isAr ? 'أسرة عندها معلم' : 'Family');
+    if (t.group === 'support') return isAr ? 'لسه ما بدأش مع معلم' : 'No teacher yet';
+    if (t.kind === 'support') return isAr ? 'دعم ومتابعة' : 'Support';
+    return isAr ? 'محادثة الحصص' : 'Lessons';
+  };
   // The academy's own conversation shows the academy mark instead of initials (not for the admin's list of families).
   const isTeamThread = (t: Thread) => t.kind === 'support' && role !== 'admin';
 
@@ -227,8 +249,10 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
 
   const active = threads.find((t) => t.id === activeId) || null;
   const isAdmin = role === 'admin';
-  const shown = isAdmin ? filterThreads(threads, filter) : threads;
-  const teacherNames = isAdmin ? [...new Set(threads.map((t) => t.teacherName).filter(Boolean) as string[])].sort() : [];
+  // Admin: unread first. Families and teachers keep the server's order (our team pinned, then the most recent).
+  const shown = filterThreads(threads, filter, { sort: isAdmin });
+  const sections = SECTIONS[role].filter((sec) => sec.key === 'all' || sec.key === 'unread' || threads.some((t) => t.group === sec.key));
+  const sectionUnread = (k: Section) => threads.filter((t) => t.unread && (k === 'unread' || t.group === k)).length;
   const replies = [...BUILT_IN_REPLIES, ...customReplies];
   const insertReply = (id: string) => {
     const r = replies.find((x) => x.id === id);
@@ -253,32 +277,32 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
             </span>
           )}
         </div>
-        {isAdmin && (
-          <div className="px-3 pb-3 space-y-2 border-b border-border/60" data-testid="admin-inbox-filters">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 start-3 text-muted-foreground pointer-events-none" aria-hidden="true" />
-              <Input
-                value={filter.query}
-                onChange={(e) => setFilter((f) => ({ ...f, query: e.target.value }))}
-                placeholder={isAr ? 'دوّر باسم الأسرة أو المعلم' : 'Search family or teacher'}
-                aria-label={isAr ? 'بحث في المحادثات' : 'Search conversations'}
-                className="ps-9 h-10 rounded-full"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Select value={filter.kind} onChange={(e) => setFilter((f) => ({ ...f, kind: e.target.value as 'all' | 'support' | 'lesson' }))} aria-label={isAr ? 'نوع المحادثة' : 'Conversation type'} className="h-10 text-xs">
-                <option value="all">{isAr ? 'الكل' : 'All'}</option>
-                <option value="support">{isAr ? 'دعم' : 'Support'}</option>
-                <option value="lesson">{isAr ? 'الحصص' : 'Lessons'}</option>
-              </Select>
-              <Select value={filter.teacher} onChange={(e) => setFilter((f) => ({ ...f, teacher: e.target.value }))} aria-label={isAr ? 'المعلم' : 'Teacher'} className="h-10 text-xs">
-                <option value="">{isAr ? 'كل المعلمين' : 'All teachers'}</option>
-                {teacherNames.map((n) => <option key={n} value={n}>{n}</option>)}
-              </Select>
-            </div>
-            <p className="text-xs text-muted-foreground px-1">{isAr ? 'الجديد الأول' : 'Unread first'}</p>
+        <div className="px-3 pb-2 space-y-2.5 border-b border-border/60" data-testid="admin-inbox-filters">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute z-10 top-1/2 -translate-y-1/2 start-3.5 text-muted-foreground pointer-events-none" aria-hidden="true" />
+            <Input
+              value={filter.query}
+              onChange={(e) => setFilter((f) => ({ ...f, query: e.target.value }))}
+              placeholder={isAr ? 'ابحث' : 'Search'}
+              aria-label={isAr ? 'بحث في المحادثات' : 'Search conversations'}
+              className="ps-10 h-10 rounded-full bg-surface-subtle"
+            />
           </div>
-        )}
+          {/* WhatsApp-style section chips with unread counts. */}
+          <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] -mx-3 px-3 pb-1" role="tablist" aria-label={isAr ? 'أقسام الرسائل' : 'Message sections'}>
+            {sections.map((sec) => {
+              const on = filter.group === sec.key;
+              const n = sec.key === 'all' ? 0 : sectionUnread(sec.key);
+              return (
+                <button key={sec.key} type="button" role="tab" aria-selected={on} onClick={() => setFilter((f) => ({ ...f, group: sec.key }))}
+                  className={`shrink-0 h-8 px-3.5 rounded-full text-[13px] font-semibold border transition-colors duration-150 cursor-pointer focus-ring ${on ? 'bg-[var(--teal)] text-white border-[var(--teal)]' : 'bg-surface text-muted-foreground border-border hover:bg-surface-subtle'}`}>
+                  {isAr ? sec.ar : sec.en}
+                  {n > 0 && <span className={`ms-1.5 tabular-nums ${on ? 'text-white/85' : 'text-[var(--teal)]'}`}>{n}</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
         <div className="flex-1 min-h-0 overflow-y-auto p-2">
           {shown.length === 0 && (
             <div className="flex flex-col items-center text-center gap-3 px-6 py-14">
@@ -310,19 +334,25 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
                     }`}
                   >
                     {selected && <span aria-hidden="true" className="absolute inset-y-3 start-0 w-[3px] rounded-full bg-[var(--teal)]" />}
-                    <Avatar name={title} team={isTeamThread(t)} size={44} />
+                    <Avatar name={title} team={isTeamThread(t)} photo={t.photo} size={50} />
                     <span className="flex-1 min-w-0 grid gap-0.5">
                       <span className="flex items-baseline justify-between gap-2">
-                        <span className={`text-sm truncate ${t.unread ? 'font-bold text-foreground' : 'font-semibold text-foreground'}`}>{title}</span>
+                        <span className={`text-[15px] truncate ${t.unread ? 'font-bold text-foreground' : 'font-semibold text-foreground'}`}>{title}</span>
                         <span className={`text-[11px] shrink-0 tabular-nums ${t.unread ? 'text-[var(--teal)] font-semibold' : 'text-muted-foreground'}`}>{listTime(t.lastMessageAt)}</span>
                       </span>
                       <span className="flex items-center justify-between gap-2">
-                        <span className={`text-xs truncate ${t.unread ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        <span className={`text-[13px] min-w-0 flex items-center gap-1 ${t.unread ? 'text-foreground' : 'text-muted-foreground'}`}>
                           {t.lastMessage
-                            ? <>{t.lastMessage.mine && <span className="text-muted-foreground">{isAr ? 'أنت: ' : 'You: '}</span>}{t.lastMessage.text}</>
-                            : threadSubtitle(t)}
+                            ? <>{t.lastMessage.mine && (t.otherReadAt && t.lastMessageAt && t.otherReadAt >= t.lastMessageAt
+                                ? <CheckCheck className="w-4 h-4 shrink-0 text-[var(--teal)]" aria-label={isAr ? 'اتشافت' : 'Seen'} />
+                                : <Check className="w-4 h-4 shrink-0" aria-label={isAr ? 'اتبعتت' : 'Sent'} />)}<span className="truncate">{t.lastMessage.text}</span></>
+                            : <span className="truncate">{threadSubtitle(t)}</span>}
                         </span>
-                        {t.unread && <span className="w-2.5 h-2.5 rounded-full bg-[var(--teal)] shrink-0 shadow-[0_0_0_3px_var(--teal-light)]" role="img" aria-label={isAr ? 'رسالة جديدة' : 'New message'} />}
+                        {t.unread && (
+                          <span className="min-w-5 h-5 px-1.5 rounded-full bg-[var(--teal)] text-white text-[11px] font-bold tabular-nums grid place-items-center shrink-0" role="img" aria-label={isAr ? 'رسايل جديدة' : 'New messages'}>
+                            {t.unreadCount || ''}
+                          </span>
+                        )}
                       </span>
                     </span>
                   </button>
@@ -337,17 +367,18 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
       <section className={`${active ? 'flex' : 'hidden md:flex'} glass-card rounded-2xl flex-col min-h-0 overflow-hidden`}>
         {active ? (
           <>
-            <header className="px-3 sm:px-4 py-3 border-b border-border/60 flex items-center gap-3 bg-surface/80 backdrop-blur-sm">
-              <button type="button" onClick={() => setActiveId(null)} className="md:hidden w-11 h-11 -ms-1 grid place-items-center rounded-full hover:bg-surface-subtle cursor-pointer focus-ring" aria-label={isAr ? 'رجوع' : 'Back'}>
+            {/* Espresso bar like a messaging app, in our colours (owner review 2026-11-09). */}
+            <header className="px-2 sm:px-4 py-2.5 flex items-center gap-3 bg-[#2A1710] text-white">
+              <button type="button" onClick={() => setActiveId(null)} className="md:hidden w-11 h-11 grid place-items-center rounded-full hover:bg-white/10 cursor-pointer focus-ring" aria-label={isAr ? 'رجوع' : 'Back'}>
                 <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
               </button>
-              <Avatar name={threadTitle(active)} team={isTeamThread(active)} size={40} />
+              <Avatar name={threadTitle(active)} team={isTeamThread(active)} photo={active.photo} size={42} />
               <div className="flex-1 min-w-0">
-                <h2 className="font-display font-bold text-foreground truncate leading-tight">{threadTitle(active)}</h2>
-                <p className="text-xs text-muted-foreground truncate">{threadSubtitle(active)}</p>
+                <h2 className="font-display font-bold text-white truncate leading-tight">{threadTitle(active)}</h2>
+                <p className="text-xs text-white/70 truncate">{threadSubtitle(active)}</p>
               </div>
               {isAdmin && active.ownerStudentId && (
-                <Link to={`/dashboard/students/${active.ownerStudentId}`} className="text-xs font-semibold text-primary hover:underline underline-offset-4 shrink-0 min-h-11 inline-flex items-center px-2 rounded-lg focus-ring">
+                <Link to={`/dashboard/students/${active.ownerStudentId}`} className="text-xs font-semibold text-[#F4C35C] hover:underline underline-offset-4 shrink-0 min-h-11 inline-flex items-center px-2 rounded-lg focus-ring">
                   {isAr ? 'سجل الأسرة' : 'Family timeline'}
                 </Link>
               )}
@@ -356,7 +387,7 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
             <div ref={scrollRef} className="khatam-field flex-1 min-h-0 overflow-y-auto px-3 sm:px-5 py-4" aria-live="polite">
               {messages.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center text-center gap-3 px-6">
-                  <Avatar name={threadTitle(active)} team={isTeamThread(active)} size={64} />
+                  <Avatar name={threadTitle(active)} team={isTeamThread(active)} photo={active.photo} size={64} />
                   <p className="font-display font-bold text-foreground">{threadTitle(active)}</p>
                   <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
                     {active.kind === 'support' && role !== 'admin'
@@ -393,7 +424,7 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
                           <div
                             className={`relative max-w-[82%] sm:max-w-[72%] px-3.5 pt-2 pb-1.5 text-[15px] leading-relaxed whitespace-pre-wrap break-words shadow-[0_1px_2px_rgba(5,54,63,0.08)] ${
                               m.mine
-                                ? `bg-[var(--teal)] dark:bg-[#087D91] text-white rounded-2xl ${joinsNext ? '' : 'rounded-ee-md'}`
+                                ? `bg-[#DDF0F3] dark:bg-[#0B4F5B] text-foreground rounded-2xl ${joinsNext ? '' : 'rounded-ee-md'}`
                                 : `bg-surface text-foreground border border-border/70 rounded-2xl ${joinsNext ? '' : 'rounded-es-md'}`
                             }`}
                           >
@@ -401,10 +432,10 @@ export function ChatPanel({ lang }: { lang: 'ar' | 'en' }) {
                               <span className={`block text-[11px] font-bold mb-0.5 ${m.sender_role === 'admin' ? 'text-[#A06E14] dark:text-[#E5A93C]' : 'text-[var(--teal)]'}`}>{senderLabel(m)}</span>
                             )}
                             <span>{m.body}</span>
-                            <span className={`flex items-center justify-end gap-1 mt-0.5 text-[10.5px] tabular-nums ${m.mine ? 'text-white/80' : 'text-muted-foreground'}`}>
+                            <span className="flex items-center justify-end gap-1 mt-0.5 text-[10.5px] tabular-nums text-muted-foreground">
                               <time dateTime={m.created_at}>{at.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' })}</time>
                               {m.mine && (seen
-                                ? <CheckCheck className="w-3.5 h-3.5" aria-label={isAr ? 'اتشافت' : 'Seen'} />
+                                ? <CheckCheck className="w-3.5 h-3.5 text-[var(--teal)] dark:text-[#7FD3E0]" aria-label={isAr ? 'اتشافت' : 'Seen'} />
                                 : <Check className="w-3.5 h-3.5" aria-label={isAr ? 'اتبعتت' : 'Sent'} />)}
                             </span>
                           </div>

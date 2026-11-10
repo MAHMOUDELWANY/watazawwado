@@ -36,15 +36,18 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// NX-09: phone notifications. The server sends {title, body, url, tag}; a tap opens (or focuses) that page.
+// NX-09: phone notifications. The server sends {title, body, url, tag, icon, badge, action}; a tap (or the button) opens
+// or focuses that page. icon is the picture on the side (Zad, or the sender's photo for a chat message).
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
   event.waitUntil(self.registration.showNotification(data.title || 'وتزودوا · Watazawwado', {
     body: data.body || '',
-    icon: data.icon || '/android-chrome-192x192.png',
-    badge: '/favicon-48x48.png',
+    icon: data.icon || '/zad-notification-192.png',
+    badge: data.badge || '/favicon-48x48.png',
     tag: data.tag || undefined,
+    renotify: Boolean(data.tag),
+    actions: data.action ? [{ action: 'open', title: data.action }] : [],
     data: { url: data.url || '/student' },
   }));
 });
