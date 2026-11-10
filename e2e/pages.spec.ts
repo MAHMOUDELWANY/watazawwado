@@ -41,8 +41,10 @@ async function sweep(page: Page, info: TestInfo, role: string, base: string, rou
     current = `${base}${route}`;
     await test.step(current, async () => {
       await page.goto(current, { waitUntil: 'domcontentloaded' });
-      await page.waitForLoadState('networkidle', { timeout: 20_000 }).catch(() => {});
-      await page.waitForTimeout(900); // entrance motion
+      await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {});
+      await page.waitForFunction(() => document.body.innerText.trim().length > 60, null, { timeout: 15_000 }).catch(() => {});
+      await page.waitForTimeout(1200); // entrance motion, and Zad's tour on the home page
+      await page.getByRole('button', { name: /^(تخطي|Skip)$/ }).click({ timeout: 800 }).catch(() => {});
       const state = await page.evaluate(() => ({
         crash: /Something went wrong|حدث خطأ غير متوقع/.test(document.body.innerText),
         overflow: document.documentElement.scrollWidth - window.innerWidth,

@@ -3640,7 +3640,11 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
       waitUntil((async () => {
         try {
           const account = await resolveLearnerAccount(supabase, id);
-          if (account.userId) await ensureTeacherThreads(supabase, account.userId, [targetTeacher.id]);
+          if (account.userId) {
+            await ensureTeacherThreads(supabase, account.userId, [targetTeacher.id]);
+            // P2-011: a chat closed by an earlier teacher change opens again when the learner returns to that teacher.
+            await supabase.from('chat_threads').update({ closed_at: null }).eq('kind', 'lesson').eq('owner_user_id', account.userId).eq('teacher_id', targetTeacher.id);
+          }
           await notifyUser(supabase, { userId: targetTeacher.id, staff: true }, {
             kind: 'student_assigned',
             title: { en: 'A student was assigned to you', ar: 'اتعيّن ليك طالب' },
@@ -8956,6 +8960,21 @@ app.post('/api/student/children', rateLimit, verifyStudentAuth, async (req: any,
       await supabaseAdmin.from('students').delete().eq('id', child.id);
       console.error('[POST /api/student/children] guardian link failed', gErr.message);
       return res.status(500).json({ error: `We could not save ${name}'s profile. Please try again.` });
+    }
+
+    // P2-010: two requests in the same instant both pass the retry check above. The child whose guardian link is
+    // older stays; the later one removes itself and answers like a retry.
+    const { data: links } = await supabaseAdmin.from('guardians').select('student_id, created_at, id').eq('parent_email', parentEmail).order('created_at').order('id');
+    const linkedIds = (links || []).map((g: any) => g.student_id);
+    const { data: twins } = linkedIds.length
+      ? await supabaseAdmin.from('students').select('id, name, current_level, learning_interest').in('id', linkedIds).ilike('name', escapeLike(name)).eq('age', Number(req.body.age))
+          .gte('created_at', new Date(Date.now() - 10 * 60_000).toISOString())
+      : { data: [] as any[] };
+    const first = linkedIds.map((sid: string) => (twins || []).find((t: any) => t.id === sid)).find(Boolean);
+    if (first && first.id !== child.id) {
+      await supabaseAdmin.from('guardians').delete().eq('student_id', child.id);
+      await supabaseAdmin.from('students').delete().eq('id', child.id);
+      return res.status(200).json({ child: { id: first.id, name: first.name, currentLevel: first.current_level, learningInterest: first.learning_interest }, alreadyAdded: true });
     }
 
     waitUntil(announceNewStudent(

@@ -37,7 +37,7 @@ export async function call(token: string | null, method: string, route: string, 
   const text = await res.text();
   let json: any = null;
   try { json = text ? JSON.parse(text) : null; } catch { json = { raw: text.slice(0, 300) }; }
-  return { status: res.status, ok: res.ok, json };
+  return { status: res.status, ok: res.ok, json, text };
 }
 
 export type QaIds = {
