@@ -382,7 +382,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}
       {/* ========================================================================= */}
       {(profile?.learnerType === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)) && (
-        <section className="space-y-3" aria-labelledby="family-overview-heading">
+        <section className="space-y-3" aria-labelledby="family-overview-heading" data-tour="family-children">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />

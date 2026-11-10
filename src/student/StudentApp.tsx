@@ -9,7 +9,7 @@ import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
 import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { setAppBadge } from '../lib/appBadge';
-import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { HelpCircle, Globe, LogOut, BookOpen,
   User,
@@ -88,6 +88,7 @@ export default function StudentApp() {
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
   const location = useLocation();
+  const navigate = useNavigate();
   const isSignupParam = location.search.includes('auth=signup') || location.pathname.includes('/signup');
   const isLoginParam = location.search.includes('auth=login') || location.pathname.includes('/login');
   const shouldAutoOpenAuth = isLoginParam || isSignupParam;
@@ -574,6 +575,8 @@ export default function StudentApp() {
             <button
               type="button"
               onClick={() => { setSidebarOpen(false); setShowGlobalTour(true); }}
+              id="student-tour-btn-mobile"
+              data-tour="student-tour-btn-mobile"
               className="w-full flex items-center gap-3 px-4 min-h-[56px] text-sm font-medium text-start cursor-pointer"
             >
               <HelpCircle className="w-5 h-5 text-teal" /> {isAr ? 'جولة سريعة في الحساب' : 'Quick tour of your account'}
@@ -761,7 +764,15 @@ export default function StudentApp() {
       <OnboardingGuide
         steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : learnerTourSteps(isAr)}
         isOpen={showGlobalTour}
+        // Owner review 2026-11-10: the tour opens the sheet or page each step explains, then closes everything.
+        onStepChange={(step) => {
+          const phone = window.innerWidth < 768;
+          setSidebarOpen(phone && step.open === 'more');
+          if (step.route && location.pathname !== step.route) navigate(step.route);
+        }}
         onClose={() => {
+          setSidebarOpen(false);
+          if (location.pathname !== '/student') navigate('/student');
           setShowGlobalTour(false);
           try { markTourSeen(tourKey, window.localStorage); } catch { /* blocked storage */ }
         }}

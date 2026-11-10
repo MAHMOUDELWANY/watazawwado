@@ -24,8 +24,22 @@ describe('Zad tours (one per account type)', () => {
       }
       assert.ok(/[؀-ۿ]/.test(steps(true)[1].title), `${kind}: Arabic copy`);
     }
-    assert.deepStrictEqual(familyTourSteps(false).map((s) => s.targetId[0]).slice(1, 6),
-      ['onboarding-welcome', 'nav-book-link', 'student-progress', 'student-messages', 'student-header-tour-btn']);
+    assert.deepStrictEqual(familyTourSteps(false).map((s) => s.targetId[0]).slice(1, 5),
+      ['family-children', 'nav-book-link-desktop', 'learner-chips', 'student-progress']);
+  });
+
+  it('owner review 2026-11-10: every phone and desktop target exists, and steps open what they explain', () => {
+    const src = ['src/student/StudentApp.tsx', 'src/student/pages/StudentHomePage.tsx', 'src/student/activeLearner.tsx']
+      .map((f) => fs.readFileSync(f, 'utf8')).join(' ');
+    const tourIds = [...src.matchAll(/tour: '([a-z-]+)'/g)].map((m) => m[1]);
+    // An id or data-tour written as an attribute, a nav item's `tour`, or an id chosen in JSX ('nav-book-link-desktop').
+    const exists = (id: string) => src.includes(`"${id}"`) || src.includes(`'${id}'`) || tourIds.includes(id);
+    for (const steps of [learnerTourSteps(false), familyTourSteps(false)]) {
+      for (const s of steps) for (const id of [...s.targetId, ...(s.phone || [])]) assert.ok(exists(id), `missing tour target ${id}`);
+      assert.ok(steps.some((s) => s.open === 'more'), 'phone steps open the More sheet');
+      assert.ok(steps.some((s) => s.route === '/student/lessons'), 'the lessons step opens the lessons page');
+    }
+    assert.ok(fs.readFileSync('src/student/StudentApp.tsx', 'utf8').includes("setSidebarOpen(phone && step.open === 'more')"));
   });
 
   it('opens once per account and kind on this browser', () => {

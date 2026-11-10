@@ -73,7 +73,7 @@ export function LearnerChips({ isAr, className = '' }: { isAr: boolean; classNam
   if (learners.length === 0) return null;
   const options: Array<{ id: string | null; name: string }> = [{ id: null, name: isAr ? 'كل الأسرة' : 'Whole family' }, ...learners];
   return (
-    <div role="radiogroup" aria-label={isAr ? 'عرض بيانات' : 'Show'} className={`flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none ${className}`}>
+    <div role="radiogroup" data-tour="learner-chips" aria-label={isAr ? 'عرض بيانات' : 'Show'} className={`flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none ${className}`}>
       <Users className="w-4 h-4 text-accent shrink-0" aria-hidden="true" />
       {options.map((o) => {
         const selected = (activeId || null) === o.id;

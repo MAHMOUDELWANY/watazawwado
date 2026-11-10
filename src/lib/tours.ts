@@ -16,6 +16,12 @@ export interface TourStep {
   description: string;
   position?: 'top' | 'bottom';
   pose?: ZadPose;
+  /** Phone targets when they differ (under 768px); a missing target shows a centred card, never another control. */
+  phone?: string[];
+  /** Phone only: open the "More" sheet for this step. */
+  open?: 'more';
+  /** The page this step explains; the tour opens it first, so the user reads and sees it (owner review 2026-11-10). */
+  route?: string;
 }
 
 /** v2: everyone sees the Zad tour once, including accounts that saw the older tours. */
@@ -42,6 +48,10 @@ export function markTourSeen(key: string | null, storage: Pick<Storage, 'setItem
 
 const T = (isAr: boolean) => (en: string, ar: string) => (isAr ? ar : en);
 
+/**
+ * Owner review 2026-11-10: the tour teaches what each control does and shows it. Each step opens the page or the
+ * "More" sheet it explains, phone and desktop each point at their own control, and Zad reacts to every message.
+ */
 export function learnerTourSteps(isAr: boolean): TourStep[] {
   const t = T(isAr);
   return [
@@ -49,63 +59,129 @@ export function learnerTourSteps(isAr: boolean): TourStep[] {
       targetId: [],
       title: t("Assalamu alaikum, I'm Zad", 'السلام عليكم، أنا زاد'),
       description: t(
-        "Let me show you around your account. It takes under a minute, and you can skip it and come back any time.",
-        'هلفّ معاك لفّة سريعة في حسابك، أقل من دقيقة. تقدر تتخطاها وترجعلها وقت ما تحب.',
+        "I'll show you how to use your account, one button at a time. Two minutes, and you can skip any time.",
+        'هوريك تستخدم حسابك إزاي، زرار زرار. دقيقتين، وتقدر تتخطى في أي وقت.',
       ),
       pose: 'wave',
+      route: '/student',
     },
     {
       targetId: ['onboarding-next-lesson', 'onboarding-welcome'],
       title: t('Your next lesson', 'درسك الجاي'),
       description: t(
-        'Your next lesson shows here. On the day, the button to join the lesson room appears on this card.',
-        'هنا هيظهر درسك الجاي، ويوم الدرس هتلاقي زرار دخول الحصة على الكارت ده.',
+        'Your next lesson shows on this card. On the day, a "Join lesson" button appears here: tap it at the time and you are in the room with your teacher.',
+        'درسك الجاي بيظهر في الكارت ده. يوم الحصة هيظهر هنا زرار «ادخل الحصة»: اضغطه في الميعاد وتلاقي نفسك مع معلمك.',
       ),
       position: 'bottom',
+      pose: 'point',
+      route: '/student',
     },
     {
-      targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
+      targetId: ['nav-book-link-desktop'],
+      phone: ['nav-book-link'],
       title: t('Book a lesson', 'احجز درس'),
       description: t(
-        'Pick the subject, your teacher and a time that suits you. Times show in your own time zone.',
-        'اختار المادة والمعلم والوقت اللي يناسبك، والمواعيد بتظهر بتوقيتك.',
+        "Tap here to book: choose the subject, then one of your teacher's free times (shown in your own time zone), then pay or use your package.",
+        'اضغط هنا عشان تحجز: اختار المادة، بعدين ميعاد من مواعيد معلمك الفاضية (بتوقيتك)، وبعدين ادفع أو استخدم باقتك.',
       ),
       position: 'top',
+      pose: 'excited',
     },
     {
-      targetId: ['nav-lessons-link', 'nav-lessons-link-desktop', 'student-lessons'],
+      targetId: ['nav-lessons-link-desktop'],
+      phone: ['nav-lessons-link'],
       title: t('Your lessons', 'دروسك'),
       description: t(
-        "Upcoming and past lessons, your teacher's notes after each one, and where to change a time.",
-        'دروسك الجاية واللي فاتت، وملاحظات المعلم بعد كل درس، ومنها تغيّر الميعاد لو احتجت.',
+        "This is your lessons page. Tap a lesson to see its details and your teacher's notes. To move it, choose another day up to 1 hour before; to cancel, up to 3 hours before.",
+        'دي صفحة دروسك. اضغط على أي حصة تشوف تفاصيلها وملاحظات معلمك. ولو عايز تغيّر ميعادها، اختار يوم تاني قبلها بساعة على الأقل، والإلغاء قبلها بـ ٣ ساعات.',
       ),
       position: 'top',
+      pose: 'think',
+      route: '/student/lessons',
     },
     {
-      targetId: ['student-homework', 'student-curriculum', 'nav-more-btn'],
-      title: t('Homework and your curriculum', 'الواجبات ومنهجك'),
+      targetId: ['student-messages'],
+      title: t('Messages', 'الرسائل'),
       description: t(
-        "After each lesson, a few short questions on what you learned wait under Homework, and the lessons you've taken stay open to review. On a phone they are under More.",
-        'بعد كل درس هتلاقي في «الواجبات» كام سؤال قصير على اللي اتعلمته، ودروس منهجك مفتوحة تراجعها. على الموبايل هتلاقيهم في «المزيد».',
+        'Write to your teacher or to our team here. A number on it means a new reply is waiting.',
+        'من هنا تكلّم معلمك أو فريقنا. لو ظهر عليه رقم، يبقى في رد جديد مستنيك.',
+      ),
+      position: 'top',
+      pose: 'love',
+    },
+    {
+      targetId: ['student-homework'],
+      open: 'more',
+      title: t('Homework', 'الواجبات'),
+      description: t(
+        'After each lesson your teacher leaves a few short questions here. Answer them and tap Done; your teacher sees it before the next lesson.',
+        'بعد كل حصة معلمك بيسيبلك كام سؤال قصير هنا. جاوبهم واضغط «تم»، ومعلمك بيشوف ده قبل الحصة الجاية.',
       ),
       position: 'bottom',
       pose: 'think',
     },
     {
-      targetId: ['student-messages'],
-      title: t('Talk to our team', 'كلّم فريقنا'),
+      targetId: ['student-curriculum'],
+      open: 'more',
+      title: t('Your curriculum', 'منهجك'),
       description: t(
-        'Questions about lessons, times or payment? Message us here and we will reply.',
-        'أي سؤال عن الدروس أو المواعيد أو الدفع، ابعتلنا من هنا وهنرد عليك.',
+        'Every lesson you take opens here, so you can go back over it any time.',
+        'كل درس بتاخده بيتفتح هنا، فتقدر ترجعله وتراجعه وقت ما تحب.',
       ),
-      position: 'top',
+      position: 'bottom',
+      pose: 'proud',
     },
     {
-      targetId: ['student-header-tour-btn', 'nav-more-btn'],
+      targetId: ['student-wallet'],
+      open: 'more',
+      title: t('Your wallet', 'محفظتك'),
+      description: t(
+        'Your packages, lesson credits and receipts. A lesson you cancel in time comes back here as a credit.',
+        'باقاتك والحصص اللي ليك ووصولات الدفع. ولو لغيت حصة في ميعادها، بترجع هنا رصيد.',
+      ),
+      position: 'bottom',
+      pose: 'wow',
+    },
+    {
+      targetId: ['nav-account-link-desktop'],
+      phone: ['student-account'],
+      open: 'more',
+      title: t('Your account', 'حسابك'),
+      description: t(
+        'Your name, WhatsApp and time zone, your teacher (you can ask to change them from here), and signing out.',
+        'اسمك ورقم الواتساب والتوقيت، ومعلمك (ومن هنا تقدر تطلب تغييره)، وتسجيل الخروج.',
+      ),
+      position: 'bottom',
+      pose: 'point',
+    },
+    {
+      targetId: ['student-notifications'],
+      title: t('Notifications', 'التنبيهات'),
+      description: t(
+        'Reminders before each lesson and news from our team land on this bell.',
+        'تنبيهات قبل كل حصة وأخبار فريقنا بتوصل على الجرس ده.',
+      ),
+      position: 'bottom',
+      pose: 'wow',
+    },
+    {
+      targetId: ['header-lang-btn'],
+      title: t('Arabic or English', 'عربي أو إنجليزي'),
+      description: t(
+        'Switch the whole account between Arabic and English any time.',
+        'من هنا تغيّر لغة الحساب كله بين العربي والإنجليزي في أي وقت.',
+      ),
+      position: 'bottom',
+      pose: 'love',
+    },
+    {
+      targetId: ['student-header-tour-btn'],
+      phone: ['student-tour-btn-mobile'],
+      open: 'more',
       title: t("You're all set", 'كده جاهز'),
       description: t(
-        'To see this tour again, tap the compass, or "Quick tour" in the menu.',
-        'ولو حبيت تشوف الجولة تاني، اضغط البوصلة أو «جولة سريعة» في القائمة.',
+        'To watch this tour again, tap here any time.',
+        'ولو حبيت تشوف الجولة تاني، اضغط هنا في أي وقت.',
       ),
       position: 'bottom',
       pose: 'cheer',
@@ -120,54 +196,107 @@ export function familyTourSteps(isAr: boolean): TourStep[] {
       targetId: [],
       title: t("Assalamu alaikum, I'm Zad", 'السلام عليكم، أنا زاد'),
       description: t(
-        "Let me show you around your family space. It takes under a minute, and you can skip it and come back any time.",
-        'هلفّ معاك لفّة سريعة في مساحة أسرتك، أقل من دقيقة. تقدر تتخطاها وترجعلها وقت ما تحب.',
+        "I'll show you how to follow your children's learning here, one button at a time. Two minutes, and you can skip any time.",
+        'هوريك تتابع تعلّم أولادك من هنا إزاي، زرار زرار. دقيقتين، وتقدر تتخطى في أي وقت.',
       ),
       pose: 'wave',
+      route: '/student',
     },
     {
-      targetId: ['onboarding-welcome'],
-      title: t('Your family space', 'مساحة أسرتك'),
+      targetId: ['family-children'],
+      title: t('Your children', 'أولادك'),
       description: t(
-        "Everything about your children's lessons with their teachers: upcoming lessons, bookings and follow-up.",
-        'هنا كل ما يخص دروس أولادك مع معلميهم: الحصص الجاية والحجوزات والمتابعة.',
+        'One card per child: their teacher, lessons done and their next lesson. If nothing is booked, "Pick a time" books for that child.',
+        'كارت لكل طفل: معلمه، والحصص اللي خلّصها، وحصته الجاية. ولو مفيش حاجة محجوزة، «اختار ميعاد» بتحجزله على طول.',
       ),
       position: 'bottom',
+      pose: 'love',
+      route: '/student',
     },
     {
-      targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
+      targetId: ['nav-book-link-desktop'],
+      phone: ['nav-book-link'],
       title: t('Book a lesson', 'احجز درس'),
       description: t(
-        'Choose the child, the subject and a time that suits you. Times show in your own time zone.',
-        'اختار الطفل والمادة والوقت المناسب ليكم، والمواعيد بتظهر بتوقيتك.',
+        "Tap here, choose which child the lesson is for, then a time from their teacher's free hours (in your time zone).",
+        'اضغط هنا، اختار الحصة لأنهي طفل، وبعدين ميعاد من مواعيد معلمه الفاضية (بتوقيتك).',
       ),
       position: 'top',
+      pose: 'excited',
     },
     {
-      targetId: ['student-progress', 'nav-more-btn'],
+      targetId: ['learner-chips'],
+      title: t("Each child's lessons", 'دروس كل طفل'),
+      description: t(
+        'This is the lessons page. Tap a child\'s name to see only their lessons, or "Whole family" for everyone. Tap a lesson to move or cancel it.',
+        'دي صفحة الدروس. اضغط على اسم الطفل تشوف دروسه هو بس، أو «كل الأسرة» تشوفهم كلهم. واضغط على أي حصة عشان تغيّر ميعادها أو تلغيها.',
+      ),
+      position: 'bottom',
+      pose: 'think',
+      route: '/student/lessons',
+    },
+    {
+      targetId: ['student-progress'],
+      open: 'more',
       title: t('Follow their progress', 'تابع تقدّمهم'),
       description: t(
-        "See where each child is in every subject, the teacher's notes after each lesson, and a monthly report you can print.",
-        'هنا تشوف وصلوا لفين في كل مادة، وملاحظات المعلم بعد كل درس، وتقرير شهري تقدر تطبعه.',
+        "Where each child is in every subject, the teacher's notes after each lesson, and a monthly report you can print.",
+        'هنا وصل كل طفل لفين في كل مادة، وملاحظات المعلم بعد كل حصة، وتقرير شهري تقدر تطبعه.',
       ),
       position: 'bottom',
       pose: 'proud',
     },
     {
-      targetId: ['student-messages'],
-      title: t('Talk to our team', 'كلّم فريقنا'),
+      targetId: ['student-homework'],
+      open: 'more',
+      title: t('Homework', 'الواجبات'),
       description: t(
-        'Questions about lessons, times or payments? Send us a message here and we will get back to you.',
-        'أي سؤال عن الدروس أو المواعيد أو الدفع، ابعتلنا رسالة من هنا وهنرد عليك.',
+        'The short questions each teacher leaves after a lesson. Sit with your child, answer together and tap Done.',
+        'الأسئلة القصيرة اللي المعلم بيسيبها بعد كل حصة. اقعد مع ابنك، جاوبوا مع بعض واضغطوا «تم».',
       ),
-      position: 'top',
+      position: 'bottom',
+      pose: 'think',
     },
     {
-      targetId: ['student-header-tour-btn', 'nav-more-btn'],
+      targetId: ['student-messages'],
+      title: t('Messages', 'الرسائل'),
+      description: t(
+        "Talk to each child's teacher or to our team here. A number on it means a new reply.",
+        'من هنا تكلّم معلم كل طفل أو فريقنا. لو ظهر عليه رقم، يبقى في رد جديد.',
+      ),
+      position: 'top',
+      pose: 'love',
+    },
+    {
+      targetId: ['nav-account-link-desktop'],
+      phone: ['student-account'],
+      open: 'more',
+      title: t('Your account', 'حسابك'),
+      description: t(
+        "Add a child, see each child's teacher and ask to change one, your contact details, and signing out.",
+        'من هنا تضيف طفل، وتشوف معلم كل طفل وتطلب تغييره لو حبيت، وبيانات التواصل، وتسجيل الخروج.',
+      ),
+      position: 'bottom',
+      pose: 'point',
+    },
+    {
+      targetId: ['student-notifications'],
+      title: t('Notifications', 'التنبيهات'),
+      description: t(
+        'Reminders before every lesson, for every child, land on this bell.',
+        'تنبيهات قبل كل حصة، لكل طفل، بتوصل على الجرس ده.',
+      ),
+      position: 'bottom',
+      pose: 'wow',
+    },
+    {
+      targetId: ['student-header-tour-btn'],
+      phone: ['student-tour-btn-mobile'],
+      open: 'more',
       title: t("You're all set", 'كده جاهزين'),
       description: t(
-        'To see this tour again, tap the compass, or "Quick tour" in the menu.',
-        'ولو حبيت تشوف الجولة تاني، اضغط البوصلة أو «جولة سريعة» في القائمة.',
+        'To watch this tour again, tap here any time.',
+        'ولو حبيت تشوف الجولة تاني، اضغط هنا في أي وقت.',
       ),
       position: 'bottom',
       pose: 'cheer',

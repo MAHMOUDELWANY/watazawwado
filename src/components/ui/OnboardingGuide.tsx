@@ -12,6 +12,12 @@ export interface OnboardingStep {
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
   /** Zad presents every step; defaults: wave first, cheer last, point between. */
   pose?: ZadPose;
+  /** Targets on a phone (under 768px) when they differ from the desktop ones; never falls back to another control. */
+  phone?: string[];
+  /** Phone only: the tour opens the "More" sheet for this step, so the user sees what it explains. */
+  open?: 'more';
+  /** The page this step explains; the tour goes there first (owner review 2026-11-10: read it and see it). */
+  route?: string;
 }
 
 interface OnboardingGuideProps {
@@ -19,7 +25,11 @@ interface OnboardingGuideProps {
   isOpen: boolean;
   onClose: () => void;
   isAr?: boolean;
+  /** Called when a step starts: the app opens menus or navigates as the step asks (route / open). */
+  onStepChange?: (step: OnboardingStep, index: number) => void;
 }
+
+const isPhone = () => typeof window !== 'undefined' && window.innerWidth < 768;
 
 interface TargetGeometry {
   x: number;
@@ -32,7 +42,7 @@ interface TargetGeometry {
   bottom: number;
 }
 
-export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: OnboardingGuideProps) {
+export function OnboardingGuide({ steps, isOpen, onClose, isAr = false, onStepChange }: OnboardingGuideProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<TargetGeometry | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -64,7 +74,16 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   }, [currentStepIndex, isOpen]);
 
   useEffect(() => {
-    if (isOpen) nextRef.current?.focus({ preventScroll: true });
+    if (!isOpen) return;
+    // After the "More" sheet's own focus move (50 ms), so Next keeps the focus.
+    const id = window.setTimeout(() => nextRef.current?.focus({ preventScroll: true }), 120);
+    return () => window.clearTimeout(id);
+  }, [isOpen, currentStepIndex]);
+
+  // The step drives the screen: open the sheet or the page it explains before pointing at it.
+  useEffect(() => {
+    if (isOpen && steps[currentStepIndex]) onStepChange?.(steps[currentStepIndex], currentStepIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, currentStepIndex]);
 
   // Robust target element finder by data-tour, id, or css selector
@@ -73,7 +92,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     const step = steps[currentStepIndex];
     if (!step) return null;
 
-    const currentTargetId = step.targetId;
+    const currentTargetId = isPhone() && step.phone ? step.phone : step.targetId;
     const targetIds = Array.isArray(currentTargetId) ? currentTargetId : [currentTargetId];
 
     for (const id of targetIds) {
@@ -110,6 +129,8 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
         if (isInViewport) {
           return el;
         }
+        // Present but scrolled away (e.g. low in the "More" sheet): bring it in; the next poll finds it.
+        if (b.width > 0 && b.height > 0) el.scrollIntoView({ block: 'center', inline: 'nearest' });
       }
     }
     return null;
@@ -145,7 +166,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     if (!isOpen || steps.length === 0) return;
 
     let attempts = 0;
-    const maxAttempts = 15; // Poll over ~300ms if target is animating or mounting
+    const maxAttempts = 90; // ~1.5 s: the page or sheet the step opened may still be loading
 
     const resolveTarget = () => {
       const found = updateTargetGeometry();
@@ -163,9 +184,14 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     };
 
     resolveTarget();
+    // A sheet sliding in or a page settling moves the target: follow it for a moment.
+    const follow = window.setInterval(updateTargetGeometry, 200);
+    const stopFollow = window.setTimeout(() => window.clearInterval(follow), 1600);
 
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      window.clearInterval(follow);
+      window.clearTimeout(stopFollow);
     };
   }, [isOpen, currentStepIndex, steps, updateTargetGeometry, findTargetElement]);
 
@@ -178,10 +204,11 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     };
 
     window.addEventListener('resize', handleUpdate);
-    window.addEventListener('scroll', handleUpdate, { passive: true });
+    // Capture: also scrolls inside the "More" sheet or a page panel, not only the window.
+    window.addEventListener('scroll', handleUpdate, { passive: true, capture: true });
     return () => {
       window.removeEventListener('resize', handleUpdate);
-      window.removeEventListener('scroll', handleUpdate);
+      window.removeEventListener('scroll', handleUpdate, { capture: true });
     };
   }, [isOpen, updateTargetGeometry]);
 
@@ -242,7 +269,16 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   let popoverLeft = (viewportWidth - cardWidth) / 2;
   let arrowLeft = cardWidth / 2;
 
-  if (targetRect) {
+  // Phone: the card is a sheet across the screen, on the half away from the target, so it never hides it.
+  const sheet = viewportWidth < 640;
+  if (sheet) {
+    const cardW = viewportWidth - 24;
+    const targetLow = targetRect ? targetRect.top + targetRect.height / 2 > viewportHeight / 2 : false;
+    placement = targetLow ? 'top' : 'bottom';
+    popoverLeft = 12;
+    popoverTop = !targetRect ? (viewportHeight - cardHeight) / 2 : targetLow ? 12 : viewportHeight - cardHeight - 12;
+    arrowLeft = cardW / 2;
+  } else if (targetRect) {
     const spaceBelow = viewportHeight - targetRect.bottom;
     const spaceAbove = targetRect.top;
     const preferredPosition = currentStep.position || 'bottom';
@@ -356,14 +392,14 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
         animate={{
           top: popoverTop,
           left: popoverLeft,
-          width: cardWidth,
+          width: sheet ? viewportWidth - 24 : cardWidth,
         }}
         transition={smoothSpring}
         onClick={(e) => e.stopPropagation()} // Prevent backdrop click when clicking inside card
         className="fixed z-[100000] will-change-transform"
       >
-        {/* Pointer Arrow Notch (Points directly at the active target, matching video) */}
-        {targetRect && (
+        {/* Pointer Arrow Notch (Points directly at the active target, matching video); none on the phone sheet */}
+        {targetRect && !sheet && (
           <motion.div
             initial={false}
             animate={{
@@ -388,7 +424,8 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
             {/* Zad presents the step; the counter says how far along the tour is */}
             <div className="flex items-start gap-3.5">
               <div className="shrink-0 w-16 h-16 grid place-items-center rounded-2xl bg-sand-light ring-1 ring-border/60 overflow-visible">
-                <ZadRig pose={pose} size={50} glow={false} />
+                {/* A new Zad per step, so each message gets its own reaction, not one looping pose. */}
+                <ZadRig key={currentStepIndex} pose={pose} size={50} glow={false} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
