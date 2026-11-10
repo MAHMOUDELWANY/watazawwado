@@ -26,6 +26,12 @@ redesign of a screen or flow, with the reason.
 - **Live site** `watazawwado.academy`: read-only smoke checks only (open pages, read). No sign-up, no password, no
   attack traffic, no request loops (they trigger Vercel's challenge on the owner's IP). Everything else runs on
   `localhost:3000`, which is the same code and the same database.
+- **Live accounts in Chrome** (owner's setup): the owner signs in himself, one Chrome profile per account
+  (super_admin, teacher, adult student, family/parent, linked child), plus Gmail tabs. Use them through Claude in
+  Chrome for live checks of real flows only, never for attacks or loops. Only one session drives Chrome at a time
+  (P2, then P4); the others use the built-in browser and Playwright on their own port. The teacher account is a
+  real teacher: anything that touches Google Calendar, Zoom or messages to real people needs care, and cancel
+  what you book.
 - **Payment**: do not pay. Go through checkout up to the Stripe/PayPal page and stop. Test paid-booking logic by
   calling the server, never by confirming from the client.
 
