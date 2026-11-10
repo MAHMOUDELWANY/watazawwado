@@ -39,6 +39,7 @@ import { HomeworkSetsPanel } from '../components/HomeworkSetsPanel';
 import { PlacementLevelCard } from '../components/PlacementLevelCard';
 import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
+import { HandOverCard } from '../components/HandOverCard';
 import { useT } from '../../lib/language';
 import { confirmAction, notify } from '../../components/ui/Feedback';
 import { levelsFor } from '../../components/onboarding/subjects';
@@ -721,6 +722,8 @@ export default function StudentDetailPage() {
             </div>
           )}
 
+          {/* docs/policies/TEACHER-CHANGE.md: the teacher asks, the academy decides. */}
+          {!isSuperAdmin && id && <HandOverCard studentId={id} />}
           {isSuperAdmin && id && <CrmNotesPanel studentId={id} />}
           {isSuperAdmin && id && <FamilyTimeline studentId={id} />}
 

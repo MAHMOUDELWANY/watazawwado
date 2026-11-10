@@ -56,6 +56,7 @@ import UpcomingPage from './pages/UpcomingPage';
 import TrialsPage from './pages/TrialsPage';
 import LeadsPage from './pages/LeadsPage';
 import WaitlistPage from './pages/WaitlistPage';
+import TeacherChangesPage from './pages/TeacherChangesPage';
 import StudentsPage from './pages/StudentsPage';
 import StudentDetailPage from './pages/StudentDetailPage';
 import BookingsPage from './pages/BookingsPage';
@@ -270,6 +271,7 @@ export function DashboardApp() {
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck, group: G.people },
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles, group: G.people },
     { name: L('Placement', 'تحديد المستوى'), path: '/dashboard/placement', icon: GraduationCap, group: G.people },
+    { name: L('Teacher changes', 'تغيير المعلم'), path: '/dashboard/teacher-changes', icon: Users, group: G.people },
     { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen, group: G.money },
     { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet, group: G.money },
     { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag, group: G.money },
@@ -635,6 +637,7 @@ export function DashboardApp() {
                 <Route path="/trials" element={<TrialsPage />} />
                 <Route path="/leads" element={isSuperAdmin ? <LeadsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/waitlist" element={isSuperAdmin ? <WaitlistPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/teacher-changes" element={isSuperAdmin ? <TeacherChangesPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/intakes" element={isSuperAdmin ? <IntakeReviewPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/teachers" element={isSuperAdmin ? <TeachersPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/students" element={<StudentsPage />} />

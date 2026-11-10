@@ -1,8 +1,7 @@
 # Changing a learner's teacher: policy and procedures
 
-Status: **proposed 2026-11-10, waiting for the owner's OK before it is built.** The one point the owner already
-decided is marked *(owner, 2026-11-10)*. Once approved, the summary goes into RULES.md and replaces the
-2026-10-14 "Changing teacher" entry.
+Status: **approved by the owner 2026-11-10 and built** (`server/routes/teacherChange.ts`, migration
+`20261110000000_teacher_profiles_and_change_requests.sql`). Summary in RULES.md ("Changing teacher").
 
 This covers a learner moving from one of our teachers to another. A learner who stops learning with us altogether is
 a different case and is not covered here.
@@ -71,8 +70,9 @@ Only one open request per learner at a time. The family can withdraw its request
    toward the refund limit, and the family can still ask for a refund instead (RULES.md: platform-cancelled lessons).
    Lessons **within the next 3 hours** stay and are held with the previous teacher as normal (the teacher is paid
    for them, as for any held lesson). The family then books the new teacher's free times with that credit.
-   Free trials booked with the previous teacher move to the new teacher if the time is free, otherwise they are
-   cancelled and the trial stays available.
+   Free trials booked with the previous teacher stay where they are; the admin sees them in the result and moves
+   them with "Move lesson" (Bookings) when the new teacher is free, so a cancelled trial never triggers the 48-hour
+   wait or the trial limit.
 4. **The move itself** (one server action, all or nothing):
    - The learner's assigned teacher changes; new bookings go to the new teacher.
    - The new teacher gets the learner's file: goals, level, the previous teacher's lesson notes, progress, homework
@@ -115,7 +115,7 @@ Only one open request per learner at a time. The family can withdraw its request
 ## 6. Urgent track: safety and conduct
 
 The request form has one more option: "Something about safety or respect". Choosing it:
-- alerts the super admin at once (on-site, email and WhatsApp), not within 48 hours;
+- alerts the super admin at once (on-site notice and email, marked urgent), not within 48 hours;
 - lets the admin pause the teacher's upcoming lessons with that learner immediately (cancelled to credit, as above);
 - is handled by the admin directly with the family; nothing is sent to the teacher automatically.
 
