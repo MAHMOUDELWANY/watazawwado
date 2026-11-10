@@ -8,6 +8,7 @@ import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components
 import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
 import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
+import { setAppBadge } from '../lib/appBadge';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { HelpCircle, Globe, LogOut, BookOpen,
@@ -275,6 +276,21 @@ export default function StudentApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, location.pathname]);
 
+
+  // New chat messages: checked every 45 seconds as well, so the Messages badge and the app-icon number appear without
+  // a page change (owner, 2026-11-10).
+  useEffect(() => {
+    if (!userId || userRole !== 'student' || !accessToken || isTeacherAuthenticated) return;
+    let alive = true;
+    const tick = () => authedJson<{ unreadChats?: number }>('/api/me/notifications')
+      .then((d) => { if (alive) setUnreadChats(Number(d?.unreadChats || 0)); }).catch(() => {});
+    const id = window.setInterval(tick, 45000);
+    const onFocus = () => { if (document.visibilityState === 'visible') tick(); };
+    document.addEventListener('visibilitychange', onFocus);
+    return () => { alive = false; window.clearInterval(id); document.removeEventListener('visibilitychange', onFocus); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated]);
+  useEffect(() => { setAppBadge(unreadChats); }, [unreadChats]);
 
   // A sign-in made here (the auth modal) after we saw no session earns the short welcome.
   const sawSignedOut = useRef(false);

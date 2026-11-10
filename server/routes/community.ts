@@ -132,12 +132,13 @@ function readColumn(thread: any, actor: Actor): 'owner_last_read_at' | 'staff_la
   return null;
 }
 
-function isUnreadFor(thread: any, actor: Actor): boolean {
-  const col = readColumn(thread, actor);
+export function isUnreadFor(thread: any, actor: Pick<Actor, 'userId' | 'role'>): boolean {
+  const col = readColumn(thread, actor as Actor);
   if (!col || !thread.last_message_at) return false;
-  const mySide = col === 'owner_last_read_at' ? thread.owner_role : 'staff';
-  const lastSide = thread.last_sender_role === 'teacher' || thread.last_sender_role === 'admin' ? 'staff' : 'student';
-  if ((mySide === 'staff' && lastSide === 'staff') || (mySide !== 'staff' && thread.last_sender_role === thread.owner_role)) return false;
+  // Which side this reader is on: the owner (student or teacher), the lesson's teacher, or the admin team.
+  // 2026-11-10: a teacher writing to the admin used to count as "staff to staff" and never showed as unread.
+  const mySide = col === 'owner_last_read_at' ? thread.owner_role : thread.kind === 'lesson' ? 'teacher' : 'admin';
+  if (thread.last_sender_role === mySide) return false;
   return !thread[col] || new Date(thread.last_message_at) > new Date(thread[col]);
 }
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { setAppBadge } from '../../lib/appBadge';
 import { InboxList } from '../../components/InboxList';
 import { DateTime } from 'luxon';
 import { Bell, CalendarPlus, CalendarX, CalendarClock, Sparkles, Loader2 } from 'lucide-react';
@@ -64,9 +65,13 @@ export function useUnreadDashboardChats(enabled: boolean, pathname: string): num
       .then((r) => { if (alive) setCount(Number(r?.unreadChats || 0)); })
       .catch(() => {});
     load();
-    const timer = setInterval(load, 60000);
-    return () => { alive = false; clearInterval(timer); };
+    const timer = setInterval(load, 45000);
+    const onFocus = () => { if (document.visibilityState === 'visible') load(); };
+    document.addEventListener('visibilitychange', onFocus);
+    return () => { alive = false; clearInterval(timer); document.removeEventListener('visibilitychange', onFocus); };
   }, [enabled, pathname]);
+  // The number on the installed app's icon too (owner, 2026-11-10).
+  useEffect(() => { if (enabled) setAppBadge(count); }, [enabled, count]);
   return count;
 }
 

@@ -543,7 +543,7 @@ export function DashboardApp() {
                     <item.icon className="relative w-4 h-4" aria-hidden="true" />
                     <span className="relative">{item.name}</span>
                     {item.path === '/dashboard/messages' && unreadChats > 0 && (
-                      <span className="relative w-2 h-2 rounded-full bg-[#E5A93C]" role="status" aria-label={L(`${unreadChats} unread`, `${unreadChats} رسالة جديدة`)} />
+                      <span className="relative min-w-5 h-5 px-1.5 rounded-full bg-[var(--teal)] text-white text-[11px] font-bold tabular-nums grid place-items-center" role="status" aria-label={L(`${unreadChats} unread`, `${unreadChats} محادثة فيها رسايل جديدة`)}>{unreadChats}</span>
                     )}
                   </Link>
                 );

@@ -41,6 +41,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   let data = {};
   try { data = event.data ? event.data.json() : {}; } catch (e) { data = { body: event.data && event.data.text() }; }
+  // A mark on the app icon that stays after the notification is cleared; the app sets the exact number when opened.
+  try { if (self.navigator.setAppBadge) self.navigator.setAppBadge().catch(() => {}); } catch (e) { /* not supported */ }
   event.waitUntil(self.registration.showNotification(data.title || 'وتزودوا · Watazawwado', {
     body: data.body || '',
     icon: data.icon || '/zad-notification-192.png',

@@ -4,7 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import app from '../api/index.js';
 import { parseSubscription, sendPushToUser, pushConfigured, pushPayload, PUSH_KINDS } from '../server/notifications/push.js';
-import { threadGroup } from '../server/routes/community.js';
+import { threadGroup, isUnreadFor } from '../server/routes/community.js';
 import { keyToBytes } from '../src/student/components/PushToggle.js';
 
 const goodSub = { endpoint: 'https://fcm.googleapis.com/fcm/send/abc', keys: { p256dh: 'BNc', auth: 'xyz' } };
@@ -88,6 +88,23 @@ describe('Inbox sections', () => {
     assert.strictEqual(threadGroup({ kind: 'lesson', owner_role: 'student', owner_user_id: 'p' }, { role: 'student' }, fam), 'teachers');
     assert.strictEqual(threadGroup({ kind: 'lesson', owner_role: 'student', owner_user_id: 'p' }, { role: 'teacher' }, fam), 'families');
     assert.strictEqual(threadGroup({ kind: 'support', owner_role: 'teacher', owner_user_id: 't' }, { role: 'teacher' }, fam), 'team');
+  });
+});
+
+describe('Unread conversations', () => {
+  // 2026-11-10: a teacher's message to the admin team never showed as unread.
+  it('marks a message unread for whoever did not send it', () => {
+    const at = '2026-11-10T08:00:00Z', before = '2026-11-10T07:00:00Z';
+    const teacherToAdmin = { kind: 'support', owner_role: 'teacher', owner_user_id: 't', last_sender_role: 'teacher', last_message_at: at, staff_last_read_at: before, owner_last_read_at: at };
+    assert.strictEqual(isUnreadFor(teacherToAdmin, { userId: 'a', role: 'admin' }), true);
+    assert.strictEqual(isUnreadFor(teacherToAdmin, { userId: 't', role: 'teacher' }), false);
+    const adminToTeacher = { ...teacherToAdmin, last_sender_role: 'admin', owner_last_read_at: before, staff_last_read_at: at };
+    assert.strictEqual(isUnreadFor(adminToTeacher, { userId: 't', role: 'teacher' }), true);
+    const lesson = { kind: 'lesson', owner_role: 'student', owner_user_id: 's', teacher_id: 't', last_sender_role: 'student', last_message_at: at, staff_last_read_at: before, owner_last_read_at: at };
+    assert.strictEqual(isUnreadFor(lesson, { userId: 't', role: 'teacher' }), true);
+    assert.strictEqual(isUnreadFor(lesson, { userId: 's', role: 'student' }), false);
+    assert.strictEqual(isUnreadFor({ ...lesson, last_sender_role: 'teacher', owner_last_read_at: before }, { userId: 's', role: 'student' }), true);
+    assert.strictEqual(isUnreadFor({ ...lesson, staff_last_read_at: at }, { userId: 't', role: 'teacher' }), false);
   });
 });
 
