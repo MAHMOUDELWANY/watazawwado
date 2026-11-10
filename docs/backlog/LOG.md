@@ -1019,3 +1019,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## 2026-11-05 — Pre-launch review (released to main)
 - Report: `docs/reports/2026-11-05 pre-launch review.md`. Waitlist fixes (hook order, invite error, 72-hour hold, Google sign-out), security pass, developer probes removed from the learner profile, Arabic copy to the 80/20 Fusha style across the public site, portal, kid app and family emails, Zaadi in the joy moments, espresso closing bands.
+
+## 2026-11-10 — Phone notifications per account, chat push, WhatsApp-style inbox, teacher photos (owner review 2026-11-09)
+- Phone notices follow the owner's Duolingo reference: emoji title, one line, Zaadi in a pose that fits (`public/push/zaadi-*.png`, captured from ZaadiRig via `/prototype/messages?assets`) or the sender's photo, one button, white badge for the status bar. `pushPayload` in `server/notifications/push.ts` holds the per-kind emoji/pose map; `PUSH_KINDS` now covers student, teacher and super-admin news.
+- Every chat message pushes to the other side (owner, teacher, or all super admins for a support thread), one notification per conversation (`tag chat-<id>`).
+- Inbox for every role: search, section chips with unread counts (admin: teachers, families, support, lesson chats; student: my teachers, our team; teacher: my students, our team), teacher photos, WhatsApp-style counts and ticks, espresso chat header. Teachers no longer show as "Support" for the admin.
+- Teacher photos (teacher_accounts.photo_url) now show in chat, chat push, student home, student profile, today's lesson card and the admin teacher list (`/api/teacher-photos`, `TeacherFace`).
+- Not yet checked on a real phone: Android shows picture and button; iPhone shows title and line only.
