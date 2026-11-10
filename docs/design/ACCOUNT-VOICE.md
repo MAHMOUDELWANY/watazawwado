@@ -36,7 +36,7 @@ Zad, Seerah or language lesson, ever. No default surah.
 - Arabic UI copy for families: warm everyday Arabic (Egyptian is fine in the dashboard and notices; Fusha-light in
   emails). English: plain, warm, no idioms that don't travel.
 - Both languages always say the same thing; neither is a word-for-word translation.
-- Zaadi (phone notices, homework, rewards) speaks for the academy: short, cheerful, never guilt or streak pressure
+- Zad (the sign-in welcome, first-visit tours, phone notices, homework, rewards) speaks for the academy: short, cheerful, never guilt or streak pressure
   (NX-01: no streaks).
 
 ## 5. Checklist for any new screen or message

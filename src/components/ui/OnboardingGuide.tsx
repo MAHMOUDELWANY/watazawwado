@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ZadRig, type ZadPose } from '../zad/ZadRig';
+import FocusTrap from '../FocusTrap';
 
 export interface OnboardingStep {
   targetId: string | string[]; // data-tour / id to highlight; empty = a centred card
@@ -156,7 +157,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
       } else {
         const el = findTargetElement();
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' }); // 'center' shifted the dashboard sideways
         }
       }
     };
@@ -188,9 +189,8 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'ArrowRight') {
+      // Escape is handled by FocusTrap.
+      if (e.key === 'ArrowRight') {
         if (isAr) {
           if (currentStepIndex > 0) setCurrentStepIndex(p => p - 1);
         } else {
@@ -490,5 +490,5 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     </div>
   );
 
-  return createPortal(overlayContent, document.body);
+  return createPortal(<FocusTrap onEscape={onClose}>{overlayContent}</FocusTrap>, document.body);
 }

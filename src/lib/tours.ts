@@ -306,7 +306,7 @@ export function adminTourSteps(isAr: boolean): TourStep[] {
     {
       targetId: ['admin-search'],
       title: t('Search everything', 'دوّر على أي حاجة'),
-      description: t('Press Ctrl K to find any account, child, booking reference or payment.', 'اضغط Ctrl K ودوّر على أي حساب أو طفل أو رقم حجز أو دفعة.'),
+      description: t('Tap search (or press Ctrl K) to find any account, child, booking reference or payment.', 'اضغط البحث (أو Ctrl K) ودوّر على أي حساب أو طفل أو رقم حجز أو دفعة.'),
       position: 'bottom',
       pose: 'think',
     },

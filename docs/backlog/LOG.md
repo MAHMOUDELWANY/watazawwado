@@ -4,6 +4,26 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Zad: new name, brand colours, welcome and tours for every account (2026-11-10)
+
+Owner, 2026-11-09: "Zadi everywhere it should appear for every account type at sign-in, the tour everywhere it should be,
+professional, call it Zad instead of Zadi, colours that express our identity."
+- Renamed Zaadi/زادي to Zad/زاد in the UI, phone notifications (`server/notifications/push.ts`) and the waitlist page
+  ("جهّزت زادي" stays: it means "I packed my zaad"). Code: `src/components/zad/ZadRig.tsx`, icon `public/zad-notification-192.png`.
+- Colours: crimson khatam body with a gold inner star and gold face rim, copper arms and feet, gold star hands, gold
+  and teal effect accents, espresso shadow. Phone-notification picture re-rendered in the same colours.
+- Sign-in welcome shows Zad for every role: wave (learners, families), hand on heart (teachers), calm (admin).
+- Tours (`src/lib/tours.ts`): learner, family, teacher and admin, each opened by Zad in the centre, then the real
+  places on that account, ending on the replay button. Open once per account per browser after sign-in (after
+  onboarding / the teacher agreement), replay from the compass or "Quick tour"/"Tour guide" in the menu. A step whose
+  target is hidden on a phone points at "More" or shows a centred card. The old home-page tour was folded into the
+  learner tour. The notification popup waits until the tour closes.
+- Tour card: Zad presents each step with a pose, "Zad · 2 of 7" counter, dialog semantics, focus on the main button,
+  44px-ish buttons, no accidental close on a backdrop tap; fixed a sideways shift of the dashboard when a tour step
+  scrolled a target into view.
+- Checked in the browser: learner tour on a phone in Arabic, teacher and admin tours on desktop and phone widths.
+  Test: `test/zad-tours.test.ts`.
+
 ### Phone notifications actually reach phones (2026-11-09)
 
 - Problem (owner test): no permission request after installing the app, and no notifications outside it. Production had 0 push subscriptions: the only way in was the switch on the student Notifications page, and teachers could not subscribe at all, so `teacher_lesson_in_2h` and teacher booking notices never reached a device.

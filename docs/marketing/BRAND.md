@@ -69,7 +69,7 @@ patterns stay secondary because every academy uses them.
 2. **Sound opening (~0.5 s):** a natural sound (a bag zipping shut) with a soft tone; no musical instruments
    (`RULES.md` §1.6). Recitation is never used as a branded sound.
 3. **The zaad bag:** a simple bag icon with the khatam star, in crimson, on thumbnails and on the site.
-4. **Zaadi (زادي), the companion:** a 3D gold khatam badge with simple eyes and soft cheeks, two small arms ending in four-point star hands and two feet; sixteen expressions with their own effects. Design approved by the owner 2026-11-05 (prototype `src/prototypes/ZaadiRig.tsx`); never a human or human-like face, no mouth (owner 2026-11-05) for learners and guardians,
+4. **Zad (زاد), the companion** (renamed from Zad/زادي, owner 2026-11-09): a 3D crimson khatam badge with a gold inner star and gold rim, simple eyes and soft cheeks, copper arms ending in gold four-point star hands, copper feet; sixteen expressions with their own effects (gold and teal accents). Shape approved by the owner 2026-11-05, brand colours 2026-11-09 (`src/components/zad/ZadRig.tsx`, showcase `/prototype/zad` in dev); never a human or human-like face, no mouth (owner 2026-11-05) for learners and guardians,
    the counterpart of Jalila for teachers. A rounder, lighter, more playful version for child accounts. Appears only
    at chosen moments (the waitlist, a welcome, the learning guide), small and light, and respects reduced motion.
    In videos it is a recurring character; the audience is guardians and adults, not children.
@@ -98,21 +98,21 @@ patterns stay secondary because every academy uses them.
 - Every video has one audience (parents of children, parents of teens, adults 18+) and one goal. About 40% build
   story, 60% teaching. No pressure, no "book now".
 - First series "Building Watazawwado": what I kept seeing as a teacher → what parents told me → a mentor who stays →
-  "what annoyed you?" → "you said ___, here's what we did" (×4) → meet Zaadi → wave 1, 20 spots.
+  "what annoyed you?" → "you said ___, here's what we did" (×4) → meet Zad → wave 1, 20 spots.
 
 ## 8. Brand experience: nine moments [Decided 2026-11-05]
 
 Principle: people remember the strongest moment and the last one, so these are designed on purpose, with the teacher at
-the centre. Zaadi appears only in moments of joy (waitlist, welcome, celebrations), never in payment, cancellation or
+the centre. Zad appears only in moments of joy (waitlist, welcome, celebrations), never in payment, cancellation or
 refund messages.
 
-1. **Invitation when a wave opens** ("finally, my turn"): an email with the bag they packed and Zaadi saying "Your
+1. **Invitation when a wave opens** ("finally, my turn"): an email with the bag they packed and Zad saying "Your
    place is open". The place is held **72 hours** because the next person is really waiting; one reminder before it
    ends.
 2. **First WhatsApp reply** ("real people are here"): ready replies in our voice, each naming the exact next step;
    within 12 hours, within **4 hours** during the weeks a wave opens; signed by the Watazawwado team.
 3. **Sign-up and choosing a teacher** ("they remember me"): the track chosen in "Pack your zaad" is preselected and
-   Zaadi says "I kept your bag"; we never ask the same question twice.
+   Zad says "I kept your bag"; we never ask the same question twice.
 4. **The first 10 minutes of the trial** (the moment of truth): two minutes about the person, not the lesson; a small
    success within the first five minutes; at the end "today you learned ___, your plan is ___". Part of the
    Watazawwado Way (§4).
@@ -121,9 +121,9 @@ refund messages.
 6. **When something goes wrong on our side** (late teacher, lesson we cancel): an apology from the team within hours,
    plain and without excuses, on top of the existing choice (free new time, credit or refund), plus **10 extra minutes
    in the next lesson** as a gift.
-7. **Celebrating progress** ("I am really moving"): Zaadi celebrates the end of a level, a memorized surah and every 10
+7. **Celebrating progress** ("I am really moving"): Zad celebrates the end of a level, a memorized surah and every 10
    lessons, with a share card in the same system as "I packed my zaad" (e.g. "I finished Level 1").
-8. **Emails and notifications**: all templates reviewed against the brand line, short and warm; Zaadi only in welcome
+8. **Emails and notifications**: all templates reviewed against the brand line, short and warm; Zad only in welcome
    and celebration messages.
 9. **When someone leaves** ("the door is open"): no guilt; one optional one-tap "why?"; "your zaad is saved, come
    back any time"; progress stays saved.
