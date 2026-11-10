@@ -15,6 +15,13 @@ password, and wipe its data, from the repo alone.
    one that reads `PORT`; `run_tests.js` and `npm run test-only` must accept a base URL/port instead of assuming
    3000, so parallel sessions don't refuse to start or hit each other's server. Run `npx playwright install
    chromium` once.
+   **Env (checked 2026-11-10):** the main `.env` has only Supabase, Stripe and PayPal. Gemini, Brevo, Zoom,
+   Google, `CRON_SECRET`, `LESSON_ROOM_SECRET`, VAPID and the notification addresses are missing, so the AI chat,
+   emails, meetings and push would fail locally. The owner pulls production values into the main checkout as
+   `.env.vercel` (`npx vercel env pull .env.vercel --environment=production`). Load both files (`.env` then
+   `.env.vercel`) and force `VERCEL_ENV`/`NODE_ENV` to non-production for the local server, or dev auth and the
+   prod guards switch on. Report by name only (never values) which variables are still empty; Vercel "sensitive"
+   variables come back empty and the owner copies those from the provider dashboards.
 2. **`scripts/qa/create-accounts.ts <project>`**: with the service role, creates confirmed auth users (random
    password nobody types) and the matching rows for each role: student (adult), parent with 2 children (one kid,
    one teen), teacher (male, female, with availability), super_admin. Follow how the app itself creates each role
