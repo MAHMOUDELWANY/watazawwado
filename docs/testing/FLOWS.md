@@ -49,7 +49,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
-| BOOK-01 | Free trial per learner, confirmed at once | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | review-2026-11-07-trial-per-learner | StudentBookingPage.tsx, `/api/bookings/create`, `create_booking_atomic` | **fail (P2-003): a second child cannot book a trial until migration 20261110000210 is applied**; P2-012 open; P2-013, P2-020 fixed |
+| BOOK-01 | Free trial per learner, confirmed at once | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | review-2026-11-07-trial-per-learner | StudentBookingPage.tsx, `/api/bookings/create`, `create_booking_atomic` | pass (P2); P2-003 fixed (migration applied 2026-11-11), P2-013, P2-020 fixed; P2-012 open |
 | BOOK-02 | Slots: teacher hours in teacher zone, learner zone shown, conflicts | S P T | e2e/booking.api.spec.ts | review-2026-11-08-slots, task-production-availability-root-cause-fix | server/integrations/availabilityEngine.ts, AvailabilityPage.tsx | pass (P2); fixed P2-004; no daylight-saving change falls inside the 60-day booking window now |
 | BOOK-03 | Paid booking stays pending until payment verified (stop at Stripe) | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | qa-01-money-paths-smoke, task-04a-payment-mvp, stripe-webhook-signature | server/payment/stripeService.ts, `/api/payments/create-intent`, `/api/payments/stripe/verify`, webhook | pass up to the payment step (P2); Stripe page not reached locally (P2-001) |
 | BOOK-04 | PayPal checkout up to PayPal page | S P | e2e/pages.spec.ts (opens) | b4-embedded-checkout | src/components/payment | smoke (P2: its screens open clean; the journey is untested) |
