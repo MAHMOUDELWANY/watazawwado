@@ -5618,7 +5618,9 @@ async function fulfillAutomatedPayment(params: {
 }
 
 // 2. Zero-Trust Payment Intent Creation (server authoritative pricing)
-app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) => {
+// P3-003: only the signed-in account that owns the lesson or package opens its checkout (RULES.md §2: no guests).
+// The Stripe page shows the booking's email and price, so a stranger with a reference code must not reach it.
+app.post('/api/payments/create-intent', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabaseAdmin = getSupabaseAdminClient();
     if (!supabaseAdmin) {
@@ -5639,12 +5641,13 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
     let authoritativeCurrency = 'USD';
     let itemTitle = 'Watazawwado Academy Lesson';
     let customerEmail: string | undefined = undefined;
+    const ownLearnerIds = (await getAuthorizedLearnersForStudent(supabaseAdmin, req)).map(l => l.id);
 
     if (targetType === 'booking') {
       const isTargetUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(targetId).trim());
       let bQuery = supabaseAdmin
         .from('bookings')
-        .select('id, reference_code, fee_amount_usd, service_id, contact_email, status, hold_expires_at, payment_plan');
+        .select('id, reference_code, student_id, fee_amount_usd, service_id, contact_email, status, hold_expires_at, payment_plan');
 
       if (isTargetUuid) {
         bQuery = bQuery.or(`id.eq.${targetId},reference_code.eq.${targetId}`);
@@ -5654,8 +5657,9 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
 
       const { data: booking, error: bErr } = await bQuery.maybeSingle();
 
-      if (bErr || !booking) {
-        console.error('[create-intent] booking not found:', bErr, 'targetId:', targetId);
+      // Someone else's booking answers exactly like a missing one.
+      if (bErr || !booking || !ownLearnerIds.includes(booking.student_id)) {
+        if (bErr) console.error('[create-intent] booking lookup failed:', bErr.message);
         return res.status(404).json({ error: 'Booking not found.' });
       }
 
@@ -5694,13 +5698,14 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
       // Check if targetId is an existing entitlement
       const { data: entitlement } = await supabaseAdmin
         .from('package_entitlements')
-        .select('id, price_paid, currency, status, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
+        .select('id, purchaser_account_id, learner_student_id, price_paid, currency, status, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
         .eq('id', targetId)
         .maybeSingle();
 
       // Only an existing entitlement awaiting payment can be paid for: payment confirmation
       // activates an entitlement, so charging for a bare catalog id could never be fulfilled.
-      if (!entitlement) {
+      const ownsPackage = entitlement && (entitlement.purchaser_account_id === req.studentUser?.auth_id || ownLearnerIds.includes(entitlement.learner_student_id));
+      if (!entitlement || !ownsPackage) {
         return res.status(404).json({ error: 'Package not found. Please select the package from your student portal.' });
       }
       if (entitlement.status !== 'pending_payment') {

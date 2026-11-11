@@ -166,13 +166,9 @@ export function InstantCheckoutModal({
   };
 
   const createSession = async (wantEmbedded: boolean) => {
-    const res = await fetch('/api/payments/create-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ gateway: 'stripe', targetType, targetId, ...stripeUrls(), embedded: wantEmbedded })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to initialize Stripe Checkout session.');
+    // Signed in like the quote: the server opens a checkout only for the account that owns it (P3-003).
+    const { ok, data } = await postJson('/api/payments/create-intent', { gateway: 'stripe', targetType, targetId, ...stripeUrls(), embedded: wantEmbedded });
+    if (!ok) throw new Error(data.error || 'Failed to initialize Stripe Checkout session.');
     return data;
   };
 

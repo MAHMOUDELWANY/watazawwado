@@ -102,11 +102,15 @@ describe('QA-01 money paths over HTTP (no writes)', () => {
   });
 
   it('checkout: only Stripe, only a known booking, and the amount never comes from the browser', async () => {
-    let r = await call('/api/payments/create-intent', { method: 'POST', body: { gateway: 'paypal', targetType: 'booking', targetId: NO_SUCH_BOOKING } });
+    // P3-003: the checkout is opened only by a signed-in family.
+    let r = await call('/api/payments/create-intent', { method: 'POST', body: { gateway: 'stripe', targetType: 'booking', targetId: NO_SUCH_BOOKING } });
+    assert.strictEqual(r.status, 401);
+    const token = 'dev-student-token';
+    r = await call('/api/payments/create-intent', { method: 'POST', token, body: { gateway: 'paypal', targetType: 'booking', targetId: NO_SUCH_BOOKING } });
     assert.strictEqual(r.status, 400);
-    r = await call('/api/payments/create-intent', { method: 'POST', body: { gateway: 'stripe' } });
+    r = await call('/api/payments/create-intent', { method: 'POST', token, body: { gateway: 'stripe' } });
     assert.strictEqual(r.status, 400);
-    r = await call('/api/payments/create-intent', { method: 'POST', body: { gateway: 'stripe', targetType: 'booking', targetId: NO_SUCH_BOOKING, amount: 0.01 } });
+    r = await call('/api/payments/create-intent', { method: 'POST', token, body: { gateway: 'stripe', targetType: 'booking', targetId: NO_SUCH_BOOKING, amount: 0.01 } });
     if (r.status !== 503) assert.strictEqual(r.status, 404);
     const api = fs.readFileSync('api/index.ts', 'utf8');
     const route = api.slice(api.indexOf("app.post('/api/payments/create-intent'"), api.indexOf("app.post('/api/payments/stripe/verify'"));
