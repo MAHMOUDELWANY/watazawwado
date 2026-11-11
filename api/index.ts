@@ -784,6 +784,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     let authUserEmail = '';
     let assignedTeacherId: string | null = null;
     let ownStudentId: string | null = null;
+    let followsChildrenOnly = false;
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
@@ -794,13 +795,14 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
           authUserEmail = (uData.user.email || '').toLowerCase();
           const { data: st } = await supabaseAdmin
             .from('students')
-            .select('id, assigned_teacher_id')
+            .select('id, assigned_teacher_id, booking_preference')
             .eq('auth_user_id', authUserId)
             .maybeSingle();
           if (st?.id) {
             linkedStudentId = st.id;
             ownStudentId = st.id;
             assignedTeacherId = st.assigned_teacher_id || null;
+            followsChildrenOnly = st.booking_preference === 'child';
           }
         }
       } catch (authErr) {
@@ -823,6 +825,11 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         return res.status(403).json({ error: 'You are not allowed to book for this learner.' });
       }
       linkedStudentId = requestedStudentId;
+    }
+    // P2-020: a parent who only follows their children is not a learner (P1-002). Without a child chosen the lesson
+    // used to be booked for the parent's own row, with whichever teacher the site picked.
+    if (!studentId && followsChildrenOnly && authorizedLearnerIds.length > 1) {
+      return res.status(400).json({ error: 'Please choose which child this lesson is for.', code: 'LEARNER_REQUIRED' });
     }
     // RULES.md §2: no guest bookings. Every booking belongs to a signed-in account,
     // and the booking's contact email is always that account's email.
@@ -6414,7 +6421,8 @@ app.get('/api/dashboard/overview-metrics', verifyTeacherAuth, requireSuperAdmin,
       supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial'),
       supabase.from('students').select('*', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgoUtc),
       supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-      supabase.from('students').select('*', { count: 'exact', head: true }).is('assigned_teacher_id', null).eq('status', 'active'),
+      // P2-015: a parent who only follows their children has no teacher on purpose (P1-002) and is not counted.
+      supabase.from('students').select('*', { count: 'exact', head: true }).is('assigned_teacher_id', null).eq('status', 'active').or('booking_preference.is.null,booking_preference.neq.child'),
       supabase.from('students').select('id, assigned_teacher_id').eq('status', 'active'),
       supabase.from('bookings').select('id, teacher_id').gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled')
     ]);

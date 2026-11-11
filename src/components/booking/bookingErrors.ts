@@ -11,6 +11,7 @@ const AR: Array<[RegExp, string]> = [
   [/valid contact email/i, 'نحتاج إلى بريد صحيح نتواصل معك عليه.'],
   [/student.s name/i, 'اكتب اسم الطالب.'],
   [/parent or guardian name/i, 'اكتب اسم ولي الأمر.'],
+  [/which child this lesson is for/i, 'اختر الطفل اللي الحصة دي له.'],
   [/already has a lesson at that time/i, 'الطالب عنده حصة تانية في نفس الوقت ده. اختر موعدًا آخر.'],
   [/select an available lesson time|no longer available|no longer in the teacher|outside the teacher|just been booked|just taken/i, 'هذا الموعد لم يعد متاحًا. اختر موعدًا آخر.'],
   // Specific trial messages first: the general one below used to swallow all of them.

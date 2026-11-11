@@ -1959,7 +1959,8 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           learners.some((l) => l.learnerType === 'child')
       );
 
-      const defaultLearner = learners[0];
+      // P2-014: a guardian who only follows their children is not a learner; the family's first child is the default.
+      const defaultLearner = (profileFallback.booking_preference === 'child' && learners.find((l) => !l.isPrimary)) || learners[0];
       const targetLearner = requestedLearnerId
         ? learners.find((l) => l.id === requestedLearnerId) || defaultLearner
         : defaultLearner;

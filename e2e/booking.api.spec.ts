@@ -93,6 +93,10 @@ test('one free trial per learner, also on a double click', async () => {
 });
 
 test('a parent cannot book for a learner outside the family', async () => {
+  // P2-020: a parent who only follows their children must pick a child; the lesson is never booked for the parent.
+  const noChild = await call(parent, 'POST', '/api/bookings/create', forTeen(next1(), { studentId: undefined, mode: 'regular', teacherId: q.teacher1 }));
+  expect(noChild.status, JSON.stringify(noChild.json)).toBe(400);
+  expect(noChild.json.code).toBe('LEARNER_REQUIRED');
   const r = await call(parent, 'POST', '/api/bookings/create', forTeen(next1(), { studentId: q.student.id, mode: 'regular' }));
   expect(r.status).toBe(403);
 });

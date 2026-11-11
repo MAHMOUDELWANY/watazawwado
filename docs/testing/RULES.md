@@ -25,6 +25,11 @@ redesign of a screen or flow, with the reason.
   from `npx vercel env pull .env.vercel --environment=production` in the main checkout (owner).
   Still empty locally (2026-11-10): `LESSON_ROOM_SECRET`, `NOTIFICATION_ADMIN_EMAIL` (optional, has a fallback),
   `LEARNER_SIGNUP_MODE` (unset = open), `VITE_TEACHER_AUTH_DIAGNOSTIC` (optional).
+- **Specs** (P2): `e2e/*.api.spec.ts` drive the server and check the database, once (Playwright project `api`);
+  every other spec runs on phone/desktop x Arabic/English. One worker only: all specs share the project's few QA
+  accounts. `e2e/helpers.ts` has the tokens, free slots, `resetLearnerData()` and a per-call client address (the
+  server limits each address to 10 calls a minute per route). `e2e/pages.spec.ts` opens every screen of every role
+  and saves a screenshot of each in `qa-shots/pages/<project>/` (gitignored) for the design review.
 - **One port per project**, because P2, P3 and P4 run at the same time: P1 3001, P2 3002, P3 3003, P4 3004,
   P5 3005. Run tests against it, never against another session's server.
   (Port 3000 stays free for the owner and for plain `npm test`.)
@@ -36,6 +41,10 @@ redesign of a screen or flow, with the reason.
 cp ../../../package-lock.json . && npm ci        # package-lock.json is gitignored; the main checkout has one
 npx playwright install chromium                   # once per machine
 ```
+If `npm ci` says the lock file and `package.json` disagree, the main checkout's lock is older than `main`
+(P2-001): copy the lock from the newest testing worktree instead, or run `npm install` here. Do this **before**
+`preview_start`: a server started with no local `node_modules` resolves the main checkout's packages and then
+fails to load pages once you install.
 Then `preview_start` `qa-p<N>`, wait for `curl http://localhost:300N/api/health` to return `{"status":"ok"}`, and:
 ```bash
 npx tsx scripts/qa/create-accounts.ts p<N>        # idempotent; needs the qa-p<N> server running
@@ -69,8 +78,10 @@ npx tsx scripts/qa/purge.ts p<N>                  # dry run; add --yes to delete
 - QA teachers are hidden from the live site (`listPublicTeachers` drops `+qa-` emails when
   `VERCEL_ENV=production`), so real families never see or get routed to them. Always pass a QA `teacherId` when a
   QA learner onboards, or routing picks a real teacher (P1-002).
-- Email pattern: `mahmoudelwany98+qa-<project>-<role>-<n>@gmail.com` (for example `+qa-p2-student-1`). Emails really
-  arrive, so a session can check them with the Gmail tools. Display names start with `QA `.
+- Email pattern: `mahmoudelwany98+qa-<project>-<role>-<n>@gmail.com` (for example `+qa-p2-student-1`). Display names
+  start with `QA `. Emails do **not** arrive from a local server today: `.env.vercel` holds `[SENSITIVE]` instead of
+  the Brevo, Zoom, Gemini, Google and VAPID secrets, and the Stripe test key in `.env` has expired (P2-001). Check the
+  rows the server writes (reminders, `user_notifications`, `integration_jobs`) until the owner fills those in.
 - Each project uses only its own `qa-<project>` accounts, so parallel sessions never touch each other's data.
 - Cleanup: `scripts/qa/purge.ts <project|all>` deletes only accounts whose email contains `+qa-` and their rows
   (dry run by default, `--yes` deletes, then it prints what is left). It follows the live foreign keys: explicit

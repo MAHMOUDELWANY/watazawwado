@@ -128,6 +128,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             onClick={() => onGoToStep(1)}
             className="p-1.5 rounded-lg text-foreground/60 dark:text-accent/90/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer shrink-0"
             title={isEn ? 'Edit Subject' : 'تعديل المادة'}
+            aria-label={isEn ? 'Edit Subject' : 'تعديل المادة'}
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -162,6 +163,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             onClick={() => onGoToStep(scheduleStep)}
             className="p-1.5 rounded-lg text-foreground/60 dark:text-accent/90/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer shrink-0"
             title={isEn ? 'Edit Schedule' : 'تعديل الموعد'}
+            aria-label={isEn ? 'Edit Schedule' : 'تعديل الموعد'}
           >
             <Edit2 className="w-4 h-4" />
           </button>
@@ -180,14 +182,14 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
                 <span>
                   {formData.childName}{' '}
                   <span className="text-sm text-foreground/60 dark:text-accent/90/60">
-                    ({isEn ? `Child, Age ${formData.childAge}` : `طفل، العمر ${formData.childAge}`} • Parent: {formData.parentName})
+                    ({isEn ? 'Child' : 'طفل'} • {isEn ? 'Parent' : 'ولي الأمر'}: {formData.parentName})
                   </span>
                 </span>
               ) : (
                 <span>
                   {formData.studentName}{' '}
                   <span className="text-sm text-foreground/60 dark:text-accent/90/60">
-                    ({isEn ? `Adult, Age ${formData.ageGroup}` : `بالغ، الفئة ${formData.ageGroup}`})
+                    ({isEn ? 'Adult' : 'بالغ'})
                   </span>
                 </span>
               )}
@@ -212,6 +214,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             onClick={() => onGoToStep(3)}
             className="p-1.5 rounded-lg text-foreground/60 dark:text-accent/90/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer shrink-0"
             title={isEn ? 'Edit Student Details' : 'تعديل البيانات'}
+            aria-label={isEn ? 'Edit Student Details' : 'تعديل البيانات'}
           >
             <Edit2 className="w-4 h-4" />
           </button>

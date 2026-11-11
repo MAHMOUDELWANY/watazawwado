@@ -20,8 +20,8 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, 
   const isEn = lang === 'en';
   // Four screens (owner D4, 2026-10-28): what, length & plan, time, review & pay.
   const stepTitles = isEn
-    ? ['What you will learn', 'Length and plan', 'Pick a time', 'Review and pay']
-    : ['ماذا ستتعلّم', 'المدة والخطة', 'اختر الموعد', 'راجع وادفع'];
+    ? ['What you will learn', 'Length and plan', 'Pick a time', mode === 'trial' ? 'Review and confirm' : 'Review and pay']
+    : ['ماذا ستتعلّم', 'المدة والخطة', 'اختر الموعد', mode === 'trial' ? 'راجع وأكّد' : 'راجع وادفع'];
 
   return (
     <div className="pb-5 mb-5 sm:mb-7 border-b border-border/80">

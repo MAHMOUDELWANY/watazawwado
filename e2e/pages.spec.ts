@@ -40,10 +40,13 @@ async function sweep(page: Page, info: TestInfo, role: string, base: string, rou
   for (const route of routes) {
     current = `${base}${route}`;
     await test.step(current, async () => {
-      await page.goto(current, { waitUntil: 'domcontentloaded' });
-      await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {});
+      // The first page loads in full; the rest are opened the way the menu does (client-side), which is what a
+      // family does all day and is ten times faster on the unbundled dev server.
+      if (route === routes[0]) await page.goto(current, { waitUntil: 'domcontentloaded' });
+      else await page.evaluate((to) => { history.pushState({}, '', to); dispatchEvent(new PopStateEvent('popstate')); }, current);
+      await page.waitForLoadState('networkidle', { timeout: 4_000 }).catch(() => {});
       await page.waitForFunction(() => document.body.innerText.trim().length > 60, null, { timeout: 15_000 }).catch(() => {});
-      await page.waitForTimeout(1200); // entrance motion, and Zad's tour on the home page
+      await page.waitForTimeout(route === routes[0] ? 1500 : 700); // entrance motion, and Zad's tour on the home page
       await page.getByRole('button', { name: /^(تخطي|Skip)$/ }).click({ timeout: 800 }).catch(() => {});
       const state = await page.evaluate(() => ({
         crash: /Something went wrong|حدث خطأ غير متوقع/.test(document.body.innerText),

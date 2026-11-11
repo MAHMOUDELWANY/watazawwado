@@ -988,7 +988,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               >
                 {isMultiStepFlow && screenIndex === 1 && formData.buyPackageCatalogId
                   ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))
-                  : [isAr ? 'المتابعة: المدة والخطة' : 'Continue: length and plan', isAr ? 'المتابعة: اختر الموعد' : 'Continue: pick a time', isAr ? 'المتابعة: راجع وادفع' : 'Continue: review and pay'][screenIndex]}
+                  : [isAr ? 'المتابعة: المدة والخطة' : 'Continue: length and plan', isAr ? 'المتابعة: اختر الموعد' : 'Continue: pick a time', formData.mode === 'trial' ? (isAr ? 'المتابعة: راجع وأكّد' : 'Continue: review and confirm') : (isAr ? 'المتابعة: راجع وادفع' : 'Continue: review and pay')][screenIndex]}
               </button>
             </div>
             </div>

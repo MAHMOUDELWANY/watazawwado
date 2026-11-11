@@ -105,6 +105,7 @@ export async function resetLearnerData(): Promise<void> {
   await del('payments', 'booking_id', B); await del('payments', 'entitlement_id', En); await del('payments', 'student_id', S);
   await del('package_credit_ledger', 'booking_id', B); await del('package_credit_ledger', 'package_entitlement_id', En);
   await del('account_credit_ledger', 'account_user_id', U); await del('discount_redemptions', 'account_user_id', U);
+  await del('crm_tasks', 'account_student_id', S); // the follow-up the admin gets after a QA trial
   await del('bookings', 'id', B); await del('package_entitlements', 'id', En);
 }
 

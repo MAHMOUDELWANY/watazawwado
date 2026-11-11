@@ -336,7 +336,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors"
         >
           <span className="text-sm text-foreground">
-            <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}{placementTodo.length > 1 ? ` (${placementTodo.join(isAr ? '، ' : ', ')})` : ''}</strong>
+            <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}{placementTodo.length > 1 && <> ({placementTodo.map((name, i) => <React.Fragment key={name}>{i > 0 && (isAr ? '، ' : ', ')}<bdi>{name}</bdi></React.Fragment>)})</>}</strong>
             {' · '}
             {isAr ? '5 دقائق تساعد معلمك على تجهيز الحصة على قدر مستواك.' : '5 minutes that help your teacher prepare lessons for your level.'}
           </span>

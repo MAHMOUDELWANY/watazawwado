@@ -115,7 +115,7 @@ export default function OverviewPage() {
               <UserPlus className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                  {t(`${metrics.unassigned_students} student(s) without a teacher`, `${metrics.unassigned_students} طالب من غير معلم`)}
+                  {t(`${metrics.unassigned_students} student(s) without a teacher`, `${metrics.unassigned_students} ${metrics.unassigned_students >= 3 && metrics.unassigned_students <= 10 ? 'طلاب' : 'طالب'} من غير معلم`)}
                 </p>
                 <p className="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-0.5">
                   {t('Give them a teacher so they can book.', 'اختار لهم معلم علشان يقدروا يحجزوا.')}
