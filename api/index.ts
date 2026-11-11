@@ -2282,18 +2282,21 @@ function transformBookingToDashboardLesson(b: any) {
 // RULES.md §1: a teacher's dashboard knows nothing about payments. Every /api/dashboard response
 // is filtered for non-super-admins, so a new endpoint can't leak money fields by accident.
 const PAYMENT_FIELD = /fee|payment|price|amount|revenue|refund|paid|currency|pay_?later|hold_expires|entitlement/i;
-export function stripPaymentFields(value: any): any {
-  if (Array.isArray(value)) return value.map(stripPaymentFields);
+// P3-011: the stored hash of a booking's management token is for the database only; no dashboard answer carries it.
+const SECRET_FIELD = /management_token/i;
+const TEACHER_HIDDEN = new RegExp(`${PAYMENT_FIELD.source}|${SECRET_FIELD.source}`, 'i');
+export function stripPaymentFields(value: any, hidden: RegExp = PAYMENT_FIELD): any {
+  if (Array.isArray(value)) return value.map((v) => stripPaymentFields(v, hidden));
   if (!value || typeof value !== 'object' || value instanceof Date) return value;
   const out: any = {};
   for (const [key, v] of Object.entries(value)) {
-    if (!PAYMENT_FIELD.test(key)) out[key] = stripPaymentFields(v);
+    if (!hidden.test(key)) out[key] = stripPaymentFields(v, hidden);
   }
   return out;
 }
 app.use('/api/dashboard', (req: any, res: any, next: any) => {
   const json = res.json.bind(res);
-  res.json = (body: any) => json(req.teacherUser && req.teacherUser.role !== 'super_admin' ? stripPaymentFields(body) : body);
+  res.json = (body: any) => json(stripPaymentFields(body, req.teacherUser && req.teacherUser.role !== 'super_admin' ? TEACHER_HIDDEN : SECRET_FIELD));
   next();
 });
 

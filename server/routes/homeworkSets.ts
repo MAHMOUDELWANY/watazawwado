@@ -201,7 +201,8 @@ export function registerHomeworkSetRoutes(app: express.Express, deps: {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
     const studentId = String(req.params.id || '');
-    if (!UUID_RE.test(studentId) || !(await canTeacherAccessStudent(client, req.teacherUser, studentId))) return res.status(403).json({ error: 'Forbidden.' });
+    // P3-010: the check returns { exists, allowed }; testing the object itself let every teacher through.
+    if (!UUID_RE.test(studentId) || !(await canTeacherAccessStudent(client, req.teacherUser, studentId)).allowed) return res.status(403).json({ error: 'Forbidden.' });
     const { data, error } = await client.from('homework_sets').select(LIST_COLUMNS).eq('student_id', studentId).order('created_at', { ascending: false }).limit(60);
     if (error) return res.status(500).json({ error: 'Could not load homework.' });
     // The teacher sees each attempt with the questions missed, so they know what to go over next lesson.
@@ -230,7 +231,7 @@ export function registerHomeworkSetRoutes(app: express.Express, deps: {
     if (decision !== 'retry' && decision !== 'accept') return res.status(400).json({ error: 'Choose retry or accept.' });
     if (!UUID_RE.test(String(req.params.id))) return res.status(404).json({ error: 'Homework not found.' });
     const { data: row } = await client.from('homework_sets').select('*').eq('id', req.params.id).maybeSingle();
-    if (!row || !(await canTeacherAccessStudent(client, req.teacherUser, row.student_id))) return res.status(404).json({ error: 'Homework not found.' });
+    if (!row || !(await canTeacherAccessStudent(client, req.teacherUser, row.student_id)).allowed) return res.status(404).json({ error: 'Homework not found.' });
     if (row.status !== 'submitted' && row.status !== 'passed') return res.status(409).json({ error: 'There is nothing to decide on this homework yet.' });
     const now = new Date().toISOString();
     if (decision === 'accept') {
