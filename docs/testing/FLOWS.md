@@ -8,6 +8,10 @@ touches; update the row (status, spec, finding id) whenever you check it.
 P2 (2026-11-10) drove 34 rows end to end (specs named in the rows) and opened every screen of every role on
 phone/desktop x Arabic/English (`e2e/pages.spec.ts`). The 44 rows marked `smoke (P2 ...)` still need their journey.
 
+**Carry-over for P3 and later projects:** the 44 `smoke (P2 ...)` rows need their journeys, emails and the real Stripe,
+Zoom, Google and Gemini paths are blocked until local secrets exist (P2-001), and production must be compared with the
+migrations (P2-009). List in `docs/testing/projects/P3-unit-and-code.md`, section "Carry-over from P2".
+
 Roles: **V** visitor, **S** student (adult), **P** parent (family account), **K** child device, **T** teacher,
 **A** super_admin. Status: `untested`, `pass`, `fail (P2-014)`, `smoke` (sign-in only).
 E2E specs live in `e2e/`; unit/API tests in `test/`.

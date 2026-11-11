@@ -38,3 +38,11 @@ severity, fix. Fix Critical/High with a regression test that fails before the fi
 
 ## Done when
 Every item above tried and recorded as safe or finding; all Critical/High fixed and re-attacked; summary sent.
+
+## Carry-over from P2 (2026-11-11)
+- Run these against the real keys once the owner provides them: Stripe webhook with a real signature, the 14-day
+  withdrawal flow, the privacy delete request, staff invite and set-password, the sign-up code (rate limit and reuse).
+- `/api/dashboard/me` answers 403 on every learner page (P2-006): decide whether that endpoint should reveal that
+  an account is not staff, and give the client a neutral check.
+- The server's rate limit is per instance and per client address taken from `x-real-ip`; P2's specs send a made-up
+  address on every call to avoid it. Check that a caller on the public internet cannot choose that header.
