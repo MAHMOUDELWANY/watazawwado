@@ -171,8 +171,8 @@ describe('P3 the database itself (production, read with the keys the roles reall
     assert.ok((await teacher.from('students').update({ assigned_teacher_id: ids.teacher2 }).eq('id', ids.student.id).select('id')).data?.length !== 1, 'a teacher cannot take a learner');
   });
 
-  // Fails until the grants are narrowed (migration 20261111000001, the owner applies it); then drop `todo`.
-  it('P3-012: internal notes and pricing notes are not readable from the browser', { todo: 'waits for migration 20261111000001_p3_private_columns_api_only.sql' }, async (t) => {
+  // Migration 20261111000001 (applied 2026-11-11) made the intake and offer tables API only.
+  it('P3-012: internal notes and pricing notes are not readable from the browser', async (t) => {
     if (!q) return t.skip(skipReason);
     const readable: string[] = [];
     for (const [table, column] of PRIVATE_COLUMNS) {

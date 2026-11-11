@@ -40,14 +40,14 @@ export const DB_FUNCTIONS: Record<string, DbFunction> = {
   teacher_record_lesson_outcome: { args: () => ({ p_booking_id: id(), p_teacher_id: id(), p_outcome: 'completed', p_notes: null, p_covered_material: null, p_no_show_credit_decision: null }) },
   update_teacher_availability: { args: () => ({ p_teacher_id: id(), p_schedule: [], p_timezone: 'Africa/Cairo' }) },
   verify_payment_atomic: { args: () => ({ p_payment_id: id() }) },
-  // Not called by the app (the server moves and cancels lessons itself). Migration 20261111000000 takes them away
-  // from the browser roles (P3-004); they stay listed so that change is checked.
+  // Not called by the app (the server moves and cancels lessons itself). Migration 20261111000000 took them away
+  // from the browser roles (P3-004); they stay listed so that stays checked.
   reschedule_booking_by_management: { args: () => ({ p_reference_code: 'MHM-000000', p_management_token: 'x', p_new_start: now(), p_new_end: now(), p_cairo_time_display: 'x' }), note: 'P3-004' },
   cancel_booking_by_management: { args: () => ({ p_reference_code: 'MHM-000000', p_management_token: 'x', p_reason: 'x' }), note: 'P3-004' },
 };
 
-/** Functions the browser roles may still run until migration 20261111000000 is applied (P3-004). */
-export const PENDING_LOCKDOWN = ['reschedule_booking_by_management', 'cancel_booking_by_management'];
+/** Functions waiting for a migration that takes them away from the browser roles. Empty since 2026-11-11 (P3-004). */
+export const PENDING_LOCKDOWN: string[] = [];
 
 /** Tables whose rows are public content; every other table must give the anon key nothing. */
 export const PUBLIC_TABLES = ['services', 'package_catalog', 'testimonials', 'blog_posts'];

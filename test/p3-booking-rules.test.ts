@@ -139,8 +139,8 @@ describe('P3 booking rules with real rows', () => {
     assert.deepStrictEqual([trials[0].status, Number(trials[0].fee_amount_usd)], ['confirmed', 0]);
   });
 
-  // Fails until migration 20261111000000 is applied to the database (the owner applies it); then drop `todo`.
-  it('P3-004: the browser cannot move or cancel a lesson through the database, round the rules', { todo: 'waits for migration 20261111000000_p3_management_rpc_lockdown_and_package_credit_guard.sql' }, async (t) => {
+  // Migration 20261111000000 (applied 2026-11-11) took these two functions away from the browser roles.
+  it('P3-004: the browser cannot move or cancel a lesson through the database, round the rules', async (t) => {
     if (!q) return t.skip(skipReason);
     await q.resetLearnerData();
     t.after(() => q.resetLearnerData());
