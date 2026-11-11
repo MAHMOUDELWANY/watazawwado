@@ -754,7 +754,8 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     const cleanMode = mode === 'trial' ? 'trial' : 'regular';
     const isTrial = cleanMode === 'trial';
     const isChild = audience === 'child';
-    const durationMins = Number(duration) || 60;
+    // Only a missing length falls back to 60; "thirty" is refused, not read as an hour (P3-008).
+    const durationMins = duration === undefined || duration === null || duration === '' ? 60 : Number(duration);
 
     if (![30, 45, 60].includes(durationMins)) {
       return res.status(400).json({ error: 'Lesson duration must be 30, 45 or 60 minutes.' });
@@ -837,6 +838,15 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       return res.status(401).json({ error: 'Please sign in or create an account to book a lesson.', code: 'AUTH_REQUIRED' });
     }
     cleanEmail = authUserEmail;
+    // P3-006: a lesson belongs to a learner of a family account. A teacher's sign-in used to pass here (the route
+    // reads the token itself), and an account with no learner row made a lesson no teacher could see.
+    const { data: staffAccount } = await supabaseAdmin.from('teacher_accounts').select('role').eq('email', authUserEmail).maybeSingle();
+    if (staffAccount && staffAccount.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Staff accounts cannot book lessons. Please use a student or family account.' });
+    }
+    if (!linkedStudentId) {
+      return res.status(409).json({ error: 'Please finish setting up your account before booking a lesson.', code: 'ONBOARDING_REQUIRED' });
+    }
 
     if (isTrial) {
       // One free trial per learner (RULES.md §2, owner review 2026-11-07): a family's child is checked on its own;
@@ -976,6 +986,10 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       resolvedTeacherId = learnerTeacherId || await resolveAuthoritativeTeacherForAvailability(undefined);
     }
 
+    // P3-009: with no teacher there are no working hours to check, and the lesson would belong to nobody.
+    if (!resolvedTeacherId) {
+      return res.status(409).json({ error: 'No teacher is assigned to this learner yet. Please choose a teacher first, or message us.', code: 'NO_TEACHER' });
+    }
     // NX-15: the lesson's teacher must hold this subject's licence.
     if (resolvedTeacherId && !(await canTeach(supabaseAdmin, resolvedTeacherId, cleanServiceId))) {
       return res.status(409).json(NOT_LICENSED);
@@ -1177,8 +1191,29 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       if (bErr?.code === '23505' && /one_trial/.test(bErr.message || '')) {
         return res.status(400).json({ error: 'You already have a free trial on this account. Each student gets one free trial, but you can book a regular lesson any time.' });
       }
+      // P3-007: the database counts the package's booked lessons under a lock (trg_enforce_package_credit).
+      if (/PACKAGE_CREDITS_BOOKED|PACKAGE_NOT_ACTIVE/.test(bErr?.message || '')) {
+        return res.status(400).json({ error: 'All remaining package credits are already booked.' });
+      }
       console.error('[Create Booking Insert Error]', bErr);
       return res.status(500).json({ error: 'Failed to create booking reservation. Please try again.' });
+    }
+
+    // P3-007: two bookings sent in the same instant both passed the credit count above. Count again now that the
+    // row exists; a lesson beyond the package's credits (the later one) removes itself.
+    // shortcut: a request slower than the other's whole insert + recount can still slip through; migration
+    // 20261111000000 (trg_enforce_package_credit) counts under a row lock and closes that too.
+    if (resolvedPackageEntitlementId) {
+      const [{ data: booked }, { data: pkg }] = await Promise.all([
+        supabaseAdmin.from('bookings').select('id').eq('package_entitlement_id', resolvedPackageEntitlementId)
+          .in('status', ['pending', 'confirmed', 'rescheduled']).order('created_at', { ascending: true }).order('id', { ascending: true }),
+        supabaseAdmin.from('package_entitlements').select('remaining_credits').eq('id', resolvedPackageEntitlementId).maybeSingle()
+      ]);
+      const place = (booked || []).findIndex((b: any) => b.id === newBooking.id);
+      if (place >= Number(pkg?.remaining_credits ?? 0)) {
+        await supabaseAdmin.from('bookings').delete().eq('id', newBooking.id);
+        return res.status(400).json({ error: 'All remaining package credits are already booked.' });
+      }
     }
 
     // If already confirmed (trial or package credit), trigger calendar integration & reminders

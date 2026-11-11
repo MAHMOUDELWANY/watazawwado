@@ -214,6 +214,9 @@ export async function resolveAuthoritativeTeacherForAvailability(
   }
 }
 
+/** How far ahead a lesson can be booked or moved; the same number the availability endpoint accepts for `days`. */
+export const MAX_BOOKING_DAYS_AHEAD = 60;
+
 /**
  * A wall-clock time on a calendar day: minute 360 is 06:00 on that day, also on a day the clocks change
  * (adding 360 minutes to midnight gives 07:00 or 05:00 there, P3-002). Minute 1440 is the next midnight.
@@ -398,6 +401,11 @@ export async function validateSlotAvailability(
 
   if (!reqStart.isValid || !reqEnd.isValid) {
     return { isAvailable: false, conflictReason: 'Invalid slot datetime.' };
+  }
+
+  // P3-005: the calendar shows 60 days; a hand-made request must not book a lesson years ahead.
+  if (reqStart > DateTime.utc().plus({ days: MAX_BOOKING_DAYS_AHEAD + 1 })) {
+    return { isAvailable: false, conflictReason: `Lessons can be booked up to ${MAX_BOOKING_DAYS_AHEAD} days ahead. Please choose an earlier day.` };
   }
 
   const reqInterval = Interval.fromDateTimes(reqStart, reqEnd);

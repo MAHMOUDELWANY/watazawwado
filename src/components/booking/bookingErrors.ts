@@ -13,6 +13,11 @@ const AR: Array<[RegExp, string]> = [
   [/parent or guardian name/i, 'اكتب اسم ولي الأمر.'],
   [/which child this lesson is for/i, 'اختر الطفل اللي الحصة دي له.'],
   [/already has a lesson at that time/i, 'الطالب عنده حصة تانية في نفس الوقت ده. اختر موعدًا آخر.'],
+  [/days ahead/i, 'الحجز متاح حتى ٦٠ يومًا من اليوم. اختر يومًا أقرب.'],
+  [/no teacher is assigned/i, 'لم يُحدَّد معلّم لهذا الطالب بعد. اختر معلّمًا أولًا، أو راسلنا.'],
+  [/finish setting up your account/i, 'أكمل إعداد حسابك أولًا، ثم احجز حصتك.'],
+  [/staff accounts cannot book/i, 'حسابات فريق العمل لا تحجز حصصًا. استخدم حساب طالب أو أسرة.'],
+  [/package credits are already booked/i, 'كل حصص الباقة المتبقية محجوزة بالفعل.'],
   [/select an available lesson time|no longer available|no longer in the teacher|outside the teacher|just been booked|just taken/i, 'هذا الموعد لم يعد متاحًا. اختر موعدًا آخر.'],
   // Specific trial messages first: the general one below used to swallow all of them.
   [/last free trial was cancelled or missed/i, 'آخر حصة تجريبية اتلغت أو فاتت، فتقدر تحجز تجربة جديدة بعد ٤٨ ساعة من إلغائها. الحصص العادية متاحة في أي وقت.'],
