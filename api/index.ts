@@ -243,8 +243,10 @@ const LEARNER_BUSY = { error: 'This learner already has a lesson at that time. P
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
   try {
-    const { error } = await client.rpc('release_expired_payment_holds');
+    const { data: released, error } = await client.rpc('release_expired_payment_holds');
     if (error) console.warn('[Payment Holds] release failed:', error.message);
+    // P3-013: the balance or code held by a released checkout goes back with it.
+    else if (Number(released) > 0) await settleCheckoutRedemptions(client);
   } catch (err) {
     console.warn('[Payment Holds] release failed:', err);
   }
@@ -6276,6 +6278,8 @@ app.post('/api/student/bookings/:id/release-hold', rateLimit, verifyStudentAuth,
     if (!released?.length) return res.status(409).json({ error: 'This lesson changed meanwhile. Please refresh the page.' });
     await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() })
       .eq('booking_id', booking.id).eq('status', 'pending');
+    // P3-013: a code or balance held for this checkout comes back now, not at the family's next checkout.
+    await settleCheckoutRedemptions(supabase);
     return res.json({ success: true });
   } catch (err: any) {
     console.error('[POST /api/student/bookings/:id/release-hold]', err);
@@ -6296,14 +6300,17 @@ app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async
     const isTrial = booking.booking_type === 'trial';
     const reason = typeof req.body?.reason === 'string' && req.body.reason.trim() ? req.body.reason.trim().slice(0, 500) : 'Cancelled by student';
 
-    let isPaidSingle = !isTrial && !booking.package_entitlement_id && booking.payment_plan !== 'pay_later';
+    let isPaidSingle = !isTrial && !booking.package_entitlement_id;
     // A lesson paid entirely from the balance (an invite gift, say) has no payment to turn into a lesson credit:
     // it is cancelled normally and the balance it used goes back (owner review 2026-11-07, item 31).
+    // P3-014: a pay-later lesson is judged the same way, by whether money was received for it. It used to be
+    // cancelled with nothing back even after the family had paid.
     let paidFromBalance = false;
-    if (isPaidSingle && Number(booking.fee_amount_usd || 0) === 0) {
+    const isPayLater = booking.payment_plan === 'pay_later';
+    if (isPaidSingle && (isPayLater || Number(booking.fee_amount_usd || 0) === 0)) {
       const { count: paidCount } = await supabase.from('payments').select('id', { count: 'exact', head: true })
         .eq('booking_id', booking.id).eq('status', 'confirmed');
-      if (!paidCount) { isPaidSingle = false; paidFromBalance = true; }
+      if (!paidCount) { isPaidSingle = false; paidFromBalance = !isPayLater; }
     }
     if (isPaidSingle) {
       const { data: result, error: rpcErr } = await supabase.rpc('student_cancel_paid_lesson_to_credit', {
@@ -7629,8 +7636,9 @@ app.patch('/api/dashboard/services/:id', verifyTeacherAuth, requireSuperAdmin, a
 
     if (hourly_rate_usd !== undefined) {
       const rate = Number(hourly_rate_usd);
-      if (isNaN(rate) || !isFinite(rate) || rate < 0) {
-        return res.status(400).json({ error: 'Hourly rate must be a non-negative number.' });
+      // P3-015: a rate of 0 made every paid lesson of the subject an unpayable hold; Number(null) is 0 too.
+      if (hourly_rate_usd === null || isNaN(rate) || !isFinite(rate) || rate <= 0 || rate > 1000) {
+        return res.status(400).json({ error: 'Hourly rate must be a number above 0.' });
       }
       updates.hourly_rate_usd = Number(rate.toFixed(2));
     }
@@ -7654,11 +7662,12 @@ app.patch('/api/dashboard/services/:id', verifyTeacherAuth, requireSuperAdmin, a
       .update(updates)
       .eq('id', id)
       .select('*')
-      .single();
+      .maybeSingle();
 
     if (error) {
       return res.status(500).json({ error: 'Failed to update service details.' });
     }
+    if (!data) return res.status(404).json({ error: 'Service not found.' });
 
     res.json({ message: 'Service details updated successfully', service: data });
   } catch (err) {
@@ -7839,7 +7848,9 @@ app.post('/api/contact', rateLimit, async (req, res) => {
     }
 
     const cleanEmail = email.toLowerCase().trim();
-    const cleanName = name.trim();
+    // P3-016: an open form; every field has a length, or a stranger stores a 200 KB "name" in the CRM and its email.
+    const cleanName = name.trim().slice(0, 120);
+    const cleanInterest = typeof serviceInterest === 'string' && /^[a-z0-9-]{1,60}$/.test(serviceInterest) ? serviceInterest : null;
     const cleanWhatsapp = whatsapp ? String(whatsapp).trim().slice(0, 40) : null;
     const cleanMessage = message ? String(message).trim().slice(0, 2000) : null;
     const cleanSource = typeof source === 'string' && /^[a-z_]{1,40}$/.test(source) ? source : 'website_contact';
@@ -7873,7 +7884,7 @@ app.post('/api/contact', rateLimit, async (req, res) => {
           email: cleanEmail,
           whatsapp: cleanWhatsapp,
           learner_type: 'adult',
-          service_interest_id: serviceInterest || null,
+          service_interest_id: cleanInterest,
           goal: cleanMessage,
           source: cleanSource,
           status: 'lead',
@@ -7889,7 +7900,7 @@ app.post('/api/contact', rateLimit, async (req, res) => {
           name: cleanName,
           email: cleanEmail,
           whatsapp: cleanWhatsapp,
-          serviceInterest: serviceInterest || undefined,
+          serviceInterest: cleanInterest || undefined,
           goal: cleanMessage,
           source: cleanSource
         }
