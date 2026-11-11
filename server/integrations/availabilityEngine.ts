@@ -215,6 +215,15 @@ export async function resolveAuthoritativeTeacherForAvailability(
 }
 
 /**
+ * A wall-clock time on a calendar day: minute 360 is 06:00 on that day, also on a day the clocks change
+ * (adding 360 minutes to midnight gives 07:00 or 05:00 there, P3-002). Minute 1440 is the next midnight.
+ */
+export function atDayMinute(day: DateTime, minutes: number): DateTime {
+  if (minutes >= 1440) return day.plus({ days: 1 }).startOf('day');
+  return day.startOf('day').set({ hour: Math.floor(minutes / 60), minute: minutes % 60 });
+}
+
+/**
  * RULES.md §2 (2026-10-15): a booking or a new time for a lesson starts on a later calendar day
  * than today, in the student's time zone. No same-day bookings or moves.
  */
@@ -316,8 +325,8 @@ export async function computeAvailableSlots(
 
     // Find all availability blocks for this day
     for (const block of mergeDayBlocks(dbAvailability, currentDayIndex)) {
-      const blockStartCairo = targetDateCairo.startOf('day').plus({ minutes: block.start });
-      const blockEndCairo = targetDateCairo.startOf('day').plus({ minutes: block.end });
+      const blockStartCairo = atDayMinute(targetDateCairo, block.start);
+      const blockEndCairo = atDayMinute(targetDateCairo, block.end);
 
       // Generate slots within this block based on durationMinutes
       let currentSlotStart = blockStartCairo;
@@ -446,9 +455,8 @@ export async function validateSlotAvailability(
     }
 
     // Same merged windows as computeAvailableSlots, so every slot we show is a slot we accept.
-    const dayStart = reqStartCairo.startOf('day');
     const isWithinBlock = mergeDayBlocks(dbAvailability, currentDayIndex).some((block) =>
-      reqStartCairo >= dayStart.plus({ minutes: block.start }) && reqEndCairo <= dayStart.plus({ minutes: block.end }));
+      reqStartCairo >= atDayMinute(reqStartCairo, block.start) && reqEndCairo <= atDayMinute(reqStartCairo, block.end));
 
     const isTestEnv = process.env.NODE_ENV !== 'production' && typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function';
 
