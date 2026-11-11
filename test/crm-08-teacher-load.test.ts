@@ -26,9 +26,11 @@ describe('CRM-08 teacher load and quality', () => {
 
   it('a teacher move is logged after the move succeeds', () => {
     const api = fs.readFileSync('api/index.ts', 'utf8');
-    const rpc = api.indexOf("supabase.rpc('teacher_reschedule_booking'");
+    // P2-009: the move runs in the route (the database function it used is missing in production).
+    const move = api.indexOf("// P2-009: done here, not through the missing teacher_reschedule_booking function.");
     const log = api.indexOf("supabase.from('teacher_lesson_moves').insert(");
-    assert.ok(rpc > 0 && log > rpc, 'logged after the RPC');
+    assert.ok(move > 0 && log > move, 'logged after the move');
+    assert.ok(!api.includes("supabase.rpc('teacher_reschedule_booking'") && !api.includes("supabase.rpc('teacher_cancel_booking'"), 'no call to the missing functions');
     const sql = fs.readFileSync('supabase/migrations/20261021000006_teacher_lesson_moves.sql', 'utf8');
     assert.match(sql, /REVOKE ALL ON public\.teacher_lesson_moves FROM anon, authenticated/);
   });
