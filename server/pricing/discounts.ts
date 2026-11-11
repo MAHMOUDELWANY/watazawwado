@@ -183,9 +183,11 @@ export function computeCheckout(input: CheckoutInput): CheckoutBreakdown {
   // 1. The code's face value, never more than what is left to pay.
   let codeDiscount = 0;
   if (code) {
+    // A value that is not a number gives no discount, never a NaN total (P3-001).
+    const value = Number.isNaN(Number(code.value)) ? 0 : Number(code.value);
     const raw = code.discount_type === 'percent'
-      ? (base * Math.min(100, Math.max(0, Number(code.value)))) / 100
-      : Math.max(0, Number(code.value));
+      ? (base * Math.min(100, Math.max(0, value))) / 100
+      : Math.max(0, value);
     codeDiscount = round2(Math.min(base, raw));
   }
 
