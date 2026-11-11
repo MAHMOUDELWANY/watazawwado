@@ -42,7 +42,8 @@ cp ../../../package-lock.json . && npm ci        # package-lock.json is gitignor
 npx playwright install chromium                   # once per machine
 ```
 If `npm ci` says the lock file and `package.json` disagree, the main checkout's lock is older than `main`
-(P2-001): copy the lock from the newest testing worktree instead, or run `npm install` here. Do this **before**
+(P2-001): copy the lock from the newest testing worktree instead, or run `npm install` here. The same when `npm ci`
+works but `node_modules/typescript` or `@playwright/test` is missing afterwards (P3): run `npm install`. Do this **before**
 `preview_start`: a server started with no local `node_modules` resolves the main checkout's packages and then
 fails to load pages once you install.
 Then `preview_start` `qa-p<N>`, wait for `curl http://localhost:300N/api/health` to return `{"status":"ok"}`, and:
@@ -50,7 +51,9 @@ Then `preview_start` `qa-p<N>`, wait for `curl http://localhost:300N/api/health`
 npx tsx scripts/qa/create-accounts.ts p<N>        # idempotent; needs the qa-p<N> server running
 QA_PROJECT=p<N> npm run e2e                        # smoke: every role signs in (phone/desktop x ar/en)
 PORT=300N npm test                                 # unit/API tests on your own port (starts its own server)
-TEST_BASE_URL=http://localhost:300N npm run test-only   # same tests against a server you already run
+# Not `npm run test-only` against a qa-pN server: many suites run the app in-process and need the env `npm test` sets
+# (about 265 fail without it). Stop the preview server, then `PORT=300N npm test`.
+npx tsx --test test/p3-booking-rules.test.ts        # one P3 file on its own: it starts the app itself, no server needed
 npx tsx scripts/qa/purge.ts p<N>                  # dry run; add --yes to delete
 ```
 - **Database**: the production Supabase project (`fmwxqyroyxgigvpahpri`). Owner allows test writes and deletes.

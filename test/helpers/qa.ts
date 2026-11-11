@@ -7,7 +7,10 @@
  *
  * Accounts: QA_PROJECT (default p3), made by `npx tsx scripts/qa/create-accounts.ts p3`.
  */
+import fs from 'node:fs';
 import http from 'node:http';
+import os from 'node:os';
+import path from 'node:path';
 import type { AddressInfo } from 'node:net';
 import { loadEnv } from '../../scripts/qa/lib.js';
 
@@ -16,6 +19,27 @@ export type Qa = Helpers & { base: string; skipReason?: undefined };
 
 let cached: Promise<Qa | null> | null = null;
 export let skipReason = '';
+
+/**
+ * `node --test` runs the test files side by side, and every file here books, pays and resets as the same few QA
+ * accounts. One file at a time: a lock folder per project, held until this process ends.
+ */
+async function takeTurn(project: string): Promise<void> {
+  const lock = path.join(os.tmpdir(), `watazawwado-qa-${project}.lock`);
+  for (let waited = 0; ; waited += 500) {
+    try {
+      fs.mkdirSync(lock);
+      process.on('exit', () => { try { fs.rmdirSync(lock); } catch { /* already gone */ } });
+      return;
+    } catch {
+      // A run that was killed leaves its lock behind; no file here needs more than a few minutes.
+      const age = Date.now() - (fs.statSync(lock, { throwIfNoEntry: false })?.mtimeMs ?? Date.now());
+      if (age > 10 * 60_000) { try { fs.rmdirSync(lock); } catch { /* another file took it */ } continue; }
+      if (waited > 20 * 60_000) throw new Error('another QA test run holds the accounts');
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
+}
 
 export function qa(): Promise<Qa | null> {
   return (cached ||= (async () => {
@@ -26,6 +50,7 @@ export function qa(): Promise<Qa | null> {
     try {
       loadEnv();
       if (!process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.VITE_SUPABASE_ANON_KEY) throw new Error('no Supabase keys in the env files');
+      await takeTurn(process.env.QA_PROJECT);
       const app = (await import('../../api/index.js')).default;
       const server = http.createServer(app);
       await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));

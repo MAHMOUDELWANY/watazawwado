@@ -9,7 +9,7 @@ import { listRoutes } from './helpers/routes.js';
  * (p3-auth-matrix), which proves its guard; this counts the routes whose own behaviour no test or e2e spec touches.
  * The number may only go down: a new route arrives with a test, or this fails.
  *
- *   npx tsx --test test/p3-endpoint-coverage.test.ts     prints the list (also kept in docs/testing/findings/P3.md)
+ *   npx tsx --test test/p3-endpoint-coverage.test.ts     prints the list (also kept in docs/testing/findings/p3.md)
  */
 
 const BASELINE_UNNAMED = 85; // 2026-11-11: 285 routes, 200 named. Lower it when you cover a route.

@@ -82,6 +82,21 @@ describe('P3 booking rules with real rows', () => {
     assert.strictEqual(count, 0);
   });
 
+  it('P3-009: a learner with no teacher cannot be booked at an hour no teacher offers', async (t) => {
+    if (!q) return t.skip(skipReason);
+    // 03:00 Cairo, a paid lesson (it would wait for payment, so even a miss here sends nothing to a calendar).
+    const night = DateTime.utc().plus({ days: 5 }).set({ hour: 1, minute: 0, second: 0, millisecond: 0 });
+    await q.db.from('students').update({ assigned_teacher_id: null }).eq('id', ids.student.id);
+    try {
+      const r = await q.call(student, 'POST', '/api/bookings/create', { ...q.bookingBody({ utcStartIso: night.toISO()!, date: night.toISODate()!, time24: '01:00' }, { mode: 'regular' }), teacherId: undefined });
+      assert.strictEqual(r.status, 409, JSON.stringify(r.json));
+      assert.strictEqual((await rowsOf(ids.student.id)).length, 0);
+    } finally {
+      await q.db.from('students').update({ assigned_teacher_id: ids.teacher1 }).eq('id', ids.student.id);
+      await q.db.from('bookings').delete().eq('student_id', ids.student.id).eq('scheduled_start', night.toISO());
+    }
+  });
+
   it('the price, the status and the contact email come from the server, whatever the browser sends', async (t) => {
     if (!q) return t.skip(skipReason);
     const r = await book(student, next(), {

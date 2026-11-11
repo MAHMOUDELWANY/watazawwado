@@ -8,6 +8,10 @@ touches; update the row (status, spec, finding id) whenever you check it.
 P2 (2026-11-10) drove 34 rows end to end (specs named in the rows) and opened every screen of every role on
 phone/desktop x Arabic/English (`e2e/pages.spec.ts`). The 44 rows marked `smoke (P2 ...)` still need their journey.
 
+P3 (2026-11-11) tested the code under the flows: money, booking and time, permissions for all 285 routes, and the
+database itself. Test files are named `p3-*` in the rows; findings in `docs/testing/findings/p3.md` (22, 14 fixed,
+2 waiting for a migration the owner applies). 85 routes still have no test of their own (list in the findings file).
+
 **Carry-over for P3 and later projects:** the 44 `smoke (P2 ...)` rows need their journeys, emails and the real Stripe,
 Zoom, Google and Gemini paths are blocked until local secrets exist (P2-001), and production must be compared with the
 migrations (P2-009). List in `docs/testing/projects/P3-unit-and-code.md`, section "Carry-over from P2".
@@ -26,9 +30,9 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 | AUTH-04 | Sign in (student OTP), sign out, session refresh | S P | e2e/smoke.spec.ts, e2e/pages.spec.ts | student-e2e-session-hardening | src/lib/auth.ts, src/lib/supabase.ts | smoke; P2-006 open, P2-007 fixed |
 | AUTH-05 | Staff login + set password from invite | T A | e2e/pages.spec.ts (opens) | phase5g-security, task-0.55.4-a | /staff/login, /staff/set-password | smoke (P2: its screens open clean; the journey is untested) |
 | AUTH-06 | Teacher agreement gate (/staff/agreement) | T | e2e/pages.spec.ts (opens) | task-teacher-operations-remediation | api/index.ts `/api/dashboard/agreement/accept` | smoke (P2: its screens open clean; the journey is untested) |
-| AUTH-07 | Role isolation: student token on teacher API and back, inactive teacher | S T A | e2e/teacher.api.spec.ts, e2e/paid-lifecycle.api.spec.ts | phase5g-security, task-0.58-h-authorization | `verifyStudentAuth`, `verifyTeacherAuth`, `requireSuperAdmin` | pass (P2) |
+| AUTH-07 | Role isolation: student token on teacher API and back, inactive teacher | S T A | e2e/teacher.api.spec.ts, e2e/paid-lifecycle.api.spec.ts | phase5g-security, task-0.58-h-authorization, p3-auth-matrix, p3-ownership, p3-db-contract | `verifyStudentAuth`, `verifyTeacherAuth`, `requireSuperAdmin` | pass (P2); P3: every route by role and by ownership, and the database as anon/family/teacher; fixed P3-006, P3-010, P3-011; P3-012 open (migration) |
 | AUTH-08 | Waitlist mode (LEARNER_SIGNUP_MODE=waitlist), invites in waves | V A | e2e/pages.spec.ts (opens) | waitlist | server/routes/waitlist.ts, /zaad | smoke (P2: its screens open clean; the journey is untested) |
-| AUTH-09 | Child device link (kid token, limited routes) | P K | e2e/more-flows.api.spec.ts | nx-16-child-devices | server/routes/childDevices.ts, /kid/* | pass (P2): a child device reaches no money, account or booking route |
+| AUTH-09 | Child device link (kid token, limited routes) | P K | e2e/more-flows.api.spec.ts | nx-16-child-devices, p3-auth-matrix | server/routes/childDevices.ts, /kid/* | pass (P2): a child device reaches no money, account or booking route |
 | AUTH-10 | Privacy: data export / delete request | S P A | e2e/family.api.spec.ts (export) | st-06-privacy-requests | server/routes/privacy.ts | pass for the export (P2); delete request untested |
 | AUTH-11 | Language switch AR/EN persists (cookie) and reaches emails | all | e2e/smoke.spec.ts, e2e/family.api.spec.ts, e2e/pages.spec.ts | qa-03-rtl-bilingual | src/lib/language.ts, `/api/me/language` | pass (P2) |
 | AUTH-12 | Smoke: every role opens its own area as a real QA account | S P T A | e2e/smoke.spec.ts | p1-testing-foundation | scripts/qa/*, e2e/fixtures.ts | pass (P1) |
@@ -37,9 +41,9 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
-| INT-01 | AI intake chat (Gemini) to learning profile | V S | e2e/pages.spec.ts (opens) | phase05-intake-schema, intake-token, phase-c-ai-security | server/intake/*, server/routes/intake.ts, src/components/intake | smoke (P2: its screens open clean; the journey is untested) |
+| INT-01 | AI intake chat (Gemini) to learning profile | V S | e2e/pages.spec.ts (opens) | phase05-intake-schema, intake-token, phase-c-ai-security, p3-db-contract | server/intake/*, server/routes/intake.ts, src/components/intake | smoke (P2: its screens open clean; the journey is untested); P3-012 open (migration) |
 | INT-02 | Admin reviews intake, sends offer | A | e2e/pages.spec.ts (opens) | phase05-offers | IntakeReviewPage.tsx, `/api/dashboard/intakes/:id/review` | smoke (P2: its screens open clean; the journey is untested) |
-| INT-03 | Student sees and accepts an offer | S P | e2e/pages.spec.ts (opens) | phase05-purchasability | StudentOffersPage.tsx, `/api/student/offers/:id/accept` | smoke (P2: its screens open clean; the journey is untested) |
+| INT-03 | Student sees and accepts an offer | S P | e2e/pages.spec.ts (opens) | phase05-purchasability, p3-db-contract | StudentOffersPage.tsx, `/api/student/offers/:id/accept` | smoke (P2: its screens open clean; the journey is untested); P3-012 open (migration) |
 | INT-04 | Placement test per learner, report, teacher review | S P T | e2e/pages.spec.ts (opens) | community-placement, placement-ladder-route | server/placement/*, StudentPlacementPage.tsx, PlacementTestsPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
 | INT-05 | Teacher choice at onboarding (licensed for subject, gender) | S P | e2e/pages.spec.ts (opens) | phase-c-teacher-choice, nx-15-university | `listPublicTeachers`, onboarding routing | smoke (P2: its screens open clean; the journey is untested) |
 | INT-06 | Admin assigns / changes a learner's teacher | A | e2e/family.api.spec.ts | task-0.61-b-assignment-model | `/api/dashboard/admin/students/:id/assign-teacher` | fail→fixed (P2-011) |
@@ -49,31 +53,31 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
-| BOOK-01 | Free trial per learner, confirmed at once | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | review-2026-11-07-trial-per-learner | StudentBookingPage.tsx, `/api/bookings/create`, `create_booking_atomic` | pass (P2); P2-003 fixed (migration applied 2026-11-11), P2-013, P2-020 fixed; P2-012 open |
-| BOOK-02 | Slots: teacher hours in teacher zone, learner zone shown, conflicts | S P T | e2e/booking.api.spec.ts | review-2026-11-08-slots, task-production-availability-root-cause-fix | server/integrations/availabilityEngine.ts, AvailabilityPage.tsx | pass (P2); fixed P2-004; no daylight-saving change falls inside the 60-day booking window now |
-| BOOK-03 | Paid booking stays pending until payment verified (stop at Stripe) | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | qa-01-money-paths-smoke, task-04a-payment-mvp, stripe-webhook-signature | server/payment/stripeService.ts, `/api/payments/create-intent`, `/api/payments/stripe/verify`, webhook | pass up to the payment step (P2); Stripe page not reached locally (P2-001) |
+| BOOK-01 | Free trial per learner, confirmed at once | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | review-2026-11-07-trial-per-learner, p3-booking-rules | StudentBookingPage.tsx, `/api/bookings/create`, `create_booking_atomic` | pass (P2); P2-003 fixed (migration applied 2026-11-11), P2-013, P2-020 fixed; P2-012 open; P3: hostile input, races, who may book; fixed P3-005, P3-006, P3-008, P3-009 |
+| BOOK-02 | Slots: teacher hours in teacher zone, learner zone shown, conflicts | S P T | e2e/booking.api.spec.ts | review-2026-11-08-slots, task-production-availability-root-cause-fix, p3-time-dst, p3-booking-rules | server/integrations/availabilityEngine.ts, AvailabilityPage.tsx | pass (P2); fixed P2-004; no daylight-saving change falls inside the 60-day booking window now; P3: fixed P3-002 (clock-change days), P3-005 (60-day limit); P3-019 open |
+| BOOK-03 | Paid booking stays pending until payment verified (stop at Stripe) | S P | e2e/booking.api.spec.ts, e2e/booking-ui.spec.ts | qa-01-money-paths-smoke, task-04a-payment-mvp, stripe-webhook-signature, p3-payments-flow, p3-money-units | server/payment/stripeService.ts, `/api/payments/create-intent`, `/api/payments/stripe/verify`, webhook | pass up to the payment step (P2); Stripe page not reached locally (P2-001); P3: the webhook path with real rows and a stubbed Stripe (repeat, race, wrong amount, other currency, unsigned); fixed P3-003, P3-017; P3-021 open |
 | BOOK-04 | PayPal checkout up to PayPal page | S P | e2e/pages.spec.ts (opens) | b4-embedded-checkout | src/components/payment | smoke (P2: its screens open clean; the journey is untested) |
-| BOOK-05 | Pay later request, admin approves/declines | S A | e2e/more-flows.api.spec.ts | b2-pending-payment-card | `/api/bookings/:ref/pay-later`, PayLaterPage.tsx | pass for eligibility and refusal (P2); approval untested (needs 12 paid lessons) |
-| BOOK-06 | Release a held slot | S P | e2e/booking.api.spec.ts |  | `/api/student/bookings/:id/release-hold` | pass (P2) |
-| BOOK-07 | Reschedule within window (student) / request (teacher) | S P T | e2e/booking.api.spec.ts, e2e/teacher.api.spec.ts | task-0.55.5-c-a-durable-cancel-reschedule-outbox-restoration | `/api/student/bookings/:id/reschedule`, `/api/dashboard/bookings/:id/reschedule-request` | fail→fixed (P2-009: a teacher move answered 500 in production) |
-| BOOK-08 | Cancel, credit back per RULES | S P | e2e/paid-lifecycle.api.spec.ts, e2e/more-flows.api.spec.ts | task-0.58-f-lifecycle | `/api/student/bookings/:id/cancel` | pass (P2) |
-| BOOK-09 | Refund request (credit) and admin refund | S A | e2e/paid-lifecycle.api.spec.ts |  | `/api/student/credits/:id/refund-request`, `/api/dashboard/payments/:id/refund` | pass (P2) |
+| BOOK-05 | Pay later request, admin approves/declines | S A | e2e/more-flows.api.spec.ts | b2-pending-payment-card, p3-checkout-and-admin-money | `/api/bookings/:ref/pay-later`, PayLaterPage.tsx | pass for eligibility and refusal (P2); approval untested (needs 12 paid lessons); P3: approve/reject once, admin only; fixed P3-014 |
+| BOOK-06 | Release a held slot | S P | e2e/booking.api.spec.ts | p3-checkout-and-admin-money | `/api/student/bookings/:id/release-hold` | pass (P2); P3: fixed P3-013 (balance back at once) |
+| BOOK-07 | Reschedule within window (student) / request (teacher) | S P T | e2e/booking.api.spec.ts, e2e/teacher.api.spec.ts | task-0.55.5-c-a-durable-cancel-reschedule-outbox-restoration, p3-booking-rules, p3-time-dst | `/api/student/bookings/:id/reschedule`, `/api/dashboard/bookings/:id/reschedule-request` | fail→fixed (P2-009: a teacher move answered 500 in production); P3: the student move under every rule and in a race; P3-004 open (migration) |
+| BOOK-08 | Cancel, credit back per RULES | S P | e2e/paid-lifecycle.api.spec.ts, e2e/more-flows.api.spec.ts | task-0.58-f-lifecycle, p3-booking-rules, p3-checkout-and-admin-money | `/api/student/bookings/:id/cancel` | pass (P2); P3: P3-004 open (migration); fixed P3-014 |
+| BOOK-09 | Refund request (credit) and admin refund | S A | e2e/paid-lifecycle.api.spec.ts | p3-checkout-and-admin-money | `/api/student/credits/:id/refund-request`, `/api/dashboard/payments/:id/refund` | pass (P2); P3: refund once, twice, unpaid, unknown |
 | BOOK-10 | Repeat last booking / next-week suggestion | S P | e2e/pages.spec.ts (opens) | task-0.58-repeat-last-booking, rn-04-next-week-suggestion | server/routes/nextWeekSuggestion.ts | smoke (P2: its screens open clean; the journey is untested) |
 | BOOK-11 | Admin bulk cancel, move lesson to another teacher | A | e2e/teacher.api.spec.ts (admin cancel) | ad-02-bulk-cancel, ad-02b-lesson-teacher-move | server/routes/lessonTeacherMove.ts | fail→fixed (P2-009: admin cancel answered 500); bulk cancel and move to another teacher untested |
-| BOOK-12 | Admin records manual payment, confirm/reject | A | e2e/paid-lifecycle.api.spec.ts | task-04a-payment-mvp | `/api/dashboard/payments*` | fail→fixed (P2-005); P2-008 open |
+| BOOK-12 | Admin records manual payment, confirm/reject | A | e2e/paid-lifecycle.api.spec.ts | task-04a-payment-mvp, p3-checkout-and-admin-money | `/api/dashboard/payments*` | fail→fixed (P2-005); P2-008 open; P3: 13 wrong inputs refused; P3-018 open |
 
 ## Packages, credits, discounts, referrals, gifts
 
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
-| PKG-01 | Package catalog and pricing (server-side) | V S | e2e/more-flows.api.spec.ts | package-pricing-catalog-closure, phase05-pricing-engine | server/pricing/*, StudentPackagesPage.tsx | pass (P2) |
+| PKG-01 | Package catalog and pricing (server-side) | V S | e2e/more-flows.api.spec.ts | package-pricing-catalog-closure, phase05-pricing-engine, p3-money-units | server/pricing/*, StudentPackagesPage.tsx | pass (P2) |
 | PKG-02 | Buy package up to checkout; credits after verified payment | S P | e2e/more-flows.api.spec.ts | student-packages-phase-a-redemption, student-packages-phase-b | `/api/student/packages/select`, package_entitlements | pass (P2); P2-019 open; checkout page not reached (P2-001) |
-| PKG-03 | Book with package credit (confirms at once), balance, low balance, renew | S P | e2e/more-flows.api.spec.ts, e2e/paid-lifecycle.api.spec.ts | rn-01..rn-03 | PackageBalance.tsx, server/notifications/lowBalance.ts | pass (P2); low-balance notice untested |
-| PKG-04 | Discount codes (admin creates, checkout applies, per-account limit) | A S | e2e/more-flows.api.spec.ts | discount-codes-referrals, discounts-engine | DiscountsPage.tsx, server/pricing/discounts.ts | pass for create, quote and the cap (P2); per-account limit and gift codes untested |
+| PKG-03 | Book with package credit (confirms at once), balance, low balance, renew | S P | e2e/more-flows.api.spec.ts, e2e/paid-lifecycle.api.spec.ts | rn-01..rn-03, p3-booking-rules | PackageBalance.tsx, server/notifications/lowBalance.ts | pass (P2); low-balance notice untested; P3: fixed P3-007 (one credit, two lessons); the migration closes the last gap |
+| PKG-04 | Discount codes (admin creates, checkout applies, per-account limit) | A S | e2e/more-flows.api.spec.ts | discount-codes-referrals, discounts-engine, p3-checkout-and-admin-money, p3-money-units | DiscountsPage.tsx, server/pricing/discounts.ts | pass for create, quote and the cap (P2); per-account limit and gift codes untested; P3: per-family limit, cap, gift code covering the whole price; fixed P3-001 |
 | PKG-05 | Referral link, welcome credit, referrer reward | S P | e2e/pages.spec.ts (opens) | discount-codes-referrals | StudentInvitePage.tsx, `/api/student/referral` | smoke (P2: its screens open clean; the journey is untested) |
 | PKG-06 | Gifts and seasonal programs | S P A | e2e/pages.spec.ts (opens) | nx-06-gifts, nx-08-programs | server/routes/gifts.ts, programs.ts | smoke (P2: its screens open clean; the journey is untested) |
 | PKG-07 | Sponsorship: request, donate, admin grants | S P A | e2e/pages.spec.ts (opens) | nx-07-sponsorship | server/routes/sponsorship.ts, StudentSponsorPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
-| PKG-08 | Wallet / account credit ledger | S P | e2e/pages.spec.ts (opens) |  | StudentWalletPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
+| PKG-08 | Wallet / account credit ledger | S P | e2e/pages.spec.ts (opens) | p3-checkout-and-admin-money | StudentWalletPage.tsx | smoke (P2: its screens open clean; the journey is untested); P3: balance used once across two checkouts at once, never below zero (pass) |
 
 ## Lessons and learning
 
@@ -85,7 +89,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 | LES-04 | Attendance, no-show, past lesson handling | T | e2e/teacher.api.spec.ts | review-2026-11-09-past-lesson | server/routes/attendance.ts | pass for the lesson report and its guards (P2); attendance from Zoom untested (P2-001) |
 | LES-05 | Lesson notes, summary draft (AI), family summary | T P | e2e/pages.spec.ts (opens) | pr-06-teacher-family-summary, nx-13-summary-reminders | server/routes/summaryDraft.ts, StudentDetailPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
 | LES-06 | Lesson feedback from family, teacher badges | S P | e2e/pages.spec.ts (opens) | st-02-lesson-feedback | server/routes/feedback.ts | smoke (P2: its screens open clean; the journey is untested) |
-| LES-07 | Homework (teacher sets, student does, review) and homework sets from curriculum | T S P | e2e/pages.spec.ts (opens) | nx-02-homework, review-2026-11-09-homework-sets | server/homework/sets.ts, homework.ts, homeworkSets.ts | smoke (P2: its screens open clean; the journey is untested) |
+| LES-07 | Homework (teacher sets, student does, review) and homework sets from curriculum | T S P | e2e/pages.spec.ts (opens) | nx-02-homework, review-2026-11-09-homework-sets, p3-ownership | server/homework/sets.ts, homework.ts, homeworkSets.ts | smoke (P2: its screens open clean; the journey is untested); P3: fixed P3-010 (any teacher read and decided any learner's homework sets) |
 | LES-08 | Recitations: record, send, teacher replies | S P T | e2e/pages.spec.ts (opens) | nx-03-recitations | server/routes/recitations.ts | smoke (P2: its screens open clean; the journey is untested) |
 | LES-09 | Curriculum player, samples, lesson reports | S P T | e2e/pages.spec.ts (opens) | curriculum-* | StudentCurriculumPage.tsx, server/routes/curriculum.ts | smoke (P2: its screens open clean; the journey is untested) |
 | LES-10 | Progress page, milestones, monthly report, certificates | S P T | e2e/pages.spec.ts (opens) | pr-01..pr-10, nx-04-certificates | server/routes/progress.ts, certificates.ts | smoke (P2: its screens open clean; the journey is untested) |
@@ -110,7 +114,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 | id | flow | roles | E2E spec | API/unit tests | source files | status |
 |---|---|---|---|---|---|---|
 | TCH-01 | Today, upcoming, schedule, first-week checklist | T | e2e/smoke.spec.ts, e2e/teacher.api.spec.ts |  | TodayPage.tsx, UpcomingPage.tsx | pass (P2) |
-| TCH-02 | My students, student detail, notes, AI brief | T | e2e/teacher.api.spec.ts | studentManagement | StudentsPage.tsx, StudentDetailPage.tsx | pass for the list and isolation (P2); notes and AI brief untested |
+| TCH-02 | My students, student detail, notes, AI brief | T | e2e/teacher.api.spec.ts | studentManagement, p3-ownership | StudentsPage.tsx, StudentDetailPage.tsx | pass for the list and isolation (P2); notes and AI brief untested |
 | TCH-03 | Availability (own time zone) | T | e2e/teacher.api.spec.ts |  | AvailabilityPage.tsx, `PUT /api/dashboard/availability` | pass (P2) |
 | TCH-04 | Trials and trial assessment | T | e2e/pages.spec.ts (opens) | rn-05-trial-follow-up | TrialsPage.tsx, `/api/dashboard/trials/:id/assessment` | smoke (P2: its screens open clean; the journey is untested) |
 | TCH-05 | My month / my pay | T | e2e/pages.spec.ts (opens) | my-month, payroll-rules | MyMonthPage.tsx, MyPayPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
@@ -127,7 +131,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 | ADM-04 | CRM: timeline, pipeline, notes, tags, tasks, search, CSV export, funnel | A | e2e/pages.spec.ts (opens) | crm-01..crm-07 | server/routes/crm.ts, exports.ts, funnel.ts | smoke (P2: its screens open clean; the journey is untested) |
 | ADM-05 | Leads | A | e2e/pages.spec.ts (opens) | leadTransitions | LeadsPage.tsx, server/leadTransitions.ts | smoke (P2: its screens open clean; the journey is untested) |
 | ADM-06 | Payroll and payouts | A | e2e/pages.spec.ts (opens) | payroll-routes | PayrollPage.tsx, server/payroll/payroll.ts | smoke (P2: its screens open clean; the journey is untested) |
-| ADM-07 | Settings, services, waitlist waves | A | e2e/pages.spec.ts (opens) | waitlist | `/api/dashboard/settings`, WaitlistPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
+| ADM-07 | Settings, services, waitlist waves | A | e2e/pages.spec.ts (opens) | waitlist, p3-checkout-and-admin-money | `/api/dashboard/settings`, WaitlistPage.tsx | smoke (P2: its screens open clean; the journey is untested); P3: fixed P3-015 (a subject price of 0) |
 | ADM-08 | Analytics | A T | e2e/pages.spec.ts (opens) | phase5f | AnalyticsPage.tsx | smoke (P2: its screens open clean; the journey is untested) |
 
 ## Public site
@@ -136,7 +140,7 @@ E2E specs live in `e2e/`; unit/API tests in `test/`.
 |---|---|---|---|---|---|---|
 | PUB-01 | Home, about, how it works, pricing, FAQ in EN and /ar | V | e2e/pages.spec.ts (opens) | pu-03-faq, qa-03-rtl-bilingual, qa-05-seo, qa-05b-hreflang | src/components/public/* | smoke (P2: its screens open clean; the journey is untested) |
 | PUB-02 | Learning subject pages, articles | V | e2e/pages.spec.ts (opens) | seo-subject-pages, nx-11-articles | src/components/public/learning, articles | smoke (P2: its screens open clean; the journey is untested) |
-| PUB-03 | Get started modal / contact form | V | e2e/pages.spec.ts (opens) |  | GetStartedModal.tsx, `/api/contact` | smoke (P2: its screens open clean; the journey is untested) |
+| PUB-03 | Get started modal / contact form | V | e2e/pages.spec.ts (opens) | p3-checkout-and-admin-money | GetStartedModal.tsx, `/api/contact` | smoke (P2: its screens open clean; the journey is untested); P3: fixed P3-016 (uncapped fields); the form's journey is still untested |
 | PUB-04 | Legal pages: terms, privacy, safety | V | e2e/pages.spec.ts (opens) |  | src/components/public/terms, privacy, safety | smoke (P2: its screens open clean; the journey is untested) |
 | PUB-05 | Careers, community page, certificates verify | V | e2e/pages.spec.ts (opens) |  | /careers, /community, /certificate/:id | smoke (P2: its screens open clean; the journey is untested) |
 | PUB-06 | PWA install, offline, performance | V S | e2e/pages.spec.ts (opens) | pwa-install, pu-04-performance, st-07-pwa | src/components/pwa | smoke (P2: its screens open clean; the journey is untested) |

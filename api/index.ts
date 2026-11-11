@@ -5553,6 +5553,10 @@ async function fulfillAutomatedPayment(params: {
         console.error('[fulfillAutomatedPayment] verify_payment_atomic failed on retry', retryErr);
         throw new PublicError('Payment received but could not be confirmed automatically. It is pending manual review.');
       }
+      // P3-017: this pass is the one that confirmed it (the first stopped between recording and confirming), so the
+      // lesson's meeting, calendar event and reminders, and its code or balance, are settled here.
+      await settleCheckoutRedemptions(supabaseAdmin);
+      if (bookingId) await enqueueAndRunBookingSync(supabaseAdmin, bookingId);
     }
     return { success: true, paymentId: existingPayment.id, isIdempotent: true };
   }

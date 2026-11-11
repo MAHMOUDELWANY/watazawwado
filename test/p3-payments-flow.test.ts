@@ -158,6 +158,21 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
     assert.strictEqual(rows[0].status, 'pending', 'waiting for the admin, not confirmed');
   });
 
+  it('P3-017: a payment recorded but not confirmed (the first pass stopped half way) is finished by the retry, meeting and all', async (t) => {
+    if (!q) return t.skip(skipReason);
+    const id = await heldLesson();
+    const s = session(id);
+    // What the first pass leaves behind when it stops between recording the payment and confirming the lesson.
+    const { error } = await q.db.from('payments').insert({ booking_id: id, student_id: (await q.qaIds()).student.id, amount: 4.5, currency: 'USD', payment_method: 'stripe', payment_reference: s.payment_intent, status: 'pending', notes: 'Automated stripe verified payment' });
+    assert.ok(!error, error?.message);
+    assert.strictEqual((await deliver(s)).status, 200);
+    assert.strictEqual((await q.booking(id)).status, 'confirmed');
+    const rows = await payments(id);
+    assert.deepStrictEqual(rows.map(r => r.status), ['confirmed'], 'the one payment, confirmed');
+    const { count } = await q.db.from('integration_jobs').select('id', { count: 'exact', head: true }).eq('booking_id', id).eq('job_type', 'booking_sync');
+    assert.ok((count || 0) > 0, 'the lesson is queued for its meeting, calendar event and reminders');
+  });
+
   it('the checkout cannot be opened for someone else\'s lesson, a free lesson or a paid one', async (t) => {
     if (!q) return t.skip(skipReason);
     const id = await heldLesson();
