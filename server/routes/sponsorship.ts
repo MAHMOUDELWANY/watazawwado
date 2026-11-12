@@ -12,8 +12,8 @@ import { isUuid } from './progress.js';
  */
 type Middleware = (req: any, res: any, next: any) => any;
 
-/** One sponsored lesson = a 30-minute Quran lesson at its normal price (RULES.md §3: $9/hour). */
-export const LESSON_UNIT_USD = 4.5;
+/** One sponsored lesson = a 30-minute Quran lesson at its normal price (RULES.md §3: $10/hour). */
+export const LESSON_UNIT_USD = 5;
 export const LESSON_CHOICES = [4, 8, 12] as const;
 export const MIN_AMOUNT_USD = 5;
 export const MAX_AMOUNT_USD = 5000;

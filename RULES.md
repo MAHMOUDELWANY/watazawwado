@@ -101,7 +101,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 ## 3. Pricing
 
 - **[Decided 2026-11-12] New list price: Quran, Tajweed and all Islamic studies $10/hour** (was $9); Arabic and
-  English stay $13/hour. Wave 1 gets a founding discount of **15% for 12 months** (§4). Until BACKLOG MK-01 ships, the site and server still charge the old rates below.
+  English stay $13/hour. Wave 1 gets a founding discount of **15% for 12 months** (§4). Live since BACKLOG MK-01 (2026-11-12); packages for the $10 band: $9.50 / $9.25 / $9.00 an hour for 4 / 8 / 12 lessons (`docs/pricing/packages.md`). The $9 lines below are the earlier rate.
 - **[Decided 2026-10-14] Hourly rates (60 minutes):**
   - Quran, Tajweed, and all Islamic studies (Aqeedah, Fiqh, Seerah, …): **$9 / hour**.
   - Arabic (MSA / Fusha, Egyptian Arabic) and English: **from $13 / hour** (most cases are $13).

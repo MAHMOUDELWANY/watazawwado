@@ -11,9 +11,9 @@ import { SUBJECT_MEANING_EN } from '../../onboarding/subjects';
 
 // Approved packages for both price bands (RULES.md §4, docs/pricing/packages.md), 60-minute lessons. Display only:
 // the server catalog charges the real price. Honest wording only, no invented social proof.
-type Band = 9 | 13;
+type Band = 10 | 13;
 const TIERS: Record<Band, Array<{ perLesson: string; total: number; save: number }>> = {
-  9: [{ perLesson: '8.50', total: 34, save: 2 }, { perLesson: '8.25', total: 66, save: 6 }, { perLesson: '8.00', total: 96, save: 12 }],
+  10: [{ perLesson: '9.50', total: 38, save: 2 }, { perLesson: '9.25', total: 74, save: 6 }, { perLesson: '9.00', total: 108, save: 12 }],
   13: [{ perLesson: '12.25', total: 49, save: 3 }, { perLesson: '12.00', total: 96, save: 8 }, { perLesson: '11.50', total: 138, save: 18 }],
 };
 const AR_COUNT = ['لأربع حصص', 'لثماني حصص', 'لاثنتي عشرة حصة'];
@@ -53,8 +53,8 @@ export function plansFor(band: Band, minutes: Minutes): Array<{ en: EnvelopePlan
       ar: { id: 'pkg-4', tone: 'teal', title: 'بداية ثابتة', meta: metaAr('٤ حصص'), perLesson: `$${t4.perLesson}`, total: `${t4.total}$ ${AR_COUNT[0]}، وتوفّر ${t4.save}$`, features: ['حصة في الأسبوع، عادة هادئة', 'تحجز كل حصة في الوقت الذي يناسبك', 'إلغاء حتى ٣ ساعات قبل الحصة'] }
     },
     {
-      en: { id: 'pkg-8', tone: 'crimson', title: 'Committed Learner', meta: metaEn(8), badge: 'Balanced', perLesson: `$${t8.perLesson}`, total: `$${t8.total} for 8 lessons. You save $${t8.save}.`, features: ['Two lessons a week, progress you feel', band === 9 ? 'A good rhythm for memorization' : 'A good rhythm for a new language', '5% off for a second child'] },
-      ar: { id: 'pkg-8', tone: 'crimson', title: 'طالب ملتزم', meta: metaAr('٨ حصص'), badge: 'متوازنة', perLesson: `$${t8.perLesson}`, total: `${t8.total}$ ${AR_COUNT[1]}، وتوفّر ${t8.save}$`, features: ['حصتان في الأسبوع، تقدّم تشعر به', band === 9 ? 'وتيرة مناسبة للحفظ والمراجعة' : 'وتيرة مناسبة للغة جديدة', 'خصم 5% للطفل الثاني'] }
+      en: { id: 'pkg-8', tone: 'crimson', title: 'Committed Learner', meta: metaEn(8), badge: 'Balanced', perLesson: `$${t8.perLesson}`, total: `$${t8.total} for 8 lessons. You save $${t8.save}.`, features: ['Two lessons a week, progress you feel', band === 10 ? 'A good rhythm for memorization' : 'A good rhythm for a new language', '5% off for a second child'] },
+      ar: { id: 'pkg-8', tone: 'crimson', title: 'طالب ملتزم', meta: metaAr('٨ حصص'), badge: 'متوازنة', perLesson: `$${t8.perLesson}`, total: `${t8.total}$ ${AR_COUNT[1]}، وتوفّر ${t8.save}$`, features: ['حصتان في الأسبوع، تقدّم تشعر به', band === 10 ? 'وتيرة مناسبة للحفظ والمراجعة' : 'وتيرة مناسبة للغة جديدة', 'خصم 5% للطفل الثاني'] }
     },
     {
       en: { id: 'pkg-12', tone: 'copper', title: 'Fast Progress', meta: metaEn(12), badge: 'Best price', perLesson: `$${t12.perLesson}`, total: `$${t12.total} for 12 lessons. You save $${t12.save}.`, features: ['Three lessons a week, faster steps', 'The lowest price per lesson', '5% off for a second child'] },
@@ -122,10 +122,10 @@ export function PricingPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
   const navigate = useNavigate();
-  // The chosen subject picks the price band ($9 or from $13); it lives in ?subject= so the subject cards can link here.
+  // The chosen subject picks the price band ($10 or from $13); it lives in ?subject= so the subject cards can link here.
   const [params, setParams] = useSearchParams();
   const subject = BOOKABLE_SERVICES.find((b) => b.id === params.get('subject')) || null;
-  const band: Band | null = subject ? (subject.hourlyRateUsd > 9 ? 13 : 9) : null;
+  const band: Band | null = subject ? (subject.hourlyRateUsd > 10 ? 13 : 10) : null;
   const [minutes, setMinutes] = useState<Minutes>(30);
   const plans = band ? plansFor(band, minutes) : [];
   const envelopes = useOpenEnvelope(plans.map((p) => p.en.id));
@@ -144,7 +144,7 @@ export function PricingPage() {
             {/* The prices before anything else (P4-017): a skeptical parent sees them without choosing a subject. */}
             <div className="mt-7 grid grid-cols-2 gap-3 max-w-xl mx-auto" data-testid="pricing-headline">
               <div className="rounded-2xl border border-border bg-surface p-4">
-                <span className="block font-display text-3xl sm:text-4xl font-bold text-foreground" dir="ltr">$9</span>
+                <span className="block font-display text-3xl sm:text-4xl font-bold text-foreground" dir="ltr">$10</span>
                 <span className="block text-sm text-muted-foreground mt-1">{isEn ? 'an hour: Quran, Tajweed, Memorization, Zad Path' : 'للساعة: القرآن والتجويد والحفظ ومسار الأثر'}</span>
               </div>
               <div className="rounded-2xl border border-border bg-surface p-4">
@@ -179,8 +179,8 @@ export function PricingPage() {
             {subject && (
               <p className="text-center text-sm text-muted-foreground" aria-live="polite">
                 {isEn && SUBJECT_MEANING_EN[subject.id] && <span className="block font-semibold text-foreground">{SHORT[subject.id]?.[0] ?? subject.name}: {SUBJECT_MEANING_EN[subject.id]}.</span>}
-                {band === 9
-                  ? (isEn ? 'One lesson on its own: $9 an hour. A package brings it down to $8.' : 'الحصة لوحدها: 9$ للساعة، والباقة بتنزّلها لحد 8$.')
+                {band === 10
+                  ? (isEn ? 'One lesson on its own: $10 an hour. A package brings it down to $9.' : 'الحصة لوحدها: 10$ للساعة، والباقة بتنزّلها لحد 9$.')
                   : (isEn ? 'One lesson on its own: from $13 an hour. A package brings it down to $11.50.' : 'الحصة لوحدها: من 13$ للساعة، والباقة بتنزّلها لحد 11.50$.')}
               </p>
             )}
@@ -226,8 +226,8 @@ export function PricingPage() {
 
           <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto text-center">
             {isEn
-              ? 'Quran, Tajweed, Memorization and the Zad Path are $9 an hour; Fusha, Egyptian Arabic and English start from $13 an hour. Packages come in 30, 45 or 60 minutes, at the same price per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
-              : 'القرآن والتجويد والحفظ ومسار الأثر بـ 9$ للساعة، والفصحى والعامية المصرية والإنجليزية من 13$ للساعة. والباقات متاحة لحصص ٣٠ أو ٤٥ أو ٦٠ دقيقة، بالسعر نفسه للدقيقة. وقد تكون الدراسة المتقدمة أو المكثفة أعلى سعرًا؛ يحددها المعلم بعد التقييم، وتراها دائمًا قبل أن تدفع.'}
+              ? 'Quran, Tajweed, Memorization and the Zad Path are $10 an hour; Fusha, Egyptian Arabic and English start from $13 an hour. Packages come in 30, 45 or 60 minutes, at the same price per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
+              : 'القرآن والتجويد والحفظ ومسار الأثر بـ 10$ للساعة، والفصحى والعامية المصرية والإنجليزية من 13$ للساعة. والباقات متاحة لحصص ٣٠ أو ٤٥ أو ٦٠ دقيقة، بالسعر نفسه للدقيقة. وقد تكون الدراسة المتقدمة أو المكثفة أعلى سعرًا؛ يحددها المعلم بعد التقييم، وتراها دائمًا قبل أن تدفع.'}
           </p>
 
           <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">

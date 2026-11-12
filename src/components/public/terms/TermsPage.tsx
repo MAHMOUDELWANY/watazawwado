@@ -6,7 +6,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-28.1, last updated 28 October 2026', ar: 'الإصدار 2026-10-28.1، آخر تحديث 28 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-11-12.1, last updated 12 November 2026', ar: 'الإصدار 2026-11-12.1، آخر تحديث 12 نوفمبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -56,14 +56,14 @@ const SECTIONS: Section[] = [
   {
     id: 'prices',
     en: { title: 'Prices and payment', items: [
-      'Standard prices per 60 minutes: $9 for Quran, Tajweed and the Zad Path, and from $13 for Arabic (Fusha and Egyptian) and English. Shorter lessons cost the same rate per minute (for example 30 minutes = half the hourly price).',
+      'Standard prices per 60 minutes: $10 for Quran, Tajweed and the Zad Path, and from $13 for Arabic (Fusha and Egyptian) and English. Shorter lessons cost the same rate per minute (for example 30 minutes = half the hourly price).',
       'Advanced, specialized or intensive learning may cost more. That price is set by the teacher after an assessment and is always shown to you before you pay.',
       'Lessons are paid in advance. A booking is confirmed only after the payment succeeds. While you pay, the time is held for about 35 minutes; if payment is not completed, the time is released.',
       'Payments are processed by Stripe (card, Apple Pay, Google Pay or PayPal). We never see or store your card details.',
       '“Pay later” is a courtesy offered only to regular students with at least 12 paid lessons, and each request needs our approval.',
     ] },
     ar: { title: 'الأسعار والدفع', items: [
-      'الأسعار الأساسية لكل 60 دقيقة: 9 دولار للقرآن والتجويد ومسار الأثر، ومن 13 دولار للغة العربية (الفصحى والعامية المصرية) والإنجليزية. الحصص الأقصر بنفس السعر للدقيقة (مثلاً 30 دقيقة = نصف سعر الساعة).',
+      'الأسعار الأساسية لكل 60 دقيقة: 10 دولار للقرآن والتجويد ومسار الأثر، ومن 13 دولار للغة العربية (الفصحى والعامية المصرية) والإنجليزية. الحصص الأقصر بنفس السعر للدقيقة (مثلاً 30 دقيقة = نصف سعر الساعة).',
       'التعليم المتقدم أو المتخصص أو المكثف قد يكون سعره أعلى، ويحدده المعلم بعد تقييم الطالب، ويظهر لك دائماً قبل الدفع.',
       'الدفع مقدماً، ولا يتأكد الحجز إلا بعد نجاح الدفع. أثناء الدفع نحجز لك الموعد حوالي 35 دقيقة، وإذا لم يكتمل الدفع يُتاح الموعد لغيرك.',
       'تتم المدفوعات عبر Stripe (بطاقة، أو Apple Pay، أو Google Pay، أو PayPal)، ولا نرى بيانات بطاقتك ولا نخزنها.',
@@ -87,7 +87,7 @@ const SECTIONS: Section[] = [
     id: 'packages',
     en: { title: 'Packages and family care', items: [
       'Packages are prepaid lessons at a lower price per lesson. They are not a subscription and nothing renews automatically.',
-      'A package is for one subject group ($9 group or $13 group) and one lesson length (30, 45 or 60 minutes). Its lessons can be booked any time.',
+      'A package is for one subject group ($10 group or $13 group) and one lesson length (30, 45 or 60 minutes). Its lessons can be booked any time.',
       'A package credit is used when a lesson is completed (or missed without cancelling in time), not when it is booked.',
       'Family care: a package for a second (or third…) child on the same account gets an extra 5% off.',
       'Within 14 days of buying a package you may withdraw (see “Your 14-day right of withdrawal”): we refund the unused lessons, and lessons already taken are charged at the package price per lesson.',
@@ -96,7 +96,7 @@ const SECTIONS: Section[] = [
     ] },
     ar: { title: 'الباقات ورعاية الأسرة', items: [
       'الباقات دروس مدفوعة مقدماً بسعر أقل للدرس، وليست اشتراكاً، ولا يتجدد أي شيء تلقائياً.',
-      'كل باقة لمجموعة مواد واحدة (مجموعة 9 دولار أو مجموعة 13 دولار) ولمدة حصة واحدة (30 أو 45 أو 60 دقيقة)، ويمكن حجز دروسها في أي وقت.',
+      'كل باقة لمجموعة مواد واحدة (مجموعة 10 دولار أو مجموعة 13 دولار) ولمدة حصة واحدة (30 أو 45 أو 60 دقيقة)، ويمكن حجز دروسها في أي وقت.',
       'يُخصم رصيد الباقة عند إتمام الدرس (أو عند عدم الحضور بدون إلغاء في الوقت المسموح)، وليس عند الحجز.',
       'رعاية الأسرة: الباقة للطفل الثاني (أو الثالث…) في نفس الحساب عليها خصم إضافي 5%.',
       'خلال 14 يوماً من شراء الباقة يحق لك الانسحاب (انظر "حقك في الانسحاب خلال 14 يوماً"): نرد لك ثمن الدروس غير المستخدمة، وتُحتسب الدروس التي تمت بسعر الدرس في الباقة.',

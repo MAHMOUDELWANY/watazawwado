@@ -120,6 +120,8 @@ const CARDS = [
     icon: User,
     tone: 'from-[#087D91]/14 to-transparent border-[#087D91]/30 text-[#087D91] dark:text-[#12A4BC]',
     title: { en: 'Learn for yourself', ar: 'تعلّم لنفسك' },
+    // MK-04: one line for young adults who drifted away.
+    lead: { en: 'Drifted? Start where you are. No lectures.', ar: 'بعدت شوية؟ ابدأ من مكانك. من غير محاضرات.' },
     body: {
       en: 'Your own account: book lessons at times that suit you, follow your progress, and talk to your teacher in the on-site chat.',
       ar: 'حسابك الخاص: احجز دروسك في المواعيد التي تناسبك، وتابع تقدّمك، وراسل معلمك في المحادثة داخل الموقع.'
@@ -131,6 +133,7 @@ const CARDS = [
     icon: Users,
     tone: 'from-[#8B4935]/14 to-transparent border-[#8B4935]/30 text-[#8B4935] dark:text-[#DA7960]',
     title: { en: 'Learn for your family', ar: 'تعلّم لعائلتك' },
+    lead: null,
     body: {
       en: 'One parent account for every child. Each child has their own teacher and plan, and you see every lesson and note.',
       ar: 'حساب واحد لولي الأمر لكل الأولاد. لكل طفل معلمه وخطته، وإنت شايف كل حصة وكل ملاحظة.'
@@ -153,7 +156,7 @@ export function TwoWays({ isEn }: { isEn: boolean }) {
 
   return (
     <div ref={ref} className="grid md:grid-cols-2 gap-6 lg:gap-8">
-      {CARDS.map(({ key, icon: Icon, tone, title, body, note }, i) => (
+      {CARDS.map(({ key, icon: Icon, tone, title, lead, body, note }, i) => (
         <motion.article
           key={key}
           initial={reduce ? false : { opacity: 0, y: 28 }}
@@ -166,6 +169,7 @@ export function TwoWays({ isEn }: { isEn: boolean }) {
             <Icon className="w-7 h-7" aria-hidden="true" />
           </div>
           <h3 className="font-editorial text-2xl font-bold text-foreground mb-3">{t(title)}</h3>
+          {lead && <p className="font-semibold text-foreground mb-2">{t(lead)}</p>}
           <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto">{t(body)}</p>
           <div className="mt-6 max-w-[21rem] mx-auto" aria-hidden={key === 'self' ? 'true' : undefined}>
             {key === 'self' ? <SelfWindow isEn={isEn} play={play} /> : <FamilyWindow isEn={isEn} play={inView && !reduce} />}

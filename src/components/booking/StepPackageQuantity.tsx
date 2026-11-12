@@ -46,7 +46,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
 }) => {
   const isAr = lang === 'ar';
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId) || BOOKING_SERVICES[0];
-  const hourlyRate = service.hourlyRateUsd || 9;
+  const hourlyRate = service.hourlyRateUsd || 10;
   const singleLessonFee = calculateLessonFee(serviceId, duration, false);
   const money = (v: number) => `$${Number.isInteger(v) ? v : v.toFixed(2)}`;
   const n = (v: number) => (isAr ? v.toLocaleString('ar-EG') : String(v));

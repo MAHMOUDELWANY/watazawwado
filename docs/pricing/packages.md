@@ -1,5 +1,7 @@
 # Packages & discounts
 
+**2026-11-12 (BACKLOG MK-01):** the Quran and Islamic studies band is now **$10/hour**. Its packages are $9.50 / $9.25 / $9.00 an hour for 4 / 8 / 12 lessons (totals for 60 minutes: $38 / $74 / $108; the same dollar savings as before: $2 / $6 / $12). The $9 rows below are switched off in `package_catalog` (migration `20261112000000`). The $13 band is unchanged.
+
 Status: **Approved by the owner on 2026-10-14 and live** in `package_catalog` (migration `20261014000002`). Rows exist for 30, 45 and 60-minute lessons.
 
 ## Principles

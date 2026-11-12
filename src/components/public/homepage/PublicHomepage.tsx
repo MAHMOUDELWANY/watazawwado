@@ -61,7 +61,7 @@ const EXPLORE: Door[] = [
   {
     to: '/pricing', emblem: EnvelopeEmblem, tone: ['#0A5866', '#05262D'],
     title: { en: 'Prices and packages', ar: 'الأسعار والباقات' },
-    body: { en: 'From $9 an hour.', ar: 'من 9$ للساعة.' },
+    body: { en: 'From $10 an hour.', ar: 'من 10$ للساعة.' },
     cta: { en: 'See prices', ar: 'شوف الأسعار' }
   },
   {
@@ -97,10 +97,7 @@ export function PublicHomepage() {
             <h1
               className={`[grid-area:title] self-end font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-[4rem] text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}
             >
-              {/* Plain words families search for, above the brand line (SEO: the headline said no subject). */}
-              <span className="block mb-4 font-sans text-sm sm:text-base font-semibold tracking-normal text-[#087D91] dark:text-[#12A4BC]">
-                {isEn ? 'Online 1-on-1 classes: Quran, Tajweed, the Zad Path, Arabic & English' : 'حصص فردية أونلاين: قرآن، وتجويد، ومسار الأثر، وعربي، وإنجليزي'}
-              </span>
+              {/* MK-04: no kicker above the brand line; the subjects live in <title>, the meta description and the hero paragraph. */}
               {isEn ? (
                 <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
               ) : (
@@ -113,6 +110,11 @@ export function PublicHomepage() {
             </div>
 
             <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
+              <p className="font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-xl">
+                {isEn
+                  ? 'Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask.'
+                  : 'اختار معلّمك من ملفات حقيقية. وبعد كل حصة، نبلّغك كيف كانت قبل ما تسأل.'}
+              </p>
               <HeroSubjects isEn={isEn} className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl" />
 
               <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">

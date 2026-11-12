@@ -177,11 +177,14 @@ async function buildQuote(client: any, req: any, deps: GrowthDeps, target: Resol
       : { data: null };
     if (data) {
       const paidBefore = data.first_purchase_only ? await hasPaidBefore(client, accountUserId, learnerIds) : false;
-      const [{ count: usedTotal }, { count: usedByAccount }] = await Promise.all([
+      const [{ count: usedTotal }, { count: usedByAccount }, { data: usedRows }] = await Promise.all([
         client.from('discount_redemptions').select('id', { count: 'exact', head: true }).eq('code_id', data.id).in('status', ['reserved', 'redeemed']).neq('target_id', target.id),
         isUuid(accountUserId)
           ? client.from('discount_redemptions').select('id', { count: 'exact', head: true }).eq('code_id', data.id).eq('account_user_id', accountUserId).in('status', ['reserved', 'redeemed']).neq('target_id', target.id)
           : Promise.resolve({ count: 0 }),
+        data.max_accounts != null
+          ? client.from('discount_redemptions').select('account_user_id').eq('code_id', data.id).in('status', ['reserved', 'redeemed']).neq('target_id', target.id).limit(5000)
+          : Promise.resolve({ data: [] }),
       ]);
       rejection = checkCodeEligibility(data, {
         targetType: target.targetType,
@@ -189,6 +192,7 @@ async function buildQuote(client: any, req: any, deps: GrowthDeps, target: Resol
         hasPaidBefore: paidBefore,
         usedTotal: usedTotal || 0,
         usedByAccount: usedByAccount || 0,
+        usedAccounts: new Set((usedRows || []).map((r: any) => r.account_user_id)).size,
       });
       if (!rejection) codeRow = data;
     } else {
@@ -356,7 +360,7 @@ async function ensureReferralCode(client: any, userId: string, name: string | nu
   return null;
 }
 
-const ADMIN_CODE_FIELDS = 'id, code, discount_type, value, applies_to, first_purchase_only, min_amount_usd, max_redemptions, max_per_account, starts_at, ends_at, is_gift, is_active, note, created_by, created_at';
+const ADMIN_CODE_FIELDS = 'id, code, discount_type, value, applies_to, first_purchase_only, min_amount_usd, max_redemptions, max_per_account, max_accounts, starts_at, ends_at, is_gift, is_active, note, created_by, created_at';
 
 function parseCodeInput(body: any, partial: boolean): { values?: Record<string, any>; error?: string } {
   const v: Record<string, any> = {};
@@ -404,8 +408,17 @@ function parseCodeInput(body: any, partial: boolean): { values?: Record<string, 
   }
   if (!partial || has('max_per_account')) {
     const n = Number(body?.max_per_account ?? 1);
-    if (!Number.isInteger(n) || n < 1 || n > 100) return { error: 'Uses per family must be between 1 and 100.' };
+    if (!Number.isInteger(n) || n < 1 || n > 1000) return { error: 'Uses per family must be between 1 and 1000.' };
     v.max_per_account = n;
+  }
+  if (!partial || has('max_accounts')) {
+    const raw = body?.max_accounts;
+    if (raw === null || raw === undefined || raw === '') v.max_accounts = null;
+    else {
+      const n = Number(raw);
+      if (!Number.isInteger(n) || n < 1) return { error: 'Families must be a whole number of 1 or more, or empty for no limit.' };
+      v.max_accounts = n;
+    }
   }
   for (const k of ['starts_at', 'ends_at'] as const) {
     if (!partial || has(k)) {
@@ -612,9 +625,16 @@ export function registerGrowthRoutes(app: express.Express, deps: GrowthDeps) {
       const { values, error } = parseCodeInput(req.body, true);
       if (!values) return res.status(400).json({ error });
       const { count } = await client.from('discount_redemptions').select('id', { count: 'exact', head: true }).eq('code_id', req.params.id);
-      const editableAfterUse = ['is_active', 'ends_at', 'max_redemptions', 'note'];
+      const editableAfterUse = ['is_active', 'ends_at', 'max_redemptions', 'max_accounts', 'note'];
       if ((count || 0) > 0 && Object.keys(values).some((k) => !editableAfterUse.includes(k))) {
-        return res.status(400).json({ error: 'This code has been used, so only its end date, total uses, note and on/off can change.' });
+        return res.status(400).json({ error: 'This code has been used, so only its end date, total uses, number of families, note and on/off can change.' });
+      }
+      // RULES.md §4: a used code may get a lower family limit, never a higher one or none.
+      if ((count || 0) > 0 && Object.prototype.hasOwnProperty.call(values, 'max_accounts')) {
+        const { data: cur } = await client.from('discount_codes').select('max_accounts').eq('id', req.params.id).maybeSingle();
+        if (cur?.max_accounts != null && (values.max_accounts == null || values.max_accounts > cur.max_accounts)) {
+          return res.status(400).json({ error: 'This code has been used, so the number of families can only go down.' });
+        }
       }
       const { data, error: upErr } = await client.from('discount_codes')
         .update({ ...values, updated_at: new Date().toISOString() })

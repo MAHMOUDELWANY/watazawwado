@@ -241,7 +241,7 @@ export default function SettingsPage() {
               <div>
                 <h2 className="text-lg font-display font-semibold text-foreground">{t('Subjects & hourly prices', 'المواد وسعر الساعة')}</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {t('Agreed prices: $9/hour for Quran & Islamic studies, from $13/hour for Arabic & English. Change them only after updating the academy rules.', 'الأسعار المتفق عليها: 9$ للساعة للقرآن والعلوم الشرعية، ومن 13$ للعربي والإنجليزي. غيّرها بس بعد ما تحدّث قواعد الأكاديمية.')}
+                  {t('Agreed prices: $10/hour for Quran & Islamic studies, from $13/hour for Arabic & English. Change them only after updating the academy rules.', 'الأسعار المتفق عليها: 10$ للساعة للقرآن والعلوم الشرعية، ومن 13$ للعربي والإنجليزي. غيّرها بس بعد ما تحدّث قواعد الأكاديمية.')}
                 </p>
               </div>
               {services.length === 0 ? (

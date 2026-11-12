@@ -28,10 +28,10 @@ test('packages: the public list has real prices; choosing one waits for payment 
   expect(list.status).toBe(200);
   const all: any[] = list.json.data;
   expect(all.length).toBeGreaterThan(0);
-  pack = all.filter(p => Number(p.eligibility_rules?.hourly_rate) === 9 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
-  expect(pack, 'a 30-minute package in the $9 band').toBeTruthy();
+  pack = all.filter(p => Number(p.eligibility_rules?.hourly_rate) === 10 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
+  expect(pack, 'a 30-minute package in the $10 band').toBeTruthy();
   const perLesson = Number(pack.price_amount) / pack.lesson_count;
-  expect(perLesson, 'a package lesson costs no more than a single lesson (USD 4.50), and is never free').toBeLessThanOrEqual(4.5);
+  expect(perLesson, 'a package lesson costs no more than a single lesson (USD 5), and is never free').toBeLessThanOrEqual(5);
   expect(perLesson).toBeGreaterThan(3);
 
   expect((await call(student, 'POST', '/api/student/packages/select', { packageCatalogId: pack.id })).json.code).toBe('TERMS_REQUIRED');
@@ -107,7 +107,7 @@ test('discount codes: only the admin makes them; the server prices; savings stay
   expect(capped.json, `a 50% code stays inside the 25% cap: ${JSON.stringify(capped.json)}`).toMatchObject({ finalAmount: 3.37, codeCapped: true });
   expect((await call(student, 'POST', '/api/checkout/quote', { ...target, code: 'NO-SUCH-CODE' })).json.rejection, 'an unknown code is refused').toBeTruthy();
   expect((await call(parent, 'POST', '/api/checkout/quote', { ...target, code: CODE })).ok, 'another account pricing this lesson').toBe(false);
-  expect(Number((await booking(b.json.bookingId)).fee_amount_usd), 'a quote changes nothing').toBe(4.5);
+  expect(Number((await booking(b.json.bookingId)).fee_amount_usd), 'a quote changes nothing').toBe(5);
   await call(student, 'POST', `/api/student/bookings/${b.json.bookingId}/release-hold`, {});
 });
 

@@ -39,10 +39,10 @@ function base(over: Partial<ServiceAssessment> = {}): ServiceAssessment {
 
 describe('Phase 05 — Deterministic Pricing Engine', () => {
   describe('1. Approved baselines', () => {
-    it('religious 60/45/30 = 9/6.75/4.50 (proportional to $9/hour)', () => {
-      assert.equal(baselinePrice('religious', 60), 9);
-      assert.equal(baselinePrice('religious', 45), 6.75);
-      assert.equal(baselinePrice('religious', 30), 4.5);
+    it('religious 60/45/30 = 10/7.50/5 (proportional to $10/hour)', () => {
+      assert.equal(baselinePrice('religious', 60), 10);
+      assert.equal(baselinePrice('religious', 45), 7.5);
+      assert.equal(baselinePrice('religious', 30), 5);
     });
     it('language 60/45/30 = 13/9.75/6.50 (proportional to $13/hour)', () => {
       assert.equal(baselinePrice('language', 60), 13);
@@ -58,9 +58,9 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
   });
 
   describe('2. Standard band produces approved price', () => {
-    it('religious standard 60min → $9, no review', () => {
+    it('religious standard 60min → $10, no review', () => {
       const r = evaluateAssessment(base({ preferred_duration: 60 }));
-      assert.equal(r.recommended_price_usd, 9);
+      assert.equal(r.recommended_price_usd, 10);
       assert.equal(r.teacher_review_required, false);
       assert.equal(r.tier, 'STANDARD');
     });
@@ -69,9 +69,9 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
       assert.equal(r.recommended_price_usd, 9.75);
       assert.equal(r.teacher_review_required, false);
     });
-    it('religious standard 30min → $4.50', () => {
+    it('religious standard 30min → $5', () => {
       const r = evaluateAssessment(base({ preferred_duration: 30 }));
-      assert.equal(r.recommended_price_usd, 4.5);
+      assert.equal(r.recommended_price_usd, 5);
     });
   });
 
@@ -80,7 +80,7 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
       const a = evaluateAssessment(base({ current_level: 'advanced', preferred_duration: 60 }));
       const b = evaluateAssessment(base({ current_level: 'beginner', preferred_duration: 60 }));
       assert.equal(a.recommended_price_usd, b.recommended_price_usd);
-      assert.equal(a.recommended_price_usd, 9);
+      assert.equal(a.recommended_price_usd, 10);
     });
   });
 
@@ -159,7 +159,7 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
       withDemographics.country = 'wealthy-country';
       withDemographics.willingness_to_pay = 999;
       const r = evaluateAssessment(withDemographics);
-      assert.equal(r.recommended_price_usd, 9);
+      assert.equal(r.recommended_price_usd, 10);
       assert.equal(r.teacher_review_required, false);
     });
   });

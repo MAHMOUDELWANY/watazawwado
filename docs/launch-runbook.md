@@ -19,6 +19,10 @@ super admin only).
 - [ ] **Reminder cron running** on cron-job.org every 10 minutes (docs/production-reminder-scheduler.md).
 - [ ] **Uptime monitor set up** (section 2).
 - [ ] **System health page all green** or each amber row understood.
+- [ ] **Founding families code** (RULES.md §4, on the day wave 1 opens): Dashboard → Discounts & invites → new code
+      `FOUNDING15`: percent, 15, lessons and packages, not first-purchase-only, uses per family 1000, families who
+      can use it 20, starts on the opening day, ends 12 months later, not a gift. It stays inside the 25% cap, so with
+      a package and the sibling 5% it can be smaller. Never tied to a review.
 
 ## 2. Uptime monitor (5 minutes, free)
 

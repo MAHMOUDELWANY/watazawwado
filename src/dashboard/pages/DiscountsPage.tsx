@@ -23,6 +23,7 @@ interface CodeRow {
   min_amount_usd: number;
   max_redemptions: number | null;
   max_per_account: number;
+  max_accounts: number | null;
   starts_at: string | null;
   ends_at: string | null;
   is_gift: boolean;
@@ -66,6 +67,7 @@ const emptyForm = {
   min_amount_usd: '',
   max_redemptions: '',
   max_per_account: '1',
+  max_accounts: '',
   starts_at: '',
   ends_at: '',
   is_gift: false,
@@ -138,6 +140,7 @@ export default function DiscountsPage() {
     if (form.first_purchase_only) parts.push(t('first purchase only', 'لأول شراء'));
     if (Number(form.min_amount_usd) > 0) parts.push(t(`orders from ${money(Number(form.min_amount_usd))}`, `للطلبات من ${money(Number(form.min_amount_usd))}`));
     if (form.max_redemptions) parts.push(t(`${form.max_redemptions} uses in total`, `${form.max_redemptions} استخدام بالكتير`));
+    if (form.max_accounts) parts.push(t(`first ${form.max_accounts} families`, `لأول ${form.max_accounts} عيلة`));
     if (form.ends_at) parts.push(t(`until ${new Date(form.ends_at).toLocaleDateString('en-GB')}`, `لحد ${new Date(form.ends_at).toLocaleDateString('ar-EG')}`));
     if (form.is_gift) parts.push(t('gift: outside the savings cap', 'هدية: برّه الحد الأقصى للتوفير'));
     return parts.join(isAr ? '، ' : ', ');
@@ -162,6 +165,7 @@ export default function DiscountsPage() {
           min_amount_usd: Number(form.min_amount_usd || 0),
           max_redemptions: form.max_redemptions ? Number(form.max_redemptions) : null,
           max_per_account: Number(form.max_per_account || 1),
+          max_accounts: form.max_accounts ? Number(form.max_accounts) : null,
           starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : null,
           ends_at: form.ends_at ? new Date(`${form.ends_at}T23:59:59`).toISOString() : null,
         }),
@@ -373,6 +377,7 @@ export default function DiscountsPage() {
                     {c.ends_at ? t(`Ends ${new Date(c.ends_at).toLocaleDateString('en-GB')}`, `بينتهي ${new Date(c.ends_at).toLocaleDateString('ar-EG')}`) : t('No end date', 'من غير تاريخ نهاية')}
                     {' · '}
                     {t(`${c.max_per_account} per family`, `${c.max_per_account} لكل عيلة`)}
+                    {c.max_accounts ? t(` · first ${c.max_accounts} families`, ` · لأول ${c.max_accounts} عيلة`) : ''}
                     {c.note ? ` · ${c.note}` : ''}
                   </p>
                   <div className="flex items-center gap-2 pt-1">
@@ -544,6 +549,11 @@ export default function DiscountsPage() {
               <span className="text-muted-foreground">{t('Uses per family', 'مرات لكل عيلة')}</span>
               <Input type="number" min={1} step={1} dir="ltr" className="mt-1" value={form.max_per_account}
                 onChange={(e) => setForm({ ...form, max_per_account: e.target.value })} />
+            </label>
+            <label className="block text-sm col-span-2">
+              <span className="text-muted-foreground">{t('Families who can use it (empty = no limit)', 'عدد العائلات اللي تقدر تستخدمه (فاضي = مفتوح)')}</span>
+              <Input type="number" min={1} step={1} dir="ltr" className="mt-1" value={form.max_accounts}
+                onChange={(e) => setForm({ ...form, max_accounts: e.target.value })} />
             </label>
             <label className="block text-sm">
               <span className="text-muted-foreground">{t('Starts (optional)', 'يبدأ (اختياري)')}</span>

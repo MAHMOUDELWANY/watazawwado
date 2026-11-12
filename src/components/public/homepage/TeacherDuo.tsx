@@ -126,6 +126,14 @@ export function TeacherDuo({ isEn }: { isEn: boolean }) {
           </motion.div>
         ))}
       </div>
+
+      {/* MK-04: families pick the person, not only the gender. */}
+      <p className="relative mt-5 text-center text-sm sm:text-base text-muted-foreground">
+        {isEn ? 'You choose. ' : 'أنت تختار. '}
+        <Link to="/about" className="font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
+          {isEn ? "See each teacher's story before you book." : 'اقرأ قصة كل معلّم قبل ما تحجز.'}
+        </Link>
+      </p>
     </div>
   );
 }

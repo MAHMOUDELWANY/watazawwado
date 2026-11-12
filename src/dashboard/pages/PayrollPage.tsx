@@ -4,6 +4,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { notify, confirmAction } from '../../components/ui/Feedback';
 import { PayLines, PayTotals, MonthSelect, fmtMoney, monthLabel } from '../components/PayStatementView';
+import { RetentionBonus } from '../components/RetentionBonus';
 
 /**
  * Super admin: Teacher pay (launch plan D). Per month: each teacher's total from their hourly rate and the lessons
@@ -158,6 +159,7 @@ export default function PayrollPage() {
           })}
         </ul>
       )}
+      <RetentionBonus isAr={isAr} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ let slots: Slot[]; let n = 0;
 const next = () => slots[n++ * 3];
 const paid = (slot: Slot, over: Record<string, unknown> = {}) => call(student, 'POST', '/api/bookings/create', bookingBody(slot, { mode: 'regular', ...over }));
 const record = (bookingId: string, over: Record<string, unknown> = {}) =>
-  call(admin, 'POST', '/api/dashboard/payments', { booking_id: bookingId, amount: 4.5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-${Date.now()}`, status: 'pending', ...over });
+  call(admin, 'POST', '/api/dashboard/payments', { booking_id: bookingId, amount: 5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-${Date.now()}`, status: 'pending', ...over });
 const credits = async () => (await db.from('package_entitlements').select('*').eq('purchaser_account_id', q.student.authId)).data || [];
 
 test.beforeAll(async () => {
@@ -31,7 +31,7 @@ test('only the super admin records a payment; recording it alone confirms nothin
   expect(r.status, JSON.stringify(r.json)).toBe(201);
   lessonId = r.json.bookingId;
   for (const [who, token] of [['student', student], ['teacher', teacher]] as const) {
-    const refused = await call(token, 'POST', '/api/dashboard/payments', { booking_id: lessonId, amount: 4.5, currency: 'USD', payment_method: 'wise', status: 'confirmed' });
+    const refused = await call(token, 'POST', '/api/dashboard/payments', { booking_id: lessonId, amount: 5, currency: 'USD', payment_method: 'wise', status: 'confirmed' });
     expect([401, 403], `${who} recording a payment`).toContain(refused.status);
   }
   const bad = await record(lessonId, { amount: -5 });
@@ -99,7 +99,7 @@ test('cancelling a paid lesson in time gives one lesson credit, once', async () 
   expect(mine.length).toBe(1);
   creditId = mine[0].id;
   expect(mine[0]).toMatchObject({ status: 'active', remaining_credits: 1, learner_student_id: q.student.id });
-  expect(Number(mine[0].price_paid)).toBe(4.5);
+  expect(Number(mine[0].price_paid)).toBe(5);
   expect((await call(student, 'POST', `/api/student/bookings/${lessonId}/cancel`, {})).status).toBe(400);
   expect((await credits()).filter(c => c.metadata?.source === 'cancellation_credit').length, 'cancelling twice gives no second credit').toBe(1);
   expect((await db.from('payments').select('status').eq('id', paymentId).single()).data?.status, 'the payment stays confirmed').toBe('confirmed');

@@ -7,7 +7,7 @@ import { useT } from '../lib/language';
 import { dashboardFetch } from '../dashboard/lib/dashboardApi';
 
 // Keep in sync with TEACHER_AGREEMENT_VERSION in api/index.ts.
-const AGREEMENT_VERSION = '2026-10-28.1';
+const AGREEMENT_VERSION = '2026-11-12.1';
 
 type Clause = { en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -44,9 +44,11 @@ const CLAUSES: Clause[] = [
   },
   {
     // 2026-10-28.1 (launch plan F, owner approved): pay month by month and what is paid (RULES.md §2c).
+    // 2026-11-12.1 (BACKLOG MK-02): the quarterly retention bonus exists; never how it is calculated (RULES.md §1, §2c).
     en: { title: 'Pay, month by month', items: [
       'Your pay is counted per calendar month. It is sent between the 1st and the 5th of the next month, outside the site (bank transfer, Instapay, Wise or another way we agree). When it is sent you get a payslip by email and on the site.',
       'Watazawwado may add a bonus or make a deduction for a month, always with a written reason that you can see on your payslip.',
+      'Every three months you may also receive a retention bonus. It rewards keeping your learners with you and doing the work well. The amount varies with many factors and is not guaranteed; when it is given, it appears on your payslip as a bonus.',
       'Record what happened in every lesson (held, student did not come, technical problem) from the lesson window. A lesson is counted once its outcome is recorded.',
       'Paid to you: a lesson that was held (its full length); a lesson where the student did not come within 15 minutes or cancelled late; a lesson where the student came late (its full length); a lesson paid later, from a package or from a credit (same rate).',
       'Not paid: a free trial lesson; a lesson the student cancelled in time (3 hours or more before); a lesson you could not attend or cancelled less than 3 hours before without moving it; a lesson a technical problem on our side stopped.',
@@ -56,6 +58,7 @@ const CLAUSES: Clause[] = [
     ar: { title: 'الأجر شهراً بشهر', items: [
       'يُحسب أجرك عن كل شهر ميلادي، ويُرسل بين يوم 1 و5 من الشهر التالي خارج الموقع (تحويل بنكي، إنستاباي، Wise، أو طريقة أخرى نتفق عليها). وعند الإرسال يصلك إيصال بالبريد وعلى الموقع.',
       'يجوز لوتزودوا إضافة مكافأة أو خصم عن شهر، دائماً مع سبب مكتوب تراه في إيصالك.',
+      'وكل ثلاثة أشهر قد تحصل أيضاً على مكافأة الاحتفاظ بالطلاب، وهي تكافئ بقاء طلابك معك وإتقانك للعمل. ويختلف مبلغها حسب عوامل كثيرة وليس مضموناً، وعند صرفها تظهر في إيصالك كمكافأة.',
       'سجّل ما حدث في كل حصة (تمت، الطالب لم يحضر، مشكلة تقنية) من نافذة الحصة. والحصة تُحسب بعد تسجيل نتيجتها.',
       'يُدفع لك عن: الحصة التي تمت (بمدتها كاملة)؛ والحصة التي لم يحضرها الطالب خلال 15 دقيقة أو ألغاها متأخراً؛ والحصة التي تأخر فيها الطالب (بمدتها كاملة)؛ والحصة بالدفع المؤجل أو من باقة أو من رصيد (بنفس السعر).',
       'لا يُدفع عن: الحصة التجريبية المجانية؛ والحصة التي ألغاها الطالب في الوقت (قبلها بـ 3 ساعات أو أكثر)؛ والحصة التي لم تستطع حضورها أو ألغيتها قبل أقل من 3 ساعات دون تغيير موعدها؛ والحصة التي منعتها مشكلة تقنية من جهتنا.',

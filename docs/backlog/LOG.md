@@ -4,6 +4,40 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### MK-01 to MK-04 From the brand and growth strategy (2026-11-12)
+
+Order chosen: MK-04 and MK-03 (copy, green) first, then MK-01 (price, red), then MK-02 (bonus, red, uses the same
+pay tools). Strategy docs (RULES §2c/§3/§4, STRATEGY.md, STRATEGY-DISCUSSION.md, BACKLOG MK section) were
+cherry-picked from `claude/notion-content-strategy-ef32ca` so main holds the decisions the code follows.
+- **MK-04 homepage:** kicker above the h1 removed (subjects stay in `<title>`, meta and the hero paragraph); hero
+  sub-line "Pick your teacher from real profiles…" (`PublicHomepage.tsx`); caption under the teacher photos linking
+  to /about (`TeacherDuo.tsx`); "Drifted? Start where you are. No lectures." on the learn-for-yourself card
+  (`TwoWays.tsx`). Arabic for all three.
+- **MK-03 About:** Ustadh Mahmoud's card lists the approved proof only: ijazah in the Quran (Hafs 'an 'Asim), Al-Azhar
+  secondary graduate, 100+ students in person and about 25 online (most in the US), currently studying the seven
+  Qira'at. AI chat facts (`server/siteFacts.ts`) carry the same and no longer claim "C1 English".
+- **MK-01 price:** $10/hour for Quran, Tajweed and Islamic studies everywhere: pricing engine, `services`, packages
+  ($9.50/$9.25/$9.00 an hour for 4/8/12; same dollar savings as before; $9 rows switched off), credits moved to the $10
+  band, pricing/home/terms/SEO/subject landing pages/booking summary/student packages/settings note/AI facts, sponsored
+  lesson unit $5. `TERMS_VERSION` 2026-11-12.1. Founding code: new `discount_codes.max_accounts` (first N families,
+  checked under lock in `apply_checkout_discount_atomic` and in the quote; admin field on Discounts & invites; can
+  only go down after use); uses per family up to 1000. The code itself (FOUNDING15, 15%, 20 families, 12 months) is
+  created at the wave opening: steps in `docs/launch-runbook.md`.
+- **MK-02 retention bonus:** `server/payroll/retention.ts` (pure rules) + `server/routes/retentionBonus.ts` (super
+  admin, kept out of the pay routes, which never read student money) + `RetentionBonus.tsx` on Teacher pay: per
+  teacher and quarter, learners taught vs the minimum (setting `retention_bonus`, default 5), learners who moved (with
+  the change-request reason) or stopped (judged only after the quarter ends), full-price hours, pool = 10% of list per
+  full-price lesson, top-up, and "Pay as bonus" through the existing monthly adjustment ("Retention bonus YYYY-Qn: …",
+  which also marks the quarter paid). Teacher agreement 2026-11-12.1 says the bonus exists, rewards keeping learners
+  and good work, and varies; every teacher accepts again.
+- Migration: `20261112000000_price_10_and_founding_code.sql`.
+- Tests: new `test/mk-01-04-strategy.test.ts`; price tests and e2e money specs moved to $10; QA account script on the
+  new agreement version.
+- Not checked / risks: the hidden browser pane blocked screenshots, so copy was checked in the prerendered HTML (both
+  languages) and not visually at 375px. The ijazah wording follows the owner's words in STRATEGY-DISCUSSION.md, not a
+  photo of the certificate: the owner should confirm it. The dashboard pages (Discounts, Teacher pay) were not opened
+  in a browser (owner rule). Legacy `create_booking_atomic` still has $9-era constants; nothing calls it.
+
 ### Pre-launch testing P1: testing foundation (2026-11-10)
 
 Brief: docs/testing/projects/P1-foundation.md. Any Claude account can now start a server per project, get real QA

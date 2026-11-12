@@ -11,7 +11,7 @@ test.afterAll(resetLearnerData);
 test('the admin records a package payment from the bookings page', async ({ page, signInAs, lang }, info) => {
   const q = await qaIds();
   const packs: any[] = (await call(null, 'GET', '/api/packages')).json.data;
-  const pack = packs.filter(p => Number(p.eligibility_rules?.hourly_rate) === 9 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
+  const pack = packs.filter(p => Number(p.eligibility_rules?.hourly_rate) === 10 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
   const chosen = await call(await tokenFor('student'), 'POST', '/api/student/packages/select', { packageCatalogId: pack.id, acceptedTerms: true, acceptedEarlyStart: true });
   expect(chosen.status, JSON.stringify(chosen.json)).toBe(201);
   const entitlementId = chosen.json.entitlement.id as string;

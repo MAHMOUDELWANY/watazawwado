@@ -130,11 +130,11 @@ test('a paid lesson waits for payment: pending, server price, a short hold, no r
   paidSlot = next1();
   const r = await call(student, 'POST', '/api/bookings/create', bookingBody(paidSlot, { mode: 'regular', feeAmountUsd: 0, fee_amount_usd: 0, price: 0, status: 'confirmed', paymentStatus: 'paid' }));
   expect(r.status, JSON.stringify(r.json)).toBe(201);
-  expect(r.json).toMatchObject({ status: 'pending', feeAmountUsd: 4.5 }); // $9 an hour, 30 minutes (RULES.md §3)
+  expect(r.json).toMatchObject({ status: 'pending', feeAmountUsd: 5 }); // $10 an hour, 30 minutes (RULES.md §3)
   [paidId, paidRef] = [r.json.bookingId, r.json.referenceCode];
   const b = await booking(paidId);
   expect(b.status).toBe('pending');
-  expect(Number(b.fee_amount_usd)).toBe(4.5);
+  expect(Number(b.fee_amount_usd)).toBe(5);
   const holdMin = (new Date(b.hold_expires_at).getTime() - Date.now()) / 60_000;
   expect(holdMin).toBeGreaterThan(30);
   expect(holdMin).toBeLessThan(36);
@@ -149,7 +149,7 @@ test('checkout opens at Stripe for the server price and confirms nothing by itse
   test.info().annotations.push({ type: 'stripe', description: gatewayUp ? 'reached' : 'not reachable with the local key: the Stripe page itself was not checked' });
   if (gatewayUp) {
     expect(intent.status, JSON.stringify(intent.json)).toBe(200);
-    expect(intent.json.amount).toBe(4.5);
+    expect(intent.json.amount).toBe(5);
     expect(intent.json.sessionUrl).toMatch(/^https:\/\/checkout\.stripe\.com\//);
     // Coming back without paying leaves the lesson unpaid.
     const unpaid = await call(student, 'POST', '/api/payments/stripe/verify', { sessionId: intent.json.sessionId });

@@ -57,10 +57,10 @@ export const PUBLIC_PAGES: PageSeo[] = [
   },
   {
     path: '/pricing',
-    titleEn: 'Prices & packages — from $9/hour | Watazawwado Academy',
-    titleAr: 'الأسعار والباقات — من 9 دولار للساعة | وتزودوا Watazawwado',
-    descEn: 'Quran, Tajweed and the Zad Path from $9 an hour; Fusha, Egyptian Arabic and English from $13. Packages of 4, 8 or 12 lessons, family discount, free trial.',
-    descAr: 'القرآن والتجويد ومسار الأثر من 9 دولار للساعة، والفصحى والعامية المصرية والإنجليزية من 13 دولار. باقات 4 و8 و12 حصة وخصم عائلي، وحصة تجريبية مجانية.',
+    titleEn: 'Prices & packages — from $10/hour | Watazawwado Academy',
+    titleAr: 'الأسعار والباقات — من 10 دولار للساعة | وتزودوا Watazawwado',
+    descEn: 'Quran, Tajweed and the Zad Path from $10 an hour; Fusha, Egyptian Arabic and English from $13. Packages of 4, 8 or 12 lessons, family discount, free trial.',
+    descAr: 'القرآن والتجويد ومسار الأثر من 10 دولار للساعة، والفصحى والعامية المصرية والإنجليزية من 13 دولار. باقات 4 و8 و12 حصة وخصم عائلي، وحصة تجريبية مجانية.',
     h1En: 'Prices and packages'
   },
   {

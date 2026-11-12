@@ -118,7 +118,7 @@ test('a paid lesson stops at payment: held, unpaid, and the screen says what to 
   const held = await activeBookings(q.student.id);
   expect(held.length).toBe(1);
   expect(held[0].status, 'never confirmed before the server verifies a payment').toBe('pending');
-  expect(Number(held[0].fee_amount_usd)).toBe(4.5);
+  expect(Number(held[0].fee_amount_usd)).toBe(5);
   const atStripe = /stripe\.com/.test(page.url()) || await page.locator('iframe[src*="stripe"], iframe[name*="stripe" i]').count() > 0;
   test.info().annotations.push({ type: 'payment step', description: atStripe ? 'Stripe opened' : 'Stripe did not open on this machine (P2-001)' });
   if (!atStripe) {

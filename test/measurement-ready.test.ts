@@ -14,7 +14,7 @@ describe('ready to measure content (2026-10-20 external research review)', () =>
 
   it('pricing and the booking summary use current subjects, no retired ones or stale copy', () => {
     const pricing = read('src/components/public/pricing/PricingPage.tsx');
-    assert.ok(pricing.includes('the Zad Path') && pricing.includes('مسار الأثر') && pricing.includes('$9 an hour'));
+    assert.ok(pricing.includes('the Zad Path') && pricing.includes('مسار الأثر') && pricing.includes('$10 an hour'));
     assert.ok(!pricing.includes('العلوم الشرعية') && !pricing.includes('Islamic studies'));
     const review = read('src/components/booking/StepReviewSummary.tsx');
     for (const stale of ['IELTS', 'Advanced Fiqh', 'Super Admin', 'الفقه التخصصي']) assert.ok(!review.includes(stale), stale);

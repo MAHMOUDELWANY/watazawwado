@@ -11,7 +11,7 @@ export interface SubjectPage {
   slug: string;
   /** BOOKABLE_SERVICES ids this page is about (first one gives the schema price). */
   serviceIds: string[];
-  rateUsd: 9 | 13;
+  rateUsd: 10 | 13;
   titleEn: string;
   titleAr: string;
   descEn: string;
@@ -33,7 +33,7 @@ export const SUBJECT_PAGES: SubjectPage[] = [
   {
     slug: 'online-quran-classes-for-kids',
     serviceIds: ['quran-reading', 'tajweed', 'quran-memorization'],
-    rateUsd: 9,
+    rateUsd: 10,
     titleEn: 'Online Quran Classes for Kids, 1-on-1 on Zoom | Watazawwado',
     titleAr: 'حصص قرآن أونلاين للأطفال، فردية على Zoom | وتزودوا',
     descEn: 'One-on-one online Quran classes for children aged 6 to 17: reading from the first letters, Tajweed and memorization, with male and female teachers. Free trial lesson.',
@@ -63,19 +63,19 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     faqEn: [
       { q: 'From what age can my child start?', a: 'Children in a family account are 6 to 17. A parent aged 18 or over opens the account and manages each child.' },
       { q: 'Can my daughter have a female teacher?', a: 'Yes. We have male and female teachers, and you choose your child’s teacher when you sign up.' },
-      { q: 'How much does it cost?', a: 'Quran lessons are from $9 an hour, so a 30-minute lesson is $4.50. The first lesson is a free 30-minute trial.' }
+      { q: 'How much does it cost?', a: 'Quran lessons are from $10 an hour, so a 30-minute lesson is $5. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
       { q: 'من أي عمر يمكن لابني أن يبدأ؟', a: 'الأطفال في حساب الأسرة من ٦ إلى ١٧ سنة. ويفتح وليّ الأمر (١٨ سنة أو أكثر) الحساب ويتابع كل طفل.' },
       { q: 'هل يمكن أن تدرس ابنتي مع معلمة؟', a: 'نعم. لدينا معلمون ومعلمات، وتختار معلم ابنك أو ابنتك عند التسجيل.' },
-      { q: 'السعر كام؟', a: 'حصص القرآن من ٩ دولار للساعة، يعني حصة ٣٠ دقيقة بـ ٤.٥ دولار. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
+      { q: 'السعر كام؟', a: 'حصص القرآن من ١٠ دولار للساعة، يعني حصة ٣٠ دقيقة بـ ٥ دولار. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-tajweed-classes', 'online-quran-memorization', 'islamic-classes-for-kids']
   },
   {
     slug: 'online-quran-classes-for-adults',
     serviceIds: ['quran-reading', 'tajweed', 'quran-memorization'],
-    rateUsd: 9,
+    rateUsd: 10,
     titleEn: 'Online Quran Classes for Adults & Sisters, 1-on-1 | Watazawwado',
     titleAr: 'حصص قرآن أونلاين للكبار والأخوات، فردية | وتزودوا',
     descEn: 'Learn to read the Quran as an adult, fix your Tajweed or memorize, in private one-on-one Zoom lessons. Female teachers for sisters. Free trial lesson.',
@@ -105,19 +105,19 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     faqEn: [
       { q: 'I am a complete beginner. Is that fine?', a: 'Yes. Quran Reading starts with Foundations: the letters, their sounds and the qaida, from zero.' },
       { q: 'Are lessons recorded?', a: 'No. Lessons are not recorded, and the teacher hosts every Zoom lesson with a waiting room.' },
-      { q: 'How much does it cost?', a: 'From $9 an hour, charged by length: $4.50 for 30 minutes. The first lesson is a free 30-minute trial.' }
+      { q: 'How much does it cost?', a: 'From $10 an hour, charged by length: $5 for 30 minutes. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
       { q: 'أنا مبتدئ تمامًا. هل يناسبني؟', a: 'نعم. تبدأ قراءة القرآن بالتأسيس: الحروف وأصواتها والقاعدة، من الصفر.' },
       { q: 'هل تُسجَّل الحصص؟', a: 'لا. الحصص لا تُسجَّل، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار.' },
-      { q: 'السعر كام؟', a: 'من ٩ دولار للساعة، والسعر على قد مدة الحصة: ٤.٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
+      { q: 'السعر كام؟', a: 'من ١٠ دولار للساعة، والسعر على قد مدة الحصة: ٥ دولار لـ ٣٠ دقيقة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-tajweed-classes', 'online-quran-memorization', 'learn-arabic-online']
   },
   {
     slug: 'online-tajweed-classes',
     serviceIds: ['tajweed'],
-    rateUsd: 9,
+    rateUsd: 10,
     titleEn: 'Online Tajweed Classes, 1-on-1 for Kids & Adults | Watazawwado',
     titleAr: 'حصص تجويد أونلاين، فردية للأطفال والكبار | وتزودوا',
     descEn: 'Learn Tajweed online in one-on-one Zoom lessons: three levels from the essential rules to the advanced ones, applied as you recite. Free trial lesson.',
@@ -147,19 +147,19 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     faqEn: [
       { q: 'Do I need to read Arabic first?', a: 'Tajweed builds on reading. If you cannot read yet, start with Quran Reading; your teacher will tell you in the trial.' },
       { q: 'Is it for children too?', a: 'Yes. Children aged 6 to 17 learn in a family account, adults in their own account.' },
-      { q: 'How much does it cost?', a: 'From $9 an hour: $4.50 for 30 minutes, $6.75 for 45, $9 for 60. The first lesson is a free trial.' }
+      { q: 'How much does it cost?', a: 'From $10 an hour: $5 for 30 minutes, $7.50 for 45, $10 for 60. The first lesson is a free trial.' }
     ],
     faqAr: [
       { q: 'هل يجب أن أعرف قراءة العربية أولًا؟', a: 'التجويد مبني على القراءة. إن كنت لا تقرأ بعد، فابدأ بقراءة القرآن، وسيخبرك معلمك في الحصة التجريبية.' },
       { q: 'هل يناسب الأطفال أيضًا؟', a: 'نعم. يتعلّم الأطفال من ٦ إلى ١٧ سنة في حساب الأسرة، والكبار في حساباتهم.' },
-      { q: 'السعر كام؟', a: 'من ٩ دولار للساعة: ٤.٥ لـ ٣٠ دقيقة، و٦.٧٥ لـ ٤٥، و٩ لـ ٦٠. وأول حصة تجريبية مجانية.' }
+      { q: 'السعر كام؟', a: 'من ١٠ دولار للساعة: ٥ لـ ٣٠ دقيقة، و٧.٥ لـ ٤٥، و١٠ لـ ٦٠. وأول حصة تجريبية مجانية.' }
     ],
     related: ['online-quran-memorization', 'online-quran-classes-for-kids', 'online-quran-classes-for-adults']
   },
   {
     slug: 'online-quran-memorization',
     serviceIds: ['quran-memorization'],
-    rateUsd: 9,
+    rateUsd: 10,
     titleEn: 'Online Hifz Classes: Quran Memorization & Revision | Watazawwado',
     titleAr: 'حصص حفظ القرآن ومراجعته أونلاين | وتزودوا',
     descEn: 'One-on-one online Hifz lessons for kids and adults: start memorizing, add more, or keep what you know firm with steady revision. Free trial lesson.',
@@ -189,19 +189,19 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     faqEn: [
       { q: 'How fast will my child memorize?', a: 'It depends on the child and on daily practice. Steady, short revision every day matters more than big amounts once a week.' },
       { q: 'Can we do revision only?', a: 'Yes. Choose “keeping it firm” and the lessons focus on revision.' },
-      { q: 'How much does it cost?', a: 'From $9 an hour, charged by length. The first lesson is a free 30-minute trial.' }
+      { q: 'How much does it cost?', a: 'From $10 an hour, charged by length. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
       { q: 'في كم من الوقت سيحفظ ابني؟', a: 'يختلف ذلك من طفل لآخر وبحسب المراجعة اليومية. مراجعة قصيرة منتظمة كل يوم أهم من كمية كبيرة مرة في الأسبوع.' },
       { q: 'ينفع مراجعة بس؟', a: 'أيوه. اختار «بثبّت» والحصص هتركّز على المراجعة.' },
-      { q: 'السعر كام؟', a: 'من ٩ دولار للساعة، على قد مدة الحصة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
+      { q: 'السعر كام؟', a: 'من ١٠ دولار للساعة، على قد مدة الحصة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-tajweed-classes', 'online-quran-classes-for-kids', 'online-quran-classes-for-adults']
   },
   {
     slug: 'islamic-classes-for-kids',
     serviceIds: ['zad-essentials', 'seerah'],
-    rateUsd: 9,
+    rateUsd: 10,
     titleEn: 'Online Islamic Classes for Kids & Teens: the Zad Path | Watazawwado',
     titleAr: 'حصص دينية أونلاين للأطفال والشباب: مسار الأثر | وتزودوا',
     descEn: 'Our own curriculum of Islamic knowledge, taught 1-on-1 online: Zad Essentials and the Seerah, in Kids (6–11), Teens (12–17) and Adults versions. Free trial lesson.',
@@ -231,12 +231,12 @@ export const SUBJECT_PAGES: SubjectPage[] = [
     faqEn: [
       { q: 'Can I sit in on the lessons?', a: 'Yes. Parents can sit in on any lesson, and the teacher hosts every Zoom lesson with a waiting room.' },
       { q: 'Can adults take it too?', a: 'Yes. The Adults version is for learners aged 18 and over.' },
-      { q: 'How much does it cost?', a: 'From $9 an hour, charged by length. The first lesson is a free 30-minute trial.' }
+      { q: 'How much does it cost?', a: 'From $10 an hour, charged by length. The first lesson is a free 30-minute trial.' }
     ],
     faqAr: [
       { q: 'أقدر أحضر الحصة مع ابني؟', a: 'أيوه. ولي الأمر يقدر يحضر أي حصة، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار.' },
       { q: 'ينفع للكبار؟', a: 'أيوه. نسخة الكبار للي عندهم ١٨ سنة أو أكتر.' },
-      { q: 'السعر كام؟', a: 'من ٩ دولار للساعة، على قد مدة الحصة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
+      { q: 'السعر كام؟', a: 'من ١٠ دولار للساعة، على قد مدة الحصة. وأول حصة تجريبية مجانية ٣٠ دقيقة.' }
     ],
     related: ['online-quran-classes-for-kids', 'learn-arabic-online', 'online-quran-memorization']
   },

@@ -74,6 +74,7 @@ import { registerTeacherFileRoutes } from '../server/routes/teacherFiles.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
+import { registerRetentionBonusRoutes } from '../server/routes/retentionBonus.js';
 import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
 import { registerAttendanceRoutes, recordLinkOpened, studentJoinPath, attachAttendance, loadAttendanceAnalysis, inRoomNow } from '../server/routes/attendance.js';
@@ -224,9 +225,9 @@ const MAX_LOST_TRIALS = 5;
 const MAX_FAMILY_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-28.1';
+const TERMS_VERSION = '2026-11-12.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
-const TEACHER_AGREEMENT_VERSION = '2026-10-28.1';
+const TEACHER_AGREEMENT_VERSION = '2026-11-12.1';
 
 /** True when the learner already has a lesson (held, confirmed or moved) overlapping this time, with any teacher (P2-004). */
 async function learnerHasLessonAt(client: any, studentId: string | null, startIso: string, endIso: string, exceptBookingId?: string): Promise<boolean> {
@@ -10900,6 +10901,14 @@ registerFamilyReviewRoutes(app, { getClient: getSupabaseAdminClient, verifyStude
 
 // Launch plan D: teacher pay (rates, bonuses/deductions, payouts and payslips, the teacher's own month).
 registerPayrollRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  rateLimit,
+  listStaff: async () => listStaffAccounts(getSupabaseAdminClient())
+});
+// MK-02: quarterly retention bonus (super admin only).
+registerRetentionBonusRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   requireSuperAdmin,

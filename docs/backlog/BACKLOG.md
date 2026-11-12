@@ -594,14 +594,14 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 ## MK: From the brand and growth strategy (owner 2026-11-12)
 
 ### MK-01 Price $9 → $10 and the founding discount
-- Priority P1 · Zone 🔴 (money) · Size M · Status todo (founding: 15% for 12 months, owner 2026-11-12)
+- Priority P1 · Zone 🔴 (money) · Size M · Status done (2026-11-12; founding: 15% for 12 months, owner 2026-11-12)
 - RULES.md §3 (2026-11-12): Quran, Tajweed and Islamic studies $10/h; languages $13/h. Update the pricing engine,
   packages, every price shown on the site (both languages), emails and FAQ; replace the 20%/90-day founding code with
   the chosen founding discount for 12 months (inside the 25% cap). Tests for the new amounts. Bump `TERMS_VERSION` if
   the terms quote prices.
 
 ### MK-02 Quarterly retention bonus for teachers
-- Priority P1 · Zone 🔴 (money) · Size M · Status todo
+- Priority P1 · Zone 🔴 (money) · Size M · Status done (2026-11-12)
 - RULES.md §2c (2026-11-12). Super admin only (teachers never see it): per teacher and quarter, learners taught,
   learners who left with the reason, full-price hours and the resulting pool (+10% of list per full-price hour),
   eligibility checks (minimum learners setting, default 5), a top-up field, and "pay as bonus", which uses the
@@ -609,7 +609,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   accept again): it exists, it rewards keeping learners and good work, the amount varies.
 
 ### MK-03 About page: the owner's real credentials
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done (2026-11-12)
 - Approved proof rules (`docs/marketing/STRATEGY-DISCUSSION.md`, 2026-11-12): add to Ustadh Mahmoud's card and the
   About page, both languages: ijazah in the Quran (Hafs 'an 'Asim, wording exactly as on the certificate; ask the
   owner for it), Al-Azhar secondary graduate, "100+ students in person, about 25 online, most in the US", currently
@@ -617,7 +617,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   what this page states (content RULES §3.5).
 
 ### MK-04 Homepage copy from the strategy
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done (2026-11-12)
 - `docs/marketing/STRATEGY.md` §4. Keep the headline "Provision that lasts…". Remove the visible kicker above it
   (no hidden text; subjects stay in `<title>`, meta description and the hero paragraph). Add the hero sub-line
   "Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask." and a

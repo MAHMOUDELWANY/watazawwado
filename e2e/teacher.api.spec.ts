@@ -130,7 +130,7 @@ test('after the lesson time: the report closes it once; a no-show cannot replace
 
 test('only the super admin cancels; the family is told and keeps what it paid for', async () => {
   const r = await call(student, 'POST', '/api/bookings/create', bookingBody(next(), { mode: 'regular' }));
-  const rec = await call(admin, 'POST', '/api/dashboard/payments', { booking_id: r.json.bookingId, amount: 4.5, currency: 'USD', payment_method: 'wise', status: 'pending' });
+  const rec = await call(admin, 'POST', '/api/dashboard/payments', { booking_id: r.json.bookingId, amount: 5, currency: 'USD', payment_method: 'wise', status: 'pending' });
   expect((await call(admin, 'POST', `/api/dashboard/payments/${rec.json.payment.id}/confirm`, {})).status).toBe(200);
   const cancel = await call(admin, 'PATCH', `/api/dashboard/bookings/${r.json.bookingId}`, { status: 'cancelled', cancellation_reason: 'QA: the teacher is ill' });
   expect(cancel.status, JSON.stringify(cancel.json)).toBe(200);

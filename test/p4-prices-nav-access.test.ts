@@ -12,11 +12,11 @@ describe('P4-016/017 prices first', () => {
     assert.ok(page.includes('([30, 45, 60] as Minutes[])'));
     assert.ok(page.includes('useState<Minutes>(30)'));
     const { plansFor } = await import('../src/components/public/pricing/PricingPage.js');
-    // Same price per minute as the live catalog: 4 x 30 min Quran = $17, 8 x 30 = $33; 4 x 45 Arabic = $36.75.
-    assert.equal(plansFor(9, 30)[0].en.total.startsWith('$17 for 4'), true);
-    assert.equal(plansFor(9, 30)[1].en.total.startsWith('$33 for 8'), true);
+    // Same price per minute as the live catalog: 4 x 30 min Quran = $19, 8 x 30 = $37; 4 x 45 Arabic = $36.75.
+    assert.equal(plansFor(10, 30)[0].en.total.startsWith('$19 for 4'), true);
+    assert.equal(plansFor(10, 30)[1].en.total.startsWith('$37 for 8'), true);
     assert.equal(plansFor(13, 45)[0].en.total.startsWith('$36.75 for 4'), true);
-    assert.equal(plansFor(9, 30)[0].en.perLesson, '$4.25');
+    assert.equal(plansFor(10, 30)[0].en.perLesson, '$4.75');
   });
 
   it('"Book with a new package" starts a paid booking instead of an old draft, and a draft follows the zone', () => {

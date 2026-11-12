@@ -28,6 +28,8 @@ export interface DiscountCode {
   min_amount_usd: number;
   max_redemptions: number | null;
   max_per_account: number;
+  /** How many different families may use the code (null = no limit). MK-01: the founding code's first 20. */
+  max_accounts?: number | null;
   starts_at: string | null;
   ends_at: string | null;
   is_gift: boolean;
@@ -133,7 +135,7 @@ export function rejectionFromRpcMessage(message: string | undefined): CodeReject
  */
 export function checkCodeEligibility(
   code: DiscountCode | null,
-  ctx: { targetType: CheckoutTarget; baseAmount: number; hasPaidBefore: boolean; now?: Date; usedTotal?: number; usedByAccount?: number }
+  ctx: { targetType: CheckoutTarget; baseAmount: number; hasPaidBefore: boolean; now?: Date; usedTotal?: number; usedByAccount?: number; usedAccounts?: number }
 ): CodeRejection | null {
   if (!code) return 'NOT_FOUND';
   if (!code.is_active) return 'NOT_ACTIVE';
@@ -146,6 +148,7 @@ export function checkCodeEligibility(
   if (Number(code.min_amount_usd || 0) > 0 && ctx.baseAmount < Number(code.min_amount_usd)) return 'MIN_AMOUNT';
   if (code.max_redemptions != null && (ctx.usedTotal || 0) >= code.max_redemptions) return 'USED_UP';
   if ((ctx.usedByAccount || 0) >= (code.max_per_account || 1)) return 'ALREADY_USED';
+  if (code.max_accounts != null && !(ctx.usedByAccount || 0) && (ctx.usedAccounts || 0) >= code.max_accounts) return 'USED_UP';
   return null;
 }
 

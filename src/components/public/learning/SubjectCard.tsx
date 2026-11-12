@@ -56,7 +56,7 @@ export function SubjectCard({ service, family, isEn, title, tagline, whoFor, lea
         </ul>
         <p className="mt-3.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="font-editorial text-lg font-bold text-foreground">
-            {rate > 9 ? (isEn ? `from $${rate}` : `من ${rate}$`) : (isEn ? `$${rate}` : `${rate}$`)}
+            {rate > 10 ? (isEn ? `from $${rate}` : `من ${rate}$`) : (isEn ? `$${rate}` : `${rate}$`)}
           </span>
           <span className="text-sm text-muted-foreground">{isEn ? 'an hour' : 'للساعة'}</span>
           <Link to={`/pricing?subject=${service.id}`} className={`ms-auto text-sm font-bold underline-offset-4 hover:underline ${family.text}`}>

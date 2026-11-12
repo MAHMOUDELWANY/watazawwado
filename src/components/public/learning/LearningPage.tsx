@@ -446,7 +446,7 @@ export function LearningPage() {
                           whoFor={isEn ? service.whoIsItFor : (arDetails?.whoIsItFor || service.whoIsItFor)}
                           learn={isEn ? (service.whatYouWillLearn || []) : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || [])}
                           frequency={isEn ? service.recommendedFrequency : (arDetails?.recommendedFrequency || service.recommendedFrequency)}
-                          rate={BOOKABLE_SERVICES.find((b) => b.id === service.id)?.hourlyRateUsd ?? 9}
+                          rate={BOOKABLE_SERVICES.find((b) => b.id === service.id)?.hourlyRateUsd ?? 10}
                           expanded={Boolean(expandedServices[service.id])}
                           onToggle={() => toggleExpand(service.id)}
                           onTrial={() => onOpenTrialModal(service.id)}

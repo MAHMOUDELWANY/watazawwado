@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PortraitFrame, PublicButton, PageHero } from '../PublicDesignSystem';
+import { BadgeCheck } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { ValueCard, PORTALS } from '../ValueCard';
@@ -12,7 +13,9 @@ import { FirstStepEmblem, ShelterEmblem, SameTeacherEmblem, ConversationEmblem }
 type L = { en: string; ar: string };
 
 // The academy speaks as "we"; teachers are introduced as part of it (owner, 2026-10-16).
-const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boolean }> = [
+// Credentials follow the approved proof rules (docs/marketing/STRATEGY-DISCUSSION.md, 2026-11-12): only what is
+// checkable, numbers never rounded up, the Qira'at as "studying". Social content may only state what this page states.
+const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; credentials?: L[]; mirror?: boolean }> = [
   {
     src: '/ustadh-mahmoud.jpg',
     name: { en: 'Ustadh Mahmoud', ar: 'الأستاذ محمود' },
@@ -26,6 +29,12 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
         en: 'His strong English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
         ar: 'وتساعده إنجليزيته القوية على شرح النطق والقواعد بوضوح للطلاب الذين نشؤوا في الخارج.'
       }
+    ],
+    credentials: [
+      { en: "Ijazah in the Quran, the narration of Hafs 'an 'Asim", ar: 'إجازة في القرآن الكريم برواية حفص عن عاصم' },
+      { en: 'Graduate of Al-Azhar secondary school', ar: 'خريج الثانوية الأزهرية' },
+      { en: 'Has taught 100+ students in person and about 25 online, most of them in the US', ar: 'درّس أكثر من ١٠٠ طالب حضوريًا، ونحو ٢٥ طالبًا أونلاين أغلبهم في أمريكا' },
+      { en: "Currently studying the seven Qira'at", ar: 'يدرس حاليًا القراءات السبع' }
     ]
   },
   {
@@ -143,6 +152,16 @@ export function AboutPage() {
                   {teacher.bio.map((p) => (
                     <p key={p.en} className="text-muted-foreground leading-relaxed">{t(p)}</p>
                   ))}
+                  {teacher.credentials && (
+                    <ul className="space-y-2 pt-1" aria-label={isEn ? `${teacher.name.en}: credentials` : `مؤهلات ${teacher.name.ar}`}>
+                      {teacher.credentials.map((c) => (
+                        <li key={c.en} className="flex items-start gap-2 text-foreground/90 leading-relaxed">
+                          <BadgeCheck className="w-5 h-5 mt-0.5 shrink-0 text-[var(--teal)]" aria-hidden="true" />
+                          <span>{t(c)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </article>
             ))}

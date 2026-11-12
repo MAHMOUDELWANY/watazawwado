@@ -13,7 +13,7 @@
 import { adminClient, api, assertProject, baseUrl, findUserByEmail, isMain, mintSession, qaEmail } from './lib.js';
 
 const SUBJECTS = ['quran-reading', 'tajweed', 'quran-memorization', 'zad-essentials', 'seerah', 'modern-standard-arabic', 'egyptian-arabic', 'english'];
-const AGREEMENT_VERSION = '2026-10-28.1'; // api/index.ts TEACHER_AGREEMENT_VERSION
+const AGREEMENT_VERSION = '2026-11-12.1'; // api/index.ts TEACHER_AGREEMENT_VERSION
 // Wide hours in the teacher's own zone (RULES.md §1) so every learner zone finds slots.
 const SCHEDULE = [0, 1, 2, 3, 4, 5, 6].map(weekday => ({ weekday, start_time: '06:00', end_time: '23:00', is_active: true }));
 

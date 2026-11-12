@@ -1098,6 +1098,7 @@ export interface DiscountCodeRow {
   min_amount_usd: number;
   max_redemptions: number | null;
   max_per_account: number;
+  max_accounts: number | null;
   starts_at: string | null;
   ends_at: string | null;
   is_gift: boolean;

@@ -24,7 +24,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'إتقان علامات الوقف والابتداء'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'tajweed',
@@ -48,7 +48,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'التأسيس لمنهج الإجازة القرآنية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'quran-memorization',
@@ -73,7 +73,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'السير في خطة ختم القرآن الكريم كاملاً'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'quran-revision',
@@ -98,7 +98,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'المحافظة على ورد مراجعة أسبوعي مستمر'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
 
   // --- ISLAMIC STUDIES PILLAR ---
@@ -125,7 +125,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'بناء الأخلاق والسنن اليومية في البيت'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'islamic-studies',
@@ -150,7 +150,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'مساحة آمنة للنقاش والإجابة عن تساؤلات الهوية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'fiqh',
@@ -158,8 +158,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     name: 'Practical Fiqh (Worship & Daily Life)',
     arabicName: 'الفقه الميسر والعلوم الشرعية',
     group: 'islamic_studies',
-    tagline: 'Clear, step-by-step guidance on Taharah, Salah, Sawm, and everyday halal ($9/hr base, up to $13/hr for advanced Fiqh).',
-    arabicTagline: 'بيان أحكام الطهارة والصلاة والصيام والمعاملات (تبدأ من 9$ للميسر وحتى 13$ للمستويات المتقدمة).',
+    tagline: 'Clear, step-by-step guidance on Taharah, Salah, Sawm, and everyday halal ($10/hr base, up to $13/hr for advanced Fiqh).',
+    arabicTagline: 'بيان أحكام الطهارة والصلاة والصيام والمعاملات (تبدأ من 10$ للميسر وحتى 13$ للمستويات المتقدمة).',
     description: 'Accessible learning on how to perform acts of worship accurately according to established mainstream Islamic jurisprudence, without sectarian division.',
     arabicDescription: 'شرح ميسر لأحكام العبادات والمعاملات وفق المنهج المعتدل دون تعقيد.',
     suggestedGoals: [
@@ -175,7 +175,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'معرفة الحلال والحرام في شؤون الحياة اليومية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'aqeedah',
@@ -200,7 +200,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تعليم التوحيد للأطفال بصورة ميسرة'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
   {
     id: 'seerah',
@@ -224,7 +224,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تطبيق الأخلاق والرحمة المحمدية في المعاملات'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
 
   // --- ARABIC PILLAR ---
@@ -325,7 +325,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'اكتساب نطق عربي سليم وواثق'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 9
+    hourlyRateUsd: 10
   },
 
   // --- ENGLISH PILLAR ---
@@ -376,7 +376,7 @@ export const MAJOR_TIMEZONES: TimezoneOption[] = [
 export function calculateLessonFee(serviceId: string, duration: LessonDuration, isTrial: boolean): number {
   if (isTrial) return 0;
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId);
-  const hourlyRate = service?.hourlyRateUsd || 9;
+  const hourlyRate = service?.hourlyRateUsd || 10;
   
   // Display only; the server computes the charged fee with the same rule (server/pricing lessonFeeUsd).
   return Math.round(((hourlyRate * duration) / 60) * 100) / 100;

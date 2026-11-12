@@ -18,13 +18,13 @@ const code = (over: Partial<DiscountCode> = {}): DiscountCode => ({
 
 describe('P3 lesson fee (RULES.md §3)', () => {
   it('is strictly proportional for every approved rate and length, in whole cents', () => {
-    const expected: Record<string, number> = { '9/30': 4.5, '9/45': 6.75, '9/60': 9, '13/30': 6.5, '13/45': 9.75, '13/60': 13 };
+    const expected: Record<string, number> = { '10/30': 5, '10/45': 7.5, '10/60': 10, '13/30': 6.5, '13/45': 9.75, '13/60': 13 };
     for (const rate of Object.values(APPROVED_HOURLY_RATES)) for (const d of [30, 45, 60]) {
       const fee = lessonFeeUsd(rate, d);
       assert.strictEqual(fee, expected[`${rate}/${d}`]);
       assert.strictEqual(cents(fee) / 100, fee, 'no fraction of a cent');
     }
-    assert.strictEqual(baselinePrice('religious', 45), 6.75);
+    assert.strictEqual(baselinePrice('religious', 45), 7.5);
   });
 
   it('rounds half a cent up and never returns a float artefact', () => {

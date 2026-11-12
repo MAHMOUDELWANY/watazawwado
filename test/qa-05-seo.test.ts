@@ -10,7 +10,7 @@ describe('QA-05 SEO', () => {
     assert.ok(script.includes("if (page.path === '/learning')"));
     assert.ok(script.includes('BOOKABLE_SERVICES.map('));
     assert.ok(script.includes("courseMode: 'Online'"));
-    for (const s of BOOKABLE_SERVICES) assert.ok([9, 13].includes(s.hourlyRateUsd as number), `${s.id} matches RULES.md §3`);
+    for (const s of BOOKABLE_SERVICES) assert.ok([10, 13].includes(s.hourlyRateUsd as number), `${s.id} matches RULES.md §3`);
   });
 
   it('the built page carries valid JSON-LD when a build is present', (t) => {
