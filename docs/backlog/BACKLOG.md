@@ -608,6 +608,14 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   existing monthly bonus with a written reason. Add the bonus wording to the teacher agreement (new version, teachers
   accept again): it exists, it rewards keeping learners and good work, the amount varies.
 
+### MK-03 About page: the owner's real credentials
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- Approved proof rules (`docs/marketing/STRATEGY-DISCUSSION.md`, 2026-11-12): add to Ustadh Mahmoud's card and the
+  About page, both languages: ijazah in the Quran (Hafs 'an 'Asim, wording exactly as on the certificate; ask the
+  owner for it), Al-Azhar secondary graduate, "100+ students in person, about 25 online, most in the US", currently
+  studying the seven Qira'at. Never: Preply, the former institute's award, an English level. Content may only state
+  what this page states (content RULES §3.5).
+
 ---
 
 ## Owner decisions needed (agents: do not start these)
