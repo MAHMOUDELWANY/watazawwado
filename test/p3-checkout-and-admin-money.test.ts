@@ -43,14 +43,14 @@ describe('P3 checkout: codes, gifts and balance with real rows', () => {
     const [a, b] = [await held(), await held()];
     const first = await q.call(student, 'POST', '/api/checkout/apply', { ...target(a), code: CODE + 'ONE', useCredit: false });
     assert.strictEqual(first.status, 200, JSON.stringify(first.json));
-    assert.deepStrictEqual([first.json.codeDiscount, first.json.finalAmount, first.json.confirmed], [0.45, 4.05, false]);
-    assert.strictEqual(Number((await q.booking(a)).fee_amount_usd), 4.05, 'the stored price is what Stripe will charge');
+    assert.deepStrictEqual([first.json.codeDiscount, first.json.finalAmount, first.json.confirmed], [0.5, 4.5, false]);
+    assert.strictEqual(Number((await q.booking(a)).fee_amount_usd), 4.5, 'the stored price is what Stripe will charge');
     const quote = await q.call(student, 'POST', '/api/checkout/quote', { ...target(b), code: CODE + 'ONE' });
     assert.strictEqual(quote.json.rejection, 'ALREADY_USED');
-    assert.strictEqual(quote.json.finalAmount, 4.5);
+    assert.strictEqual(quote.json.finalAmount, 5);
     const second = await q.call(student, 'POST', '/api/checkout/apply', { ...target(b), code: CODE + 'ONE', useCredit: false });
     assert.strictEqual(second.status, 400);
-    assert.strictEqual(Number((await q.booking(b)).fee_amount_usd), 4.5);
+    assert.strictEqual(Number((await q.booking(b)).fee_amount_usd), 5);
     // Applying the same code again to the same lesson replaces the use, it does not add one.
     assert.strictEqual((await q.call(student, 'POST', '/api/checkout/apply', { ...target(a), code: CODE + 'ONE', useCredit: false })).status, 200);
     const { count } = await q.db.from('discount_redemptions').select('id', { count: 'exact', head: true }).eq('account_user_id', ids.student.authId).in('status', ['reserved', 'redeemed']);
@@ -59,7 +59,7 @@ describe('P3 checkout: codes, gifts and balance with real rows', () => {
     assert.strictEqual((await q.call(student, 'POST', `/api/student/bookings/${a}/release-hold`, {})).status, 200);
     const after = await q.call(student, 'POST', '/api/checkout/quote', { ...target(b), code: CODE + 'ONE' });
     assert.strictEqual(after.json.rejection, null, JSON.stringify(after.json));
-    assert.strictEqual(after.json.finalAmount, 4.05);
+    assert.strictEqual(after.json.finalAmount, 4.5);
   });
 
   it('savings stay inside the cap, and nothing the browser sends changes the numbers', async (t) => {
@@ -68,8 +68,8 @@ describe('P3 checkout: codes, gifts and balance with real rows', () => {
     const id = await held();
     const r = await q.call(student, 'POST', '/api/checkout/apply', { ...target(id), code: CODE + 'HALF', useCredit: false, finalAmount: 0, codeDiscount: 4.5, p_final: 0, capPercent: 100, baseAmount: 0.01, is_gift: true });
     assert.strictEqual(r.status, 200, JSON.stringify(r.json));
-    assert.deepStrictEqual([r.json.codeCapped, r.json.finalAmount, r.json.confirmed], [true, 3.37, false], '25% of 4.50 is 1.13 (rounded), not 50%');
-    assert.deepStrictEqual([(await q.booking(id)).status, Number((await q.booking(id)).fee_amount_usd)], ['pending', 3.37]);
+    assert.deepStrictEqual([r.json.codeCapped, r.json.finalAmount, r.json.confirmed], [true, 3.75, false], '25% of 5.00 is 1.25, not 50%');
+    assert.deepStrictEqual([(await q.booking(id)).status, Number((await q.booking(id)).fee_amount_usd)], ['pending', 3.75]);
     for (const [who, token] of [['another family', parent], ['a visitor', null]] as const) {
       const other = await q.call(token, 'POST', '/api/checkout/apply', { ...target(id), code: CODE + 'HALF' });
       assert.ok([401, 404].includes(other.status), `${who}: ${other.status}`);
@@ -116,7 +116,7 @@ describe('P3 checkout: codes, gifts and balance with real rows', () => {
     const used = both.filter(r => r.ok).reduce((s, r) => s + Number(r.json.creditUsed || 0), 0);
     assert.ok(used <= 3.001, `3.00 of balance paid ${used}`);
     const fees = await Promise.all([a, b].map(async id => Number((await q.booking(id)).fee_amount_usd)));
-    assert.strictEqual(Math.round((fees[0] + fees[1] + used) * 100), 900, 'every cent is either still owed or paid from the balance');
+    assert.strictEqual(Math.round((fees[0] + fees[1] + used) * 100), 1000, 'every cent is either still owed or paid from the balance');
     // Letting both go: the balance is whole again the next time it is read.
     for (const id of [a, b]) await q.call(student, 'POST', `/api/student/bookings/${id}/release-hold`, {});
     assert.strictEqual(await balance(), 3, 'P3-013: a released hold gives its balance back at once');
@@ -132,7 +132,7 @@ describe('P3 checkout: codes, gifts and balance with real rows', () => {
     assert.strictEqual((await q.call(admin, 'POST', `/api/dashboard/bookings/${id}/pay-later/approve`, {})).status, 200);
     assert.strictEqual((await q.call(admin, 'POST', `/api/dashboard/bookings/${id}/pay-later/reject`, {})).status, 409, 'a decision is made once');
     assert.strictEqual((await q.booking(id)).status, 'confirmed');
-    const paid = await q.call(admin, 'POST', '/api/dashboard/payments', { booking_id: id, amount: 4.5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-P3-PL-${Date.now()}`, status: 'confirmed' });
+    const paid = await q.call(admin, 'POST', '/api/dashboard/payments', { booking_id: id, amount: 5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-P3-PL-${Date.now()}`, status: 'confirmed' });
     assert.strictEqual(paid.status, 201, JSON.stringify(paid.json));
     const cancel = await q.call(student, 'POST', `/api/student/bookings/${id}/cancel`, {});
     assert.strictEqual(cancel.status, 200, JSON.stringify(cancel.json));
@@ -156,7 +156,7 @@ describe('P3 admin money actions and open endpoints under hostile input', () => 
     const slots = await q.freeSlots(ids.teacher1, { fromDay: 14 });
     const lesson = await q.call(student, 'POST', '/api/bookings/create', q.bookingBody(slots[0], { mode: 'regular' }));
     assert.strictEqual(lesson.status, 201, JSON.stringify(lesson.json));
-    const base = { booking_id: lesson.json.bookingId, amount: 4.5, currency: 'USD', payment_method: 'wise', status: 'pending' };
+    const base = { booking_id: lesson.json.bookingId, amount: 5, currency: 'USD', payment_method: 'wise', status: 'pending' };
     const bad: Record<string, unknown>[] = [
       { amount: 0 }, { amount: -4.5 }, { amount: 'abc' }, { amount: 1e9 }, { amount: null }, { amount: Infinity }, { currency: 'US' }, { currency: 'usd!' },
       { payment_method: 'cash' }, { payment_method: undefined }, { status: 'paid' }, { status: { $ne: 'x' } }, { booking_id: randomUUID(), status: 'confirmed' },
@@ -183,14 +183,14 @@ describe('P3 admin money actions and open endpoints under hostile input', () => 
     assert.strictEqual(again.status, 200);
     assert.strictEqual(again.json.idempotent, true, 'refunding twice refunds once');
     const { data: payment } = await q.db.from('payments').select('status, amount').eq('id', pid).single();
-    assert.deepStrictEqual([payment!.status, Number(payment!.amount)], ['refunded', 4.5], 'the record stays, marked refunded');
+    assert.deepStrictEqual([payment!.status, Number(payment!.amount)], ['refunded', 5], 'the record stays, marked refunded');
     assert.strictEqual((await q.booking(lesson.json.bookingId)).status, 'cancelled', 'the refunded lesson is cancelled');
   });
 
   it('P3-018: a package paid outside the site is recorded against that package, and activates it once', async (t) => {
     if (!q) return t.skip(skipReason);
     const all: any[] = (await q.call(null, 'GET', '/api/packages')).json.data;
-    const pack = all.filter(p => Number(p.eligibility_rules?.hourly_rate) === 9 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
+    const pack = all.filter(p => Number(p.eligibility_rules?.hourly_rate) === 10 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
     const chosen = await q.call(student, 'POST', '/api/student/packages/select', { packageCatalogId: pack.id, acceptedTerms: true, acceptedEarlyStart: true });
     assert.strictEqual(chosen.status, 201, JSON.stringify(chosen.json));
     const entitlementId = chosen.json.entitlement.id as string;

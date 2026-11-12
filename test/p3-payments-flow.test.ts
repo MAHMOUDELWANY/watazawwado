@@ -44,16 +44,16 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
   const notices = async (kind: string, userId: string, since: string) =>
     (await q.db.from('user_notifications').select('title_en, body_en, body_ar, link').eq('kind', kind).eq('recipient_user_id', userId).gte('created_at', since)).data || [];
 
-  /** A held, unpaid 30-minute lesson (USD 4.50) of the QA student. */
+  /** A held, unpaid 30-minute lesson (USD 5) of the QA student. */
   const heldLesson = async () => {
     const r = await q.call(student, 'POST', '/api/bookings/create', q.bookingBody(slots[n++ * 4], { mode: 'regular' }));
     assert.strictEqual(r.status, 201, JSON.stringify(r.json));
     assert.strictEqual(r.json.status, 'pending');
-    assert.strictEqual(r.json.feeAmountUsd, 4.5);
+    assert.strictEqual(r.json.feeAmountUsd, 5);
     return r.json.bookingId as string;
   };
   const session = (bookingId: string, over: Partial<Session> = {}): Session => {
-    const s: Session = { id: `cs_test_${randomUUID()}`, payment_status: 'paid', status: 'complete', amount_total: 450, currency: 'usd', payment_intent: `pi_p3_${randomUUID()}`, metadata: { targetType: 'booking', targetId: bookingId }, customer_details: { email: 'qa@example.com' }, ...over };
+    const s: Session = { id: `cs_test_${randomUUID()}`, payment_status: 'paid', status: 'complete', amount_total: 500, currency: 'usd', payment_intent: `pi_p3_${randomUUID()}`, metadata: { targetType: 'booking', targetId: bookingId }, customer_details: { email: 'qa@example.com' }, ...over };
     sessions.set(s.id, s);
     return s;
   };
@@ -74,7 +74,7 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
     assert.strictEqual((await q.booking(id)).status, 'confirmed');
     let rows = await payments(id);
     assert.strictEqual(rows.length, 1);
-    assert.deepStrictEqual([rows[0].status, Number(rows[0].amount), rows[0].currency, rows[0].payment_method, rows[0].payment_reference], ['confirmed', 4.5, 'USD', 'stripe', s.payment_intent]);
+    assert.deepStrictEqual([rows[0].status, Number(rows[0].amount), rows[0].currency, rows[0].payment_method, rows[0].payment_reference], ['confirmed', 5, 'USD', 'stripe', s.payment_intent]);
 
     assert.strictEqual((await deliver(s)).status, 200, 'a redelivery is acknowledged');
     const viaPage = await q.call(student, 'POST', '/api/payments/stripe/verify', { sessionId: s.id });
@@ -101,7 +101,7 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
   it('a wrong amount is recorded for review and never confirms, also on a retry', async (t) => {
     if (!q) return t.skip(skipReason);
     const id = await heldLesson();
-    const s = session(id, { amount_total: 449 });
+    const s = session(id, { amount_total: 499 });
     assert.strictEqual((await deliver(s)).status, 200, 'acknowledged, so Stripe stops retrying');
     assert.strictEqual((await deliver(s)).status, 200);
     const page = await q.call(student, 'POST', '/api/payments/stripe/verify', { sessionId: s.id });
@@ -171,11 +171,11 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
     const ids = await q.qaIds();
     const toAdmin = await notices('payment_review', ids.admin, since);
     assert.strictEqual(toAdmin.length, 1, `admin notices: ${toAdmin.length}`);
-    assert.match(toAdmin[0].body_en, /paid USD 4\.50 for MHM-[0-9A-F]+, but it was not confirmed: the held time had already been released/);
+    assert.match(toAdmin[0].body_en, /paid USD 5.00 for MHM-[0-9A-F]+, but it was not confirmed: the held time had already been released/);
     assert.ok(/[\u0600-\u06FF]/.test(toAdmin[0].body_ar), 'Arabic too');
     const toFamily = await notices('payment_received_review', ids.student.authId, since);
     assert.strictEqual(toFamily.length, 1, `family notices: ${toFamily.length}`);
-    assert.match(toFamily[0].body_en, /USD 4\.50 reached us.*do not pay again/);
+    assert.match(toFamily[0].body_en, /USD 5.00 reached us.*do not pay again/);
     assert.ok(!/zad|زاد/i.test(JSON.stringify(toFamily[0])), 'Zad stays out of payment messages (BRAND.md)');
   });
 
@@ -184,7 +184,7 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
     const id = await heldLesson();
     const s = session(id);
     // What the first pass leaves behind when it stops between recording the payment and confirming the lesson.
-    const { error } = await q.db.from('payments').insert({ booking_id: id, student_id: (await q.qaIds()).student.id, amount: 4.5, currency: 'USD', payment_method: 'stripe', payment_reference: s.payment_intent, status: 'pending', notes: 'Automated stripe verified payment' });
+    const { error } = await q.db.from('payments').insert({ booking_id: id, student_id: (await q.qaIds()).student.id, amount: 5, currency: 'USD', payment_method: 'stripe', payment_reference: s.payment_intent, status: 'pending', notes: 'Automated stripe verified payment' });
     assert.ok(!error, error?.message);
     assert.strictEqual((await deliver(s)).status, 200);
     assert.strictEqual((await q.booking(id)).status, 'confirmed');

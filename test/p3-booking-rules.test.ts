@@ -108,7 +108,7 @@ describe('P3 booking rules with real rows', () => {
     assert.strictEqual(r.status, 201, JSON.stringify(r.json));
     const b = await q.booking(r.json.bookingId);
     assert.deepStrictEqual([b.status, Number(b.fee_amount_usd), b.booking_type, b.payment_plan, b.student_id, b.teacher_id],
-      ['pending', 4.5, 'regular', 'pay_now', ids.student.id, ids.teacher1]);
+      ['pending', 5, 'regular', 'pay_now', ids.student.id, ids.teacher1]);
     assert.match(b.contact_email, /\+qa-p\d-student-1@/);
     assert.strictEqual(DateTime.fromISO(b.scheduled_end).diff(DateTime.fromISO(b.scheduled_start), 'minutes').minutes, 30);
     const holdMinutes = DateTime.fromISO(b.hold_expires_at).diffNow('minutes').minutes;
@@ -191,7 +191,7 @@ describe('P3 booking rules with real rows', () => {
     // A paid lesson, paid (the admin records the transfer), cancelled in time: one lesson credit.
     const paid = await book(student, next(), { mode: 'regular' });
     assert.strictEqual(paid.status, 201, JSON.stringify(paid.json));
-    const rec = await q.call(admin, 'POST', '/api/dashboard/payments', { booking_id: paid.json.bookingId, amount: 4.5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-P3-${Date.now()}`, status: 'confirmed' });
+    const rec = await q.call(admin, 'POST', '/api/dashboard/payments', { booking_id: paid.json.bookingId, amount: 5, currency: 'USD', payment_method: 'wise', payment_reference: `QA-P3-${Date.now()}`, status: 'confirmed' });
     assert.strictEqual(rec.status, 201, JSON.stringify(rec.json));
     const cancelled = await q.call(student, 'POST', `/api/student/bookings/${paid.json.bookingId}/cancel`, {});
     assert.strictEqual(cancelled.status, 200, JSON.stringify(cancelled.json));
