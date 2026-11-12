@@ -33,6 +33,21 @@ master prompt (8 deliverables) and a transcript of Chris Hewitt's storytelling v
 7. **[2026-11-12] No "AI" label on voice-clone videos.** Owner: the clone is his own voice, the script is his.
    Claude raised the trust risk once; the owner decided. Only exception: where a platform's upload form itself
    requires the synthetic-media toggle, follow the platform's rule.
+8. **[2026-11-12] Message hierarchy** (English drafts, humanizer and Arabic versions before publishing):
+   1. Brand line (fixed everywhere): "Not just lessons. A mentor who stays."
+   2. Enemy: "Nobody should learn their deen from a stranger."
+   3a. Parents: "You choose your child's teacher. We message you before you have to ask."
+   3b. Young adults: "Someone your age who gets you. No lectures."
+   4. Proof: the ijazah, 100+ students, a report after every class, a learner with him since May 2026.
+9. **[2026-11-12] Five content pillars** (shares reviewed after 4 weeks; together ~60% parents / ~40% young adults):
+   | Pillar | Job | Audience | Share | Main format |
+   |---|---|---|---|---|
+   | 1. Not a stranger | Show the teacher–learner relationship (first 10 minutes, a proactive message to a mother on demo data, the report) | Parents | 15% | Screen recording, carousel |
+   | 2. Learn something in a minute | Free value that proves the ijazah and the teaching (a letter, a Tajweed rule, a family Arabic phrase, a Seerah story) | Both | 35% | Motion graphics (voice clone) or filmed |
+   | 3. Come back, no lecture | Young adults returning to the deen; "I drifted, where do I start?"; no fatwas | Young adults | 20% | Street talking video |
+   | 4. Parent playbook | Practical help; the enemy indirectly ("5 questions to ask any academy before you book") | Parents | 15% | Carousel, written post |
+   | 5. Building it with you | Behind the scenes with the family as hero ("you told us ___, so we built ___"), the platform, Zad | Both | 15% | Home talking video |
+   Replaces PLAN.md §4 and the 40% build-story share in BRAND.md §7 once the strategy is written.
 4. **[2026-11-12] Use proven external frameworks** (books, research) when setting rules, not only the owner's input;
    each one adapted and labelled with its source and limits.
 
@@ -153,7 +168,8 @@ _(none yet)_
 ## Open questions
 1. Non-solicitation terms with the former institute: not yet answered (the owner is in touch with past families).
 2. How to measure awareness (branded search, name mentions, shares/saves, waitlist): proposed, not agreed.
-4. Message hierarchy (asked 2026-11-12). Decided 2026-11-12: founding discount **15% for 12 months**. Price $10/$13 and the retention bonus are decided
+4. Funnel and KPIs approved 2026-11-12 (north star: waitlist sign-ups; no numeric targets before a 2-week baseline;
+   process targets: post on 90%+ of days, a 2-week bank before day 1). Decided 2026-11-12: founding discount **15% for 12 months**. Price $10/$13 and the retention bonus are decided
    (root RULES.md §2c and §3, 2026-11-12; build in BACKLOG MK-01, MK-02). Watch-out: wave 1 learners all pay a
    discounted price for a year, so the full-price bonus pool stays near empty in year 1; the super admin top-up
    carries the bonus until later waves pay full price. Background: Owner: list price **$10/h** Quran and Islamic studies
