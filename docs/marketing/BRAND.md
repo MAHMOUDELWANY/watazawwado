@@ -83,7 +83,7 @@ patterns stay secondary because every academy uses them.
 - Site: open to browse; new learner sign-up by invitation only; the waitlist "Pack your zaad": tap subjects into the
   bag, one tap for "me" or "my child", email or Google only, an honest place in line, an instant email, a share card
   ("I packed my zaad"), an optional tap-card "what annoyed you before?". Referrals never move anyone up the line.
-- Founding families: 20% off for 90 days, first 20 learners (RULES.md §4). The existing friend referral credit works
+- Founding families: 15% off for 12 months, first 20 learners (RULES.md §4, changed 2026-11-12; list price $10/h). The existing friend referral credit works
   once the wave opens.
 - Weekly short email to the waitlist: what we built because of them.
 - Comments: "comment ZAAD" → automatic DM with the link (ManyChat, Instagram and Facebook); link in bio elsewhere.

@@ -59,6 +59,15 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 ## 2c. Lesson outcomes and teacher pay
 
 - **[Decided 2026-10-28] Teacher pay (D2, D6, D7).** Each teacher has one fixed hourly rate in their own pay currency, set by the super admin; a lesson counts by its length. Pay is per calendar month, sent outside the site between the 1st and 5th of the next month; the super admin may add a bonus or deduction with a written reason and records the transfer (method, reference), which sends the teacher a payslip. Teachers see their own pay ("My month") and never what students pay.
+- **[Decided 2026-11-12] Teacher pay floor and quarterly retention bonus.** A teacher's base rate is the floor that
+  still holds at the deepest discount (target: 50% of the list price, e.g. $5/h on a $10 lesson, $6.50 on $13).
+  Every 3 months a teacher may receive a **retention bonus** when: (1) they taught at least a minimum number of
+  learners through the quarter (a setting, 5 to start); (2) no learner left because of the teacher (the super admin
+  judges, using the leaving reason and reports; nobody is perfect); (3) the super admin's review of performance and
+  commitment is good. The bonus pool is built from full-price bookings (about +$1/h per full-price hour, 10% of list)
+  and the super admin may top it up from the academy. The amount varies with many factors. Teachers are told the
+  bonus exists and rewards keeping learners and doing the work well; they never see prices or how the pool is
+  calculated (§1). Paid through the existing bonus field with a written reason (above). Build: BACKLOG MK-02.
 - **[Decided 2026-10-28] What is paid (D5, S1–S4).** Held lesson: paid, full length. Free trial: not paid. Student cancels in time: not paid; the student gets a lesson credit. Student no-show (not in within 15 minutes) or late cancel: paid. Student late: paid, full length; the teacher is encouraged, not obliged, to add time if free so the student gets at least 30 minutes in total. Teacher absent or cancels inside 3 hours without moving: not paid; the student gets a lesson credit; the admin is alerted and may deduct if it repeats. Technical problem on our side: not paid; the student gets a lesson credit. Pay-later lesson unpaid at month end, package or credit lessons: paid at the same rate.
 - **[Decided 2026-10-28] Published** in the teacher agreement (version 2026-10-28.1, every teacher accepts it again) and the student terms (version 2026-10-28.1), as drafted in `docs/plans/POLICY-DRAFT-2026-10-28.md`.
 
@@ -91,6 +100,8 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 
 ## 3. Pricing
 
+- **[Decided 2026-11-12] New list price: Quran, Tajweed and all Islamic studies $10/hour** (was $9); Arabic and
+  English stay $13/hour. Wave 1 gets a founding discount of **15% for 12 months** (§4). Until BACKLOG MK-01 ships, the site and server still charge the old rates below.
 - **[Decided 2026-10-14] Hourly rates (60 minutes):**
   - Quran, Tajweed, and all Islamic studies (Aqeedah, Fiqh, Seerah, …): **$9 / hour**.
   - Arabic (MSA / Fusha, Egyptian Arabic) and English: **from $13 / hour** (most cases are $13).
@@ -106,7 +117,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided] Commercial principles:** discounts must be sustainable (never selling below cost of the owner's time), clearly explained, and honest. Use positive framing (per-lesson price, "you save $X", family care) — never fake urgency, fake scarcity, hidden fees or pressure. Parents and students should feel the platform is their safe place, not a seller chasing money.
 - **[Decided 2026-10-14] Package table approved by the owner:** `docs/pricing/packages.md` (live in `package_catalog`). A package is for one price band ($9 or $13) and one lesson length (30/45/60); the server enforces both. Family care: 5% off a package for a second (third…) child, applied by the server.
 - **[Decided 2026-10-22] Discount codes:** the super admin creates codes (Dashboard → Discounts & invites): percent or fixed amount, for lessons, packages or both, with optional first-purchase-only, minimum order, total uses, uses per family and dates. A code stacks with package savings and the family 5%, but total savings on one order stay within a cap of the full price (a setting, 25% at launch). A **gift** code is outside the cap and may cover the whole price (100% allowed): the booking is confirmed or the package activated with no payment. A used code's terms never change; it can only be switched off, given an end date or a lower use limit. The server prices everything (`server/pricing/discounts.ts`).
-- **[Decided 2026-11-05] Founding families code (wave 1).** One code for the first 20 learners of wave 1: 20% off, valid 90 days from the wave opening, inside the 25% cap. Never tied to a review or rating. Waitlist referrals never move anyone up the line.
+- **[Decided 2026-11-05, changed 2026-11-12] Founding families code (wave 1).** One code for the first 20 learners of wave 1: **15% off, valid 12 months** from the wave opening (was 20% for 90 days), inside the 25% cap. Never tied to a review or rating. Waitlist referrals never move anyone up the line.
 - **[Decided 2026-10-22] Invite a friend (referral):** every family has a personal link (`/?ref=CODE`) on its Invite page. The friend gets account credit when they join (once, new accounts only, never your own code); the inviter gets credit only after the friend's first **paid** lesson is completed (the free trial does not count), up to a yearly limit. **[Decided 2026-11-07]** Paid means the friend paid at least the inviter's reward in real money on that lesson (or the package it came from); a lesson covered mostly or fully by the welcome gift does not count, so invites can't be chained into free lessons. A lesson paid fully from the balance can be cancelled in time like any lesson, and the balance goes back. Amounts and the limit are settings (USD 5 / 5, 10 a year at launch). Credit is money, not a discount: it is used automatically at checkout (the family can switch it off), sits outside the cap, cannot be cashed out, and comes back if a booking it paid for is refunded or not completed.
 
 ## 5. Payments
