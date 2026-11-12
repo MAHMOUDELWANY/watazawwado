@@ -46,3 +46,8 @@ Every item above tried and recorded as safe or finding; all Critical/High fixed 
   an account is not staff, and give the client a neutral check.
 - The server's rate limit is per instance and per client address taken from `x-real-ip`; P2's specs send a made-up
   address on every call to avoid it. Check that a caller on the public internet cannot choose that header.
+
+## Carry-over from P3 (2026-11-12, owner: clean-up goes to P5)
+- P3-022 code clean-up: drop or wire up `src/lib/bookingRepository.ts` (`check_trial_eligibility` is dead in the browser),
+  decide on `create_booking_atomic` (in the database, not used by the server), and close the race in
+  `/api/dashboard/admin/account-credit` (it reads the balance then writes; two negative adjustments at once could pass zero).
