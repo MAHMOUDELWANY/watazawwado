@@ -616,6 +616,14 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   studying the seven Qira'at. Never: Preply, the former institute's award, an English level. Content may only state
   what this page states (content RULES §3.5).
 
+### MK-04 Homepage copy from the strategy
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- `docs/marketing/STRATEGY.md` §4. Keep the headline "Provision that lasts…". Remove the visible kicker above it
+  (no hidden text; subjects stay in `<title>`, meta description and the hero paragraph). Add the hero sub-line
+  "Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask." and a
+  caption by the teacher photos ("You choose. See each teacher's story before you book."). Add one line for young
+  adults ("Drifted? Start where you are. No lectures."). Arabic versions, humanizer, desktop and 375px.
+
 ---
 
 ## Owner decisions needed (agents: do not start these)
