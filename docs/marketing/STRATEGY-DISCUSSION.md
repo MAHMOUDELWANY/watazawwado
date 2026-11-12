@@ -96,6 +96,30 @@ Evidence level: second-hand, from the owner's recollection of families who staye
 | Christensen & Moesta, Jobs to Be Done | The "job" a family hires us for; push, pull, anxiety, habit | Customer psychology and interview script | Needs real interviews |
 | Kahneman, peak-end rule | Experiences remembered by peak and end | Already in BRAND.md §8 (nine moments) | Applies to experience more than ads |
 
+## Proof we have (owner, 2026-11-12)
+Facts (the owner can show documents for each):
+- **Ijazah in the Quran, Hafs 'an 'Asim.**
+- Al-Azhar secondary school graduate.
+- Studying the seven Qira'at (reached about a third to half of the Quran, no ijazah yet); memorised ~800 lines of
+  al-Shatibiyya.
+- Taught Quran and Tajweed **in person to 100+ students** (an education centre) and **about 25 students online**,
+  mostly in the United States.
+- Longest online learner: since May 2026, still learning with him.
+- A real public review on the site from a Czech student (sent through the super admin review link).
+- Also: Super Tutor on Preply; "best teacher" at his last institute; BBA student at the University of Wrocław.
+
+Proof rules [Approved 2026-11-12]:
+1. Lead with the **ijazah** and show the certificate on camera: concrete and checkable (Made to Stick: credibility
+   you can see). The Arabic and English wording follows the certificate exactly.
+2. Numbers stated conservatively: "100+ students in person, about 25 online, most in the US." Never round up.
+3. Qira'at as "currently studying", never as a qualification.
+4. Not public: Preply (names another platform, RULES §5) and the former institute's award (names a former employer,
+   hard for a viewer to check). They can support a private conversation.
+5. Add the ijazah and the numbers to the About page first; content only states what the About page states (content
+   RULES §3.5). BACKLOG MK-03.
+6. Reviews: the owner sends the review link to past families who reply to the VOC messages (no gift or condition,
+   RULES §3.6); each review says it is about him as a teacher before Watazawwado.
+
 ## Competitive alternatives (owner, 2026-11-12; analysis is Claude's hypothesis)
 | Audience | Real alternative | What it does well | Where it fails them | Our angle |
 |---|---|---|---|---|
@@ -129,8 +153,7 @@ _(none yet)_
 ## Open questions
 1. Non-solicitation terms with the former institute: not yet answered (the owner is in touch with past families).
 2. How to measure awareness (branded search, name mentions, shares/saves, waitlist): proposed, not agreed.
-4. Public proof: which verifiable facts about the owner's teaching history can we state (asked 2026-11-12)?
-   Decided 2026-11-12: founding discount **15% for 12 months**. Price $10/$13 and the retention bonus are decided
+4. Message hierarchy (asked 2026-11-12). Decided 2026-11-12: founding discount **15% for 12 months**. Price $10/$13 and the retention bonus are decided
    (root RULES.md §2c and §3, 2026-11-12; build in BACKLOG MK-01, MK-02). Watch-out: wave 1 learners all pay a
    discounted price for a year, so the full-price bonus pool stays near empty in year 1; the super admin top-up
    carries the bonus until later waves pay full price. Background: Owner: list price **$10/h** Quran and Islamic studies
