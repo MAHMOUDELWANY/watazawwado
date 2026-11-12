@@ -591,6 +591,23 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   - No Supabase user for the child.
 - Teens (13+) might later get their own email login instead. Privacy policy needs a line on child devices.
 
+## MK: From the brand and growth strategy (owner 2026-11-12)
+
+### MK-01 Price $9 → $10 and the founding discount
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo (founding: 15% for 12 months, owner 2026-11-12)
+- RULES.md §3 (2026-11-12): Quran, Tajweed and Islamic studies $10/h; languages $13/h. Update the pricing engine,
+  packages, every price shown on the site (both languages), emails and FAQ; replace the 20%/90-day founding code with
+  the chosen founding discount for 12 months (inside the 25% cap). Tests for the new amounts. Bump `TERMS_VERSION` if
+  the terms quote prices.
+
+### MK-02 Quarterly retention bonus for teachers
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo
+- RULES.md §2c (2026-11-12). Super admin only (teachers never see it): per teacher and quarter, learners taught,
+  learners who left with the reason, full-price hours and the resulting pool (+10% of list per full-price hour),
+  eligibility checks (minimum learners setting, default 5), a top-up field, and "pay as bonus", which uses the
+  existing monthly bonus with a written reason. Add the bonus wording to the teacher agreement (new version, teachers
+  accept again): it exists, it rewards keeping learners and good work, the amount varies.
+
 ---
 
 ## Owner decisions needed (agents: do not start these)
