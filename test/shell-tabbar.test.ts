@@ -24,9 +24,10 @@ test('tab bars point at existing routes for every role', () => {
     assert.ok(student.includes(path), `student nav ${path}`);
   }
   assert.match(student, /setSidebarOpen\(true\)/, '"More" opens the sheet');
-  // One place per screen size: header tabs and rail share no page; bottom bar and the More sheet share none.
-  assert.match(student, /const topTabs = \[home, lessons, book, curriculum, homework\];/);
-  assert.match(student, /const railItems = \[messages, wallet, calendar, progress, community, guide, invite, sponsor\];/);
+  // One place per screen size: header tabs and the desktop More menu share no page (P4-020: no unlabelled rail);
+  // bottom bar and the More sheet share none.
+  assert.match(student, /const topTabs = \[home, lessons, book, curriculum, homework, messages\];/);
+  assert.match(student, /const desktopMoreItems = \[wallet, calendar, progress, community, guide, invite, sponsor\];/);
   assert.match(student, /const moreItems = \[homework, curriculum, wallet, calendar, progress, community, guide, invite, sponsor\];/);
 });
 

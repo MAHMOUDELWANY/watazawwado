@@ -165,6 +165,10 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 font-sans">
+        {/* First stop for a keyboard or screen reader: past the menu, straight to the page (P4-037). */}
+        <a href="#site-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-[100] focus:px-4 focus:py-3 focus:rounded-xl focus:bg-foreground focus:text-background focus:font-bold" data-testid="skip-link">
+          {lang === 'ar' ? 'تخطَّ إلى المحتوى' : 'Skip to main content'}
+        </a>
         {/* Global Navigation */}
         <Navbar
           lang={lang}
@@ -176,7 +180,9 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         />
         <ReferralWelcome lang={lang} />
 
-        <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
+        <div id="site-content" tabIndex={-1} className="outline-none">
+          <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
+        </div>
         {/* Cookie-free page views, public pages only (docs/marketing/PLAN.md §8). */}
         <Analytics />
 

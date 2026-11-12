@@ -1109,6 +1109,15 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
 
+## 2026-11-12 — P4 proposals 8–10 built (owner's pick)
+- Prices: hourly prices at the top of /pricing, a 30/45/60-minute package switch, "Book with a new package" no longer
+  reopens an old trial draft, drafts follow the current zone (P4-016/017).
+- Navigation: portal without the unlabelled rail (Messages tab + labelled More menu); dashboard rail with names and
+  group headings; admin queue adds teacher changes, next-24 h trials, learner requests, waitlist (P4-020/035).
+- Access: skip link, no sound on key press or reduced motion, Esc stops the recitation, named step dots, 44 px age
+  box, wrapping zone buttons, "Ask a parent to join" for under-18s (P4-022/024/029/037). Test:
+  `test/p4-prices-nav-access.test.ts`. Open: leave requests in the queue, P4-038.
+
 ## 2026-11-12 — P4 proposals 6–7 built (owner's pick)
 - Child: code button at the top of the sign-in dialog, code boxes that keep up with fast typing, kid home and
   curriculum without grown-up cards or booking buttons, 12.5 px tab labels (P4-025/026/027).

@@ -568,14 +568,22 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   // PA-01: a new booking starts for the child chosen in the header (the family can still change it in the flow).
   const { activeId } = useActiveLearner();
   // A booking left half-way (terms page, packages, Stripe) continues where it stopped.
-  const [resumingDraft, setResumingDraft] = useState<boolean>(hasBookingDraft);
+  // "Book with a new package" (?mode=package) means a new paid booking: an old draft (say, a free trial left half-way)
+  // must not take its place (P4-016).
+  const [wantsPackage] = useState(() => {
+    try { return new URLSearchParams(window.location.search).get('mode') === 'package'; } catch { return false; }
+  });
+  const [resumingDraft, setResumingDraft] = useState<boolean>(() => {
+    if (wantsPackage) { clearBookingDraft(); return false; }
+    return hasBookingDraft();
+  });
   const [placement, setPlacement] = useState<Array<{ id: string; status: string }> | null>(null);
 
   // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
   const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
   const [isReusing, setIsReusing] = useState<boolean>(false);
   const [flowKey, setFlowKey] = useState<number>(0);
-  const [flowStep, setFlowStep] = useState<number>(1);
+  const [flowStep, setFlowStep] = useState<number>(wantsPackage ? 4 : 1);
   const [activeConfig, setActiveConfig] = useState<{
     initialData: Partial<BookingFormData>;
     matchedServiceId: string;
@@ -905,7 +913,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   );
   // Placement test comes after the free trial is booked (owner decision 2026-10-16): say so up front, offer it after.
   const needsPlacement = placement ? placement.some((l) => l.status === 'not_yet' || l.status === 'take_now') : false;
-  const currentMode = activeConfig ? activeConfig.initialMode : (requestedEntitlementId ? 'regular' : standardMode);
+  const currentMode = activeConfig ? activeConfig.initialMode : (requestedEntitlementId || wantsPackage ? 'regular' : standardMode);
 
   return (
     <div className="space-y-6">

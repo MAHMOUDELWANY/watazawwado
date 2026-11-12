@@ -140,7 +140,7 @@ export function learnerTourSteps(isAr: boolean): TourStep[] {
       pose: 'proud',
     },
     {
-      targetId: ['student-wallet'],
+      targetId: ['student-wallet', 'student-more-btn'],
       open: 'more',
       title: t('Your wallet', 'محفظتك'),
       description: t(
@@ -244,7 +244,7 @@ export function familyTourSteps(isAr: boolean): TourStep[] {
       route: '/student/lessons',
     },
     {
-      targetId: ['student-progress'],
+      targetId: ['student-progress', 'student-more-btn'],
       open: 'more',
       title: t('Follow their progress', 'تابع تقدّمهم'),
       description: t(

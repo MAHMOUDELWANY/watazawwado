@@ -4,7 +4,8 @@ import http from 'node:http';
 import fs from 'node:fs';
 import app from '../api/index.js';
 
-const KEYS = ['follow_ups', 'pay_later', 'refunds', 'placements', 'unread_chats', 'health', 'no_zoom_24h'];
+// P4-035 added what waits on a person: teacher changes, trials in the next 24 h, learner requests, the waitlist.
+const KEYS = ['follow_ups', 'pay_later', 'refunds', 'placements', 'unread_chats', 'health', 'no_zoom_24h', 'teacher_changes', 'trials_24h', 'intakes', 'waitlist'];
 
 describe('AD-01 admin overview: what needs me today', () => {
   it('the overview leads with the action items, before follow-ups and the numbers', () => {

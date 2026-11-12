@@ -174,6 +174,9 @@ export function WeekWithUs({ isEn }: { isEn: boolean }) {
                     type="button"
                     tabIndex={-1}
                     onClick={() => goTo(i)}
+                    // Named for screen readers (P4-037); still out of the Tab order, the cards scroll on their own.
+                    aria-label={isEn ? `Step ${i + 1} of ${STEPS.length}: ${x.when.en}` : `الخطوة ${i + 1} من ${STEPS.length}: ${x.when.ar}`}
+                    aria-current={i === active ? 'step' : undefined}
                     className="week-pip h-2 rounded-full"
                     data-on={i === active || undefined}
                     data-done={i < active || undefined}

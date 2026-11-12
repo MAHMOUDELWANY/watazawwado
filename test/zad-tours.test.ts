@@ -34,7 +34,7 @@ describe('Zad tours (one per account type)', () => {
   });
 
   it('owner review 2026-11-10: every phone and desktop target exists, and steps open what they explain', () => {
-    const src = ['src/student/StudentApp.tsx', 'src/student/pages/StudentHomePage.tsx', 'src/student/activeLearner.tsx']
+    const src = ['src/student/StudentApp.tsx', 'src/student/pages/StudentHomePage.tsx', 'src/student/activeLearner.tsx', 'src/student/components/DesktopMoreMenu.tsx']
       .map((f) => fs.readFileSync(f, 'utf8')).join(' ');
     const tourIds = [...src.matchAll(/tour: '([a-z-]+)'/g)].map((m) => m[1]);
     // An id or data-tour written as an attribute, a nav item's `tour`, or an id chosen in JSX ('nav-book-link-desktop').

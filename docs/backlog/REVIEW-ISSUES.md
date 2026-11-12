@@ -121,9 +121,9 @@ pick.
 5. **Booking v2** (P4-008/009/021) [built 2026-11-12]: three steps, nothing wrongly pre-selected, Arabic dates, the sibling's trial next.
 6. **A child's way in** (P4-025/026/027/028) [built 2026-11-12 except the child mode on the parent's phone]: code option inside sign-in, one-field code, a kid space for children.
 7. **One voice, meanings first** (P4-010/023/031/032) [built 2026-11-12 except the full Arabic 80/20 pass]: rewrite onboarding, booking and tour; "New to Islam? Start here".
-8. **Prices first, no loops** (P4-016/017): prices at the top of /pricing, 30-minute packages, wallet link to packages.
-9. **One navigation** (P4-020/035): one top bar for portal and teachers; one admin queue and a labelled menu.
-10. **Access for everyone** (P4-022/024/029/037/038): 44 px targets, large text, skip link, recitation control,
+8. **Prices first, no loops** (P4-016/017) [built 2026-11-12]: prices at the top of /pricing, 30-minute packages, wallet link to packages.
+9. **One navigation** (P4-020/035) [built 2026-11-12; leave requests not in the queue yet]: one top bar for portal and teachers; one admin queue and a labelled menu.
+10. **Access for everyone** (P4-022/024/029/037/038) [built 2026-11-12 except P4-038]: 44 px targets, large text, skip link, recitation control,
     "Ask a parent to join" for teens.
 11. Quick wins: green in the ribbon gradient (P4-039), one-tap language gate (P4-011), trader's full address (P4-019),
     learner card on the trial (P4-033), type hours first on phones (P4-034), QA accounts out of admin numbers (P4-036).

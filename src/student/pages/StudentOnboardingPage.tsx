@@ -706,14 +706,22 @@ export default function StudentOnboardingPage({
                       : learnerType === 'adult'
                         ? (isRTL ? `الحساب الشخصي من ${ADULT_MIN_AGE} سنة وطالع.` : `Personal accounts are for ages ${ADULT_MIN_AGE}+.`)
                         : (isRTL ? `وليّ الأمر ${GUARDIAN_MIN_AGE} سنة أو أكثر، والأبناء من ${CHILD_MIN_AGE} إلى ${CHILD_MAX_AGE} سنة.` : `Guardians are ${GUARDIAN_MIN_AGE}+; children are ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
+                    {/* An under-18 does not turn himself into his own guardian (P4-029): he asks a parent, who opens the
+                        family account and adds him. The message carries his name and age so the parent knows what to do. */}
                     {tooYoung && learnerType === 'adult' && (
-                      <button
-                        type="button"
-                        onClick={() => { setLearnerType('child'); setError(null); }}
-                        className="ms-1.5 underline font-bold cursor-pointer"
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(isRTL
+                          ? `السلام عليكم، أريد أن أتعلم في أكاديمية وتزودوا. افتح لي حساب أسرة من هنا وأضفني فيه: ${window.location.origin}/ar/student?auth=signup
+اسمي: ${studentName.trim() || '...'}، وعمري ${age} سنة.`
+                          : `Assalamu alaikum. I'd like to learn at Watazawwado Academy. Please open a family account here and add me: ${window.location.origin}/student?auth=signup
+My name: ${studentName.trim() || '...'}, age ${age}.`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ms-1.5 inline-flex items-center min-h-11 underline font-bold cursor-pointer"
+                        data-testid="ask-parent-to-join"
                       >
-                        {isRTL ? 'حوّل لحساب عائلة' : 'Switch to a family account'}
-                      </button>
+                        {isRTL ? 'اطلب من وليّ أمرك ينضم' : 'Ask a parent to join'}
+                      </a>
                     )}
                   </p>
                 );

@@ -379,13 +379,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                           </div>
 
                           {accountType === 'self' ? (
-                            <label className="flex items-start gap-2.5 pt-1 cursor-pointer select-none">
+                            <label className="flex items-start gap-3 min-h-11 py-1 cursor-pointer select-none">
                               <input
                                 type="checkbox"
                                 data-ring-mark
                                 checked={confirmedAdult}
                                 onChange={(e) => { setConfirmedAdult(e.target.checked); setError(''); }}
-                                className="mt-0.5 w-[18px] h-[18px] shrink-0 accent-[#087D91] cursor-pointer"
+                                className="mt-0.5 w-5 h-5 shrink-0 accent-[#087D91] cursor-pointer"
                               />
                               <span className="text-sm text-foreground leading-snug">
                                 {isAr ? `أؤكد أن عمري ${ADULT_MIN_AGE} سنة أو أكثر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}

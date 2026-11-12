@@ -2637,7 +2637,8 @@ app.get('/api/dashboard/admin/action-items', verifyTeacherAuth, requireSuperAdmi
     if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
     const now = DateTime.utc();
     const endOfToday = DateTime.now().setZone('Africa/Cairo').endOf('day').toUTC().toISO();
-    const [tasks, payLater, refunds, placements, threads, noZoom, health] = await Promise.all([
+    // P4-035: one queue for everything that waits on a person, not only money and chats.
+    const [tasks, payLater, refunds, placements, threads, noZoom, health, teacherChanges, waitlist, intakes, trials] = await Promise.all([
       supabase.from('crm_tasks').select('id', { count: 'exact', head: true }).is('done_at', null).lte('due_at', endOfToday),
       supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'pending').eq('payment_plan', 'pay_later'),
       supabase.from('package_entitlements').select('id', { count: 'exact', head: true }).eq('status', 'active')
@@ -2648,7 +2649,12 @@ app.get('/api/dashboard/admin/action-items', verifyTeacherAuth, requireSuperAdmi
       supabase.from('bookings').select('id', { count: 'exact', head: true }).in('status', ['confirmed', 'rescheduled'])
         .gte('scheduled_start', now.toISO()).lte('scheduled_start', now.plus({ hours: 24 }).toISO())
         .or('zoom_meeting_link.is.null,zoom_meeting_link.not.like.http*'),
-      computeHealth(supabase, PLACEMENT_BEFORE_BOOKING)
+      computeHealth(supabase, PLACEMENT_BEFORE_BOOKING),
+      supabase.from('teacher_change_requests').select('id', { count: 'exact', head: true }).in('status', ['open', 'talk']),
+      supabase.from('waitlist_entries').select('id', { count: 'exact', head: true }).is('invited_at', null),
+      supabase.from('student_intakes').select('id', { count: 'exact', head: true }).eq('status', 'awaiting_teacher_review'),
+      supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('booking_type', 'trial').in('status', ['confirmed', 'rescheduled'])
+        .gte('scheduled_start', now.toISO()).lte('scheduled_start', now.plus({ hours: 24 }).toISO())
     ]);
     // Unread = the family wrote last and the admin hasn't opened it since (two columns, so compared here).
     const unreadChats = (threads.data || []).filter((t: any) =>
@@ -2663,7 +2669,11 @@ app.get('/api/dashboard/admin/action-items', verifyTeacherAuth, requireSuperAdmi
         { key: 'placements', count: placements.count || 0, link: '/dashboard/placement' },
         { key: 'unread_chats', count: unreadChats, link: '/dashboard/messages' },
         { key: 'health', count: healthWarnings, link: '/dashboard/health' },
-        { key: 'no_zoom_24h', count: noZoom.count || 0, link: '/dashboard/upcoming' }
+        { key: 'no_zoom_24h', count: noZoom.count || 0, link: '/dashboard/upcoming' },
+        { key: 'teacher_changes', count: teacherChanges.count || 0, link: '/dashboard/teacher-changes' },
+        { key: 'trials_24h', count: trials.count || 0, link: '/dashboard/trials' },
+        { key: 'intakes', count: intakes.count || 0, link: '/dashboard/intakes' },
+        { key: 'waitlist', count: waitlist.count || 0, link: '/dashboard/waitlist' }
       ]
     });
   } catch (err) {

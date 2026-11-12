@@ -697,7 +697,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
       {/* 5. Packages Catalog Section */}
       {!showCatalog ? (
         <div className="flex flex-wrap items-center gap-3 pt-2">
-          <Link to="/student/book" className="inline-flex items-center gap-2 h-11 px-5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+          <Link to="/student/book?mode=package" className="inline-flex items-center gap-2 h-11 px-5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
             <Plus className="w-4 h-4" aria-hidden="true" />
             {isAr ? 'احجز بباقة جديدة' : 'Book with a new package'}
           </Link>

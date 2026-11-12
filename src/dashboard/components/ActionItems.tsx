@@ -25,7 +25,11 @@ export function ActionItems() {
     placements: (n) => t(`${n} placement result(s) to review`, `${n} نتيجة اختبار مستوى للمراجعة`),
     unread_chats: (n) => t(`${n} unread conversation(s)`, `${n} محادثة مش مقروءة`),
     health: (n) => t(`${n} system health warning(s)`, `${n} تنبيه في صحة النظام`),
-    no_zoom_24h: (n) => t(`${n} lesson(s) in the next 24 h without a Zoom link`, `${n} حصة خلال 24 ساعة من غير لينك زووم`)
+    no_zoom_24h: (n) => t(`${n} lesson(s) in the next 24 h without a Zoom link`, `${n} حصة خلال 24 ساعة من غير لينك زووم`),
+    teacher_changes: (n) => t(`${n} teacher change request(s)`, `${n} طلب تغيير معلم`),
+    trials_24h: (n) => t(`${n} free trial(s) in the next 24 h: is the teacher ready?`, `${n} حصة تجريبية خلال 24 ساعة: المعلم جاهز؟`),
+    intakes: (n) => t(`${n} learner request(s) waiting for review`, `${n} طلب طالب مستني مراجعة`),
+    waitlist: (n) => t(`${n} on the waitlist, not invited yet`, `${n} في قائمة الانتظار لسه ما اتدعوش`)
   };
 
   if (failed || !items) return null;

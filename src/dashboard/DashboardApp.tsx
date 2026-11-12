@@ -357,32 +357,31 @@ export function DashboardApp() {
         id="teacher-rail"
         aria-label={L('Teacher Navigation Sidebar', 'شريط التنقل للمعلم')}
         inert={!railOpen}
-        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)] transition-[opacity,translate] duration-300 ease-out ${railOpen ? '' : 'opacity-0 -translate-x-[140%] rtl:translate-x-[140%] pointer-events-none'}`}
+        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[208px] max-h-[calc(100vh-2rem)] flex-col items-stretch gap-2 rounded-[1.75rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)] transition-[opacity,translate] duration-300 ease-out ${railOpen ? '' : 'opacity-0 -translate-x-[140%] rtl:translate-x-[140%] pointer-events-none'}`}
       >
-        <Link to="/" aria-label={L('Watazawwado website', 'موقع وتزودوا')} className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
+        <Link to="/" aria-label={L('Watazawwado website', 'موقع وتزودوا')} className="self-center rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
           <BrandLogo variant="compact" />
         </Link>
-        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
+        <span className="self-center w-6 h-px bg-white/15" aria-hidden="true" />
         <nav
           aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
-          className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2"
+          className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-stretch gap-0.5 px-2"
         >
           {railItems.map((item, idx) => {
             const active = isActive(item.path);
             const startsGroup = Boolean(item.group && item.group !== railItems[idx - 1]?.group);
             return (
               <React.Fragment key={item.path}>
-              {startsGroup && <span className="shrink-0 w-6 h-px my-1 bg-white/15" aria-hidden="true" />}
+              {startsGroup && <span className="shrink-0 px-3 pt-3 pb-1 text-[12.5px] font-bold text-white/55">{item.group}</span>}
               <Link
                 to={item.path}
                 data-tour={dashTourId(item.path)}
-                title={item.group ? `${item.group} · ${item.name}` : item.name}
-                aria-label={item.name}
                 aria-current={active ? 'page' : undefined}
-                className={`relative shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
+                className={`relative shrink-0 min-h-10 px-3 rounded-full flex items-center gap-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
               >
                 {active && <motion.span layoutId="rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
-                <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
+                <item.icon className="relative w-[18px] h-[18px] shrink-0" aria-hidden="true" />
+                <span className="relative truncate">{item.name}</span>
                 {item.path === '/dashboard/notifications' && unreadNotifications > 0 && (
                   <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#1F1A17]" />
                 )}
@@ -396,7 +395,7 @@ export function DashboardApp() {
       <SidebarHandle
         open={railOpen} onToggle={toggleRail} controls="teacher-rail"
         labelOpen={L('Hide the sidebar', 'اخفي الشريط الجانبي')} labelClosed={L('Show the sidebar', 'اظهر الشريط الجانبي')}
-        className={`hidden md:flex fixed top-1/2 -translate-y-1/2 ${railOpen ? 'start-[88px]' : 'start-0'}`}
+        className={`hidden md:flex fixed top-1/2 -translate-y-1/2 ${railOpen ? 'start-[228px]' : 'start-0'}`}
       />
 
       {/* Phone drawer (opened by the menu button or "More") */}
@@ -518,7 +517,7 @@ export function DashboardApp() {
       </aside>
 
       {/* Main Content Area */}
-      <main className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${railOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}>
+      <main className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${railOpen ? 'md:ps-[240px]' : 'md:ps-6'}`}>
         <header className="shrink-0 z-20 px-4 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: menu (phones) and workspace name */}

@@ -22,7 +22,7 @@ describe('PR-03: Progress page — the learning path', () => {
       studentAppSource.includes("path: '/student/progress'"),
       'Sidebar navigation must include /student/progress'
     );
-    assert.match(studentAppSource, /const railItems = \[[^\]]*progress/, 'Progress is on the tablet/desktop rail');
+    assert.match(studentAppSource, /const desktopMoreItems = \[[^\]]*progress/, 'Progress is in the desktop More menu');
     assert.match(studentAppSource, /const moreItems = \[[^\]]*progress/, 'Progress is in the phone More sheet');
     assert.ok(
       studentAppSource.includes('<Route path="/progress" element={<StudentProgressPage lang={lang} />} />'),

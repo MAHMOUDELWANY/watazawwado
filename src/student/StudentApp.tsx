@@ -5,7 +5,7 @@ import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components/ui/MobileTabBar';
-import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
+import { DesktopMoreMenu } from './components/DesktopMoreMenu';
 import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { setAppBadge } from '../lib/appBadge';
@@ -83,7 +83,6 @@ export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [desktopSidebarOpen, toggleDesktopSidebar] = useSidebarOpen('student-sidebar-open');
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
@@ -442,9 +441,10 @@ export default function StudentApp() {
   const community: NavItem = { name: isAr ? 'مجتمعنا' : 'Community', path: '/student/community', icon: Users, tour: 'student-community' };
   const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
 
-  const topTabs = [home, lessons, book, curriculum, homework];
+  const topTabs = [home, lessons, book, curriculum, homework, messages];
   const sponsor: NavItem = { name: isAr ? 'اكفل طالب' : 'Sponsor a learner', path: '/student/sponsor', icon: HeartHandshake, tour: 'student-sponsor' };
-  const railItems = [messages, wallet, calendar, progress, community, guide, invite, sponsor];
+  // Desktop "More" menu (P4-020): the pages that are not tabs, each with its name, in one labelled list.
+  const desktopMoreItems = [wallet, calendar, progress, community, guide, invite, sponsor];
   const moreItems = [homework, curriculum, wallet, calendar, progress, community, guide, invite, sponsor];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
@@ -465,49 +465,6 @@ export default function StudentApp() {
       dir={isAr ? 'rtl' : 'ltr'}
       lang={lang}
     >
-      {/* Tablet & desktop: floating ink rail with the pages that are not header tabs */}
-      <aside
-        id="student-rail"
-        aria-label={isAr ? 'صفحات أخرى' : 'More pages'}
-        inert={!desktopSidebarOpen}
-        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)] transition-[opacity,translate] duration-300 ease-out ${desktopSidebarOpen ? '' : 'opacity-0 -translate-x-[140%] rtl:translate-x-[140%] pointer-events-none'}`}
-      >
-        <Link to="/" aria-label={isAr ? 'موقع وتزودوا' : 'Watazawwado website'} className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
-          <BrandLogo variant="compact" />
-        </Link>
-        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
-        <nav className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2">
-          {railItems.map((item) => {
-            const active = isActive(item.path);
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                title={item.name}
-                aria-label={item.name}
-                aria-current={active ? 'page' : undefined}
-                data-tour={item.tour}
-                className={`group relative shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
-              >
-                {active && <motion.span layoutId="student-rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
-                <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
-                {item.badge ? <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#1F1A17]" /> : null}
-                {/* A visible name on hover/focus, so nobody has to guess an icon. */}
-                <span className="pointer-events-none absolute start-[calc(100%+14px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#1F1A17] px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-                  {item.name}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
-      <SidebarHandle
-        open={desktopSidebarOpen} onToggle={toggleDesktopSidebar} controls="student-rail"
-        labelOpen={isAr ? 'اخفي الشريط الجانبي' : 'Hide the sidebar'} labelClosed={isAr ? 'اظهر الشريط الجانبي' : 'Show the sidebar'}
-        className={`hidden md:flex fixed top-1/2 -translate-y-1/2 ${desktopSidebarOpen ? 'start-[88px]' : 'start-0'}`}
-      />
-
       {/* Phone: the "More" sheet (pages that are not in the bottom bar, the account and settings) */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 md:hidden backdrop-blur-xs transition-opacity" onClick={() => setSidebarOpen(false)} aria-hidden="true" />
@@ -598,14 +555,14 @@ export default function StudentApp() {
       </aside>
 
       <div
-        className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${desktopSidebarOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}
+        className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden md:ps-6`}
         aria-hidden={sidebarOpen ? true : undefined}
       >
         <header className="shrink-0 z-20 px-4 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
-            {/* Start: who and where (phones show the logo here; tablets and up have it on the rail) */}
-            <Link to="/student" className="flex md:hidden xl:flex items-center gap-2 min-w-0 flex-1 md:flex-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-              <span className="md:hidden shrink-0"><BrandLogo variant="compact" /></span>
+            {/* Start: who and where */}
+            <Link to="/student" className="flex md:hidden lg:flex items-center gap-2 min-w-0 flex-1 md:flex-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              <span className="shrink-0"><BrandLogo variant="compact" /></span>
               <span className="min-w-0 text-start">
                 <span className="block font-display font-bold text-lg leading-tight truncate">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
                 <span className="block text-[11px] text-muted-foreground truncate">{spaceLabel}</span>
@@ -628,9 +585,11 @@ export default function StudentApp() {
                     {active && <motion.span layoutId="student-top-tab" className={`absolute inset-0 rounded-full ${INK}`} transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
                     <item.icon className="relative w-4 h-4" aria-hidden="true" />
                     <span className="relative">{item.name}</span>
+                    {item.badge ? <span className="relative w-2 h-2 rounded-full bg-[#E5A93C]" aria-label={isAr ? 'رسائل جديدة' : 'New messages'} /> : null}
                   </Link>
                 );
               })}
+              <DesktopMoreMenu items={desktopMoreItems} isActive={isActive} isAr={isAr} ink={INK} />
             </nav>
 
             {/* End: tour, notifications, language, theme, account */}

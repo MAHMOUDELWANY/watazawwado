@@ -58,11 +58,12 @@ export function TimezoneCheck({ isAr, onUse }: { isAr: boolean; onUse?: (tz: str
           ? <>جهازك على توقيت <b>{label(device)}</b>، والمواعيد معروضة بتوقيت <b>{label(active)}</b>.</>
           : <>Your device is on <b>{label(device)}</b> time; lessons are shown in <b>{label(active)}</b> time.</>}
       </p>
-      <div className="flex gap-2 shrink-0">
-        <button type="button" onClick={use} disabled={busy} className="flex-1 sm:flex-none min-h-11 px-4 rounded-xl bg-foreground text-background text-sm font-semibold cursor-pointer focus-ring disabled:opacity-60">
+      {/* Buttons wrap their words at large text sizes instead of cutting them (P4-024). */}
+      <div className="flex flex-wrap gap-2 sm:shrink-0">
+        <button type="button" onClick={use} disabled={busy} className="flex-1 sm:flex-none min-h-11 h-auto py-2 px-4 leading-tight rounded-xl bg-foreground text-background text-sm font-semibold cursor-pointer focus-ring disabled:opacity-60">
           {isAr ? 'استخدم توقيت جهازي' : 'Use my device time'}
         </button>
-        <button type="button" onClick={keep} className="flex-1 sm:flex-none min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground cursor-pointer focus-ring">
+        <button type="button" onClick={keep} className="flex-1 sm:flex-none min-h-11 h-auto py-2 px-4 leading-tight rounded-xl border border-border text-sm font-semibold text-foreground cursor-pointer focus-ring">
           {isAr ? 'سيبه زي ما هو' : 'Keep it'}
         </button>
       </div>

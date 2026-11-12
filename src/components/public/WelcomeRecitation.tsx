@@ -12,7 +12,8 @@ import { playWelcome, useWelcomeAudio } from '../../lib/welcomeAudio';
  */
 
 const SESSION_KEY = 'wz_welcome_recitation_played';
-const EVENTS = ['touchend', 'pointerup', 'click', 'keydown'] as const;
+// No 'keydown': a keyboard or screen-reader visitor's first Tab must not start sound over their reader (P4-037).
+const EVENTS = ['touchend', 'pointerup', 'click'] as const;
 
 const read = (store: () => Storage, key: string) => { try { return store().getItem(key); } catch { return null; } };
 const write = (store: () => Storage, key: string) => { try { store().setItem(key, '1'); } catch { /* storage blocked */ } };
@@ -20,6 +21,8 @@ const write = (store: () => Storage, key: string) => { try { store().setItem(key
 export function WelcomeRecitation(_props: { isAr: boolean }) {
   useEffect(() => {
     if (typeof window === 'undefined' || read(() => sessionStorage, SESSION_KEY)) return;
+    // Visitors who ask for less motion get no surprise sound either; the play button under the verse stays.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     let done = false;
     let busy = false;
 
@@ -54,6 +57,13 @@ export function WelcomeMuteButton({ isAr }: { isAr: boolean }) {
   const bounds = useRef<HTMLDivElement>(null);
   const dragged = useRef(false);
   const label = isAr ? 'إيقاف التلاوة' : 'Stop the recitation';
+  // Esc stops it from anywhere on the page, without hunting for the button (P4-037).
+  useEffect(() => {
+    if (!playing) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') stop(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [playing, stop]);
   return (
     <div ref={bounds} className="fixed inset-x-2 top-20 bottom-24 z-[46] pointer-events-none" aria-hidden={!playing}>
       <AnimatePresence>

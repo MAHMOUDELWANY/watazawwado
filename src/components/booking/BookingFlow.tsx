@@ -161,8 +161,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
     if (draft?.formData && typeof draft.formData === 'object') {
+      // A draft keeps its choices but follows the account's current time zone (P4-016); a time picked on the old
+      // clock is dropped unless a payment is already holding it.
+      const zone = initialData?.timezone;
+      const rezone = Boolean(zone && !draft.pendingBooking && draft.formData.timezone !== zone);
       return {
         ...draft.formData,
+        ...(rezone ? { timezone: zone, date: '', timeSlot: null } : {}),
         ...(studentEmail && !draft.formData.email ? { email: studentEmail } : {}),
         ...(studentName && !draft.formData.studentName ? { studentName } : {}),
         ...(entitlementFromProps && !draft.pendingBooking ? { packageEntitlementId: entitlementFromProps, mode: 'regular' as BookingMode } : {})
