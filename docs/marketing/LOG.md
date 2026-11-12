@@ -49,3 +49,4 @@ Change next week: <one thing>
 - 2026-11-12: V1 carousel produced (7 slides, marketing/posts/2026-11-16-V1, copy and captions in Notion, Status Review). Deep slide uses espresso, not the petrol band (no-green rule).
 - 2026-11-12: Publishing set up (`PUBLISHING.md`): Buffer = Instagram, TikTok, YouTube; Metricool = Facebook page, Threads, Google Business Profile. Default slot 16:00 Warsaw. Batch approval by the owner; Buffer free plan holds 10 scheduled posts.
 - 2026-11-12: V1 drafts for 16 Nov 16:00: Buffer Instagram carousel (6af6004ab978266eafc61b60), Buffer TikTok photo post (6af6003e75a0351fa310693b), Metricool Facebook album (426039363). Images live at watazawwado.academy/social/v1/. Pinned comment by hand (Buffer free plan has no first comment).
+- 2026-11-12: V1 scheduled on the owner's go-ahead, times per platform: Facebook 15:00, Instagram 18:00, TikTok 20:00 (Warsaw), 16 Nov. Metricool post id is now 426044127.

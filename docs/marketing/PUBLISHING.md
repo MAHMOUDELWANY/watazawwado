@@ -29,12 +29,19 @@ Buffer organisation `6af5f27405b6372653a75d65` ("My organization"), timezone Eur
 Same piece adapted per platform: captions per platform, one CTA, UTM link (RULES §6). No "AI" label (owner,
 2026-11-12) unless a platform's form requires it.
 
-## 3. Times
+## 3. Times (per platform, Europe/Warsaw) [owner 2026-11-12: best time per platform]
 
-Default slot **16:00 Europe/Warsaw** (10:00 New York, 15:00 London): the audience is the US, UK and Europe.
-Metricool's general best times for Europe peak at 10:00–12:00 Warsaw, but that is not our audience; we test 16:00 vs
-20:00 after two weeks of our own numbers. Buffer's default queue times are random; posts are scheduled at a fixed time
-(`customScheduled`), not added to the queue.
+| Platform | Slot | New York | London | Why |
+|---|---|---|---|---|
+| Facebook | **15:00** | 09:00 | 14:00 | Metricool's Facebook curve peaks 10:00-12:00 for a European audience; 15:00 catches the US morning and UK afternoon |
+| Instagram | **18:00** | 12:00 | 17:00 | US lunch break and UK after school pick-up, the usual Instagram peaks for parents |
+| TikTok | **20:00** | 14:00 | 19:00 | Metricool's TikTok curve peaks at 18:00 in Europe; 20:00 hits the UK evening and the US afternoon |
+| YouTube Shorts | 18:00 | 12:00 | 17:00 | Same as Instagram until our own data says otherwise |
+| Threads | 15:00 | 09:00 | 14:00 | Text, read with the morning feed |
+
+Metricool has no Instagram data yet (Instagram is in Buffer, not Metricool). Its curves are general, not our
+audience: after two weeks, compare each platform's posts by hour and move one slot at a time. Buffer's own queue
+times are random and unused; every post is scheduled at a fixed time (`customScheduled`).
 
 ## 4. Workflow
 
