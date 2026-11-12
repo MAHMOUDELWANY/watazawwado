@@ -32,6 +32,8 @@ interface BookingConfirmationProps {
   doneLabel?: string;
   /** The next useful step, e.g. "Book Yusuf's free trial" when a sibling has none yet (P4-009). */
   nextAction?: { label: string; onClick: () => void };
+  /** Who teaches this lesson, named in the greeting (P4-009). */
+  teacherName?: string;
 }
 
 export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
@@ -39,7 +41,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   onDone,
   lang,
   doneLabel,
-  nextAction
+  nextAction,
+  teacherName
 }) => {
   const isEn = lang === 'en';
   // Open at the top with the heading focused, not at the scroll position of the review step (P4-009).
@@ -152,8 +155,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
         <p className="text-sm text-foreground/80 dark:text-muted-foreground max-w-lg mx-auto leading-relaxed">
           {isEn
-            ? `Assalamu Alaikum ${confirmation.learnerName}. Your teacher is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
-            : `السلام عليكم ${confirmation.learnerName}. يتطلع معلمك للقائك في الموعد المحدد.`}
+            ? `Assalamu alaikum ${confirmation.learnerName}. ${teacherName || 'Your teacher'} is looking forward to meeting you.`
+            : `السلام عليكم ${confirmation.learnerName}. ${teacherName ? `${teacherName} في انتظارك` : 'معلمك في انتظارك'} في الموعد المحدد.`}
           {confirmation.integrationStatus === 'failed' && (
             <span className="block mt-2 text-amber-700 dark:text-amber-500 font-medium text-sm">
               {isEn ? 'Your booking is secured, but the lesson link is not ready yet. Please try again later or message us.' : 'حجزك مؤكد، ولكن رابط الدرس لم يتم تجهيزه بعد. يرجى المحاولة لاحقاً أو مراسلتنا.'}

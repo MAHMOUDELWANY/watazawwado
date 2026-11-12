@@ -23,6 +23,9 @@ import { MAJOR_TIMEZONES } from '../../booking/mockData';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { DateTime } from 'luxon';
 
+/** Before this local time a child's slot is hidden until asked for (no 4 am lessons offered first). */
+const EARLIEST_CHILD_TIME = '07:00';
+
 interface StepDateTimeProps {
   mode: BookingMode;
   duration?: LessonDuration;
@@ -36,6 +39,8 @@ interface StepDateTimeProps {
   onNext: () => void;
   onBack: () => void;
   lang: Language;
+  /** A child's lesson: after-school times first, and the earliest hours behind a button (P4-009). */
+  forChild?: boolean;
   /** Inside a screen with several steps, the screen shows one Back/Continue for all of them. */
   hideNav?: boolean;
 }
@@ -53,7 +58,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   onNext,
   onBack,
   hideNav = false,
-  lang
+  lang,
+  forChild = false
 }) => {
   const isEn = lang === 'en';
   // Day names, months and times in the page's language (P4-021); the server's strings are English only.
@@ -132,9 +138,53 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   };
 
   // Group slots by period
-  const morningSlots = currentDay?.slots.filter((s) => s.period === 'morning') || [];
+  const [showEarly, setShowEarly] = useState(false);
+  const isEarly = (s: TimeSlot) => forChild && s.time24 < EARLIEST_CHILD_TIME;
+  const earlyCount = currentDay?.slots.filter((s) => s.available && isEarly(s)).length || 0;
+  const morningSlots = currentDay?.slots.filter((s) => s.period === 'morning' && (showEarly || !isEarly(s))) || [];
   const afternoonSlots = currentDay?.slots.filter((s) => s.period === 'afternoon') || [];
   const eveningSlots = currentDay?.slots.filter((s) => s.period === 'evening') || [];
+
+  // A child sees afternoon and evening first; morning comes after them, in reading order too (P4-009).
+  const morningBlock = (
+    morningSlots.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground mb-2">
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>{isEn ? 'Morning' : 'الفترة الصباحية'}</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {morningSlots.map((slot) => {
+                        const isSelected = selectedSlot?.id === slot.id;
+                        return (
+                          <button
+                            key={slot.id}
+                            type="button"
+                            disabled={!slot.available}
+                            onClick={() => onSelectSlot(slot)}
+                            className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-between ${
+                              !slot.available
+                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
+                                : isSelected
+                                ? 'btn-primary-material text-white font-medium shadow-sm'
+                                : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
+                            }`}
+                          >
+                            <span className="text-sm font-medium">{slotTime(slot)}</span>
+                            {isSelected ? (
+                              <Check className="w-3.5 h-3.5 text-white" />
+                            ) : (
+                              <span className="text-[13px] text-foreground/40 dark:text-accent/90/40">
+                                {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
+  );
 
   const matchedTz = MAJOR_TIMEZONES.find((t) => t.value === timezone);
   const timezoneReadable = matchedTz ? matchedTz.label : timezone;
@@ -304,45 +354,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
               </div>
             ) : (
               /* SLOTS GROUPED BY MORNING, AFTERNOON, EVENING */
-              <div className="space-y-4">
-                {/* Morning */}
-                {morningSlots.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground mb-2">
-                      <Sun className="w-3.5 h-3.5 text-amber-500" />
-                      <span>{isEn ? 'Morning' : 'الفترة الصباحية'}</span>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {morningSlots.map((slot) => {
-                        const isSelected = selectedSlot?.id === slot.id;
-                        return (
-                          <button
-                            key={slot.id}
-                            type="button"
-                            disabled={!slot.available}
-                            onClick={() => onSelectSlot(slot)}
-                            className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-between ${
-                              !slot.available
-                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
-                                : isSelected
-                                ? 'btn-primary-material text-white font-medium shadow-sm'
-                                : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
-                            }`}
-                          >
-                            <span className="text-sm font-medium">{slotTime(slot)}</span>
-                            {isSelected ? (
-                              <Check className="w-3.5 h-3.5 text-white" />
-                            ) : (
-                              <span className="text-[13px] text-foreground/40 dark:text-accent/90/40">
-                                {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+              <div className="flex flex-col gap-4">
+                {!forChild && morningBlock}
 
                 {/* Afternoon */}
                 {afternoonSlots.length > 0 && (
@@ -420,6 +433,16 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                       })}
                     </div>
                   </div>
+                )}
+                {forChild && morningBlock}
+                {earlyCount > 0 && !showEarly && (
+                  <button
+                    type="button"
+                    onClick={() => setShowEarly(true)}
+                    className="self-start min-h-11 px-3 text-sm font-semibold text-primary underline underline-offset-4 cursor-pointer"
+                  >
+                    {isEn ? `Show ${earlyCount} early-morning times` : `اعرض ${earlyCount.toLocaleString('ar-EG')} مواعيد بدري الصبح`}
+                  </button>
                 )}
               </div>
             )}

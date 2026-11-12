@@ -113,12 +113,15 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             <h3 className="font-display text-lg font-medium text-foreground">
               {isEn ? service.name : service.arabicName}
             </h3>
-            <div className="text-sm text-foreground/80 dark:text-accent/80">
-              <span className="font-medium text-foreground dark:text-white">
-                {isEn ? 'Goal: ' : 'الهدف: '}
-              </span>
-              <span>{formData.goal || formData.customGoalText}</span>
-            </div>
+            {/* The goal is optional for a free trial (P4-008): no empty "Goal:" line. */}
+            {(formData.goal || formData.customGoalText) && (
+              <div className="text-sm text-foreground/80 dark:text-accent/80">
+                <span className="font-medium text-foreground dark:text-white">
+                  {isEn ? 'Goal: ' : 'الهدف: '}
+                </span>
+                <span>{formData.goal || formData.customGoalText}</span>
+              </div>
+            )}
             {formData.customGoalText && formData.goal && (
               <p className="text-sm italic bg-foreground/40 dark:bg-background p-2 rounded-lg text-foreground/75 dark:text-accent/80 mt-1">
                 “{formData.customGoalText}”

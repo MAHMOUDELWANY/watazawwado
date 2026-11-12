@@ -193,8 +193,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     {hasActiveCredits
                       ? (isEn ? 'Prepaid Credits Available • $0 today' : 'رصيد باقة متاح • ٠.٠٠$ اليوم')
                       : (isEn
-                        ? `From $${calculateLessonFee(serviceId, 30, false)} • 30, 45, or 60 min`
-                        : `يبدأ من $${calculateLessonFee(serviceId, 30, false)} • ٣٠ أو ٤٥ أو ٦٠ دقيقة`)}
+                        ? `From $${calculateLessonFee(serviceId, 30, false).toFixed(2)} • 30, 45, or 60 min`
+                        : `يبدأ من $${calculateLessonFee(serviceId, 30, false).toFixed(2)} • ٣٠ أو ٤٥ أو ٦٠ دقيقة`)}
                   </span>
                 </div>
               </div>

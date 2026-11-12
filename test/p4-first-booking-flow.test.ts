@@ -57,3 +57,25 @@ describe('P4-008/009/021 booking', () => {
     assert.ok(src('src/components/booking/StepLearner.tsx').includes("goal: serviceId === formData.serviceId ? formData.goal : ''"));
   });
 });
+
+// P4-009 (rest of proposal 5): a trial in three screens, a child's times after school first, the teacher named.
+describe('P4-009 booking v2, rest', () => {
+  it('a flow that starts as a trial has three screens and matching titles', () => {
+    const flow = src('src/components/booking/BookingFlow.tsx');
+    assert.ok(flow.includes('startedAsTrial ? [[1, 2, 3, 4], [5], [6]]'));
+    assert.ok(flow.includes('threeScreens={startedAsTrial && !isMultiStepFlow}'));
+    assert.ok(src('src/components/booking/BookingHeader.tsx').includes('if (threeScreens) stepTitles.splice(1, 1);'));
+  });
+
+  it('a child sees morning after the evening and the earliest times only on request', () => {
+    const s = src('src/components/booking/StepDateTime.tsx');
+    assert.ok(s.includes("const EARLIEST_CHILD_TIME = '07:00'"));
+    assert.ok(s.indexOf('{!forChild && morningBlock}') < s.indexOf('{/* Afternoon */}'));
+    assert.ok(s.indexOf('{forChild && morningBlock}') > s.indexOf('{/* Evening */}'));
+  });
+
+  it('the confirmation names the teacher', () => {
+    assert.ok(src('src/components/booking/BookingFlow.tsx').includes('teacherName={lessonTeacherName}'));
+    assert.ok(src('src/student/pages/StudentBookingPage.tsx').includes('teacherName={profile?.assignedTeacherName'));
+  });
+});

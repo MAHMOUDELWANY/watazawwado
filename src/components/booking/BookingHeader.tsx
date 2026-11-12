@@ -10,18 +10,21 @@ interface BookingHeaderProps {
   onBack?: () => void;
   onClose?: () => void;
   serviceName?: string;
+  /** Three screens for a free trial: no "Length and plan" screen (P4-009). */
+  threeScreens?: boolean;
 }
 
 /**
  * Calm header (owner, 2026-10-28): back, the step and its title, four progress segments. No WhatsApp badge or
  * lesson-type pill (they crowded phones); a free trial still says so under the title.
  */
-export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, mode, lang, onBack, onClose }) => {
+export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, mode, lang, onBack, onClose, threeScreens }) => {
   const isEn = lang === 'en';
   // Four screens (owner D4, 2026-10-28): what, length & plan, time, review & pay.
   const stepTitles = isEn
     ? ['What you will learn', 'Length and plan', 'Pick a time', mode === 'trial' ? 'Review and confirm' : 'Review and pay']
     : ['ماذا ستتعلّم', 'المدة والخطة', 'اختر الموعد', mode === 'trial' ? 'راجع وأكّد' : 'راجع وادفع'];
+  if (threeScreens) stepTitles.splice(1, 1);
 
   return (
     <div className="pb-5 mb-5 sm:mb-7 border-b border-border/80">

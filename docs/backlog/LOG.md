@@ -1114,8 +1114,9 @@ professional, call it Zad instead of Zadi, colours that express our identity."
   dialog (P4-007). Booking: goal optional for a trial and kept on child pick; no pre-selected time; Arabic/English
   human dates (`src/lib/lessonDate.ts`); confirmation opens at the top and offers the sibling's free trial
   (P4-008/009/021). Test: `test/p4-first-booking-flow.test.ts`.
-- Open from proposal 5: three steps instead of four, after-school/evening time groups for children, teacher name on
-  the confirmation.
+- Proposal 5 finished the same day: a trial is three screens; a child's times show afternoon and evening first,
+  before-07:00 times on request; the confirmation names the teacher. Walked through in the browser as qa-p4
+  parent-1: kid's trial booked, sibling button opened the teen's trial on step 1 of 3.
 
 ## 2026-11-12 — P4 proposals 1–3 built (owner's pick)
 - No default Boy/Girl, teacher gender or teacher in onboarding and "Add a child"; a gender with no teacher for the

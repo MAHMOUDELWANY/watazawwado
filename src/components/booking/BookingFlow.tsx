@@ -91,6 +91,8 @@ interface BookingFlowProps {
   studentName?: string;
   studentEmail?: string;
   teacherId?: string;
+  /** The account's own teacher, named on the confirmation (a child's comes from linkedChildren). */
+  teacherName?: string | null;
   activeEntitlements?: PackageEntitlementEntry[];
   catalog?: PackageCatalogEntry[];
   accessToken?: string;
@@ -121,6 +123,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   studentName,
   studentEmail,
   teacherId,
+  teacherName,
   activeEntitlements = [],
   catalog = [],
   accessToken,
@@ -232,7 +235,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   // Determines whether this is a 7-step regular package flow or 6-step trial/credit flow
   const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
   // Four screens over the internal steps (owner D4): what (subject, goal, learner), length & plan, time, review & pay.
-  const screens: number[][] = isMultiStepFlow ? [[1, 2, 3], [4, 5], [6], [7]] : [[1, 2, 3], [4], [5], [6]];
+  // A free trial is three screens (P4-009): its length and type sit under "who and what", then the time, then review.
+  // A flow that starts as a trial keeps that layout, so switching to a paid lesson does not move the choice away.
+  const [startedAsTrial] = useState(() => formData.mode === 'trial' && !formData.packageEntitlementId);
+  const screens: number[][] = isMultiStepFlow
+    ? (startedAsTrial ? [[1, 2, 3, 4], [5], [6], [7]] : [[1, 2, 3], [4, 5], [6], [7]])
+    : startedAsTrial ? [[1, 2, 3, 4], [5], [6]] : [[1, 2, 3], [4], [5], [6]];
 
   // The student let the held time go from the pending-payment card: forget it and pick a time again.
   useEffect(() => {
@@ -642,6 +650,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setStep(isMultiStepFlow ? 6 : 5);
   };
 
+  const lessonChild = formData.audience === 'child' && formData.studentId ? linkedChildren.find((c: any) => c?.id === formData.studentId) : null;
+  const lessonTeacherName: string | undefined = (lessonChild ? lessonChild.assignedTeacherName : teacherName) || undefined;
+
   // After a child's free trial, offer the next child who has none yet (P4-009).
   const nextSibling = confirmation?.isFreeTrial && formData.audience === 'child'
     ? linkedChildren.find((c: any) => c?.id && c.id !== formData.studentId && !trialUsedLearnerIds.includes(c.id))
@@ -721,6 +732,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             lang={lang}
             doneLabel={doneLabel}
             nextAction={siblingTrialAction}
+            teacherName={lessonTeacherName}
           />
           {renderConfirmationExtra?.(confirmation)}
         </>
@@ -735,6 +747,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             onBack={screenIndex > 0 ? handleBack : undefined}
             onClose={onClose}
             serviceName={isEn ? currentService?.name : currentService?.arabicName}
+            threeScreens={startedAsTrial && !isMultiStepFlow}
           />
 
 
@@ -890,6 +903,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     mode={formData.mode}
                     duration={formData.duration}
                     teacherId={formData.teacherId}
+                    forChild={formData.audience === 'child'}
                     selectedDate={formData.date}
                     selectedSlot={formData.timeSlot}
                     timezone={formData.timezone}
@@ -953,6 +967,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   mode={formData.mode}
                   duration={formData.duration}
                   teacherId={formData.teacherId}
+                  forChild={formData.audience === 'child'}
                   selectedDate={formData.date}
                   selectedSlot={formData.timeSlot}
                   timezone={formData.timezone}
@@ -1015,7 +1030,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               >
                 {isMultiStepFlow && screenIndex === 1 && formData.buyPackageCatalogId
                   ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))
-                  : [isAr ? 'المتابعة: المدة والخطة' : 'Continue: length and plan', isAr ? 'المتابعة: اختر الموعد' : 'Continue: pick a time', formData.mode === 'trial' ? (isAr ? 'المتابعة: راجع وأكّد' : 'Continue: review and confirm') : (isAr ? 'المتابعة: راجع وادفع' : 'Continue: review and pay')][screenIndex]}
+                  : [isAr ? 'المتابعة: المدة والخطة' : 'Continue: length and plan', isAr ? 'المتابعة: اختر الموعد' : 'Continue: pick a time', formData.mode === 'trial' ? (isAr ? 'المتابعة: راجع وأكّد' : 'Continue: review and confirm') : (isAr ? 'المتابعة: راجع وادفع' : 'Continue: review and pay')].slice(startedAsTrial && !isMultiStepFlow ? 1 : 0)[screenIndex]}
               </button>
             </div>
             </div>

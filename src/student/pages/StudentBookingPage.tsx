@@ -1089,6 +1089,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               studentName={profile?.name}
               studentEmail={profile?.email}
               teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
+              teacherName={profile?.assignedTeacherName || profile?.assigned_teacher_name}
               activeEntitlements={packagesData?.entitlements || []}
               catalog={packagesData?.catalog || []}
               accessToken={accessToken}

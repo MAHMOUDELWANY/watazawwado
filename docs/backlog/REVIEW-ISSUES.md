@@ -118,7 +118,7 @@ pick.
 2. **The right rules at consent** (P4-006) [built 2026-11-12]: trial rules and the real reminder times on the review step and confirmation.
 3. **A checkout that cannot be misread** (P4-014/015/018) [built 2026-11-12; split savings lines open]: one summary line beside the amount; tappable consent rows.
 4. **One thing at a time for a new family** (P4-007) [built 2026-11-12]: no install banner, tour and push modal before the first booking.
-5. **Booking v2** (P4-008/009/021) [partly built 2026-11-12; three-step layout and kid-friendly times open]: three steps, nothing wrongly pre-selected, Arabic dates, the sibling's trial next.
+5. **Booking v2** (P4-008/009/021) [built 2026-11-12]: three steps, nothing wrongly pre-selected, Arabic dates, the sibling's trial next.
 6. **A child's way in** (P4-025/026/027/028): code option inside sign-in, one-field code, a kid space for children.
 7. **One voice, meanings first** (P4-010/023/031/032): rewrite onboarding, booking and tour; "New to Islam? Start here".
 8. **Prices first, no loops** (P4-016/017): prices at the top of /pricing, 30-minute packages, wallet link to packages.
