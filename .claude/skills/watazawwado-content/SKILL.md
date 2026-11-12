@@ -10,7 +10,11 @@ channels. One request = one finished, checked deliverable (a week's scripts coun
 
 ## 1. Read before anything
 
-1. `docs/marketing/PLAN.md`: where we are, pillars, month, open questions.
+0. `docs/marketing/STRATEGY.md` (approved 2026-11-12): audiences, the enemy, the message ladder, the five pillars,
+   the 90-day plan and KPIs. It overrides `PLAN.md` where they differ. Strategic calls (new series, offers, "is this
+   on-brand?") go through the `watazawwado-marketing` skill; every piece passes its eight questions
+   (`.claude/skills/watazawwado-marketing/references/decision-framework.md`).
+1. `docs/marketing/PLAN.md`: background, Islamic calendar and seasons, open questions.
 2. `docs/marketing/RULES.md`: binding content rules and the pre-publish checklist.
 3. `docs/marketing/PRODUCTION.md`: formats, script anatomy, safe zones.
 4. The last two weeks of `docs/marketing/LOG.md`.
@@ -28,7 +32,7 @@ never let `voice-builder` invent a voice or write files to the project root.
 
 - A specific request → do that.
 - "Next" / vague → the next undone item for the current month in `PLAN.md` §6, else the next idea in `IDEAS.md`
-  that fits the pillar mix (`PLAN.md` §4).
+  that fits the pillar mix (`STRATEGY.md` §7).
 - An `[Open]` question blocks the item (e.g. Ustadha Afnan's appearance) → do something else and ask the owner.
 
 ## 3. Produce (pick the tools that fit)
@@ -42,7 +46,7 @@ never let `voice-builder` invent a voice or write files to the project root.
 | Thumbnail | `youtube-thumbnail` (brand colours from `docs/design-system.md`) |
 | Carousel | `gemini-carousel` brief, or HTML/CSS slides via `graphic-designer`; 1080×1350 |
 | Captions for all platforms | `social`, `post-formatter` (adapt: Instagram/TikTok/Facebook, not LinkedIn) |
-| Monthly calendar or new series | `content-strategy`, `content-matrix` with our 5 pillars |
+| Monthly calendar or new series | `content-strategy`, `content-matrix` with the 5 pillars of `STRATEGY.md` §7 |
 | Lead magnet / email follow-up | `lead-magnets`, `emails` (Brevo free plan) |
 | Collaborations | `influencer-marketing`, `co-marketing`, `community-marketing` |
 | Weekly numbers | `analytics`; write the summary in `LOG.md` |

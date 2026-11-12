@@ -10,7 +10,7 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **Curriculum (المنهج) work, any size, even a vague prompt: use the `curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
 
-**Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
+**Marketing strategy, positioning, offers, campaigns, KPI reviews or "is this on-brand?": use the `watazawwado-marketing` skill** (approved strategy: [docs/marketing/STRATEGY.md](docs/marketing/STRATEGY.md)). **Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
 
 **Pre-launch backlog:** [docs/backlog/BACKLOG.md](docs/backlog/BACKLOG.md) (order of work at the top); log each finished task in [docs/backlog/LOG.md](docs/backlog/LOG.md). Claude does all of it (owner, 2026-10-20).
 

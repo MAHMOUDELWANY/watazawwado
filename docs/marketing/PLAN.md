@@ -1,5 +1,9 @@
 # Watazawwado Content & Growth Plan (Oct 2026 – Apr 2027)
 
+> **Superseded in part (2026-11-12):** the approved [STRATEGY.md](STRATEGY.md) replaces §2 (positioning), §3
+> (audiences), §4 (pillars), §5 (rhythm), §7 (path to a booking) and §8 (measuring). Keep this file for the Islamic
+> calendar and seasons (§6), research (§10) and earlier decisions (§9). Strategy skill: `watazawwado-marketing`.
+
 > **Read first** for any social media, video, content or marketing work, together with `RULES.md` (this folder, binding)
 > and `PRODUCTION.md` (how a video is made). Procedure: the `watazawwado-content` skill. Ideas: `IDEAS.md`. Progress:
 > `LOG.md`. Status legend as in the root RULES.md: **[Decided]**, **[Proposed]** (awaiting the owner), **[Open]**.
