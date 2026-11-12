@@ -76,5 +76,7 @@ cut it.
    changed.
 5. Tell the owner, in Arabic, what is ready and what they need to do (film, record, approve), shortest first.
 
+Publishing and scheduling: `docs/marketing/PUBLISHING.md` (Buffer + Metricool, batch approval by the owner).
+
 Content does not need the owner's review to be **written**; it needs the owner (or the teacher on camera) to film and
 publish it. Posting on the accounts is the owner's action unless the owner gives Claude access and asks.
