@@ -77,6 +77,10 @@ export interface TrialAssessment {
 
 export interface DashboardTrial {
   id: string;
+  /** P4-033: what the teacher prepares from. */
+  learner_age?: number | null;
+  learner_type?: string | null;
+  placement?: { score: number | null; max_score: number | null; level: string | null; language: string | null } | null;
   reference_code?: string | null;
   lead_id: string | null;
   student_id: string | null;

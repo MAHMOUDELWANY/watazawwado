@@ -68,7 +68,7 @@ export function ProgressShowcase({ isEn }: { isEn: boolean }) {
                     <span className="block text-sm text-muted-foreground">{isEn ? lvl.descEn : lvl.descAr}</span>
                     {now && (
                       <span className="mt-2 block h-2 rounded-full bg-surface-subtle overflow-hidden" role="img" aria-label={t('About halfway', 'تقريبًا في النص')}>
-                        <span className="block h-full w-1/2 rounded-full bg-gradient-to-r rtl:bg-gradient-to-l from-[#C51F24] via-[#E5A93C] to-[#087D91]" />
+                        <span className="block h-full w-1/2 rounded-full bg-[linear-gradient(90deg,#C51F24,#E5A93C_50%,#D8C6AE_75%,#087D91)] rtl:bg-[linear-gradient(270deg,#C51F24,#E5A93C_50%,#D8C6AE_75%,#087D91)]" />
                       </span>
                     )}
                   </span>

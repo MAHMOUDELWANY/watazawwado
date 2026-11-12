@@ -125,5 +125,5 @@ pick.
 9. **One navigation** (P4-020/035) [built 2026-11-12; leave requests not in the queue yet]: one top bar for portal and teachers; one admin queue and a labelled menu.
 10. **Access for everyone** (P4-022/024/029/037/038) [built 2026-11-12 except P4-038]: 44 px targets, large text, skip link, recitation control,
     "Ask a parent to join" for teens.
-11. Quick wins: green in the ribbon gradient (P4-039), one-tap language gate (P4-011), trader's full address (P4-019),
+11. Quick wins [built 2026-11-12 except P4-019, which needs the trader's full address from the owner]: green in the ribbon gradient (P4-039), one-tap language gate (P4-011), trader's full address (P4-019),
     learner card on the trial (P4-033), type hours first on phones (P4-034), QA accounts out of admin numbers (P4-036).

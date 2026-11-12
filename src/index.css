@@ -1487,12 +1487,13 @@ h3, .text-heading-lg {
 /* Mihrab arch. Radii stay under 100% per side so the browser never shrinks the bottom corners. */
 .arch-top { border-radius: 50% 50% 1.5rem 1.5rem / 9rem 9rem 1.5rem 1.5rem; }
 .arch-tile { border-radius: 50% 50% 0.55rem 0.55rem / 45% 45% 0.55rem 0.55rem; }
-/* Brand gradient text that keeps working in both themes. */
+/* Brand gradient text that keeps working in both themes. A sand stop sits between gold and teal: mixing those two
+   directly passes through olive green (P4-039, no green anywhere). */
 .text-ribbon {
-  background: linear-gradient(100deg, var(--crimson) 0%, #B4552F 35%, #E5A93C 55%, var(--teal) 100%);
+  background: linear-gradient(100deg, var(--crimson) 0%, #B4552F 35%, #E5A93C 55%, #D8C6AE 74%, var(--teal) 100%);
   -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
 }
-[dir="rtl"] .text-ribbon { background-image: linear-gradient(260deg, var(--crimson) 0%, #B4552F 35%, #E5A93C 55%, var(--teal) 100%); }
+[dir="rtl"] .text-ribbon { background-image: linear-gradient(260deg, var(--crimson) 0%, #B4552F 35%, #E5A93C 55%, #D8C6AE 74%, var(--teal) 100%); }
 /* Deep closing band. */
 .band-deep { background: radial-gradient(60rem 30rem at 80% 0%, rgba(229,169,60,0.22), transparent 60%), linear-gradient(135deg, #05363F 0%, #0A5866 55%, #3B2219 100%); color: #FAF7F2; }
 /* Public closing bands: espresso and gold, the brand at night (owner 2026-11-03: no deep-green surfaces). The curriculum keeps .band-deep. */
@@ -2329,7 +2330,7 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
 .lang-welcome-overlay .lw-inner { position: relative; width: min(100vw - 2rem, 28rem); text-align: center; }
 .lang-welcome-overlay .lw-mark { display: block; width: 2.5rem; height: 2.5rem; margin: 0 auto 1rem; animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .lang-welcome-overlay .lw-eyebrow {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--teal);
+  font-size: 0.85rem; font-weight: 700; letter-spacing: 0.02em; color: var(--teal);
   animation: lw-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
 }
 .lang-welcome-overlay .lw-title {

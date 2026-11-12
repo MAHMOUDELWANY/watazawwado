@@ -375,6 +375,7 @@ export function PageHero({ title, intro, meta, children, className }: PageHeroPr
           <linearGradient id="page-hero-arch" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#C51F24" />
             <stop offset="55%" stopColor="#E5A93C" />
+            <stop offset="76%" stopColor="#D8C6AE" />
             <stop offset="100%" stopColor="#087D91" />
           </linearGradient>
         </defs>

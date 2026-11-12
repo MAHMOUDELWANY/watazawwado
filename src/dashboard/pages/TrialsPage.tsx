@@ -300,6 +300,19 @@ export default function TrialsPage() {
                       {t('Subject', 'المادة')}: <span className="font-medium text-foreground">{trial.service_name}</span>
                       {trial.contact_email && <span> • {trial.contact_email}</span>}
                     </p>
+                    {/* What to prepare (P4-033): who the learner is, what they want, what the placement found. */}
+                    <p className="text-sm text-muted-foreground" data-testid="trial-prep">
+                      {trial.learner_age != null && (
+                        <span className="font-medium text-foreground">
+                          {trial.learner_type === 'child' ? t(`Child, ${trial.learner_age}`, `طفل، ${trial.learner_age} سنين`) : t(`Age ${trial.learner_age}`, `السن ${trial.learner_age}`)}
+                        </span>
+                      )}
+                      {trial.goal && <span> • {t('Goal', 'الهدف')}: {trial.goal}</span>}
+                      {trial.placement && (
+                        <span> • {t('Placement', 'تحديد المستوى')}: {trial.placement.score ?? '?'}/{trial.placement.max_score ?? '?'}{trial.placement.level ? ` (${trial.placement.level})` : ''}{trial.placement.language ? ` · ${trial.placement.language === 'ar' ? t('Arabic', 'عربي') : t('English', 'إنجليزي')}` : ''}</span>
+                      )}
+                      {!trial.placement && <span> • {t('No placement test yet', 'لسه ما عملش اختبار المستوى')}</span>}
+                    </p>
                   </div>
 
                   {/* Cairo & Student Local Time */}

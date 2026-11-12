@@ -1109,6 +1109,12 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
 
+## 2026-11-12 — P4 quick wins built
+- No olive in the ribbon (sand stop between gold and teal), one-tap language gate, trial card with age, goal and
+  placement and without the family's contacts for teachers, typed hours first on phones, QA accounts out of admin
+  numbers on production (P4-039/011/033/034/036). Test: `test/p4-quick-wins.test.ts`.
+- Waiting for the owner: the trader's full address for the terms (P4-019); the curriculum slides' own gradient.
+
 ## 2026-11-12 — P4 proposals 8–10 built (owner's pick)
 - Prices: hourly prices at the top of /pricing, a 30/45/60-minute package switch, "Book with a new package" no longer
   reopens an old trial draft, drafts follow the current zone (P4-016/017).

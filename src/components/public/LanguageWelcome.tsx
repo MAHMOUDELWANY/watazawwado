@@ -34,7 +34,10 @@ export function LanguageWelcome() {
     if (!root.classList.contains('lang-welcome')) return;
     // A visitor already reading after a very slow start is not interrupted; they can use the header toggle.
     if (performance.now() > 4500) { root.classList.remove('lang-welcome'); return; }
-    setSuggested(root.dataset.langSuggest === 'ar' ? 'ar' : 'en');
+    const s: Language = root.dataset.langSuggest === 'ar' ? 'ar' : 'en';
+    setSuggested(s);
+    // The device's language is already chosen, so "Continue in English" is one tap (P4-011).
+    setPicked(s);
     setOpen(true);
     if (!root.classList.contains('sig-intro')) return;
     setBehindIntro(true);
@@ -68,8 +71,8 @@ export function LanguageWelcome() {
     }, 480);
   };
 
-  // First tap selects; a second tap on the selected card goes on.
-  const tap = (lang: Language) => (picked === lang ? go(lang) : setPicked(lang));
+  // One tap on a language goes on in it (P4-011); the button does the same for the one already chosen.
+  const tap = (lang: Language) => { setPicked(lang); go(lang); };
 
   if (!open) return null;
   const chosen = OPTIONS.find((o) => o.lang === picked);

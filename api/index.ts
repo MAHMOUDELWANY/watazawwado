@@ -6559,6 +6559,10 @@ app.get('/api/dashboard/overview-metrics', verifyTeacherAuth, requireSuperAdmin,
     const endOfWeekUtc = nowCairo.endOf('week').toUTC().toISO();
     const thirtyDaysAgoUtc = nowCairo.minus({ days: 30 }).toUTC().toISO();
     const nowUtc = DateTime.now().toUTC().toISO();
+    // P4-036: QA accounts share the production database (docs/testing/RULES.md); keep them out of the admin's
+    // numbers there, as listPublicTeachers does. A row without an email is a real one and stays.
+    const hideQa = process.env.VERCEL_ENV === 'production';
+    const noQa = (q: any, col: string) => (hideQa ? q.or(`${col}.is.null,${col}.not.ilike.*+qa-*`) : q);
 
     const [
       activeStudentsRes,
@@ -6573,23 +6577,23 @@ app.get('/api/dashboard/overview-metrics', verifyTeacherAuth, requireSuperAdmin,
       allActiveStudentsRes,
       allBookingsThisWeekRes
     ] = await Promise.all([
-      supabase.from('students').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+      noQa(supabase.from('students').select('*', { count: 'exact', head: true }).eq('status', 'active'), 'email'),
       supabase.from('profiles').select('id, email, display_name, role'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfDayUtc).lte('scheduled_start', endOfDayUtc).neq('status', 'cancelled'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial').gte('scheduled_start', nowUtc).neq('status', 'cancelled'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial'),
-      supabase.from('students').select('*', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgoUtc),
+      noQa(supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfDayUtc).lte('scheduled_start', endOfDayUtc).neq('status', 'cancelled'), 'contact_email'),
+      noQa(supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled'), 'contact_email'),
+      noQa(supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial').gte('scheduled_start', nowUtc).neq('status', 'cancelled'), 'contact_email'),
+      noQa(supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial'), 'contact_email'),
+      noQa(supabase.from('students').select('*', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgoUtc), 'email'),
       supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
       // P2-015: a parent who only follows their children has no teacher on purpose (P1-002) and is not counted.
-      supabase.from('students').select('*', { count: 'exact', head: true }).is('assigned_teacher_id', null).eq('status', 'active').or('booking_preference.is.null,booking_preference.neq.child'),
-      supabase.from('students').select('id, assigned_teacher_id').eq('status', 'active'),
-      supabase.from('bookings').select('id, teacher_id').gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled')
+      noQa(supabase.from('students').select('*', { count: 'exact', head: true }).is('assigned_teacher_id', null).eq('status', 'active').or('booking_preference.is.null,booking_preference.neq.child'), 'email'),
+      noQa(supabase.from('students').select('id, assigned_teacher_id').eq('status', 'active'), 'email'),
+      noQa(supabase.from('bookings').select('id, teacher_id').gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled'), 'contact_email')
     ]);
 
     const activeStudentsList = allActiveStudentsRes.data || [];
     const bookingsThisWeekList = allBookingsThisWeekRes.data || [];
-    const teachersList = teachersRes.data || [];
+    const teachersList = (teachersRes.data || []).filter((t: any) => !(hideQa && /\+qa-/i.test(String(t.email || ''))));
 
     const teacher_capacity = teachersList.map((t: any) => {
       const active_students = activeStudentsList.filter((s: any) => s.assigned_teacher_id === t.id).length;
@@ -6770,7 +6774,28 @@ app.get('/api/dashboard/trials', verifyTeacherAuth, async (req, res) => {
       }
     }
 
-    const trials = (bookingsRes.data || []).map(b => transformBookingToDashboardTrial(b, leadMap, serviceMap));
+    const isAdmin = (req as any).teacherUser?.role === 'super_admin';
+    // P4-033: what the teacher needs to prepare (age, child or adult, placement result, language), and no family
+    // email for teachers: contact goes through the site chat.
+    const studentIds = [...new Set((bookingsRes.data || []).map((b: any) => b.student_id).filter(Boolean))];
+    const [learnersRes, placementsRes] = studentIds.length
+      ? await Promise.all([
+          supabase.from('students').select('id, age, learner_type').in('id', studentIds),
+          supabase.from('placement_tests').select('learner_student_id, service_id, status, score, max_score, suggested_level, admin_level, language, created_at')
+            .in('learner_student_id', studentIds).in('status', ['submitted', 'reviewed']).order('created_at', { ascending: false })
+        ])
+      : [{ data: [] as any[] }, { data: [] as any[] }];
+    const learnerById = new Map<string, any>((learnersRes.data || []).map((l: any) => [l.id, l]));
+    const trials = (bookingsRes.data || []).map((b: any) => {
+      const t: any = transformBookingToDashboardTrial(b, leadMap, serviceMap);
+      const learner = b.student_id ? learnerById.get(b.student_id) : null;
+      const placement = (placementsRes.data || []).find((p: any) => p.learner_student_id === b.student_id && p.service_id === b.service_id) || null;
+      t.learner_age = learner?.age ?? null;
+      t.learner_type = learner?.learner_type || null;
+      t.placement = placement ? { score: placement.score, max_score: placement.max_score, level: placement.admin_level || placement.suggested_level || null, language: placement.language || null } : null;
+      if (!isAdmin) { t.contact_email = ''; t.contact_whatsapp = null; }
+      return t;
+    });
 
     const nowCairo = DateTime.now().setZone('Africa/Cairo');
     const startOfDayUtc = nowCairo.startOf('day').toUTC().toISO();

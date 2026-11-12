@@ -83,7 +83,8 @@ export default function AvailabilityPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-3xl" dir={isAr ? 'rtl' : 'ltr'}>
+    // Phones type their hours first and the paint grid comes after (P4-034); desktop keeps the grid first.
+    <div className="flex flex-col gap-6 max-w-3xl" dir={isAr ? 'rtl' : 'ltr'}>
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground">{isAr ? 'مواعيد التدريس' : 'My teaching hours'}</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -107,10 +108,15 @@ export default function AvailabilityPage() {
         </div>
       )}
 
-      <WeekHoursGrid intervals={intervals} setIntervals={setIntervals} days={DAYS} isAr={isAr} timezone={timezone} />
+      <div className="order-2 md:order-none">
+        <WeekHoursGrid intervals={intervals} setIntervals={setIntervals} days={DAYS} isAr={isAr} timezone={timezone} />
+      </div>
 
-      <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'أو اكتب المواعيد بالدقيقة' : 'Or type exact times'}</h2>
-      <div className="space-y-4">
+      <h2 className="order-1 md:order-none text-lg font-display font-bold text-foreground">
+        <span className="md:hidden">{isAr ? 'اكتب مواعيدك' : 'Type your hours'}</span>
+        <span className="hidden md:inline">{isAr ? 'أو اكتب المواعيد بالدقيقة' : 'Or type exact times'}</span>
+      </h2>
+      <div className="order-1 md:order-none space-y-4">
         {DAYS.map((day, weekday) => {
           const rows = intervals.map((iv, index) => ({ iv, index })).filter(r => r.iv.weekday === weekday);
           return (
@@ -169,7 +175,7 @@ export default function AvailabilityPage() {
         type="button"
         onClick={save}
         disabled={saving}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground font-semibold cursor-pointer disabled:opacity-60"
+        className="order-3 md:order-none self-start inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground font-semibold cursor-pointer disabled:opacity-60"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
         {isAr ? 'حفظ المواعيد' : 'Save hours'}
