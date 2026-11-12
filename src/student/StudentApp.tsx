@@ -233,14 +233,17 @@ export default function StudentApp() {
   // Zad's tour opens once per account on this browser, after onboarding, when no sign-in modal is open.
   // A family gets the family tour, a learner the learner tour (src/lib/tours.ts).
   const tourKey = profile?.id && profile.onboardingCompleted !== false ? tourSeenKey(isFamilyAccount(profile) ? 'family' : 'learner', profile.id) : null;
+  // One thing at a time for a new family (P4-007): until the first booking exists, the only ask is to book. The tour
+  // and the reminders prompt wait for it; the tour stays one tap away in the menu.
+  const [hasBooking, setHasBooking] = useState<boolean | null>(null);
   useEffect(() => {
-    if (authModalOpen) return;
+    if (authModalOpen || hasBooking !== true) return;
     let storage: Storage | null = null;
     try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
     if (!isTourHome(location.pathname) || !shouldAutoOpenTour(tourKey, storage)) return;
     const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
     return () => window.clearTimeout(timer);
-  }, [tourKey, authModalOpen, location.pathname]);
+  }, [tourKey, authModalOpen, location.pathname, hasBooking]);
 
   // Unread badge: refreshed in the background on page changes, never blocks the page.
   useEffect(() => {
@@ -266,6 +269,7 @@ export default function StudentApp() {
           getSavedNotificationReadIds(userId)
         );
         if (isMounted) {
+          setHasBooking(Array.isArray(bookings) && bookings.length > 0);
           setUnreadNotificationsCount(countUnread(items) + Number(inbox?.unreadCount || 0));
           setUnreadChats(Number(inbox?.unreadChats || 0));
         }
@@ -677,7 +681,7 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
-            {profile?.id && <PushPrompt isAr={isAr} role="student" hold={showGlobalTour} />}
+            {profile?.id && <PushPrompt isAr={isAr} role="student" hold={showGlobalTour || hasBooking !== true} />}
             {profile?.id && (
               <div className="mb-4">
                 <TimezoneCheck

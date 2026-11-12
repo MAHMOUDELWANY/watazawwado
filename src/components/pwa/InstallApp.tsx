@@ -253,18 +253,43 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
  * installed or the card is closed (then gone for two weeks). "Install" opens the browser's own install dialog where
  * there is one (Chrome, Edge, Samsung) and the step-by-step sheet elsewhere (iPhone, iPad, Firefox).
  */
+const VISITS_KEY = 'watazawwado_visit_count';
+/** True from the second visit on (one count per browser session). Blocked storage counts as a first visit. */
+export function isReturningVisit(storage: Pick<Storage, 'getItem' | 'setItem'> | null = safeLocal(), session: Pick<Storage, 'getItem' | 'setItem'> | null = safeSession()): boolean {
+  if (!storage) return false;
+  try {
+    let n = Number(storage.getItem(VISITS_KEY)) || 0;
+    if (session && !session.getItem(VISITS_KEY)) {
+      n += 1;
+      storage.setItem(VISITS_KEY, String(n));
+      session.setItem(VISITS_KEY, '1');
+    }
+    return n >= 2;
+  } catch {
+    return false;
+  }
+}
+function safeLocal() { try { return window.localStorage; } catch { return null; } }
+function safeSession() { try { return window.sessionStorage; } catch { return null; } }
+
 export function InstallAppNudge({ isAr }: Lang) {
   const s = usePwaInstall();
   const reduce = useReducedMotion();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Not on the first visit, and never on top of a dialog (P4-007): a new visitor first meets the academy.
+    if (!isReturningVisit()) return;
     const root = document.documentElement;
     let timer = 0;
     const busy = () => root.classList.contains('sig-intro') || root.classList.contains('lang-welcome');
+    const tryShow = () => {
+      if (document.querySelector('[role="dialog"], [aria-modal="true"]')) timer = window.setTimeout(tryShow, 2500);
+      else setReady(true);
+    };
     const arm = () => {
       if (busy() || timer) return;
-      timer = window.setTimeout(() => setReady(true), 2500);
+      timer = window.setTimeout(tryShow, 2500);
       watch.disconnect();
     };
     const watch = new MutationObserver(arm);

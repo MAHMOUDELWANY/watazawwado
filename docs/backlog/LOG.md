@@ -1109,6 +1109,14 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
 
+## 2026-11-12 — P4 proposals 4–5 built (owner's pick)
+- New family: tour and push prompt wait for the first booking; install card from the second visit and never over a
+  dialog (P4-007). Booking: goal optional for a trial and kept on child pick; no pre-selected time; Arabic/English
+  human dates (`src/lib/lessonDate.ts`); confirmation opens at the top and offers the sibling's free trial
+  (P4-008/009/021). Test: `test/p4-first-booking-flow.test.ts`.
+- Open from proposal 5: three steps instead of four, after-school/evening time groups for children, teacher name on
+  the confirmation.
+
 ## 2026-11-12 — P4 proposals 1–3 built (owner's pick)
 - No default Boy/Girl, teacher gender or teacher in onboarding and "Add a child"; a gender with no teacher for the
   subject says so (P4-004/005). Trial and lesson rules plus the real reminder times from one helper

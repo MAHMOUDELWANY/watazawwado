@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { humanDate, humanTime } from '../../lib/lessonDate';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
@@ -29,15 +30,24 @@ interface BookingConfirmationProps {
   onDone: () => void;
   lang: Language;
   doneLabel?: string;
+  /** The next useful step, e.g. "Book Yusuf's free trial" when a sibling has none yet (P4-009). */
+  nextAction?: { label: string; onClick: () => void };
 }
 
 export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   confirmation,
   onDone,
   lang,
-  doneLabel
+  doneLabel,
+  nextAction
 }) => {
   const isEn = lang === 'en';
+  // Open at the top with the heading focused, not at the scroll position of the review step (P4-009).
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.scrollIntoView({ block: 'center' });
+    headingRef.current?.focus({ preventScroll: true });
+  }, []);
   const [downloadedIcs, setDownloadedIcs] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [showPaymentDetails, setShowPaymentDetails] = useState(!confirmation.isFreeTrial);
@@ -134,7 +144,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
-        <h2 className="font-display text-3xl sm:text-4xl font-medium text-foreground">
+        <h2 ref={headingRef} tabIndex={-1} className="font-display text-3xl sm:text-4xl font-medium text-foreground focus:outline-none">
           {confirmation.isFreeTrial
             ? isEn ? 'Your Free Trial is Booked' : 'تم تأكيد حجز جلستك التجريبية'
             : isEn ? 'Your Lesson is Scheduled' : 'تأكّد حجز درسك'}
@@ -164,7 +174,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 {isEn ? 'Date' : 'التاريخ'}
               </span>
               <span className="text-sm font-medium text-foreground">
-                {confirmation.date}
+                {humanDate(confirmation.date, !isEn)}
               </span>
             </div>
           </div>
@@ -178,7 +188,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 {isEn ? 'Time (Your Local Time)' : 'الوقت (بتوقيتك المحلي)'}
               </span>
               <span className="text-sm font-medium text-foreground">
-                {confirmation.timeDisplay}
+                {humanTime(confirmation.timeDisplay, !isEn)}
               </span>
               <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60 block">
                 {confirmation.timezone} ({confirmation.durationMinutes} {isEn ? 'min' : 'دقيقة'})
@@ -367,7 +377,16 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       </div>
 
       {/* Return to Site */}
-      <div className="pt-3 flex justify-center">
+      <div className="pt-3 flex flex-col items-center gap-2">
+        {nextAction && (
+          <button
+            type="button"
+            onClick={nextAction.onClick}
+            className="min-h-11 px-6 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-bold cursor-pointer"
+          >
+            {nextAction.label}
+          </button>
+        )}
         <button
           type="button"
           onClick={onDone}

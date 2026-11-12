@@ -21,6 +21,7 @@ import { DayAvailability, TimeSlot, Language, BookingMode, LessonDuration } from
 import { TimezoneSelectorModal } from './TimezoneSelectorModal';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
+import { DateTime } from 'luxon';
 
 interface StepDateTimeProps {
   mode: BookingMode;
@@ -30,7 +31,7 @@ interface StepDateTimeProps {
   selectedSlot: TimeSlot | null;
   timezone: string;
   onSelectDate: (dateStr: string) => void;
-  onSelectSlot: (slot: TimeSlot) => void;
+  onSelectSlot: (slot: TimeSlot | null) => void;
   onSelectTimezone: (tz: string) => void;
   onNext: () => void;
   onBack: () => void;
@@ -55,6 +56,13 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   lang
 }) => {
   const isEn = lang === 'en';
+  // Day names, months and times in the page's language (P4-021); the server's strings are English only.
+  const loc = isEn ? 'en-GB' : 'ar-EG';
+  const dayOf = (d: DayAvailability) => DateTime.fromISO(d.dateString).setLocale(loc);
+  const slotTime = (slot: TimeSlot) => {
+    const t = DateTime.fromISO(`2000-01-01T${slot.time24}`);
+    return t.isValid ? t.setLocale(loc).toLocaleString(DateTime.TIME_SIMPLE) : slot.timeDisplay;
+  };
 
   const [days, setDays] = useState<DayAvailability[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -81,9 +89,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
         if (!selectedDate) {
           const firstAvail = data.find((d) => d.isAvailable && d.slots.length > 0);
           if (firstAvail) {
+            // The day only: the family picks the time itself, never a 4 am default (P4-009).
             onSelectDate(firstAvail.dateString);
-            const defaultSlot = firstAvail.slots.find((s) => s.available);
-            if (defaultSlot) onSelectSlot(defaultSlot);
           }
         } else {
           // If already selected, ensure active index matches
@@ -113,11 +120,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
 
   const handleDaySelect = (d: DayAvailability) => {
     onSelectDate(d.dateString);
-    // If current selected slot is not valid for this day, choose first available slot
-    const firstAvailSlot = d.slots.find((s) => s.available);
-    if (firstAvailSlot) {
-      onSelectSlot(firstAvailSlot);
-    }
+    // A time from another day is no longer valid; the family picks one on this day.
+    if (d.dateString !== selectedDate) onSelectSlot(null);
   };
 
   const handleNextDayWithAvailability = () => {
@@ -215,13 +219,13 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     }`}
                   >
                     <span className="text-[13px] uppercase font-semibold tracking-wider opacity-85">
-                      {d.dayOfWeek}
+                      {dayOf(d).toFormat('ccc')}
                     </span>
                     <span className="text-base sm:text-lg font-display font-bold my-0.5">
-                      {d.dayOfMonth}
+                      {dayOf(d).toFormat('d')}
                     </span>
                     <span className="text-[13px] opacity-80">
-                      {d.monthName}
+                      {dayOf(d).toFormat('LLL')}
                     </span>
 
                     {/* Dot indicator */}
@@ -248,7 +252,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
                 <span className="font-display text-sm font-medium text-foreground">
-                  {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
+                  {currentDay ? dayOf(currentDay).toFormat('cccc d LLLL') : ''}
                 </span>
               </div>
               <span className="text-sm text-foreground/60 dark:text-accent/90/60">
@@ -325,7 +329,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slotTime(slot)}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
@@ -364,7 +368,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slotTime(slot)}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
@@ -403,7 +407,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slotTime(slot)}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (

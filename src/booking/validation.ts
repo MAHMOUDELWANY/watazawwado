@@ -17,8 +17,8 @@ export function validateStep(step: number, data: BookingFormData, isArabic = fal
       }
       break;
 
-    case 2: // Goal Selection
-      if (!data.goal && !data.customGoalText.trim()) {
+    case 2: // Goal Selection (optional for a free trial: the teacher meets the learner anyway, P4-008)
+      if (data.mode !== 'trial' && !data.goal && !data.customGoalText.trim()) {
         errors.goal = isArabic
           ? 'اختر هدفاً مقترحاً أو اكتب باختصار ما تأمل تحقيقه لتخصيص الجلسة.'
           : 'Please select a suggested goal or write a short note about what you hope to achieve.';

@@ -15,6 +15,7 @@ import {
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
+import { serviceIdForInterest } from '../../booking/serviceInterest';
 import { BookingHeader } from './BookingHeader';
 import { StepServiceSelect } from './StepServiceSelect';
 import { StepLearner } from './StepLearner';
@@ -641,6 +642,31 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setStep(isMultiStepFlow ? 6 : 5);
   };
 
+  // After a child's free trial, offer the next child who has none yet (P4-009).
+  const nextSibling = confirmation?.isFreeTrial && formData.audience === 'child'
+    ? linkedChildren.find((c: any) => c?.id && c.id !== formData.studentId && !trialUsedLearnerIds.includes(c.id))
+    : null;
+  const siblingTrialAction = nextSibling ? {
+    label: isAr ? `احجز التجربة المجانية لـ ${nextSibling.name}` : `Book ${nextSibling.name}'s free trial`,
+    onClick: () => {
+      try { sessionStorage.removeItem('watazawwado_pending_booking_state'); } catch {}
+      setConfirmation(null);
+      setPendingBooking(null);
+      updateFormData({
+        audience: 'child',
+        studentId: nextSibling.id,
+        serviceId: serviceIdForInterest(nextSibling.learningInterest || nextSibling.learning_interest),
+        goal: '',
+        childName: nextSibling.name || '',
+        childLevel: (nextSibling.current_level || nextSibling.currentLevel || 'beginner') as ProficiencyLevel,
+        date: '',
+        timeSlot: null,
+        acceptedTerms: false,
+      });
+      setStep(1);
+    },
+  } : undefined;
+
   const handleResetForNewBooking = () => {
     try {
       sessionStorage.removeItem('watazawwado_pending_booking_state');
@@ -694,6 +720,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             onDone={handleResetForNewBooking}
             lang={lang}
             doneLabel={doneLabel}
+            nextAction={siblingTrialAction}
           />
           {renderConfirmationExtra?.(confirmation)}
         </>

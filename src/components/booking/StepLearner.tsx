@@ -45,7 +45,8 @@ export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, link
   const family = canBookForChild && linkedChildren.length > 0;
   const selfName = formData.studentName || studentName || (isAr ? 'أنا' : 'Me');
 
-  const pickChild = (child: any) => update({
+  // Keep the goal when the subject stays the same (P4-008); a new subject has its own goals.
+  const pickChild = (child: any) => { const serviceId = serviceIdForInterest(child.learningInterest || child.learning_interest); update({
     audience: 'child',
     studentId: child.id,
     childName: child.name,
@@ -53,10 +54,10 @@ export const StepLearner: React.FC<StepLearnerProps> = ({ formData, update, link
     parentName: formData.parentName || formData.studentName || studentName || '',
     parentEmail: formData.parentEmail || formData.email || '',
     parentWhatsapp: formData.parentWhatsapp || formData.whatsapp || '',
-    serviceId: serviceIdForInterest(child.learningInterest || child.learning_interest),
-    goal: '',
-  });
-  const pickSelf = () => update({ audience: 'adult', studentId: undefined, goal: '' });
+    serviceId,
+    goal: serviceId === formData.serviceId ? formData.goal : '',
+  }); };
+  const pickSelf = () => update({ audience: 'adult', studentId: undefined });
 
   return (
     <div className="space-y-5" data-testid="booking-learner-step">

@@ -21,6 +21,7 @@ import { BookingFormData, Language } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee, MAJOR_TIMEZONES } from '../../booking/mockData';
 import { lessonRulesText, reminderText } from '../../lib/lessonRules';
 import { TermsConsent } from './TermsConsent';
+import { humanDate, humanTime } from '../../lib/lessonDate';
 
 interface StepReviewSummaryProps {
   formData: BookingFormData;
@@ -144,9 +145,9 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
               <span>{isEn ? 'Scheduled Date & Time' : 'الموعد والتوقيت'}</span>
             </div>
             <div className="text-base font-display font-medium text-foreground flex flex-wrap items-center gap-2">
-              <span>{formData.date}</span>
+              <span>{humanDate(formData.date, !isEn)}</span>
               <span>•</span>
-              <span className="text-primary font-semibold">{formData.timeSlot?.timeDisplay}</span>
+              <span className="text-primary font-semibold">{formData.timeSlot ? humanTime(formData.timeSlot.time24 || formData.timeSlot.timeDisplay, !isEn) : ''}</span>
             </div>
             <div className="text-sm text-foreground/80 dark:text-accent/90 flex flex-wrap items-center gap-2">
               <span className="flex items-center gap-1">
