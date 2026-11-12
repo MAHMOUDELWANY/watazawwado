@@ -49,4 +49,11 @@ Metricool's general best times for Europe peak at 10:00–12:00 Warsaw, but that
 7. Every week Claude pulls the numbers (Buffer analytics, Metricool) into Notion Weekly Numbers and sets the items to
    **Published**.
 
+Learned on the first post (V1, 2026-11-12):
+- Media goes public by a small commit of only `public/social/<id>/` on top of `origin/main` (temporary worktree), then
+  one check after the deploy (~4 min). Never a polling loop against production.
+- Buffer's free plan has **no first comment**: the owner posts the pinned comment by hand after publishing.
+- Buffer drafts keep their date; Metricool posts with `draft: true` stay drafts. Approval = Claude switches them to
+  scheduled.
+
 Never: publish without the batch approval, delete a published post without asking, reply to comments as the owner.
