@@ -123,6 +123,18 @@ export const subjectLabel = (id: string, isAr: boolean) => {
   return found ? (isAr ? found.subject.ar : found.subject.en) : id;
 };
 
+/**
+ * What an Arabic subject name means, for English readers who meet it for the first time (P4-031). Shown next to the
+ * name on the onboarding shelf and the pricing page; Arabic pages need no gloss.
+ */
+export const SUBJECT_MEANING_EN: Record<string, string> = {
+  'tajweed': 'reciting each letter correctly',
+  'quran-memorization': 'learning the Quran by heart',
+  'zad-essentials': 'the first things every Muslim needs to know',
+  'seerah': 'the life of the Prophet, peace be upon him',
+  'modern-standard-arabic': 'standard Arabic, the language of the Quran and of books',
+};
+
 /** One-line description of a subject (from the booking catalogue). */
 export const subjectTagline = (id: string, isAr: boolean) => {
   const s = BOOKING_SERVICES.find((x) => x.id === id);

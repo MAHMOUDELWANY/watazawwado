@@ -429,12 +429,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                       <div className="p-2.5 rounded-xl glass-surface border border-border/50 text-xs space-y-1">
                         <div className="flex items-center justify-between text-muted-foreground">
-                          <span>{isAr ? 'المعلم المعتمد:' : 'Instructor:'}</span>
+                          <span>{isAr ? 'المعلم:' : 'Teacher:'}</span>
                           <span className="font-bold text-primary">{teacherName}</span>
                         </div>
                         {child.learningInterest && (
                           <div className="flex items-center justify-between text-muted-foreground">
-                            <span>{isAr ? 'المسار:' : 'Track:'}</span>
+                            <span>{isAr ? 'يدرس:' : 'Studying:'}</span>
                             <span className="font-medium text-foreground truncate max-w-[130px]">{serviceLabel({ service_id: child.learningInterest }, isAr)}</span>
                           </div>
                         )}

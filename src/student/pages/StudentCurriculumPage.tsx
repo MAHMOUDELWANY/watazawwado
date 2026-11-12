@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Lock, CalendarPlus, Sparkles } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
@@ -33,6 +33,7 @@ function Samples({ lang }: { lang: 'ar' | 'en' }) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
   const navigate = useNavigate();
+  const kid = useLocation().pathname.startsWith('/kid');
   const list = samples();
   const [pick, setPick] = useState<number | null>(null);
   const current = pick === null ? undefined : list[pick];
@@ -60,8 +61,8 @@ function Samples({ lang }: { lang: 'ar' | 'en' }) {
           </div>
           <h3 dir="ltr" className="font-display text-lg font-bold text-foreground text-start">{current.lesson.number}. {current.lesson.title}</h3>
           <LessonPlayer key={current.track.id} lesson={current.lesson} lang={lang}
-            sample={{ totalPages: current.totalPages, teaser: ar ? current.teaserAr : current.teaser, onBook: () => navigate('/student/book') }} />
-          <Button className="w-full" onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial to unlock the full lesson', 'احجز حصة تجريبية مجانية وافتح الدرس كله')}</Button>
+            sample={{ totalPages: current.totalPages, teaser: ar ? current.teaserAr : current.teaser, onBook: kid ? undefined : () => navigate('/student/book') }} />
+          <BookOrAskParent ar={ar} label={L('Book a free trial to unlock the full lesson', 'احجز حصة تجريبية مجانية وافتح الدرس كله')} />
         </div>
       ) : (
         <ul className={DOORS}>
@@ -74,6 +75,16 @@ function Samples({ lang }: { lang: 'ar' | 'en' }) {
       )}
     </section>
   );
+}
+
+/** On a child's own device (/kid) booking belongs to the parent: say so instead of a button that leads nowhere (P4-027). */
+function BookOrAskParent({ ar, label }: { ar: boolean; label: string }) {
+  const navigate = useNavigate();
+  const kid = useLocation().pathname.startsWith('/kid');
+  if (kid) {
+    return <p className="text-sm font-semibold text-foreground">{ar ? 'اطلب من بابا أو ماما يحجزولك حصة، وهيتفتح هنا.' : 'Ask your parent to book a lesson, and it opens here.'}</p>;
+  }
+  return <Button onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {label}</Button>;
 }
 
 /** My curriculum: the puzzle per learner. Locked until the family has a booking (PLAN §4.2). */
@@ -99,7 +110,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
               'احجز حصة تجريبية مجانية، والمعلم هيكمل معاك القصة وتلعبوا لعبة آخر الدرس.'
             )}
           </p>
-          <Button onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial', 'احجز حصة تجريبية مجانية')}</Button>
+          <BookOrAskParent ar={ar} label={L('Book a free trial', 'احجز حصة تجريبية مجانية')} />
         </div>
         <section className="relative overflow-hidden glass-2 rounded-[var(--r-4,28px)] p-6 sm:p-8 text-center space-y-4">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-teal/15 text-teal flex items-center justify-center">
@@ -117,7 +128,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
               <li key={t} className="aspect-square rounded-xl bg-surface-subtle border border-border flex items-center justify-center text-xs font-bold text-muted-foreground">{i + 1}</li>
             ))}
           </ol>
-          <Button onClick={() => navigate('/student/book')}><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a lesson', 'احجز حصة')}</Button>
+          <BookOrAskParent ar={ar} label={L('Book a lesson', 'احجز حصة')} />
         </section>
       </div>
     );

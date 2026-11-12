@@ -25,7 +25,8 @@ interface Props {
   /** Called with the 0-based page index whenever the page changes (the teacher report uses it). */
   onPageChange?: (pageIndex: number) => void;
   /** A free sample: the lesson stops after these pages behind a lock, with a call to book (owner, 2026-10-23). */
-  sample?: { totalPages: number; teaser: string; onBook: () => void };
+  /** No onBook on a child's own device: booking belongs to the parent (P4-027). */
+  sample?: { totalPages: number; teaser: string; onBook?: () => void };
   /** NX-12 lesson room: the teacher's player reports every page and build step... */
   onPosition?: (page: number, step: number) => void;
   /** ...and the learner's player follows that position. */
@@ -489,7 +490,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                     </p>
                     <div className="flex gap-4">
                       <button type="button" onClick={() => { setFinished(false); goPage(0); }} className="rounded-full bg-white/10 px-8 py-4 font-sans text-[26px] font-bold text-white ring-1 ring-white/30 hover:bg-white/20">{L('Watch again', 'اتفرج تاني')}</button>
-                      <button type="button" onClick={sample.onBook} className="rounded-full bg-[#C51F24] px-10 py-4 font-sans text-[28px] font-bold text-white shadow-[0_14px_30px_-12px_rgba(197,31,36,0.8)] hover:bg-[#A8181D]">{L('Book a free trial', 'احجز حصة تجريبية مجانية')}</button>
+                      {sample.onBook && <button type="button" onClick={sample.onBook} className="rounded-full bg-[#C51F24] px-10 py-4 font-sans text-[28px] font-bold text-white shadow-[0_14px_30px_-12px_rgba(197,31,36,0.8)] hover:bg-[#A8181D]">{L('Book a free trial', 'احجز حصة تجريبية مجانية')}</button>}
                     </div>
                   </motion.div>
                 )}

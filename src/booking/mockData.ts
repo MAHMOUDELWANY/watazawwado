@@ -31,7 +31,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     name: 'Tajweed Rules & Applied Articulation',
     arabicName: 'أحكام التجويد ومخارج الحروف',
     group: 'quran',
-    tagline: 'Practical application of Makhaarij, Sifaat, and recitation rules.',
+    tagline: 'Saying each letter from the right place and in the right way, and the rules of recitation, practised on real verses.',
     arabicTagline: 'تطبيق عملي لأحكام النون والميم والمدود ومخارج الحروف.',
     description: 'Learn the exact rules of Tajweed through guided repetition and real-time auditory correction, applying theoretical rules directly into verses.',
     arabicDescription: 'إتقان أحكام التلاوة عبر الترديد والتصحيح الصوتي المباشر والتدريب العملي.',
@@ -113,13 +113,13 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     description: 'Each lesson gives the reason first, then the evidence from the Quran and Sunnah, and ends with one small step to live it this week. Animated lessons in three versions, picked from the learner’s age: Kids (6–11), Teens (12–17) and Adults (18+).',
     arabicDescription: 'كل درس يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، وينتهي بخطوة عملية صغيرة يطبقها المتعلم في أسبوعه. دروس متحركة بتلات نسخ حسب السن: للأطفال (٦–١١)، وللناشئة (١٢–١٧)، وللكبار (١٨+).',
     suggestedGoals: [
-      'My child knows nothing yet and I want a clear start',
+      'Starting from zero, with a clear first step',
       'Learn how to make wudu and pray correctly, with the evidence',
       'Understand who Allah is and why we worship Him',
       'Build good manners and daily Sunnahs at home'
     ],
     arabicSuggestedGoals: [
-      'ابني لسه مايعرفش حاجة وعايز بداية واضحة',
+      'البداية من الصفر بخطوة أولى واضحة',
       'تعلم الوضوء والصلاة بطريقة صحيحة مع الدليل',
       'معرفة الله ولماذا نعبده',
       'بناء الأخلاق والسنن اليومية في البيت'

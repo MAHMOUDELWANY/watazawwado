@@ -15,6 +15,7 @@ import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem
 import { WeekWithUs } from './WeekWithUs';
 import { FamilyVoices } from './FamilyVoices';
 import { TwoWays } from './TwoWays';
+import { NewToIslamDoor } from '../NewToIslamDoor';
 import { FAQS } from '../../../data/content';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { useWelcomeAudio } from '../../../lib/welcomeAudio';
@@ -199,6 +200,7 @@ export function PublicHomepage() {
           </div>
 
           <TwoWays isEn={isEn} />
+          <NewToIslamDoor isEn={isEn} />
         </div>
       </PublicSection>
 

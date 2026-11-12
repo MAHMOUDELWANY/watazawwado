@@ -85,7 +85,7 @@ export function CountryTimezonePicker({
         <label htmlFor={countrySelectId} className="block text-xs sm:text-sm font-semibold text-foreground mb-1.5">
           <span className="flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-            <span>{isAr ? 'دولة الإقامة (يُحدد التوقيت وكود الهاتف تلقائياً)' : 'Country of Residence (Auto-sets timezone & phone code)'}</span>
+            <span>{isAr ? 'بلد الإقامة (منه نضبط توقيتك وكود الهاتف)' : 'The country you live in (it sets your time zone and phone code)'}</span>
           </span>
         </label>
         <select

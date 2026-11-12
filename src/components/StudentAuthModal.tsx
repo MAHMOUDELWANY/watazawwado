@@ -450,6 +450,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                         </div>
                       )}
 
+                      {/* NX-16, P4-025: a child with a code from a parent starts here, before any email field. */}
+                      {view === 'login' && (
+                        <button
+                          type="button"
+                          onClick={() => { onClose(); navigate('/kid'); }}
+                          className="w-full min-h-12 px-4 rounded-2xl border-2 border-[var(--teal)] text-[var(--teal)] font-bold text-base cursor-pointer hover:bg-[var(--teal)]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--teal)]"
+                          data-testid="kid-code-entry"
+                        >
+                          {isAr ? 'معايا كود من بابا أو ماما' : 'I have a code from my parent'}
+                        </button>
+                      )}
                       {view !== 'update-password' && (
                         <div className={isSignup ? 'auth-half' : undefined}>
                           <label htmlFor="auth-email" className="block text-sm font-semibold text-foreground mb-1.5">
@@ -544,15 +555,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     </form>
                     )}
 
-                    {/* NX-16: a child's own device, linked with the code a parent makes in the Family tab. */}
-                    {view === 'login' && (
-                      <p className="mt-5 text-center text-sm text-muted-foreground">
-                        {isAr ? 'معك رمز من أبيك أو أمك؟ ' : 'Have a code from your parent? '}
-                        <button type="button" onClick={() => { onClose(); navigate('/kid'); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
-                          {isAr ? 'اربط هذا الجهاز' : 'Link this device'}
-                        </button>
-                      </p>
-                    )}
 
                     {(view === 'forgot' || view === 'update-password') && (
                       <p className="mt-5 text-center text-sm">

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
-import { SUBJECT_FAMILIES, findSubject, subjectTagline } from './subjects';
+import { SUBJECT_FAMILIES, SUBJECT_MEANING_EN, findSubject, subjectTagline } from './subjects';
 import { SubjectMark } from './SubjectMark';
 import { ZadRig, type ZadPose } from '../zad/ZadRig';
 
@@ -125,6 +125,7 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
                     <span className="hidden sm:block shrink-0"><SubjectMark subjectId={chosen.subject.id} color={chosen.family.color} size={48} /></span>
                     <div className="min-w-0">
                       <p className="font-display text-base sm:text-lg font-bold text-foreground">{isAr ? chosen.subject.ar : chosen.subject.en}</p>
+                      {!isAr && SUBJECT_MEANING_EN[chosen.subject.id] && <p className="text-sm font-semibold text-foreground/80">{SUBJECT_MEANING_EN[chosen.subject.id]}</p>}
                       <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{subjectTagline(chosen.subject.id, isAr)}</p>
                     </div>
                   </div>

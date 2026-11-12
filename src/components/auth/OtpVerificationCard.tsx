@@ -30,7 +30,7 @@ export interface OtpVerificationCardProps {
   /** A code that is not an email code (NX-16 device linking): its own length and words, no email field. */
   length?: number;
   initialCode?: string;
-  copy?: { title: React.ReactNode; subtitle: React.ReactNode; doneSubtitle: string; error: string; groupLabel: string };
+  copy?: { title: React.ReactNode; subtitle: React.ReactNode; doneSubtitle: string; error: string; groupLabel: string; button?: string };
 }
 
 const RESEND_COOLDOWN = 60;
@@ -88,6 +88,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
 
   const [email, setEmail] = useState(initialEmail);
   const [digits, setDigits] = useState<string[]>(() => applyInput(emptyDigits(length), 0, initialCode).digits);
+  const digitsRef = useRef(digits);
+  digitsRef.current = digits;
   const [phase, setPhaseState] = useState<OtpPhase>('idle');
   const phaseRef = useRef<OtpPhase>('idle');
   const [focused, setFocused] = useState<number | null>(null);
@@ -152,7 +154,13 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     return () => clearTimeout(id);
   }, [countdown]);
 
-  const focusBox = (i: number) => setTimeout(() => inputRefs.current[i]?.select(), 0);
+  // Move focus at once, not on a timer: a child typing fast must land each digit in the next box (P4-026).
+  const focusBox = (i: number) => {
+    const el = inputRefs.current[i];
+    if (!el) return;
+    if (document.activeElement !== el) el.focus();
+    el.select();
+  };
 
   const stopSpin = () => {
     spinCtrl.current?.stop();
@@ -209,11 +217,13 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     setError(
       copy?.error ?? t('الكود غير صحيح أو انتهت صلاحيته. اكتبه مرة أخرى.', 'That code is wrong or has expired. Enter it again.')
     );
-    setDigits(emptyDigits(length));
+    digitsRef.current = emptyDigits(length);
+    setDigits(digitsRef.current);
     focusBox(0);
   };
 
   const commit = (next: string[], focus: number) => {
+    digitsRef.current = next;
     setDigits(next);
     if (phaseRef.current === 'error') dispatch('edit');
     setError(null);
@@ -222,14 +232,15 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
   };
 
   const onChange = (i: number, value: string) => {
-    const r = applyInput(digits, i, value);
+    // The newest digits, not this render's: two quick keys can arrive before React re-renders.
+    const r = applyInput(digitsRef.current, i, value);
     commit(r.digits, r.focus);
   };
 
   const onKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       e.preventDefault();
-      const r = applyBackspace(digits, i);
+      const r = applyBackspace(digitsRef.current, i);
       commit(r.digits, r.focus);
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       // Boxes are always laid out left-to-right (digits stay LTR), so arrows map directly.
@@ -243,7 +254,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
 
   const onPaste = (i: number, e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const r = applyInput(digits, i, e.clipboardData.getData('text'));
+    const r = applyInput(digitsRef.current, i, e.clipboardData.getData('text'));
     commit(r.digits, r.focus);
   };
 
@@ -261,7 +272,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     if (res.success) {
       setCountdown(RESEND_COOLDOWN);
       setNotice(t('أرسلنا كوداً جديداً إلى بريدك.', 'We sent a new code to your email.'));
-      setDigits(emptyDigits(length));
+      digitsRef.current = emptyDigits(length);
+      setDigits(digitsRef.current);
       if (phaseRef.current === 'error') dispatch('edit');
       focusBox(0);
     } else {
@@ -551,7 +563,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
             disabled={!isComplete(digits, length)}
             onClick={() => verify(digits.join(''))}
           >
-            {busy ? t('نتحقق…', 'Checking…') : t('تأكيد', 'Verify')}
+            {busy ? t('نتحقق…', 'Checking…') : (copy?.button ?? t('تأكيد', 'Verify'))}
           </Button>
 
           {onResend && (

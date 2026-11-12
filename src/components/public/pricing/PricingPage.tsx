@@ -7,6 +7,7 @@ import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { EnvelopeCard, EnvelopePlan } from './EnvelopeCard';
 import { CalendarClock, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { BOOKABLE_SERVICES } from '../../../booking/mockData';
+import { SUBJECT_MEANING_EN } from '../../onboarding/subjects';
 
 // Approved packages for both price bands (RULES.md §4, docs/pricing/packages.md), 60-minute lessons. Display only:
 // the server catalog charges the real price. Honest wording only, no invented social proof.
@@ -147,6 +148,7 @@ export function PricingPage() {
             </div>
             {subject && (
               <p className="text-center text-sm text-muted-foreground" aria-live="polite">
+                {isEn && SUBJECT_MEANING_EN[subject.id] && <span className="block font-semibold text-foreground">{SHORT[subject.id]?.[0] ?? subject.name}: {SUBJECT_MEANING_EN[subject.id]}.</span>}
                 {band === 9
                   ? (isEn ? 'One lesson on its own: $9 an hour. A package brings it down to $8.' : 'الحصة لوحدها: 9$ للساعة، والباقة بتنزّلها لحد 8$.')
                   : (isEn ? 'One lesson on its own: from $13 an hour. A package brings it down to $11.50.' : 'الحصة لوحدها: من 13$ للساعة، والباقة بتنزّلها لحد 11.50$.')}

@@ -144,7 +144,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </motion.div>
 
         <span className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-surface-warm glass-surface text-muted-foreground border border-secondary/60">
-          {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
+          {isEn ? `Booking number ${confirmation.bookingReference}` : `رقم الحجز ${confirmation.bookingReference}`}
         </span>
 
         <h2 ref={headingRef} tabIndex={-1} className="font-display text-3xl sm:text-4xl font-medium text-foreground focus:outline-none">

@@ -16,7 +16,7 @@ describe('P4-004/005 no pre-selected gender or teacher', () => {
 
   it('a new child starts with no gender and needs a hand-picked teacher', () => {
     const s = src('src/student/pages/StudentOnboardingPage.tsx');
-    assert.equal((s.match(/gender: '',\n\s*teacherGenderPreference: 'auto'/g) || []).length, 2);
+    assert.equal((s.match(/gender: '',\r?\n\s*teacherGenderPreference: 'auto'/g) || []).length, 2);
     assert.ok(/childComplete = [^;]*Boolean\(c\.gender\) && childTeacherPicked\(c\)/.test(s));
     assert.ok(s.includes('!adultTeacherPicked'), 'an adult must pick a teacher before continuing');
     const add = src('src/student/components/AddChildForm.tsx');

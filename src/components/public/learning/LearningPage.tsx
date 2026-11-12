@@ -5,6 +5,7 @@ import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { SERVICES_DATA as ALL_PILLARS } from '../../../data/content';
+import { NewToIslamDoor } from '../NewToIslamDoor';
 import { BOOKABLE_SERVICES } from '../../../booking/mockData';
 import { SUBJECT_PAGES, SUBJECT_PAGES_PATH } from '../../../data/subjectPages';
 
@@ -236,7 +237,13 @@ export function LearningPage() {
   const isEn = lang === 'en';
 
   // Navigation and filter state
-  const [selectedPillarId, setSelectedPillarId] = useState<string>('all');
+  // ?family=islamic_studies opens one family (the "New to Islam" door, P4-031).
+  const [selectedPillarId, setSelectedPillarId] = useState<string>(() => {
+    try {
+      const f = new URLSearchParams(window.location.search).get('family');
+      return f && ALL_PILLARS.some((p) => p.id === f) ? f : 'all';
+    } catch { return 'all'; }
+  });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedServices, setExpandedServices] = useState<Record<string, boolean>>({});
 
@@ -301,6 +308,7 @@ export function LearningPage() {
               ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Zad Essentials and Seerah, Arabic and English, from the very first letter to advanced study.'
               : 'دروس فردية على مقاس هدفك: القرآن والتجويد، وأول الزاد والسيرة، والعربية والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
           />
+          <NewToIslamDoor isEn={isEn} onOpen={() => setSelectedPillarId('islamic_studies')} />
 
         </div>
       </PublicSection>

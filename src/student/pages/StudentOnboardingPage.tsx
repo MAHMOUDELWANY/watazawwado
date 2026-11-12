@@ -560,7 +560,7 @@ export default function StudentOnboardingPage({
               <GraduationCap className="w-6 h-6 text-primary shrink-0" />
               <div className="text-xs sm:text-sm">
                 <span className="font-semibold text-foreground block">
-                  {isRTL ? 'المعلم المعين لرحلتك:' : 'Assigned Instructor:'}
+                  {isRTL ? 'معلمك:' : 'Your teacher:'}
                 </span>
                 <span className="text-primary font-bold">{assignedTeacherName}</span>
               </div>
@@ -830,17 +830,17 @@ export default function StudentOnboardingPage({
                   <div>
                     <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                       <Baby className="w-5 h-5 text-primary" />
-                      <span>{isRTL ? 'بيانات الأبناء والمعلم المفضل' : 'Children Information & Teacher Assignment'}</span>
+                      <span>{isRTL ? 'أولادك ومعلم كل واحد' : 'Your children and their teachers'}</span>
                     </h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {isRTL 
-                        ? 'يمكنك إضافة طفل أو طفلين أو أكثر، وتحديد جنس كل طفل والمعلم المناسب له بدقة.'
-                        : 'Add 1, 2, or more children with individual gender, teacher preference, and subjects.'}
+                        ? 'أضف طفلًا أو أكثر، ولكل واحد مادته ومعلمه.'
+                        : 'Add one child or more. Each one gets their own subject and teacher.'}
                     </p>
                   </div>
 
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    {children.length} {isRTL ? (children.length === 1 ? 'طفل' : 'أبناء') : 'Child(ren)'}
+                    {children.length} {isRTL ? (children.length === 1 ? 'طفل' : 'أطفال') : (children.length === 1 ? 'child' : 'children')}
                   </span>
                 </div>
 
@@ -1140,12 +1140,12 @@ export default function StudentOnboardingPage({
             <div className="text-start pb-2 border-b border-border/70">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                <span>{isRTL ? 'مراجعة بيانات الحساب وتأكيد التسجيل' : 'Review & Confirm Profile'}</span>
+                <span>{isRTL ? 'راجع وأكمل' : 'Check and finish'}</span>
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {isRTL 
-                  ? 'يرجى مراجعة التفاصيل أدناه قبل الاعتماد النهائي لحسابك التعليمي.'
-                  : 'Please verify the details below before completing your profile.'}
+                  ? 'ألقِ نظرة أخيرة، وتقدر ترجع تعدّل أي حاجة.'
+                  : 'Have a last look. You can go back and change anything.'}
               </p>
             </div>
 
@@ -1193,7 +1193,7 @@ export default function StudentOnboardingPage({
               {learnerType === 'child' ? (
                 <div className="pt-3 border-t border-border/60 space-y-2.5">
                   <span className="text-xs font-bold text-foreground block">
-                    {isRTL ? 'تفاصيل الأبناء والمعلمين المعتمدين:' : 'Children & Instructors Breakdown:'}
+                    {isRTL ? 'كل طفل ومعلمه:' : 'Each child and their teacher:'}
                   </span>
                   <div className="space-y-2">
                     {children.map((c, i) => {
@@ -1205,7 +1205,7 @@ export default function StudentOnboardingPage({
                           <div className="flex items-center gap-2">
                             <span>{c.gender === 'female' ? '👧' : '👦'}</span>
                             <span className="font-bold text-foreground text-sm">{c.name}</span>
-                            <span className="text-muted-foreground">• {subject} ({c.currentLevel})</span>
+                            <span className="text-muted-foreground">• {subject}</span>
                           </div>
                           <div className="inline-flex items-center gap-1.5 font-bold text-primary">
                             <GraduationCap className="w-3.5 h-3.5" />
@@ -1219,7 +1219,7 @@ export default function StudentOnboardingPage({
               ) : (
                 <div className="pt-3 border-t border-border/60 space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{isRTL ? 'المعلم المعين:' : 'Instructor:'}</span>
+                    <span className="text-muted-foreground">{isRTL ? 'المعلم:' : 'Teacher:'}</span>
                     <span className="font-bold text-primary">{assignedTeacherName}</span>
                   </div>
                   <div className="flex items-center justify-between">

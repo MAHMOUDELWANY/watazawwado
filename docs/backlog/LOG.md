@@ -1109,6 +1109,14 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
 
+## 2026-11-12 — P4 proposals 6–7 built (owner's pick)
+- Child: code button at the top of the sign-in dialog, code boxes that keep up with fast typing, kid home and
+  curriculum without grown-up cards or booking buttons, 12.5 px tab labels (P4-025/026/027).
+- Voice: plain labels on onboarding, review, home and confirmation; English meanings for Arabic subject names;
+  "New to Islam, or to Arabic? Start here" door on the homepage and Learning page; neutral first Zad goal
+  (P4-010/031/032). Test: `test/p4-child-and-voice.test.ts`.
+- Open: child mode on the parent's phone (P4-028); the full Arabic 80/20 pass over the tour and onboarding (P4-023).
+
 ## 2026-11-12 — P4 proposals 4–5 built (owner's pick)
 - New family: tour and push prompt wait for the first booking; install card from the second visit and never over a
   dialog (P4-007). Booking: goal optional for a trial and kept on child pick; no pre-selected time; Arabic/English

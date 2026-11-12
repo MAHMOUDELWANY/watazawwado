@@ -106,9 +106,9 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         {/* Service & Goal */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <BookOpen className="w-3.5 h-3.5 text-accent" />
-              <span>{isEn ? 'Selected Discipline' : 'المادة المختارة'}</span>
+              <span>{isEn ? 'Subject' : 'المادة'}</span>
             </div>
             <h3 className="font-display text-lg font-medium text-foreground">
               {isEn ? service.name : service.arabicName}
@@ -143,9 +143,9 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         {/* Schedule & Timezone */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <Calendar className="w-3.5 h-3.5 text-accent" />
-              <span>{isEn ? 'Scheduled Date & Time' : 'الموعد والتوقيت'}</span>
+              <span>{isEn ? 'When' : 'الموعد'}</span>
             </div>
             <div className="text-base font-display font-medium text-foreground flex flex-wrap items-center gap-2">
               <span>{humanDate(formData.date, !isEn)}</span>
@@ -178,7 +178,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         {/* Learner Details & Communication */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <User className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Student & Contact' : 'بيانات الطالب والتواصل'}</span>
             </div>
@@ -229,22 +229,22 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         {/* Investment / Fee Structure */}
         <div className="flex items-center justify-between pt-1">
           <div>
-            <span className="text-sm font-semibold uppercase tracking-wider text-foreground/60 dark:text-accent/90/60 block">
-              {isEn ? 'Session Investment' : 'رسوم الجلسة'}
+            <span className="text-sm font-semibold text-foreground/60 dark:text-accent/90/60 block">
+              {isEn ? 'Price' : 'السعر'}
             </span>
             <span className="text-sm text-foreground/60 dark:text-accent/90/60">
               {isTrial
-                ? isEn ? 'Free introductory assessment session' : 'جلسة تعارف وتقييم مجانية تماماً'
+                ? isEn ? 'A free first meeting with your teacher' : 'لقاء أول مجاني مع معلمك'
                 : isPackageCredit
-                ? isEn ? 'Prepaid package credit • 1 credit linked' : 'رصيد باقة مدفوعة مسبقاً • تم ربط رصيد درس واحد'
-                : isEn ? 'Pay per lesson / no lock-in' : 'دفع لكل درس دون التزام مقيد'}
+                ? isEn ? 'One lesson from your package' : 'حصة واحدة من باقتك'
+                : isEn ? 'You pay for this lesson only' : 'تدفع ثمن هذه الحصة فقط'}
             </span>
           </div>
 
           <div className="text-end">
             <span className="font-display text-2xl font-bold text-primary dark:text-primary">
               {isTrial
-                ? (isEn ? 'FREE ($0.00)' : 'مجاناً ($٠.٠٠)')
+                ? (isEn ? 'Free' : 'مجانًا')
                 : isPackageCredit
                 ? (isEn ? '$0.00 USD (Covered by Package)' : '٠.٠٠$ (مغطى بالباقة)')
                 : `$${fee.toFixed(2)} USD`}

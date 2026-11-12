@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Calendar, Compass, Globe, GraduationCap, HeartHandshake, Library, LogOut, Presentation, Users, Video } from 'lucide-react';
 import { authedJson } from '../lib/authedJson';
@@ -24,7 +24,6 @@ import StudentCommunityPage from '../student/pages/StudentCommunityPage';
 import StudentPlacementPage from '../student/pages/StudentPlacementPage';
 import StudentPlacementReportPage from '../student/pages/StudentPlacementReportPage';
 
-const HomeProgressCard = lazy(() => import('../student/components/progress/HomeProgressCard').then((m) => ({ default: m.HomeProgressCard })));
 
 /**
  * NX-16: a child's own device (a phone, tablet or computer other than the parent's). The parent makes a one-time
@@ -200,6 +199,7 @@ function PairCard({ lang, removed, onToggleLang, onLinked }: { lang: 'ar' | 'en'
         doneSubtitle: isAr ? 'رُبط هذا الجهاز. هيا إلى حصصك!' : 'This device is linked. On to your lessons.',
         error: isAr ? 'هذا الرمز غير صحيح أو انتهت مدته. اطلب من بابا أو ماما رمزًا جديدًا.' : 'This code is wrong or has expired. Ask your parent for a new one.',
         groupLabel: isAr ? 'كود الربط من 6 أرقام' : '6-digit link code',
+        button: isAr ? 'يلا ندخل' : 'Let me in',
       }}
     />
   );
@@ -266,7 +266,7 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
 
       <section className="grid gap-3" aria-labelledby="kid-next">
         <h2 id="kid-next" className="text-base font-semibold">{isAr ? 'حصتك القادمة' : 'Your next lesson'}</h2>
-        {next ? <LessonCard lesson={next} isAr={isAr} big /> : <p className="text-sm text-muted-foreground">{isAr ? 'لا توجد حصص محجوزة الآن.' : 'No lessons booked right now.'}</p>}
+        {next ? <LessonCard lesson={next} isAr={isAr} big /> : <p className="text-sm text-muted-foreground">{isAr ? 'مفيش حصة محجوزة دلوقتي. قول لبابا أو ماما.' : 'No lesson booked yet. Tell your parent.'}</p>}
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
@@ -274,14 +274,14 @@ function KidHome({ isAr, me }: { isAr: boolean; me: KidMe }) {
         <HomeworkCard isAr={isAr} kid />
       </div>
 
-      <Suspense fallback={null}><HomeProgressCard isAr={isAr} /></Suspense>
+      {/* The grown-up progress card ("A new rhythm starts...") is not for a child; the Progress tab has it (P4-027). */}
 
       {/* Curriculum, progress and community are already the tabs; the level test is the one page that is not. */}
       <Link to="/kid/placement" className="glass-1 rounded-2xl p-4 flex items-center gap-3 min-h-11 hover:bg-surface-subtle transition-colors focus-ring">
         <GraduationCap className="w-6 h-6 text-accent shrink-0" aria-hidden="true" />
         <span className="grid gap-0.5">
-          <span className="font-semibold text-sm">{isAr ? 'اختبار المستوى' : 'Level test'}</span>
-          <span className="text-xs text-muted-foreground">{isAr ? 'اعرف مستواك' : 'Find your level'}</span>
+          <span className="font-semibold text-sm">{isAr ? 'لعبة أسئلة قصيرة' : 'A short quiz'}</span>
+          <span className="text-xs text-muted-foreground">{isAr ? 'وري معلمك إنت عارف إيه' : 'Show your teacher what you already know'}</span>
         </span>
       </Link>
     </div>
