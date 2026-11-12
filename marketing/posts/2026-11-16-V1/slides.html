@@ -13,7 +13,10 @@
   * { box-sizing: border-box; margin: 0; }
   body { background: #333; font-family: Sans, sans-serif; }
   .slide { width: 1080px; height: 1350px; position: relative; overflow: hidden; background: var(--paper); color: var(--ink);
-           padding: 120px 110px 230px; display: flex; flex-direction: column; margin-bottom: 40px; }
+           padding: 230px 110px 230px; display: flex; flex-direction: column; margin-bottom: 40px; }
+  /* Same small brand mark, top-left, on every slide. */
+  .slide::after { content: ""; position: absolute; left: 104px; top: 92px; width: 200px; height: 84px;
+           background: url(../../../public/logo-256.png) left center / contain no-repeat; }
   .slide::before { content: ""; position: absolute; inset: 0; pointer-events: none;
            background: radial-gradient(900px 600px at 100% 0%, rgba(229,169,60,.16), transparent 60%),
                        radial-gradient(800px 700px at 0% 100%, rgba(139,73,53,.10), transparent 60%); }
@@ -29,7 +32,7 @@
   .dots { display: flex; gap: 12px; }
   .dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--warm); display: block; }
   .dots i.on { background: var(--teal); }
-  .star { position: absolute; right: 90px; top: 90px; width: 120px; opacity: .9; }
+  .star { position: absolute; right: 104px; top: 74px; width: 104px; opacity: .9; }
   .deep { background: linear-gradient(160deg, #1B1816 0%, #2E2824 55%, #3B2219 100%); color: var(--paper); }
   .deep::before { background: radial-gradient(800px 600px at 80% 10%, rgba(229,169,60,.22), transparent 60%); }
   .deep h1 { color: var(--paper); }
@@ -50,7 +53,7 @@
   <div class="kicker">For parents</div>
   <h1>Before you book a Quran teacher for your child, ask these <span style="color:var(--crimson)">5 questions.</span></h1>
   <div class="save">Save this for when you choose →</div>
-  <div class="foot"><img src="../../../public/logo-256.png" alt=""><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+  <div class="foot"><span>watazawwado.academy</span><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
 </section>
 
 <section class="slide" id="s2">
