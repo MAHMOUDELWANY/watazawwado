@@ -104,19 +104,24 @@ reviews policy; "you can sit in on any lesson"; the learn-for-yourself / for-you
 audiences.
 
 Gaps [R]:
-1. **The CTA contradicts the launch.** "Every journey starts with one lesson. The first one is free" invites a trial,
-   while wave 1 is invitation-only through the waitlist. Until the wave opens, the main CTA is "Pack your zaad"; the
-   trial is the step after the invitation.
-2. **The cover-the-logo test fails in places.** "Online 1-on-1 classes: Quran, Tajweed, the Zad Path, Arabic &
-   English" could be any academy. Lead with the enemy and the choice: e.g. "Choose your teacher. Meet them before you
-   book. They stay."
-3. **"Choose your teacher" is under-sold.** It is our sharpest proof against the stranger; today it appears as
+1. ~~The CTA contradicts the launch.~~ Withdrawn (owner, 2026-11-12): the free trial (30 min, max 45) stays open to
+   every new learner, waitlisted or not, and the main button already switches to "Pack your zaad" in waitlist mode
+   (`TrialCtaLabel`).
+2. **Hero headline [D 2026-11-12]: keep "Provision that lasts, for you and your family" / «زادٌ يبقى، لك ولأهل
+   بيتك.»** as a signature line: it comes from the name (وتزودوا), so another academy cannot own it, and "a mentor who
+   stays" sits on the same page. Remove the visible kicker "Online 1-on-1 classes: Quran, Tajweed…" (owner: it spoils
+   the look). Not hidden text: Google treats text hidden only for search as spam. The subjects stay in the page
+   `<title>`, the meta description and the hero paragraph, which is enough for search. The cover-the-logo fix comes
+   from the sub-line (point 6) instead.
+3. **"Choose your teacher" is under-sold [owner: make it clear].** It is our sharpest proof against the stranger; today it appears as
    "Choose a male or female teacher". Show the teacher profiles and say families pick the person, not just the gender.
 4. **No founder credibility.** The ijazah and numbers are missing (BACKLOG MK-03).
 5. **Young adults have no scene.** Add one line for them ("Drifted? Start where you are. No lectures.").
-6. **"We contact you first" is not stated.** It is the parents' core promise.
+6. **"We contact you first" is not stated [owner: make it clear].** It is the parents' core promise. Proposed hero
+   sub-line: "Pick your teacher from real profiles. After every class, we tell you how it went, before you have to
+   ask."
 
-These go into one backlog task after approval (copy only; design untouched; humanizer and Arabic versions).
+These go into BACKLOG MK-04 (copy only; design untouched; humanizer and Arabic versions).
 
 ## 5. Product packaging and offer architecture
 
