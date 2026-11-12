@@ -1,6 +1,6 @@
 # Watazawwado Brand & Growth Strategy (draft for owner approval)
 
-Status: **[Proposed 2026-11-12]**. Built from the owner discussion in `STRATEGY-DISCUSSION.md` (decisions, evidence,
+Status: **[Approved by the owner 2026-11-12]**. Built from the owner discussion in `STRATEGY-DISCUSSION.md` (decisions, evidence,
 reasoning). When approved it replaces `PLAN.md` §2–5 and §7–8 and the content parts of `BRAND.md` §7; root `RULES.md`
 and `docs/marketing/RULES.md` still win. Labels: **[D]** decided by the owner, **[H]** hypothesis to test, **[R]**
 Claude's recommendation awaiting approval.
