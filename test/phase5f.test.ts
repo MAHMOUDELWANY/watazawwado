@@ -164,7 +164,8 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
         body: JSON.stringify({
           amount: 50,
           currency: '',
-          payment_method: 'wise'
+          payment_method: 'wise',
+          entitlement_id: '00000000-0000-4000-8000-000000000000' // P3-018: a payment names its lesson or package
         })
       });
       assert.strictEqual(res.status, 400);

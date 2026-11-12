@@ -4,6 +4,10 @@ import { X, DollarSign, Check, AlertCircle, Calendar, Hash, FileText } from 'luc
 import { dashboardFetch } from '../lib/dashboardApi';
 import { PaymentMethodType, PaymentRecordStatus } from '../types';
 import { useT } from '../../lib/language';
+import { Select } from '../../components/ui/Select';
+
+/** A package a family chose and has not paid for (GET /api/dashboard/payments/unpaid-packages). */
+interface UnpaidPackage { id: string; name: string; lessons: number; learnerName: string | null; email: string | null; amount: number; currency: string }
 
 interface RecordPaymentModalProps {
   isOpen: boolean;
@@ -41,6 +45,25 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [notes, setNotes] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // P3-018: without a lesson, the payment is for a package the family chose and has not paid for.
+  const forPackage = !bookingId;
+  const [packages, setPackages] = useState<UnpaidPackage[] | null>(null);
+  const [packageId, setPackageId] = useState('');
+
+  useEffect(() => {
+    if (!isOpen || !forPackage) return;
+    setPackages(null);
+    setPackageId('');
+    dashboardFetch<{ packages: UnpaidPackage[] }>('/api/dashboard/payments/unpaid-packages')
+      .then((d) => setPackages(d.packages || []))
+      .catch(() => setPackages([]));
+  }, [isOpen, forPackage]);
+
+  const choosePackage = (id: string) => {
+    setPackageId(id);
+    const chosen = packages?.find((p) => p.id === id);
+    if (chosen) { setAmount(String(chosen.amount)); setCurrency(chosen.currency); }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -86,6 +109,10 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       setError(t('Please choose a currency.', 'اختار العملة.'));
       return;
     }
+    if (forPackage && !packageId) {
+      setError(t('Choose the package this payment is for.', 'اختار الباقة اللي الدفع ده بتاعها.'));
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -93,6 +120,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         method: 'POST',
         body: JSON.stringify({
           booking_id: bookingId || null,
+          entitlement_id: forPackage ? packageId : null,
           student_id: studentId || null,
           amount: parsedAmount,
           currency: currency.toUpperCase().trim(),
@@ -133,7 +161,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               {t('Record a payment', 'سجّل دفع')}
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {bookingReference ? t(`For lesson ${bookingReference}`, `للحصة ${bookingReference}`) : t('A payment you received outside the site', 'دفع وصلك برّه الموقع')}
+              {bookingReference ? t(`For lesson ${bookingReference}`, `للحصة ${bookingReference}`) : t('For a package a family paid outside the site', 'لباقة دفعتها أسرة برّه الموقع')}
               {contactName ? ` (${contactName})` : ''}
             </p>
           </div>
@@ -156,6 +184,28 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
           )}
 
+          {forPackage && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-package">
+                {t('Package', 'الباقة')} *
+              </label>
+              {packages && packages.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  {t('No package is waiting for payment. The family chooses a package in their account first; then it shows here.', 'مفيش باقة مستنية دفع. الأسرة بتختار الباقة من حسابها الأول، وبعدها بتظهر هنا.')}
+                </p>
+              ) : (
+                <Select id="rpm-package" value={packageId} onChange={(e) => choosePackage(e.target.value)} required disabled={!packages}>
+                  <option value="">{packages ? t('Choose…', 'اختار…') : t('Loading…', 'جارٍ التحميل…')}</option>
+                  {(packages || []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {`${p.learnerName || p.email || t('Family', 'أسرة')} · ${p.name} · ${p.currency} ${p.amount.toFixed(2)}`}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </div>
+          )}
+
           {/* Amount & Currency */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
@@ -173,7 +223,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                  autoFocus
+                  autoFocus={!forPackage}
                 />
               </div>
             </div>
@@ -312,7 +362,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (forPackage && !packageId)}
               className="px-5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[40px]"
             >
               {submitting ? (

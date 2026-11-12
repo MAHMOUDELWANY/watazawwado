@@ -33,7 +33,16 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
       return s ? { json: s } : { status: 404, json: { error: { message: 'No such checkout.session' } } };
     });
   });
-  after(async () => { restore(); if (q) await q.resetLearnerData(); });
+  after(async () => {
+    restore();
+    if (!q) return;
+    await q.resetLearnerData();
+    // P3-021 notices go to every super admin; the ones this file caused must not stay in a real inbox.
+    await q.db.from('user_notifications').delete().eq('kind', 'payment_review').like('body_en', `QA Student ${q.TAG}%`);
+    await q.db.from('user_notifications').delete().eq('kind', 'payment_received_review').eq('recipient_user_id', (await q.qaIds()).student.authId);
+  });
+  const notices = async (kind: string, userId: string, since: string) =>
+    (await q.db.from('user_notifications').select('title_en, body_en, body_ar, link').eq('kind', kind).eq('recipient_user_id', userId).gte('created_at', since)).data || [];
 
   /** A held, unpaid 30-minute lesson (USD 4.50) of the QA student. */
   const heldLesson = async () => {
@@ -151,11 +160,23 @@ describe('P3 paid lesson through the Stripe webhook (real rows, Stripe stubbed)'
     await q.db.rpc('release_expired_payment_holds');
     assert.strictEqual((await q.booking(id)).status, 'cancelled');
     const s = session(id);
+    const since = new Date(Date.now() - 2000).toISOString();
     assert.strictEqual((await deliver(s)).status, 200);
     assert.strictEqual((await q.booking(id)).status, 'cancelled', 'a released slot is not taken back silently');
     const rows = await payments(id);
     assert.strictEqual(rows.length, 1, 'the money is on record');
     assert.strictEqual(rows[0].status, 'pending', 'waiting for the admin, not confirmed');
+    // P3-021: the admin is told what to do, the family is told we have the money; once each, also after a redelivery.
+    assert.strictEqual((await deliver(s)).status, 200);
+    const ids = await q.qaIds();
+    const toAdmin = await notices('payment_review', ids.admin, since);
+    assert.strictEqual(toAdmin.length, 1, `admin notices: ${toAdmin.length}`);
+    assert.match(toAdmin[0].body_en, /paid USD 4\.50 for MHM-[0-9A-F]+, but it was not confirmed: the held time had already been released/);
+    assert.ok(/[\u0600-\u06FF]/.test(toAdmin[0].body_ar), 'Arabic too');
+    const toFamily = await notices('payment_received_review', ids.student.authId, since);
+    assert.strictEqual(toFamily.length, 1, `family notices: ${toFamily.length}`);
+    assert.match(toFamily[0].body_en, /USD 4\.50 reached us.*do not pay again/);
+    assert.ok(!/zad|زاد/i.test(JSON.stringify(toFamily[0])), 'Zad stays out of payment messages (BRAND.md)');
   });
 
   it('P3-017: a payment recorded but not confirmed (the first pass stopped half way) is finished by the retry, meeting and all', async (t) => {

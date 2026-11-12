@@ -160,6 +160,7 @@ describe('P3 admin money actions and open endpoints under hostile input', () => 
     const bad: Record<string, unknown>[] = [
       { amount: 0 }, { amount: -4.5 }, { amount: 'abc' }, { amount: 1e9 }, { amount: null }, { amount: Infinity }, { currency: 'US' }, { currency: 'usd!' },
       { payment_method: 'cash' }, { payment_method: undefined }, { status: 'paid' }, { status: { $ne: 'x' } }, { booking_id: randomUUID(), status: 'confirmed' },
+      { booking_id: null }, { booking_id: { $ne: null } },
     ];
     for (const patch of bad) {
       const r = await q.call(admin, 'POST', '/api/dashboard/payments', { ...base, ...patch });
@@ -184,6 +185,40 @@ describe('P3 admin money actions and open endpoints under hostile input', () => 
     const { data: payment } = await q.db.from('payments').select('status, amount').eq('id', pid).single();
     assert.deepStrictEqual([payment!.status, Number(payment!.amount)], ['refunded', 4.5], 'the record stays, marked refunded');
     assert.strictEqual((await q.booking(lesson.json.bookingId)).status, 'cancelled', 'the refunded lesson is cancelled');
+  });
+
+  it('P3-018: a package paid outside the site is recorded against that package, and activates it once', async (t) => {
+    if (!q) return t.skip(skipReason);
+    const all: any[] = (await q.call(null, 'GET', '/api/packages')).json.data;
+    const pack = all.filter(p => Number(p.eligibility_rules?.hourly_rate) === 9 && Number(p.eligibility_rules?.duration_minutes) === 30).sort((a, b) => a.lesson_count - b.lesson_count)[0];
+    const chosen = await q.call(student, 'POST', '/api/student/packages/select', { packageCatalogId: pack.id, acceptedTerms: true, acceptedEarlyStart: true });
+    assert.strictEqual(chosen.status, 201, JSON.stringify(chosen.json));
+    const entitlementId = chosen.json.entitlement.id as string;
+    const price = Number(pack.price_amount);
+
+    const list = await q.call(admin, 'GET', '/api/dashboard/payments/unpaid-packages');
+    assert.strictEqual(list.status, 200);
+    const row = list.json.packages.find((p: any) => p.id === entitlementId);
+    assert.ok(row, 'the form lists the package the family chose');
+    assert.deepStrictEqual([row.amount, row.currency, row.learnerName, row.lessons], [price, 'USD', `QA Student ${q.TAG}`, pack.lesson_count]);
+    assert.strictEqual((await q.call(student, 'GET', '/api/dashboard/payments/unpaid-packages')).status, 403);
+
+    const pay = (over: Record<string, unknown>) => q.call(admin, 'POST', '/api/dashboard/payments', { amount: price, currency: 'USD', payment_method: 'wise', status: 'confirmed', ...over });
+    const neither = await pay({});
+    assert.deepStrictEqual([neither.status, neither.json.code], [400, 'PAYMENT_TARGET_REQUIRED'], 'no lesson and no package: a clear answer, not a server error');
+    assert.strictEqual((await pay({ entitlement_id: entitlementId, booking_id: randomUUID() })).status, 400, 'a lesson and a package at once');
+    assert.strictEqual((await pay({ entitlement_id: 'not-an-id' })).status, 400);
+    assert.strictEqual((await pay({ entitlement_id: randomUUID() })).status, 404);
+    assert.strictEqual((await q.call(student, 'POST', '/api/dashboard/payments', { entitlement_id: entitlementId, amount: price, currency: 'USD', payment_method: 'wise' })).status, 403);
+
+    const ok = await pay({ entitlement_id: entitlementId, payment_reference: `QA-P3-PKG-${Date.now()}` });
+    assert.strictEqual(ok.status, 201, JSON.stringify(ok.json));
+    const { data: ent } = await q.db.from('package_entitlements').select('status, remaining_credits').eq('id', entitlementId).single();
+    assert.deepStrictEqual([ent!.status, ent!.remaining_credits], ['active', pack.lesson_count], 'the package is active with all its lessons');
+    assert.strictEqual((await pay({ entitlement_id: entitlementId })).status, 409, 'paid packages take no second "received" payment');
+    const { data: pays } = await q.db.from('payments').select('status').eq('entitlement_id', entitlementId);
+    assert.deepStrictEqual((pays || []).map(p => p.status), ['confirmed']);
+    assert.ok(!(await q.call(admin, 'GET', '/api/dashboard/payments/unpaid-packages')).json.packages.some((p: any) => p.id === entitlementId), 'it leaves the unpaid list');
   });
 
   it('a subject\'s price cannot be set to nothing, a negative or an absurd number', async (t) => {

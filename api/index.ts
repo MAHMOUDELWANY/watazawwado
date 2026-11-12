@@ -5169,11 +5169,46 @@ async function afterPaymentConfirmed(supabase: any, updated: any): Promise<void>
   }
 }
 
+// P3-018: the packages a family chose and has not paid for, for the admin's "Record a payment" form.
+app.get('/api/dashboard/payments/unpaid-packages', verifyTeacherAuth, requireSuperAdmin, async (_req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    const { data, error } = await supabase
+      .from('package_entitlements')
+      .select('id, price_paid, currency, purchased_quantity, created_at, purchaser_account_id, students:learner_student_id(name, email), package_catalog:package_catalog_id(name, price_amount, currency)')
+      .eq('status', 'pending_payment')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (error) throw error;
+    res.json({
+      packages: (data || []).map((p: any) => {
+        const st = Array.isArray(p.students) ? p.students[0] : p.students;
+        const cat = Array.isArray(p.package_catalog) ? p.package_catalog[0] : p.package_catalog;
+        return {
+          id: p.id,
+          name: cat?.name || 'Lesson package',
+          lessons: p.purchased_quantity,
+          learnerName: st?.name || null,
+          email: st?.email || null,
+          amount: Number(p.price_paid ?? cat?.price_amount ?? 0),
+          currency: p.currency || cat?.currency || 'USD',
+          createdAt: p.created_at
+        };
+      })
+    });
+  } catch (err) {
+    console.error('[GET /api/dashboard/payments/unpaid-packages]', err);
+    res.status(500).json({ error: 'Could not load the unpaid packages.' });
+  }
+});
+
 // 16e. DASHBOARD: Record manual payment directly
 app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const {
       booking_id,
+      entitlement_id,
       student_id,
       amount,
       currency,
@@ -5182,6 +5217,13 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       status = 'confirmed',
       notes
     } = req.body;
+
+    // P3-018: every payment belongs to one lesson or one package (the table requires it). With neither, this route
+    // used to answer 500; a package could not be recorded at all.
+    const isId = (v: unknown) => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+    if (!booking_id === !entitlement_id || !isId(booking_id || entitlement_id)) {
+      return res.status(400).json({ error: 'Choose the lesson or the package this payment is for.', code: 'PAYMENT_TARGET_REQUIRED' });
+    }
 
     // Strict validation - Never invent or accept invalid amount
     const parsedAmount = Number(amount);
@@ -5198,7 +5240,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       }
       finalCurrency = cleanCur;
     } else if (!booking_id) {
-      return res.status(400).json({ error: 'Currency is required for manual payments without a booking.' });
+      return res.status(400).json({ error: 'Currency is required for a package payment.' });
     }
 
     const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'stripe', 'wise', 'other'];
@@ -5237,6 +5279,18 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
         finalStudentId = b.student_id;
       }
     }
+    // A package: it must exist, and money "received" is only for one still waiting for payment (a second
+    // confirmed payment on an active package would be money with nothing behind it).
+    let packageAwaitsPayment = false;
+    if (entitlement_id) {
+      const { data: pkg } = await supabase.from('package_entitlements').select('status, learner_student_id').eq('id', entitlement_id).maybeSingle();
+      if (!pkg) return res.status(404).json({ error: 'Package not found.' });
+      packageAwaitsPayment = pkg.status === 'pending_payment';
+      if (status === 'confirmed' && !packageAwaitsPayment) {
+        return res.status(409).json({ error: 'This package is not waiting for payment.', code: 'PAYMENT_CONFIRM_FAILED' });
+      }
+      finalStudentId = pkg.learner_student_id || finalStudentId;
+    }
 
     // P2-005: "received" for a lesson that still waits for payment must confirm the lesson too, through the same
     // atomic step as the Confirm button. Otherwise the money is on record and the unpaid hold still expires.
@@ -5246,9 +5300,12 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       if (!target) return res.status(404).json({ error: 'Booking not found.' });
       confirmsLesson = target.status === 'pending';
     }
+    // The same atomic step activates a package and grants its credits.
+    if (status === 'confirmed' && packageAwaitsPayment) confirmsLesson = true;
     const isConfirmed = status === 'confirmed' && !confirmsLesson;
     const insertPayload = {
       booking_id: booking_id || null,
+      entitlement_id: entitlement_id || null,
       student_id: finalStudentId,
       amount: Number(parsedAmount.toFixed(2)),
       currency: finalCurrency,
@@ -5275,7 +5332,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       if (rpcErr) {
         // The lesson stopped waiting meanwhile (hold ended, cancelled): keep nothing half-recorded.
         await supabase.from('payments').delete().eq('id', newPayment.id).eq('status', 'pending');
-        return res.status(409).json({ error: 'This lesson is no longer waiting for payment, so the payment was not recorded. Refresh and check the lesson.', code: 'PAYMENT_CONFIRM_FAILED' });
+        return res.status(409).json({ error: `This ${booking_id ? 'lesson' : 'package'} is no longer waiting for payment, so the payment was not recorded. Refresh and check it.`, code: 'PAYMENT_CONFIRM_FAILED' });
       }
       const { data: confirmed } = await supabase.from('payments').select('*').eq('id', newPayment.id).single();
       await afterPaymentConfirmed(supabase, confirmed || newPayment);
@@ -5592,6 +5649,7 @@ async function fulfillAutomatedPayment(params: {
 
   if (!amountMatches) {
     console.error('[fulfillAutomatedPayment] amount mismatch', { paymentId: newPayment.id, paidCents, expectedCents, paidCurrency, expectedCurrency });
+    await notifyUnconfirmedPayment(supabaseAdmin, { studentId, amount: Number(params.amount), currency: paidCurrency, reference: referenceCode, name: learnerName, reason: 'amount' });
     throw new PublicError('Payment amount does not match the order. It has been recorded for manual review.');
   }
 
@@ -5603,6 +5661,8 @@ async function fulfillAutomatedPayment(params: {
   });
   if (rpcErr) {
     console.error('[fulfillAutomatedPayment] verify_payment_atomic failed', { paymentId: newPayment.id, rpcErr });
+    // Told once: a redelivery of the same event finds this payment and takes the retry path above.
+    await notifyUnconfirmedPayment(supabaseAdmin, { studentId, amount: Number(params.amount), currency: paidCurrency, reference: referenceCode, name: learnerName, reason: 'released' });
     throw new PublicError('Payment received but could not be confirmed automatically. It is pending manual review.');
   }
 
@@ -5659,6 +5719,42 @@ async function fulfillAutomatedPayment(params: {
     serviceName,
     status: 'confirmed'
   };
+}
+
+/**
+ * P3-021: a card payment that reached us but confirmed nothing (the held time was released first, or the amount is
+ * not the price). The money is on record as a payment to check; this tells the super admin to rebook or refund,
+ * and tells the family we have it, so nobody is left with "paid, no lesson, no word". Never throws.
+ */
+async function notifyUnconfirmedPayment(supabase: any, p: { studentId: string | null; amount: number; currency: string; reference: string; name: string; reason: 'released' | 'amount' }): Promise<void> {
+  try {
+    const money = `${String(p.currency || 'USD').toUpperCase()} ${Number(p.amount).toFixed(2)}`;
+    const why = p.reason === 'amount'
+      ? { en: 'the amount does not match the price', ar: 'المبلغ لا يطابق السعر' }
+      : { en: 'the held time had already been released', ar: 'الموعد المحجوز كان قد أُفرج عنه' };
+    await notifySuperAdmins(supabase, {
+      kind: 'payment_review',
+      title: { en: 'Payment received, nothing confirmed', ar: 'وصلت دفعة ولم يتأكد شيء' },
+      body: {
+        en: `${p.name} paid ${money} for ${p.reference}, but it was not confirmed: ${why.en}. Book the family again or refund them. The payment is in Payments, marked "To check".`,
+        ar: `${p.name} دفع ${money} مقابل ${p.reference}، لكنها لم تتأكد: ${why.ar}. احجز للأسرة من جديد أو أعد المبلغ. الدفعة في صفحة المدفوعات بحالة "محتاج مراجعة".`
+      },
+      link: '/dashboard/bookings'
+    }, { email: true });
+    const account = await resolveLearnerAccount(supabase, p.studentId);
+    if (!account.userId && !account.email) return;
+    await notifyUser(supabase, { userId: account.userId, email: account.email, name: account.name }, {
+      kind: 'payment_received_review',
+      title: { en: 'We received your payment', ar: 'وصلتنا دفعتك' },
+      body: {
+        en: `Your payment of ${money} reached us, but we could not confirm your booking automatically. Our team will contact you shortly to book it again or return the money. Please do not pay again.`,
+        ar: `وصلتنا دفعتك (${money})، لكن تعذّر تأكيد حجزك تلقائيًا. سيتواصل معك فريقنا قريبًا لحجزه من جديد أو لإعادة المبلغ. من فضلك لا تدفع مرة أخرى.`
+      },
+      link: '/student/payments'
+    }, { email: true });
+  } catch (err) {
+    console.warn('[Payment review notice]', err);
+  }
 }
 
 // 2. Zero-Trust Payment Intent Creation (server authoritative pricing)

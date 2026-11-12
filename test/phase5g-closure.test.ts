@@ -72,9 +72,10 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       body: JSON.stringify({ amount: 10, currency: 'USD', payment_method: 'wise', status: 'pending' })
     });
     const body = await res.json();
-    assert.strictEqual(res.status, 500);
+    // P3-018: with no lesson and no package this used to reach the table's constraint (500); now it is refused first.
+    assert.strictEqual(res.status, 400);
     assert.ok(!JSON.stringify(body).includes('SECRET_DB_ERROR_SHOULD_NEVER_REACH_CLIENT'));
-    assert.ok(body.error?.includes('Failed to record payment'));
+    assert.strictEqual(body.code, 'PAYMENT_TARGET_REQUIRED');
     globalThis.fetch = originalFetch;
   });
 
