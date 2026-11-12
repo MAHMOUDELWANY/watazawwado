@@ -42,6 +42,7 @@ import {
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useActiveLearner, LearnerChips } from '../activeLearner';
 import { PendingPaymentCard } from '../components/PendingPaymentCard';
+import { allLessonRulesText } from '../../lib/lessonRules';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -190,9 +191,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             {isAr ? 'سياسة الجدولة والإلغاء المعتمدة' : 'Cancellation & Rescheduling Policy'}
           </span>
           <span>
-            {isAr
-              ? 'يمكنك إعادة جدولة أو إلغاء موعدك قبل موعد الدرس بـ ٣ ساعات على الأقل. في حال كان المتبقي أقل من ٣ ساعات، يرجى التنسيق معنا مباشرة عبر واتساب.'
-              : 'You may reschedule or cancel any session at least 3 hours in advance. For changes within 3 hours of start time, please message us directly on WhatsApp.'}
+            {allLessonRulesText(isAr)}
           </span>
         </div>
       </div>

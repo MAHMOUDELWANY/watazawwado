@@ -5,11 +5,12 @@
  * from the server catalog (RULES.md §4); the server charges, this screen only shows.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { Language, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
 import { EnvelopeCard, EnvelopePlan } from '../public/pricing/EnvelopeCard';
+import { TermsConsent } from './TermsConsent';
 
 interface StepPackageQuantityProps {
   serviceId: string;
@@ -91,6 +92,13 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
 
   const chosenId = selectedCatalogId || 'single';
   const chosenPackage = packages.find((p) => p.id === selectedCatalogId);
+  // Once a package is chosen, the grid folds into one line so no other package sits beside the amount (P4-014).
+  const [showAll, setShowAll] = useState(false);
+  const choose = (catalogId: string | undefined) => {
+    onSelect?.(catalogId);
+    setShowAll(false);
+  };
+  const folded = Boolean(chosenPackage) && !showAll;
 
   return (
     <div className="space-y-5" data-testid="booking-plan-step">
@@ -105,6 +113,27 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
 
       {/* The same envelopes as the public pricing page (owner, 2026-11-02, after the compact cards):
           phones swipe a row, larger screens show a grid. The chosen one stands out of its envelope. */}
+      {folded && chosenPackage && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border-2 border-[#087D91] bg-surface p-4" data-testid="booking-package-summary">
+          <span className="text-sm text-foreground">
+            <span className="block font-bold">
+              {isAr
+                ? `${n(chosenPackage.lesson_count)} حصص × ${n(duration)} دقيقة`
+                : `${chosenPackage.lesson_count} lessons × ${duration} min`}
+            </span>
+            <span className="font-display text-xl font-bold tabular-nums" dir="ltr">{money(Number(chosenPackage.price_amount))}</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowAll(true)}
+            className="min-h-11 px-3 text-sm font-semibold text-primary underline underline-offset-4 cursor-pointer rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            {isAr ? 'غيّر' : 'Change'}
+          </button>
+        </div>
+      )}
+
+      {!folded && (
       <div
         role="radiogroup"
         aria-label={isAr ? 'اختر الخطة' : 'Choose a plan'}
@@ -117,15 +146,16 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
               <EnvelopeCard
                 plan={plan}
                 open={chosen}
-                onTap={() => onSelect?.(plan.catalogId)}
+                onTap={() => choose(plan.catalogId)}
                 primaryLabel={chosen ? (isAr ? 'مختارة ✓' : 'Chosen ✓') : (isAr ? 'اختر هذه' : 'Choose this')}
-                onPrimary={() => onSelect?.(plan.catalogId)}
+                onPrimary={() => choose(plan.catalogId)}
                 isAr={isAr}
               />
             </div>
           );
         })}
       </div>
+      )}
 
       {chosenPackage && (
         <div className={`rounded-2xl border p-4 space-y-3 ${acceptedTerms && acceptedEarlyStart ? 'border-border bg-surface' : 'border-amber-500/50 bg-amber-500/5'}`} data-testid="booking-package-terms">
@@ -134,16 +164,8 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
               ? `ستدفع ${money(Number(chosenPackage.price_amount))} للباقة الآن، ثم تختار موعد أول حصة، دون دفع إضافي.`
               : `You pay ${money(Number(chosenPackage.price_amount))} for the package now, then pick the time of your first lesson with nothing more to pay.`}
           </p>
-          <label className="flex items-start gap-3 text-sm text-foreground/90 cursor-pointer">
-            <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#087D91]" checked={acceptedTerms} onChange={(e) => onAcceptTerms?.(e.target.checked)} />
-            <span>
-              {isAr ? 'قريت ووافقت على ' : 'I have read and accept the '}
-              <a href={isAr ? '/ar/terms' : '/terms'} target="_blank" rel="noopener noreferrer" className="underline font-semibold">
-                {isAr ? 'الشروط وسياسة الإلغاء والاسترداد' : 'terms and the cancellation & refund policy'}
-              </a>
-            </span>
-          </label>
-          <label className="flex items-start gap-3 text-sm text-foreground/90 cursor-pointer">
+          <TermsConsent checked={acceptedTerms} onChange={(v) => onAcceptTerms?.(v)} isAr={isAr} />
+          <label className="flex items-start gap-3 min-h-11 py-1 text-sm text-foreground/90 cursor-pointer">
             <input type="checkbox" className="mt-0.5 w-5 h-5 shrink-0 accent-[#087D91]" checked={acceptedEarlyStart} onChange={(e) => onAcceptEarlyStart?.(e.target.checked)} />
             <span>
               {isAr

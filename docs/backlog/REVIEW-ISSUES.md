@@ -113,10 +113,10 @@ From `docs/testing/findings/p4.md` (nine personas on phone and desktop, Arabic a
 lesson times on Home and right after onboarding) are already fixed in the P4 branch; the rest wait for the owner's
 pick.
 
-1. **Teacher choice you can trust** (P4-003/004/005): a real intro and photo for Ahmed, hours for Ustadh Mahmoud or his
+1. **Teacher choice you can trust** (P4-003/004/005) [product part built 2026-11-12; data still with the owner]: a real intro and photo for Ahmed, hours for Ustadh Mahmoud or his
    photo out of the hero, a female Quran teacher before wave 1; no pre-selected gender or teacher.
-2. **The right rules at consent** (P4-006): trial rules and the real reminder times on the review step and confirmation.
-3. **A checkout that cannot be misread** (P4-014/015/018): one summary line beside the amount; tappable consent rows.
+2. **The right rules at consent** (P4-006) [built 2026-11-12]: trial rules and the real reminder times on the review step and confirmation.
+3. **A checkout that cannot be misread** (P4-014/015/018) [built 2026-11-12; split savings lines open]: one summary line beside the amount; tappable consent rows.
 4. **One thing at a time for a new family** (P4-007): no install banner, tour and push modal before the first booking.
 5. **Booking v2** (P4-008/009/021): three steps, nothing wrongly pre-selected, Arabic dates, the sibling's trial next.
 6. **A child's way in** (P4-025/026/027/028): code option inside sign-in, one-field code, a kid space for children.

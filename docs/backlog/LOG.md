@@ -1109,6 +1109,14 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
 
+## 2026-11-12 — P4 proposals 1–3 built (owner's pick)
+- No default Boy/Girl, teacher gender or teacher in onboarding and "Add a child"; a gender with no teacher for the
+  subject says so (P4-004/005). Trial and lesson rules plus the real reminder times from one helper
+  `src/lib/lessonRules.ts` on review, confirmation and Lessons (P4-006). Package checkout folds to one summary line;
+  terms consent is one tappable row with a separate "Read the terms" link (P4-014/015/018).
+- Test: `test/p4-trust-at-booking.test.ts`. Open: package vs family savings on separate lines needs the quote to carry
+  both amounts.
+
 ## 2026-11-12 — P4 real-user experience by persona (testing project 4, branch `claude/p4-ux-personas-testing-c0546c`)
 - Nine personas lived on phone and desktop, Arabic and English, on `qa-p4` (:3004) with four fresh not-onboarded QA
   accounts so each one went through the real onboarding; live site used read-only for Lighthouse and one slow-3G load.

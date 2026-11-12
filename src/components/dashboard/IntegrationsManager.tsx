@@ -395,7 +395,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang, 
 
             <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
               {isEn
-                ? 'Delivers transactional confirmations, reminders (24h/1h), receipts, and alerts via Brevo HTTP API.'
+                ? 'Delivers transactional confirmations, reminders (3 h before), receipts, and alerts via Brevo HTTP API.'
                 : 'إرسال تأكيدات الحجز والتذكيرات وإشعارات الدفع عبر واجهة Brevo السحابية.'}
             </p>
 

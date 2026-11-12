@@ -33,6 +33,7 @@ import { PackageBalance } from '../components/PackageBalance';
 import { useActiveLearner } from '../activeLearner';
 import { GiftsPanel, seasonGiftLabel } from '../components/GiftsPanel';
 import { Input } from '../../components/ui/Input';
+import { TermsConsent } from '../../components/booking/TermsConsent';
 
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
@@ -813,21 +814,7 @@ export default function StudentPackagesPage({ lang = 'en', embedded = false }: S
               )}
             </div>
           )}
-          <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
-            <input
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={e => setAcceptedTerms(e.target.checked)}
-              className="mt-1 w-4 h-4 accent-teal-600"
-            />
-            <span>
-              {isAr ? 'قرأت ووافقت على ' : 'I have read and accept the '}
-              <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
-                {isAr ? 'الشروط وسياسة الإلغاء والاسترداد' : 'terms and the cancellation & refund policy'}
-              </a>
-              .
-            </span>
-          </label>
+          <TermsConsent checked={acceptedTerms} onChange={setAcceptedTerms} isAr={isAr} />
           <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
             <input
               type="checkbox"

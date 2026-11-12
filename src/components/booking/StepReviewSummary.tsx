@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { BookingFormData, Language } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee, MAJOR_TIMEZONES } from '../../booking/mockData';
+import { lessonRulesText, reminderText } from '../../lib/lessonRules';
+import { TermsConsent } from './TermsConsent';
 
 interface StepReviewSummaryProps {
   formData: BookingFormData;
@@ -289,9 +291,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             {isEn ? 'Cancellation & Rescheduling Policy' : 'سياسة الإلغاء وتغيير الموعد'}
           </strong>
           <span className="text-muted-foreground text-xs sm:text-sm">
-            {isEn
-              ? 'You can easily reschedule or cancel anytime up to 3 hours before your lesson. For requests within the 3-hour window, please message us directly on WhatsApp.'
-              : 'يمكنك تعديل الموعد أو الإلغاء بكل سهولة حتى ٣ ساعات قبل بدء الدرس. في حال رغبتك بالتعديل خلال الساعات الثلاث السابقة للدرس، يُرجى مراسلتنا مباشرة على واتساب.'}
+            {lessonRulesText(isTrial, !isEn)} {reminderText(!isEn)}
           </span>
         </div>
       </div>
@@ -342,21 +342,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       )}
 
       {!pendingBookingReference && (
-        <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
-          <input
-            type="checkbox"
-            checked={formData.acceptedTerms === true}
-            onChange={e => onAcceptTerms?.(e.target.checked)}
-            className="mt-1 w-4 h-4 accent-teal-600"
-          />
-          <span>
-            {isEn ? 'I have read and accept the ' : 'قرأت ووافقت على '}
-            <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
-              {isEn ? 'terms and the cancellation & refund policy' : 'الشروط وسياسة الإلغاء والاسترداد'}
-            </a>
-            .
-          </span>
-        </label>
+        <TermsConsent checked={formData.acceptedTerms === true} onChange={(v) => onAcceptTerms?.(v)} isAr={!isEn} />
       )}
 
       {!pendingBookingReference && needsEarlyStart && (

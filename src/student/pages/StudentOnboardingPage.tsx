@@ -65,6 +65,9 @@ const FALLBACK_TEACHERS: TeacherCard[] = [
 ];
 const isFallbackTeacherId = (id: string) => FALLBACK_TEACHERS.some((t) => t.id === id);
 
+/** True when this teacher was picked by hand from this list (nothing is pre-selected, P4-004/005). */
+export const isTeacherPicked = (teachers: TeacherCard[], id: string) => Boolean(id) && teachers.some((t) => t.id === id);
+
 /** The chosen teacher, else the first one of the learner's gender, else the first teacher. */
 export function resolveTeacherCard(teachers: TeacherCard[], id: string, gender: 'male' | 'female'): TeacherCard {
   return teachers.find((t) => t.id === id) || teachers.find((t) => t.gender === gender) || teachers[0] || FALLBACK_TEACHERS[0];
@@ -90,7 +93,8 @@ function detectCountryFromBrowser(): { country: string; timezone: string } | nul
 export interface ChildOnboardingForm {
   id: string;
   name: string;
-  gender: 'male' | 'female';
+  /** '' until the parent taps Boy or Girl (no default, P4-005). */
+  gender: 'male' | 'female' | '';
   teacherGenderPreference: 'male_teacher' | 'female_teacher' | 'auto';
   /** The teacher picked for this child ('' = the first teacher of the child's gender). */
   teacherId: string;
@@ -153,8 +157,8 @@ export default function StudentOnboardingPage({
 
   // Adult learner details
   const [studentName, setStudentName] = useState(currentProfile?.name || '');
-  const [gender, setGender] = useState<'male' | 'female'>(
-    currentProfile?.gender === 'female' ? 'female' : 'male'
+  const [gender, setGender] = useState<'male' | 'female' | ''>(
+    currentProfile?.gender === 'female' || currentProfile?.gender === 'male' ? currentProfile.gender : ''
   );
   const [teacherId, setTeacherId] = useState<string>(currentProfile?.assignedTeacherId || '');
   const [teacherGenderPreference, setTeacherGenderPreference] = useState<'male' | 'female'>(
@@ -165,7 +169,10 @@ export default function StudentOnboardingPage({
   const adultTeacher = resolveTeacherCard(adultTeachers, teacherId, teacherGenderPreference);
   const teacherName = (t: TeacherCard) => (isRTL ? t.nameAr : t.nameEn);
   const childTeacher = (c: ChildOnboardingForm) =>
-    resolveTeacherCard(teachersFor(teachers, c.learningInterest), c.teacherId, c.teacherGenderPreference === 'auto' ? c.gender : c.teacherGenderPreference === 'female_teacher' ? 'female' : 'male');
+    resolveTeacherCard(teachersFor(teachers, c.learningInterest), c.teacherId, c.teacherGenderPreference === 'auto' ? (c.gender || 'male') : c.teacherGenderPreference === 'female_teacher' ? 'female' : 'male');
+  const childTeacherPicked = (c: ChildOnboardingForm) => isTeacherPicked(teachersFor(teachers, c.learningInterest), c.teacherId);
+  const adultTeacherPicked = isTeacherPicked(adultTeachers, teacherId);
+  const pickTeacherMessage = isRTL ? 'اختار المعلم أو المعلمة الأول.' : 'Please choose a teacher first.';
   const [currentLevel, setCurrentLevel] = useState(currentProfile?.currentLevel || 'beginner');
   const [learningGoal, setLearningGoal] = useState(currentProfile?.learningGoal || '');
   const [age, setAge] = useState<string>(currentProfile?.age ? String(currentProfile.age) : '');
@@ -194,7 +201,7 @@ export default function StudentOnboardingPage({
       {
         id: 'child-1',
         name: '',
-        gender: 'male',
+        gender: '',
         teacherGenderPreference: 'auto',
         teacherId: '',
         learningInterest: 'quran-reading',
@@ -249,12 +256,16 @@ export default function StudentOnboardingPage({
     if (error) errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [error]);
   // Family accounts: only one child's ticket is open at a time; finished ones fold into a pass.
-  const childComplete = (c: ChildOnboardingForm) => c.name.trim().length >= 2 && isChildAge(c.age);
+  const childComplete = (c: ChildOnboardingForm) => c.name.trim().length >= 2 && isChildAge(c.age) && Boolean(c.gender) && childTeacherPicked(c);
   const childAgeMessage = (index: number) => isRTL
     ? `سن الطفل رقم (${index + 1}) لازم يكون من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة. لو ${ADULT_MIN_AGE} سنة أو أكبر، يفتح حساب شخصي باسمه.`
     : `Child #${index + 1} must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE} years old. Learners aged ${ADULT_MIN_AGE}+ open their own account.`;
   const incompleteChildMessage = (index: number) => {
     const c = children[index];
+    if (c && c.name.trim().length >= 2 && isChildAge(c.age)) {
+      if (!c.gender) return isRTL ? `اختار ولد ولا بنت للطفل رقم (${index + 1}).` : `Please choose boy or girl for child #${index + 1}.`;
+      return isRTL ? `اختار معلم أو معلمة للطفل رقم (${index + 1}).` : `Please choose a teacher for child #${index + 1}.`;
+    }
     if (c && c.name.trim().length >= 2 && c.age.trim()) return childAgeMessage(index);
     return isRTL ? `كمّل اسم وسن الطفل رقم (${index + 1}) الأول.` : `Please add the name and age of child #${index + 1} first.`;
   };
@@ -275,6 +286,7 @@ export default function StudentOnboardingPage({
         ? adultAgeMessage
         : (isRTL ? 'اكتب سنك بالأرقام (مثال: 24).' : 'Please enter your age in numbers (e.g. 24).');
     }
+    if (learnerType === 'adult' && !gender) return isRTL ? 'اختار الجنس.' : 'Please choose your gender.';
     if (learnerType === 'child' && !isGuardianAge(guardianAge)) return guardianAgeMessage;
     if (learnerType === 'child' && guardianLearns === null) {
       return isRTL ? 'قولنا الأول: هتتعلم معاهم ولا هتتابعهم بس؟' : 'First tell us: will you learn too, or follow them?';
@@ -323,7 +335,7 @@ export default function StudentOnboardingPage({
       {
         id: `child-${Date.now()}-${prev.length + 1}`,
         name: '',
-        gender: 'male',
+        gender: '',
         teacherGenderPreference: 'auto',
         teacherId: '',
         learningInterest: 'quran-reading',
@@ -368,6 +380,11 @@ export default function StudentOnboardingPage({
         setStep(2);
         return;
       }
+    }
+    if ((learnerType === 'adult' || guardianLearns) && !adultTeacherPicked) {
+      setError(pickTeacherMessage);
+      setStep(2);
+      return;
     }
 
     setIsSubmitting(true);
@@ -708,7 +725,7 @@ export default function StudentOnboardingPage({
                     <SealChoice
                       label={isRTL ? 'الجنس' : 'Gender'}
                       value={gender}
-                      onChange={(g) => handleGenderSelect(g)}
+                      onChange={(g) => g && handleGenderSelect(g)}
                       options={[
                         { id: 'male' as const, text: isRTL ? 'ذكر' : 'Male' },
                         { id: 'female' as const, text: isRTL ? 'أنثى' : 'Female' }
@@ -804,7 +821,7 @@ export default function StudentOnboardingPage({
                       <JourneyPath name="guardian-level" subject={learningInterest} value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
                     </div>
                     <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
-                      <GuideChoice teachers={adultTeachers} value={adultTeacher.id} onChange={handleTeacherSelect} isAr={isRTL} />
+                      <GuideChoice teachers={adultTeachers} value={adultTeacherPicked ? teacherId : ''} onChange={handleTeacherSelect} isAr={isRTL} />
                     </PassField>
                   </PassCard>
                 )}
@@ -964,7 +981,7 @@ export default function StudentOnboardingPage({
                         <PassField label={isRTL ? 'مرشده في الرحلة' : 'Their guide on the journey'}>
                           <GuideChoice
                             teachers={teachersFor(teachers, child.learningInterest)}
-                            value={guideOfChild.id}
+                            value={childTeacherPicked(child) ? child.teacherId : ''}
                             onChange={(id) => {
                               const t = teachers.find((x) => x.id === id);
                               handleUpdateChild(index, {
@@ -1039,7 +1056,7 @@ export default function StudentOnboardingPage({
                   <p className="text-xs text-muted-foreground mb-2.5">
                     {isRTL ? 'دول المعلمين اللي بيدرّسوا المادة دي ووقتهم فاضي. يصله تسجيلك وتُفتح بينكما محادثة.' : 'These teachers teach this subject and have free time. Your teacher gets your sign-up and a chat opens between you.'}
                   </p>
-                  <GuideChoice teachers={adultTeachers} value={adultTeacher.id} onChange={handleTeacherSelect} isAr={isRTL} />
+                  <GuideChoice teachers={adultTeachers} value={adultTeacherPicked ? teacherId : ''} onChange={handleTeacherSelect} isAr={isRTL} />
                 </div>
 
                 <div>
@@ -1095,6 +1112,10 @@ export default function StudentOnboardingPage({
                       return;
                     }
                     setOpenChild(-1);
+                  }
+                  if ((learnerType === 'adult' || guardianLearns) && !adultTeacherPicked) {
+                    setError(pickTeacherMessage);
+                    return;
                   }
                   setError(null);
                   setStep(3);

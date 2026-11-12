@@ -294,7 +294,7 @@ export function InstantCheckoutModal({
                           <dd>{money(quote.listAmount)}</dd>
                         </div>
                         <div className="flex justify-between gap-3 text-secondary">
-                          <dt>{isAr ? 'توفير الباقة والعيلة' : 'Package & family savings'}</dt>
+                          <dt>{isAr ? 'توفير محسوب في السعر' : 'Savings already in the price'}</dt>
                           <dd>−{money(quote.priorSavings)}</dd>
                         </div>
                       </>

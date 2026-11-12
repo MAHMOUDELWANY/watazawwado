@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { User, Users, Check, Star } from 'lucide-react';
 import { tagLabel } from '../../lib/teacherBadges';
@@ -281,22 +281,24 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
   isAr: boolean;
 }) {
   const selectedGender = teachers.find((t) => t.id === value)?.gender;
-  const [tab, setTab] = useState<'male' | 'female'>(selectedGender || 'male');
-  const genders = (['male', 'female'] as const).filter((g) => teachers.some((t) => t.gender === g));
-  const shown = genders.length > 1 ? teachers.filter((t) => t.gender === tab) : teachers;
+  // Nothing is pre-chosen (P4-004/005): the family picks male or female first, then a teacher.
+  const [tab, setTab] = useState<'male' | 'female' | null>(selectedGender || null);
+  // A choice that arrives later (the real teacher list loads after the cards) opens its own tab.
+  useEffect(() => { if (selectedGender) setTab(selectedGender); }, [selectedGender]);
+  const genders = ['male', 'female'] as const;
+  const shown = tab ? teachers.filter((t) => t.gender === tab) : [];
   const [aboutId, setAboutId] = useState<string | null>(null);
   const about = teachers.find((t) => t.id === aboutId) || null;
 
   const pickGender = (g: 'male' | 'female') => {
     setTab(g);
-    // Keep the choice on screen: move it to the first teacher of that gender.
-    const first = teachers.find((t) => t.gender === g);
-    if (first && selectedGender !== g) onChange(first.id);
+    // A teacher of the other gender is no longer the choice.
+    if (value && selectedGender !== g) onChange('');
   };
 
   return (
     <div className="space-y-3">
-      {genders.length > 1 && (
+      {teachers.length > 0 && (
         <div role="radiogroup" aria-label={isAr ? 'معلم ولا معلمة' : 'Male or female teacher'} className="grid grid-cols-2 gap-2">
           {genders.map((g) => (
             <button
@@ -314,6 +316,14 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
             </button>
           ))}
         </div>
+      )}
+      {/* Say so instead of hiding the choice when no teacher of that gender teaches this subject yet (P4-004). */}
+      {tab && shown.length === 0 && (
+        <p role="status" className="p-3 rounded-xl bg-[#D8C6AE]/20 text-sm text-foreground leading-relaxed">
+          {tab === 'female'
+            ? (isAr ? 'لسه مفيش معلمة بتدرّس المادة دي. تقدر تختار معلم، أو مادة تانية.' : 'No female teacher teaches this subject yet. You can choose a male teacher, or another subject.')
+            : (isAr ? 'لسه مفيش معلم بيدرّس المادة دي. تقدر تختار معلمة، أو مادة تانية.' : 'No male teacher teaches this subject yet. You can choose a female teacher, or another subject.')}
+        </p>
       )}
       <div role="radiogroup" aria-label={isAr ? 'مرشدك في الرحلة' : 'Your guide'} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {shown.map((t, i) => {

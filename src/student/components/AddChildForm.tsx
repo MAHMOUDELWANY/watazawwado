@@ -19,7 +19,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [gender, setGender] = useState<'male' | 'female' | ''>('');
   const [subject, setSubject] = useState('quran-reading');
   const [level, setLevel] = useState<string>(firstLevel('quran-reading'));
   const [allTeachers, setAllTeachers] = useState<TeacherCard[]>([]);
@@ -43,11 +43,8 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
 
   const subjects = useMemo(() => SUBJECT_FAMILIES.flatMap((f) => f.subjects), []);
   const teachers = useMemo(() => teachersFor(allTeachers, subject), [allTeachers, subject]);
-  // Keep a valid pick: a teacher of this subject, preferring one matching the child (a girl starts on a female teacher).
-  useEffect(() => {
-    if (!teachers.length || teachers.some((t) => t.id === teacherId)) return;
-    setTeacherId((teachers.find((t) => t.gender === gender) || teachers[0]).id);
-  }, [teachers, teacherId, gender]);
+  // Nothing is pre-selected (P4-005): the parent picks the teacher; a pick that does not teach the subject drops.
+  const teacherPicked = teachers.some((t) => t.id === teacherId);
   const levels = levelsFor(subject);
   const ageOk = isChildAge(age);
 
@@ -59,7 +56,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
       await authedJson('/api/student/children', {
         method: 'POST',
         body: JSON.stringify({ name, age: Number(age), gender, learningInterest: subject, currentLevel: level,
-          ...(teacherId ? { teacherId, teacherGenderPreference: teachers.find((t) => t.id === teacherId)?.gender === 'female' ? 'female_teacher' : 'male_teacher' } : {}) })
+          ...(teacherPicked ? { teacherId, teacherGenderPreference: teachers.find((t) => t.id === teacherId)?.gender === 'female' ? 'female_teacher' : 'male_teacher' } : {}) })
       });
       setMessage({ ok: true, text: isAr ? `أُضيف ${name}. يمكنك الحجز له الآن.` : `${name} has been added. You can book for them now.` });
       setName('');
@@ -97,7 +94,8 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
             </label>
             <label className="space-y-1 text-sm text-foreground">
               <span>{isAr ? 'ولد أو بنت' : 'Boy or girl'}</span>
-              <Select value={gender} onChange={(e) => setGender(e.target.value as 'male' | 'female')}>
+              <Select value={gender} onChange={(e) => setGender(e.target.value as 'male' | 'female')} required>
+                <option value="" disabled>{isAr ? 'اختار' : 'Choose'}</option>
                 <option value="male">{isAr ? 'ولد' : 'Boy'}</option>
                 <option value="female">{isAr ? 'بنت' : 'Girl'}</option>
               </Select>
@@ -123,7 +121,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
               <p className="text-xs text-muted-foreground">
                 {isAr ? 'دول المعلمين اللي بيدرّسوا المادة دي ووقتهم فاضي.' : 'These teachers teach this subject and have free time.'}
               </p>
-              <GuideChoice key={`${subject}-${teacherId ? 1 : 0}`} teachers={teachers} value={teacherId} onChange={setTeacherId} isAr={isAr} />
+              <GuideChoice key={subject} teachers={teachers} value={teacherPicked ? teacherId : ''} onChange={setTeacherId} isAr={isAr} />
             </div>
           )}
           {age && !ageOk && (
@@ -134,7 +132,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
             </p>
           )}
           <div className="flex gap-2">
-            <Button type="submit" size="sm" disabled={busy || name.trim().length < 2 || !ageOk} isLoading={busy}>
+            <Button type="submit" size="sm" disabled={busy || name.trim().length < 2 || !ageOk || !gender || (teachers.length > 0 && !teacherPicked)} isLoading={busy}>
               {isAr ? 'إضافة' : 'Add'}
             </Button>
             <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>{isAr ? 'إلغاء' : 'Cancel'}</Button>

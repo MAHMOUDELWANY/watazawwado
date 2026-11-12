@@ -159,8 +159,8 @@ export function PrivacyPolicyPage() {
                       ar: 'جدولة وتنظيم الدروس الفردية عبر منصات الاتصال المرئي (Zoom / Google Meet).'
                     },
                     {
-                      en: 'Sending automated booking confirmations, meeting links, and 24h & 1h lesson reminders via Brevo email service.',
-                      ar: 'إرسال تأكيدات الحجز التلقائية وروابط الجلسات وتذكيرات الدروس (قبل 24 ساعة وساعة) عبر خدمة Brevo.'
+                      en: 'Sending automated booking confirmations, meeting links, and an email lesson reminder 3 hours before via Brevo email service.',
+                      ar: 'إرسال تأكيدات الحجز التلقائية وروابط الجلسات وتذكير بالدرس قبله بـ 3 ساعات عبر خدمة Brevo.'
                     },
                     {
                       en: 'Synchronizing confirmed lesson appointments to the teacher’s Google Calendar schedule.',

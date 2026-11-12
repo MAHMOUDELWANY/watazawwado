@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { BookingConfirmationData, Language } from '../../booking/types';
 import { buildBookingWhatsAppUrl } from '../../lib/whatsapp';
+import { reminderText } from '../../lib/lessonRules';
 
 interface BookingConfirmationProps {
   confirmation: BookingConfirmationData;
@@ -89,7 +90,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   const getGoogleCalendarUrl = () => {
     const title = encodeURIComponent(`Watazawwado 1-on-1 Lesson: ${confirmation.serviceName}`);
     const details = encodeURIComponent(
-      `Learner: ${confirmation.learnerName}\nBooking Ref: ${confirmation.bookingReference}\nDuration: ${confirmation.durationMinutes} minutes\nZoom Link: ${zoomUrl}\n\nAutomated reminders will be delivered 24h and 1h prior.`
+      `Learner: ${confirmation.learnerName}\nBooking Ref: ${confirmation.bookingReference}\nDuration: ${confirmation.durationMinutes} minutes\nZoom Link: ${zoomUrl}\n\nReminders: email 3 hours before; on the site 12 hours and 2 hours before.`
     );
     const location = encodeURIComponent(zoomUrl);
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
@@ -246,9 +247,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-sm text-foreground/80 dark:text-muted-foreground/80">
           <BellRing className="w-4 h-4 text-accent shrink-0" />
           <span>
-            {isEn
-              ? 'Automated lesson reminders will be delivered 24 hours and 1 hour before your scheduled session.'
-              : 'ستصلك تذكيرات بموعد الدرس قبل الجلسة بـ ٢٤ ساعة وساعة واحدة.'}
+            {reminderText(!isEn)}
           </span>
         </div>
       </div>
@@ -318,8 +317,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, your teacher will share an honest learning roadmap. There is zero obligation to commit.'
               : 'الحصة التجريبية فرصة هادئة للتعارف ومعرفة مستواك الفعلي وتجربة أسلوب التدريس في درس قصير. وإن ارتحت، يقترح عليك معلمك خطة مناسبة دون أي التزام.'
             : isEn
-              ? 'Please have your Mushaf or learning materials ready. We will send you a reminder 24 hours and 1 hour before your scheduled lesson.'
-              : 'يرجى تحضير المصحف أو كراس الملاحظات. سيصلك تذكير قبل موعد الدرس بـ ٢٤ ساعة وساعة واحدة.'}
+              ? 'Please have your Mushaf or learning materials ready.'
+              : 'يرجى تحضير المصحف أو كراس الملاحظات.'}
         </p>
       </div>
 
