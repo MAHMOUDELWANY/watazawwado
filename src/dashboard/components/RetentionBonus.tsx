@@ -36,7 +36,8 @@ function TeacherQuarter({ row, quarter, isAr, reload }: { row: any; quarter: str
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const [topUp, setTopUp] = useState('');
   const [amount, setAmount] = useState('');
-  const [note, setNote] = useState(isAr ? 'شكرًا على حفاظك على طلابك وشغلك الكويس.' : 'Thank you for keeping your learners and for your good work.');
+  // The payslip line starts with the fixed English prefix (it also marks the quarter paid), so the default note matches it.
+  const [note, setNote] = useState('Thank you for keeping your learners and for your good work.');
   const [busy, setBusy] = useState(false);
   const total = Math.round((s.poolUsd + (Number(topUp) || 0)) * 100) / 100;
   const prefix = `Retention bonus ${quarter}`;
