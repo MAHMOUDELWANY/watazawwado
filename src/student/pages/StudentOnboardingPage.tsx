@@ -35,7 +35,7 @@ import { subjectLabel, findSubject, levelsFor, asksLevel } from '../../component
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
-import { getCountryByCode, findCountryByTimezone } from '../../lib/countryTimezones';
+import { getCountryByCode, findCountryByTimezone, setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useTeacherAuth } from '../../lib/auth';
 import {
   ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE, MAX_AGE,
@@ -447,6 +447,8 @@ export default function StudentOnboardingPage({
       }
 
       setCompletedSuccess(true);
+      // The portal read the sign-up row's zone (UTC) before onboarding; show times in the zone just chosen (P4-002).
+      setActiveWorkingTimezone(data.profile?.timezone || timezone);
       if (onCompleted) {
         onCompleted(data.profile);
       }

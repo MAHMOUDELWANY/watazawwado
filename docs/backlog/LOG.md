@@ -1108,3 +1108,15 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - 2026-11-12, owner approved three open ones: P3-018 the admin records a package paid outside the site (new package choice in "Record payment", `GET /api/dashboard/payments/unpaid-packages`, `entitlement_id` on `POST /api/dashboard/payments`); P3-019 lesson starts only on the 5-minute grid; P3-021 the admin and the family are told when a card payment arrives but confirms nothing. Still open: P3-020 (Supabase setting), P3-022 (clean-up ideas).
 - Permissions: all 285 routes are checked by role on every run (`p3-auth-matrix`, read from the source), every family and teacher route by ownership (`p3-ownership`), and the database as anon, family and teacher (`p3-db-contract`, which also checks that every `.rpc()` in the source exists in the database).
 - Coverage: 200 of 285 routes are named by a test of their own; the other 85 are listed in the findings file and `p3-endpoint-coverage` fails if the number grows.
+
+## 2026-11-12 — P4 real-user experience by persona (testing project 4, branch `claude/p4-ux-personas-testing-c0546c`)
+- Nine personas lived on phone and desktop, Arabic and English, on `qa-p4` (:3004) with four fresh not-onboarded QA
+  accounts so each one went through the real onboarding; live site used read-only for Lighthouse and one slow-3G load.
+- Findings: `docs/testing/findings/p4.md` (40; 6 High). Screenshots in `docs/testing/findings/shots/p4/`.
+- Fixed (High, with `test/p4-lesson-time-zone.test.ts`): Home showed lesson times in the device's zone (P4-001); right
+  after onboarding the portal stayed on UTC until a reload, so a New York family picked its first trial on a UTC clock
+  (P4-002). Checked in the browser after a restart.
+- Waiting for the owner (data, not code): Ahmed's public intro "احمد الاسطورة" and photo; Ustadh Mahmoud has no weekly
+  hours so families cannot choose him; no female teacher holds a Quran licence (P4-003, P4-004).
+- Top 10 proposals ranked in the findings file and added to `REVIEW-ISSUES.md` section H for the owner's pick.
+- FLOWS.md: 17 rows annotated with the P4 journey and finding ids.

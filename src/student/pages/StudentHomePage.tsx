@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { TeacherFace } from '../../components/TeacherFace';
 import { Link, useNavigate } from 'react-router-dom';
-import { isCoordinationAllowed } from '../lessonsPresentation';
+import { isCoordinationAllowed, getLessonStart } from '../lessonsPresentation';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { authedJson } from '../../lib/authedJson';
 import { isFamilyAccount } from '../../lib/tours';
 import { DateTime } from 'luxon';
@@ -407,7 +408,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 const teacherName = child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher');
                 // upcomingBookings is already sorted soonest first.
                 const childNext = upcomingBookings.find(b => b.student_id === child.id || b.studentId === child.id);
-                const childNextAt = childNext ? DateTime.fromISO(childNext.scheduledStart || childNext.scheduled_start || childNext.lesson_date) : null;
+                const childNextAt = childNext ? getLessonStart(childNext, getActiveWorkingTimezone()) : null;
 
                 return (
                   <div
@@ -551,8 +552,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <div className="flex items-center gap-2.5 text-foreground">
                     <Clock className="w-4 h-4 text-accent shrink-0" />
                     <span>
-                      {DateTime.fromISO(nextBooking.scheduledStart || nextBooking.scheduled_start || nextBooking.lesson_date)
-                        .setLocale(isAr ? 'ar' : 'en')
+                      {getLessonStart(nextBooking, getActiveWorkingTimezone())
+                        ?.setLocale(isAr ? 'ar' : 'en')
                         .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
                     </span>
                   </div>
@@ -717,8 +718,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             ) : (
               <div className="divide-y divide-border border border-border rounded-2xl glass-card overflow-hidden">
                 {recentLessons.map((b: any) => {
-                  const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
-                  const dt = dateStr ? DateTime.fromISO(dateStr) : null;
+                  const dt = getLessonStart(b, getActiveWorkingTimezone());
                   const title = b.serviceTitle || b.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson');
                   const bServiceId = b.serviceId || b.service_id;
 

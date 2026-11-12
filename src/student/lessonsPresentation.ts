@@ -51,11 +51,14 @@ const IN_FLIGHT_STATUSES = ['confirmed', 'pending', 'rescheduled'];
 /** Grace window (ms) during/just after which a lesson is still shown as "upcoming". */
 const UPCOMING_GRACE_MS = 60 * 60 * 1000;
 
-/** Resolve a booking's scheduled start as a valid Luxon DateTime, or null. */
-export function getLessonStart(booking: any): DateTime | null {
+/**
+ * Resolve a booking's scheduled start as a valid Luxon DateTime, or null. Pass the account's zone
+ * (`getActiveWorkingTimezone()`) whenever the result is shown, so it never falls back to the device's zone (P4-001).
+ */
+export function getLessonStart(booking: any, zone?: string): DateTime | null {
   const raw = booking?.scheduledStart || booking?.scheduled_start || booking?.lesson_date;
   if (!raw) return null;
-  const dt = DateTime.fromISO(raw);
+  const dt = zone ? DateTime.fromISO(raw, { setZone: true }).setZone(zone) : DateTime.fromISO(raw);
   return dt.isValid ? dt : null;
 }
 

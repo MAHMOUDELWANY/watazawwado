@@ -106,3 +106,24 @@ Order: data clean-up first, then the sign-up path (it decides who reaches a teac
 34. **Done 2026-11-07.** The teacher gets a notice when their student finishes the placement test, and the student page has "Placement and level": the result, the current level, and "set the level" (the card shows who changed it and when; the family is notified, migration `20261107000001`, applied). The student's Learning Track has a placement link, and the result page has "Take the test again". Was: **Placement test changes nothing.** The result ("basic") doesn't reach the learning path (still "beginner"), and the teacher sees no result. The teacher must see it and be able to change the level (with a mark that they did), and the student needs a clear place to see the result and retake the test.
 35. **Done 2026-11-07.** For a family account the Learning Track panel showed the parent's own empty fields. It now shows each child (subject, level, teacher, placement link), and only the child picked in the header when one is picked. Was: **Family "whole family" view of the learning path** shows "subject not set" and the default teacher; picking one child shows the same. Each child's subject and teacher must show.
 36. **Done 2026-11-07.** Same cause as item 20 (fixed earlier today): Manar was added at 18:10 on 11-06, before that fix. Adding a child now lists the teachers of the subject. Manar was moved to Ustadh Ahmed, as the owner asked. Was: **Family sign-up, second child: no teacher choice.** After picking "male teacher" the form gave no list and put the default teacher (who has no free times), so the child could not be booked.
+
+## H. Real-user review by persona (P4, 2026-11-12)
+
+From `docs/testing/findings/p4.md` (nine personas on phone and desktop, Arabic and English). P4-001 and P4-002 (wrong
+lesson times on Home and right after onboarding) are already fixed in the P4 branch; the rest wait for the owner's
+pick.
+
+1. **Teacher choice you can trust** (P4-003/004/005): a real intro and photo for Ahmed, hours for Ustadh Mahmoud or his
+   photo out of the hero, a female Quran teacher before wave 1; no pre-selected gender or teacher.
+2. **The right rules at consent** (P4-006): trial rules and the real reminder times on the review step and confirmation.
+3. **A checkout that cannot be misread** (P4-014/015/018): one summary line beside the amount; tappable consent rows.
+4. **One thing at a time for a new family** (P4-007): no install banner, tour and push modal before the first booking.
+5. **Booking v2** (P4-008/009/021): three steps, nothing wrongly pre-selected, Arabic dates, the sibling's trial next.
+6. **A child's way in** (P4-025/026/027/028): code option inside sign-in, one-field code, a kid space for children.
+7. **One voice, meanings first** (P4-010/023/031/032): rewrite onboarding, booking and tour; "New to Islam? Start here".
+8. **Prices first, no loops** (P4-016/017): prices at the top of /pricing, 30-minute packages, wallet link to packages.
+9. **One navigation** (P4-020/035): one top bar for portal and teachers; one admin queue and a labelled menu.
+10. **Access for everyone** (P4-022/024/029/037/038): 44 px targets, large text, skip link, recitation control,
+    "Ask a parent to join" for teens.
+11. Quick wins: green in the ribbon gradient (P4-039), one-tap language gate (P4-011), trader's full address (P4-019),
+    learner card on the trial (P4-033), type hours first on phones (P4-034), QA accounts out of admin numbers (P4-036).
