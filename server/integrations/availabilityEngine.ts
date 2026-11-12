@@ -463,8 +463,13 @@ export async function validateSlotAvailability(
     }
 
     // Same merged windows as computeAvailableSlots, so every slot we show is a slot we accept.
-    const isWithinBlock = mergeDayBlocks(dbAvailability, currentDayIndex).some((block) =>
-      reqStartCairo >= atDayMinute(reqStartCairo, block.start) && reqEndCairo <= atDayMinute(reqStartCairo, block.end));
+    // P3-019: inside the hours and on the 5-minute grid counted from the start of the block. Every time the calendar
+    // offers is on it (lessons are 30, 45 or 60 minutes); a hand-made 07:13 that would split two slots is not.
+    const isWithinBlock = mergeDayBlocks(dbAvailability, currentDayIndex).some((block) => {
+      const blockStart = atDayMinute(reqStartCairo, block.start);
+      return reqStartCairo >= blockStart && reqEndCairo <= atDayMinute(reqStartCairo, block.end)
+        && (reqStartCairo.toMillis() - blockStart.toMillis()) % (5 * 60_000) === 0;
+    });
 
     const isTestEnv = process.env.NODE_ENV !== 'production' && typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function';
 

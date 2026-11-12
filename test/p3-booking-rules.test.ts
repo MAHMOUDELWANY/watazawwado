@@ -37,6 +37,8 @@ describe('P3 booking rules with real rows', () => {
       ['a time in the past', { timeSlot: { utcStartIso: '2020-01-01T10:00:00Z' } }, [400]],
       ['today', { timeSlot: { utcStartIso: DateTime.utc().plus({ minutes: 30 }).toISO() } }, [400, 409]],
       ['a time outside the teacher\'s hours', { timeSlot: { utcStartIso: tomorrowNight.toISO() } }, [409]],
+      ['a time between two calendar times (P3-019)', { timeSlot: { utcStartIso: DateTime.fromISO(slot.utcStartIso).plus({ minutes: 13 }).toISO() } }, [409]],
+      ['a time with stray seconds', { timeSlot: { utcStartIso: DateTime.fromISO(slot.utcStartIso).plus({ seconds: 7 }).toISO() } }, [409]],
       ['years ahead', { timeSlot: { utcStartIso: DateTime.fromISO(slot.utcStartIso).plus({ years: 3 }).toISO() } }, [400, 409]],
       ['an unreadable time', { timeSlot: { utcStartIso: 'tomorrow-ish' } }, [400]],
       ['a time object instead of text', { timeSlot: { utcStartIso: { $gt: '' } } }, [400]],

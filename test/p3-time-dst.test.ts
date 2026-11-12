@@ -47,6 +47,9 @@ describe('P3 teacher hours are wall-clock hours, also on a clock-change day (P3-
     const nine = DateTime.fromISO('2027-04-30T09:00', { zone: 'Africa/Cairo' }).toUTC();
     const ok = await validateSlotAvailability(nine.toISO()!, nine.plus({ minutes: 30 }).toISO()!, teacher);
     assert.strictEqual(ok.isAvailable, true, ok.conflictReason);
+    // P3-019: on the 5-minute grid from the start of the teacher's block, and nowhere between.
+    const at = async (minutes: number) => (await validateSlotAvailability(nine.plus({ minutes }).toISO()!, nine.plus({ minutes: minutes + 30 }).toISO()!, teacher)).isAvailable;
+    assert.deepStrictEqual([await at(5), await at(30), await at(13), await at(0.5)], [true, true, false, false]);
     const eight = nine.minus({ hours: 1 });
     const early = await validateSlotAvailability(eight.toISO()!, eight.plus({ minutes: 30 }).toISO()!, teacher);
     assert.strictEqual(early.isAvailable, false, '08:00 is before the teacher starts');
