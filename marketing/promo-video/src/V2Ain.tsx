@@ -133,8 +133,8 @@ export const Logo: React.FC = () => (
   <div style={{ position: 'absolute', right: 52, top: 64, width: 132, height: 132, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center',
     background: 'radial-gradient(circle at 50% 40%, rgba(255,255,255,0.28), rgba(236,230,219,0.10) 70%)',
     boxShadow: 'inset 0 3px 6px rgba(60,40,25,0.22), inset 0 -2px 3px rgba(255,255,255,0.7), 0 1px 0 rgba(255,255,255,0.5)' }}>
-    <Img src={staticFile('img/logo-clean.png')} style={{ width: 92, objectFit: 'contain', opacity: 0.62, mixBlendMode: 'multiply',
-      filter: 'saturate(0.8) drop-shadow(0 -1px 0 rgba(255,255,255,0.6)) drop-shadow(0 1px 1px rgba(60,40,25,0.35))' }} />
+    <Img src={staticFile('img/logo-clean.png')} style={{ width: 92, objectFit: 'contain', 
+      filter: 'drop-shadow(0 -1px 0 rgba(255,255,255,0.7)) drop-shadow(0 1px 1px rgba(60,40,25,0.4))' }} />
   </div>
 );
 
