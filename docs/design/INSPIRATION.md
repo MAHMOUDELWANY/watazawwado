@@ -24,6 +24,7 @@ plan; the research below comes from these files, public docs and the iOS web-app
 | `site-ui/` | Site and app chrome: buttons, bars, intro, install, promo/scroll story. |
 | `zaadi-mascot/` | Zaadi, our mascot: how a simple mascot is built, poses, moods, motion. |
 | `badges-and-rewards/` | Badge, level-up and reward reveals for homework and progress. |
+| `motion-explainer/` | Looks for our motion-graphics explainer videos (social). |
 
 ## Zaadi and rewards (owner, 2026-11-09)
 
@@ -48,3 +49,12 @@ Sent with the homework task: "inspirations for badges and for Zaadi, from Duolin
 - iOS web apps: [MobiLoud PWA on iOS 2026](https://www.mobiloud.com/blog/progressive-web-apps-ios/), [OneSignal iOS web push](https://documentation.onesignal.com/docs/en/web-push-for-ios), [progressivewebapps.com iOS guide](https://progressivewebapps.com/platforms/ios-safari/), [iOS PWA limitations 2026](https://tappwa.com/blog/ios-pwa-limitations-2026)
 - Tab bar minimize on scroll: [Create with Swift](https://www.createwithswift.com/making-the-tab-bar-collapse-while-scrolling/), [expo-glass-tabs](https://github.com/davidmokos/expo-glass-tabs/wiki)
 - Child login on own device: [Waterford QR login](https://help.waterford.org/waterford-family-app-browsers/waterford-family-logging-in-with-qr-code), [ClassDojo child QR](https://help.classdojo.com/hc/en-us/articles/360060108292-Access-Your-Child-s-Individual-QR-Code), [RoosterMoney child login](https://support.roostermoney.com/en/articles/2942965-how-to-log-in-to-the-child-account)
+
+## Motion explainers (owner, 2026-11-13)
+
+Sent while V2 (the ع video) was being made: "put it in the references and take inspiration from it". **Inspire, not
+copy**: the creator's characters, logo and topics are theirs; we keep our palette, type and zaad bag.
+
+| Name we use | File | What it shows | What we take |
+|---|---|---|---|
+| **Paper cut-out explainer** | `motion-explainer/paper-cutout-explainer.jpg` (12 frames over 4:45), `paper-cutout-explainer-detail.png` (first 16 s, 24 frames) | An Arabic TikTok explainer on graph paper: torn paper cards in teal, mustard and dark brown, flat faceless black silhouettes, white-bordered stickers (house, phone, card, hospital), red pins and red string linking ideas, torn white labels with a red underline, a black rounded caption chip at the bottom, a small framed logo top right. Cards slide in like paper on a desk, pages tear away, the camera zooms out to show how pieces connect. | The house look for our voice-clone motion videos (first used in V2): graph paper, torn cards in teal / sand / espresso, stickers for letters and objects, red pins and string for "where it comes from", black caption chip, framed logo. Silhouettes stay faceless and are never prophets or companions (RULES §1.5). No music. |

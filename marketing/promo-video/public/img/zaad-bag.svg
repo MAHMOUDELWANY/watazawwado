@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 190" width="420" height="380">
+  <title>The zaad bag (Watazawwado brand mark)</title>
+  <defs>
+    <linearGradient id="leather" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3363C"/><stop offset="1" stop-color="#951419"/></linearGradient>
+  </defs>
+  <path d="M70 66c0-38 70-38 70 0" fill="none" stroke="#951419" stroke-width="10" stroke-linecap="round"/>
+  <rect x="18" y="66" width="174" height="118" rx="26" fill="url(#leather)"/>
+  <rect x="28" y="76" width="154" height="98" rx="20" fill="none" stroke="#F6D58E" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <path d="M34 70 H176" stroke="#F6D58E" stroke-width="4" stroke-dasharray="3 3"/>
+  <path d="M18 92c0-14 12-26 26-26h122c14 0 26 12 26 26v14c0 4-3 7-7 8l-80 18-80-18c-4-1-7-4-7-8z" fill="url(#leather)"/>
+  <path d="M30 100c0-9 7-16 16-16h118c9 0 16 7 16 16v4l-75 17-75-17z" fill="none" stroke="#F6D58E" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <g transform="translate(105 122)">
+    <rect x="-13" y="-13" width="26" height="26" rx="4" fill="#E5A93C"/>
+    <rect x="-13" y="-13" width="26" height="26" rx="4" fill="#E5A93C" transform="rotate(45)"/>
+    <circle r="5.5" fill="#951419"/>
+  </g>
+</svg>
