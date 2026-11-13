@@ -19,9 +19,10 @@ const WORDS = [
   { ar: 'جَزَاكَ اللهُ خَيْرًا', tr: 'JazakAllahu khayran', mean: 'May Allah reward you with good', when: 'To whoever made dinner', color: COPPER },
 ];
 
-const Border: React.FC = () => {
+/** Progress ribbon around the frame; shared by the motion videos after V4. */
+export const Border: React.FC<{ total: number }> = ({ total }) => {
   const f = useCurrentFrame();
-  const p = Math.min(1, f / (V5_TOTAL - 1));
+  const p = Math.min(1, f / (total - 1));
   const m = 14, r = 44;
   const d = `M 540 ${m} H ${1080 - m - r} A ${r} ${r} 0 0 1 ${1080 - m} ${m + r} V ${1920 - m - r} A ${r} ${r} 0 0 1 ${1080 - m - r} ${1920 - m}
     H ${m + r} A ${r} ${r} 0 0 1 ${m} ${1920 - m - r} V ${m + r} A ${r} ${r} 0 0 1 ${m + r} ${m} H 540`;
@@ -34,7 +35,7 @@ const Border: React.FC = () => {
   );
 };
 
-const Slide: React.FC<{ dur: number; children: React.ReactNode; from?: 1 | -1 }> = ({ dur, children, from = 1 }) => {
+export const Slide: React.FC<{ dur: number; children: React.ReactNode; from?: 1 | -1 }> = ({ dur, children, from = 1 }) => {
   const f = useCurrentFrame();
   const inP = spring({ frame: f, fps: FPS, config: { damping: 15, mass: 0.7 } });
   const outP = io(f, dur - 7, dur, 0, 1, (n) => n * n);
@@ -42,7 +43,7 @@ const Slide: React.FC<{ dur: number; children: React.ReactNode; from?: 1 | -1 }>
 };
 
 /** A paper plate seen from above; `food` 1 = full, 0 = empty. */
-const Plate: React.FC<{ x: number; y: number; r?: number; food?: number; rot?: number }> = ({ x, y, r = 170, food = 1, rot = 0 }) => (
+export const Plate: React.FC<{ x: number; y: number; r?: number; food?: number; rot?: number }> = ({ x, y, r = 170, food = 1, rot = 0 }) => (
   <svg width={r * 2 + 40} height={r * 2 + 40} viewBox={`-20 -20 ${r * 2 + 40} ${r * 2 + 40}`} style={{ position: 'absolute', left: x - r - 20, top: y - r - 20, transform: `rotate(${rot}deg)`, overflow: 'visible' }}>
     <circle cx={r} cy={r + 10} r={r} fill="rgba(40,25,15,0.25)" />
     <circle cx={r} cy={r} r={r} fill="#fff" />
@@ -207,7 +208,7 @@ export const V5Meal: React.FC = () => {
       {seq(SC.w3, SC.recap, <Word i={2} dur={t(SC.recap - SC.w3)} />, -1)}
       {seq(SC.recap, SC.end, <Recap />)}
       <Sequence from={t(SC.end)}><Slide dur={99999} from={-1}><End /></Slide></Sequence>
-      <Border />
+      <Border total={V5_TOTAL} />
       <Logo />
       {/* VO: the owner's recording goes in here once it arrives: <Audio src={staticFile('vo-v5.mp3')} /> */}
       {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.35} />)}
