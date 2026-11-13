@@ -58,3 +58,4 @@ Change next week: <one thing>
 
 - 2026-11-13: V2 logo shown in full colour (no faded layer); new file live on main, Metricool FB post re-uploaded, Buffer posts read the same URL. V4 voice-over script rewritten to ElevenLabs' v4 tag guide; owner records it himself (connector download broke after the session reset). Rule added: every video has a voice.
 - 2026-11-13: V5 (3 words at every meal): visuals built (src/V5Meal.tsx), script with emotion tags and captions in Notion; Review, waiting for the owner's recording. V6 (Drifted? 5 small ways back): 7-slide carousel done (marketing/posts/2026-11-21-V6); Review.
+- 2026-11-13: V6 approved and scheduled 21 Nov: FB album 15:00 (Metricool), IG carousel 18:00 (Buffer). Buffer now holds 6 of 10 scheduled posts.
