@@ -24,6 +24,32 @@ production method, the owner's taste and the lessons learned (session of 2026-10
 
 Commands, file layout and the measured recipes are in [reference.md §4](reference.md).
 
+## The retention method (owner, 2026-11-13: binding for every teaching video)
+
+From a reference the owner chose ("How to make boring content addictive", a marketer with 22 years in branding;
+contact sheet `docs/design/inspiration/motion-explainer/retention-method.jpg`). The topic is never boring; the way in
+is. Every script follows four steps, in this order:
+
+| Step | Rule | In a Fix-one-letter video |
+|---|---|---|
+| 1. **A moment, not a topic** | Open on a situation the viewer recognises in the first 2 s, never "today we learn X" or "5 tips for Y". | "You've said the word *Arabic* a thousand times. You've probably never said its first letter." |
+| 2. **Give the problem a consequence** | Say why it matters to *them*: what it costs or changes. This is where most creators lose people. | Miss the sound and the word changes: *he knew* becomes *he was in pain*. |
+| 3. **Show the moment it changed** | The turn: what was wrong, what works instead. It makes them curious about the fix. | "The fix isn't in your mouth. It's in your throat." |
+| 4. **Something they can do** | A concrete exercise for tonight, never vague advice. Saveable. | Hand on the throat, "aah", squeeze, feel the buzz; ten times tonight. |
+
+Checklist before any script ships: Did I start with a moment someone recognises? Did I explain why it matters? Did I
+show what changed? Did I give one thing to do today?
+
+Craft that goes with it (from the same reference, adapted to our paper look):
+- **Open loop in the first 5 s** ("stay for step 3", "this one changes the meaning") so the viewer waits for a payoff.
+- **Step tracker** on screen (●○○○ / "step 2"), so people feel progress and stay to the end.
+- **Pattern break every 4–6 s**: a full-screen typographic card (big two-word line, one word in serif italic), a
+  colour flip, black-and-white for "the boring way", a speech-bubble prop ("so what?"), a number or timer card.
+- **Props that make it concrete**: a notepad with the exercise written by hand, a timer ("tonight: 10×"), before → after.
+- **Sound follows motion**: a whoosh on every slide, a pop on every sticker, a pen scratch on every underline or X,
+  a riser into the reveal, a soft "correct" on the payoff. Effects 14–20 dB under the voice, never over Arabic letters.
+- **The ending asks for a save** (the exercise is the reason to save) and the brand sign-off "Pack your zaad".
+
 ## The owner's taste (binding)
 
 - **Script:** a hook a parent recognises in the first second, an open loop paid off at the end, value first so it
