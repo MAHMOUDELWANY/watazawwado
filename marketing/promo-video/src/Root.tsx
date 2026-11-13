@@ -5,6 +5,8 @@ import { TikTok, TT_TOTAL } from './TikTok';
 import { V2Ain, V2_TOTAL } from './V2Ain';
 import { V3Post, V3_SLIDES } from './V3Post';
 import { V4Choose, V4_TOTAL } from './V4Choose';
+import { V5Meal, V5_TOTAL } from './V5Meal';
+import { V6Back, V6_SLIDES } from './V6Back';
 
 export const Root: React.FC = () => (
   <>
@@ -13,5 +15,7 @@ export const Root: React.FC = () => (
     <Composition id="V2Ain" component={V2Ain} durationInFrames={V2_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="V3Post" component={V3Post} durationInFrames={V3_SLIDES} fps={30} width={1080} height={1350} />
     <Composition id="V4Choose" component={V4Choose} durationInFrames={V4_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="V5Meal" component={V5Meal} durationInFrames={V5_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="V6Back" component={V6Back} durationInFrames={V6_SLIDES} fps={30} width={1080} height={1350} />
   </>
 );
