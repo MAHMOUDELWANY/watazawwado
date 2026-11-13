@@ -8,15 +8,15 @@ import { COPPER, CRIMSON, FPS, GOLD, GOLD_SOFT, SANS, SERIF, Sfx, TEAL_DEEP, cla
  * what changed → a hand test and a habit hook ("every time you say Arabic") that closes the loop the hook opened. Look: paper cut-out explainer (docs/design/INSPIRATION.md).
  * Voice: public/vo-v2.mp3 = owner's English clone (a2, b2, c3 from 3.3 s) + Fusha clone syllables (f1, f2), offsets below.
  */
-export const V2_TOTAL = Math.round(69.6 * FPS);
+export const V2_TOTAL = Math.round(71.4 * FPS);
 const t = (s: number) => Math.round(s * FPS);
 
-const INK = '#1B1512';
-const ESPRESSO = '#3B2219';
-const SAND = '#D9A441';
-const CREAM = '#ECE6DB';
-const WHITE = '#FBF8F2';
-const AR = 'ThmanyahSerif, "Noto Naskh Arabic", serif';
+export const INK = '#1B1512';
+export const ESPRESSO = '#3B2219';
+export const SAND = '#D9A441';
+export const CREAM = '#ECE6DB';
+export const WHITE = '#FBF8F2';
+export const AR = 'ThmanyahSerif, "Noto Naskh Arabic", serif';
 
 const CUES: [string, number, number][] = [
   ['You’ve said the word “Arabic” a thousand times', 0.3, 3.5],
@@ -47,18 +47,18 @@ const CUES: [string, number, number][] = [
   ['start it right here', 58.45, 60.0],
   ['You’ve said it a thousand times', 60.25, 62.5],
   ['Make the next one count', 62.7, 64.4],
-  ['Send this to someone who says “Arabic” a lot', 64.6, 67.3],
-  ['Pack your zaad', 67.45, 69.6],
+  ['Save this, so you can come back whenever your ع slips', 64.6, 68.9],
+  ['Pack your zaad', 69.1, 71.4],
 ];
 // scenes (s)
-const SC = { hook: 0, first: 3.6, letter: 7.0, so: 12.45, cons: 14.85, flip: 20.85, hand: 25.5, slam: 34.3, listen: 36.4, you: 41.7, test: 50.2, today: 55.05, count: 60.15, send: 64.5, end: 69.6 };
+const SC = { hook: 0, first: 3.6, letter: 7.0, so: 12.45, cons: 14.85, flip: 20.85, hand: 25.5, slam: 34.3, listen: 36.4, you: 41.7, test: 50.2, today: 55.05, count: 60.15, send: 64.45, end: 71.4 };
 const STEPS = [0, 12.45, 20.85, 41.7];
 const F1 = [['أَ', 36.6], ['عَ', 38.14], ['أَ', 39.58], ['عَ', 40.71]] as const;
 const F2 = [['عَ', 45.0], ['عِ', 47.43], ['عُ', 49.27]] as const;
 
 /* ---------- paper kit ---------- */
 
-const torn = (seed: string, amp = 1.2, n = 18) => {
+export const torn = (seed: string, amp = 1.2, n = 18) => {
   const pts: string[] = [];
   const j = (i: number, k: string) => (random(`${seed}${k}${i}`) - 0.5) * amp;
   for (let i = 0; i <= n; i++) pts.push(`${(i / n) * 100}% ${Math.max(0, j(i, 't') + amp / 2)}%`);
@@ -67,9 +67,9 @@ const torn = (seed: string, amp = 1.2, n = 18) => {
   for (let i = n; i >= 0; i--) pts.push(`${Math.max(0, j(i, 'l') + amp / 2)}% ${(i / n) * 100}%`);
   return `polygon(${pts.join(',')})`;
 };
-const grain = { backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1.5px), radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1.5px)', backgroundSize: '7px 7px, 11px 11px' };
+export const grain = { backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1.5px), radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1.5px)', backgroundSize: '7px 7px, 11px 11px' };
 
-const Paper: React.FC<{ seed: string; x: number; y: number; w: number; h: number; color: string; rot?: number; children?: React.ReactNode }> =
+export const Paper: React.FC<{ seed: string; x: number; y: number; w: number; h: number; color: string; rot?: number; children?: React.ReactNode }> =
   ({ seed, x, y, w, h, color, rot = 0, children }) => (
     <div style={{ position: 'absolute', left: x, top: y, width: w, height: h, transform: `rotate(${rot}deg)`, filter: 'drop-shadow(0 10px 14px rgba(40,25,15,0.28))' }}>
       <div style={{ position: 'absolute', inset: -10, background: WHITE, clipPath: torn(seed + 'w', 1.6) }} />
@@ -79,7 +79,7 @@ const Paper: React.FC<{ seed: string; x: number; y: number; w: number; h: number
   );
 
 /** A sticker that slaps in at `at` (local frames) and then breathes a little. */
-const Sticker: React.FC<{ at: number; x: number; y: number; size?: number; w?: number; rot?: number; children: React.ReactNode; bg?: string }> =
+export const Sticker: React.FC<{ at: number; x: number; y: number; size?: number; w?: number; rot?: number; children: React.ReactNode; bg?: string }> =
   ({ at, x, y, size = 260, w, rot = 0, children, bg = WHITE }) => {
     const f = useCurrentFrame();
     if (f < at) return null;
@@ -93,19 +93,19 @@ const Sticker: React.FC<{ at: number; x: number; y: number; size?: number; w?: n
     );
   };
 
-const Pin: React.FC<{ x: number; y: number; on?: number }> = ({ x, y, on = 1 }) => (
+export const Pin: React.FC<{ x: number; y: number; on?: number }> = ({ x, y, on = 1 }) => (
   <div style={{ position: 'absolute', left: x - 13, top: y - 13, width: 26, height: 26, borderRadius: 99, opacity: on, transform: `scale(${0.5 + 0.5 * on})`,
     background: `radial-gradient(circle at 35% 35%, #FF7A7A, ${CRIMSON} 60%, #7A1013)`, boxShadow: '0 4px 6px rgba(0,0,0,0.35)' }} />
 );
 
 /** Hand-drawn marker stroke along an SVG path. */
-const Marker: React.FC<{ d: string; p: number; w?: number; color?: string }> = ({ d, p, w = 14, color = CRIMSON }) => (
+export const Marker: React.FC<{ d: string; p: number; w?: number; color?: string }> = ({ d, p, w = 14, color = CRIMSON }) => (
   <svg width={1080} height={1920} style={{ position: 'absolute', inset: 0, overflow: 'visible', pointerEvents: 'none' }}>
     <path d={d} fill="none" stroke={color} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - p} opacity={0.92} />
   </svg>
 );
 
-const Label: React.FC<{ at: number; x: number; y: number; text: string; size?: number; rot?: number; under?: boolean }> = ({ at, x, y, text, size = 64, rot = -2, under = true }) => {
+export const Label: React.FC<{ at: number; x: number; y: number; text: string; size?: number; rot?: number; under?: boolean }> = ({ at, x, y, text, size = 64, rot = -2, under = true }) => {
   const f = useCurrentFrame();
   if (f < at) return null;
   const p = spring({ frame: f - at, fps: FPS, config: { damping: 11 } });
@@ -121,7 +121,7 @@ const Label: React.FC<{ at: number; x: number; y: number; text: string; size?: n
   );
 };
 
-const GraphPaper: React.FC = () => (
+export const GraphPaper: React.FC = () => (
   <AbsoluteFill style={{ background: CREAM }}>
     <AbsoluteFill style={{ backgroundImage: 'linear-gradient(rgba(120,100,80,0.10) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(120,100,80,0.10) 1.5px, transparent 1.5px)', backgroundSize: '36px 36px' }} />
     <AbsoluteFill style={{ background: 'radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(90,70,50,0.18))' }} />
@@ -129,7 +129,7 @@ const GraphPaper: React.FC = () => (
 );
 
 /** Logo pressed into the paper: a soft round dent, low-contrast, not a sticker. */
-const Logo: React.FC = () => (
+export const Logo: React.FC = () => (
   <div style={{ position: 'absolute', right: 52, top: 64, width: 132, height: 132, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center',
     background: 'radial-gradient(circle at 50% 40%, rgba(255,255,255,0.28), rgba(236,230,219,0.10) 70%)',
     boxShadow: 'inset 0 3px 6px rgba(60,40,25,0.22), inset 0 -2px 3px rgba(255,255,255,0.7), 0 1px 0 rgba(255,255,255,0.5)' }}>
@@ -165,9 +165,9 @@ const BagTracker: React.FC = () => {
   const done = STEPS.filter((s) => f >= t(s) + 10).length;
   const lastDrop = Math.max(...STEPS.map((s) => (f >= t(s) ? t(s) : -999)));
   const squash = interpolate(f - lastDrop, [8, 11, 20], [0, 1, 0], clamp);
-  const fly = io(f, t(66.9), t(67.6));
-  const zip = io(f, t(67.7), t(68.3));
-  const bounce = interpolate(f, [t(68.3), t(68.45), t(68.8)], [0, 1, 0], clamp);
+  const fly = io(f, t(68.4), t(69.1));
+  const zip = io(f, t(69.2), t(69.8));
+  const bounce = interpolate(f, [t(69.8), t(69.95), t(70.3)], [0, 1, 0], clamp);
   const x = interpolate(fly, [0, 1], [118, 540]);
   const y = interpolate(fly, [0, 1], [130, 900]);
   const sc = interpolate(fly, [0, 1], [1, 3.6]) * (1 + bounce * 0.08);
@@ -224,7 +224,7 @@ const Slide: React.FC<{ dur: number; children: React.ReactNode; from?: 1 | -1; p
 };
 
 /** Full-screen typographic card (pattern break), torn top and bottom. */
-const BigCard: React.FC<{ color: string; children: React.ReactNode; seed: string }> = ({ color, children, seed }) => (
+export const BigCard: React.FC<{ color: string; children: React.ReactNode; seed: string }> = ({ color, children, seed }) => (
   <AbsoluteFill>
     <div style={{ position: 'absolute', left: -40, right: -40, top: 230, bottom: 420, background: color, clipPath: torn(seed, 2.4, 10), ...grain,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 14px 18px rgba(0,0,0,0.25))' }}>{children}</div>
@@ -597,24 +597,25 @@ const Count: React.FC = () => {
   );
 };
 
-/** Send it on; then the bag from the tracker packs itself (BagTracker). */
+/** Save it: a bookmark ribbon drops onto a mini video card; then the bag from the tracker packs itself. */
 const Send: React.FC = () => {
   const f = useCurrentFrame();
   const L = (s: number) => t(s - SC.send);
-  const fly = io(f, L(66.2), L(66.9), 0, 1, (n) => n * n);
-  const plane = spring({ frame: f - 4, fps: FPS, config: { damping: 10 } });
+  const card = spring({ frame: f - 2, fps: FPS, config: { damping: 12 } });
+  const drop = spring({ frame: f - L(64.75), fps: FPS, config: { damping: 7, mass: 0.7 } });
+  const out = io(f, L(68.2), L(68.6));
   return (
-    <AbsoluteFill>
-      <div style={{ position: 'absolute', left: 380 + fly * 900, top: 380 - fly * 500, transform: `scale(${plane}) rotate(${-12 - fly * 20}deg)` }}>
-        <svg width={320} height={260} viewBox="0 0 320 260">
-          <path d="M10 130 L310 20 L230 240 L150 160 Z" fill={WHITE} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
-          <path d="M310 20 L150 160 L130 230 L110 145" fill="#E8E1D4" stroke={INK} strokeWidth={10} strokeLinejoin="round" />
+    <AbsoluteFill style={{ opacity: 1 - out }}>
+      <div style={{ position: 'absolute', left: 300, top: 360, width: 480, height: 760, transform: `scale(${card}) rotate(-3deg)` }}>
+        <Paper seed="savecard" x={0} y={0} w={480} h={760} color={TEAL_DEEP}>
+          <div style={{ position: 'absolute', top: 150, width: '100%', textAlign: 'center', fontFamily: AR, fontWeight: 700, fontSize: 300, color: WHITE, lineHeight: 1 }}>ع</div>
+          <div style={{ position: 'absolute', bottom: 120, width: '100%', textAlign: 'center', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 52, color: GOLD_SOFT }}>the hand test</div>
+        </Paper>
+        <svg width={150} height={210} viewBox="0 0 150 210" style={{ position: 'absolute', right: 40, top: -20 + (1 - drop) * -500 }}>
+          <path d="M15 0 H135 V200 L75 150 L15 200 Z" fill={CRIMSON} stroke="#fff" strokeWidth={10} strokeLinejoin="round" />
         </svg>
       </div>
-      <div style={{ opacity: 1 - io(f, L(66.8), L(67.2)) }}>
-        <Label at={L(64.7)} x={540} y={760} text="send this to someone" size={62} rot={-2} />
-        <Label at={L(65.6)} x={540} y={900} text="who says “Arabic” a lot" size={62} rot={2} under={false} />
-      </div>
+      <Label at={L(65.2)} x={540} y={1180} text="save it for when ع slips" size={58} rot={-2} />
     </AbsoluteFill>
   );
 };
@@ -680,11 +681,11 @@ export const V2Ain: React.FC = () => {
       {[0, 1, 2, 3].map((i) => <Sfx key={'m' + i} at={t(58.5) + i * 3} src="wv/tick-sound.wav" volume={0.2} />)}
       <Sfx at={t(63.55)} src="wv/bass-impact.wav" volume={0.26} />
       <Sfx at={t(63.55)} src="wv/tick-sound.wav" volume={0.3} />
-      <Sfx at={t(64.5) + 4} src="wv/swish-whoosh-large.wav" volume={0.2} />
-      <Sfx at={t(66.2)} src="wv/fast-whoosh.wav" volume={0.22} />
-      <Sfx at={t(66.9)} src="wv/swish-whoosh-large.wav" volume={0.18} />
-      <Sfx at={t(67.7)} src="paper/marker-s.mp3" volume={0.3} />
-      <Sfx at={t(68.3)} src="wv/dull-thud.wav" volume={0.3} />
+      <Sfx at={t(64.45) + 2} src="paper/slap-s.mp3" volume={0.3} />
+      <Sfx at={t(64.75)} src="wv/pop-hand.wav" volume={0.3} />
+      <Sfx at={t(68.4)} src="wv/swish-whoosh-large.wav" volume={0.18} />
+      <Sfx at={t(69.2)} src="paper/marker-s.mp3" volume={0.3} />
+      <Sfx at={t(69.8)} src="wv/dull-thud.wav" volume={0.3} />
     </AbsoluteFill>
   );
 };
