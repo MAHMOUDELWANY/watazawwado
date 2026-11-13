@@ -9,6 +9,8 @@ import { V5Meal, V5_TOTAL } from './V5Meal';
 import { V6Back, V6_SLIDES } from './V6Back';
 import { V7Qaf, V7_TOTAL } from './V7Qaf';
 import { V8Why, V8_SLIDES } from './V8Why';
+import { V10Screen, V10_SLIDES } from './V10Screen';
+import { V11How, V11_SLIDES } from './V11How';
 
 export const Root: React.FC = () => (
   <>
@@ -21,5 +23,7 @@ export const Root: React.FC = () => (
     <Composition id="V6Back" component={V6Back} durationInFrames={V6_SLIDES} fps={30} width={1080} height={1350} />
     <Composition id="V7Qaf" component={V7Qaf} durationInFrames={V7_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="V8Why" component={V8Why} durationInFrames={V8_SLIDES} fps={30} width={1080} height={1350} />
+    <Composition id="V10Screen" component={V10Screen} durationInFrames={V10_SLIDES} fps={30} width={1080} height={1350} />
+    <Composition id="V11How" component={V11How} durationInFrames={V11_SLIDES} fps={30} width={1080} height={1350} />
   </>
 );
