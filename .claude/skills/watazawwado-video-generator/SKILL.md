@@ -55,6 +55,10 @@ not templates. Brainstorm our own version for every video before writing: the ta
 life (V2: "every time you say *Arabic*, start it from your throat"), the ending should close the loop the hook opened
 (V2: ×1,000 → ×1,001, "make the next one count"), and a self-check beats a homework list (V2: the hand test).
 
+**Every video has a voice (owner, 2026-11-13):** never ship a voice-free motion video with only on-screen
+text and SFX; the owner rejected V4 for it. Every video gets a voice-over in the clone voice, and the scenes are
+timed to it.
+
 **House frame for every motion video (owner, 2026-11-13):**
 - A **progress ribbon around the frame** (crimson → copper → gold → teal) that runs clockwise from the top centre and
   closes on the last frame, so the viewer always sees how much is left.
