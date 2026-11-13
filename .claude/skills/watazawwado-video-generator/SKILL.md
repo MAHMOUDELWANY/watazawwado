@@ -48,7 +48,21 @@ Craft that goes with it (from the same reference, adapted to our paper look):
 - **Props that make it concrete**: a notepad with the exercise written by hand, a timer ("tonight: 10×"), before → after.
 - **Sound follows motion**: a whoosh on every slide, a pop on every sticker, a pen scratch on every underline or X,
   a riser into the reveal, a soft "correct" on the payoff. Effects 14–20 dB under the voice, never over Arabic letters.
-- **The ending asks for a save** (the exercise is the reason to save) and the brand sign-off "Pack your zaad".
+- **The ending asks for one action** (save or send, whichever fits the goal) and the brand sign-off "Pack your zaad".
+
+**Use the method, not her examples (owner, 2026-11-13).** Her "something to try tonight" or "step 2 ●●○○" are examples,
+not templates. Brainstorm our own version for every video before writing: the task should hook into the viewer's real
+life (V2: "every time you say *Arabic*, start it from your throat"), the ending should close the loop the hook opened
+(V2: ×1,000 → ×1,001, "make the next one count"), and a self-check beats a homework list (V2: the hand test).
+
+**House frame for every motion video (owner, 2026-11-13):**
+- A **progress ribbon around the frame** (crimson → copper → gold → teal) that runs clockwise from the top centre and
+  closes on the last frame, so the viewer always sees how much is left.
+- The **logo pressed into the paper** top-right: a soft round dent, low opacity, multiply; never a square sticker.
+- A **zaad bag tracker** top-left instead of a step counter: it collects one token per step and, at "Pack your zaad",
+  flies to the centre, grows and zips shut.
+- Hands and bodies are drawn as real shapes (palm, joined fingers, thumb, sleeve) with a white sticker outline;
+  silhouettes stay faceless.
 
 ## The owner's taste (binding)
 

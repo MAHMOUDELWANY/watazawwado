@@ -3,12 +3,12 @@ import { AbsoluteFill, Audio, Img, Sequence, interpolate, random, spring, static
 import { COPPER, CRIMSON, FPS, GOLD, GOLD_SOFT, SANS, SERIF, Sfx, TEAL_DEEP, clamp, io } from './kit';
 
 /**
- * V2 · Fix one letter: ع (Content Calendar, 17 Nov 2026), take 2.
- * Script: the retention method (watazawwado-video-generator SKILL.md): a moment → a consequence → what changed →
- * something to do tonight. Look: paper cut-out explainer (docs/design/INSPIRATION.md).
- * Voice: public/vo-v2.mp3 = owner's English clone (a2, b2, c2) + Fusha clone syllables (f1, f2), offsets below.
+ * V2 · Fix one letter: ع (Content Calendar, 17 Nov 2026), take 3.
+ * Script: the retention method (watazawwado-video-generator SKILL.md), used creatively: a moment → a consequence →
+ * what changed → a hand test and a habit hook ("every time you say Arabic") that closes the loop the hook opened. Look: paper cut-out explainer (docs/design/INSPIRATION.md).
+ * Voice: public/vo-v2.mp3 = owner's English clone (a2, b2, c3 from 3.3 s) + Fusha clone syllables (f1, f2), offsets below.
  */
-export const V2_TOTAL = Math.round(61 * FPS);
+export const V2_TOTAL = Math.round(69.6 * FPS);
 const t = (s: number) => Math.round(s * FPS);
 
 const INK = '#1B1512';
@@ -37,19 +37,24 @@ const CUES: [string, number, number][] = [
   ['like you’re lifting something heavy', 30.75, 32.7],
   ['Feel that buzz?', 33.15, 34.2],
   ['That’s ع', 34.35, 35.6],
-  ['Listen', 35.8, 36.7],
-  ['Your turn', 42.0, 43.4],
-  ['Hand on your throat', 43.65, 45.1],
-  ['Tonight, do it ten times before bed', 50.7, 53.6],
-  ['Feel the buzz, and you’ve got it', 53.9, 55.9],
-  ['Save this so you don’t forget', 56.5, 58.4],
-  ['Pack your zaad', 58.65, 61],
+  ['Listen', 35.8, 36.5],
+  ['Your turn', 41.8, 43.2],
+  ['Hand on your throat', 43.45, 44.9],
+  ['No buzz? That was an “a”', 50.4, 52.7],
+  ['Buzz? That’s ع', 52.9, 55.0],
+  ['And from today…', 55.15, 56.5],
+  ['every time you say “Arabic”', 56.6, 58.2],
+  ['start it right here', 58.45, 60.0],
+  ['You’ve said it a thousand times', 60.25, 62.5],
+  ['Make the next one count', 62.7, 64.4],
+  ['Send this to someone who says “Arabic” a lot', 64.6, 67.3],
+  ['Pack your zaad', 67.45, 69.6],
 ];
 // scenes (s)
-const SC = { hook: 0, first: 3.6, letter: 7.0, so: 12.45, cons: 14.85, flip: 20.85, hand: 25.5, slam: 34.3, listen: 36.6, you: 41.9, tonight: 50.55, save: 56.35, end: 61 };
-const STEPS: [number, string][] = [[0, 'the letter'], [12.45, 'why it matters'], [20.85, 'the fix'], [41.9, 'your turn']];
-const F1 = [['أَ', 36.8], ['عَ', 38.34], ['أَ', 39.78], ['عَ', 40.91]] as const;
-const F2 = [['عَ', 45.3], ['عِ', 47.73], ['عُ', 49.57]] as const;
+const SC = { hook: 0, first: 3.6, letter: 7.0, so: 12.45, cons: 14.85, flip: 20.85, hand: 25.5, slam: 34.3, listen: 36.4, you: 41.7, test: 50.2, today: 55.05, count: 60.15, send: 64.5, end: 69.6 };
+const STEPS = [0, 12.45, 20.85, 41.7];
+const F1 = [['أَ', 36.6], ['عَ', 38.14], ['أَ', 39.58], ['عَ', 40.71]] as const;
+const F2 = [['عَ', 45.0], ['عِ', 47.43], ['عُ', 49.27]] as const;
 
 /* ---------- paper kit ---------- */
 
@@ -123,26 +128,68 @@ const GraphPaper: React.FC = () => (
   </AbsoluteFill>
 );
 
+/** Logo pressed into the paper: a soft round dent, low-contrast, not a sticker. */
 const Logo: React.FC = () => (
-  <div style={{ position: 'absolute', right: 56, top: 70, width: 130, height: 130, border: '2.5px solid rgba(27,21,18,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(251,248,242,0.6)' }}>
-    <Img src={staticFile('img/logo-clean.png')} style={{ width: 104, objectFit: 'contain' }} />
+  <div style={{ position: 'absolute', right: 52, top: 64, width: 132, height: 132, borderRadius: 999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'radial-gradient(circle at 50% 40%, rgba(255,255,255,0.28), rgba(236,230,219,0.10) 70%)',
+    boxShadow: 'inset 0 3px 6px rgba(60,40,25,0.22), inset 0 -2px 3px rgba(255,255,255,0.7), 0 1px 0 rgba(255,255,255,0.5)' }}>
+    <Img src={staticFile('img/logo-clean.png')} style={{ width: 92, objectFit: 'contain', opacity: 0.62, mixBlendMode: 'multiply',
+      filter: 'saturate(0.8) drop-shadow(0 -1px 0 rgba(255,255,255,0.6)) drop-shadow(0 1px 1px rgba(60,40,25,0.35))' }} />
   </div>
 );
 
-/** Step tracker top-left: four dots and the current step's name. */
-const Steps: React.FC = () => {
+/** Progress around the frame: a ribbon that runs clockwise from the top centre and closes when the video ends. */
+const Border: React.FC = () => {
   const f = useCurrentFrame();
-  const idx = STEPS.filter(([s]) => f >= t(s)).length - 1;
-  const since = f - t(STEPS[idx][0]);
-  const pop = spring({ frame: since, fps: FPS, config: { damping: 10 } });
+  const p = Math.min(1, f / (V2_TOTAL - 1));
+  const m = 14, r = 44;
+  const d = `M 540 ${m} H ${1080 - m - r} A ${r} ${r} 0 0 1 ${1080 - m} ${m + r} V ${1920 - m - r} A ${r} ${r} 0 0 1 ${1080 - m - r} ${1920 - m}
+    H ${m + r} A ${r} ${r} 0 0 1 ${m} ${1920 - m - r} V ${m + r} A ${r} ${r} 0 0 1 ${m + r} ${m} H 540`;
   return (
-    <div style={{ position: 'absolute', left: 56, top: 92, display: 'flex', alignItems: 'center', gap: 16 }}>
-      <div style={{ background: INK, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 34, borderRadius: 12, padding: '8px 18px', transform: `scale(${0.8 + 0.2 * pop})` }}>
-        step {idx + 1} · {STEPS[idx][1]}
-      </div>
-      <div style={{ display: 'flex', gap: 8 }}>
-        {STEPS.map((_, i) => <div key={i} style={{ width: 16, height: 16, borderRadius: 99, background: i <= idx ? CRIMSON : 'rgba(27,21,18,0.2)', transform: `scale(${i === idx ? 1 + 0.4 * (1 - pop) : 1})` }} />)}
-      </div>
+    <svg width={1080} height={1920} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+      <defs>
+        <linearGradient id="prog" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={CRIMSON} /><stop offset="0.4" stopColor={COPPER} /><stop offset="0.7" stopColor={GOLD} /><stop offset="1" stopColor={TEAL_DEEP} />
+        </linearGradient>
+      </defs>
+      <path d={d} fill="none" stroke="rgba(27,21,18,0.10)" strokeWidth={10} />
+      <path d={d} fill="none" stroke="url(#prog)" strokeWidth={10} strokeLinecap="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - p} />
+    </svg>
+  );
+};
+
+/** The zaad bag collects one token per step; at "Pack your zaad" it flies to the centre, grows and zips shut. */
+const TOKENS = ['ع', '!', '◎', '✓'];
+const BagTracker: React.FC = () => {
+  const f = useCurrentFrame();
+  const done = STEPS.filter((s) => f >= t(s) + 10).length;
+  const lastDrop = Math.max(...STEPS.map((s) => (f >= t(s) ? t(s) : -999)));
+  const squash = interpolate(f - lastDrop, [8, 11, 20], [0, 1, 0], clamp);
+  const fly = io(f, t(66.9), t(67.6));
+  const zip = io(f, t(67.7), t(68.3));
+  const bounce = interpolate(f, [t(68.3), t(68.45), t(68.8)], [0, 1, 0], clamp);
+  const x = interpolate(fly, [0, 1], [118, 540]);
+  const y = interpolate(fly, [0, 1], [130, 900]);
+  const sc = interpolate(fly, [0, 1], [1, 3.6]) * (1 + bounce * 0.08);
+  return (
+    <div style={{ position: 'absolute', left: x - 60, top: y - 60, width: 120, height: 120, transform: `scale(${sc}) scaleX(${1 + squash * 0.08}) scaleY(${1 - squash * 0.08})` }}>
+      {STEPS.map((s, i) => {
+        const p = io(f, t(s), t(s) + 10, 0, 1, (n) => n * n);
+        if (f < t(s) || p >= 1) return null;
+        return (
+          <div key={i} style={{ position: 'absolute', left: 38, top: -70 + p * 90, width: 44, height: 44, borderRadius: 10, background: WHITE, border: '4px solid #fff',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: i === 0 ? AR : SANS, fontWeight: 700,
+            fontSize: 28, color: CRIMSON, transform: `rotate(${(1 - p) * 40}deg) scale(${1 - p * 0.4})` }}>{TOKENS[i]}</div>
+        );
+      })}
+      <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', inset: 0, width: 120, filter: 'drop-shadow(0 6px 8px rgba(40,25,15,0.3))' }} />
+      {/* the zipper closes along the top of the bag */}
+      <svg width={120} height={120} viewBox="0 0 210 190" style={{ position: 'absolute', inset: 0 }}>
+        {zip > 0 && <path d={`M40 80 H${40 + 130 * zip}`} stroke={GOLD_SOFT} strokeWidth={9} strokeLinecap="round" strokeDasharray="10 7" />}
+        {zip > 0 && zip < 1 && <circle cx={40 + 130 * zip} cy={80} r={10} fill={GOLD} />}
+      </svg>
+      <div style={{ position: 'absolute', left: 92, top: -6, minWidth: 40, height: 40, borderRadius: 20, background: INK, color: WHITE, fontFamily: SANS, fontWeight: 700,
+        fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 8px', opacity: 1 - fly }}>{done}/4</div>
     </div>
   );
 };
@@ -315,17 +362,45 @@ const Silhouette: React.FC<{ buzz?: number }> = ({ buzz = 0 }) => {
     </>
   );
 };
-/** A flat hand, palm resting on the side of the neck. */
-const Hand: React.FC<{ p: number }> = ({ p }) => (
-  <svg width={1080} height={1920} style={{ position: 'absolute', inset: 0, transform: `translate(${(1 - p) * 420}px, ${(1 - p) * 260}px)`, opacity: Math.min(1, p * 2) }}>
-    <g fill={COPPER} stroke={WHITE} strokeWidth={8} strokeLinejoin="round">
-      <path d="M560 700 C600 690 640 700 700 720 L900 800 C940 815 950 860 905 870 L700 830 L700 900 C700 940 660 960 620 950 L560 930 Z" />
-      <rect x="610" y="690" width="210" height="42" rx="21" transform="rotate(-8 610 690)" />
-      <rect x="600" y="740" width="230" height="42" rx="21" transform="rotate(-2 600 740)" />
-      <rect x="600" y="790" width="220" height="42" rx="21" transform="rotate(4 600 790)" />
-    </g>
-  </svg>
-);
+/** A hand on the front of the neck: palm, four joined fingers whose tips rest on the throat, a thumb, a sleeve. */
+const Hand: React.FC<{ p: number; buzz?: number }> = ({ p, buzz = 0 }) => {
+  const f = useCurrentFrame();
+  const jit = Math.sin(f * 2.6) * 2.5 * buzz;
+  const SKIN = '#D99A78';
+  const CREASE = '#A8634A';
+  return (
+    <svg width={1080} height={1920} style={{ position: 'absolute', inset: 0, overflow: 'visible', opacity: Math.min(1, p * 2),
+      transform: `translate(${(1 - p) * 460 + jit}px, ${(1 - p) * 300}px) rotate(${(1 - p) * 12}deg)`, transformOrigin: '640px 785px' }}>
+      <defs>
+        <filter id="outline" x="-30%" y="-30%" width="160%" height="160%">
+          <feMorphology in="SourceAlpha" operator="dilate" radius="7" result="d" />
+          <feFlood floodColor="#FFFFFF" />
+          <feComposite in2="d" operator="in" result="o" />
+          <feMerge><feMergeNode in="o" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <g transform="translate(640 785)" filter="url(#outline)">
+        <g transform="rotate(24)">
+          <rect x="70" y="-62" width="330" height="128" rx="20" fill={TEAL_DEEP} />
+          <rect x="70" y="-62" width="34" height="128" rx="10" fill={WHITE} opacity={0.9} />
+          <rect x="36" y="-52" width="60" height="106" rx="30" fill={SKIN} />
+        </g>
+        <rect x="-50" y="-72" width="150" height="148" rx="56" fill={SKIN} />
+        <rect x="-168" y="-66" width="150" height="38" rx="19" fill={SKIN} transform="rotate(-3 -18 -47)" />
+        <rect x="-182" y="-30" width="164" height="38" rx="19" fill={SKIN} />
+        <rect x="-172" y="6" width="154" height="38" rx="19" fill={SKIN} transform="rotate(3 -18 25)" />
+        <rect x="-142" y="42" width="124" height="34" rx="17" fill={SKIN} transform="rotate(7 -18 59)" />
+        <rect x="-40" y="-130" width="44" height="110" rx="22" fill={SKIN} transform="rotate(-32 -18 -30)" />
+      </g>
+      <g transform="translate(640 785)" stroke={CREASE} strokeWidth={4} strokeLinecap="round" fill="none" opacity={0.75}>
+        <path d="M -150 -29 L -40 -29" />
+        <path d="M -160 7 L -40 7" />
+        <path d="M -132 44 L -40 44" />
+        <path d="M -30 -50 C -10 -10 -10 30 -30 60" opacity={0.6} />
+      </g>
+    </svg>
+  );
+};
 const HandScene: React.FC = () => {
   const f = useCurrentFrame();
   const L = (s: number) => t(s - SC.hand);
@@ -337,7 +412,10 @@ const HandScene: React.FC = () => {
     <AbsoluteFill>
       <Paper seed="hand" x={60} y={210} w={960} h={1040} color={SAND} rot={1}>{null}</Paper>
       <AbsoluteFill><Silhouette buzz={buzz} /></AbsoluteFill>
-      <Hand p={hand} />
+      <Hand p={hand} buzz={buzz} />
+      {buzz > 0 && [0, 1].map((i) => { const k = ((f / 8 + i / 2) % 1); return (
+        <div key={'v' + i} style={{ position: 'absolute', left: 430 - k * 60, top: 700 - k * 40, width: 120 + k * 120, height: 160 + k * 80, borderRadius: '50%',
+          border: `5px solid ${GOLD_SOFT}`, opacity: (1 - k) * buzz * 0.9 }} />); })}
       {f >= L(27.3) && (
         <div style={{ position: 'absolute', left: 690, top: 300, transform: `scale(${aah})`, transformOrigin: 'left bottom' }}>
           <div style={{ background: WHITE, border: `6px solid ${INK}`, borderRadius: 40, padding: '14px 34px', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 80, color: INK }}>aah…</div>
@@ -362,6 +440,7 @@ const Slam: React.FC = () => {
     <AbsoluteFill style={{ transform: `scale(${zoom})`, transformOrigin: `${MID[0]}px ${MID[1]}px` }}>
       <Paper seed="hand" x={60} y={210} w={960} h={1040} color={SAND} rot={1}>{null}</Paper>
       <AbsoluteFill><Silhouette buzz={1} /></AbsoluteFill>
+      <Hand p={1} buzz={1} />
       {f >= t(34.6 - SC.slam) && (
         <div style={{ position: 'absolute', left: MID[0] - 150, top: MID[1] - 170, width: 300, height: 300, borderRadius: 50, background: WHITE, border: '12px solid #fff',
           boxShadow: '0 16px 26px rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `scale(${2.2 - 1.2 * p}) rotate(${(1 - p) * 20 - 4}deg)`, opacity: Math.min(1, p * 2) }}>
@@ -433,59 +512,109 @@ const You: React.FC = () => {
     </AbsoluteFill>
   );
 };
-/** Yellow notepad with tonight's exercise written in. */
-const Tonight: React.FC = () => {
+/** The hand test: no buzz = "a", buzz = ع. */
+const Test: React.FC = () => {
   const f = useCurrentFrame();
-  const L = (s: number) => t(s - SC.tonight);
-  const lines: [string, number][] = [['hand on your throat', 51.0], ['“aah” → squeeze', 52.0], ['عَ  عِ  عُ', 52.7], ['× 10 before bed', 53.2]];
-  const tick = (i: number) => io(f, L(54.0 + i * 0.35), L(54.3 + i * 0.35));
+  const L = (s: number) => t(s - SC.test);
+  const half = (x: number, color: string, seed: string, title: string, glyph: string, at: number, on: boolean) => {
+    if (f < at) return null;
+    const p = spring({ frame: f - at, fps: FPS, config: { damping: 12 } });
+    return (
+      <div style={{ position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `translateY(${(1 - p) * 400}px)`, filter: on ? 'none' : 'grayscale(1)' }}>
+        <Paper seed={seed} x={x} y={420} w={450} h={760} color={color} rot={x < 300 ? -2 : 2}>
+          <div style={{ position: 'absolute', top: 60, width: '100%', textAlign: 'center', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 64, color: WHITE }}>{title}</div>
+          <svg width={450} height={300} style={{ position: 'absolute', top: 160 }}>
+            <rect x="185" y="40" width="70" height="200" rx="35" fill={INK} />
+            <rect x="215" y="120" width="120" height="44" rx="22" fill="#D99A78" stroke="#fff" strokeWidth="5" />
+            {on && [0, 1, 2].map((i) => (
+              <path key={i} d={`M ${150 - i * 22} ${110 - i * 8} q -14 32 0 64`} stroke={GOLD_SOFT} strokeWidth="7" fill="none" strokeLinecap="round"
+                opacity={0.4 + 0.6 * Math.abs(Math.sin(f / 4 + i))} />
+            ))}
+          </svg>
+          <div style={{ position: 'absolute', bottom: 70, width: '100%', textAlign: 'center' }}>
+            <span style={{ fontFamily: glyph === 'a' ? SERIF : AR, fontWeight: 700, fontSize: 200, color: on ? GOLD_SOFT : WHITE, lineHeight: 1 }}>{glyph}</span>
+          </div>
+        </Paper>
+      </div>
+    );
+  };
   return (
     <AbsoluteFill>
-      <div style={{ position: 'absolute', left: 120, top: 260, width: 840, height: 1040, background: '#F6E79A', borderRadius: 10, transform: 'rotate(-2deg)',
-        boxShadow: '0 18px 26px rgba(40,25,15,0.3)', backgroundImage: 'linear-gradient(transparent 94px, rgba(8,125,145,0.35) 96px)', backgroundSize: '100% 98px', backgroundPosition: '0 150px' }}>
-        <div style={{ position: 'absolute', left: 90, top: 0, bottom: 0, width: 3, background: 'rgba(197,31,36,0.5)' }} />
-        <div style={{ height: 70, background: '#E9D77E', borderRadius: '10px 10px 0 0', borderBottom: '3px solid rgba(0,0,0,0.08)' }} />
-        <div style={{ position: 'absolute', left: 130, top: 120, fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 90, color: CRIMSON, opacity: io(f, 0, 8) }}>Tonight</div>
-        {lines.map(([txt, s], i) => {
-          const w = io(f, L(s), L(s) + 14);
-          return (
-            <div key={i} style={{ position: 'absolute', left: 130, top: 268 + i * 98 * 1.4, display: 'flex', alignItems: 'center', gap: 30 }}>
-              <div style={{ width: 60, height: 60, border: `6px solid ${INK}`, borderRadius: 8, position: 'relative' }}>
-                <svg width={80} height={80} style={{ position: 'absolute', left: -6, top: -18, overflow: 'visible' }}>
-                  <path d="M8 40 L30 62 L74 6" stroke={CRIMSON} strokeWidth={12} fill="none" strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - tick(i)} />
-                </svg>
-              </div>
-              <div style={{ fontFamily: txt.includes('عَ') ? AR : SERIF, fontStyle: txt.includes('عَ') ? 'normal' : 'italic', fontWeight: 700, fontSize: txt.includes('عَ') ? 96 : 60, direction: txt.includes('عَ') ? 'rtl' : 'ltr', lineHeight: 1.4, color: INK,
-                clipPath: `inset(-20% ${100 - w * 100}% -20% 0)` }}>{txt}</div>
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ position: 'absolute', left: 770, top: 1180, transform: `rotate(${-30 + Math.sin(f / 3) * 4}deg)`, opacity: io(f, L(51.0), L(51.2)) * (1 - io(f, L(55.6), L(55.9))) }}>
-        <div style={{ width: 26, height: 260, background: GOLD, border: '5px solid #fff', borderRadius: 6 }} />
-      </div>
+      <Label at={4} x={540} y={270} text="the hand test" size={66} />
+      {half(70, ESPRESSO, 'tn', 'no buzz', 'a', L(50.4), false)}
+      {half(560, TEAL_DEEP, 'tb', 'buzz', 'ع', L(52.9), true)}
     </AbsoluteFill>
   );
 };
-const Save: React.FC = () => {
+
+/** Everyday "Arabic": the A in each phrase turns into ع. */
+const Today: React.FC = () => {
   const f = useCurrentFrame();
-  const L = (s: number) => t(s - SC.save);
-  const bm = spring({ frame: f - 4, fps: FPS, config: { damping: 8 } });
-  const drop = spring({ frame: f - L(58.6), fps: FPS, config: { damping: 9, mass: 0.8 } });
+  const L = (s: number) => t(s - SC.today);
+  const items: [string, string, number, number, number, number][] = [
+    ['I’m learning ', 'rabic', 330, 520, -5, 56.6],
+    ['', 'rabic class', 740, 760, 4, 57.0],
+    ['', 'rabic food', 320, 1000, 3, 57.35],
+    ['say it in ', 'rabic', 720, 1220, -4, 57.7],
+  ];
   return (
     <AbsoluteFill>
-      <div style={{ position: 'absolute', left: 540 - 130, top: 330, transform: `scale(${bm}) rotate(${(1 - bm) * 30}deg)` }}>
-        <svg width={260} height={320} viewBox="0 0 260 320">
-          <path d="M30 20 H230 V300 L130 230 L30 300 Z" fill={CRIMSON} stroke="#fff" strokeWidth={16} strokeLinejoin="round" />
+      <Label at={4} x={540} y={270} text="from today" size={66} />
+      {items.map(([pre, post, x, y, r, s], i) => {
+        const morph = io(f, L(58.5) + i * 3, L(58.5) + i * 3 + 8);
+        return (
+          <Sticker key={i} at={L(s)} x={x} y={y} w={pre ? 580 : 450} size={150} rot={r}>
+            <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 54, color: INK, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'flex-end' }}>
+              {pre}
+              <span style={{ display: 'inline-grid', alignItems: 'end', justifyItems: 'center', margin: '0 2px' }}>
+                <span style={{ gridArea: '1 / 1', opacity: 1 - morph, transform: `translateY(${-morph * 30}px)` }}>A</span>
+                <span style={{ gridArea: '1 / 1', fontFamily: AR, fontSize: 64, lineHeight: 0.9, color: CRIMSON, opacity: morph, transform: `scale(${0.5 + 0.5 * morph})` }}>ع</span>
+              </span>
+              {post}
+            </span>
+          </Sticker>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
+/** The loop closes: ×1,000 becomes ×1,001. */
+const Count: React.FC = () => {
+  const f = useCurrentFrame();
+  const L = (s: number) => t(s - SC.count);
+  const tick = f >= L(63.55);
+  const pop = spring({ frame: f - L(63.55), fps: FPS, config: { damping: 7 } });
+  return (
+    <BigCard color={SAND} seed="count">
+      <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 64, color: INK, opacity: io(f, 0, 8) }}>you’ve said “Arabic”</div>
+      <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 230, color: tick ? CRIMSON : INK, lineHeight: 1.1, fontVariantNumeric: 'tabular-nums',
+        transform: `scale(${tick ? 1 + 0.25 * (1 - Math.min(1, pop)) : 1})` }}>×{tick ? '1,001' : '1,000'}</div>
+      <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 88, color: INK, opacity: io(f, L(62.7), L(63.0)) }}>make the next one</div>
+      <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 150, color: CRIMSON, lineHeight: 1,
+        transform: `scale(${f >= L(63.55) ? spring({ frame: f - L(63.55), fps: FPS, config: { damping: 8 } }) : 0})` }}>count.</div>
+    </BigCard>
+  );
+};
+
+/** Send it on; then the bag from the tracker packs itself (BagTracker). */
+const Send: React.FC = () => {
+  const f = useCurrentFrame();
+  const L = (s: number) => t(s - SC.send);
+  const fly = io(f, L(66.2), L(66.9), 0, 1, (n) => n * n);
+  const plane = spring({ frame: f - 4, fps: FPS, config: { damping: 10 } });
+  return (
+    <AbsoluteFill>
+      <div style={{ position: 'absolute', left: 380 + fly * 900, top: 380 - fly * 500, transform: `scale(${plane}) rotate(${-12 - fly * 20}deg)` }}>
+        <svg width={320} height={260} viewBox="0 0 320 260">
+          <path d="M10 130 L310 20 L230 240 L150 160 Z" fill={WHITE} stroke={INK} strokeWidth={10} strokeLinejoin="round" />
+          <path d="M310 20 L150 160 L130 230 L110 145" fill="#E8E1D4" stroke={INK} strokeWidth={10} strokeLinejoin="round" />
         </svg>
       </div>
-      <Label at={L(56.6)} x={540} y={700} text="Save this for tonight" size={64} />
-      <Paper seed="end" x={240} y={880} w={600} h={460} color={TEAL_DEEP} rot={1.5}>
-        <div style={{ position: 'absolute', left: 160, top: 50 + (1 - drop) * -500, opacity: Math.min(1, drop * 3), transform: `rotate(${(1 - drop) * 20}deg)` }}>
-          <Img src={staticFile('img/zaad-bag.svg')} style={{ width: 270, filter: 'drop-shadow(0 12px 16px rgba(0,0,0,0.35))' }} />
-        </div>
-        <div style={{ position: 'absolute', bottom: 40, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 60, color: WHITE, opacity: io(f, L(58.9), L(59.3)) }}>Pack your zaad</div>
-      </Paper>
+      <div style={{ opacity: 1 - io(f, L(66.8), L(67.2)) }}>
+        <Label at={L(64.7)} x={540} y={760} text="send this to someone" size={62} rot={-2} />
+        <Label at={L(65.6)} x={540} y={900} text="who says “Arabic” a lot" size={62} rot={2} under={false} />
+      </div>
     </AbsoluteFill>
   );
 };
@@ -494,7 +623,7 @@ export const V2Ain: React.FC = () => {
   const seq = (a: number, b: number, el: React.ReactNode, from: 1 | -1 = 1, punches: number[] = []) => (
     <Sequence from={t(a)} durationInFrames={t(b) - t(a)}><Slide dur={t(b) - t(a)} from={from} punches={punches} start={a}>{el}</Slide></Sequence>
   );
-  const cuts = [SC.first, SC.letter, SC.so, SC.cons, SC.flip, SC.hand, SC.listen, SC.you, SC.tonight, SC.save];
+  const cuts = [SC.first, SC.letter, SC.so, SC.cons, SC.flip, SC.hand, SC.listen, SC.you, SC.test, SC.today, SC.count, SC.send];
   return (
     <AbsoluteFill>
       <GraphPaper />
@@ -507,17 +636,20 @@ export const V2Ain: React.FC = () => {
       {seq(SC.hand, SC.slam, <HandScene />, 1, [27.56, 33.44])}
       <Sequence from={t(SC.slam)} durationInFrames={t(SC.listen) - t(SC.slam)}><Slam /></Sequence>
       {seq(SC.listen, SC.you, <Listen />, 1)}
-      {seq(SC.you, SC.tonight, <You />, -1)}
-      {seq(SC.tonight, SC.save, <Tonight />, 1, [51.92])}
-      <Sequence from={t(SC.save)}><Slide dur={99999} start={SC.save} punches={[56.54]}><Save /></Slide></Sequence>
-      <Steps />
+      {seq(SC.you, SC.test, <You />, -1)}
+      {seq(SC.test, SC.today, <Test />, 1, [52.94, 54.4])}
+      {seq(SC.today, SC.count, <Today />, -1, [57.54, 58.6])}
+      {seq(SC.count, SC.send, <Count />, 1, [61.08, 63.55])}
+      <Sequence from={t(SC.send)}><Slide dur={99999} start={SC.send} from={-1}><Send /></Slide></Sequence>
+      <Border />
+      <BagTracker />
       <Logo />
       <Caption />
       <Audio src={staticFile('vo-v2.mp3')} />
 
       {/* Sound follows motion (no music, RULES §1.6). Nothing sits on the Arabic syllables. */}
       {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.32} />)}
-      {[SC.so, SC.flip].map((s) => <Sfx key={'tear' + s} at={t(s) - 2} src="paper/tear-s.mp3" volume={0.3} />)}
+      {[SC.so, SC.flip, SC.count].map((s) => <Sfx key={'tear' + s} at={t(s) - 2} src="paper/tear-s.mp3" volume={0.3} />)}
       <Sfx at={t(1.2)} src="paper/slap-s.mp3" volume={0.35} />
       {Array.from({ length: 8 }).map((_, i) => <Sfx key={'tk' + i} at={t(2.0) + i * 4} src="wv/tick-sound.wav" volume={0.12} />)}
       <Sfx at={t(3.6) + 6} src="paper/slap-s.mp3" volume={0.35} />
@@ -539,11 +671,20 @@ export const V2Ain: React.FC = () => {
       <Sfx at={t(33.15)} src="paper/slap-s.mp3" volume={0.3} />
       <Sfx at={t(34.6)} src="wv/bass-impact.wav" volume={0.28} />
       <Sfx at={t(34.65)} src="correct.mp3" volume={0.2} />
-      <Sfx at={t(42.0) + 10} src="paper/slap-s.mp3" volume={0.3} />
-      {[51.0, 52.0, 52.7, 53.2].map((s) => <Sfx key={'w' + s} at={t(s)} src="paper/marker-s.mp3" volume={0.3} />)}
-      {[0, 1, 2, 3].map((i) => <Sfx key={'ck' + i} at={t(54.0 + i * 0.35)} src="wv/tick-sound.wav" volume={0.2} />)}
-      <Sfx at={t(56.35) + 4} src="wv/pop-hand.wav" volume={0.3} />
-      <Sfx at={t(58.6)} src="wv/dull-thud.wav" volume={0.3} />
+      <Sfx at={t(41.7) + 10} src="paper/slap-s.mp3" volume={0.3} />
+      {STEPS.map((s, i) => <Sfx key={'bag' + i} at={t(s) + 9} src="wv/pop-hand.wav" volume={0.18} />)}
+      <Sfx at={t(50.4)} src="paper/slap-s.mp3" volume={0.3} />
+      <Sfx at={t(52.9)} src="paper/slap-s.mp3" volume={0.3} />
+      <Sfx at={t(54.1)} src="correct.mp3" volume={0.2} />
+      {[56.6, 57.0, 57.35, 57.7].map((s) => <Sfx key={'d' + s} at={t(s)} src="paper/slap-s.mp3" volume={0.26} />)}
+      {[0, 1, 2, 3].map((i) => <Sfx key={'m' + i} at={t(58.5) + i * 3} src="wv/tick-sound.wav" volume={0.2} />)}
+      <Sfx at={t(63.55)} src="wv/bass-impact.wav" volume={0.26} />
+      <Sfx at={t(63.55)} src="wv/tick-sound.wav" volume={0.3} />
+      <Sfx at={t(64.5) + 4} src="wv/swish-whoosh-large.wav" volume={0.2} />
+      <Sfx at={t(66.2)} src="wv/fast-whoosh.wav" volume={0.22} />
+      <Sfx at={t(66.9)} src="wv/swish-whoosh-large.wav" volume={0.18} />
+      <Sfx at={t(67.7)} src="paper/marker-s.mp3" volume={0.3} />
+      <Sfx at={t(68.3)} src="wv/dull-thud.wav" volume={0.3} />
     </AbsoluteFill>
   );
 };
