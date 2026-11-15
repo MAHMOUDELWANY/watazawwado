@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ContactShadows, Environment, Lightformer, OrbitControls, Sparkles } from '@react-three/drei';
+import { ContactShadows, Environment, Lightformer, OrbitControls, PerformanceMonitor, Sparkles } from '@react-three/drei';
 import { BackSide, CanvasTexture, NeutralToneMapping, SRGBColorSpace, type WebGLRenderer } from 'three';
 
 /** Keeps the brand crimson and gold true; ACES greys them. */
@@ -38,6 +38,39 @@ export function StudioLights({ shadows = true }: { shadows?: boolean }) {
   );
 }
 
+/**
+ * Phones and weak computers get the light stage: no shadow map, a painted soft shadow instead of a per-frame shadow
+ * render, fewer sparkles and a capped pixel ratio. Owner, 2026-11-15: taps stuttered on a phone.
+ */
+export function isLiteDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  const coarse = window.matchMedia?.('(pointer: coarse)').matches;
+  return Boolean(coarse || (nav.deviceMemory ?? 8) <= 4 || (nav.hardwareConcurrency ?? 8) <= 4);
+}
+
+/** A soft round shadow painted once: what the light stage uses instead of rendering the scene from below every frame. */
+function BlobShadow() {
+  const tex = useMemo(() => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const g = c.getContext('2d')!;
+    const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grad.addColorStop(0, 'rgba(18,8,4,0.75)');
+    grad.addColorStop(0.55, 'rgba(18,8,4,0.35)');
+    grad.addColorStop(1, 'rgba(18,8,4,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 128, 128);
+    return new CanvasTexture(c);
+  }, []);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]} raycast={() => null}>
+      <planeGeometry args={[1.5, 1.5]} />
+      <meshBasicMaterial map={tex} transparent depthWrite={false} toneMapped={false} />
+    </mesh>
+  );
+}
+
 /** The studio stage for a character on show: lights, an espresso pedestal with a gold khatam ring, drag to turn. */
 export default function Stage3D({ children, onClock, still }: { children: React.ReactNode; onClock: (now: () => number) => void; still: boolean }) {
   const floor = useMemo(() => {
@@ -55,15 +88,20 @@ export default function Stage3D({ children, onClock, still }: { children: React.
     return tex;
   }, []);
 
+  const lite = useMemo(isLiteDevice, []);
+  const [dpr, setDpr] = useState(lite ? 1.5 : 2);
+
   return (
     <Canvas
-      shadows
+      shadows={!lite}
       camera={{ position: [0, 1.05, 4.9], fov: 34 }}
-      dpr={[1, 2]}
+      dpr={[1, dpr]}
       gl={{ antialias: true, alpha: true }}
       onCreated={({ clock, gl }) => { onClock(() => clock.getElapsedTime()); toneRenderer(gl); }}
     >
-      <StudioLights />
+      {/* Falls back to a lower pixel ratio if the device cannot hold the frame rate. */}
+      <PerformanceMonitor onDecline={() => setDpr(1)} />
+      <StudioLights shadows={!lite} />
       {children}
       {/* pedestal: espresso drum, gold lip, a gold khatam ring on top; unlit on purpose (lit dark materials wash out to tan) */}
       <mesh position={[0, -0.09, 0]}>
@@ -84,8 +122,8 @@ export default function Stage3D({ children, onClock, still }: { children: React.
           <meshPhysicalMaterial color="#F3C15A" metalness={1} roughness={0.25} />
         </mesh>
       ))}
-      <ContactShadows position={[0, 0.004, 0]} opacity={0.6} scale={3} blur={2.4} far={1.5} color="#120804" />
-      {!still && <Sparkles count={28} scale={[3.4, 2.4, 1.6]} position={[0, 1.2, -0.4]} size={2.2} speed={0.25} opacity={0.6} color="#FFE7A8" />}
+      {lite ? <BlobShadow /> : <ContactShadows position={[0, 0.004, 0]} opacity={0.6} scale={3} blur={2.4} far={1.5} color="#120804" />}
+      {!still && <Sparkles count={lite ? 12 : 28} scale={[3.4, 2.4, 1.6]} position={[0, 1.2, -0.4]} size={2.2} speed={0.25} opacity={0.6} color="#FFE7A8" />}
       <OrbitControls enablePan={false} enableZoom={false} minPolarAngle={Math.PI / 3.2} maxPolarAngle={Math.PI / 2.05} target={[0, 0.8, 0]} />
     </Canvas>
   );

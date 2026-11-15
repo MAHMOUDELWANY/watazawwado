@@ -2415,3 +2415,13 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
 @keyframes badge-rays-turn { to { transform: rotate(360deg); } }
 .badge-rays { background: repeating-conic-gradient(from 0deg, rgba(246, 213, 142, .55) 0deg 7deg, transparent 7deg 22.5deg); mask-image: radial-gradient(circle, #000 18%, transparent 68%); animation: badge-rays-turn 24s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .badge-rays { animation: none; } }
+
+/* Rows that scroll sideways on phones (chips, the companion controls) hide their scrollbar. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* The badge display case (progress design system): espresso in both themes, earned badges lit, the rest silhouettes. */
+.badge-case { background: radial-gradient(120% 80% at 50% 0%, #3A2418 0%, #1F1A17 55%, #120E0C 100%); color: #F4EEE6; }
+.badge-silhouette { filter: grayscale(1) brightness(.42) contrast(1.1); opacity: .6; }
+.badge-spot { background: radial-gradient(closest-side, rgba(246, 213, 142, .38), rgba(229, 169, 60, .12) 55%, transparent 75%); }
+.badge-ledge { height: 10px; border-radius: 9999px; background: linear-gradient(180deg, rgba(229, 169, 60, .55), rgba(139, 73, 53, .35) 40%, rgba(0, 0, 0, 0) 100%); box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .8); }

@@ -85,9 +85,19 @@ export default function CompanionDemo({ lang }: { lang: 'ar' | 'en' }) {
     : next ? (ar ? `باقي ${next.xp - xp} نقطة على «${next.label.ar}»` : `${next.xp - xp} points to "${next.label.en}"`)
       : (ar ? 'فتحت كل الرقصات' : 'Every dance unlocked');
 
+  // On a phone the buttons sit under the stage: bring the hoopoe back into view so the child sees what the tap did.
+  const stageBox = useRef<HTMLDivElement | null>(null);
+  const showStage = () => {
+    const el = stageBox.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > window.innerHeight) el.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'nearest' });
+  };
+  const [panel, setPanel] = useState<'dances' | 'earn'>(() => (readXp() >= HATCH ? 'dances' : 'earn'));
   const play = (id: HoopoeDance) => { setDance(id); setStartedAt(clockRef.current()); };
 
   const earn = (n: number) => {
+    showStage();
     const before = xp, after = xp + n;
     setXp(after);
     setGain((g) => ({ n, id: g.id + 1 }));
@@ -135,7 +145,7 @@ export default function CompanionDemo({ lang }: { lang: 'ar' | 'en' }) {
         </span>
       </div>
 
-      <div className="relative mt-4 h-[min(52svh,400px)] overflow-hidden rounded-3xl bg-[radial-gradient(80%_65%_at_50%_45%,#8A4128_0%,#4A2418_45%,#24140E_80%,#1C120D_100%)]">
+      <div ref={stageBox} className="relative mt-4 h-[min(46svh,400px)] scroll-mt-24 overflow-hidden rounded-3xl bg-[radial-gradient(80%_65%_at_50%_45%,#8A4128_0%,#4A2418_45%,#24140E_80%,#1C120D_100%)]">
         <Stage3D still={still} onClock={(now) => { clockRef.current = now; }}>
           <Suspense fallback={null}>
             <HoopoeModel dance={dance} startedAt={startedAt} onDone={() => setDance('idle')} still={still} look={look} celebrateAt={celebrateAt} hatchAt={hatchAt} />
@@ -161,22 +171,33 @@ export default function CompanionDemo({ lang }: { lang: 'ar' | 'en' }) {
         </p>
       </div>
 
-      <div className="mt-5 grid gap-4">
+      <div className="mt-4 grid gap-3">
         <StageTrack stages={STAGES.map((s) => ({ key: s.key, label: t(s.label), xp: s.xp }))} current={stageIndex} />
         <XpBar value={progress} caption={caption} />
       </div>
 
-      <h3 className="mt-6 text-sm font-semibold">{ar ? 'جرّب تكسب نقط' : 'Try earning points'}</h3>
-      <p className="text-xs text-muted-foreground">{ar ? 'في الحقيقة المعلم هو اللي بيديها بعد كل حصة.' : 'For real, your teacher gives these after each lesson.'}</p>
-      <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {EARN.map((e) => <AchievementTile key={e.label.en} icon={e.icon} label={t(e.label)} xp={e.xp} onClick={() => earn(e.xp)} />)}
-      </div>
-
-      <h3 className="mt-6 text-sm font-semibold">{ar ? 'الرقصات' : 'Dances'}</h3>
-      <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-9">
-        {DANCES.map((d) => (
-          <UnlockTile key={d.id} icon={d.icon} label={t(d.label)} need={d.xp} locked={xp < d.xp} active={dance === d.id} onClick={() => play(d.id)} />
+      {/* Dances and points in one row under the stage on phones (a grid on wider screens), so a tap and its result share the screen. */}
+      <div className="mt-4 inline-flex rounded-full border border-border bg-surface-subtle p-1" role="tablist" aria-label={ar ? 'الرقصات والنقط' : 'Dances and points'}>
+        {([['dances', ar ? 'الرقصات' : 'Dances'], ['earn', ar ? 'جرّب تكسب نقط' : 'Try earning points']] as const).map(([id, label]) => (
+          <button key={id} type="button" role="tab" aria-selected={panel === id} onClick={() => setPanel(id)}
+            className={`min-h-10 rounded-full px-4 text-sm font-semibold focus-ring ${panel === id ? 'bg-foreground text-background' : 'text-foreground'}`}>
+            {label}
+          </button>
         ))}
+      </div>
+      {panel === 'earn' && <p className="mt-2 text-xs text-muted-foreground">{ar ? 'في الحقيقة المعلم هو اللي بيديها بعد كل حصة.' : 'For real, your teacher gives these after each lesson.'}</p>}
+      <div className="-mx-4 mt-2 flex snap-x gap-2 overflow-x-auto px-4 pb-2 no-scrollbar sm:mx-0 sm:grid sm:overflow-visible sm:px-0 sm:pb-0 sm:grid-cols-3 lg:grid-cols-5" role="tabpanel">
+        {panel === 'dances'
+          ? DANCES.map((d) => (
+            <div key={d.id} className="w-[92px] shrink-0 snap-start sm:w-auto">
+              <UnlockTile icon={d.icon} label={t(d.label)} need={d.xp} locked={xp < d.xp} active={dance === d.id} onClick={() => { showStage(); play(d.id); }} />
+            </div>
+          ))
+          : EARN.map((e) => (
+            <div key={e.label.en} className="w-[210px] shrink-0 snap-start sm:w-auto">
+              <AchievementTile icon={e.icon} label={t(e.label)} xp={e.xp} onClick={() => earn(e.xp)} />
+            </div>
+          ))}
       </div>
 
       <button type="button" onClick={reset} className="mt-5 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-xs font-semibold text-muted-foreground hover:text-foreground focus-ring">

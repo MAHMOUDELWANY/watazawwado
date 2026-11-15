@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ZadModel, type ZadEmote } from './Zad3D';
-import { StudioLights, toneRenderer } from './Stage3D';
+import { StudioLights, isLiteDevice, toneRenderer } from './Stage3D';
 import type { ZadPose } from '../zad/ZadRig';
 
 /**
@@ -50,7 +50,7 @@ export default function ZadLive({ pose, size, still }: { pose: ZadPose; size: nu
     <span aria-hidden="true" className="relative inline-block shrink-0 align-middle" style={{ width: size, height: size }}>
       <span className="pointer-events-none absolute" style={{ width: box, height: box, left: (size - box) / 2, top: (size - box) / 2 }}>
         <Canvas
-          dpr={[1, 2]}
+          dpr={[1, isLiteDevice() ? 1.5 : 2]}
           camera={{ position: [0, 0.82, 5.6], fov: 30 }}
           gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }}
           onCreated={({ gl, camera }) => { toneRenderer(gl); camera.lookAt(0, 0.8, 0); }}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { Modal } from '../../../components/ui/Modal';
-import { AchievementEmblem } from './AchievementEmblems';
+import { AchievementEmblem, badgeSrc } from './AchievementEmblems';
 import type { BadgeFamily, BadgeTier, Bilingual, ShelfItem } from './achievements';
 
 /**
@@ -37,25 +37,38 @@ export function AchievementsShelf({ items, isAr, highlight, learnerName, isSelf 
   const earned = items.filter((i) => i.earned).length;
   const title = isSelf ? (isAr ? 'أوسمتي' : 'My badges') : isAr ? `أوسمة ${learnerName || ''}` : `${learnerName || 'Learner'}'s badges`;
 
+  const pct = items.length ? Math.round((earned / items.length) * 100) : 0;
+
+  // A display case: espresso in both themes so gold reads as gold; earned badges stand lit on their shelf,
+  // the rest are dark silhouettes of the same badge (docs/design/PROGRESS.md).
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="rounded-[28px] border border-border bg-surface p-4 sm:p-6 grid gap-5 shadow-[var(--shadow-1)] scroll-mt-24" data-testid="achievements-shelf">
-      <header className="flex items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h2 id={`${id}-title`} className="font-display text-xl sm:text-2xl font-bold text-foreground">{title}</h2>
-          <p className="text-sm text-muted-foreground">{isAr ? 'اضغط أي وسام لتراه عن قرب.' : 'Tap any badge to see it up close.'}</p>
+    <section id={id} aria-labelledby={`${id}-title`} className="badge-case rounded-[28px] p-4 sm:p-6 grid gap-6 shadow-[var(--shadow-2)] ring-1 ring-[#E5A93C]/25 scroll-mt-24" data-testid="achievements-shelf">
+      <header className="grid gap-3">
+        <div className="flex items-end justify-between gap-3">
+          <div className="grid gap-0.5">
+            <h2 id={`${id}-title`} className="font-display text-xl sm:text-2xl font-bold text-[#F4EEE6]">{title}</h2>
+            <p className="text-sm text-[#CDBFAE]">{isAr ? 'اضغط أي وسام لتراه عن قرب.' : 'Tap any badge to see it up close.'}</p>
+          </div>
+          <span className="shrink-0 rounded-full bg-[#E5A93C]/15 ring-1 ring-[#E5A93C]/40 px-3 py-1 text-sm font-bold tabular-nums text-[#F6D58E]" data-testid="shelf-count">
+            {isAr ? `${digits(earned, true)} من ${digits(items.length, true)}` : `${earned} of ${items.length}`}
+          </span>
         </div>
-        <span className="shrink-0 rounded-full bg-surface-subtle px-3 py-1 text-sm font-semibold tabular-nums text-foreground" data-testid="shelf-count">
-          {isAr ? `${digits(earned, true)} من ${digits(items.length, true)}` : `${earned} of ${items.length}`}
-        </span>
+        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden" role="progressbar" aria-valuemin={0} aria-valuemax={items.length} aria-valuenow={earned} aria-label={isAr ? 'الأوسمة المكتسبة' : 'Badges earned'}>
+          <div className="h-full rounded-full bg-gradient-to-r rtl:bg-gradient-to-l from-[#C51F24] via-[#E0672E] to-[#E5A93C]" style={{ width: `${pct}%` }} />
+        </div>
       </header>
 
       {ORDER.map((fam) => {
         const group = items.filter((i) => i.family === fam);
         if (!group.length) return null;
+        const got = group.filter((i) => i.earned).length;
         return (
-          <div key={fam} className="grid gap-2">
-            <h3 className="text-xs font-bold text-muted-foreground">{pick(FAMILY_TITLE[fam])}</h3>
-            <ul className="grid grid-cols-3 min-[480px]:grid-cols-4 sm:grid-cols-5 gap-x-2 gap-y-3">
+          <div key={fam} className="grid gap-1">
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className="text-sm font-bold text-[#F6D58E]">{pick(FAMILY_TITLE[fam])}</h3>
+              <span className="text-xs tabular-nums text-[#A8998A]">{isAr ? `${digits(got, true)} من ${digits(group.length, true)}` : `${got} of ${group.length}`}</span>
+            </div>
+            <ul className="grid grid-cols-3 min-[480px]:grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-1 gap-y-2 pt-1">
               {group.map((item) => {
                 const isNew = Boolean(highlight) && item.emblem === highlight && item.earned;
                 return (
@@ -64,20 +77,28 @@ export function AchievementsShelf({ items, isAr, highlight, learnerName, isSelf 
                       type="button"
                       onClick={() => setOpen(item)}
                       aria-label={`${pick(item.title)}${item.earned ? '' : isAr ? '، لم يُكسب بعد' : ', not earned yet'}`}
-                      className={`group relative w-full grid justify-items-center gap-1 rounded-2xl p-1.5 text-center cursor-pointer focus-ring transition-transform active:scale-[0.97] ${isNew ? 'bg-[#E5A93C]/10 ring-2 ring-[#E5A93C]/60' : 'hover:bg-surface-subtle'}`}
+                      className="group relative w-full grid justify-items-center gap-1 rounded-2xl px-1 pt-1 pb-1.5 text-center cursor-pointer transition-transform active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-[#F6D58E] focus-visible:outline-offset-2"
                     >
-                      <AchievementEmblem id={item.emblem} earned={item.earned} isAr={isAr} className="w-full max-w-[84px] lg:max-w-[100px] aspect-square transition-transform duration-200 group-hover:-translate-y-0.5" />
-                      {item.earned && (item.count || 0) > 1 && (
-                        <span className="absolute top-1 start-1 rounded-full bg-foreground text-background text-[11px] font-bold px-1.5 leading-5 tabular-nums" data-testid="shelf-repeat">
-                          ×{digits(item.count!, isAr)}
-                        </span>
-                      )}
-                      <span className={`text-[12px] leading-tight font-semibold ${item.earned ? 'text-foreground' : 'text-muted-foreground'}`}>{pick(item.title)}</span>
+                      <span className="relative grid place-items-center w-full max-w-[92px] lg:max-w-[120px] aspect-square">
+                        {item.earned && <span className="badge-spot absolute inset-[-14%]" aria-hidden="true" />}
+                        <img
+                          src={badgeSrc(item.emblem, isAr)} alt="" aria-hidden="true" width={180} height={180} loading="lazy" decoding="async" draggable={false}
+                          className={`relative w-full h-full object-contain transition-transform duration-200 group-hover:-translate-y-1 ${item.earned ? 'drop-shadow-[0_10px_14px_rgba(0,0,0,0.55)]' : 'badge-silhouette'}`}
+                        />
+                        {item.earned && (item.count || 0) > 1 && (
+                          <span className="absolute top-0 start-0 rounded-full bg-[#F6D58E] text-[#1F1A17] text-[11px] font-bold px-1.5 leading-5 tabular-nums shadow" data-testid="shelf-repeat">
+                            ×{digits(item.count!, isAr)}
+                          </span>
+                        )}
+                        {isNew && <span className="absolute -top-1 end-0 rounded-full bg-[#C51F24] text-white text-[10px] font-bold px-1.5 leading-5">{isAr ? 'جديد' : 'New'}</span>}
+                      </span>
+                      <span className={`text-[12px] leading-tight font-semibold ${item.earned ? 'text-[#F4EEE6]' : 'text-[#8F8173]'}`}>{pick(item.title)}</span>
                     </button>
                   </li>
                 );
               })}
             </ul>
+            <div className="badge-ledge -mt-1" aria-hidden="true" />
           </div>
         );
       })}

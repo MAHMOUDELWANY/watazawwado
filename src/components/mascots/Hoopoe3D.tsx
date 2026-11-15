@@ -439,6 +439,12 @@ export function HoopoeModel({ dance, startedAt, onDone, still, look, celebrateAt
               hearts.current?.burst(new Vector3(root.current?.position.x ?? 0, 1.35 * look.size, 0.3), { n: 6, speed: 0.8, up: 0.8, gravity: -0.8, colors: ['#E43A3F', '#FF8F86'], size: [0.06, 0.1], life: [1.1, 1.6] });
             }}
           >
+            {/* What a tap hits: a light invisible ball. Hit-testing the skinned bird itself skins every vertex on the CPU
+                and froze phones for a moment on each tap (owner, 2026-11-15). */}
+            <mesh position={[0, 0.12 * look.size, 0.05]} scale={look.size}>
+              <sphereGeometry args={[0.72, 12, 8]} />
+              <meshBasicMaterial visible={false} />
+            </mesh>
             <group position={[0, -0.62, 0]}>
               {/* warm glow behind; brighter once it has the aura */}
               <mesh ref={halo} position={[0, 0.85, -0.6]} raycast={() => null}>
@@ -446,7 +452,7 @@ export function HoopoeModel({ dance, startedAt, onDone, still, look, celebrateAt
                 <meshBasicMaterial map={tex.glow} transparent opacity={0.3} blending={AdditiveBlending} depthWrite={false} toneMapped={false} />
               </mesh>
 
-              <primitive object={rig.mesh} />
+              <primitive object={rig.mesh} raycast={() => null} />
 
               {/* gold khatam pendant on a fine chain (a level-up reward) */}
               {look.pendant && (

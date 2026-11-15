@@ -4,6 +4,18 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Hoopoe taps on phones, companion controls, badge display case (2026-11-15)
+
+- Taps on the hoopoe froze phones: three.js hit-tested the skinned bird by skinning every vertex on the CPU. A light
+  invisible ball now takes the taps (`Hoopoe3D.tsx`). Measured with a 6x slower CPU: 10 taps went from about 104 s of
+  blocked time (worst 11.5 s) to 6.6 s, against 5.0 s with no taps at all (headless, no GPU, so the baseline is high).
+- Phones and weak devices get a light stage (`isLiteDevice` in `Stage3D.tsx`): no shadow map, a painted shadow instead
+  of a per-frame shadow render, fewer sparkles, pixel ratio capped at 1.5, and it drops to 1 if the frame rate falls.
+- Companion card: dances and points sit in one row under the stage on phones (tabs), and a tap brings the hoopoe back
+  into view. The "try earning points" buttons are demo only and go when real points arrive.
+- Badge shelf is now a display case: espresso in both themes, earned badges lit on a gold ledge, the rest dark
+  silhouettes, per-family counts and an overall bar. `.no-scrollbar` utility added (it was used but never defined).
+
 ### Progress design system; the new badges inside the app (2026-11-15)
 
 - Owner: put the badges in the app (no separate page), replace the old ones, keep the hoopoe, and design the progress
