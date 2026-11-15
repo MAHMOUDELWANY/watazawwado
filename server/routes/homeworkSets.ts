@@ -147,7 +147,10 @@ export function registerHomeworkSetRoutes(app: express.Express, deps: {
       if (error) throw error;
       const rows = data || [];
       res.json({
-        learners: learners.map((l) => ({ id: l.id, name: l.name, badges: earnedBadges(historyOf(rows.filter((r: any) => r.student_id === l.id))) })),
+        learners: learners.map((l) => {
+          const stats = historyOf(rows.filter((r: any) => r.student_id === l.id));
+          return { id: l.id, name: l.name, badges: earnedBadges(stats), stats };
+        }),
         sets: rows.map(forStudent),
       });
     } catch (err) {
@@ -169,7 +172,7 @@ export function registerHomeworkSetRoutes(app: express.Express, deps: {
       const variant: Variant = row.variants[row.variant_index];
       const graded = gradeVariant(variant, answers);
       const ok = passed(graded.score, graded.total);
-      const { data: before } = await client.from('homework_sets').select('status, kind, score, total').eq('student_id', row.student_id).limit(500);
+      const { data: before } = await client.from('homework_sets').select('status, kind, attempts').eq('student_id', row.student_id).limit(500);
       const badgesBefore = new Set(earnedBadges(historyOf(before || [])).map((b) => b.id));
       const attempt = { variant: row.variant_index, score: graded.score, total: graded.total, results: graded.results, answers, at: new Date().toISOString() };
       const { error } = await client.from('homework_sets').update({
@@ -178,7 +181,7 @@ export function registerHomeworkSetRoutes(app: express.Express, deps: {
       }).eq('id', row.id).in('status', ['new', 'retry']);
       if (error) throw error;
       const after = (before || []).map((b: any) => b);
-      after.push({ status: ok ? 'passed' : 'submitted', kind: row.kind, score: graded.score, total: graded.total });
+      after.push({ status: ok ? 'passed' : 'submitted', kind: row.kind, attempts: [...(row.attempts || []), attempt] });
       const newBadges = earnedBadges(historyOf(after)).filter((b) => !badgesBefore.has(b.id));
       // Below the pass mark, the teacher decides: try again with new questions, or accept it.
       if (!ok && row.teacher_id) {

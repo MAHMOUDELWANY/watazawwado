@@ -189,7 +189,7 @@ export interface StudentMilestoneItem {
   id: string;
   student_id: string;
   subject: string;
-  kind: 'surah_memorized' | 'juz_completed' | 'level_completed' | 'rule_mastered' | 'book_completed' | 'custom';
+  kind: 'surah_memorized' | 'juz_completed' | 'khatma' | 'level_completed' | 'rule_mastered' | 'book_completed' | 'custom';
   title_ar: string;
   title_en: string;
   reached_at: string;

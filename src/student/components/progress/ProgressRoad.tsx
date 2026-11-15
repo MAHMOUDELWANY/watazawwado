@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { Check, Flag } from 'lucide-react';
+import { Check } from 'lucide-react';
 import type { SubjectProgressModel } from '../../pages/StudentProgressPage';
 import { MilestoneEmblemByKind, KhatamStarMilestoneEmblem } from '../../pages/StudentProgressPage';
 import { TeacherNote, NextLessonAction, rhythmText } from './progressShared';
+import { AchievementEmblem } from '../achievements/AchievementEmblems';
+import { emblemForKind } from '../achievements/achievements';
 
 /**
  * Progress for children (look A, owner 2026-10-28): a winding road from the start to the end of the subject.
@@ -76,7 +78,7 @@ export function ProgressRoad({ subject, learnerName, tz, isAr }: {
           <svg className="absolute inset-0 w-full h-full rtl:-scale-x-100" viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" aria-hidden="true">
             <path d={segment(0, stops.length - 1)} fill="none" stroke="var(--color-border)" strokeWidth="10" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             {nowIndex > 0 && (
-              <path d={segment(0, nowIndex)} fill="none" stroke="var(--color-teal)" strokeWidth="10" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+              <path d={segment(0, nowIndex)} fill="none" stroke="var(--color-gold)" strokeWidth="10" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             )}
           </svg>
           <ol className="absolute inset-0">
@@ -97,19 +99,19 @@ export function ProgressRoad({ subject, learnerName, tz, isAr }: {
                     style={{ insetInlineStart: `${xOf(i)}%` }}
                   >
                     {s.state === 'done' && s.milestoneKind ? (
-                      <span data-testid="path-milestone-emblem" className="grid place-items-center w-11 h-11 rounded-full bg-surface ring-2 ring-teal">
-                        <MilestoneEmblemByKind kind={s.milestoneKind as any} className="w-8 h-8" />
+                      <span data-testid="path-milestone-emblem" className="grid place-items-center w-14 h-14">
+                        <MilestoneEmblemByKind kind={s.milestoneKind as any} subject={subject.subject} className="w-14 h-14 drop-shadow-[0_6px_12px_rgba(139,73,53,0.3)]" />
                       </span>
                     ) : s.state === 'done' ? (
-                      <span className="grid place-items-center w-10 h-10 rounded-full bg-teal dark:bg-[#087D91] text-white"><Check className="w-5 h-5" strokeWidth={3} aria-hidden="true" /></span>
+                      <span className="grid place-items-center w-10 h-10 rounded-full bg-gradient-to-br from-[#F6D58E] via-[#E5A93C] to-[#B9782A] text-[#3B2219] shadow-[var(--shadow-1)]"><Check className="w-5 h-5" strokeWidth={3} aria-hidden="true" /></span>
                     ) : s.state === 'now' ? (
-                      <span className={`grid place-items-center w-14 h-14 rounded-full bg-gold/25 ring-4 ring-gold ${reduceMotion ? '' : 'animate-pulse'}`}>
+                      <span className="grid place-items-center w-14 h-14 rounded-full bg-crimson ring-4 ring-gold shadow-[0_8px_20px_-6px_rgba(197,31,36,0.55)]">
                         <KhatamStarMilestoneEmblem className="w-10 h-10" />
                       </span>
                     ) : s.state === 'goal' ? (
-                      <span className="grid place-items-center w-11 h-11 rounded-full bg-foreground text-background"><Flag className="w-5 h-5" aria-hidden="true" /></span>
+                      <span className="grid place-items-center w-16 h-16" data-testid="path-goal-badge"><AchievementEmblem id={emblemForKind('level_completed', subject.subject)} earned={false} isAr={isAr} className="w-16 h-16" /></span>
                     ) : (
-                      <span className="w-9 h-9 rounded-full bg-surface border-2 border-dashed border-border" />
+                      <span className="w-9 h-9 rounded-full bg-foreground/[0.07] ring-1 ring-[#E5A93C]/30" />
                     )}
                   </span>
                   <span
@@ -128,7 +130,7 @@ export function ProgressRoad({ subject, learnerName, tz, isAr }: {
 
       <div className="grid gap-4 min-w-0">
         <div className="flex flex-wrap gap-2" data-testid="progress-stats">
-          <span className="rounded-full bg-teal/10 text-teal px-3.5 py-1.5 text-sm font-semibold">
+          <span className="rounded-full bg-gold/15 text-[#8B4935] dark:text-gold px-3.5 py-1.5 text-sm font-semibold">
             {isAr ? `${subject.lessonsAttended.total.toLocaleString('ar-EG')} حصة` : `${subject.lessonsAttended.total} lessons`}
           </span>
           <span className="rounded-full bg-gold/20 text-foreground px-3.5 py-1.5 text-sm font-semibold">

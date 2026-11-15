@@ -66,6 +66,7 @@ export interface LessonHomeworkRow {
 export type LearnerMilestoneKind =
   | 'surah_memorized'
   | 'juz_completed'
+  | 'khatma'
   | 'level_completed'
   | 'rule_mastered'
   | 'book_completed'

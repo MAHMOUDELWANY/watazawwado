@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { X } from 'lucide-react';
 import FocusTrap from '../../../components/FocusTrap';
 import { AchievementEmblem } from './AchievementEmblems';
-import type { AgeGroup, Bilingual, CelebrationItem } from './achievements';
+import { BADGE_INFO, type AgeGroup, type Bilingual, type CelebrationItem } from './achievements';
 import type { IslamicSeason } from '../../../lib/islamicSeason';
 
 /**
@@ -27,6 +27,9 @@ export function MilestoneCelebration({
   const reduce = useReducedMotion();
   const pick = (b: Bilingual) => (isAr ? b.ar : b.en);
   const playful = ageGroup === 'kids' && !reduce;
+  // A child's big Quran badge (a juz, a khatma, a Quran level) gets the clockwork reveal, silent for now (owner, 2026-11-15).
+  const info = BADGE_INFO[item.emblem];
+  const clockwork = playful && info?.tier === 'grand' && info.group === 'quran';
 
   const emblemMotion = reduce
     ? { initial: false as const }
@@ -73,7 +76,8 @@ export function MilestoneCelebration({
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
 
-          <div className="relative mx-auto w-36 h-36 flex items-center justify-center">
+          {clockwork ? <ClockworkReveal /> : (
+          <div className="relative mx-auto w-44 h-44 flex items-center justify-center">
             <motion.div
               {...glowMotion}
               aria-hidden="true"
@@ -82,13 +86,15 @@ export function MilestoneCelebration({
             />
             {season === 'ramadan' && <SeasonMark kind="crescent" />}
             {season === 'dhul-hijjah' && <SeasonMark kind="kaaba" />}
+            {!reduce && ageGroup !== 'adults' && <div className="badge-rays absolute -inset-6 rounded-full" aria-hidden="true" />}
             <motion.div {...emblemMotion} className="relative">
-              <AchievementEmblem id={item.emblem} className="w-28 h-28 drop-shadow-[0_10px_24px_rgba(185,120,42,0.45)]" />
+              <AchievementEmblem id={item.emblem} isAr={isAr} className="w-40 h-40 drop-shadow-[0_12px_26px_rgba(185,120,42,0.5)]" />
             </motion.div>
           </div>
+          )}
 
           <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[#B9782A] dark:text-[#E5A93C]">
-            {isAr ? 'إنجاز جديد' : 'New milestone'}
+            {isAr ? 'وسام جديد' : 'New badge'}
           </p>
           <h2 id="milestone-celebration-title" className="mt-1 font-display text-2xl font-bold leading-snug">
             {pick(item.title)}
@@ -101,7 +107,7 @@ export function MilestoneCelebration({
             <p className="mt-3 text-xs text-muted-foreground">
               {isAr
                 ? (alsoNew === 1 ? 'ومعه وسام آخر على الرف' : `ومعه ${alsoNew.toLocaleString('ar-EG')} أوسمة أخرى على الرف`)
-                : `${alsoNew === 1 ? 'One more emblem is' : `${alsoNew} more emblems are`} waiting on your shelf`}
+                : `${alsoNew === 1 ? 'One more badge is' : `${alsoNew} more badges are`} waiting on your shelf`}
             </p>
           )}
 
@@ -159,6 +165,19 @@ function Confetti() {
           {p.kind === 2 && <rect x="5" y="5" width="10" height="10" transform="rotate(45 10 10)" fill={p.color} />}
         </motion.svg>
       ))}
+    </div>
+  );
+}
+
+/** The ruby khatam's clockwork reveal, then its idle loop. Muted: the sound effects are not ready yet. */
+function ClockworkReveal() {
+  const [idle, setIdle] = React.useState(false);
+  return (
+    <div className="relative mx-auto w-52 aspect-[4/5] rounded-2xl overflow-hidden bg-black" data-testid="clockwork-reveal">
+      <img src="/badges/ruby-khatam/idle-poster.webp" alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+      {idle
+        ? <video src="/badges/ruby-khatam/idle.mp4" muted playsInline autoPlay loop aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+        : <video src="/badges/ruby-khatam/reveal.mp4" muted playsInline autoPlay onEnded={() => setIdle(true)} onError={() => setIdle(true)} aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />}
     </div>
   );
 }

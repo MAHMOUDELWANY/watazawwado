@@ -43,6 +43,7 @@ export interface ProgressDeps {
 export const MILESTONE_KINDS: readonly LearnerMilestoneKind[] = [
   'surah_memorized',
   'juz_completed',
+  'khatma',
   'level_completed',
   'rule_mastered',
   'book_completed',
@@ -57,7 +58,7 @@ export const FAMILY_SUMMARY_COLUMNS =
   'id, session_id, student_id, family_summary, achievements, next_steps, created_at, updated_at';
 
 export const MILESTONE_COLUMNS =
-  'id, student_id, subject, kind, title_ar, title_en, reached_at, created_by, lesson_session_id, created_at, updated_at';
+  'id, student_id, subject, kind, title_ar, title_en, reached_at, created_by, lesson_session_id, created_at, updated_at, auto_key';
 
 /**
  * Explicit column list for student progress bookings query.

@@ -83,7 +83,7 @@ export function ProgressCalm({ subject, learnerName, isSelf, tz, isAr }: {
             <ul className="grid gap-2.5">
               {milestones.map((m) => (
                 <li key={m.id} className="flex items-center gap-3" data-testid="path-milestone-emblem">
-                  <MilestoneEmblemByKind kind={m.kind} className="w-8 h-8 shrink-0" />
+                  <MilestoneEmblemByKind kind={m.kind} subject={m.subject} className="w-10 h-10 shrink-0" />
                   <span className="min-w-0">
                     <span className="block text-sm font-semibold text-foreground">{isAr ? m.title_ar : m.title_en}</span>
                     <span className="block text-xs text-muted-foreground">{formatDay(m.reached_at, tz, isAr)}</span>

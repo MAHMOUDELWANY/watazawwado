@@ -18,10 +18,10 @@ describe('PU-04b hydrate prerendered public pages', () => {
 
   it('every lazy public page can be loaded before hydration', () => {
     assert.ok(main.includes('preloadPage(pathname)'));
-    // The review-link page (/review/<token>) and the badges trial page (/badges) are never prerendered, so they have nothing to hydrate.
+    // The review-link page (/review/<token>) is never prerendered, so it has nothing to hydrate.
     // Subject landing pages (/learning/<slug>) are preloaded by their address prefix, like articles.
     assert.ok(app.includes("if (base.startsWith('/learning/')) return SubjectLandingPage.preload();"));
-    const lazyPublic = [...app.matchAll(/const (\w+) = lazyWithReload\(\(\) => import\('\.\/components\/public/g)].map((m) => m[1]).filter((n) => n !== 'WriteReviewPage' && n !== 'SubjectLandingPage' && n !== 'BadgesPreviewPage');
+    const lazyPublic = [...app.matchAll(/const (\w+) = lazyWithReload\(\(\) => import\('\.\/components\/public/g)].map((m) => m[1]).filter((n) => n !== 'WriteReviewPage' && n !== 'SubjectLandingPage');
     assert.strictEqual(lazyPublic.length, 11); // the 10 layout pages plus /zaad
     const map = app.slice(app.indexOf('const LAZY_PUBLIC_PAGES'), app.indexOf('};', app.indexOf('const LAZY_PUBLIC_PAGES')));
     for (const name of lazyPublic) assert.ok(map.includes(`: ${name}`), `${name} is missing from LAZY_PUBLIC_PAGES`);

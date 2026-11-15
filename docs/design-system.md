@@ -152,3 +152,8 @@ Never: scroll-jacking, parallax on text, more than one looping thing in the read
 - Decorative SVG gets `aria-hidden="true"`. Meaning lives in real text. Any text that rotates or animates has a static full version for screen readers (see `HeroSubjects`: `.rotator-static` / `.rotator-live`).
 - Respect `prefers-reduced-motion` and `prefers-reduced-transparency`.
 - Pages are prerendered: no `window`/`document` at module scope or during render, and h1 text stays in the HTML.
+
+## Page systems
+
+- Progress page: `docs/design/PROGRESS.md` (level dial, badge shelf, celebrations; classes `.badge-shadow`, `.progress-arch`, `.badge-rays`).
+- Points (XP): `docs/design/XP.md`.

@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { AchievementEmblem } from '../components/achievements/AchievementEmblems';
+import type { EmblemId } from '../components/achievements/achievements';
 import { useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Award, Check, ChevronLeft, ChevronRight, ClipboardCheck, Clock, RotateCcw, Sparkles, X } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, ClipboardCheck, Clock, RotateCcw, Sparkles, X } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import FocusTrap from '../../components/FocusTrap';
 
@@ -91,22 +93,9 @@ function BadgeUnlock({ badges, onClose, pick, t }: { badges: Badge[]; onClose: (
             ))}
           </>
         )}
-        <motion.div className="relative mx-auto w-40 h-48" initial={reduce ? false : { y: -260, rotate: -12, scale: 0.6 }} animate={{ y: 0, rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 16 }}>
-          {/* Arch-shaped badge in our palette, the khatam star inside. */}
-          <svg viewBox="0 0 160 192" className="w-full h-full drop-shadow-[0_12px_30px_rgba(229,169,60,0.45)]" aria-hidden="true">
-            <defs>
-              <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#F6D58E" /><stop offset="0.5" stopColor="#E5A93C" /><stop offset="1" stopColor="#B5835A" /></linearGradient>
-              <linearGradient id="in" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8E1B2C" /><stop offset="1" stopColor="#5C1220" /></linearGradient>
-            </defs>
-            <path d="M80 6 C122 6 152 36 152 78 V176 a10 10 0 0 1-10 10 H18 a10 10 0 0 1-10-10 V78 C8 36 38 6 80 6Z" fill="url(#bg)" />
-            <path d="M80 22 C113 22 136 46 136 80 V166 H24 V80 C24 46 47 22 80 22Z" fill="url(#in)" />
-            <g transform="translate(80 98)" fill="#F6D58E">
-              <rect x="-26" y="-26" width="52" height="52" rx="4" />
-              <rect x="-26" y="-26" width="52" height="52" rx="4" transform="rotate(45)" />
-              <circle r="15" fill="#8E1B2C" />
-              <circle r="7" fill="#F6D58E" />
-            </g>
-          </svg>
+        <motion.div className="relative mx-auto w-44 h-44" initial={reduce ? false : { y: -260, rotate: -12, scale: 0.6 }} animate={{ y: 0, rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 16 }}>
+          {/* The new badge set's render (owner, 2026-11-15). */}
+          <AchievementEmblem id={(badges[0]?.id || 'homework-first') as EmblemId} isAr={t('en', 'ar') === 'ar'} className="w-full h-full drop-shadow-[0_12px_30px_rgba(229,169,60,0.45)]" />
           {!reduce && <motion.div className="absolute inset-0 rounded-t-full" style={{ clipPath: 'inset(0 round 999px 999px 10px 10px)' }}><motion.div className="absolute inset-0" style={{ background: 'linear-gradient(110deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%)' }} initial={{ x: '-120%' }} animate={{ x: '120%' }} transition={{ duration: 1.6, delay: 1.1, repeat: Infinity, repeatDelay: 2.4 }} /></motion.div>}
         </motion.div>
         <motion.img src={ZAD} alt="" aria-hidden="true" className="absolute end-[calc(50%-7rem)] -top-2 w-14 h-14 rounded-full" initial={reduce ? false : { scale: 0, y: 30 }} animate={{ scale: 1, y: [30, -8, 0] }} transition={{ delay: 0.9, duration: 0.6 }} />
@@ -304,8 +293,8 @@ export default function StudentHomeworkPage({ lang }: { lang: 'ar' | 'en' }) {
       {data?.learners.some((l) => l.badges.length) && (
         <section aria-label={t('Badges', 'الأوسمة')} className="flex flex-wrap gap-2">
           {data.learners.flatMap((l) => l.badges.map((b) => (
-            <span key={`${l.id}-${b.id}`} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)]/50 bg-[var(--gold)]/10 px-3 py-1 text-sm font-semibold text-foreground">
-              <Award className="w-4 h-4 text-[#B5835A]" />{pick(b.title)}{multi ? ` · ${l.name}` : ''}
+            <span key={`${l.id}-${b.id}`} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)]/50 bg-[var(--gold)]/10 ps-1 pe-3 py-0.5 text-sm font-semibold text-foreground">
+              <AchievementEmblem id={b.id as EmblemId} className="w-7 h-7" />{pick(b.title)}{multi ? ` · ${l.name}` : ''}
             </span>
           )))}
         </section>

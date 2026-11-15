@@ -4,6 +4,24 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Progress design system; the new badges inside the app (2026-11-15)
+
+- Owner: put the badges in the app (no separate page), replace the old ones, keep the hoopoe, and design the progress
+  page as a system for every account, device and the lessons.
+- Design system: `docs/design/PROGRESS.md` (the clockwork idea: gold done, crimson "now", faint shadow ahead; who sees
+  what per account; phone/tablet/desktop; parts; motion). Parts in `src/student/components/progress/ds/` (`LevelDial`,
+  `ProgressHero`).
+- Badges: the old drawn emblems are replaced everywhere by the 3D set (`AchievementEmblem` now renders
+  `public/badges/shelf/*.webp`; shelf, celebration, road, calm view, home card, report, community, homework page).
+  New shelf by family with counts and a close-up sheet; only the learner's subjects; a new "Quran level" badge render.
+  A child's big Quran badge plays the clockwork reveal, silent. `/badges` now redirects to the progress page.
+- Data: homework badges follow the new set (no "Full marks"; 25, 50 and "tried again" added) and the homework API returns
+  counts per learner; khatma is a new milestone kind (migration `20261115000000_milestone_kind_khatma.sql`, teacher
+  editor preset); automatic milestones (100 lessons, a year) no longer show as teacher recognition.
+- The hoopoe companion (demo, other session's work) stays as it was, placed under the hero.
+- Checks: tsc, related tests, full suite, build; screens at 390 (ar, light, child) and 1366 (en dark adult; ar light
+  parent overview), close-up sheet and the child celebration.
+
 ### 3D Zad sitewide, the hoopoe companion in demo mode, XP design system (2026-11-15)
 
 - Every Zad on the site is now the 3D Zad: `ZadRig` loads `src/components/mascots/ZadLive.tsx`, with the SVG Zad as the

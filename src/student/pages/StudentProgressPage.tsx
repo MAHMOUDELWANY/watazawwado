@@ -24,6 +24,9 @@ import { useActiveLearner } from '../activeLearner';
 import type { IslamicSeason } from '../../lib/islamicSeason';
 import { useProgressAchievements } from '../components/achievements/useProgressAchievements';
 import { AchievementsShelf } from '../components/achievements/AchievementsShelf';
+import { AchievementEmblem } from '../components/achievements/AchievementEmblems';
+import { ageGroupFor, emblemForKind, type HomeworkCounts } from '../components/achievements/achievements';
+import { ProgressHero } from '../components/progress/ds/ProgressHero';
 import { LessonTimeline } from '../components/progress/LessonTimeline';
 import { ProgressCalm } from '../components/progress/ProgressCalm';
 import { ProgressRoad } from '../components/progress/ProgressRoad';
@@ -431,20 +434,17 @@ export function MihrabArchMilestoneEmblem({ className = 'w-11 h-11' }: { classNa
   );
 }
 
+/** A teacher-recorded milestone drawn as its badge from the new set (owner, 2026-11-15). */
 export function MilestoneEmblemByKind({
   kind,
+  subject,
   className = 'w-11 h-11',
 }: {
   kind: LearnerMilestoneKind | string;
+  subject?: string;
   className?: string;
 }) {
-  if (kind === 'book_completed' || kind === 'surah_memorized') {
-    return <OpenMushafMilestoneEmblem className={className} />;
-  }
-  if (kind === 'rule_mastered' || kind === 'custom') {
-    return <MihrabArchMilestoneEmblem className={className} />;
-  }
-  return <KhatamStarMilestoneEmblem className={className} />;
+  return <AchievementEmblem id={emblemForKind(kind, subject)} className={className} />;
 }
 
 // ============================================================================
@@ -468,6 +468,8 @@ function formatMilestoneKindLabel(kind: LearnerMilestoneKind | string, isAr: boo
       return isAr ? 'إتمام سورة' : 'Surah Memorized';
     case 'juz_completed':
       return isAr ? 'إتمام جزء' : 'Juz Completed';
+    case 'khatma':
+      return isAr ? 'ختمة' : 'Khatma';
     case 'level_completed':
       return isAr ? 'إتمام مستوى' : 'Stage Completed';
     case 'rule_mastered':
@@ -698,7 +700,23 @@ export default function StudentProgressPage({
   };
 
   // PR-04: achievements shelf and the one-time celebration (hooks stay above the early returns).
-  const achievements = useProgressAchievements(data, isAr);
+  // Homework badges: counted on the server from the learner's homework (GET /api/student/homework-sets).
+  const [homeworkByLearner, setHomeworkByLearner] = useState<Record<string, HomeworkCounts>>({});
+  const learnerIdForHomework = data?.learner?.id || '';
+  useEffect(() => {
+    if (!learnerIdForHomework || previewMode || homeworkByLearner[learnerIdForHomework]) return;
+    let live = true;
+    authedJson<{ learners?: Array<{ id: string; stats?: HomeworkCounts }> }>('/api/student/homework-sets')
+      .then((res) => {
+        if (!live) return;
+        const next: Record<string, HomeworkCounts> = {};
+        for (const l of res?.learners || []) if (l.stats) next[l.id] = l.stats;
+        setHomeworkByLearner((prev) => ({ ...prev, ...next }));
+      })
+      .catch(() => { /* homework badges stay as shadows; the rest of the page does not depend on them */ });
+    return () => { live = false; };
+  }, [learnerIdForHomework, previewMode]);
+  const achievements = useProgressAchievements(data, isAr, homeworkByLearner[learnerIdForHomework] || null);
 
   const springTransition = prefersReducedMotion
     ? { duration: 0 }
@@ -765,19 +783,49 @@ export default function StudentProgressPage({
   const learnerName = learner?.name?.split(' ')[0] || (isAr ? 'الطالب' : 'Learner');
   const isSelf = !data.isGuardianAccount || Boolean(data.learners.find((l) => l.id === learner?.id)?.isPrimary);
 
+  const ageGroup = ageGroupFor(learner?.age, learner?.learnerType);
+  const badgesEarned = achievements.shelf.filter((i) => i.earned).length;
+  const showCompanion = isChildLearner || Boolean(data.isGuardianAccount) || Boolean(data.learners?.some((l) => l.learnerType === 'child'));
+  const scrollToShelf = () => document.getElementById('achievements-shelf')?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+
+  // Progress design system (docs/design/PROGRESS.md): hero with the level dial, the companion for children,
+  // the path, the badges shelf, then the lesson timeline. One column on phones, wider rows on desktop.
   return (
     <div
       className="space-y-5 sm:space-y-6 pb-12"
       data-testid="student-progress-page"
       data-learner-mode={isChildLearner ? 'child' : 'adult'}
+      data-age-group={ageGroup}
     >
-      <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مسيرتي' : 'My progress'}</h1>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مسيرتي' : 'My progress'}</h1>
+        {data.subjects.length > 1 && !isNewLearner && (
+          <div data-testid="subject-switcher" role="tablist" aria-label={isAr ? 'المادة' : 'Subject'} className="flex gap-2 overflow-x-auto pb-1 no-scrollbar max-w-full">
+            {data.subjects.map((s) => {
+              const active = s.subject === activeSubject?.subject;
+              return (
+                <button
+                  key={s.subject}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setSelectedSubjectId(s.subject)}
+                  className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${active ? 'bg-foreground text-background' : 'bg-surface text-foreground border border-border'}`}
+                >
+                  {isAr ? s.subjectMeta.ar : s.subjectMeta.en}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* PR-07: a guardian sees every child at a glance; tapping one opens that child's progress. */}
       {showFamilyOverview && (
-        <section data-testid="parent-family-overview" aria-label={isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'} className="grid gap-2 sm:grid-cols-2">
+        <section data-testid="parent-family-overview" aria-label={isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'} className="grid gap-3 sm:grid-cols-2">
           {childrenOverview.map((child) => {
             const selected = child.id === learner?.id;
+            const levels = Math.max(1, child.totalLevels);
             return (
               <button
                 key={child.id}
@@ -785,25 +833,28 @@ export default function StudentProgressPage({
                 data-testid={`family-child-card-${child.id}`}
                 onClick={() => handleSelectLearner(child.id, true)}
                 aria-pressed={selected}
-                className={`text-start rounded-2xl border p-4 grid gap-2 min-h-11 cursor-pointer focus-ring ${selected ? 'border-teal bg-teal/5' : 'border-border bg-surface hover:border-teal/50'}`}
+                className={`text-start rounded-3xl border p-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 min-h-11 cursor-pointer focus-ring transition-shadow ${selected ? 'border-[#E5A93C] bg-[#E5A93C]/[0.07] shadow-[var(--shadow-1)]' : 'border-border bg-surface hover:border-[#E5A93C]/60'}`}
               >
-                <span className="flex items-center justify-between gap-2">
-                  <span className="font-semibold text-foreground" data-testid={`family-child-name-${child.id}`}>{child.name}</span>
-                  <span className="text-xs font-semibold text-teal" data-testid={`family-child-subject-${child.id}`}>{isAr ? child.subjectMeta.ar : child.subjectMeta.en}</span>
-                </span>
-                <span className="grid gap-1" style={{ gridTemplateColumns: `repeat(${Math.max(1, child.totalLevels)}, minmax(0, 1fr))` }} data-testid={`family-child-level-${child.id}`}>
-                  {Array.from({ length: Math.max(1, child.totalLevels) }, (_, i) => (
-                    <span key={i} className={`h-1.5 rounded-full ${i < child.currentLevelIndex ? 'bg-teal' : i === child.currentLevelIndex ? 'bg-teal/40' : 'bg-border'}`} />
-                  ))}
-                </span>
-                <span className="text-xs text-muted-foreground" data-testid={`family-child-rhythm-${child.id}`}>
-                  {isAr ? child.currentLevel.ar : child.currentLevel.en} · {rhythmText(child.weeklyRhythm.current, child.weeklyRhythm.longest, isAr)}
-                </span>
-                {child.newestMilestone && (
-                  <span className="text-xs font-semibold text-foreground" data-testid={`family-child-milestone-${child.id}`}>
-                    {isAr ? 'آخر محطة: ' : 'Latest milestone: '}{isAr ? child.newestMilestone.title_ar : child.newestMilestone.title_en}
+                <MilestoneEmblemByKind kind={child.newestMilestone?.kind || 'level_completed'} subject={child.subject} className={`w-14 h-14 ${child.newestMilestone ? '' : 'badge-shadow'}`} />
+                <span className="grid gap-1.5 min-w-0">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="font-display text-lg font-bold text-foreground" data-testid={`family-child-name-${child.id}`}>{child.name}</span>
+                    <span className="text-xs font-bold text-crimson" data-testid={`family-child-subject-${child.id}`}>{isAr ? child.subjectMeta.ar : child.subjectMeta.en}</span>
                   </span>
-                )}
+                  <span className="grid gap-1" style={{ gridTemplateColumns: `repeat(${levels}, minmax(0, 1fr))` }} data-testid={`family-child-level-${child.id}`}>
+                    {Array.from({ length: levels }, (_, i) => (
+                      <span key={i} className={`h-1.5 rounded-full ${i < child.currentLevelIndex ? 'bg-gold' : i === child.currentLevelIndex ? 'bg-crimson' : 'bg-foreground/10'}`} />
+                    ))}
+                  </span>
+                  <span className="text-xs text-muted-foreground" data-testid={`family-child-rhythm-${child.id}`}>
+                    {isAr ? child.currentLevel.ar : child.currentLevel.en} · {rhythmText(child.weeklyRhythm.current, child.weeklyRhythm.longest, isAr)}
+                  </span>
+                  {child.newestMilestone && (
+                    <span className="text-xs font-semibold text-foreground truncate" data-testid={`family-child-milestone-${child.id}`}>
+                      {isAr ? 'آخر وسام: ' : 'Latest badge: '}{isAr ? child.newestMilestone.title_ar : child.newestMilestone.title_en}
+                    </span>
+                  )}
+                </span>
               </button>
             );
           })}
@@ -821,7 +872,7 @@ export default function StudentProgressPage({
                 type="button"
                 onClick={() => handleSelectLearner(item.id)}
                 aria-pressed={isSelected}
-                className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${isSelected ? 'bg-teal dark:bg-[#087D91] text-white' : 'bg-surface text-foreground border border-border'}`}
+                className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${isSelected ? 'bg-foreground text-background' : 'bg-surface text-foreground border border-border'}`}
               >
                 {item.name}
               </button>
@@ -830,72 +881,66 @@ export default function StudentProgressPage({
         </div>
       )}
 
-      {/* The kids companion, in demo mode for now (owner, 2026-11-15): points are made up and stay on this device. */}
-      {/* Demo: also on a parent's own page when the family has a child, so the family can see it before a child is picked. */}
-      {(isChildLearner || data.isGuardianAccount || data.learners?.some((l) => l.learnerType === 'child')) && (
-        <Suspense fallback={null}>
-          <CompanionDemo lang={lang} />
-        </Suspense>
-      )}
-
       {isNewLearner ? (
-        <section data-testid="new-learner-empty-state" className="rounded-3xl bg-surface border border-border p-6 sm:p-8 grid gap-4 justify-items-center text-center">
-          <OpenMushafMilestoneEmblem className="w-14 h-14" />
+        <section data-testid="new-learner-empty-state" className="progress-arch khatam-field rounded-3xl bg-surface-warm border border-[#E5A93C]/30 px-6 pt-12 pb-8 sm:p-8 grid gap-4 justify-items-center text-center">
+          <AchievementEmblem id="first-lesson" earned={false} isAr={isAr} className="w-24 h-24" />
           <div className="grid gap-1.5 max-w-md">
-            <h2 className="font-display text-xl font-bold text-foreground">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-foreground">
               {isChildLearner
                 ? (isAr ? `طريق ${learnerName} يبدأ من أول حصة` : `${learnerName}'s road starts with the first lesson`)
                 : (isAr ? 'مسيرتك تبدأ من أول حصة' : 'Your progress starts with the first lesson')}
             </h2>
             <p className="text-sm text-muted-foreground">
-              {isAr ? 'بعد كل حصة يظهر هنا المستوى، والمحطات، وكلمة المعلم.' : 'After each lesson you will see the level, milestones and a note from the teacher here.'}
+              {isAr ? 'أول حصة تمنحك أول وسام. بعدها يظهر هنا المستوى، والأوسمة، وكلمة المعلم.' : 'Your first lesson earns your first badge. After that you will see the level, badges and a note from the teacher here.'}
             </p>
           </div>
-          <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-foreground text-background font-semibold focus-ring">
+          <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-crimson text-white font-semibold focus-ring">
             {isAr ? 'احجز أول حصة' : 'Book your first lesson'}
           </Link>
         </section>
       ) : (
-        <>
-          {data.subjects.length > 1 && (
-            <div data-testid="subject-switcher" role="tablist" aria-label={isAr ? 'المادة' : 'Subject'} className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-              {data.subjects.map((s) => {
-                const active = s.subject === activeSubject?.subject;
-                return (
-                  <button
-                    key={s.subject}
-                    type="button"
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setSelectedSubjectId(s.subject)}
-                    className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${active ? 'bg-foreground text-background' : 'bg-surface text-foreground border border-border'}`}
-                  >
-                    {isAr ? s.subjectMeta.ar : s.subjectMeta.en}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-          {activeSubject && (isChildLearner
-            ? <ProgressRoad subject={activeSubject} learnerName={learnerName} tz={viewerTz} isAr={isAr} />
-            : <ProgressCalm subject={activeSubject} learnerName={learnerName} isSelf={isSelf} tz={viewerTz} isAr={isAr} />)}
-        </>
+        <ProgressHero
+          subject={activeSubject}
+          learnerName={learnerName}
+          isSelf={isSelf}
+          ageGroup={ageGroup}
+          isAr={isAr}
+          lessonsTotal={overall.lessonsAttended.total}
+          rhythmCurrent={rhythmCurrent}
+          rhythmLongest={rhythmLongest}
+          badgesEarned={badgesEarned}
+          badgesTotal={achievements.shelf.length}
+          onBadges={scrollToShelf}
+        />
+      )}
+
+      {/* The kids companion, in demo mode for now (owner, 2026-11-15): points are made up and stay on this device. */}
+      {/* Demo: also on a parent's own page when the family has a child, so the family can see it before a child is picked. */}
+      {showCompanion && (
+        <Suspense fallback={null}>
+          <CompanionDemo lang={lang} />
+        </Suspense>
+      )}
+
+      {!isNewLearner && activeSubject && (isChildLearner
+        ? <ProgressRoad subject={activeSubject} learnerName={learnerName} tz={viewerTz} isAr={isAr} />
+        : <ProgressCalm subject={activeSubject} learnerName={learnerName} isSelf={isSelf} tz={viewerTz} isAr={isAr} />)}
+
+      {data.learner && achievements.shelf.length > 0 && (
+        <AchievementsShelf items={achievements.shelf} isAr={isAr} highlight={achievements.highlight} learnerName={learnerName} isSelf={isSelf} />
       )}
 
       {data.learner && !isNewLearner && (
-        <Link
-          to={`/student/progress/report?learnerId=${encodeURIComponent(data.learner.id)}`}
-          className="inline-flex items-center gap-1.5 min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle focus-ring"
-          data-testid="monthly-report-link"
-        >
-          {isAr ? 'تقرير الشهر' : 'Monthly report'}
-        </Link>
-      )}
-      {data.learner && !isNewLearner && (
-        <LessonTimeline learnerId={data.learner.id} isAr={isAr} timezone={viewerTz} />
-      )}
-      {data.learner && achievements.shelf.length > 0 && (
-        <AchievementsShelf items={achievements.shelf} isAr={isAr} highlight={achievements.highlight} />
+        <div className="grid gap-4">
+          <LessonTimeline learnerId={data.learner.id} isAr={isAr} timezone={viewerTz} />
+          <Link
+            to={`/student/progress/report?learnerId=${encodeURIComponent(data.learner.id)}`}
+            className="justify-self-start inline-flex items-center gap-1.5 min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle focus-ring"
+            data-testid="monthly-report-link"
+          >
+            {isAr ? 'تقرير الشهر' : 'Monthly report'}
+          </Link>
+        </div>
       )}
       {achievements.celebration}
     </div>

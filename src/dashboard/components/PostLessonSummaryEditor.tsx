@@ -116,6 +116,13 @@ export const MILESTONE_KIND_OPTIONS: Array<{
     defaultEn: 'Completed Juz Amma',
   },
   {
+    kind: 'khatma',
+    ar: 'ختمة القرآن كاملًا',
+    en: 'Khatma (whole Quran)',
+    defaultAr: 'ختم القرآن الكريم كاملًا',
+    defaultEn: 'Completed the whole Quran',
+  },
+  {
     kind: 'book_completed',
     ar: 'إتمام كتاب / متن',
     en: 'Book completed',

@@ -3,7 +3,7 @@ import { islamicSeasonFor, type IslamicSeason } from '../../../lib/islamicSeason
 import { MilestoneCelebration } from './MilestoneCelebration';
 import {
   ageGroupFor, buildShelf, pickCelebration, praiseFor,
-  type AchievementInput, type Audience, type CelebrationItem, type MilestoneInput, type ShelfItem
+  type AchievementInput, type Audience, type CelebrationItem, type HomeworkCounts, type MilestoneInput, type ShelfItem
 } from './achievements';
 
 export interface AchievementsSource {
@@ -12,7 +12,7 @@ export interface AchievementsSource {
   isGuardianAccount?: boolean;
   currentIslamicSeason?: IslamicSeason;
   overall: { lessonsAttended: { total: number }; weeklyRhythm: { longest: number } };
-  subjects: Array<{ milestones: MilestoneInput[] }>;
+  subjects: Array<{ subject?: string; milestones: MilestoneInput[] }>;
 }
 
 function safeStorage(): Storage | null {
@@ -28,7 +28,7 @@ function safeStorage(): Storage | null {
 }
 
 /** PR-04: the shelf for the learner on screen, and at most one celebration per visit for something new. */
-export function useProgressAchievements(data: AchievementsSource | null, isAr: boolean): { shelf: ShelfItem[]; celebration: React.ReactNode; highlight: string | null } {
+export function useProgressAchievements(data: AchievementsSource | null, isAr: boolean, homework?: HomeworkCounts | null): { shelf: ShelfItem[]; celebration: React.ReactNode; highlight: string | null } {
   const input = useMemo<AchievementInput | null>(() => {
     if (!data?.learner) return null;
     const byId = new Map<string, MilestoneInput>();
@@ -36,9 +36,11 @@ export function useProgressAchievements(data: AchievementsSource | null, isAr: b
     return {
       lessonsTotal: data.overall?.lessonsAttended?.total || 0,
       longestRhythm: data.overall?.weeklyRhythm?.longest || 0,
-      milestones: [...byId.values()]
+      milestones: [...byId.values()],
+      subjects: (data.subjects || []).map((s) => s.subject || '').filter(Boolean),
+      homework: homework || null
     };
-  }, [data]);
+  }, [data, homework]);
 
   const shelf = useMemo(() => (input ? buildShelf(input) : []), [input]);
   const [current, setCurrent] = useState<{ item: CelebrationItem; alsoNew: number; markSeen: () => void } | null>(null);

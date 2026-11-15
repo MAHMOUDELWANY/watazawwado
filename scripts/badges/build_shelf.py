@@ -34,6 +34,7 @@ SPECS = [
     ('tajweed', 'star', 'gold', 'crimson', ('icon', 'sound')),
     ('juz', 'star', 'grand', 'crimson', ('icon', 'juz')),
     ('khatma', 'star', 'grand', 'crimson', ('icon', 'khatma')),
+    ('quran-level', 'star', 'grand', 'crimson', ('icon', 'steps')),
     ('zad-level', 'star', 'grand', 'teal', ('icon', 'steps')),
     ('language-level', 'star', 'grand', 'amber', ('icon', 'bubbles')),
     ('scholar-book', 'star', 'grand', 'sand', ('icon', 'books')),

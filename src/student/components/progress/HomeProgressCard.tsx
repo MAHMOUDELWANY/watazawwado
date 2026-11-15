@@ -52,7 +52,7 @@ export function HomeProgressCard({ isAr }: { isAr: boolean }) {
         )}
         {newest && (
           <p className="text-xs text-foreground/80 truncate flex items-center gap-1.5">
-            <MilestoneEmblemByKind kind={newest.kind} className="w-4 h-4 shrink-0" />
+            <MilestoneEmblemByKind kind={newest.kind} subject={newest.subject} className="w-6 h-6 shrink-0" />
             <span className="truncate">{isAr ? newest.title_ar : newest.title_en}</span>
           </p>
         )}

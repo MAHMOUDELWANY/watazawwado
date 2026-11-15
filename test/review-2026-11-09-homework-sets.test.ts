@@ -60,8 +60,10 @@ describe('Owner review 2026-11-09: curriculum homework', () => {
   });
 
   it('badges come from the learner’s history', () => {
-    const h = historyOf([{ status: 'passed', kind: 'lesson', score: 5, total: 5 }, { status: 'submitted', kind: 'part', score: 1, total: 5 }]);
-    assert.deepStrictEqual(earnedBadges(h).map((b) => b.id), ['first', 'perfect', 'lesson']);
+    const h = historyOf([{ status: 'passed', kind: 'lesson', attempts: [{}] }, { status: 'submitted', kind: 'part', attempts: [{}] }, { status: 'passed', kind: 'part', attempts: [{}, {}] }]);
+    assert.deepStrictEqual(h, { passed: 2, lessons: 1, reviews: 0, retried: 1 });
+    // Effort only: there is no "full marks" badge; passing after a failed try earns one.
+    assert.deepStrictEqual(earnedBadges(h).map((b) => b.id), ['homework-first', 'lesson-mastered', 'tried-again']);
   });
 
   it('the homework table is server-only', () => {

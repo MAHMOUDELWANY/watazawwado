@@ -2403,3 +2403,15 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
   .lang-welcome-overlay, .lang-welcome-overlay *, .lang-welcome-overlay.is-leaving { animation: none !important; }
   .lang-welcome-overlay .lw-radio svg { stroke-dashoffset: 0; }
 }
+
+/* ===== Progress design system (docs/design/PROGRESS.md, 2026-11-15) ===== */
+/* A badge not earned yet: a faint shadow of the same badge. */
+.badge-shadow { filter: grayscale(1) contrast(.55) brightness(1.15); opacity: .38; }
+.dark .badge-shadow { filter: grayscale(1) contrast(.6) brightness(.75); opacity: .42; }
+/* The hero's arch: a mihrab top over the khatam field. */
+.progress-arch { border-radius: 9999px 9999px 2rem 2rem / 11rem 11rem 2rem 2rem; }
+@media (min-width: 768px) { .progress-arch { border-radius: 2rem; } }
+/* Light rays behind a celebrated badge: one slow turn, transform only. */
+@keyframes badge-rays-turn { to { transform: rotate(360deg); } }
+.badge-rays { background: repeating-conic-gradient(from 0deg, rgba(246, 213, 142, .55) 0deg 7deg, transparent 7deg 22.5deg); mask-image: radial-gradient(circle, #000 18%, transparent 68%); animation: badge-rays-turn 24s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .badge-rays { animation: none; } }

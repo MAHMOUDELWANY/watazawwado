@@ -36,8 +36,11 @@ describe('PR-01 — Progress data model: shared lesson summaries and milestones'
       assert.match(sql, /ADD COLUMN IF NOT EXISTS achievements JSONB/);
       assert.match(sql, /CREATE TABLE IF NOT EXISTS public\.learner_milestones/);
 
+      // Kinds added later (khatma, 2026-11-15) widen the check in their own migration.
+      const later = readFileSync('supabase/migrations/20261115000000_milestone_kind_khatma.sql', 'utf8');
       for (const kind of MILESTONE_KINDS) {
-        assert.ok(sql.includes(`'${kind}'`), `Migration must allow milestone kind: ${kind}`);
+        assert.ok(sql.includes(`'${kind}'`) || later.includes(`'${kind}'`), `Migrations must allow milestone kind: ${kind}`);
+        assert.ok(later.includes(`'${kind}'`), `The latest kind check must keep: ${kind}`);
       }
       assert.doesNotMatch(sql, /\bDROP TABLE\b|\bDROP COLUMN\b|\bTRUNCATE\b/i);
     });

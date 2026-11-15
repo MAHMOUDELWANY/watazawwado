@@ -137,7 +137,7 @@ export default function StudentProgressReportPage({ lang = 'ar' }: { lang?: 'en'
                   <ul className="space-y-1.5">
                     {data.milestones.map((m) => (
                       <li key={m.id} className="flex items-center gap-2 text-sm">
-                        <MilestoneEmblemByKind kind={m.kind} className="w-6 h-6 shrink-0" />
+                        <MilestoneEmblemByKind kind={m.kind} className="w-7 h-7 shrink-0" />
                         <span className="font-semibold">{isAr ? m.title_ar : m.title_en}</span>
                         <span className="text-xs text-[#6B5E55]">· {day(m.reached_at)}</span>
                       </li>

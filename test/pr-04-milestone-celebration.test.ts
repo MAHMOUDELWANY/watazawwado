@@ -31,15 +31,35 @@ describe('PR-04 Islamic season (Umm al-Qura)', () => {
 });
 
 describe('PR-04 achievements shelf', () => {
-  it('a new learner sees 12 emblems, all in outline, each saying what earns it', () => {
+  it('a new Quran learner sees 22 badges, none earned, each saying what earns it', () => {
     const shelf = buildShelf({ lessonsTotal: 0, longestRhythm: 0, milestones: [] });
-    assert.strictEqual(shelf.length, 12);
+    assert.strictEqual(shelf.length, 22); // 5 lessons, 4 rhythm, 5 Quran, 1 teacher, 7 homework
     assert.ok(shelf.every((s) => !s.earned && s.earnBy.en && s.earnBy.ar));
+    assert.ok(!shelf.some((s) => s.emblem === 'zad-level' || s.emblem === 'language-level'), 'only the subjects the learner studies');
+  });
+  it('a Zad Path learner sees the Zad level badge and not the Quran ones', () => {
+    const shelf = buildShelf({ lessonsTotal: 0, longestRhythm: 0, milestones: [], subjects: ['zad-essentials'] });
+    assert.ok(shelf.some((s) => s.emblem === 'zad-level'));
+    assert.ok(!shelf.some((s) => s.emblem === 'surah'));
+  });
+  it('repeating badges count, homework counts come from the server, automatic milestones are not teacher recognition', () => {
+    const shelf = buildShelf({
+      lessonsTotal: 0, longestRhythm: 0, subjects: ['hifz'],
+      milestones: [ms('s1', 'surah_memorized', 9), ms('s2', 'surah_memorized', 2), { ...ms('auto', 'custom', 1), auto_key: 'lessons_100' }, { ...ms('k', 'khatma', 1), subject: 'hifz' }],
+      homework: { passed: 12, lessons: 2, reviews: 0, retried: 1 },
+    });
+    const by = (e: string) => shelf.find((s) => s.emblem === e)!;
+    assert.strictEqual(by('surah').count, 2);
+    assert.strictEqual(by('surah').detail!.en, 'Milestone s2', 'newest first');
+    assert.ok(by('khatma').earned);
+    assert.ok(!by('teacher').earned);
+    assert.deepStrictEqual(['homework-first', 'homework-10', 'homework-25', 'lesson-mastered', 'tried-again'].map((e) => by(e).earned), [true, true, false, true, true]);
+    assert.strictEqual(by('lesson-mastered').count, 2);
   });
   it('counts effort and teacher milestones; a book uses the level emblem; custom ones are added as recognitions', () => {
     const shelf = buildShelf({ lessonsTotal: 18, longestRhythm: 7, milestones: [ms('a', 'surah_memorized', 3), ms('b', 'book_completed', 40), ms('c', 'custom', 5)] });
     const earned = shelf.filter((s) => s.earned).map((s) => s.emblem);
-    assert.deepStrictEqual(earned, ['first-lesson', 'lessons-10', 'rhythm-4', 'surah', 'level', 'teacher']);
+    assert.deepStrictEqual(earned, ['first-lesson', 'lessons-10', 'rhythm-4', 'surah', 'scholar-book', 'teacher']);
     assert.strictEqual(shelf.find((s) => s.emblem === 'surah')!.detail!.en, 'Milestone a');
   });
 });

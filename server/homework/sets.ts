@@ -189,25 +189,30 @@ export function gradeVariant(v: Variant, answers: Record<string, unknown>): { sc
 
 export const passed = (score: number, total: number) => total > 0 && (score / total) * 100 >= PASS_PERCENT;
 
-/** Badges come from the learner's homework history; nothing extra is stored. */
+/**
+ * Badges come from the learner's homework history; nothing extra is stored. Ids match the shelf's badge set
+ * (docs/superpowers/specs/2026-11-14-achievement-badges-design.md). Effort only: "Full marks" was removed (owner, 2026-11-14).
+ */
 export const BADGES = [
-  { id: 'first', need: (h: History) => h.passed >= 1, title: { en: 'First homework done', ar: 'أول واجب' } },
-  { id: 'perfect', need: (h: History) => h.perfect >= 1, title: { en: 'Full marks', ar: 'الدرجة النهائية' } },
-  { id: 'five', need: (h: History) => h.passed >= 5, title: { en: 'Five homeworks', ar: 'خمس واجبات' } },
-  { id: 'lesson', need: (h: History) => h.lessons >= 1, title: { en: 'A whole lesson mastered', ar: 'درس كامل متقن' } },
-  { id: 'review', need: (h: History) => h.reviews >= 1, title: { en: 'Came back to remember', ar: 'رجع وافتكر' } },
-  { id: 'ten', need: (h: History) => h.passed >= 10, title: { en: 'Ten homeworks', ar: 'عشر واجبات' } },
+  { id: 'homework-first', need: (h: History) => h.passed >= 1, title: { en: 'First homework', ar: 'أول واجب' } },
+  { id: 'homework-10', need: (h: History) => h.passed >= 10, title: { en: '10 homeworks', ar: '١٠ واجبات' } },
+  { id: 'homework-25', need: (h: History) => h.passed >= 25, title: { en: '25 homeworks', ar: '٢٥ واجبًا' } },
+  { id: 'homework-50', need: (h: History) => h.passed >= 50, title: { en: '50 homeworks', ar: '٥٠ واجبًا' } },
+  { id: 'lesson-mastered', need: (h: History) => h.lessons >= 1, title: { en: 'A whole lesson mastered', ar: 'درس كامل متقن' } },
+  { id: 'came-back', need: (h: History) => h.reviews >= 1, title: { en: 'Came back and remembered', ar: 'رجعتَ وتذكّرت' } },
+  { id: 'tried-again', need: (h: History) => h.retried >= 1, title: { en: 'Tried again and made it', ar: 'حاولتَ ثانيةً ونجحت' } },
 ] as const;
 
-export type History = { passed: number; perfect: number; lessons: number; reviews: number };
+/** passed: homework done; lessons/reviews: whole-lesson sets and spaced reviews done; retried: done after a failed try. */
+export type History = { passed: number; lessons: number; reviews: number; retried: number };
 
-export function historyOf(sets: Array<{ status: string; kind: string; score: number | null; total: number | null }>): History {
+export function historyOf(sets: Array<{ status: string; kind: string; attempts?: unknown }>): History {
   const ok = sets.filter((s) => s.status === 'passed' || s.status === 'done');
   return {
     passed: ok.length,
-    perfect: ok.filter((s) => s.total && s.score === s.total).length,
     lessons: ok.filter((s) => s.kind === 'lesson').length,
     reviews: ok.filter((s) => s.kind === 'review').length,
+    retried: ok.filter((s) => Array.isArray(s.attempts) && s.attempts.length > 1).length,
   };
 }
 
