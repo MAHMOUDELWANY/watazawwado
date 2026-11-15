@@ -831,7 +831,8 @@ export default function StudentProgressPage({
       )}
 
       {/* The kids companion, in demo mode for now (owner, 2026-11-15): points are made up and stay on this device. */}
-      {isChildLearner && (
+      {/* Demo: also on a parent's own page when the family has a child, so the family can see it before a child is picked. */}
+      {(isChildLearner || data.isGuardianAccount || data.learners?.some((l) => l.learnerType === 'child')) && (
         <Suspense fallback={null}>
           <CompanionDemo lang={lang} />
         </Suspense>
