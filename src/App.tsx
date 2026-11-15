@@ -45,6 +45,9 @@ const PackYourZaadPage = lazyWithReload(() => import('./components/public/zaad/P
 const BadgesPreviewPage = lazyWithReload(() => import('./components/public/badges/BadgesPreviewPage'));
 const ZadShowcase = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/ZadShowcase')) : null;
 const MessagesPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/MessagesPrototype')) : null;
+const CompanionPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/CompanionPrototype')) : null;
+const Zad3DPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/Zad3DPrototype')) : null;
+const Hoopoe3DPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/Hoopoe3DPrototype')) : null;
 const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
 const LearningPage = lazyWithReload(() => import('./components/public/learning/LearningPage').then((m) => ({ default: m.LearningPage })));
 const HowItWorksPage = lazyWithReload(() => import('./components/public/how-it-works/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })));
@@ -112,6 +115,9 @@ export function AppRoutes() {
           <Route path="/ar/badges" element={<BadgesPreviewPage />} />
           {ZadShowcase && <Route path="/prototype/zad" element={<ZadShowcase />} />}
           {MessagesPrototype && <Route path="/prototype/messages" element={<MessagesPrototype />} />}
+          {CompanionPrototype && <Route path="/prototype/companion" element={<CompanionPrototype />} />}
+          {Zad3DPrototype && <Route path="/prototype/zad3d" element={<Zad3DPrototype />} />}
+          {Hoopoe3DPrototype && <Route path="/prototype/hoopoe3d" element={<Hoopoe3DPrototype />} />}
           {/* Public Routes with Shared Layout */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<PublicHomepage />} />

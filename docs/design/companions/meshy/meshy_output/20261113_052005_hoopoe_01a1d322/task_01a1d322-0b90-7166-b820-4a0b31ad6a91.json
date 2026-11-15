@@ -1,0 +1,36 @@
+{
+  "id": "01a1d322-0b90-7166-b820-4a0b31ad6a91",
+  "type": "multi-image-to-3d",
+  "name": "",
+  "art_style": "",
+  "object_prompt": "",
+  "style_prompt": "",
+  "negative_prompt": "",
+  "texture_prompt": "Stylised animated-feature-film hoopoe chick: soft short orange-copper feathers, crimson crest tips, teal and cream wing bands, big glossy brown eyes, dark grey beak and legs. Clean, warm, no baked shadows.",
+  "texture_image_url": "",
+  "text_style_prompt": "",
+  "image_style_url": "",
+  "status": "SUCCEEDED",
+  "created_at": 1794543591811,
+  "progress": 100,
+  "started_at": 1794543591823,
+  "finished_at": 1794543665541,
+  "expires_at": 1794802865541,
+  "task_error": null,
+  "model_url": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/model.glb?Expires=1794802865&Signature=PaZrXOfSZfvcF~Bl06d9dxC0~9ZbHX2vuc06lB-xXtR8uj9IB40cXlOw2oXRJOlxl5Xttf3PGS2IRWypXcXYRmqqd6ifOjVajuI0VDku2aW-ezRAUBkr4tsjAmAqZd4n8OqBpm4Vr6~trq3crmhAaCC9NkrjuP~ZGDi2~JAW-SsjkR8LYI0DY79yJC~ohKqu4WcSbfe0B88wMYp2Sei~Jal4~wWZSzWn445FTltkIvqwRUzRvCIP1V19SBQhzGbsz5OxyaxrgC2rOFBKWs~bVk6g-dN-QBnGugz5JCcxIppFo4o4mZO8MjoDOitDb-TKL59ZkoGFFDXmEcG4oNNb~Q__&Key-Pair-Id=K1VGYTHIYLM9UM",
+  "model_urls": {
+    "glb": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/model.glb?Expires=1794802865&Signature=PaZrXOfSZfvcF~Bl06d9dxC0~9ZbHX2vuc06lB-xXtR8uj9IB40cXlOw2oXRJOlxl5Xttf3PGS2IRWypXcXYRmqqd6ifOjVajuI0VDku2aW-ezRAUBkr4tsjAmAqZd4n8OqBpm4Vr6~trq3crmhAaCC9NkrjuP~ZGDi2~JAW-SsjkR8LYI0DY79yJC~ohKqu4WcSbfe0B88wMYp2Sei~Jal4~wWZSzWn445FTltkIvqwRUzRvCIP1V19SBQhzGbsz5OxyaxrgC2rOFBKWs~bVk6g-dN-QBnGugz5JCcxIppFo4o4mZO8MjoDOitDb-TKL59ZkoGFFDXmEcG4oNNb~Q__&Key-Pair-Id=K1VGYTHIYLM9UM"
+  },
+  "thumbnail_url": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/preview.png?Expires=1794802865&Signature=XibTdd6-rmybmmIxQBtX8zwl8kbSLDpVPBzYKmE6Hvo1nJHrVcMeTR6AORqRAl0rYJeX-iSvtx-wgsO4bC5Ub1ORFMeoc-HdgQYspmnIiPc8XtYg2w9hQHdl9Q85eL-EUvii0QBqrejYyoPDp~4FMEm8hf2asbsS~~aAD~RPa9Res3CudSQwsUwuNbhWzXJWgsQT~wt9h2dZepsV8oo5X6SuY97NMEicz9CEt7VL79l-K5Fni0I-nAALs16niBjUfQBrhy-sTSbTaEuyistA6Bc4-QQptPCvHyO79lhbPDAq-Tj6t9R-0KOlbuSvx0ggP2mWnVu78n-G-aQSFjVWyQ__&Key-Pair-Id=K1VGYTHIYLM9UM",
+  "texture_urls": [
+    {
+      "base_color": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/texture_0.png?Expires=1794802865&Signature=QtKcBQC6XseGDT3HXq~WTdEHrG78RlqMSPwC2A6rnqxjoRa7jUf7r3koU7pgeecTfUmuZ~o0Hfx6Yn0W4PCxpTPv7OumyFGpf1wpY7n8njhlqlNexXrECSK3l8q40iLuefar~uk7oi6uDizTFNZ1fYeKwHHMpiRkuDDnjUeCBRrMeUWoL9gObNHriYvURzk4B~LS~KAc9Nvj-bJKYlM0vd72YXPmXVwp1Sm-qMKLzpbPPPN1YuBoepxVoQYeL0CYpwnJfHooHAoSX28ar9~tfF1D3kR0Z69ccUVoJEGnyXyG6wQvg3OynDaPJmSQ90ITB5xQSMsU22gHsmDUDmw-6Q__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "metallic": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/texture_0_metallic.png?Expires=1794802865&Signature=D5UtSSlZhoHlGnE7W97R7fhRUg~4TbraQJtR6Qu89d45bFzIWeXqJgKN3Xx4LUjTteGiJpARFORTmRa9Y1~MPEXz7s6icE54f1HbakCBNOOqIsgWdwzuEACHC3lNuajl6b3hY6JM7nWElcj9S56yn2GGwOWFhFFa6LqRYuYEncCYCgcfKEZYwJQugv7uidkkmjjOTc~Cfsn9u7kDpp41qzHwtDJZKf50-AWEm-DGiTwZnV9xDmG6qPBCMPpd-a3Lov1ZZw1vyyCmyjCaJ1q4~4Wo2oAeRYY7LdBrdSbHjtwXkJze1b6husfbmdcGZTXET0dIbLZLX6fZY51McDLbFg__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "roughness": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/texture_0_roughness.png?Expires=1794802865&Signature=WkbhquohS3h2gsmZAf~ibYiRg7C65bC8lIJad5jaUrg5OGshNqKhJ0MUihpiwvN-UTNGA1X1WnlDPl44cRQEdj2v7GW6gKrO7gfDeYJ9AAzoLph3fEQncd~SVn8Iuukq4WvDzWDmVpGGAYMyIoS7uRhdcKRTZszRYvz2-nnoweapSsyh4Nj4jSd3xK2aVnuwU4qy83df6duF0v9ebSdBpdNbwj~84W6B~28CEKk2a6vwq0cIJgOGr0J1eP35RmFRAMEzwb0q7MvOAFGxzLDgktsJdEkVJlrfQr6MGwmuh3ephCiKC-s-NyzE1C0Ua16dIOEoZdm9lGvDOHPycdiZBw__&Key-Pair-Id=K1VGYTHIYLM9UM",
+      "normal": "https://assets.meshy.ai/9e80e8ac-aa22-407b-becb-781a509d27e5/tasks/01a1d322-0b90-7166-b820-4a0b31ad6a91/output/texture_0_normal.png?Expires=1794802865&Signature=qXJG28-p296iZB8RnBdxAYTpH0m-3fU2ZgVfdjASWoPCRYC~qe9BDM6a3RLa4~glIXF7o~HCTRIvlF8yjKu1EfNwzrqh0C2vXd4dkOwtEJpp6KxjZ3uFybTzU5Zt5L1Tv9xpsUj0Srk4gWyt3VO9gm5OvI-OARsAWtXzM0Q18Yw3f2pI3zQVIEOL-zdCxiGDk35f1YLujrIPF9DzUws6Z-k2s6bsc1GZ~5FJ4V28OlrEPTlb2sgNKgqIB3SlZ4~mimM7hw5q9XWRl5nLvX4IUvHUTp9~mBzPmWngiBFB1RoivBN262WmB2aUvnLULFf5Arirk0amvH0~Nun~pPNqzw__&Key-Pair-Id=K1VGYTHIYLM9UM"
+    }
+  ],
+  "hd_texture": true,
+  "texture_resolution": "4k",
+  "consumed_credits": 30
+}

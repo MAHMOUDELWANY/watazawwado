@@ -4,6 +4,16 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### 3D Zad sitewide, the hoopoe companion in demo mode, XP design system (2026-11-15)
+
+- Every Zad on the site is now the 3D Zad: `ZadRig` loads `src/components/mascots/ZadLive.tsx`, with the SVG Zad as the
+  fallback. The hoopoe has an egg stage (`HoopoeEgg.tsx`) that cracks and hatches. The companion card
+  (`src/components/companion/CompanionDemo.tsx`) sits on a child's progress page in demo mode, with points kept on the
+  device. The XP look is in `src/components/xp/Xp.tsx` and `docs/design/XP.md`.
+- Checked: screenshots of the egg, the hatch, the /zaad page and the kid progress card, on phone and desktop. tsc,
+  tests and build passed.
+- Not checked: low-end phones with several 3D Zads on one page; a real kid device session (`/kid/progress`).
+
 ### Achievement badges: the full set, live in trial mode (2026-11-15)
 
 - Owner approved the 24-badge set (five families by shape, three tiers by metal, subject by gem colour; design

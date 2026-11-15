@@ -89,6 +89,15 @@
         "set ALLOW_DEV_AUTH=true&& set PORT=3005&& set APP_URL=http://localhost:3005&& set GOOGLE_REDIRECT_URI=http://localhost:3005/api/integrations/google-calendar/callback&& set NODE_ENV=development&& set VERCEL_ENV=development&& set DISABLE_HMR=true&& node --env-file-if-exists=../../../.env.vercel --env-file=../../../.env --import tsx server.ts"
       ],
       "port": 3005
+    },
+    {
+      "name": "dev-worktree-3007",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "set ALLOW_DEV_AUTH=true&& set PORT=3007&& npx tsx --env-file=../../../.env server.ts"
+      ],
+      "port": 3007
     }
   ]
 }

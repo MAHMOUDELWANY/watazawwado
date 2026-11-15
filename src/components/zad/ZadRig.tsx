@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { Component, Suspense, lazy, useEffect, useId, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion, type TargetAndTransition } from 'motion/react';
 
 /**
@@ -187,7 +187,8 @@ function Arm({ side, id }: { side: 'L' | 'R'; id: (n: string) => string }) {
   );
 }
 
-export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?: number; glow?: boolean }) {
+/** The flat SVG Zad: the fallback where 3D cannot run (no WebGL, or the 3D chunk failed). */
+export function ZadRigSvg({ pose, size = 140, glow = true }: { pose: ZadPose; size?: number; glow?: boolean }) {
   const reduce = useReducedMotion();
   const p = POSES[pose];
   const a = (t: TargetAndTransition) => (reduce ? undefined : t);
@@ -241,5 +242,42 @@ export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?
         <motion.g animate={a(p.armR)} style={at(88, 68)}><Arm side="R" id={id} /></motion.g>
       </motion.g>
     </svg>
+  );
+}
+
+const ZadLive = lazy(() => import('../mascots/ZadLive'));
+
+let webgl: boolean | undefined;
+function canUseWebGL() {
+  if (webgl === undefined) {
+    try { const c = document.createElement('canvas'); webgl = Boolean(c.getContext('webgl2') || c.getContext('webgl')); } catch { webgl = false; }
+  }
+  return webgl;
+}
+
+class Fallback extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+}
+
+/**
+ * Zad on the site: the 3D Zad (owner, 2026-11-15), loaded on demand, with the SVG Zad as the fallback. The first render
+ * is an empty slot of the same size on the server and the client, so prerendered pages hydrate cleanly.
+ */
+export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?: number; glow?: boolean }) {
+  const reduce = useReducedMotion();
+  const [mode, setMode] = useState<'pending' | '3d' | 'svg'>('pending');
+  useEffect(() => { setMode(canUseWebGL() ? '3d' : 'svg'); }, []);
+  const flat = <ZadRigSvg pose={pose} size={size} glow={glow} />;
+  const slot = <span aria-hidden="true" className="inline-block shrink-0 align-middle" style={{ width: size, height: size }} />;
+  if (mode === 'svg') return flat;
+  if (mode === 'pending') return slot;
+  return (
+    <Fallback fallback={flat}>
+      <Suspense fallback={slot}>
+        <ZadLive pose={pose} size={size} still={Boolean(reduce)} />
+      </Suspense>
+    </Fallback>
   );
 }

@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "project_name": "hoopoe",
+  "folder": "20261113_052005_hoopoe_01a1d322",
+  "root_task_id": "01a1d322-0b90-7166-b820-4a0b31ad6a91",
+  "created_at": "2026-11-13T04:20:05.245Z",
+  "updated_at": "2026-11-13T04:21:35.717Z",
+  "tasks": [
+    {
+      "task_id": "01a1d322-0b90-7166-b820-4a0b31ad6a91",
+      "task_type": "multi-image-to-3d",
+      "resource": "multi-image-to-3d",
+      "endpoint": "/openapi/v1/multi-image-to-3d",
+      "stage": "build",
+      "parent_task_id": null,
+      "status": "SUCCEEDED",
+      "files": [],
+      "task_json": "task_01a1d322-0b90-7166-b820-4a0b31ad6a91.json",
+      "operation_id": null,
+      "created_at": "2026-11-13T04:21:08.791Z",
+      "updated_at": "2026-11-13T04:21:08.791Z"
+    },
+    {
+      "task_id": "01a1d322-0b90-7166-b820-4a0b31ad6a91",
+      "task_type": "multi-image-to-3d",
+      "resource": "multi-image-to-3d",
+      "endpoint": "/openapi/v1/multi-image-to-3d",
+      "stage": "preview",
+      "parent_task_id": null,
+      "status": "SUCCEEDED",
+      "files": [
+        "preview.png"
+      ],
+      "task_json": null,
+      "operation_id": null,
+      "created_at": "2026-11-13T04:21:24.682Z",
+      "updated_at": "2026-11-13T04:21:24.682Z"
+    },
+    {
+      "task_id": "01a1d322-0b90-7166-b820-4a0b31ad6a91",
+      "task_type": "multi-image-to-3d",
+      "resource": "multi-image-to-3d",
+      "endpoint": "/openapi/v1/multi-image-to-3d",
+      "stage": "delivered",
+      "parent_task_id": null,
+      "status": "SUCCEEDED",
+      "files": [
+        "hoopoe-raw.glb"
+      ],
+      "task_json": null,
+      "operation_id": null,
+      "created_at": "2026-11-13T04:21:35.717Z",
+      "updated_at": "2026-11-13T04:21:35.717Z"
+    }
+  ]
+}

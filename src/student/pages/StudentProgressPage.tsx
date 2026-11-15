@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
+import React, { Suspense, lazy, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { DateTime } from 'luxon';
+
+const CompanionDemo = lazy(() => import('../../components/companion/CompanionDemo'));
 import {
   Calendar,
   ArrowRight,
@@ -826,6 +828,13 @@ export default function StudentProgressPage({
             );
           })}
         </div>
+      )}
+
+      {/* The kids companion, in demo mode for now (owner, 2026-11-15): points are made up and stay on this device. */}
+      {isChildLearner && (
+        <Suspense fallback={null}>
+          <CompanionDemo lang={lang} />
+        </Suspense>
       )}
 
       {isNewLearner ? (
