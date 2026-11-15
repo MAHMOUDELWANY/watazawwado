@@ -1,18 +1,22 @@
 import React from 'react';
-import { AbsoluteFill, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Audio, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
 import { COPPER, CRIMSON, FPS, GOLD, GOLD_SOFT, SANS, SERIF, Sfx, TEAL_DEEP, clamp, io } from './kit';
 import { BigCard, ESPRESSO, GraphPaper, INK, Label, Logo, Paper, SAND, WHITE } from './V2Ain';
+import { makeVO } from './captions';
+import V4W from './words-v4.json';
+
+const vo = makeVO(V4W as [string, number, number][]);
 
 /**
- * V4 · "You choose the teacher" (Content Calendar, 19 Nov 2026). Voice-free, on-screen text and sound only.
+ * V4 · "You choose the teacher" (Content Calendar, 19 Nov 2026). Voice: public/vo-v4.mp3 (owner's English clone, eleven_v4), from 0.3 s.
  * Retention method: a moment (a stranger logs in) → the consequence (you meet them when your child does) →
  * what changes here (you choose first, from the real onboarding step) → one thing to do (ask to see the person).
  * The onboarding card copies the real step (StudentOnboardingPage "Choose your teacher"), example data only.
  * The female teacher is mentioned in words, never shown (content RULES §4.3).
  */
-export const V4_TOTAL = Math.round(25 * FPS);
+export const V4_TOTAL = Math.round(35 * FPS);
 const t = (s: number) => Math.round(s * FPS);
-const SC = { hook: 0, cons: 3.6, flip: 7.6, pick: 9.8, ask: 18.0, end: 21.2 };
+const SC = { hook: 0, cons: 7.0, flip: 10.7, pick: 12.8, ask: 25.5, end: 28.8 };
 
 const Border: React.FC = () => {
   const f = useCurrentFrame();
@@ -54,13 +58,13 @@ const CallTile: React.FC<{ x: number; y: number; w: number; label: string; who?:
 
 const Hook: React.FC = () => {
   const f = useCurrentFrame();
-  const tile = spring({ frame: f - t(1.6), fps: FPS, config: { damping: 10 } });
+  const tile = spring({ frame: f - t(3.2), fps: FPS, config: { damping: 10 } });
   return (
     <AbsoluteFill>
       <BigCard color={SAND} seed="v4hook">
         <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 64, color: INK, opacity: io(f, 0, 8), textAlign: 'center' }}>Your child’s first Quran class.</div>
         <div style={{ height: 480 }} />
-        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 84, color: CRIMSON, whiteSpace: 'nowrap', transform: `scale(${spring({ frame: f - t(2.2), fps: FPS, config: { damping: 9 } })})` }}>A stranger logs in.</div>
+        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 84, color: CRIMSON, whiteSpace: 'nowrap', transform: `scale(${spring({ frame: f - t(5.3), fps: FPS, config: { damping: 9 } })})` }}>A stranger logs in.</div>
       </BigCard>
       <div style={{ position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `scale(${tile})`, transformOrigin: '540px 900px' }}>
         <CallTile x={320} y={650} w={440} label="Teacher" />
@@ -99,10 +103,10 @@ const Pick: React.FC = () => {
   const f = useCurrentFrame();
   const L = (s: number) => t(s - SC.pick);
   const phone = spring({ frame: f, fps: FPS, config: { damping: 14 } });
-  const cur = { x: interpolate(f, [L(11.6), L(12.6)], [820, 470], { ...clamp, easing: (n) => 1 - (1 - n) ** 3 }), y: interpolate(f, [L(11.6), L(12.6)], [1500, 700], { ...clamp, easing: (n) => 1 - (1 - n) ** 3 }) };
-  const tap = f >= L(12.75);
-  const tapK = interpolate(f, [L(12.75), L(12.85), L(13.1)], [0, 1, 0], clamp);
-  const chat = spring({ frame: f - L(14.2), fps: FPS, config: { damping: 11 } });
+  const cur = { x: interpolate(f, [L(14.6), L(15.6)], [820, 470], { ...clamp, easing: (n) => 1 - (1 - n) ** 3 }), y: interpolate(f, [L(14.6), L(15.6)], [1500, 700], { ...clamp, easing: (n) => 1 - (1 - n) ** 3 }) };
+  const tap = f >= L(15.8);
+  const tapK = interpolate(f, [L(15.8), L(15.9), L(16.15)], [0, 1, 0], clamp);
+  const chat = spring({ frame: f - L(22.4), fps: FPS, config: { damping: 11 } });
   const card = (y: number, selected: boolean, children: React.ReactNode) => (
     <div style={{ position: 'absolute', left: 40, right: 40, top: y, height: 190, borderRadius: 28, background: WHITE, border: `5px solid ${selected ? CRIMSON : 'rgba(27,21,18,0.12)'}`,
       boxShadow: selected ? `0 0 0 8px rgba(197,31,36,0.15), 0 12px 20px rgba(0,0,0,0.12)` : '0 6px 12px rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', gap: 26, padding: '0 28px',
@@ -147,9 +151,9 @@ const Pick: React.FC = () => {
           </div>
         </div>
       </div>
-      <Label at={L(14.4)} x={760} y={1300} text="Example" size={34} rot={4} under={false} />
+      <Label at={L(22.6)} x={760} y={1300} text="Example" size={34} rot={4} under={false} />
       {/* cursor */}
-      {f >= L(11.5) && f < L(15) && (
+      {f >= L(14.5) && f < L(17) && (
         <svg width={90} height={110} viewBox="0 0 90 110" style={{ position: 'absolute', left: cur.x, top: cur.y, transform: `scale(${1 - tapK * 0.15})`, filter: 'drop-shadow(0 6px 8px rgba(0,0,0,0.3))' }}>
           <path d="M8 6 L8 86 L28 68 L42 100 L56 94 L42 62 L68 62 Z" fill={WHITE} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
         </svg>
@@ -172,8 +176,8 @@ const Ask: React.FC = () => {
 
 const End: React.FC = () => {
   const f = useCurrentFrame();
-  const bag = spring({ frame: f - 30, fps: FPS, config: { damping: 9 } });
-  const zip = io(f, 44, 60);
+  const bag = spring({ frame: f - 85, fps: FPS, config: { damping: 9 } });
+  const zip = io(f, 92, 108);
   return (
     <AbsoluteFill>
       <Paper seed="v4end" x={70} y={300} w={940} h={520} color={TEAL_DEEP} rot={-1}>
@@ -187,12 +191,18 @@ const End: React.FC = () => {
           {zip > 0 && <path d={`M40 80 H${40 + 130 * zip}`} stroke={GOLD_SOFT} strokeWidth={9} strokeLinecap="round" strokeDasharray="10 7" />}
         </svg>
       </div>
-      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 36, 46) }}>Pack your zaad</div>
-      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 54, 64) }}>
+      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 86, 96) }}>Pack your zaad</div>
+      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 116, 126) }}>
         <div style={{ background: CRIMSON, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 48, padding: '16px 42px', borderRadius: 999, border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.3)' }}>Link in bio</div>
       </div>
     </AbsoluteFill>
   );
+};
+
+/** Captions only while the phone is on screen (the other scenes carry the line as big type). */
+const PickCaptions: React.FC = () => {
+  const f = useCurrentFrame();
+  return f >= t(SC.pick) && f < t(SC.ask) ? <vo.Captions dark={() => false} top={1470} /> : null;
 };
 
 export const V4Choose: React.FC = () => {
@@ -211,20 +221,22 @@ export const V4Choose: React.FC = () => {
       <Sequence from={t(SC.end)}><Slide dur={99999} from={-1}><End /></Slide></Sequence>
       <Border />
       <Logo />
-      {/* sound only, no voice, no music */}
-      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.4} />)}
-      {[SC.flip, SC.ask].map((s) => <Sfx key={'t' + s} at={t(s) - 2} src="paper/tear-s.mp3" volume={0.35} />)}
-      <Sfx at={t(1.6)} src="wv/notification-ding.wav" volume={0.3} />
-      <Sfx at={t(2.2)} src="wv/dull-thud.wav" volume={0.35} />
-      <Sfx at={t(SC.cons) + 3} src="paper/slap-s.mp3" volume={0.35} />
-      <Sfx at={t(SC.flip) + 14} src="wv/bass-impact.wav" volume={0.3} />
-      <Sfx at={t(SC.pick)} src="wv/swish-whoosh-large.wav" volume={0.25} />
-      <Sfx at={t(12.75)} src="wv/mouse-click-2.wav" volume={0.45} />
-      <Sfx at={t(14.2)} src="wv/message-pop-reply.wav" volume={0.4} />
-      <Sfx at={t(SC.ask) + 14} src="wv/bass-impact.wav" volume={0.3} />
-      <Sfx at={t(SC.end) + 30} src="wv/pop-hand.wav" volume={0.35} />
-      <Sfx at={t(SC.end) + 44} src="paper/marker-s.mp3" volume={0.35} />
-      <Sfx at={t(SC.end) + 54} src="wv/dull-thud.wav" volume={0.3} />
+      <Sequence from={9}><Audio src={staticFile('vo-v4.mp3')} /></Sequence>
+      <PickCaptions />
+      {/* voice + sound effects, no music */}
+      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.2} />)}
+      {[SC.flip, SC.ask].map((s) => <Sfx key={'t' + s} at={t(s) - 2} src="paper/tear-s.mp3" volume={0.18} />)}
+      <Sfx at={t(3.2)} src="wv/notification-ding.wav" volume={0.16} />
+      <Sfx at={t(5.3)} src="wv/dull-thud.wav" volume={0.18} />
+      <Sfx at={t(SC.cons) + 3} src="paper/slap-s.mp3" volume={0.18} />
+      <Sfx at={t(SC.flip) + 14} src="wv/bass-impact.wav" volume={0.16} />
+      <Sfx at={t(SC.pick)} src="wv/swish-whoosh-large.wav" volume={0.14} />
+      <Sfx at={t(15.8)} src="wv/mouse-click-2.wav" volume={0.25} />
+      <Sfx at={t(22.4)} src="wv/message-pop-reply.wav" volume={0.2} />
+      <Sfx at={t(SC.ask) + 14} src="wv/bass-impact.wav" volume={0.16} />
+      <Sfx at={t(SC.end) + 85} src="wv/pop-hand.wav" volume={0.2} />
+      <Sfx at={t(SC.end) + 92} src="paper/marker-s.mp3" volume={0.2} />
+      <Sfx at={t(SC.end) + 116} src="wv/dull-thud.wav" volume={0.16} />
     </AbsoluteFill>
   );
 };
