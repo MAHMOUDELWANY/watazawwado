@@ -162,7 +162,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 
 ## 7. Engineering rules (always)
 
-- Migrations are append-only (`supabase/migrations/`); use the `new-migration` skill.
+- Migrations are append-only (`supabase/migrations/`); use the `WATAZAWWADO-new-migration` skill.
 - Never trust prices, amounts, IDs or roles sent by the browser.
 - Never read, print or edit `.env*` files.
 - Supabase query builders have no `.catch()`; use `const { error } = await ...`.
@@ -193,4 +193,4 @@ Engineering backlog (no owner decision needed, do when there is time):
 ## 9. Curriculum
 
 - **[Decided 2026-10-16]** All curriculum (المنهج) decisions, rules and progress live in `docs/curriculum/PLAN.md`. Read it before any curriculum work and record new owner decisions there.
-- **[Decided 2026-10-18]** The binding curriculum-building rules are `docs/curriculum/RULES.md`; any curriculum work uses the `curriculum-builder` skill. All project documentation is written in English (owner, 2026-10-18); the site itself stays bilingual (§6).
+- **[Decided 2026-10-18]** The binding curriculum-building rules are `docs/curriculum/RULES.md`; any curriculum work uses the `WATAZAWWADO-curriculum-builder` skill. All project documentation is written in English (owner, 2026-10-18); the site itself stays bilingual (§6).

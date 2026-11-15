@@ -20,7 +20,7 @@ Studio, Meta Business Suite (free scheduling for Instagram + Facebook), TikTok's
 
 ## 2. Filming day (once a week, ~3 hours)
 
-1. Claude prepares the week's scripts the day before (`watazawwado-content` skill).
+1. Claude prepares the week's scripts the day before (`WATAZAWWADO-content` skill).
 2. Film long video first (energy is highest), then the standalone Shorts.
 3. Each Short: 3 takes of the hook, then the body once or twice. Say the hook looking into the lens.
 4. Leave 1 second of silence before and after each take (clean cuts).

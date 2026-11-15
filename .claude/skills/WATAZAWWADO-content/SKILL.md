@@ -1,5 +1,5 @@
 ---
-name: watazawwado-content
+name: WATAZAWWADO-content
 description: Use for ANY Watazawwado social media, video, marketing or content work, even from a short or vague prompt ("next video", "write captions", "script a short", "this week's posts", "محتوى", "فيديو جديد", "بوست", "thumbnail", "carousel", "how are the accounts doing"). Reads the content plan and binding rules, finds the next item, produces it with the installed marketing and social-media skills, checks it against the rules and logs it.
 ---
 
@@ -35,7 +35,7 @@ never let `voice-builder` invent a voice or write files to the project root.
 
 | Deliverable | Use |
 |---|---|
-| **Any spoken script (always)** | `mahmoud-voice`: the six moves, word choice per audience, stage cues, owner's edits log |
+| **Any spoken script (always)** | `WATAZAWWADO-mahmoud-voice`: the six moves, word choice per audience, stage cues, owner's edits log |
 | Short / Reel / TikTok script | `PRODUCTION.md` §3 anatomy; `hook-generator` for 6 hooks; `reels-scripting` in supplied-input mode (no Apify) |
 | Long YouTube script | `PRODUCTION.md` §5; `video`, `copywriting` |
 | Title, description, chapters, tags | `seo-content-brief` / `ai-seo` for the search phrase; `PRODUCTION.md` §5 |

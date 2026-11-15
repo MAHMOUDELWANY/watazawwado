@@ -11,7 +11,7 @@ Change next week: <one thing>
 ```
 
 ## 2026-W43 (19–25 Oct)
-- Plan, rules, production guide, idea bank and the `watazawwado-content` skill written. Marketing skills
+- Plan, rules, production guide, idea bank and the `WATAZAWWADO-content` skill written. Marketing skills
   (coreyhaines31/marketingskills) and social-media skills (charlie947/social-media-skills) installed in
   `.claude/skills` (MIT; our `seo-audit` kept, theirs skipped). Waiting on the owner: `PLAN.md` §9 open questions.
 - Owner decisions recorded (`PLAN.md` §9): TikTok renamed @watazawwado.academy (site links updated), only Ustadh
@@ -39,6 +39,6 @@ Change next week: <one thing>
   30 days). New: hub page on the brand strategy (`BRAND.md`), Content Calendar (Status, Date, Series, Audience, Goal,
   Language, Platforms, CTA) with the first series of 16 items, 9 Nov to 5 Dec (10 "Building Watazawwado" episodes,
   6 teaching), and a new Weekly Numbers (waitlist and ZAAD comments first). All items are Ideas with a brief; full
-  scripts are written item by item with `mahmoud-voice`.
+  scripts are written item by item with `WATAZAWWADO-mahmoud-voice`.
 - 2026-11-05: Week 1 scripts written into Notion (B1 What I kept seeing as a teacher, T1 the Daad, B2 What parents told me, P1 Five minutes a day), two hooks and two wise lines each, captions per platform, pinned comment, UTM links; all four moved to Review. T1 needs a teacher to confirm the makhraj on camera; B1/B2 need the owner to confirm the stories are his own.
 - 2026-11-05: Week 2 scripts written into Notion (B3 a mentor who stays, A1 three phrases for Teta, B4 what annoyed you most, T2 the ح in al-ḥamd with Al-Fatiha 1:2 verified via quran.ai, Saheeh International); all four moved to Review.

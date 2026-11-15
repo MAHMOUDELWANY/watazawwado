@@ -23,6 +23,6 @@ if (base.startsWith('.env') && base !== '.env.example') {
 if (/^supabase\/migrations\/[^/]+\.sql$/.test(rel) && existsSync(path.resolve(projectDir, rel))) {
   block(
     `Blocked: ${rel} is an existing migration and may already be applied in production. ` +
-    `Create a new migration file instead (use the new-migration skill).`
+    `Create a new migration file instead (use the WATAZAWWADO-new-migration skill).`
   );
 }

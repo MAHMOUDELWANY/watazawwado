@@ -1,6 +1,6 @@
 # Curriculum preview and capture tools
 
-Used by the `curriculum-builder` skill to see every step of every slide before the owner does.
+Used by the `WATAZAWWADO-curriculum-builder` skill to see every step of every slide before the owner does.
 
 1. **Start the preview server** (Vite on port 3101): `preview_start` with the `curriculum-preview` entry in
    `.claude/launch.json` (in a worktree without `node_modules`, it runs the main checkout's Vite).

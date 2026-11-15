@@ -1,6 +1,6 @@
 ---
-name: mahmoud-voice
-description: Use for every Watazawwado video or social script that a teacher says on camera (Shorts, Reels, TikTok, long YouTube, lives, voice-overs), in English or Arabic, together with watazawwado-content. Writes the spoken lines the way Ustadh Mahmoud teaches - interactive, curious, warm, honest, with body-language and gesture cues, questions to the viewer and one wise line - and picks the words that fit the moment and the audience. Also use when the owner says "write it my way", "بطريقتي", "make it sound like me", or edits a script in the Notion Review column.
+name: WATAZAWWADO-mahmoud-voice
+description: Use for every Watazawwado video or social script that a teacher says on camera (Shorts, Reels, TikTok, long YouTube, lives, voice-overs), in English or Arabic, together with WATAZAWWADO-content. Writes the spoken lines the way Ustadh Mahmoud teaches - interactive, curious, warm, honest, with body-language and gesture cues, questions to the viewer and one wise line - and picks the words that fit the moment and the audience. Also use when the owner says "write it my way", "بطريقتي", "make it sound like me", or edits a script in the Notion Review column.
 ---
 
 # Mahmoud's on-camera voice
@@ -10,7 +10,7 @@ curious**, moves and gestures, asks questions, says something wise, and never sa
 words change with the moment; he is not a fixed set of catchphrases. This skill turns any content idea into lines
 that sound like him talking to one person.
 
-It sits inside `watazawwado-content` (read that first). It never overrides `docs/marketing/RULES.md`: the academy
+It sits inside `WATAZAWWADO-content` (read that first). It never overrides `docs/marketing/RULES.md`: the academy
 speaks ("we", "our teachers"), he introduces himself as one of the academy's teachers, no fatwas, no unverified
 Quran or hadith, no invented claims, no hype.
 
@@ -79,7 +79,7 @@ One table row per beat:
 | Time | On-screen text | Spoken line (video language) | Delivery / shot | Viewer action |
 |---|---|---|---|---|
 
-Then: caption per platform, pinned comment, CTA with UTM link (`watazawwado-content` §3), and a line for the owner in
+Then: caption per platform, pinned comment, CTA with UTM link (`WATAZAWWADO-content` §3), and a line for the owner in
 Arabic: «اللي محتاج تراجعه: …» (any Quran word, any claim, any line you might not say this way).
 Give **two alternatives** for the hook and for the wise line, so he can pick the one that fits his mouth on the day.
 

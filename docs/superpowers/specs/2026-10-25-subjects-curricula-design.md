@@ -49,7 +49,7 @@ after the prototypes (§7), not before Thursday.
   reproduced"; AUC Press and Jannat al-Quran: all rights reserved). "Accurate transfer" means: the facts are exact
   (a tajweed rule, a letter's makhraj, a verb pattern), the presentation is ours.
 - Quran text from Tanzil only; ayat and hadith verified as in the Zad Path (sources.md A, B).
-- The motion-stage player and its standard (`.claude/skills/curriculum-builder/motion-stage.md`, `owner-feedback.md`)
+- The motion-stage player and its standard (`.claude/skills/WATAZAWWADO-curriculum-builder/motion-stage.md`, `owner-feedback.md`)
   are the house style for every subject: one graphic per page that explains the idea by moving, 1600×900, build steps.
 - `humanizer` on all English, Arabic teacher notes, `reviewed: false` until the owner approves.
 - The academy speaks as "we"; the owner is one teacher (RULES §6b). His recorded voice is "the lesson's voice", not a
@@ -74,7 +74,7 @@ after the prototypes (§7), not before Thursday.
 
 One identity for the whole academy, taken from the site (type, frame, player, khatam, ribbon), with a small change per
 curriculum: its own colour accent, motif and cast. Literacy has **new neutral characters** (it serves non-Muslims too).
-As with every new look (curriculum-builder §3), 2–3 pages are prototyped and the owner chooses before a lesson is built.
+As with every new look (WATAZAWWADO-curriculum-builder §3), 2–3 pages are prototyped and the owner chooses before a lesson is built.
 
 ## 3c. Sources and the owner's additions — [Owner, 2026-10-25]
 
@@ -164,7 +164,7 @@ As with every new look (curriculum-builder §3), 2–3 pages are prototyped and 
 - **[Owner]** Two versions: **Kids**, and **Teens + Adults** (one shared language). Kids get their own narrative tone,
   pictures, motion and animation.
 - **[Owner]** Images: Claude writes a prompt per slide; the owner generates the image (high quality, cinematic, showing
-  what that slide says). The Prophet ﷺ, the companions and angels are never shown (curriculum-builder rule): an empty
+  what that slide says). The Prophet ﷺ, the companions and angels are never shown (WATAZAWWADO-curriculum-builder rule): an empty
   cradle, a lamp, light, a figure from behind at most for others, as the deck does.
 - **The deck's grammar (analysed from Episode 1, 20 slides), the Seerah template:**
   - *Episode* = one lesson, about 20 slides, numbered "07 / 20", a running header (EPISODE 01 · THE YEAR OF THE ELEPHANT)
@@ -187,7 +187,7 @@ As with every new look (curriculum-builder §3), 2–3 pages are prototyped and 
   Dorar before use and marked or dropped, per curriculum RULES §1.2. Numbers from the story (60,000, 13 elephants) are
   given as "the sources report".
 - We rebuild the deck as motion stages in our player (same look; the stage explains by moving).
-- Skill: stays in `curriculum-builder`; a `docs/curriculum/seerah/RULES.md` holds this template.
+- Skill: stays in `WATAZAWWADO-curriculum-builder`; a `docs/curriculum/seerah/RULES.md` holds this template.
 
 ## 5. The language method (Fusha, Egyptian, English)
 
@@ -203,17 +203,17 @@ As with every new look (curriculum-builder §3), 2–3 pages are prototyped and 
 
 Item 2 and the review screen are site features (§7).
 
-## 6. Skills (one per family, same shape as curriculum-builder)
+## 6. Skills (one per family, same shape as WATAZAWWADO-curriculum-builder)
 
 | Skill | Covers | Per-subject rules file |
 |---|---|---|
-| `curriculum-builder` (exists) | Zad Essentials, Seerah | `docs/curriculum/<version>/RULES.md`, `seerah/RULES.md` |
+| `WATAZAWWADO-curriculum-builder` (exists) | Zad Essentials, Seerah | `docs/curriculum/<version>/RULES.md`, `seerah/RULES.md` |
 | `literacy-quran-builder` (new) | Literacy A, B, C; Quran Reading; Tajweed | `docs/curriculum/literacy/`, `quran-reading/`, `tajweed/` |
 | `language-builder` (new) | Fusha, Egyptian (Arabic script and Franco), English, with §5 | `docs/curriculum/fusha/`, `egyptian/`, `english/` |
 
 Each new skill: read-first list, the source folder and registry rows, the scope-only rule, the page and lesson shape,
 the audio rule, the verify steps (screenshots of every step, tests, build) and the owner-feedback file it grows. Each is
-written **after** the owner approves its prototype, so it captures the approved result, as `curriculum-builder` did.
+written **after** the owner approves its prototype, so it captures the approved result, as `WATAZAWWADO-curriculum-builder` did.
 
 ## 7. Order of work
 

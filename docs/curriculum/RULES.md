@@ -2,7 +2,7 @@
 
 > Every model, agent or developer that writes, edits or builds curriculum (المنهج) content follows this file. It was
 > agreed with the owner on 2026-10-18. Changing a rule needs the owner's explicit approval, recorded here with its date.
-> Background and history: `PLAN.md`. Workflow: the `curriculum-builder` skill (`.claude/skills/curriculum-builder`).
+> Background and history: `PLAN.md`. Workflow: the `WATAZAWWADO-curriculum-builder` skill (`.claude/skills/WATAZAWWADO-curriculum-builder`).
 > Project-wide rules (pricing, booking, language, tone): `../../RULES.md`.
 >
 > **Short version.** One step at a time, then stop for the owner's review. Never invent evidence, prices or books. Never

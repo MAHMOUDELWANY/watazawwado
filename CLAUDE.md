@@ -8,13 +8,26 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **New account or session? Read [docs/curriculum/HANDOFF-2026-11-03.md](docs/curriculum/HANDOFF-2026-11-03.md) first** (current task: every level started, placement from the curriculum; older context in HANDOFF-2026-10-26.md).
 
-**Curriculum (المنهج) work, any size, even a vague prompt: use the `curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
+**Curriculum (المنهج) work, any size, even a vague prompt: use the `WATAZAWWADO-curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
 
-**Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
+**Social media, video and marketing content, any size: use the `WATAZAWWADO-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
 
 **Pre-launch backlog:** [docs/backlog/BACKLOG.md](docs/backlog/BACKLOG.md) (order of work at the top); log each finished task in [docs/backlog/LOG.md](docs/backlog/LOG.md). Claude does all of it (owner, 2026-10-20).
 
 **Pre-launch testing (any test, QA, E2E, UX review or security work): read [docs/testing/RULES.md](docs/testing/RULES.md) first**, then your brief in `docs/testing/projects/`. It fixes the server, QA accounts and cleanup so testing works the same on every Claude account.
+
+## Our skills: `WATAZAWWADO-…` (19, owner 2026-11-15)
+
+Every skill we own starts with `WATAZAWWADO-`, so the list is the count. **Before creating a skill, check this list and `ls .claude/skills | grep WATAZAWWADO`; extend an existing one if it fits.** Outside skills below are tools these call, never a replacement for them.
+
+| Area | Skills |
+|---|---|
+| Words and look | `WATAZAWWADO-brand-voice` (any user-facing text, EN/AR), `WATAZAWWADO-design-system` (any UI), `WATAZAWWADO-parent-comms` (emails, WhatsApp, notifications) |
+| Product and money | `WATAZAWWADO-booking-payments` (bookings, prices, refunds), `WATAZAWWADO-teacher-ops` (teachers, pay, dashboard), `WATAZAWWADO-new-migration` (schema) |
+| Quality and shipping | `WATAZAWWADO-qa` (testing), `WATAZAWWADO-release` (deploy), `WATAZAWWADO-islamic-content-check` (verses, hadith, Tajweed), `WATAZAWWADO-seo-bilingual` (SEO) |
+| Curriculum | `WATAZAWWADO-curriculum-builder`, `WATAZAWWADO-curriculum-review` |
+| Marketing | `WATAZAWWADO-content` (social, video), `WATAZAWWADO-marketing` (strategy), `WATAZAWWADO-video-generator` (promo video), `WATAZAWWADO-mahmoud-voice` (on-camera scripts) |
+| Work management | `WATAZAWWADO-backlog` (BACKLOG/LOG), `WATAZAWWADO-handoff` (session handover), `WATAZAWWADO-review-issues` (owner's review list) |
 
 ## Skills (use these first)
 
@@ -23,7 +36,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
 - Writing: `humanizer` on all user-facing copy (site, emails, curriculum); `writing-skills` when making skills.
 - Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`, `impeccable` (design/audit/polish commands for any UI).
 - Motion and feel (Emil Kowalski's set, MIT), for the whole site and the curriculum alongside the design skills above: `apple-design` (important), `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-performance`, `mobile-native`, `break-ui`, `emil-design-eng`. Also present but off-stack: `animate-expo`, `write-swift`, `ask-sonner`.
-- Marketing and social media (MIT, installed 2026-10-19 from coreyhaines31/marketingskills and charlie947/social-media-skills): `content-strategy`, `social`, `video`, `copywriting`, `lead-magnets`, `emails`, `hook-generator`, `reels-scripting`, `youtube-thumbnail`, `content-matrix`, `niche-research` and more; always through `watazawwado-content`.
+- Marketing and social media (MIT, installed 2026-10-19 from coreyhaines31/marketingskills and charlie947/social-media-skills): `content-strategy`, `social`, `video`, `copywriting`, `lead-magnets`, `emails`, `hook-generator`, `reels-scripting`, `youtube-thumbnail`, `content-matrix`, `niche-research` and more; always through `WATAZAWWADO-content`.
 - SEO: the `seo` hub and `seo-*` leaves (bilingual site, so `seo-hreflang` matters). Their Python helpers live in `.claude/skills/seo/scripts` and need Python plus its requirements; the guidance works without them.
 
 ## Stack
@@ -49,7 +62,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
 - **Payments gate bookings.** Regular paid bookings stay `pending` until payment is verified server-side; free trials and package-credit redemptions confirm immediately. Never confirm a paid booking from client input.
 - **Server-side authority.** Prices, availability, and ownership are computed on the server (`server/pricing`, `availabilityEngine.ts`, `verifyTeacherAuth` / `verifyStudentAuth`). Don't trust amounts or IDs from the request body.
 - **Owner's standing approval (2026-10-18, RULES.md §7):** for any code or database change that does not need review, don't ask: commit, push to `main` after tsc + tests + build pass, apply migrations to production Supabase in the same release, then smoke-test production. Only curriculum content waits for the owner's review.
-- **Migrations are append-only.** Existing files in `supabase/migrations/` may be applied in production; a hook blocks edits. Use the `new-migration` skill for any schema change.
+- **Migrations are append-only.** Existing files in `supabase/migrations/` may be applied in production; a hook blocks edits. Use the `WATAZAWWADO-new-migration` skill for any schema change.
 - **Secrets.** Never read, print, or edit `.env*` (a hook blocks edits). `.env.example` lists the variable names.
 - **Project files in English** (owner, 2026-10-18, RULES.md §7). Plans, rules, docs and briefs saved in the repo are written
   in English; talk to the owner in Arabic. Arabic UI copy and Arabic teacher notes are content and stay Arabic.

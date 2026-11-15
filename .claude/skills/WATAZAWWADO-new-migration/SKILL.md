@@ -1,5 +1,5 @@
 ---
-name: new-migration
+name: WATAZAWWADO-new-migration
 description: Create a new Supabase migration for this project with the correct filename, header, RLS, and function-privilege conventions. Use when the user asks to change the database schema, add/alter a table, column, policy, or RPC function, or fix something in an earlier migration.
 argument-hint: "<short description of the change>"
 ---
