@@ -1,4 +1,5 @@
 import React from 'react';
+import { GOLD, GOLD_HI, GOLD_LO, PAPER, PAPER_SHADE, INK, FLAME, useGradientIds, Svg, GoldGradient, Sparkle, Khatam } from '../illustrations/svgKit';
 
 /**
  * Illustrated two-tone emblems for the homepage doors (and anywhere a generic icon would feel cheap).
@@ -7,63 +8,7 @@ import React from 'react';
  * in index.css, which reduced motion switches off. Decorative: the link text carries the meaning.
  */
 
-const GOLD = '#E5A93C';
-const GOLD_HI = '#F6D58E';
-const GOLD_LO = '#B9782A';
-const PAPER = '#FAF7F2';
-const PAPER_SHADE = '#E9DCC6';
-const INK = '#8B4935';
-const FLAME = '#FFF4D6';
-
 type EmblemProps = { className?: string };
-
-// useId gives the same value on the server and in the browser; strip the characters url(#…) dislikes.
-function useGradientIds(...names: string[]) {
-  const base = React.useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  return Object.fromEntries(names.map((n) => [n, `${n}-${base}`])) as Record<string, string>;
-}
-
-function Svg({ className, children }: EmblemProps & { children: React.ReactNode }) {
-  return (
-    <svg viewBox="0 0 96 96" className={className} aria-hidden="true" focusable="false" fill="none">
-      {children}
-    </svg>
-  );
-}
-
-function GoldGradient({ id }: { id: string }) {
-  return (
-    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={GOLD_HI} />
-      <stop offset="55%" stopColor={GOLD} />
-      <stop offset="100%" stopColor={GOLD_LO} />
-    </linearGradient>
-  );
-}
-
-/** Four-point sparkle, centred on (x, y). */
-function Sparkle({ x, y, r, delay = 0 }: { x: number; y: number; r: number; delay?: number }) {
-  const w = r * 0.28;
-  return (
-    <path
-      className="emblem-twinkle"
-      style={{ animationDelay: `${delay}s` }}
-      d={`M${x} ${y - r} L${x + w} ${y - w} L${x + r} ${y} L${x + w} ${y + w} L${x} ${y + r} L${x - w} ${y + w} L${x - r} ${y} L${x - w} ${y - w} Z`}
-      fill={GOLD_HI}
-    />
-  );
-}
-
-/** Eight-point khatam star: two squares, one turned 45°. */
-function Khatam({ x, y, size, fill, stroke }: { x: number; y: number; size: number; fill: string; stroke?: string }) {
-  const h = size / 2;
-  return (
-    <g fill={fill} stroke={stroke} strokeWidth={stroke ? 0.8 : undefined} strokeLinejoin="round">
-      <rect x={x - h} y={y - h} width={size} height={size} />
-      <rect x={x - h} y={y - h} width={size} height={size} transform={`rotate(45 ${x} ${y})`} />
-    </g>
-  );
-}
 
 /** Lessons: an open mushaf resting on a rehal stand, light rising from its pages. */
 export function MushafEmblem({ className }: EmblemProps) {

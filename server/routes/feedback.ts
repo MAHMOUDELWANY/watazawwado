@@ -2,6 +2,9 @@ import express from 'express';
 import { isFeedbackTag, MAX_TAGS_PER_LESSON } from '../../src/lib/teacherBadges.js';
 import { DateTime } from 'luxon';
 import { normalizeSubjectSlug, resolveSubjectMeta } from './progress.js';
+import { lessonEndOf as lessonEnd } from '../notifications/summaryReminders.js';
+
+export { lessonEnd };
 
 /**
  * ST-02: after a lesson ends, the family gives a one-tap rating (1-5) and an optional comment. Ratings are read by the
@@ -13,11 +16,6 @@ export const FEEDBACK_WINDOW_DAYS = 7;
 // Only a lesson the teacher recorded as held: no survey for a lesson nobody came to (owner review 2026-11-07).
 const RATEABLE_STATUSES = ['completed'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-export function lessonEnd(b: { scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null }): DateTime {
-  if (b.scheduled_end) return DateTime.fromISO(b.scheduled_end, { zone: 'utc' });
-  return DateTime.fromISO(b.scheduled_start, { zone: 'utc' }).plus({ minutes: Number(b.duration_minutes) || 30 });
-}
 
 /** A lesson can be rated once it has ended, for FEEDBACK_WINDOW_DAYS, unless it was cancelled or missed. */
 export function canRate(b: { status: string; scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null }, now: DateTime): boolean {

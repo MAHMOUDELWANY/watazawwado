@@ -2,7 +2,7 @@ import React from 'react';
 import { MushafEmblem } from '../emblems/DoorEmblems';
 import {
   GOLD, GOLD_HI, GOLD_LO, PAPER, PAPER_SHADE, INK, FLAME, CRIMSON_DEEP,
-  useGradientIds, GoldGradient, Sparkle, Khatam, OpenMushaf, ClosedMushaf, HangingLantern, Glyph,
+  useGradientIds, Svg, GoldGradient, Sparkle, Khatam, OpenMushaf, ClosedMushaf, HangingLantern, Glyph,
 } from './svgKit';
 
 /**
@@ -11,14 +11,6 @@ import {
  */
 
 type EmblemProps = { className?: string };
-
-function Svg({ className, children }: EmblemProps & { children: React.ReactNode }) {
-  return (
-    <svg viewBox="0 0 96 96" className={className} aria-hidden="true" focusable="false" fill="none">
-      {children}
-    </svg>
-  );
-}
 
 /** Tajweed: a mushaf with the arcs of the sound rising from it (makharij). */
 function TajweedEmblem({ className }: EmblemProps) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   GOLD, GOLD_HI, PAPER, PAPER_SHADE, INK, FLAME, CRIMSON_DEEP,
-  useGradientIds, GoldGradient, Sparkle, Khatam, OpenMushaf, ClosedMushaf, Glyph,
+  useGradientIds, Svg, GoldGradient, Sparkle, Khatam, OpenMushaf, ClosedMushaf, Glyph,
 } from './svgKit';
 
 /**
@@ -14,14 +14,6 @@ import {
 type EmblemProps = { className?: string };
 const SKIN = '#E2B48C';
 const TEAL_LIGHT = '#12A4BC';
-
-function Svg({ className, children }: EmblemProps & { children: React.ReactNode }) {
-  return (
-    <svg viewBox="0 0 96 96" className={className} aria-hidden="true" focusable="false" fill="none">
-      {children}
-    </svg>
-  );
-}
 
 function Glow({ cx = 48, cy = 50, r = 30 }: { cx?: number; cy?: number; r?: number }) {
   return <circle className="emblem-glow" cx={cx} cy={cy} r={r} fill={GOLD} fillOpacity="0.2" />;

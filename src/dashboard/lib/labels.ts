@@ -29,6 +29,19 @@ export function bookingStatusLabel(status: string | null | undefined, isAr: bool
   return s ? s[isAr ? 1 : 0] : status;
 }
 
+/** Badge colours for a booking status. */
+export function bookingStatusBadge(status: string): string {
+  switch (status.toLowerCase()) {
+    case 'confirmed': return 'bg-success/15 text-success border-success/30';
+    case 'completed': return 'bg-secondary/30 text-accent border-secondary/60';
+    case 'pending': return 'bg-warning/15 text-warning border-warning/30';
+    case 'cancelled': return 'bg-destructive/15 text-destructive border-destructive/30';
+    case 'no_show': return 'bg-destructive/10 text-destructive border-destructive/20';
+    case 'rescheduled': return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
+    default: return 'bg-muted text-muted-foreground border-border';
+  }
+}
+
 // Where a lead came from, in words; unknown codes stay as they are.
 const LEAD_SOURCES: Record<string, [string, string]> = {
   web_booking_modal: ['Website booking', 'حجز من الموقع'], student_portal: ['Student account', 'حساب الطالب'],

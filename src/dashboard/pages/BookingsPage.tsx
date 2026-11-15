@@ -22,7 +22,7 @@ import { BulkCancelBar, bulkCancelable } from '../components/BulkCancelBar';
 import { EmptyState } from '../../components/EmptyState';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
-import { serviceLabel, zoneCity } from '../lib/labels';
+import { bookingStatusBadge, serviceLabel, zoneCity } from '../lib/labels';
 import { notify } from '../../components/ui/Feedback';
 
 /**
@@ -147,18 +147,6 @@ export default function BookingsPage() {
     no_show: t('No-show', 'غياب'),
     rescheduled: t('Moved', 'اتغيّر ميعادها')
   } as Record<string, string>)[status.toLowerCase()] || status;
-
-  const getBookingStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'confirmed': return 'bg-success/15 text-success border-success/30';
-      case 'completed': return 'bg-secondary/30 text-accent border-secondary/60';
-      case 'pending': return 'bg-warning/15 text-warning border-warning/30';
-      case 'cancelled': return 'bg-destructive/15 text-destructive border-destructive/30';
-      case 'no_show': return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'rescheduled': return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
-      default: return 'bg-muted text-muted-foreground border-border';
-    }
-  };
 
   const getPaymentBadge = (status: BookingPaymentStatus) => {
     switch (status) {
@@ -370,7 +358,7 @@ export default function BookingsPage() {
                           />
                         )}
                         <span className="font-mono font-bold text-sm text-primary group-hover:underline">{b.reference_code}</span>
-                        <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${getBookingStatusBadge(b.status)}`}>{statusLabel(b.status)}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${bookingStatusBadge(b.status)}`}>{statusLabel(b.status)}</span>
                         {isSuperAdmin && (
                           <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${paymentBadgeInfo.classes}`}>{paymentBadgeInfo.text}</span>
                         )}

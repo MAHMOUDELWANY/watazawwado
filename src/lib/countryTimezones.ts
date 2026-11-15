@@ -1069,16 +1069,6 @@ export function cleanPhoneDigits(raw: string, countryCode: string): string {
 }
 
 /**
- * Formats a phone number cleanly into standard international E.164 string (+CountryCode Digits).
- */
-export function formatFullInternationalPhone(localOrFullNumber: string, countryCode: string): string {
-  const country = findCountryByCode(countryCode);
-  const clean = cleanPhoneDigits(localOrFullNumber, countryCode);
-  if (!clean) return '';
-  return `${country.dialCode}${clean}`;
-}
-
-/**
  * Validates a phone number against its country's expected digit constraints.
  */
 export function validatePhoneNumber(

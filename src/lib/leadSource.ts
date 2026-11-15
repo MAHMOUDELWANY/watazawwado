@@ -117,10 +117,6 @@ export function readReferral(): string | null {
   }
 }
 
-export function clearReferral(): void {
-  try { localStorage.removeItem(REFERRAL_KEY); } catch { /* storage blocked */ }
-}
-
 /** One short label for admin screens: utm_source, else the referrer host, else the onboarding answer. */
 export function sourceLabel(leadSource: LeadSource | null | undefined, heardAbout?: string | null, isAr = false): string | null {
   const tag = leadSource?.utm_source || leadSource?.referrer;

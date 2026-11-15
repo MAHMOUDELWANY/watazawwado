@@ -32,7 +32,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
   - Public site: `src/components`, `src/App.tsx`
   - Student portal: `src/student`
   - Teacher dashboard: `src/dashboard`
-- **Backend**: one Express router in `api/index.ts` (~8.7k lines, all `/api/*` routes). Deployed as a single Vercel function (`vercel.json` rewrites `/api/*` → `api/index`). Domain logic lives in `server/` (`payment`, `pricing`, `intake`, `integrations`, `notifications`).
+- **Backend**: one Express router in `api/index.ts` (~10.5k lines, all `/api/*` routes). Deployed as a single Vercel function (`vercel.json` rewrites `/api/*` → `api/index`). Domain logic lives in `server/` (`payment`, `pricing`, `intake`, `integrations`, `notifications`).
 - **Database**: Supabase Postgres. Schema is only in `supabase/migrations/`; TS types in `src/types/database.ts`. Critical writes go through `SECURITY DEFINER` RPCs (`create_booking_atomic`, `verify_payment_atomic`, ...).
 - **Integrations**: Stripe + PayPal, Google Calendar, Zoom, Brevo email, WhatsApp, Gemini (`@google/genai`) for the AI intake chat and learning guide. Reminders are sent by an external HTTP cron authenticated with `CRON_SECRET`.
 

@@ -20,6 +20,15 @@ export function useGradientIds(...names: string[]) {
   return Object.fromEntries(names.map((n) => [n, `${n}-${base}`])) as Record<string, string>;
 }
 
+/** The 96×96 decorative canvas every emblem is drawn on. */
+export function Svg({ className, children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <svg viewBox="0 0 96 96" className={className} aria-hidden="true" focusable="false" fill="none">
+      {children}
+    </svg>
+  );
+}
+
 export function GoldGradient({ id }: { id: string }) {
   return (
     <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">

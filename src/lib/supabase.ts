@@ -85,49 +85,6 @@ export const supabase: SupabaseClient = createClient(
 );
 
 /**
- * Diagnostics function to test database connectivity
- */
-export async function testDatabaseConnection(): Promise<{
-  connected: boolean;
-  configured: boolean;
-  message: string;
-  url?: string;
-}> {
-  if (!isSupabaseConfigured()) {
-    return {
-      connected: false,
-      configured: false,
-      message: 'Supabase credentials not configured in environment (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY). Using fallback local data layer.',
-    };
-  }
-
-  try {
-    const { data, error } = await supabase.from('services').select('id, title').limit(1);
-    if (error) {
-      return {
-        connected: false,
-        configured: true,
-        message: `Connected to Supabase endpoint, but table query returned: ${error.message}`,
-        url: supabaseUrl,
-      };
-    }
-    return {
-      connected: true,
-      configured: true,
-      message: 'Successfully connected to Supabase PostgreSQL database with active RLS!',
-      url: supabaseUrl,
-    };
-  } catch (err: any) {
-    return {
-      connected: false,
-      configured: true,
-      message: `Connection error: ${err.message || 'Unknown network error'}`,
-      url: supabaseUrl,
-    };
-  }
-}
-
-/**
  * NX-12: a separate client for the lesson room's live channel, with the public key only (no user session), so the
  * channel never depends on a user token or its refresh. The room's privacy comes from its server-issued key.
  */

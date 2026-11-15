@@ -29,6 +29,7 @@ import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import { StartLessonButton } from './StartLessonButton';
 import { LessonAttendance, AttendanceHint } from './LessonAttendance';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { bookingStatusBadge } from '../lib/labels';
 import { RecordPaymentModal } from './RecordPaymentModal';
 import { MoveTeacherControl } from './MoveTeacherControl';
 import { useTeacherAuth } from '../../lib/auth';
@@ -396,18 +397,6 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     rescheduled: t('Moved', 'اتغيّر ميعادها')
   } as Record<string, string>)[status.toLowerCase()] || status;
 
-  const getBookingStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'confirmed': return 'bg-success/15 text-success border-success/30';
-      case 'completed': return 'bg-secondary/30 text-accent border-secondary/60';
-      case 'pending': return 'bg-warning/15 text-warning border-warning/30';
-      case 'cancelled': return 'bg-destructive/15 text-destructive border-destructive/30';
-      case 'no_show': return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'rescheduled': return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
-      default: return 'bg-muted text-muted-foreground border-border';
-    }
-  };
-
   const getPaymentBadge = (status: BookingPaymentStatus) => {
     switch (status) {
       case 'paid': return { text: t('Paid', 'مدفوعة'), classes: 'bg-success/15 text-success border-success/30' };
@@ -469,7 +458,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           <div className="flex items-center gap-2">
             {booking && (
               <>
-                <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getBookingStatusBadge(booking.status)}`}>
+                <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${bookingStatusBadge(booking.status)}`}>
                   {statusLabel(booking.status)}
                 </span>
                 {isSuperAdmin && (

@@ -181,18 +181,6 @@ export function check3HourPolicyEligibility(scheduledIsoString: string): PolicyC
 }
 
 /**
- * Formats a UTC ISO timestamp into a human-readable local time string.
- */
-export function formatToLocal(
-  isoString: string,
-  timezone: string,
-  format = 'yyyy-MM-dd hh:mm a'
-): string {
-  const dt = DateTime.fromISO(isoString, { zone: 'utc' }).setZone(timezone);
-  return dt.isValid ? dt.toFormat(format) : isoString;
-}
-
-/**
  * Runs a deterministic verification of the primary international target timezones
  * to confirm offset accuracy and DST handling relative to Cairo.
  */
