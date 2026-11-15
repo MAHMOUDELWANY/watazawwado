@@ -1922,17 +1922,22 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
   app.get('/api/student/progress', verifyStudentAuth, async (req: any, res: any) => {
     try {
       const client = getClient();
-      const learners = await getLearners(client, req);
+      const familyLearners = await getLearners(client, req);
       const requestedLearnerId =
         typeof req.query?.learnerId === 'string' ? req.query.learnerId.trim() : '';
 
       if (requestedLearnerId) {
-        if (!canFamilyReadLearner(learners, requestedLearnerId)) {
+        if (!canFamilyReadLearner(familyLearners, requestedLearnerId)) {
           return res.status(403).json({
             error: 'Forbidden: You cannot view progress for a learner outside your family.',
           });
         }
       }
+
+      // A parent who chose "I don't learn" is not a learner: only the children appear (no parent chip, card or subject).
+      const parentFollowsOnly =
+        req.studentUser?.studentProfile?.booking_preference === 'child' && familyLearners.some((l) => !l.isPrimary);
+      const learners = parentFollowsOnly ? familyLearners.filter((l) => !l.isPrimary) : familyLearners;
 
       if (learners.length === 0) {
         return res.json({

@@ -314,6 +314,37 @@ test('PR-07: GET /api/student/progress returns isGuardianAccount=true and childr
   }
 });
 
+test('PR-07: a parent who does not learn (booking_preference=child) is not listed as a learner', async () => {
+  const app = express();
+  app.use(express.json());
+  const supabase = createFakeGuardianSupabase(new Date(Date.now() + 3 * 24 * 3600 * 1000).toISOString());
+  registerProgressRoutes(app, {
+    getClient: () => supabase,
+    rateLimit: (_req: any, _res: any, next: any) => next(),
+    verifyStudentAuth: (req: any, _res: any, next: any) => {
+      req.studentUser = { id: GUARDIAN_ID, email: 'parent@example.com', studentProfile: { booking_preference: 'child', learner_type: 'child' } };
+      next();
+    },
+    verifyTeacherAuth: (_req: any, _res: any, next: any) => next(),
+    requireSuperAdmin: (_req: any, _res: any, next: any) => next(),
+    getLearners: async () => [
+      { id: GUARDIAN_ID, name: 'Abu Maryam Al-Ansari', learnerType: 'child', isPrimary: true },
+      { id: CHILD_1_ID, name: 'Maryam Al-Ansari', learnerType: 'child', isPrimary: false },
+    ],
+  });
+  const server = http.createServer(app);
+  await new Promise<void>((resolve) => server.listen(0, resolve));
+  try {
+    const res = await fetch(`http://127.0.0.1:${(server.address() as { port: number }).port}/api/student/progress`);
+    const body = (await res.json()) as ProgressApiResponse;
+    assert.deepEqual(body.learners!.map((l) => l.id), [CHILD_1_ID]);
+    assert.deepEqual(body.childrenOverview!.map((c) => c.id), [CHILD_1_ID]);
+    assert.equal(body.learner!.id, CHILD_1_ID);
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+});
+
 test('PR-07: getRememberedChildId and setRememberedChildId persist the last opened child in localStorage', () => {
   const store = new Map<string, string>();
   const prevWindow = (globalThis as any).window;
