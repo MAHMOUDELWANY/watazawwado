@@ -1,10 +1,10 @@
 # Tiles screenshots into one contact sheet so every step of a page can be checked at a glance.
 # usage: python scripts/curriculum/sheet.py <out.png> <cols> <img> [<img> ...]
-import sys
+import os, sys
 from PIL import Image
 
 out, cols, files = sys.argv[1], int(sys.argv[2]), sys.argv[3:]
-W, H = 640, 360
+W, H = map(int, os.environ.get('SHEET_TILE', '640x360').split('x'))  # SHEET_TILE=195x422 for phone shots
 rows = (len(files) + cols - 1) // cols
 S = Image.new('RGB', (W * cols, H * rows), 'white')
 for i, f in enumerate(files):
