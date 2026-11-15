@@ -4,6 +4,20 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Achievement badges: the full set, live in trial mode (2026-11-15)
+
+- Owner approved the 24-badge set (five families by shape, three tiers by metal, subject by gem colour; design
+  `docs/superpowers/specs/2026-11-14-achievement-badges-design.md`) and asked for a trial anyone can open.
+- New page `/badges` and `/ar/badges` (`src/components/public/badges/BadgesPreviewPage.tsx`): trial banner, the big
+  badge's clockwork reveal (silent: the audio track is stripped; sound effects wait), how to read a badge, a child's
+  example shelf, every badge by family, tap for a close-up. Not in the SEO page list, so noindex.
+- Renders from `scripts/badges/build_shelf.py` (Blender 4.5, Eevee) in `public/badges/shelf/`; reveal in
+  `public/badges/ruby-khatam/`.
+- Checks: tsc, build, `test/badges-trial-page.test.ts`, full suite; page rendered headless at 390 px (ar, light) and
+  1280 px (en, dark), no console errors, no sideways scroll, reveal plays muted.
+- Not done yet: the badges on learners' real shelves and the receiving moment per age (next step after the trial), and
+  the new data (khatma, Zad level, 26 weeks, homework 25/50 and retries).
+
 ### MK-01 to MK-04 From the brand and growth strategy (2026-11-12)
 
 Order chosen: MK-04 and MK-03 (copy, green) first, then MK-01 (price, red), then MK-02 (bonus, red, uses the same

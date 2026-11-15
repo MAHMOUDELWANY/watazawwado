@@ -41,6 +41,8 @@ function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<
 // Public pages other than the homepage load on demand, so the first visit downloads less.
 // Dev-only design prototype; import.meta.env.DEV is false in production builds, so the chunk is dropped there.
 const PackYourZaadPage = lazyWithReload(() => import('./components/public/zaad/PackYourZaadPage'));
+// Trial page for the achievement badges (owner, 2026-11-15); not in the SEO page list, so it is noindex.
+const BadgesPreviewPage = lazyWithReload(() => import('./components/public/badges/BadgesPreviewPage'));
 const ZadShowcase = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/ZadShowcase')) : null;
 const MessagesPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/MessagesPrototype')) : null;
 const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
@@ -106,6 +108,8 @@ export function AppRoutes() {
           {/* The waitlist has its own calm chrome, outside the public layout. */}
           <Route path="/zaad" element={<PackYourZaadPage />} />
           <Route path="/ar/zaad" element={<PackYourZaadPage />} />
+          <Route path="/badges" element={<BadgesPreviewPage />} />
+          <Route path="/ar/badges" element={<BadgesPreviewPage />} />
           {ZadShowcase && <Route path="/prototype/zad" element={<ZadShowcase />} />}
           {MessagesPrototype && <Route path="/prototype/messages" element={<MessagesPrototype />} />}
           {/* Public Routes with Shared Layout */}
