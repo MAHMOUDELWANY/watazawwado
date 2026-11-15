@@ -1,6 +1,6 @@
 // Real-time run of a whole lesson in the real LessonPlayer, for the curriculum-review skill: presses Next through every
 // step, takes a mid-transition and a settled screenshot per press, and logs console errors and slow frames.
-// usage: node scripts/curriculum/review-run.mjs <outDir> <subject> <lesson> <presses> [WxH=390x844] [dark] [reduced]
+// usage: node scripts/curriculum/review-run.mjs <outDir> <subject> <lesson> <presses> [WxH=390x844] [dark] [reduced] [full]
 // The preview server must be running on PORT (default 3101). Real clock on purpose: the manual clock hides real-time bugs.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -42,6 +42,9 @@ if (media.length) await send('Emulation.setEmulatedMedia', { features: media });
 await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { let last = performance.now(); window.__maxGap = 0; const f = (t) => { window.__maxGap = Math.max(window.__maxGap, t - last); last = t; requestAnimationFrame(f); }; requestAnimationFrame(f); })();` });
 await send('Page.navigate', { url: `http://localhost:${PORT}/scripts/curriculum/preview/slide.html?subject=${subject}&lesson=${lesson}&player` });
 await sleep(5000);
+if (!(await send('Runtime.evaluate', { expression: "!!document.querySelector('#root > *')" })).result.result.value) { console.error('lesson did not load: is the curriculum-preview server running?'); chrome.kill(); process.exit(1); }
+const key = async (k, code) => { for (const type of ['keyDown', 'keyUp']) await send('Input.dispatchKeyEvent', { type, key: k, code: 'Key' + k.toUpperCase(), windowsVirtualKeyCode: code }); };
+if (flags.includes('full')) { await key('f', 70); await sleep(1500); } // phones are used in the player's full-screen mode
 const shot = async (name) => { const r = await send('Page.captureScreenshot', { format: 'jpeg', quality: 70 }); writeFileSync(join(out, name), Buffer.from(r.result.data, 'base64')); };
 const state = async () => (await send('Runtime.evaluate', { expression: `JSON.stringify({ gap: Math.round(window.__maxGap), scrollW: document.documentElement.scrollWidth, clientW: document.documentElement.clientWidth, text: document.body.innerText.replace(/\\s+/g, ' ').slice(0, 160) })` })).result.result.value;
 const rows = [];

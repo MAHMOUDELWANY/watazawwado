@@ -3,7 +3,7 @@
 # Needs the curriculum-preview server on 3101. Writes <outRoot>/<subject>/L<lesson>/:
 #   text.txt, audit.txt, evidence.txt        page text, build shape, ayah/hadith list
 #   steps/pNN.png                             contact sheet of every build step of page NN (desktop 1600x900, page clock)
-#   run-phone/, run-landscape/, run-dark/     real-time player runs: sheets + run.json (console issues, frame gaps)
+#   run-phone/, run-phone-full/, run-landscape-full/, run-dark/     real-time player runs: sheets + run.json (console issues, frame gaps)
 root=$1; subject=$2; n=$3
 out="$root/$subject/L$n"; mkdir -p "$out/steps"
 tsx=$( [ -x node_modules/.bin/tsx ] && echo node_modules/.bin/tsx || echo ../../../node_modules/.bin/tsx )
@@ -28,6 +28,8 @@ run() { # name size tile cols flags...
   done
 }
 run run-phone 390x844 234x506 8
-run run-landscape 844x390 480x222 4
+# Phones are used in the player's full-screen mode (the preview page cannot scroll, so a non-full landscape run looks cut off).
+run run-phone-full 390x844 234x506 8 full
+run run-landscape-full 844x390 480x222 4 full
 run run-dark 1440x900 480x300 4 dark
 echo "pack $subject L$n: $presses steps, $(ls "$out/steps"/*.png | wc -l) step sheets"

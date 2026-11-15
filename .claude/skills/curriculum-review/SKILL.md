@@ -29,8 +29,13 @@ Per-lesson quality is the same at every scope: the lesson is always the unit.
 Start `curriculum-preview` (`.claude/launch.json`), then from the repo root:
 `sh scripts/curriculum/review-pack.sh <scratch>/review <folder> <lessonNumber>` (run in the background; ~15–20 min a
 lesson). It writes page text, build shape, the evidence list, a contact sheet of **every build step of every page**
-(desktop), and real-time player runs on phone portrait, phone landscape and desktop dark, with `run.json` (console
-issues, frame gaps, horizontal overflow). Screenshots stay in the scratch folder, never in git.
+(desktop), and real-time player runs on phone portrait (default and full screen), phone landscape (full screen) and
+desktop dark, with `run.json` (console issues, frame gaps, horizontal overflow). The preview page cannot scroll, so a
+non-full-screen landscape run looks cut off: judge phones in full screen. Black frames seen only in the step sheets are
+page-clock artefacts. Screenshots stay in the scratch folder, never in git.
+
+Write one dispatch brief per folder in the scratch pack (paths, pack layout, these known limits) and point every expert
+at it: the briefs then stay short and identical.
 
 Also gather: the subject's source books in `C:\Users\ahmed\Documents\watazawwado-sources\<subject>\` and the rows of
 `docs/curriculum/sources.md`. Missing folder or unreadable book: the source comparison is reported **not done**.
@@ -41,14 +46,20 @@ finding format, the calibration file, the pack path, the lesson file paths, and 
 (`<pack>/findings/<expert>.md`). Each expert has a fresh context and sees no other expert's findings. An expert returns
 only a count and the path. **At most six experts running at once, and finish one lesson before starting the next**
 (27 at once exhausted the account's usage limit in minutes and lost every result, 2026-11-14). Findings are files, so
-a run that hits the limit resumes by dispatching only the experts whose file is missing. If subagents are unavailable, run the nine briefs one after another yourself and say so in
-"not checked".
+a run that hits the limit resumes by dispatching only the experts whose file is missing (or by messaging a stopped
+expert to continue). Cost: one expert is roughly a sixth of a five-hour usage window. **Lean mode** (four reviewers
+holding the nine briefs: scholar + sources · designer + learning + age · story + teacher · art + motion) costs about a
+third; use it when the owner asks for speed or the scope is a whole subject, and say in the report which mode ran. If
+subagents are unavailable, run the briefs one after another yourself and say so in "not checked".
 
 ## 4. Refute, then chair
 1. **Refuter** (fresh subagent): tries to knock down every finding by re-opening its evidence. Disproved findings are
    dropped from the owner report and kept in the record as `refuted` with the reason.
 2. **Chair** (you): merge duplicates, keep the strongest evidence, resolve or report contradictions, rank by severity,
    score and issue the verdict (§5 of panel.md). Open every blocker's and major's evidence yourself before it ships.
+   `python scripts/curriculum/review-merge.py <pack>/L<n> <folder> <n> <date>` applies the refuter's verdicts, folds
+   duplicates, scores, and writes the English record plus `<pack>/L<n>/findings.json`. Check its "Raised" count against
+   the number of `### ` headings in the findings files: a malformed heading is silently skipped.
 
 ## 5. Course review (per folder, after its lessons)
 The course panel in [panel.md](panel.md) reads all lesson text and all surviving findings and judges the web between
@@ -58,7 +69,11 @@ lessons, progression, consistency and the design system. Runs even for a one-les
 1. **Repo record (English):** `docs/curriculum/reviews/<folder>/<YYYY-MM-DD>-LNN.md` and `<YYYY-MM-DD>-course.md`:
    verdict, score table, every finding with id and `status: open`, refuted findings, rule challenges, not checked.
 2. **Owner report (Arabic only):** one private Artifact page per folder, layout in [report.md](report.md). Plain,
-   direct Arabic; `humanizer` tells apply. Screenshots inline as evidence.
+   direct Arabic; `humanizer` tells apply. Screenshots inline as evidence. A subagent per lesson writes
+   `<pack>/L<n>/findings-ar.json` (Arabic text, one frame and crop per visual finding); the chair writes
+   `<pack>/chair.json` (summary, top list, course notes, decisions with a recommendation, what did not run); then
+   `python scripts/curriculum/review-report.py <pack> <out.html>` builds the page. It refuses to build while any
+   finding lacks Arabic text.
 3. **Chat (Arabic):** verdict per lesson, counts by severity, the three worst findings, the link.
 4. One log line in `docs/curriculum/PLAN.md` §8. Commit the record and skill changes; never the screenshots.
 

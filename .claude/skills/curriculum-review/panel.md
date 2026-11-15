@@ -149,7 +149,8 @@ Verdict per lesson and per course, stated in one line with no softening:
 - **Needs fixes**: fixable without rethinking the lesson; list the must-fix ids.
 - **Rebuild**: the concept, structure or look is wrong; patching will not save it.
 
-Score out of 100, start each area at full marks and deduct per surviving finding (blocker −8, major −4, minor −1.5,
-polish −0.5, never below 0 in an area): content correctness 25 · pedagogy 20 · story and writing 15 · visual design 15
-· age fit 10 · motion and defects 10 · teachability 5. Sources and copyright is pass / fail / not checked. A confirmed
+Score out of 100, computed by `scripts/curriculum/review-merge.py`. Each area starts at full marks and every surviving
+finding multiplies it (blocker ×0.5, major ×0.9, minor ×0.97, polish ×0.99): content correctness 25 · pedagogy 20 ·
+story and writing 15 · visual design 15 · age fit 10 · motion and defects 10 · teachability 5. The score ranks lessons
+against each other; the verdict and the must-fix list are what the owner acts on. Sources and copyright is pass / fail / not checked. A confirmed
 blocker in correctness or copyright caps the verdict at "Needs fixes" whatever the score.

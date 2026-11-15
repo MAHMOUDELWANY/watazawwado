@@ -973,6 +973,11 @@ B3–B5 → continue lesson by lesson.
   same on the student page. Questions: `server/placement/ladders.ts` (36, written from the lessons; they wait for the
   owner's review like the lessons). Egyptian Sounds stays a side door the teacher picks. Next: Round 4 (Lesson 4 of
   every Level 1).
+- **2026-11-15 · First run of the `curriculum-review` skill: Zad Essentials Adults L1–L2.** L1 by the full nine-expert
+  panel, L2 in lean mode (four reviewers holding the nine briefs); refuter and chair on both; stopped before L3 at the
+  owner's request. Verdicts: L1 needs fixes (54.9/100, 28 major, 0 blocker), L2 needs fixes (68.8/100, 12 major).
+  Records: `docs/curriculum/reviews/zad-adults/2026-11-15-L01.md`, `-L02.md`; owner's Arabic report is a private
+  Artifact. Nothing in the lessons was changed; findings wait for the owner's accept / reject.
 - **2026-11-16 · Level covers and landmarks (Meshy).** Audit: 15 level/version doors reused another version's cover
   (Tajweed 2–3, Fusha Kids 2–3, Fusha 12+ 2–3, Egyptian Sounds, Egyptian Adults 2–3, Franco, Reading Franco, Egyptian
   Kids 2–3, Teens 2–3) and 21 road-map stages of the new levels had no landmark. Made all 36 with Meshy (nano-banana-pro,
