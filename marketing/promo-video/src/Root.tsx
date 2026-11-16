@@ -13,6 +13,9 @@ import { V9Anas, V9_TOTAL } from './V9Anas';
 import { V10Screen, V10_SLIDES } from './V10Screen';
 import { V11How, V11_SLIDES } from './V11How';
 import { V12Words, V12_TOTAL } from './V12Words';
+import { V13Madd, V13_SLIDES } from './V13Madd';
+import { V14Audience, V14_SLIDES } from './V14Audience';
+import { Thumbs, THUMBS } from './Thumbs';
 
 export const Root: React.FC = () => (
   <>
@@ -29,5 +32,8 @@ export const Root: React.FC = () => (
     <Composition id="V10Screen" component={V10Screen} durationInFrames={V10_SLIDES} fps={30} width={1080} height={1350} />
     <Composition id="V11How" component={V11How} durationInFrames={V11_SLIDES} fps={30} width={1080} height={1350} />
     <Composition id="V12Words" component={V12Words} durationInFrames={V12_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="V13Madd" component={V13Madd} durationInFrames={V13_SLIDES} fps={30} width={1080} height={1350} />
+    <Composition id="V14Audience" component={V14Audience} durationInFrames={V14_SLIDES} fps={30} width={1080} height={1350} />
+    <Composition id="Thumbs" component={Thumbs} durationInFrames={THUMBS.length} fps={30} width={1080} height={1920} />
   </>
 );
