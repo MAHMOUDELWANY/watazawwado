@@ -1,17 +1,21 @@
 import React from 'react';
-import { AbsoluteFill, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Audio, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame } from 'remotion';
 import { COPPER, CRIMSON, FPS, GOLD, GOLD_SOFT, SANS, SERIF, Sfx, TEAL_DEEP, clamp, io } from './kit';
 import { AR, BigCard, ESPRESSO, GraphPaper, INK, Label, Logo, Paper, SAND, WHITE } from './V2Ain';
+import { makeVO } from './captions';
+import V5W from './words-v5.json';
+
+const vo = makeVO(V5W as [string, number, number][]);
 
 /**
- * V5 · "3 words your kids hear at every meal" (Content Calendar, 20 Nov 2026). Voiced by the owner's own recording
- * (public/vo-v5.mp3); SC holds the scene starts in seconds and is retimed to the recording's word timings.
+ * V5 · "3 words your kids hear at every meal" (Content Calendar, 20 Nov 2026). Voiced by the owner's English clone
+ * (public/vo-v5.mp3, eleven_v4, from 0.3 s); SC holds the scene starts in seconds and is retimed to the recording's word timings.
  * Retention method: a moment (dinner) → the gap (they say it, do they know it?) → three words, each tied to a
  * moment at the table → one thing to do tonight.
  */
-export const V5_TOTAL = Math.round(33 * FPS);
+export const V5_TOTAL = Math.round(40 * FPS);
 const t = (s: number) => Math.round(s * FPS);
-export const SC = { hook: 0, w1: 4.2, w2: 11.5, w3: 17.8, recap: 25.0, end: 29.0 };
+export const SC = { hook: 0, w1: 6.4, w2: 15.2, w3: 23.4, recap: 31.9, end: 34.1 };
 
 const WORDS = [
   { ar: 'بِسْمِ اللهِ', tr: 'Bismillah', mean: 'In the name of Allah', when: 'Before the first bite', color: CRIMSON },
@@ -89,7 +93,7 @@ const Hook: React.FC = () => {
   const f = useCurrentFrame();
   const bubble = (i: number, x: number, y: number) => {
     const s = spring({ frame: f - 14 - i * 8, fps: FPS, config: { damping: 9 } });
-    const known = io(f, t(2.6), t(3.0));
+    const known = io(f, t(4.0), t(4.4));
     return (
       <div key={i} style={{ position: 'absolute', left: x, top: y, transform: `scale(${s}) rotate(${[-4, 3, -2][i]}deg)` }}>
         <div style={{ background: WHITE, border: `6px solid ${INK}`, borderRadius: 34, padding: '14px 28px', fontFamily: AR, fontSize: 54, color: INK, boxShadow: '0 10px 16px rgba(40,25,15,0.25)', whiteSpace: 'nowrap' }}>
@@ -111,7 +115,7 @@ const Hook: React.FC = () => {
       {bubble(2, 250, 1170)}
       <div style={{ position: 'absolute', left: 90, right: 90, top: 210, textAlign: 'center' }}>
         <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 60, color: INK, opacity: io(f, 0, 8) }}>Your kids already say these at dinner.</div>
-        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 92, color: CRIMSON, marginTop: 14, transform: `scale(${spring({ frame: f - t(2.4), fps: FPS, config: { damping: 9 } })})` }}>Do they know what they mean?</div>
+        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 92, color: CRIMSON, marginTop: 14, transform: `scale(${spring({ frame: f - t(4.0), fps: FPS, config: { damping: 9 } })})` }}>Do they know what they mean?</div>
       </div>
     </AbsoluteFill>
   );
@@ -130,14 +134,14 @@ const Word: React.FC<{ i: number; dur: number }> = ({ i, dur }) => {
         <Paper seed={'v5w' + i} x={70} y={380} w={940} h={470} color={w.color} rot={i % 2 ? 1.2 : -1.2}>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ fontFamily: AR, fontSize: i === 2 ? 128 : 160, color: WHITE, lineHeight: 1.3, direction: 'rtl' }}>{w.ar}</div>
-            <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 62, color: GOLD_SOFT, opacity: io(f, t(1.0), t(1.4)) }}>{w.tr}</div>
+            <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 62, color: GOLD_SOFT, opacity: io(f, t(2.0), t(2.4)) }}>{w.tr}</div>
           </div>
         </Paper>
       </div>
-      <Label at={t(2.2)} x={540} y={930} text={`“${w.mean}”`} size={56} rot={-1.5} />
+      <Label at={t(3.2)} x={540} y={930} text={`“${w.mean}”`} size={56} rot={-1.5} />
       <div style={{ position: 'absolute', left: 0, top: 0, width: 1080, height: 1920, transform: `translateY(${(1 - scene) * 700}px)` }}>
         <Paper seed={'v5s' + i} x={110} y={1080} w={860} h={560} color={SAND} rot={i % 2 ? -1 : 1}>{null}</Paper>
-        {i === 0 && <><Plate x={540} y={1360} r={190} /><ForkHand p={io(f, t(1.6), t(2.4))} x={480} y={1210} /></>}
+        {i === 0 && <><Plate x={540} y={1360} r={190} /><ForkHand p={io(f, t(1.8), t(2.6))} x={480} y={1210} /></>}
         {i === 1 && <Plate x={540} y={1360} r={190} food={interpolate(f, [t(1.2), t(3.2)], [1, 0], clamp)} />}
         {i === 2 && <Pot x={330} y={1150} steam={Math.min(1, f / 20)} />}
       </div>
@@ -171,8 +175,8 @@ const Recap: React.FC = () => {
 
 const End: React.FC = () => {
   const f = useCurrentFrame();
-  const bag = spring({ frame: f - 24, fps: FPS, config: { damping: 9 } });
-  const zip = io(f, 40, 56);
+  const bag = spring({ frame: f - 100, fps: FPS, config: { damping: 9 } });
+  const zip = io(f, 108, 124);
   return (
     <AbsoluteFill>
       <Paper seed="v5end" x={70} y={300} w={940} h={520} color={TEAL_DEEP} rot={-1}>
@@ -186,12 +190,18 @@ const End: React.FC = () => {
           {zip > 0 && <path d={`M40 80 H${40 + 130 * zip}`} stroke={GOLD_SOFT} strokeWidth={9} strokeLinecap="round" strokeDasharray="10 7" />}
         </svg>
       </div>
-      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 32, 42) }}>Pack your zaad</div>
-      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 50, 60) }}>
+      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 104, 114) }}>Pack your zaad</div>
+      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 120, 130) }}>
         <div style={{ background: CRIMSON, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 48, padding: '16px 42px', borderRadius: 999, border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.3)' }}>Link in bio</div>
       </div>
     </AbsoluteFill>
   );
+};
+
+/** Captions under the plate while a word is on screen; the hook, recap and end carry the line as big type. */
+const WordCaptions: React.FC = () => {
+  const f = useCurrentFrame();
+  return f >= t(SC.w1) && f < t(SC.recap) ? <vo.Captions dark={() => false} top={1745} /> : null;
 };
 
 export const V5Meal: React.FC = () => {
@@ -210,13 +220,14 @@ export const V5Meal: React.FC = () => {
       <Sequence from={t(SC.end)}><Slide dur={99999} from={-1}><End /></Slide></Sequence>
       <Border total={V5_TOTAL} />
       <Logo />
-      {/* VO: the owner's recording goes in here once it arrives: <Audio src={staticFile('vo-v5.mp3')} /> */}
-      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.35} />)}
-      {[0, 1, 2].map((i) => <Sfx key={'p' + i} at={14 + i * 8} src="wv/pop-hand.wav" volume={0.3} />)}
-      {[SC.w1, SC.w2, SC.w3].map((s) => <Sfx key={'s' + s} at={t(s) + 4} src="paper/slap-s.mp3" volume={0.3} />)}
-      {[SC.w1, SC.w2, SC.w3].map((s) => <Sfx key={'m' + s} at={t(s + 2.2)} src="paper/marker-s.mp3" volume={0.3} />)}
-      <Sfx at={t(SC.end) + 24} src="wv/pop-hand.wav" volume={0.3} />
-      <Sfx at={t(SC.end) + 40} src="paper/marker-s.mp3" volume={0.3} />
+      <Sequence from={9}><Audio src={staticFile('vo-v5.mp3')} /></Sequence>
+      <WordCaptions />
+      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.18} />)}
+      {[0, 1, 2].map((i) => <Sfx key={'p' + i} at={14 + i * 8} src="wv/pop-hand.wav" volume={0.18} />)}
+      {[SC.w1, SC.w2, SC.w3].map((s) => <Sfx key={'s' + s} at={t(s) + 4} src="paper/slap-s.mp3" volume={0.18} />)}
+      {[SC.w1, SC.w2, SC.w3].map((s) => <Sfx key={'m' + s} at={t(s + 3.2)} src="paper/marker-s.mp3" volume={0.18} />)}
+      <Sfx at={t(SC.end) + 100} src="wv/pop-hand.wav" volume={0.2} />
+      <Sfx at={t(SC.end) + 108} src="paper/marker-s.mp3" volume={0.18} />
     </AbsoluteFill>
   );
 };
