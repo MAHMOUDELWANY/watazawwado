@@ -44,7 +44,8 @@ never let `voice-builder` invent a voice or write files to the project root.
 | Long YouTube script | `PRODUCTION.md` §5; `video`, `copywriting` |
 | Title, description, chapters, tags | `seo-content-brief` / `ai-seo` for the search phrase; `PRODUCTION.md` §5 |
 | Thumbnail | `youtube-thumbnail` (brand colours from `docs/design-system.md`) |
-| Carousel | `gemini-carousel` brief, or HTML/CSS slides via `graphic-designer`; 1080×1350 |
+| Carousel | `watazawwado-video-generator` carousel engine (`marketing/promo-video/src/deck.tsx`, Zad on every slide, PACKED ending); 1080×1350 |
+| Motion video / Short | `watazawwado-video-generator` Shorts engine (`reel.tsx`): v4-tagged clone voice, cut every beat, two open loops, Zad, our PACKED ending |
 | Captions for all platforms | `social`, `post-formatter` (adapt: Instagram/TikTok/Facebook, not LinkedIn) |
 | Monthly calendar or new series | `content-strategy`, `content-matrix` with the 5 pillars of `STRATEGY.md` §7 |
 | Lead magnet / email follow-up | `lead-magnets`, `emails` (Brevo free plan) |

@@ -1,6 +1,6 @@
 ---
 name: watazawwado-video-generator
-description: Use when the owner wants a Watazawwado promo, motion-graphics, explainer or ad video (Reels, TikTok, Shorts, YouTube, website), a new cut or edit of one, a voice-over script for ElevenLabs, or says "اعمل فيديو", "فيديو إعلاني", "موشن جرافيك", "زي فيديو دولينجو", "نسخة تيك توك/يوتيوب".
+description: Use when the owner wants a Watazawwado promo, motion-graphics, explainer or ad video (Reels, TikTok, Shorts, YouTube, website), a carousel, a new cut or edit of one, a voice-over script for ElevenLabs, or says "اعمل فيديو", "فيديو إعلاني", "موشن جرافيك", "زي فيديو دولينجو", "نسخة تيك توك/يوتيوب".
 ---
 
 # Watazawwado Video Generator
@@ -15,7 +15,7 @@ production method, the owner's taste and the lessons learned (session of 2026-10
 |---|---|---|
 | 1 | Discuss first if the owner says "ناقشني": plan only, no build | Owner approves the plan |
 | 2 | Script in chat, in the ElevenLabs v4 format ([reference.md §1](reference.md)) | Owner has a copy-paste code block |
-| 3 | Owner records it with his voice clone ("mahmoud", eleven_v4) | Newest `Downloads/ElevenLabs_*mahmoud*_v4.mp3` found (the attached file may be an older one: check timestamps) |
+| 3 | Generate it on the ElevenLabs voice connector (`mahmoud-english` / `mahmoud-fusha`, eleven_v4, 2 takes) | Take downloaded, livelier one picked |
 | 4 | Loudness-normalise the VO, transcribe word timings locally (faster-whisper), fix spellings | `src/words-*.json` matches the script |
 | 5 | Build scenes in `marketing/promo-video` (Remotion), reuse `kit.tsx`, `captions.tsx` (`makeVO`), shared pieces exported from `Promo.tsx` | Draft renders |
 | 6 | Draft at `--scale=0.4 --muted`, review a contact sheet of frames | No overlaps, captions readable, every scene on its word |
@@ -23,6 +23,36 @@ production method, the owner's taste and the lessons learned (session of 2026-10
 | 8 | Send the phone copy with `SendUserFile`, commit on the video branch, log in `docs/marketing/LOG.md` | Owner has the file; nothing published |
 
 Commands, file layout and the measured recipes are in [reference.md §4](reference.md).
+
+## The house style: Shorts engine + carousel engine (owner, 2026-11-16, binding, "always this result")
+
+The owner approved the v2 Shorts (V4, V5, V7, V9, V12) and asked that **every** video and every carousel come out
+like them. Build every new video on `marketing/promo-video/src/reel.tsx` and every carousel on `src/deck.tsx`;
+the older paper-cut look (V2Ain, V3–V15 first versions) is retired.
+
+**Video (`reel.tsx`, compositions `R<n><Name>.tsx`, 1080×1920, 30 fps):**
+- Script with ElevenLabs v4 emotion tags on every line ([excited], [curious], [whispers], [laughs], [pause],
+  [serious], [warm]); Claude generates it on the voice connector (`mahmoud-english`; Arabic words and syllables from
+  `mahmoud-fusha`, or owner-approved clips, spliced in with `build_vo.py`). Two takes, pick the livelier.
+- **Second 1 pays off**: a line the scroller gets something from at once, over Meshy art (`public/thumbs/<id>.png`)
+  with Zad popping in.
+- **A hard cut every beat (1–3 s)** keyed to word indexes, punch-in 1.07 → 1, colour fields cycling
+  crimson / ink / teal / cream / sand / copper; slammed serif lines with one `*ribbon*` italic word.
+- **Two open loops** at least: a `Loop` sticker ("#3 is the surprise", "a 5-second test at the end") and a question
+  or quiz later; both paid off.
+- **Zad (3D, the site's model) in most beats**, playing a move that fits the line (`ZadClip` PNG sequences in
+  `public/zad/<move>`: wave, check, oops, think, point, cheer, love, clap, search, proud, spin, dash).
+- Arabic on `ArCard` / `Quote` cards; beats with Arabic audio are `quiet` (no pop over Arabic).
+- **Our ending**: "Packed! That's your zaad for today." spoken, the PACKED ✓ stamp, Zad on the zaad bag and a
+  NEXT PACK card teasing the next post. Never a copied line from a reference ("do it tonight before you sleep").
+- Kinetic captions at the bottom, a top progress ribbon, the logo top-right, a soft pop per cut.
+
+**Carousel (`deck.tsx`, `Deck` with `Card`s, 1080×1350, one frame per slide):**
+- Same colour fields, `Big` / `Num` / `Loop` / `ArCard` / `Quote` blocks (pass `f = SETTLED`), Zad on every slide,
+  a segmented progress ribbon, a swipe tag (`SWIPE ›`, `NEXT ›`, or a loop like `THE BOLD ONE ›`).
+- Slide 1 is the hook plus a `Loop` sticker; the last slide is `DeckOutro`: PACKED ✓, the key line, Zad + zaad bag,
+  NEXT PACK, one ask. Render with `npx remotion render src/index.ts <Comp> out/<id> --sequence --image-format=png`,
+  publish as JPG under `public/social/<id>/`.
 
 ## The retention method (owner, 2026-11-13: binding for every teaching video)
 
@@ -59,7 +89,7 @@ life (V2: "every time you say *Arabic*, start it from your throat"), the ending 
 text and SFX; the owner rejected V4 for it. Every video gets a voice-over in the clone voice, and the scenes are
 timed to it.
 
-**House frame for every motion video (owner, 2026-11-13):**
+**House frame of the paper-cut era (2026-11-13, superseded by the Shorts engine on 2026-11-16; keep the progress and zaad ideas):**
 - A **progress ribbon around the frame** (crimson → copper → gold → teal) that runs clockwise from the top centre and
   closes on the last frame, so the viewer always sees how much is left.
 - The **logo pressed into the paper** top-right: a soft round dent, low opacity, multiply; never a square sticker.

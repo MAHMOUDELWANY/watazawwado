@@ -37,7 +37,7 @@ export const Zad: React.FC<ZadSpot & { from: number }> = ({ emote, from, x = 700
 
 const Grain: React.FC<{ dark: boolean }> = ({ dark }) => <AbsoluteFill style={{ ...grain, opacity: dark ? 0.5 : 0.8 }} />;
 
-const Background: React.FC<{ bg: Bg; local: number }> = ({ bg, local }) => {
+export const Background: React.FC<{ bg: Bg; local: number }> = ({ bg, local }) => {
   if (typeof bg !== 'string') {
     const z = interpolate(local, [0, 150], [1.12, 1.0], clamp);
     return (

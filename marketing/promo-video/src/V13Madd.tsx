@@ -103,7 +103,7 @@ const S4: React.FC = () => (
 );
 
 /** A Quran word with its stretch letter in crimson. */
-const QWord: React.FC<{ before: string; mark: string; after: string; ref: string; note: string; y: number }> = ({ before, mark, after, ref, note, y }) => (
+export const QWord: React.FC<{ before: string; mark: string; after: string; ref: string; note: string; y: number }> = ({ before, mark, after, ref, note, y }) => (
   <div style={{ position: 'absolute', left: 80, right: 80, top: y, height: 270, borderRadius: 30, background: WHITE, border: '8px solid #fff', boxShadow: '0 10px 16px rgba(0,0,0,0.14)',
     display: 'flex', alignItems: 'center', padding: '0 40px', gap: 30 }}>
     <div style={{ flex: '0 0 460px', direction: 'rtl', textAlign: 'center', fontFamily: AR, fontSize: 110, color: INK, lineHeight: 1.4 }}>

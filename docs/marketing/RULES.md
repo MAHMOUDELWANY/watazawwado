@@ -42,7 +42,9 @@ date.
    - Use a method, never a reference's lines. Our ending: Zad on the zaad bag, "Packed! That's your zaad for
      today", and a teaser for the next pack.
    - Meshy images are welcome where they lift attention.
-   Engine: `marketing/promo-video/src/reel.tsx`.
+   Engine: `marketing/promo-video/src/reel.tsx`. **[Decided 2026-11-16, owner]** This is the house style for every
+   video, carousel and post from now on: carousels use the same look on `src/deck.tsx` (Zad on every slide, a loop on
+   slide 1, the PACKED ending with the next pack).
 
 ## 3. Claims and proof
 
