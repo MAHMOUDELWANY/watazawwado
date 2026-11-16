@@ -1,7 +1,11 @@
 import React from 'react';
-import { AbsoluteFill, Img, Sequence, spring, staticFile, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, Audio, Img, Sequence, spring, staticFile, useCurrentFrame } from 'remotion';
 import { CRIMSON, FPS, GOLD_SOFT, SANS, SERIF, Sfx, TEAL_DEEP, io } from './kit';
 import { AR, ESPRESSO, GraphPaper, INK, Label, Logo, Paper, SAND, WHITE } from './V2Ain';
+import { makeVO } from './captions';
+import V7W from './words-v7.json';
+
+const vo = makeVO(V7W as [string, number, number][]);
 import { Border, Slide } from './V5Meal';
 
 /**
@@ -9,9 +13,9 @@ import { Border, Slide } from './V5Meal';
  * SC is retimed to its word timings. Syllables and two everyday words only, no ayat (RULES §1).
  * Hook: one letter turns قَلْب (heart) into كَلْب (dog). Then where each letter sits, a drill, the word test.
  */
-export const V7_TOTAL = Math.round(37 * FPS);
+export const V7_TOTAL = Math.round(46.5 * FPS);
 const t = (s: number) => Math.round(s * FPS);
-export const SC = { hook: 0, words: 5.5, kaf: 10.0, qaf: 16.0, drill: 22.0, test: 29.0, end: 33.0 };
+export const SC = { hook: 0, words: 6.2, kaf: 12.6, qaf: 21.6, drill: 28.4, test: 36.7, end: 40.7 };
 
 /** Side view of a head with the mouth open: the tongue, the roof, and a glowing dot where the letter is made. */
 const Mouth: React.FC<{ dot: 'k' | 'q' | 'both'; p: number }> = ({ dot, p }) => {
@@ -61,12 +65,12 @@ const WordCard: React.FC<{ ar: string; tr: string; en: string; icon: string; col
 
 const Hook: React.FC = () => {
   const f = useCurrentFrame();
-  const flip = io(f, t(2.6), t(3.2));
+  const flip = io(f, t(4.3), t(4.9));
   return (
     <AbsoluteFill>
       <div style={{ position: 'absolute', left: 80, right: 80, top: 220, textAlign: 'center' }}>
         <div style={{ fontFamily: SANS, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 0, 8) }}>Arabic has two K’s.</div>
-        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 84, color: CRIMSON, marginTop: 14, transform: `scale(${spring({ frame: f - t(1.4), fps: FPS, config: { damping: 9 } })})` }}>
+        <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 84, color: CRIMSON, marginTop: 14, transform: `scale(${spring({ frame: f - t(2.7), fps: FPS, config: { damping: 9 } })})` }}>
           Mix them up…
         </div>
       </div>
@@ -78,8 +82,8 @@ const Hook: React.FC = () => {
           <WordCard ar="كَلْب" tr="kalb" en="dog" icon="🐕" color={TEAL_DEEP} x={0} y={0} rot={0} s={1} />
         </div>
       </div>
-      <div style={{ position: 'absolute', top: 1260, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, t(3.3), t(3.7)) }}>
-        …and your heart becomes a dog.
+      <div style={{ position: 'absolute', top: 1260, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, t(4.5), t(4.9)) }}>
+        …and your heart turns into a dog.
       </div>
     </AbsoluteFill>
   );
@@ -88,12 +92,12 @@ const Hook: React.FC = () => {
 const Words: React.FC = () => {
   const f = useCurrentFrame();
   const a = spring({ frame: f - 2, fps: FPS, config: { damping: 12 } });
-  const b = spring({ frame: f - 30, fps: FPS, config: { damping: 12 } });
+  const b = spring({ frame: f - 73, fps: FPS, config: { damping: 12 } });
   return (
     <AbsoluteFill>
       <WordCard ar="قَلْب" tr="qalb" en="heart" icon="❤️" color={CRIMSON} x={70} y={420} rot={-4} s={a} />
       <WordCard ar="كَلْب" tr="kalb" en="dog" icon="🐕" color={TEAL_DEEP} x={570} y={480} rot={4} s={b} />
-      <Label at={t(3)} x={540} y={1150} text="One letter apart" size={60} />
+      <Label at={t(4.8)} x={540} y={1150} text="One letter apart" size={60} />
     </AbsoluteFill>
   );
 };
@@ -113,7 +117,7 @@ const Place: React.FC<{ which: 'k' | 'q' }> = ({ which }) => {
         </div>
       </div>
       <div style={{ position: 'absolute', left: 110, top: 840, transform: `translateY(${(1 - spring({ frame: f - 4, fps: FPS, config: { damping: 14 } })) * 600}px)` }}>
-        <Mouth dot={k ? 'k' : 'both'} p={io(f, t(1.2), t(1.6))} />
+        <Mouth dot={k ? 'k' : 'both'} p={k ? io(f, t(4.2), t(4.6)) : io(f, t(2.2), t(2.6))} />
       </div>
     </AbsoluteFill>
   );
@@ -122,13 +126,13 @@ const Place: React.FC<{ which: 'k' | 'q' }> = ({ which }) => {
 const DRILL = ['كَا', 'قَا', 'كَا', 'قَا'];
 const Drill: React.FC = () => {
   const f = useCurrentFrame();
-  const beat = 1.25;
+  const beats = [1.48, 2.52, 4.02, 4.84]; // seconds into the scene, on the Fusha clone's syllables
   return (
     <AbsoluteFill>
       <div style={{ position: 'absolute', left: 80, right: 80, top: 220, textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 80, color: INK }}>Try it with me</div>
       <div style={{ position: 'absolute', left: 90, right: 90, top: 470, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
         {DRILL.map((s, i) => {
-          const at = t(1.0 + i * beat);
+          const at = t(beats[i]);
           const on = spring({ frame: f - at, fps: FPS, config: { damping: 8 } });
           const q = s.startsWith('ق');
           return (
@@ -139,7 +143,7 @@ const Drill: React.FC = () => {
           );
         })}
       </div>
-      <Label at={t(6.0)} x={540} y={1300} text="Feel the ق sit deeper?" size={56} />
+      <Label at={t(5.8)} x={540} y={1300} text="Feel the ق sit deeper?" size={56} />
     </AbsoluteFill>
   );
 };
@@ -151,16 +155,16 @@ const Test: React.FC = () => {
       <div style={{ position: 'absolute', left: 80, right: 80, top: 220, textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 80, color: INK }}>
         Now the <span style={{ color: CRIMSON, fontStyle: 'italic' }}>real test</span>
       </div>
-      <WordCard ar="كَلْب" tr="kalb" en="dog" icon="🐕" color={TEAL_DEEP} x={70} y={480} rot={-4} s={spring({ frame: f - 6, fps: FPS, config: { damping: 12 } })} />
-      <WordCard ar="قَلْب" tr="qalb" en="heart" icon="❤️" color={CRIMSON} x={570} y={520} rot={4} s={spring({ frame: f - t(1.6), fps: FPS, config: { damping: 9 } })} />
+      <WordCard ar="كَلْب" tr="kalb" en="dog" icon="🐕" color={TEAL_DEEP} x={70} y={480} rot={-4} s={spring({ frame: f - 58, fps: FPS, config: { damping: 12 } })} />
+      <WordCard ar="قَلْب" tr="qalb" en="heart" icon="❤️" color={CRIMSON} x={570} y={520} rot={4} s={spring({ frame: f - t(3.1), fps: FPS, config: { damping: 9 } })} />
     </AbsoluteFill>
   );
 };
 
 const End: React.FC = () => {
   const f = useCurrentFrame();
-  const bag = spring({ frame: f - 24, fps: FPS, config: { damping: 9 } });
-  const zip = io(f, 40, 56);
+  const bag = spring({ frame: f - 100, fps: FPS, config: { damping: 9 } });
+  const zip = io(f, 108, 124);
   return (
     <AbsoluteFill>
       <Paper seed="v7end" x={70} y={300} w={940} h={520} color={ESPRESSO} rot={-1}>
@@ -174,12 +178,18 @@ const End: React.FC = () => {
           {zip > 0 && <path d={`M40 80 H${40 + 130 * zip}`} stroke={GOLD_SOFT} strokeWidth={9} strokeLinecap="round" strokeDasharray="10 7" />}
         </svg>
       </div>
-      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 32, 42) }}>Pack your zaad</div>
-      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 50, 60) }}>
+      <div style={{ position: 'absolute', top: 1230, width: '100%', textAlign: 'center', fontFamily: SERIF, fontWeight: 700, fontSize: 70, color: INK, opacity: io(f, 104, 114) }}>Pack your zaad</div>
+      <div style={{ position: 'absolute', top: 1340, width: '100%', display: 'flex', justifyContent: 'center', opacity: io(f, 120, 130) }}>
         <div style={{ background: CRIMSON, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 48, padding: '16px 42px', borderRadius: 999, border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.3)' }}>Link in bio</div>
       </div>
     </AbsoluteFill>
   );
+};
+
+/** Captions under the mouth drawing; the other scenes carry the line as big type. */
+const PlaceCaptions: React.FC = () => {
+  const f = useCurrentFrame();
+  return f >= t(SC.kaf) && f < t(SC.drill) ? <vo.Captions dark={() => false} top={1720} /> : null;
 };
 
 export const V7Qaf: React.FC = () => {
@@ -198,15 +208,16 @@ export const V7Qaf: React.FC = () => {
       {seq(SC.test, SC.end, <Test />, -1)}
       <Sequence from={t(SC.end)}><Slide dur={99999} from={-1}><End /></Slide></Sequence>
       <Border total={V7_TOTAL} />
+      <Sequence from={9}><Audio src={staticFile('vo-v7.mp3')} /></Sequence>
+      <PlaceCaptions />
       <Logo />
       {/* VO: the owner's recording goes in here once it arrives: <Audio src={staticFile('vo-v7.mp3')} /> */}
-      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.35} />)}
-      <Sfx at={t(2.6)} src="wv/swish-whoosh-large.wav" volume={0.3} />
-      <Sfx at={t(SC.words) + 2} src="paper/slap-s.mp3" volume={0.3} />
-      <Sfx at={t(SC.words) + 30} src="paper/slap-s.mp3" volume={0.3} />
-      {DRILL.map((_, i) => <Sfx key={'d' + i} at={t(SC.drill + 1.0 + i * 1.25)} src="wv/pop-hand.wav" volume={0.3} />)}
-      <Sfx at={t(SC.end) + 24} src="wv/pop-hand.wav" volume={0.3} />
-      <Sfx at={t(SC.end) + 40} src="paper/marker-s.mp3" volume={0.3} />
+      {cuts.map((s) => <Sfx key={s} at={t(s) - 3} src="paper/slide.mp3" volume={0.16} />)}
+      <Sfx at={t(4.3)} src="wv/swish-whoosh-large.wav" volume={0.14} />
+      <Sfx at={t(SC.words) + 2} src="paper/slap-s.mp3" volume={0.16} />
+      <Sfx at={t(SC.words) + 73} src="paper/slap-s.mp3" volume={0.14} />
+      <Sfx at={t(SC.end) + 100} src="wv/pop-hand.wav" volume={0.18} />
+      <Sfx at={t(SC.end) + 108} src="paper/marker-s.mp3" volume={0.18} />
     </AbsoluteFill>
   );
 };
