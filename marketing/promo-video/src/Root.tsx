@@ -12,6 +12,7 @@ import { V8Why, V8_SLIDES } from './V8Why';
 import { V9Anas, V9_TOTAL } from './V9Anas';
 import { V10Screen, V10_SLIDES } from './V10Screen';
 import { V11How, V11_SLIDES } from './V11How';
+import { V12Words, V12_TOTAL } from './V12Words';
 
 export const Root: React.FC = () => (
   <>
@@ -27,5 +28,6 @@ export const Root: React.FC = () => (
     <Composition id="V9Anas" component={V9Anas} durationInFrames={V9_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="V10Screen" component={V10Screen} durationInFrames={V10_SLIDES} fps={30} width={1080} height={1350} />
     <Composition id="V11How" component={V11How} durationInFrames={V11_SLIDES} fps={30} width={1080} height={1350} />
+    <Composition id="V12Words" component={V12Words} durationInFrames={V12_TOTAL} fps={30} width={1080} height={1920} />
   </>
 );
