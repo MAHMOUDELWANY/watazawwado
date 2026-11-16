@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "project_name": "fennec",
+  "folder": "20261116_004533_fennec_01a1e199",
+  "root_task_id": "01a1e199-72ec-73cf-ae75-338f85bb471d",
+  "created_at": "2026-11-15T23:45:33.718Z",
+  "updated_at": "2026-11-15T23:47:42.315Z",
+  "tasks": [
+    {
+      "task_id": "01a1e199-72ec-73cf-ae75-338f85bb471d",
+      "task_type": "multi-image-to-3d",
+      "resource": "multi-image-to-3d",
+      "endpoint": "/openapi/v1/multi-image-to-3d",
+      "stage": "build",
+      "parent_task_id": null,
+      "status": "SUCCEEDED",
+      "files": [],
+      "task_json": "task_01a1e199-72ec-73cf-ae75-338f85bb471d.json",
+      "operation_id": null,
+      "created_at": "2026-11-15T23:47:42.315Z",
+      "updated_at": "2026-11-15T23:47:42.315Z"
+    }
+  ]
+}

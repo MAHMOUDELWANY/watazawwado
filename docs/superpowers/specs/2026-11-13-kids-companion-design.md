@@ -146,3 +146,13 @@ Owner asked for four things:
   - It is marked "Demo" and its points are made up and stay on the device. It shows every stage, dance and gold reward.
   - `/prototype/hoopoe3d` shows the same card.
 - **XP look**: `docs/design/XP.md`, components in `src/components/xp/Xp.tsx`.
+
+## Camel and fennec (2026-11-16)
+
+- Built the same way as the hoopoe: Meshy models from the turnaround sheets, rigged in code (`src/components/mascots/Quad3D.tsx`).
+- First stage is a sleeping newborn on its bed (camel: crimson velvet cushion; fennec: sand fur nest with a teal band). At 12 XP it wakes and stands.
+- Dances (unlock XP as the hoopoe's: 12, 12, 30, 70, 120, 220, 300, 400, 520):
+  - camel: trot, head bob, hump wiggle, spin, kneel, buck, rear up, gallop, star dance;
+  - fennec: sand dive, ear flick, tail chase, wiggle, roll over, zoomies, backflip, bunny hops, star dance.
+- The demo card lets the child pick one of the three; each keeps its own demo points.
+- Limits: eyes are baked into the models, so no blinking; legs swing and fold as whole pieces (no knees).

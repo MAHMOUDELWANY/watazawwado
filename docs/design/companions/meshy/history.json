@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "folder": "20261116_004524_camel_01a1e199",
+      "prompt": "camel",
+      "task_type": "multi-image-to-3d",
+      "root_task_id": "01a1e199-4e94-711d-8658-a758f50eced1",
+      "created_at": "2026-11-15T23:45:24.709Z",
+      "updated_at": "2026-11-15T23:46:30.324Z",
+      "task_count": 1
+    },
+    {
+      "folder": "20261116_004533_fennec_01a1e199",
+      "prompt": "fennec",
+      "task_type": "multi-image-to-3d",
+      "root_task_id": "01a1e199-72ec-73cf-ae75-338f85bb471d",
+      "created_at": "2026-11-15T23:45:33.718Z",
+      "updated_at": "2026-11-15T23:47:42.315Z",
+      "task_count": 1
+    }
+  ]
+}

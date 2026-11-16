@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "project_name": "camel",
+  "folder": "20261116_004524_camel_01a1e199",
+  "root_task_id": "01a1e199-4e94-711d-8658-a758f50eced1",
+  "created_at": "2026-11-15T23:45:24.709Z",
+  "updated_at": "2026-11-15T23:46:30.324Z",
+  "tasks": [
+    {
+      "task_id": "01a1e199-4e94-711d-8658-a758f50eced1",
+      "task_type": "multi-image-to-3d",
+      "resource": "multi-image-to-3d",
+      "endpoint": "/openapi/v1/multi-image-to-3d",
+      "stage": "build",
+      "parent_task_id": null,
+      "status": "SUCCEEDED",
+      "files": [],
+      "task_json": "task_01a1e199-4e94-711d-8658-a758f50eced1.json",
+      "operation_id": null,
+      "created_at": "2026-11-15T23:46:30.324Z",
+      "updated_at": "2026-11-15T23:46:30.324Z"
+    }
+  ]
+}

@@ -4,6 +4,24 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Camel and fennec companions with their dances and newborn stage (2026-11-16)
+
+- Owner asked for the two remaining companions, their dances and growth stages, live on the site.
+- 3D models made with Meshy from the owner's turnaround sheets (multi-image-to-3d, four views each, about 30 credits
+  each), optimised to about 120k triangles, 2048 WebP textures, meshopt: `public/prototypes/companions/3d/camel-hq.glb`
+  (1.4 MB) and `fennec-hq.glb` (1.8 MB). Task records in `docs/design/companions/meshy/2026111*_{camel,fennec}_*`.
+- `src/components/mascots/Quad3D.tsx`: one four-legged rig computed from each model's shape (neck, head, two ears,
+  tail, four legs), checked with a colour-per-bone view (`?rigdebug`, dev only) from the front and side.
+- Both are born, not hatched, as in the growth sheets: stage 1 is a newborn asleep on its bed (the camel on a crimson
+  velvet cushion, the fennec in a sand fur nest), with Z z z; it stirs as points near 12, then wakes, stands up and
+  shakes, and the bed fades away. Stages and gold rewards follow the hoopoe's thresholds.
+- Nine dances each, unlocked at the same XP as the hoopoe's. Camel: trot, head bob, hump wiggle, spin, kneel, buck,
+  rear up, gallop round the stage, star dance. Fennec: sand dive, ear flick, tail chase, wiggle, roll over, zoomies,
+  backflip, bunny hops, star dance. Every dance was checked frame by frame (`?pose=<dance>:<seconds>`, dev only).
+- Companion card: the child picks hoopoe, camel or fennec; each keeps its own demo points on the device.
+- Checks: tsc, tests, build; headless screenshots of every dance, the newborns and the card at 390 px (no sideways
+  scroll). Not checked: on a real phone's GPU (the headless browser has no GPU).
+
 ### Hoopoe taps on phones, companion controls, badge display case (2026-11-15)
 
 - Taps on the hoopoe froze phones: three.js hit-tested the skinned bird by skinning every vertex on the CPU. A light
