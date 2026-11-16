@@ -3,6 +3,7 @@ import { Img, staticFile, useCurrentFrame } from 'remotion';
 import { COPPER, CRIMSON, GOLD_SOFT, SANS, SERIF, TEAL_DEEP } from './kit';
 import { ESPRESSO, INK, Label, Paper, SAND, WHITE } from './V2Ain';
 import { CFrame } from './V10Screen';
+import { ZadStill } from './reel';
 
 /**
  * V14 · "Learning with no audience: why 1-on-1 feels different", 4 slides at 1080×1350 (Content Calendar, 29 Nov 2026).
@@ -27,6 +28,7 @@ const S1: React.FC = () => (
   <CFrame n={1} total={N}>
     <Paper seed="v14s1" x={70} y={200} w={940} h={600} color={ESPRESSO} rot={-1}>{null}</Paper>
     <Room />
+    <ZadStill emote="oops" k={45} x={900} y={1200} size={330} />
     <div style={{ position: 'absolute', left: 90, right: 90, top: 860, fontFamily: SERIF, fontWeight: 700, fontSize: 66, lineHeight: 1.12, color: INK }}>
       Remember reading out loud in class, and <span style={{ fontStyle: 'italic', color: CRIMSON }}>everyone</span> heard the mistake?
     </div>
@@ -43,7 +45,8 @@ const S2: React.FC = () => (
         We still cared. We just got tired of being watched while we learned.
       </div>
     </Paper>
-    <Label at={-100} x={540} y={1060} text="So what changes one-on-one? →" size={44} />
+    <Label at={-100} x={470} y={1060} text="So what changes one-on-one? →" size={44} />
+    <ZadStill emote="think" k={60} x={880} y={1060} size={380} />
   </CFrame>
 );
 
@@ -75,7 +78,8 @@ const S4: React.FC = () => (
       </div>
       <div style={{ position: 'absolute', left: 70, right: 70, top: 380, fontFamily: SANS, fontWeight: 700, fontSize: 52, color: WHITE }}>No lectures. Start where you are.</div>
     </Paper>
-    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 100, top: 880, width: 170, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 90, top: 1010, width: 190, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <ZadStill emote="wave" k={40} x={850} y={930} size={400} />
     <div style={{ position: 'absolute', left: 90, top: 1000, background: CRIMSON, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 46, padding: '16px 38px', borderRadius: 999,
       border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.25)' }}>Comment ZAAD</div>
   </CFrame>

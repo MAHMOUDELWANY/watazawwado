@@ -33,6 +33,16 @@ date.
 2. Warm, wise, close, never salesy; no hype words ("amazing", "life-changing", "best academy"); short sentences.
 3. Arabic copy: the 50/50 style of root RULES.md §6 (simple Fusha with a warm Egyptian touch).
 4. Every caption and script goes through the `humanizer` skill before publishing.
+5. **Motion Shorts [Decided 2026-11-16, owner]** (he rejected the first voiced V4–V12 as slow and flat):
+   - The first second pays off: a line the scroller gets something from at once.
+   - A cut every beat (about 1–3 s); no scene lingers.
+   - At least two open loops per video (a question, "#3 is the surprise", a test at the end).
+   - The voice-over uses ElevenLabs v4 audio tags so the delivery changes line by line; never a flat read.
+   - Zad (the 3D mascot, rendered from the site's own model) appears in every video and every carousel.
+   - Use a method, never a reference's lines. Our ending: Zad on the zaad bag, "Packed! That's your zaad for
+     today", and a teaser for the next pack.
+   - Meshy images are welcome where they lift attention.
+   Engine: `marketing/promo-video/src/reel.tsx`.
 
 ## 3. Claims and proof
 

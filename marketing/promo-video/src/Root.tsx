@@ -17,9 +17,23 @@ import { V13Madd, V13_SLIDES } from './V13Madd';
 import { V14Audience, V14_SLIDES } from './V14Audience';
 import { Thumbs, THUMBS } from './Thumbs';
 import { V15Ask, V15_SLIDES } from './V15Ask';
+import { R4Choose, R4_TOTAL } from './R4Choose';
+import { R5Meal, R5_TOTAL } from './R5Meal';
+import { R9Anas, R9_TOTAL } from './R9Anas';
+import { R12Words, R12_TOTAL } from './R12Words';
+import { R7Qaf, R7_TOTAL } from './R7Qaf';
+import { ZadClip, zadClipSeconds, type ZadClipProps } from './ZadClip';
 
 export const Root: React.FC = () => (
   <>
+    <Composition id="R4Choose" component={R4Choose} durationInFrames={R4_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="R5Meal" component={R5Meal} durationInFrames={R5_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="R9Anas" component={R9Anas} durationInFrames={R9_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="R12Words" component={R12Words} durationInFrames={R12_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="R7Qaf" component={R7Qaf} durationInFrames={R7_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="ZadClip" component={ZadClip} fps={30} width={900} height={900} durationInFrames={90}
+      defaultProps={{ emote: 'wave' } as ZadClipProps}
+      calculateMetadata={({ props }) => ({ durationInFrames: Math.round(zadClipSeconds(props.emote, props.lead) * 30) })} />
     <Composition id="Promo" component={Promo} durationInFrames={TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="TikTok" component={TikTok} durationInFrames={TT_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="V2Ain" component={V2Ain} durationInFrames={V2_TOTAL} fps={30} width={1080} height={1920} />

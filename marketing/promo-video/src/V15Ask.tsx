@@ -3,6 +3,7 @@ import { Img, staticFile, useCurrentFrame } from 'remotion';
 import { COPPER, CRIMSON, GOLD_SOFT, SANS, SERIF, TEAL_DEEP } from './kit';
 import { ESPRESSO, INK, Label, Paper, SAND, WHITE } from './V2Ain';
 import { CFrame } from './V10Screen';
+import { ZadStill } from './reel';
 
 /**
  * V15 · "3 questions to ask after Quran class", 5 slides at 1080×1350 (Content Calendar, 30 Nov 2026).
@@ -27,7 +28,8 @@ const S1: React.FC = () => (
     <div style={{ position: 'absolute', left: 90, right: 90, top: 900, fontFamily: SERIF, fontWeight: 700, fontSize: 66, lineHeight: 1.1, color: INK }}>
       Every week, the <span style={{ fontStyle: 'italic', color: CRIMSON }}>same</span> answer?
     </div>
-    <Label at={-100} x={540} y={1110} text="Try one of these instead →" size={44} />
+    <Label at={-100} x={480} y={1110} text="Try one of these instead →" size={44} />
+    <ZadStill emote="think" k={60} x={880} y={1080} size={420} />
   </CFrame>
 );
 
@@ -45,14 +47,15 @@ const Q: React.FC<{ n: number; k: string; color: string; q: string; why: string 
 const S5: React.FC = () => (
   <CFrame n={5} total={N}>
     <Paper seed="v15s5" x={70} y={260} w={940} h={560} color={SAND} rot={-1}>
-      <div style={{ position: 'absolute', left: 70, right: 70, top: 100, fontFamily: SERIF, fontWeight: 700, fontSize: 92, lineHeight: 1.06, color: INK }}>
-        Ask <span style={{ fontStyle: 'italic', color: CRIMSON }}>one</span> tonight.
+      <div style={{ position: 'absolute', left: 70, right: 70, top: 90, fontFamily: SERIF, fontWeight: 700, fontSize: 78, lineHeight: 1.06, color: INK }}>
+        Pick <span style={{ fontStyle: 'italic', color: CRIMSON }}>one.</span> Pack it for after class.
       </div>
-      <div style={{ position: 'absolute', left: 70, right: 70, top: 300, fontFamily: SANS, fontWeight: 500, fontSize: 44, lineHeight: 1.4, color: INK }}>
+      <div style={{ position: 'absolute', left: 70, right: 70, top: 360, fontFamily: SANS, fontWeight: 500, fontSize: 44, lineHeight: 1.4, color: INK }}>
         Then listen. A short answer is still an answer.
       </div>
     </Paper>
-    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 100, top: 880, width: 170, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 90, top: 1010, width: 190, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <ZadStill emote="wave" k={40} x={850} y={930} size={400} />
     <div style={{ position: 'absolute', left: 90, top: 1000, background: INK, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 44, padding: '16px 36px', borderRadius: 999,
       border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.25)' }}>Save this for after class</div>
   </CFrame>

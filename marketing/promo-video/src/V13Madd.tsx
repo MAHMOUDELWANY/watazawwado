@@ -3,6 +3,7 @@ import { Img, staticFile, useCurrentFrame } from 'remotion';
 import { COPPER, CRIMSON, GOLD, GOLD_SOFT, SANS, SERIF, TEAL_DEEP } from './kit';
 import { AR, ESPRESSO, INK, Label, Paper, SAND, WHITE } from './V2Ain';
 import { CFrame } from './V10Screen';
+import { ZadStill } from './reel';
 
 /**
  * V13 · "What is madd? Tajweed in one picture", 6 slides at 1080×1350 (Content Calendar, 28 Nov 2026).
@@ -32,7 +33,8 @@ const S1: React.FC = () => (
     <div style={{ position: 'absolute', left: 90, right: 90, top: 870, fontFamily: SERIF, fontWeight: 700, fontSize: 70, lineHeight: 1.1, color: INK }}>
       Why does the reciter <span style={{ fontStyle: 'italic', color: CRIMSON }}>stretch</span> some sounds?
     </div>
-    <Label at={-100} x={540} y={1130} text="It has a name: madd. Swipe →" size={42} />
+    <Label at={-100} x={470} y={1130} text="It has a name: madd. Swipe →" size={42} />
+    <ZadStill emote="search" k={50} x={890} y={1110} size={360} />
   </CFrame>
 );
 
@@ -134,7 +136,8 @@ const S6: React.FC = () => (
       <div style={{ position: 'absolute', left: 70, right: 70, top: 260, direction: 'rtl', textAlign: 'center' }}><Big size={150} color={WHITE}>بَا · بُو · بِي</Big></div>
       <div style={{ position: 'absolute', left: 70, right: 70, top: 540, fontFamily: SANS, fontWeight: 500, fontSize: 40, color: WHITE }}>Two taps for each. Then read Bismillah and listen for the stretch.</div>
     </Paper>
-    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 100, top: 950, width: 170, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <Img src={staticFile('img/zaad-bag.svg')} style={{ position: 'absolute', right: 90, top: 1060, width: 180, transform: 'rotate(8deg)', filter: 'drop-shadow(0 8px 10px rgba(40,25,15,0.3))' }} />
+    <ZadStill emote="cheer" k={30} x={860} y={990} size={380} />
     <div style={{ position: 'absolute', left: 90, top: 1030, background: INK, color: WHITE, fontFamily: SANS, fontWeight: 700, fontSize: 44, padding: '16px 36px', borderRadius: 999,
       border: '8px solid #fff', boxShadow: '0 10px 18px rgba(0,0,0,0.25)' }}>Save this for your next read</div>
   </CFrame>

@@ -7,9 +7,13 @@
     "render": "remotion render src/index.ts"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@remotion/cli": "4.0.538",
+    "@remotion/three": "^4.0.538",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "remotion": "4.0.538"
+    "remotion": "4.0.538",
+    "three": "^0.186.1"
   }
 }
