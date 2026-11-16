@@ -1,0 +1,194 @@
+{
+  "_rules": "Square 1:1. No faces, no people unless stated (then tiny, from behind), no child figures, no prophet, angel or companion. No text, letters, numbers, logos or readable signs anywhere. No green colours or green surfaces anywhere (no green leather, no green signs); plants may appear only as small muted accents. Brand accents: crimson #C51F24, gold #E5A93C, teal #0FA3B8. Main subject centred in the middle 60% of the frame.",
+  "looks": {
+    "kids": "A warm painted storybook scene, soft 3D cartoon shapes with gouache texture, cream, sand and terracotta with touches of crimson, teal and gold, cheerful and gentle.",
+    "teens": "A bold stylised cinematic illustration, strong shapes and confident colour, modern and energetic, dusk or night light with teal and crimson accents and a gold glow.",
+    "adults": "A cinematic photorealistic still, calm and refined, natural light, warm amber palette with one accent colour.",
+    "lmKids": "A warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson, teal and gold, cheerful and gentle. ONE landmark only, centred, filling about 70% of the frame, simple soft edges.",
+    "lmTeens": "A bold stylised cinematic illustration, strong simple shapes, confident colour, dusk or night light with teal and crimson accents and a gold glow. ONE landmark only, centred, filling about 70% of the frame, simple soft edges.",
+    "lmAdults": "A refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and warm stone tones with one small accent of teal or crimson, quiet and elegant. ONE landmark only, centred, filling about 70% of the frame, simple soft edges."
+  },
+  "images": [
+    {
+      "file": "banners/literacy-c",
+      "look": "adults",
+      "prompt": "A modern phone lying face-up on a café table beside a glass of hibiscus tea, its blank glowing screen casting soft teal light, a small notebook with blank pages and a pencil next to it, warm evening light through a window. Reading a language through the letters of a phone keyboard."
+    },
+    {
+      "file": "banners/fusha-kids-2",
+      "look": "kids",
+      "prompt": "A little wooden sailing boat on a calm sea of soft cloth waves, its sail made of a blank paper page, small paper fish jumping around it, a big round sun, a lighthouse on a rocky island in the distance. The next part of the journey."
+    },
+    {
+      "file": "banners/fusha-kids-3",
+      "look": "kids",
+      "prompt": "A tall cosy treehouse library at dusk built in a big round tree with warm autumn-orange leaves, little round windows glowing gold, a rope ladder, stacks of closed blank books on a small balcony, lanterns hanging from the branches, the first stars appearing. The top of the climb."
+    },
+    {
+      "file": "banners/fusha-12-2",
+      "look": "teens",
+      "prompt": "A rooftop at night above an old Arab city: a low table with an open blank notebook, a pen and a glass of tea, string lights overhead, domes and minarets in silhouette against a deep teal sky, a crimson glow on the horizon. Getting serious about the language."
+    },
+    {
+      "file": "banners/fusha-12-3",
+      "look": "teens",
+      "prompt": "A grand old library hall at dusk seen from the floor: towering carved wooden shelves of closed books with blank spines, a tall Andalusian horseshoe-arched window with geometric star lattice pouring gold light, a ladder on rails, a single low desk with a brass lamp and an open blank manuscript, teal shadows. Mastery."
+    },
+    {
+      "file": "banners/tajweed-2",
+      "look": "adults",
+      "prompt": "A row of handmade terracotta water jars of different sizes and shapes standing on a stone ledge in a quiet sunlit courtyard, each jar catching the warm light differently, a deep crimson cloth under the smallest one, carved stone arch softly blurred behind. Every sound has its own place where it is born.",
+      "task": "01a1e19c-b2d6-7111-94c5-65eb9bbbfee7"
+    },
+    {
+      "file": "banners/tajweed-3",
+      "look": "adults",
+      "prompt": "An antique brass hourglass and a set of fine old brass measuring weights arranged on a dark walnut table, a closed plain leather-bound book behind them, soft amber window light raking across, a thin teal reflection on the glass. Measure and precision."
+    },
+    {
+      "file": "banners/egyptian-sounds",
+      "look": "adults",
+      "prompt": "A vintage radio with a warm glowing dial on a wooden windowsill in Cairo, a glass of black tea beside it, through the open shutters the old Cairo rooftops and minarets in morning haze, soft amber light. Hearing the city's sounds."
+    },
+    {
+      "file": "banners/egyptian-adults-2",
+      "look": "adults",
+      "prompt": "The courtyard of an old Cairo café in the evening: carved wooden mashrabiya screens, brass lanterns casting patterned light, a small round marble table with two small cups of Turkish coffee and a backgammon board, no people. A second season in the city."
+    },
+    {
+      "file": "banners/egyptian-adults-3",
+      "look": "adults",
+      "prompt": "A quiet balcony high above modern Cairo at blue hour, a pair of reading glasses resting on a closed newspaper with blank pages and a cup of tea on the rail, the city lights and the Nile bridges glowing amber below. At home in the city."
+    },
+    {
+      "file": "banners/egyptian-franco",
+      "look": "adults",
+      "prompt": "A Cairo taxi's dashboard at golden hour seen from the back seat: a phone in a holder with a blank glowing chat screen, prayer beads hanging from the mirror, the windscreen framing a busy Cairo street with a minaret and palm trees in soft haze. Chatting your way around Cairo."
+    },
+    {
+      "file": "banners/egyptian-kids-2",
+      "look": "kids",
+      "prompt": "Grandmother's cosy Cairo kitchen: a big pot of lentil soup steaming on the stove, a round tray of flatbread, a striped tablecloth, the same fat orange cat peeking from a basket of laundry, a window showing sunny rooftops. Back at grandma's."
+    },
+    {
+      "file": "banners/egyptian-kids-3",
+      "look": "kids",
+      "prompt": "A rooftop in Cairo at night set for a story evening: a ring of floor cushions around a glowing lantern, a little tray of sweets, a toy puppet theatre with its curtain open, paper lanterns overhead and a big crescent moon above the minarets. Stories and jokes at grandma's."
+    },
+    {
+      "file": "banners/egyptian-teens-2",
+      "look": "teens",
+      "prompt": "A five-a-side football cage on a Cairo rooftop under floodlights at dusk, a ball in the corner of the goal, water bottles and a scarf on a bench, the skyline with minarets and satellite dishes glowing teal and orange. The club, a year later."
+    },
+    {
+      "file": "banners/egyptian-teens-3",
+      "look": "teens",
+      "prompt": "A motorbike parked on the Corniche by the Nile at sunset, a helmet hanging on the handlebars and a backpack on the seat, a felucca with a white sail on the glowing water, the Cairo Tower in silhouette, strong crimson and teal light. The club's last summer."
+    },
+    {
+      "file": "landmarks/fusha-kids-2-s1",
+      "look": "lmKids",
+      "prompt": "A little red hot-air balloon with a woven basket floating above soft round clouds, small paper birds flying beside it."
+    },
+    {
+      "file": "landmarks/fusha-kids-3-s1",
+      "look": "lmKids",
+      "prompt": "A small round mountain with a winding path up to a tiny golden flag at the very top, a sun rising behind it."
+    },
+    {
+      "file": "landmarks/fusha-12-2-s1",
+      "look": "lmTeens",
+      "prompt": "A glowing brass lantern hanging in a stone archway at night, its patterned light falling across old steps."
+    },
+    {
+      "file": "landmarks/fusha-12-3-s1",
+      "look": "lmTeens",
+      "prompt": "A tall lighthouse on a dark rocky point sending a wide golden beam across a teal night sea."
+    },
+    {
+      "file": "landmarks/tajweed-2-s1",
+      "look": "lmAdults",
+      "prompt": "A small arched stone niche holding a single lit oil lamp, its flame perfectly still, soft rings of light around it."
+    },
+    {
+      "file": "landmarks/tajweed-2-s2",
+      "look": "lmAdults",
+      "prompt": "A clear glass carafe of water catching a beam of light that splits into soft rays on a stone sill."
+    },
+    {
+      "file": "landmarks/tajweed-3-s1",
+      "look": "lmAdults",
+      "prompt": "An antique brass balance scale with two small pans perfectly level, resting on a stone ledge."
+    },
+    {
+      "file": "landmarks/tajweed-3-s2",
+      "look": "lmAdults",
+      "prompt": "A long ribbon of pale silk unrolling gently across a wooden table, catching soft light along its length."
+    },
+    {
+      "file": "landmarks/tajweed-3-s3",
+      "look": "lmAdults",
+      "prompt": "A small stone milestone at a bend of a quiet sandy path, a single resting bench beside it."
+    },
+    {
+      "file": "landmarks/tajweed-3-s4",
+      "look": "lmAdults",
+      "prompt": "A heavy smooth river stone and a light white feather side by side on a linen cloth, soft shadow beneath them."
+    },
+    {
+      "file": "landmarks/tajweed-3-s5",
+      "look": "lmAdults",
+      "prompt": "An arched wooden door standing slightly open, warm golden light spilling out onto stone steps."
+    },
+    {
+      "file": "landmarks/egyptian-sounds-s1",
+      "look": "lmAdults",
+      "prompt": "A large spiral seashell resting on a sunny wooden windowsill, Cairo rooftops softly blurred behind it."
+    },
+    {
+      "file": "landmarks/egyptian-adults-2-s1",
+      "look": "lmAdults",
+      "prompt": "A pair of carved wooden mashrabiya shutters half open on a sunny Cairo window, light patterns on the sill."
+    },
+    {
+      "file": "landmarks/egyptian-adults-3-s1",
+      "look": "lmAdults",
+      "prompt": "An old Cairo street lamp of black iron with a warm glow, a carved balcony behind it at dusk."
+    },
+    {
+      "file": "landmarks/literacy-c-s1",
+      "look": "lmAdults",
+      "prompt": "A small open padlock beside its brass key on a linen cloth, one teal tassel on the key."
+    },
+    {
+      "file": "landmarks/egyptian-franco-s1",
+      "look": "lmAdults",
+      "prompt": "Two simple paper cups of tea and a small plate of biscuits on a sunny Cairo windowsill, a crimson cushion beside."
+    },
+    {
+      "file": "landmarks/egyptian-franco-s2",
+      "look": "lmAdults",
+      "prompt": "A black-and-white Cairo taxi car seen from the side on a sunlit street corner, a minaret faint behind, painted directly as a vignette with no frame, no border and no book."
+    },
+    {
+      "file": "landmarks/egyptian-kids-2-s1",
+      "look": "lmKids",
+      "prompt": "A little striped awning over a toy fruit cart piled with oranges and mangoes on a sunny lane."
+    },
+    {
+      "file": "landmarks/egyptian-kids-3-s1",
+      "look": "lmKids",
+      "prompt": "A big crescent moon resting over a tiny rooftop with a single glowing paper lantern on a string."
+    },
+    {
+      "file": "landmarks/egyptian-teens-2-s1",
+      "look": "lmTeens",
+      "prompt": "A pair of worn trainers hanging by their laces from a lamp post at dusk, rooftops behind."
+    },
+    {
+      "file": "landmarks/egyptian-teens-3-s1",
+      "look": "lmTeens",
+      "prompt": "The Cairo Tower in silhouette against a huge crimson-and-gold sunset over the river."
+    }
+  ]
+}

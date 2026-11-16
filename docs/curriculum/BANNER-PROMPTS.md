@@ -182,3 +182,14 @@ picture is cut into an arched door (tall) and into a wide band (the version's he
 | english-kids | toy bus and taxi | KIDS |
 | english-general | café table with map | ADULTS |
 | english-exams | hourglass and pencils | ADULTS |
+
+---
+
+## Level and version covers (2026-11-16, Meshy)
+
+When levels were added, 15 versions reused another version's cover (Tajweed 2–3, Fusha Kids 2–3, Fusha 12+ 2–3,
+Egyptian Sounds, Egyptian Adults 2–3, Franco, Reading Franco, Egyptian Kids 2–3, Egyptian Teens 2–3). Each now has its
+own cover, made with Meshy text-to-image (nano-banana-pro, 9 credits each) from
+`scripts/curriculum/meshy-prompts-2026-11-16.json` by `scripts/curriculum/meshy-images.py`. Same look as the version's
+Level 1 cover, a new subject per level (a journey that climbs). `test/curriculum-art.test.ts` fails if two doors share a
+cover again. New level or version: add its prompt to a dated JSON like that one and run the script.

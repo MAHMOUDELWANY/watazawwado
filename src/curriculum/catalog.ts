@@ -297,7 +297,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids · Level 2',
     versionAr: 'الأطفال · المستوى الثاني',
     audience: '6–11',
-    art: '/curriculum/banners/fusha-kids.webp',
+    art: '/curriculum/banners/fusha-kids-2.webp',
     parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['What Did Everyone Do?', 'Every Day', 'My Father, Your Brother', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week in Our House', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
@@ -311,7 +311,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids · Level 3',
     versionAr: 'الأطفال · المستوى الثالث',
     audience: '6–11',
-    art: '/curriculum/banners/fusha-kids.webp',
+    art: '/curriculum/banners/fusha-kids-3.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['One Root, Many Verbs', 'Who Broke the Vase?', 'Indeed and But', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
@@ -421,7 +421,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Level 2',
     versionAr: 'المستوى الثاني',
     audience: '12+',
-    art: '/curriculum/banners/tajweed.webp',
+    art: '/curriculum/banners/tajweed-2.webp',
     parts: [
       { title: 'Level 2 · Where Letters Are Born', titleAr: 'المستوى الثاني · مخارج الحروف', from: 1 },
       { title: 'Level 2 · How Letters Come Out', titleAr: 'المستوى الثاني · صفات الحروف', from: 13 },
@@ -443,7 +443,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Level 3',
     versionAr: 'المستوى الثالث',
     audience: '12+',
-    art: '/curriculum/banners/tajweed.webp',
+    art: '/curriculum/banners/tajweed-3.webp',
     parts: [
       { title: 'Level 3 · Measure', titleAr: 'المستوى الثالث · المقاييس', from: 1 },
       { title: 'Level 3 · Madd, Deeper', titleAr: 'المستوى الثالث · المدود بالتفصيل', from: 4 },
@@ -468,7 +468,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Sounds (from Fusha)',
     versionAr: 'الأصوات (من الفصحى)',
     audience: '12+',
-    art: '/curriculum/banners/egyptian-adults.webp',
+    art: '/curriculum/banners/egyptian-sounds.webp',
     parts: [{ title: 'Sounds · From Fusha to Cairo', titleAr: 'الأصوات · من الفصحى للقاهرة', from: 1 }],
     // docs/curriculum/egyptian/MAP-sounds.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Where Did the Qaf Go?', 'Th and Dh', 'Short and Stressed', 'Ay and Aw', 'The Question Words', 'Bi- and Ha-', 'Ma…sh', 'Review: Read Fusha, Say Egyptian'],
@@ -505,7 +505,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults · Intermediate',
     versionAr: 'الكبار · المتوسط',
     audience: '18+',
-    art: '/curriculum/banners/egyptian-adults.webp',
+    art: '/curriculum/banners/egyptian-adults-2.webp',
     parts: [{ title: 'Intermediate · A Second Season', titleAr: 'المتوسط · موسم تاني', from: 1 }],
     // docs/curriculum/egyptian/MAP-intermediate.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['What Did You Do Yesterday?', 'Tomorrow, God Willing', 'And Then…', 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: A Weekend in Alexandria', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', "At the Doctor's", 'Review: The Wedding', 'A Day at the Office', 'Intermediate Story'],
@@ -518,7 +518,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults · Advanced',
     versionAr: 'الكبار · المتقدم',
     audience: '18+',
-    art: '/curriculum/banners/egyptian-adults.webp',
+    art: '/curriculum/banners/egyptian-adults-3.webp',
     parts: [{ title: 'Advanced · Sounding Like a Person', titleAr: 'المتقدم · تتكلم زي الناس', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['In My Opinion', 'As They Say…', 'At Street Speed', 'If Only…', 'Complaints', "Review: The Residents' Meeting", 'News and Gossip', 'Jokes and Wordplay', 'Formal Egyptian', 'Advanced Story'],
@@ -534,7 +534,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Franco',
     versionAr: 'فرانكو',
     audience: '18+',
-    art: '/curriculum/banners/literacy-a-adults.webp',
+    art: '/curriculum/banners/literacy-c.webp',
     parts: [{ title: 'Reading Franco', titleAr: 'قراءة الفرانكو', from: 1 }],
     plan: ['Numbers That Talk', 'The Cairo Hamza', 'Scrape and Gargle', 'Long and Short', 'Heavy Letters', 'Little Words', "Tant Hoda's Voice Note"],
     lessons: { 1: lessonC01, 2: lessonC02 },
@@ -548,7 +548,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Franco',
     versionAr: 'فرانكو',
     audience: '18+',
-    art: '/curriculum/banners/egyptian-adults.webp',
+    art: '/curriculum/banners/egyptian-franco.webp',
     parts: [
       { title: 'Beginner · Meeting People', titleAr: 'المبتدئ · التعارف', from: 1 },
       { title: 'Beginner · Around Cairo', titleAr: 'المبتدئ · في القاهرة', from: 12 },
@@ -583,7 +583,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: '12+ · Level 2',
     versionAr: '12 سنة فأكبر · المستوى الثاني',
     audience: '12+',
-    art: '/curriculum/banners/fusha-12.webp',
+    art: '/curriculum/banners/fusha-12-2.webp',
     parts: [{ title: 'Level 2 · Intermediate', titleAr: 'المستوى الثاني · المتوسط', from: 1 }],
     // docs/curriculum/fusha/MAP-level-2.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['The Class Trip', 'The Timetable', 'The Video Call', 'Not Yet', 'Go! Sit!', 'Tomorrow', 'Review: A Week at the Institute', 'What Time Is It?', 'Three Books, Ten Pens', 'Bigger and Best', 'I Want to Go', 'Because…', 'Was and Will Be', 'Review: Our Story', 'Words From a Root', 'The One Who…', 'Level 2 Story'],
@@ -597,7 +597,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: '12+ · Level 3',
     versionAr: '12 سنة فأكبر · المستوى الثالث',
     audience: '12+',
-    art: '/curriculum/banners/fusha-12.webp',
+    art: '/curriculum/banners/fusha-12-3.webp',
     parts: [{ title: 'Level 3 · Advanced', titleAr: 'المستوى الثالث · المتقدّم', from: 1 }],
     // docs/curriculum/fusha/MAP-level-3.md (Claude's draft, 2026-11-03, for the owner's review).
     plan: ['The Root Workshop', 'The Headline', 'The Debate Club', 'Becoming and Pretending', 'Breaking and Gathering', 'Asking For', 'Review: The Pattern Hunt', 'Was, Became, Still', 'Two of Everything', 'Many, the Arabic Way', 'If…', 'Said and Walked', 'How Did He Come?', 'Review: Read It Yourself', "The Doer's Name", 'Reading the News', 'Level 3 Story'],
@@ -654,7 +654,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids · Intermediate',
     versionAr: 'الأطفال · المتوسط',
     audience: '6–11',
-    art: '/curriculum/banners/egyptian-kids.webp',
+    art: '/curriculum/banners/egyptian-kids-2.webp',
     parts: [{ title: "Intermediate · Back at Teta's", titleAr: 'المتوسط · تاني عند تيتة', from: 1 }],
     // docs/curriculum/egyptian/MAP-intermediate.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Where Did You Go, Ziad?', "Tomorrow We'll Go to the Zoo", "Teta's Story", 'We Went, They Went', "I Didn't Eat It!", 'When I Was Little', 'Review: A Day at the Zoo', 'I Have to Go', 'Bigger and Biggest', 'My Tummy Hurts', 'Intermediate Story'],
@@ -667,7 +667,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids · Advanced',
     versionAr: 'الأطفال · المتقدم',
     audience: '6–11',
-    art: '/curriculum/banners/egyptian-kids.webp',
+    art: '/curriculum/banners/egyptian-kids-3.webp',
     parts: [{ title: "Advanced · Stories and Jokes at Teta's", titleAr: 'المتقدم · حكايات ونكت عند تيتة', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md, Kids (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['I Think…', "Teta's Sayings", "Ziad's Joke"],
@@ -698,7 +698,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens · Intermediate',
     versionAr: 'الشباب · المتوسط',
     audience: '12–17',
-    art: '/curriculum/banners/egyptian-teens.webp',
+    art: '/curriculum/banners/egyptian-teens-2.webp',
     parts: [{ title: 'Intermediate · The Club, a Year Later', titleAr: 'المتوسط · النادي بعد سنة', from: 1 }],
     // docs/curriculum/egyptian/MAP-intermediate.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['What Did You Do at the Match?', "Tomorrow's Final", "You Won't Believe What Happened", 'We Went, They Went', "I Didn't Go", 'I Used to…', 'Review: The Club Trip', 'I Have to…', 'Tell Him I Said…', 'Bigger, Cheaper, Best', 'When I Get There', 'If I Were You', 'The Lost Phone', 'Review: The Concert', 'Intermediate Story'],
@@ -711,7 +711,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens · Advanced',
     versionAr: 'الشباب · المتقدم',
     audience: '12–17',
-    art: '/curriculum/banners/egyptian-teens.webp',
+    art: '/curriculum/banners/egyptian-teens-3.webp',
     parts: [{ title: "Advanced · The Club's Last Summer", titleAr: 'المتقدم · آخر صيف في النادي', from: 1 }],
     // docs/curriculum/egyptian/MAP-advanced.md, Teens (Claude's draft, 2026-11-04, for the owner's review).
     plan: ['Who Should Be Captain?', "That's What They Say", 'Say It Again, Slower!'],

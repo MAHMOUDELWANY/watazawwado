@@ -268,3 +268,11 @@ leaves the gate on its own.
 
 **58 · `english-exams-s1`** · stage 1
 > Square 1:1. LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant. An hourglass with golden sand running on a desk beside sharpened pencils and blank answer sheets. Square 1:1. ONE landmark only, centred, filling about 70% of the frame, with simple soft edges (it is shown inside a small arched frame). No faces, no people unless the prompt says (then only tiny and from behind), no child figures, no prophet, angel or companion, no text, letters or numbers anywhere, no logos.
+
+---
+
+## Level and version landmarks (2026-11-16, Meshy)
+
+The 21 stages of the new levels and versions had no landmark. They were made with Meshy (same JSON and script as the
+level covers, see BANNER-PROMPTS.md), each a different object from its version's cover. `test/curriculum-art.test.ts`
+fails if a stage has no landmark.

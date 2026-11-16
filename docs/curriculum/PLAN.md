@@ -973,3 +973,10 @@ B3–B5 → continue lesson by lesson.
   same on the student page. Questions: `server/placement/ladders.ts` (36, written from the lessons; they wait for the
   owner's review like the lessons). Egyptian Sounds stays a side door the teacher picks. Next: Round 4 (Lesson 4 of
   every Level 1).
+- **2026-11-16 · Level covers and landmarks (Meshy).** Audit: 15 level/version doors reused another version's cover
+  (Tajweed 2–3, Fusha Kids 2–3, Fusha 12+ 2–3, Egyptian Sounds, Egyptian Adults 2–3, Franco, Reading Franco, Egyptian
+  Kids 2–3, Teens 2–3) and 21 road-map stages of the new levels had no landmark. Made all 36 with Meshy (nano-banana-pro,
+  369 credits incl. 5 redos: a singing bowl, two bells that read as church bells, a gothic window, a framed taxi),
+  checked each image, wired the covers in `catalog.ts`. New `test/curriculum-art.test.ts`: no two doors share a cover,
+  every cover file and every stage landmark exists. Prompts and script: `scripts/curriculum/meshy-prompts-2026-11-16.json`,
+  `meshy-images.py`. No lesson images were duplicated or low-res (only Zad Kids L2 `key.webp` is 708×380 and shown small).
