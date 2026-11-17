@@ -1031,6 +1031,36 @@ export interface Database {
         Insert: Partial<LessonAttendanceEventRow> & Pick<LessonAttendanceEventRow, 'booking_id' | 'source' | 'event' | 'occurred_at' | 'dedupe_key'>;
         Update: Partial<LessonAttendanceEventRow>;
       };
+      lesson_room_state: {
+        Row: LessonRoomStateRow;
+        Insert: Partial<LessonRoomStateRow> & Pick<LessonRoomStateRow, 'booking_id'>;
+        Update: Partial<LessonRoomStateRow>;
+      };
+      lesson_timeline_events: {
+        Row: LessonTimelineEventRow;
+        Insert: Partial<LessonTimelineEventRow> & Pick<LessonTimelineEventRow, 'booking_id' | 'type' | 'actor_role'>;
+        Update: Partial<LessonTimelineEventRow>;
+      };
+      lesson_quality: {
+        Row: LessonQualityRow;
+        Insert: Partial<LessonQualityRow> & Pick<LessonQualityRow, 'booking_id' | 'side'>;
+        Update: Partial<LessonQualityRow>;
+      };
+      teacher_late_reasons: {
+        Row: TeacherLateReasonRow;
+        Insert: Partial<TeacherLateReasonRow> & Pick<TeacherLateReasonRow, 'booking_id' | 'teacher_user_id' | 'late_minutes'>;
+        Update: Partial<TeacherLateReasonRow>;
+      };
+      classroom_incidents: {
+        Row: ClassroomIncidentRow;
+        Insert: Partial<ClassroomIncidentRow> & Pick<ClassroomIncidentRow, 'booking_id' | 'kind' | 'side'>;
+        Update: Partial<ClassroomIncidentRow>;
+      };
+      admin_observations: {
+        Row: AdminObservationRow;
+        Insert: Partial<AdminObservationRow> & Pick<AdminObservationRow, 'booking_id' | 'admin_user_id'>;
+        Update: Partial<AdminObservationRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -1049,13 +1079,79 @@ export interface Database {
 export interface LessonAttendanceEventRow {
   id: string;
   booking_id: string;
-  source: 'site' | 'zoom';
-  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined';
-  role: 'teacher' | 'student' | 'unknown';
+  source: 'site' | 'zoom' | 'room';
+  event:
+    | 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined'
+    | 'room_joined' | 'room_left' | 'room_ended';
+  role: 'teacher' | 'student' | 'unknown' | 'observer';
   participant_name: string | null;
   occurred_at: string;
   dedupe_key: string;
   created_at: string;
+}
+
+// Classroom release 1 (migration 20261117000000): all service-role only.
+export interface LessonRoomStateRow {
+  booking_id: string;
+  snapshot: Record<string, unknown>;
+  updated_at: string;
+}
+
+export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'end';
+
+export interface LessonTimelineEventRow {
+  id: string;
+  booking_id: string;
+  type: LessonTimelineEventType;
+  actor_role: 'teacher' | 'student' | 'observer' | 'system';
+  payload: Record<string, unknown>;
+  occurred_at: string;
+}
+
+export interface LessonQualityRow {
+  id: string;
+  booking_id: string;
+  side: 'teacher' | 'student';
+  precheck_720: boolean | null;
+  start_height: number | null;
+  min_height: number | null;
+  degraded_seconds: number;
+  audio_only_seconds: number;
+  reconnects: number;
+  focus_away_seconds: number;
+  updated_at: string;
+}
+
+export interface TeacherLateReasonRow {
+  id: string;
+  booking_id: string;
+  teacher_user_id: string;
+  late_minutes: number;
+  reason: string | null;
+  status: 'pending' | 'sent' | 'excused' | 'deducted';
+  admin_note: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+}
+
+export interface ClassroomIncidentRow {
+  id: string;
+  booking_id: string;
+  kind: 'connect_timeout' | 'ice_failed' | 'engine_error' | 'provider_error';
+  side: 'teacher' | 'student';
+  detail: Record<string, unknown>;
+  created_at: string;
+  resolved_at: string | null;
+}
+
+export interface AdminObservationRow {
+  id: string;
+  booking_id: string;
+  admin_user_id: string;
+  started_at: string;
+  ended_at: string | null;
+  notes: string | null;
 }
 
 export interface ChildDeviceRow {
