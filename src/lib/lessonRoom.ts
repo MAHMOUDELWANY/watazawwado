@@ -2,20 +2,10 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { lessonRoomClient } from './supabase';
 
-/** What travels in the lesson room (NX-12): which lesson is open, where the teacher is, and the teacher's ink. Nothing else. */
-export interface RoomState { track: string; number: number; page: number; step: number }
+export { isRoomEvent, isRoomInk, isRoomState, MAX_BOARD_BYTES, MAX_EVENT_BYTES } from './roomEvents';
+export type { RoomEvent, RoomInk, RoomState } from './roomEvents';
+import { isRoomEvent, isRoomInk, isRoomState, type RoomEvent, type RoomInk, type RoomState } from './roomEvents';
 type Pt = [number, number];
-export interface RoomInk { track: string; number: number; page: number; strokes: { tool: 'pen' | 'marker'; color: string; points: Pt[] }[]; laser: Pt[] }
-
-const isPts = (v: any, max: number) => Array.isArray(v) && v.length <= max
-  && v.every((p: any) => Array.isArray(p) && p.length === 2 && p.every((n: any) => Number.isFinite(n) && Math.abs(n) < 10000));
-
-export function isRoomInk(v: any): v is RoomInk {
-  return Boolean(v) && typeof v.track === 'string' && v.track.length < 60
-    && [v.number, v.page].every((n) => Number.isInteger(n) && n >= 0 && n < 1000)
-    && isPts(v.laser, 30) && Array.isArray(v.strokes) && v.strokes.length <= 300
-    && v.strokes.every((s: any) => s && (s.tool === 'pen' || s.tool === 'marker') && typeof s.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(s.color) && isPts(s.points, 4000));
-}
 
 /** Broadcast stays small: whole canvas units are plenty for ink. */
 const roundInk = (ink: RoomInk): RoomInk => ({
@@ -24,11 +14,6 @@ const roundInk = (ink: RoomInk): RoomInk => ({
   laser: ink.laser.map(([x, y]) => [Math.round(x), Math.round(y)] as Pt),
 });
 const INK_EVERY_MS = 80;
-
-export function isRoomState(v: any): v is RoomState {
-  return Boolean(v) && typeof v.track === 'string' && v.track.length < 60
-    && [v.number, v.page, v.step].every((n) => Number.isInteger(n) && n >= 0 && n < 1000);
-}
 
 /**
  * The live channel for one lesson. The teacher publishes; the learner asks for the current state when they join
@@ -42,6 +27,7 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
   const last = useRef<RoomState | null>(null);
   const lastInk = useRef<RoomInk | null>(null);
   const inkTimer = useRef<number | null>(null);
+  const listeners = useRef(new Set<(e: RoomEvent) => void>());
 
   useEffect(() => {
     if (!roomKey) return;
@@ -49,6 +35,8 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
     const ch = supabase.channel(`lesson-room-${roomKey}`, { config: { broadcast: { self: false } } });
     ch.on('broadcast', { event: 'state' }, ({ payload }) => { if (role === 'learner' && isRoomState(payload)) setState(payload); });
     ch.on('broadcast', { event: 'ink' }, ({ payload }) => { if (role === 'learner' && isRoomInk(payload)) setInk(payload); });
+    // Timeline events go both ways (the learner sends reactions and focus); every one is checked before use.
+    ch.on('broadcast', { event: 'ev' }, ({ payload }) => { if (isRoomEvent(payload)) listeners.current.forEach((fn) => fn(payload)); });
     ch.on('broadcast', { event: 'hello' }, () => {
       if (role !== 'teacher') return;
       if (last.current) ch.send({ type: 'broadcast', event: 'state', payload: last.current });
@@ -81,5 +69,15 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
     }, INK_EVERY_MS);
   }, []);
 
-  return { connected, state, ink, publish, publishInk };
+  const publishEvent = useCallback((e: RoomEvent) => {
+    channel.current?.send({ type: 'broadcast', event: 'ev', payload: e });
+  }, []);
+
+  /** Listen to timeline events from the other side; returns the unsubscribe. */
+  const onEvent = useCallback((fn: (e: RoomEvent) => void) => {
+    listeners.current.add(fn);
+    return () => { listeners.current.delete(fn); };
+  }, []);
+
+  return { connected, state, ink, publish, publishInk, publishEvent, onEvent };
 }

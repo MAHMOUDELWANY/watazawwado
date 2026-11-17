@@ -3,7 +3,8 @@ import crypto from 'node:crypto';
 import { decideRoomAccess, signTicket, verifyTicket, type Requester, type RoomBooking, type RoomRole, type TicketPayload } from '../classroom/access.js';
 import { roomKey, roomSecret } from './lessonRoom.js';
 import { isUuid } from './progress.js';
-import { ROOM_CLOSE_GRACE_MIN, roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
+import { ROOM_CLOSE_GRACE_MIN, remainingMs, roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
+import { isRoomEvent, type RoomEvent } from '../../src/lib/roomEvents.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 
 /**
@@ -22,6 +23,24 @@ const isObserver = (r: RoomRole) => r === 'guardian_observer' || r === 'admin_ob
 // Teacher and learner have one seat each (two devices replace each other); every observer has their own.
 const seatOf = (t: TicketPayload) => (isObserver(t.role) ? `${t.role}:${t.userId}` : t.role);
 const attendanceRole = (r: RoomRole) => (r === 'teacher' ? 'teacher' : 'student');
+const MAX_EVENTS = 50;
+const MAX_EVENTS_BODY = 256 * 1024;
+const EVENT_SKEW_MS = 10 * 60_000;
+
+/**
+ * Who may persist which timeline type (Task 7). Observers persist nothing. Everything else on the channel (session,
+ * ink, pointer, focus_warning_off, observer) is live only. Board: the teacher always; the learner only while the
+ * teacher's latest board in the snapshot has learnerDraw = true (a learner can never change that flag).
+ */
+function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
+  switch (e.t) {
+    case 'slide': case 'pdf': case 'layout': case 'end': return role === 'teacher';
+    case 'reaction': case 'focus': return role === 'learner';
+    case 'quality': return e.side === attendanceRole(role);
+    case 'board': return role === 'teacher' || (role === 'learner' && snapshot.board?.learnerDraw === true);
+    default: return false;
+  }
+}
 
 export function registerClassroomRoutes(app: express.Express, deps: {
   getClient: () => any;
@@ -141,25 +160,36 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     next();
   };
 
-  /** Re-checks the booking on every media call, so a moved, cancelled or reassigned lesson stops the room. */
+  /**
+   * Re-checks the booking and the caller's seat, so a moved, cancelled or reassigned lesson stops the room and an
+   * older device is refused. Sends the error and returns null when the call must stop.
+   */
+  const liveSeat = async (client: any, t: TicketPayload, res: any): Promise<{ snapshot: any; mine: SessionEntry } | null> => {
+    const stop = (status: number, body: object) => { res.status(status).json(body); return null; };
+    const booking = await loadBooking(client, t.bookingId);
+    if (!booking) return stop(404, { error: 'Lesson not found.' });
+    if (!['confirmed', 'rescheduled'].includes(booking.status)) return stop(409, { error: 'This lesson is not active.', ended: true });
+    if (roomJoinState(booking, now()) !== 'open') return stop(423, { error: 'The room is closed.', ended: true });
+    if (t.role === 'teacher' && booking.teacher_id !== t.userId) return stop(403, { error: 'This is not your lesson.', ended: true });
+    // A lesson moved to another learner ends the old family's pass, as a reassigned teacher's does.
+    if ((t.role === 'learner' || t.role === 'guardian_observer') && booking.student_id !== t.studentId) return stop(403, { error: 'This is not your lesson.', ended: true });
+    const snapshot = await loadSnapshot(client, t.bookingId);
+    const mine: SessionEntry | undefined = snapshot.sessions?.[seatOf(t)];
+    if (!mine || mine.joinId !== t.joinId) return stop(409, { error: 'The room was opened on another device.', superseded: true });
+    return { snapshot, mine };
+  };
+
+  /** Media calls re-check the booking and seat every time (liveSeat). */
   const rtc = (action: 'session' | 'tracks' | 'renegotiate' | 'update' | 'close') => async (req: any, res: any) => {
     try {
       const client = deps.getClient();
       const cf = deps.cloudflare();
       if (!client || !cf?.configured) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
-      const booking = await loadBooking(client, t.bookingId);
-      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-      if (!['confirmed', 'rescheduled'].includes(booking.status)) return res.status(409).json({ error: 'This lesson is not active.', ended: true });
-      if (roomJoinState(booking, now()) !== 'open') return res.status(423).json({ error: 'The room is closed.', ended: true });
-      if (t.role === 'teacher' && booking.teacher_id !== t.userId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
-      // A lesson moved to another learner ends the old family's pass, as a reassigned teacher's does.
-      if ((t.role === 'learner' || t.role === 'guardian_observer') && booking.student_id !== t.studentId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
-
-      const snapshot = await loadSnapshot(client, t.bookingId);
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      const { snapshot, mine } = live;
       const seat = seatOf(t);
-      const mine: SessionEntry | undefined = snapshot.sessions?.[seat];
-      if (!mine || mine.joinId !== t.joinId) return res.status(409).json({ error: 'The room was opened on another device.', superseded: true });
 
       if (action === 'session') {
         const { sessionId } = await cf.newSession();
@@ -203,6 +233,71 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   for (const action of ['session', 'tracks', 'renegotiate', 'update', 'close'] as const) {
     app.post(`/api/classroom/:id/rtc/${action}`, withTicket, deps.roomRateLimit, rtc(action));
   }
+
+  // Task 7: the lesson timeline. The client batches persisted events every 30 s and on pagehide.
+  app.post('/api/classroom/:id/events', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      const size = req.rawBody?.length ?? JSON.stringify(req.body ?? {}).length;
+      if (size > MAX_EVENTS_BODY) return res.status(413).json({ error: 'Too much at once.' });
+      const items = req.body?.events;
+      if (!Array.isArray(items) || items.length > MAX_EVENTS || !items.every((x: any) => x && isRoomEvent(x.event))) {
+        return res.status(400).json({ error: `events must be a list of up to ${MAX_EVENTS} room events.` });
+      }
+      if (isObserver(t.role)) return res.status(204).end();
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+
+      const snapshot = { ...live.snapshot };
+      const rows: any[] = [];
+      let merged = false;
+      for (const { at, event: e } of items as Array<{ at: unknown; event: RoomEvent }>) {
+        if (!mayPersist(e, t.role, snapshot)) continue;
+        merged ||= e.t === 'board' || e.t === 'slide' || e.t === 'pdf' || e.t === 'layout';
+        if (e.t === 'board') {
+          // Latest board only, in the snapshot (no timeline row); an older scene never replaces a newer one.
+          if (e.sceneVersion < (snapshot.board?.sceneVersion ?? -1)) continue;
+          snapshot.board = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
+          continue;
+        }
+        const { t: type, ...payload } = e;
+        const ms = typeof at === 'number' && at <= now() && at >= now() - EVENT_SKEW_MS ? at : now();
+        rows.push({ booking_id: t.bookingId, type, actor_role: attendanceRole(t.role), payload, occurred_at: new Date(ms).toISOString() });
+        if (e.t === 'slide') snapshot.slide = e.state;
+        if (e.t === 'pdf') snapshot.pdf = { fileId: e.fileId, page: e.page };
+        if (e.t === 'layout') snapshot.layout = e.mode;
+      }
+      if (rows.length) {
+        const { error } = await client.from('lesson_timeline_events').insert(rows);
+        if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
+      }
+      if (merged) {
+        // Same read-modify-write shortcut as saveSeat; sessions are the ones read a moment ago in liveSeat.
+        const { error } = await client.from('lesson_room_state').upsert({ booking_id: t.bookingId, snapshot, updated_at: new Date(now()).toISOString() }, { onConflict: 'booking_id' });
+        if (error) throw new Error(`lesson_room_state: ${error.message}`);
+      }
+      return res.json({ stored: rows.length });
+    } catch (err) {
+      return fail(res, err, 'events');
+    }
+  });
+
+  // Rejoin (Review Focus 4): the latest slide, board, pdf and layout, and the time left to the hard close. Seats stay private.
+  app.get('/api/classroom/:id/state', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      const { sessions: _seats, ...snapshot } = await loadSnapshot(client, t.bookingId);
+      return res.json({ snapshot, remainingMs: remainingMs(booking, now()) });
+    } catch (err) {
+      return fail(res, err, 'state');
+    }
+  });
 
   // Task 6: the waiting room's 720p result for the caller's side. One call per join, so the shared IP limiter
   // (before the ticket check, like leave) is enough. Observers have no camera: accepted, nothing stored.
