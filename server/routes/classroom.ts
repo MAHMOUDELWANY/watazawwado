@@ -1,0 +1,230 @@
+import express from 'express';
+import crypto from 'node:crypto';
+import { decideRoomAccess, signTicket, verifyTicket, type Requester, type RoomBooking, type RoomRole, type TicketPayload } from '../classroom/access.js';
+import { roomKey, roomSecret } from './lessonRoom.js';
+import { isUuid } from './progress.js';
+import { ROOM_CLOSE_GRACE_MIN, roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
+import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
+
+/**
+ * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
+ * `enter` decides the role and hands out a short-lived ticket; every media call carries that ticket, and the server
+ * holds the Cloudflare secrets. Newest join wins: each enter replaces its role's entry in
+ * lesson_room_state.snapshot.sessions, and calls from an older join are refused with 409.
+ */
+type Middleware = (req: any, res: any, next: any) => any;
+type Cloudflare = ReturnType<typeof createCloudflareRealtime>;
+type SessionEntry = { joinId: string; userId: string; at: string; sessionId?: string };
+
+const BOOKING_COLS = 'id, student_id, teacher_id, status, scheduled_start, scheduled_end, duration_minutes, contact_name';
+const MAX_TRACKS = 64;
+const isObserver = (r: RoomRole) => r === 'guardian_observer' || r === 'admin_observer';
+// Teacher and learner have one seat each (two devices replace each other); every observer has their own.
+const seatOf = (t: TicketPayload) => (isObserver(t.role) ? `${t.role}:${t.userId}` : t.role);
+const attendanceRole = (r: RoomRole) => (r === 'teacher' ? 'teacher' : 'student');
+
+export function registerClassroomRoutes(app: express.Express, deps: {
+  getClient: () => any;
+  cloudflare: () => Cloudflare | null;
+  verifyTeacherAuth: Middleware;
+  verifyStudentAuth: Middleware;
+  getLearners: (client: any, req: any) => Promise<Array<{ id: string; name: string; learnerType?: string }>>;
+  rateLimit: Middleware;
+  secret?: () => string;
+  now?: () => number;
+}) {
+  const now = deps.now ?? Date.now;
+  const secret = deps.secret ?? roomSecret;
+
+  const loadBooking = async (client: any, id: string): Promise<(RoomBooking & { contact_name?: string | null }) | null> => {
+    const { data } = await client.from('bookings').select(BOOKING_COLS).eq('id', id).maybeSingle();
+    return data || null;
+  };
+  const loadSnapshot = async (client: any, id: string): Promise<any> => {
+    const { data } = await client.from('lesson_room_state').select('snapshot').eq('booking_id', id).maybeSingle();
+    return data?.snapshot && typeof data.snapshot === 'object' ? data.snapshot : {};
+  };
+  // shortcut: read-modify-write of the jsonb snapshot; two joins in the same instant can race. Move to an RPC if seen.
+  const saveSeat = async (client: any, id: string, snapshot: any, seat: string, entry: SessionEntry) => {
+    const next = { ...snapshot, sessions: { ...(snapshot.sessions || {}), [seat]: entry } };
+    const { error } = await client.from('lesson_room_state').upsert({ booking_id: id, snapshot: next, updated_at: new Date(now()).toISOString() }, { onConflict: 'booking_id' });
+    if (error) throw new Error(`lesson_room_state: ${error.message}`);
+  };
+
+  const fail = (res: any, err: unknown, where: string) => {
+    if (err instanceof CloudflareRealtimeError) {
+      console.error(`[classroom ${where}] Cloudflare`, err.status, err.errorCode);
+      // Never forward the provider message: only our wording and its error code.
+      return res.status(502).json({ error: 'The media service did not answer. Please try again.', code: err.errorCode });
+    }
+    console.error(`[classroom ${where}]`, err);
+    return res.status(500).json({ error: 'The lesson room is not available right now.' });
+  };
+
+  const enter = (portal: 'teacher' | 'student') => async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      const cf = deps.cloudflare();
+      const key = secret();
+      if (!client || !cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const id = String(req.params.id || '');
+      if (!isUuid(id)) return res.status(404).json({ error: 'Lesson not found.' });
+      const booking = await loadBooking(client, id);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+
+      let requester: Requester;
+      let family: Array<{ id: string; name: string; learnerType?: string }> = [];
+      if (portal === 'teacher') {
+        requester = { userId: req.teacherUser?.id, role: req.teacherUser?.role === 'super_admin' ? 'super_admin' : 'teacher' };
+      } else {
+        family = await deps.getLearners(client, req);
+        // A child's own phone (NX-16) is the learner, never a guardian.
+        requester = { userId: req.studentUser?.auth_id, role: req.childDevice ? 'student' : 'parent' };
+      }
+      if (!requester.userId) return res.status(401).json({ error: 'Please sign in again.' });
+
+      const access = decideRoomAccess({
+        booking,
+        requester,
+        learners: family.map((l) => ({ id: l.id, isChild: l.learnerType === 'child' })),
+        wantObserver: req.query.observe === '1',
+        now: now(),
+      });
+      if (access.ok === false) return res.status(access.status).json({ error: access.reason });
+
+      const role = access.role;
+      const hardClose = roomHardCloseMs(booking);
+      const ticketPayload: TicketPayload = { bookingId: id, role, userId: requester.userId, exp: hardClose, joinId: crypto.randomUUID() };
+      const at = new Date(now()).toISOString();
+      await saveSeat(client, id, await loadSnapshot(client, id), seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
+
+      if (!isObserver(role)) {
+        // One room_joined per side per lesson: a second device or a rejoin is not a new join (Review Focus 2 and 4).
+        const r = attendanceRole(role);
+        const { error } = await client.from('lesson_attendance_events').upsert(
+          { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: at, dedupe_key: `room:${id}:${r}:joined` },
+          { onConflict: 'dedupe_key', ignoreDuplicates: true },
+        );
+        if (error) console.error('[classroom enter] room_joined', error.message);
+      } else if (role === 'admin_observer') {
+        const { error } = await client.from('admin_observations').insert({ booking_id: id, admin_user_id: requester.userId, started_at: at });
+        if (error) throw new Error(`admin_observations: ${error.message}`);
+      }
+
+      const iceServers = await cf.iceServers(Math.max(60, Math.ceil((hardClose - now()) / 1000)));
+      const start = new Date(booking.scheduled_start).getTime();
+      return res.json({
+        role,
+        ticket: signTicket(ticketPayload, key),
+        roomKey: roomKey(id, key),
+        iceServers,
+        startsAt: booking.scheduled_start,
+        hardCloseAt: new Date(hardClose).toISOString(),
+        durationMinutes: Math.round((hardClose - ROOM_CLOSE_GRACE_MIN * 60_000 - start) / 60_000),
+        learnerName: family.find((l) => l.id === booking.student_id)?.name || booking.contact_name || null,
+      });
+    } catch (err) {
+      return fail(res, err, 'enter');
+    }
+  };
+
+  app.get('/api/dashboard/classroom/:id/enter', deps.rateLimit, deps.verifyTeacherAuth, enter('teacher'));
+  app.get('/api/student/classroom/:id/enter', deps.rateLimit, deps.verifyStudentAuth, enter('student'));
+
+  const withTicket: Middleware = (req, res, next) => {
+    const t = verifyTicket(String(req.headers['x-room-ticket'] || ''), secret(), now());
+    if (!t) return res.status(401).json({ error: 'Your room pass has ended. Please enter again.' });
+    if (t.bookingId !== req.params.id) return res.status(403).json({ error: 'This pass is for another lesson.' });
+    req.roomTicket = t;
+    next();
+  };
+
+  /** Re-checks the booking on every media call, so a moved, cancelled or reassigned lesson stops the room. */
+  const rtc = (action: 'session' | 'tracks' | 'renegotiate' | 'update' | 'close') => async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      const cf = deps.cloudflare();
+      if (!client || !cf?.configured) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (!['confirmed', 'rescheduled'].includes(booking.status)) return res.status(409).json({ error: 'This lesson is not active.', ended: true });
+      if (roomJoinState(booking, now()) !== 'open') return res.status(423).json({ error: 'The room is closed.', ended: true });
+      if (t.role === 'teacher' && booking.teacher_id !== t.userId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
+
+      const snapshot = await loadSnapshot(client, t.bookingId);
+      const seat = seatOf(t);
+      const mine: SessionEntry | undefined = snapshot.sessions?.[seat];
+      if (!mine || mine.joinId !== t.joinId) return res.status(409).json({ error: 'The room was opened on another device.', superseded: true });
+
+      if (action === 'session') {
+        const { sessionId } = await cf.newSession();
+        await saveSeat(client, t.bookingId, snapshot, seat, { ...mine, sessionId });
+        return res.json({ sessionId });
+      }
+
+      const body = req.body || {};
+      if (!mine.sessionId || body.sessionId !== mine.sessionId) return res.status(403).json({ error: 'This media session is not yours.' });
+
+      if (action === 'renegotiate') {
+        if (typeof body.sdp !== 'string' || !body.sdp) return res.status(400).json({ error: 'sdp is required.' });
+        return res.json(await cf.renegotiate(mine.sessionId, body.sdp));
+      }
+
+      const tracks = body.tracks;
+      if (!Array.isArray(tracks) || tracks.length > MAX_TRACKS || tracks.some((x: any) => !x || typeof x !== 'object')) {
+        return res.status(400).json({ error: 'tracks must be a list.' });
+      }
+      // Observers are receive-only: nothing they send may publish.
+      if (isObserver(t.role) && tracks.some((x: any) => (action === 'close' ? x.location === 'local' : x.location !== 'remote'))) {
+        return res.status(403).json({ error: 'Observers can only watch.' });
+      }
+      // Pulls may only come from sessions of this lesson's room.
+      const roomSessions = new Set(Object.values(snapshot.sessions || {}).map((s: any) => s?.sessionId).filter(Boolean));
+      if (tracks.some((x: any) => x.location === 'remote' && (action === 'tracks' || x.sessionId != null) && !roomSessions.has(x.sessionId))) {
+        return res.status(403).json({ error: 'That track is not in this lesson.' });
+      }
+      const sd = body.sessionDescription;
+      const sessionDescription = sd && (sd.type === 'offer' || sd.type === 'answer') && typeof sd.sdp === 'string' ? { type: sd.type, sdp: sd.sdp } : undefined;
+
+      // Per-track errorCode values come back inside a 200 and are returned as they are; the client handles them.
+      if (action === 'tracks') return res.json(await cf.tracksNew(mine.sessionId, { sessionDescription, tracks }));
+      if (action === 'update') return res.json(await cf.tracksUpdate(mine.sessionId, { tracks }));
+      return res.json(await cf.tracksClose(mine.sessionId, { tracks, sessionDescription, force: body.force === true }));
+    } catch (err) {
+      return fail(res, err, `rtc/${action}`);
+    }
+  };
+
+  for (const action of ['session', 'tracks', 'renegotiate', 'update', 'close'] as const) {
+    app.post(`/api/classroom/:id/rtc/${action}`, deps.rateLimit, withTicket, rtc(action));
+  }
+
+  app.post('/api/classroom/:id/leave', deps.rateLimit, withTicket, async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      const at = new Date(now()).toISOString();
+      if (t.role === 'admin_observer') {
+        const { error } = await client.from('admin_observations').update({ ended_at: at })
+          .eq('booking_id', t.bookingId).eq('admin_user_id', t.userId).is('ended_at', null);
+        if (error) throw new Error(`admin_observations: ${error.message}`);
+      } else if (!isObserver(t.role)) {
+        // A device that was replaced by a newer join leaves silently; the newer one is still in the room.
+        const mine = (await loadSnapshot(client, t.bookingId)).sessions?.[seatOf(t)];
+        if (mine?.joinId === t.joinId) {
+          const r = attendanceRole(t.role);
+          const { error } = await client.from('lesson_attendance_events').upsert(
+            { booking_id: t.bookingId, source: 'room', event: 'room_left', role: r, occurred_at: at, dedupe_key: `room:${t.bookingId}:${r}:left:${t.joinId}` },
+            { onConflict: 'dedupe_key', ignoreDuplicates: true },
+          );
+          if (error) throw new Error(`room_left: ${error.message}`);
+        }
+      }
+      return res.json({ ok: true });
+    } catch (err) {
+      return fail(res, err, 'leave');
+    }
+  });
+}

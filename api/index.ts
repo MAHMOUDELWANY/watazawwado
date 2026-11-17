@@ -68,6 +68,8 @@ import { registerProgramRoutes } from '../server/routes/programs.js';
 import { registerPushRoutes } from '../server/routes/push.js';
 import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
+import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherFileRoutes } from '../server/routes/teacherFiles.js';
@@ -10854,6 +10856,8 @@ registerMonthlyDraftRoute(app, jalilaDraftDeps);
 
 // NX-12: the lesson room (teacher shows slides, the learner follows live).
 registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent });
+// Classroom Release 1: room tickets, roles and the Cloudflare media proxy.
+registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit });
 
 // NX-03: recitation recordings and the teacher's reply.
 registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });

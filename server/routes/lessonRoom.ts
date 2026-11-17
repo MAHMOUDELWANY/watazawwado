@@ -14,7 +14,7 @@ export function roomKey(bookingId: string, secret: string): string {
   return crypto.createHmac('sha256', secret).update(`lesson-room:${bookingId}`).digest('hex').slice(0, 40);
 }
 
-const roomSecret = () => process.env.LESSON_ROOM_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+export const roomSecret = () => process.env.LESSON_ROOM_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const ROOM_STATUSES = ['confirmed', 'rescheduled', 'completed', 'pending'];
 
 export function registerLessonRoomRoutes(app: express.Express, deps: {
