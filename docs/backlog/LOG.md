@@ -4,6 +4,35 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage redesign: "the zaad" (2026-11-18)
+
+- Owner (2026-11-18, overnight, "don't ask me anything"): redesign the landing page from scratch, simple words with
+  weight (like Nike's "Just do it"), visually striking enough for a UI/UX competition, never centred on one person,
+  never reading like a freelancer advertising themself; inspiration from Bilqalam and Arabic101, never copied.
+- One idea carries the page: the zaad, the provision for a journey our name comes from (Al-Baqarah 2:197). Order:
+  hero (our painting of a traveller's bag, water skin, dates and a lit lantern; brand line "Not just lessons. A mentor
+  who stays." / «مش مجرد حصص. معلّمٌ يبقى معك.»), the verse our name comes from, three promises we can prove (the
+  mission verse as their title; the report promise shown with an example report shaped like the portal timeline), the
+  four tracks with their course paintings and prices, "What will you pack?" (the live thing: say who is learning, tap
+  subjects, each flies into the zaad bag, the bag links to the right subject pages and starts the free lesson with the
+  first subject preselected), "How it starts" (three stops on a gold road), the FAQ, and a close on footsteps in the
+  sand with "Pack your zaad.".
+- Pictures: our own course banners (public/curriculum/banners); hero and close crops in public/home/. The open image
+  archives were not reachable from this environment, so nothing outside the project is used.
+- Removed from the homepage: the Zad's-bag token loop (`HeroBag`), "Who is the learning for?" (`PathFinder`, replaced
+  by the pack), the rotating subject line (`HeroSubjects`), the six doors, and the 3D carpet scene (`TeacherStays`,
+  `carpetScene.ts`: primitive 3D figures beside the paintings, and three screens of scroll; its promise is now the
+  first of the three promises). Fixes main: commit 31355388 had deleted `HeroBag.tsx` and `TwoWays.tsx` while the
+  homepage still imported them, so the build failed.
+- Files: `src/components/public/homepage/` (HomeHero, Promises, Tracks, PackYourZaad, StartRoad, useReveal,
+  PublicHomepage), `src/index.css` ("HOMEPAGE 2026-11-18"), `public/home/*.webp`; tests updated (measurement-ready,
+  mk-01-04, p4-child-and-voice, pu-04) and added (`test/home-2026-11-18.test.ts`).
+- Checks: full tsc clean; `npm run build` passes (46 pages prerendered, the homepage h1 and every section heading in
+  the HTML); full test suite 111 failures, all API tests that need the database (no `.env` here), against 113 on
+  main before the change (the two extra were the broken homepage tests). Screenshots at 390, 1024, 1280, 1440 and
+  1920, English and Arabic, light and dark, and the pack interaction clicked through on desktop and phone.
+- Not checked: production after deploy (the test browser cannot reach the live site from here); a real phone.
+
 ### Simpler homepage: Zad's bag in the hero, path finder, subject pages (2026-11-17)
 
 - Owner: replace the teacher photos with a general intro, remove the 3D phones, simpler and more creative; take
