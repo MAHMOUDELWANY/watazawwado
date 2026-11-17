@@ -16,13 +16,13 @@ When a post is created, tick it here (`[x]` plus the Buffer post id). Skip and r
 
 ## Queue
 
-- [ ] **V4 · 2026-11-19** · video `https://watazawwado.academy/social/v4/v4.mp4` · partial: Instagram + YouTube scheduled, TikTok waiting
+- [x] **V4 · 2026-11-19** · video `https://watazawwado.academy/social/v4/v4.mp4`
   - [x] Buffer `6afb693f3509d4c5b881a61a` · Instagram 18:00 · "Would you hand your child to a stranger? Most parents do without meaning to: the first time they meet the teacher is the first lesson.\n\nThere's a better way, and it starts before lesson one. Wherever you book, see the teacher first.\n\n#muslimparents #quranforkids #onlinequran #islamicparenting #muslimmom"
   - [x] Buffer `6afb69413e6202be8788da29` · YouTube 18:00 · title "Would you hand your child to a stranger?" · "Most parents meet their child's Quran teacher in the first lesson. There's a better way: see the teacher first.\n\nMore: https://watazawwado.academy/?utm_source=youtube&utm_medium=social&utm_campaign=choose-the-teacher&utm_content=idV4\n\n#muslimparents #quranforkids #shorts"
-  - TikTok 20:00 · title "Would you hand your child to a stranger?" · "Would you hand your child to a stranger? Most parents do 👀 #muslimparents #quranforkids #muslimtok"
-- [ ] **V5 · 2026-11-20** · video `https://watazawwado.academy/social/v5/v5.mp4`
-  - Instagram 18:00 · "Your kids say 3 Arabic words every day. Do they know what they mean?\n\nBismillah, Alhamdulillah, and the one that makes the cook smile. Quick quiz at the end 👀\n\n#muslimkids #islamicparenting #learnarabic #muslimparents #arabicforkids"
-  - YouTube 18:00 · title "3 Arabic words your kids say every day" · "Bismillah, Alhamdulillah and the one that makes the cook smile. Do your kids know what they mean?\n\nMore: https://watazawwado.academy/?utm_source=youtube&utm_medium=social&utm_campaign=meal-words&utm_content=idV5\n\n#learnarabic #muslimkids #shorts"
+  - [x] Buffer `6afcba90ea84dfa92544975b` · TikTok 20:00 · title "Would you hand your child to a stranger?" · "Would you hand your child to a stranger? Most parents do 👀 #muslimparents #quranforkids #muslimtok"
+- [ ] **V5 · 2026-11-20** · video `https://watazawwado.academy/social/v5/v5.mp4` · partial: Instagram + YouTube scheduled, TikTok waiting
+  - [x] Buffer `6afcba927acfe506d927432f` · Instagram 18:00 · "Your kids say 3 Arabic words every day. Do they know what they mean?\n\nBismillah, Alhamdulillah, and the one that makes the cook smile. Quick quiz at the end 👀\n\n#muslimkids #islamicparenting #learnarabic #muslimparents #arabicforkids"
+  - [x] Buffer `6afcba9430e8d67e7ca1fc5b` · YouTube 18:00 · title "3 Arabic words your kids say every day" · "Bismillah, Alhamdulillah and the one that makes the cook smile. Do your kids know what they mean?\n\nMore: https://watazawwado.academy/?utm_source=youtube&utm_medium=social&utm_campaign=meal-words&utm_content=idV5\n\n#learnarabic #muslimkids #shorts"
   - TikTok 20:00 · title "3 Arabic words your kids say every day" · "Your kids say these 3 Arabic words every day. Do they know what they mean? 👀 #muslimkids #learnarabic #muslimtok"
 - [ ] **V7 · 2026-11-22** · video `https://watazawwado.academy/social/v7/v7.mp4`
   - Instagram 18:00 · "One letter turns your heart… into a dog. قَلْب (heart) and كَلْب (dog) are one sound apart. Here's where ق really comes from.\n\nSave it for your next read.\n\n#tajweed #learnquran #arabicletters #quranforbeginners #learnarabic"
