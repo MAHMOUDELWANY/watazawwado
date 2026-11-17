@@ -27,9 +27,9 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 1 | Room window and lateness rules | done, reviewed | 76f3dcdc |
 | 2 | Database migration and types | done, reviewed (not applied) | 562e452d |
 | 3 | Cloudflare Realtime server client | done, reviewed | 3517cf2a |
-| 4 | Room tickets, roles, media proxy | done, security review running | 16eafbc9 |
+| 4 | Room tickets, roles, media proxy | done, security-reviewed (rate limit + learner-change fixes) | 16eafbc9, 96b6c8ef |
 | 5 | Client media engine, adaptive layers | in progress | |
-| 6 | Waiting room (720p check) | todo | |
+| 6 | Waiting room (720p check) | in progress | |
 | 7 | Lesson timeline, persistence, rejoin | todo | |
 | 8 | Whiteboard, PDF, Arabic keyboard | todo | |
 | 9 | The room screen | todo | |
