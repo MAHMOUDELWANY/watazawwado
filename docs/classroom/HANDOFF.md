@@ -31,9 +31,9 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 5 | Client media engine, adaptive layers | done + fix (recitation bitrate, unsubscribe) | c2d56f7e, fdf0c130 |
 | 6 | Waiting room (720p check) | done (not yet seen in a browser; route comes in Task 9) | ce4e3d0d |
 | 7 | Lesson timeline, persistence, rejoin | done (85 classroom tests pass) | 578fd38b |
-| 8 | Whiteboard, PDF, Arabic keyboard | done (bucket migration 20261118000000 not applied; upload-size fix running) | acc5bbd6 |
+| 8 | Whiteboard, PDF, Arabic keyboard | done (bucket migration 20261118000000 not applied; signed direct uploads up to 20 MB) | acc5bbd6, 25957e0c |
 | 9 | The room screen | in progress | |
-| 10 | Attendance and teacher punctuality | todo | |
+| 10 | Attendance and teacher punctuality | in progress (gate + admin page to be mounted in DashboardApp after Task 9) | |
 | 11 | Quality records and alerts | todo | |
 | 12 | Automatic Zoom fallback | todo | |
 | 13 | Observers and rollout switch | todo | |
