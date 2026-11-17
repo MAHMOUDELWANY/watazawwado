@@ -8,9 +8,9 @@ English clone for English), written first; scenes are timed to the VO.
 Status (2026-11-17): script approved by the owner. The hero already shows the film's opening idea as a live motion
 piece (`src/components/public/homepage/HeroBag.tsx`: the four kinds of learning drop into Zad's bag), replacing the
 teacher photos. Voice-over recorded on the new account (eleven_v4, `mahmoud-fusha` kO4IhVkRM0Oyq7qfKk0l and `mahmoud-english`
-qcy21eeEO3C1xHhSLn3U), two takes each in `marketing/intro-film/vo/` (`ar-take1/2.mp3` ~26 s, `en-take1/2.mp3`
-~27 s). The VO runs ~27 s, so the film is ~30 s (scenes retimed to the VO, short tail on the logo). Next: owner
-picks a take per language and records clips A–E, then the voiced film goes into the hero (tap to play) on top of
+qcy21eeEO3C1xHhSLn3U), takes in `marketing/intro-film/vo/` (`ar-take1.mp3` ~26 s, `en-take1.mp3`
+~27 s). The VO runs ~27 s, so the film is ~30 s (scenes retimed to the VO, short tail on the logo). Owner picked
+**take 1 for both** (`ar-take1.mp3`, `en-take1.mp3`; 2026-11-17). Next: owner records clips A–E, then the voiced film goes into the hero (tap to play) on top of
 the same visual.
 
 ## Hero behaviour
