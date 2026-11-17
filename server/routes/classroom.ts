@@ -204,6 +204,28 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     app.post(`/api/classroom/:id/rtc/${action}`, withTicket, deps.roomRateLimit, rtc(action));
   }
 
+  // Task 6: the waiting room's 720p result for the caller's side. One call per join, so the shared IP limiter
+  // (before the ticket check, like leave) is enough. Observers have no camera: accepted, nothing stored.
+  app.post('/api/classroom/:id/precheck', deps.rateLimit, withTicket, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      const { precheck720, startHeight } = req.body || {};
+      const heightOk = startHeight === null || (Number.isInteger(startHeight) && startHeight >= 0 && startHeight <= 4320);
+      if (typeof precheck720 !== 'boolean' || !heightOk) return res.status(400).json({ error: 'precheck720 and startHeight are required.' });
+      if (isObserver(t.role)) return res.status(204).end();
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const { error } = await client.from('lesson_quality').upsert(
+        { booking_id: t.bookingId, side: attendanceRole(t.role), precheck_720: precheck720, start_height: startHeight, updated_at: new Date(now()).toISOString() },
+        { onConflict: 'booking_id,side' },
+      );
+      if (error) throw new Error(`lesson_quality: ${error.message}`);
+      return res.json({ ok: true });
+    } catch (err) {
+      return fail(res, err, 'precheck');
+    }
+  });
+
   app.post('/api/classroom/:id/leave', deps.rateLimit, withTicket, async (req: any, res: any) => {
     try {
       const client = deps.getClient();
