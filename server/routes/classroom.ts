@@ -32,8 +32,6 @@ export const CLASSROOM_FILES_BUCKET = 'classroom-files';
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
 const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
 const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
-// shortcut: on Vercel a function body is capped near 4.5 MB, so larger files fail there; move to a signed upload link + magic-byte confirm if teachers need big PDFs.
-const rawFile = express.raw({ type: () => true, limit: MAX_FILE_BYTES });
 
 /** The real type from the first bytes; the Content-Type header alone is never trusted. */
 export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
@@ -41,6 +39,26 @@ export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'im
   if (b.length >= 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
   if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
   return null;
+}
+
+/** Reads only the first `n` bytes of a stored object as a stream, then stops, so a 20 MB file never sits in memory. */
+async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer | null> {
+  const { data, error } = await bucket.download(path).asStream();
+  if (error || !data) return null;
+  const reader = (data as ReadableStream<Uint8Array>).getReader();
+  const parts: Buffer[] = [];
+  let got = 0;
+  try {
+    while (got < n) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      parts.push(Buffer.from(value));
+      got += value.length;
+    }
+  } finally {
+    await reader.cancel().catch(() => {});
+  }
+  return Buffer.concat(parts).subarray(0, n);
 }
 
 /**
@@ -309,35 +327,61 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     return data.signedUrl as string;
   };
 
-  // Task 8: the teacher adds a PDF or image to the lesson. The role is checked before the body is read.
-  app.post('/api/classroom/:id/files', withTicket, deps.roomRateLimit,
-    (req: any, res: any, next: any) => (req.roomTicket.role === 'teacher' ? next() : res.status(403).json({ error: 'Only the teacher can add files.' })),
-    (req: any, res: any, next: any) => rawFile(req, res, (err: any) => (err
-      ? res.status(err.status === 413 ? 413 : 400).json({ error: err.status === 413 ? 'The file is larger than 20 MB.' : 'The file did not arrive.' })
-      : next())),
-    async (req: any, res: any) => {
-      try {
-        const body: Buffer = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
-        const type = detectFileType(body);
-        const header = String(req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
-        if (!type || header !== type) return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' });
-        const client = deps.getClient();
-        if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
-        const t: TicketPayload = req.roomTicket;
-        const live = await liveSeat(client, t, res);
-        if (!live) return;
-        const booking = await loadBooking(client, t.bookingId);
-        if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-        const fileId = `${crypto.randomUUID()}.${FILE_EXT[type]}`;
-        const { error } = await client.storage.from(CLASSROOM_FILES_BUCKET).upload(`${t.bookingId}/${fileId}`, body, { contentType: type, upsert: false });
-        if (error) throw new Error(`upload: ${error.message}`);
-        const url = await fileLink(client, booking, fileId);
-        if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
-        return res.json({ fileId, url });
-      } catch (err) {
-        return fail(res, err, 'files');
-      }
-    });
+  // Task 8: the teacher adds a PDF or image in two steps, because a Vercel function body is capped near 4.5 MB:
+  // upload-url hands out a one-path signed upload, the browser sends the file straight to Storage, confirm checks it.
+  const teacherOnly = (req: any, res: any, next: any) => (req.roomTicket.role === 'teacher' ? next() : res.status(403).json({ error: 'Only the teacher can add files.' }));
+
+  app.post('/api/classroom/:id/files/upload-url', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
+    try {
+      const contentType = String(req.body?.contentType || '').toLowerCase();
+      const size = Number(req.body?.size);
+      if (!FILE_EXT[contentType]) return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' });
+      if (!Number.isInteger(size) || size < 1) return res.status(400).json({ error: 'size must be the file size in bytes.' });
+      if (size > MAX_FILE_BYTES) return res.status(413).json({ error: 'The file is larger than 20 MB.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      if (!(await liveSeat(client, t, res))) return;
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (roomHardCloseMs(booking) <= now()) return res.status(423).json({ error: 'The room is closed.', ended: true });
+      const fileId = `${crypto.randomUUID()}.${FILE_EXT[contentType]}`;
+      const path = `${t.bookingId}/${fileId}`;
+      const { data, error } = await client.storage.from(CLASSROOM_FILES_BUCKET).createSignedUploadUrl(path);
+      if (error || !data?.token) throw new Error(`signed upload: ${error?.message || 'none'}`);
+      return res.json({ fileId, path, token: data.token, signedUrl: data.signedUrl });
+    } catch (err) {
+      return fail(res, err, 'files/upload-url');
+    }
+  });
+
+  // The upload went around us, so nothing about it is trusted until here: real size and the first bytes.
+  app.post('/api/classroom/:id/files/:fileId/confirm', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
+    try {
+      const fileId = String(req.params.fileId || '');
+      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      if (!(await liveSeat(client, t, res))) return;
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      const bucket = client.storage.from(CLASSROOM_FILES_BUCKET);
+      const path = `${t.bookingId}/${fileId}`;
+      const info = await bucket.info(path);
+      if (info.error || !info.data) return res.status(404).json({ error: 'The file did not arrive.' });
+      const drop = async () => { const { error } = await bucket.remove([path]); if (error) console.error('[classroom] files/remove', error.message); };
+      if (!(Number(info.data.size) <= MAX_FILE_BYTES)) { await drop(); return res.status(413).json({ error: 'The file is larger than 20 MB.' }); }
+      const head = await firstBytes(bucket, path, 16);
+      const declared = Object.keys(FILE_EXT).find((k) => fileId.endsWith(`.${FILE_EXT[k]}`));
+      if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' }); }
+      const url = await fileLink(client, booking, fileId);
+      if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
+      return res.json({ fileId, url });
+    } catch (err) {
+      return fail(res, err, 'files/confirm');
+    }
+  });
 
   // Any pass of this lesson (learner and observers too) gets a fresh link, e.g. after a pdf event or a rejoin.
   app.get('/api/classroom/:id/files/:fileId', withTicket, deps.roomRateLimit, async (req: any, res: any) => {

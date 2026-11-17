@@ -33,7 +33,10 @@ describe('CL-08 detectFileType', () => {
 describe('CL-08 files routes', () => {
   let server: http.Server;
   let base: string;
-  const uploads: Array<{ bucket: string; path: string; contentType: string; size: number }> = [];
+  // In-memory bucket: path -> bytes. Uploads land here directly, as the browser would with the signed token.
+  const objects = new Map<string, Buffer>();
+  const uploadUrls: Array<{ bucket: string; path: string }> = [];
+  const removed: string[] = [];
   const signed: Array<{ path: string; seconds: number }> = [];
   const sessions = {
     teacher: { joinId: 'jt', userId: 'teacher-1', at: 'x' },
@@ -51,7 +54,17 @@ describe('CL-08 files routes', () => {
     storage: {
       from(bucket: string) {
         return {
-          upload: async (path: string, body: Buffer, opts: any) => { uploads.push({ bucket, path, contentType: opts.contentType, size: body.length }); return { data: { path }, error: null }; },
+          createSignedUploadUrl: async (path: string) => { uploadUrls.push({ bucket, path }); return { data: { path, token: `tok-${path}`, signedUrl: `https://files.test/upload/${path}` }, error: null }; },
+          info: async (path: string) => (objects.has(path) ? { data: { size: objects.get(path)!.length }, error: null } : { data: null, error: { message: 'not found' } }),
+          download: (path: string) => ({
+            asStream: async () => {
+              const buf = objects.get(path);
+              if (!buf) return { data: null, error: { message: 'not found' } };
+              // Two chunks, so the reader has to stop early instead of buffering the whole file.
+              return { data: new ReadableStream({ start(c) { c.enqueue(new Uint8Array(buf.subarray(0, 4))); c.enqueue(new Uint8Array(buf.subarray(4))); c.close(); } }), error: null };
+            },
+          }),
+          remove: async (paths: string[]) => { for (const p of paths) { removed.push(p); objects.delete(p); } return { data: [], error: null }; },
           createSignedUrl: async (path: string, seconds: number) => { signed.push({ path, seconds }); return { data: { signedUrl: `https://files.test/${path}?exp=${seconds}` }, error: null }; },
         };
       },
@@ -81,42 +94,83 @@ describe('CL-08 files routes', () => {
   const T = ticket('teacher', 'teacher-1', 'jt');
   const L = ticket('learner', 'parent-1', 'jl');
   const G = ticket('guardian_observer', 'parent-2', 'jg');
-  const upload = (t: string, body: Buffer, type: string) =>
-    fetch(`${base}/api/classroom/${BOOKING_ID}/files`, { method: 'POST', headers: { 'content-type': type, 'x-room-ticket': t }, body });
+  const post = (t: string, path: string, body?: unknown) =>
+    fetch(`${base}/api/classroom/${BOOKING_ID}/files${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': t }, body: JSON.stringify(body ?? {}) });
+  const askUrl = (t: string, contentType: string, size: number) => post(t, '/upload-url', { contentType, size });
+  const confirm = (t: string, fileId: string) => post(t, `/${encodeURIComponent(fileId)}/confirm`);
+  /** The three steps, with the browser's direct upload simulated by writing into the fake bucket. */
+  const addFile = async (bytes: Buffer, contentType: string) => {
+    const r = await askUrl(T, contentType, bytes.length);
+    assert.strictEqual(r.status, 200);
+    const { fileId, path, token } = await r.json();
+    assert.strictEqual(token, `tok-${path}`);
+    objects.set(path, bytes);
+    return { fileId, path, res: await confirm(T, fileId) };
+  };
 
-  it('refuses learner and observer tickets', async () => {
-    assert.strictEqual((await upload(L, PDF, 'application/pdf')).status, 403);
-    assert.strictEqual((await upload(G, PDF, 'application/pdf')).status, 403);
-    assert.strictEqual(uploads.length, 0);
+  it('refuses learner and observer tickets on both steps', async () => {
+    assert.strictEqual((await askUrl(L, 'application/pdf', 1000)).status, 403);
+    assert.strictEqual((await askUrl(G, 'application/pdf', 1000)).status, 403);
+    const fileId = '11111111-1111-4111-8111-111111111111.pdf';
+    objects.set(`${BOOKING_ID}/${fileId}`, PDF);
+    assert.strictEqual((await confirm(L, fileId)).status, 403);
+    assert.strictEqual((await confirm(G, fileId)).status, 403);
+    assert.strictEqual(uploadUrls.length, 0);
+    assert.strictEqual(signed.length, 0);
+    objects.clear();
   });
 
-  it('refuses an .exe, even when it claims to be a PDF', async () => {
-    assert.strictEqual((await upload(T, EXE, 'application/x-msdownload')).status, 415);
-    assert.strictEqual((await upload(T, EXE, 'application/pdf')).status, 415);
-    assert.strictEqual((await upload(T, PNG, 'application/pdf')).status, 415);
-    assert.strictEqual(uploads.length, 0);
+  it('refuses a type other than PDF, PNG or JPEG, and a declared size over 20 MB', async () => {
+    assert.strictEqual((await askUrl(T, 'application/x-msdownload', 1000)).status, 415);
+    assert.strictEqual((await askUrl(T, 'application/pdf', 25 * 1024 * 1024)).status, 413);
+    assert.strictEqual((await askUrl(T, 'application/pdf', 0)).status, 400);
+    assert.strictEqual(uploadUrls.length, 0);
   });
 
-  it('refuses files over 20 MB', async () => {
-    const big = Buffer.concat([PDF, Buffer.alloc(20 * 1024 * 1024)]);
-    assert.strictEqual((await upload(T, big, 'application/pdf')).status, 413);
-    assert.strictEqual(uploads.length, 0);
+  it('signs an upload only for <bookingId>/<uuid>.<ext> in the private bucket', async () => {
+    const r = await askUrl(T, 'image/png', PNG.length);
+    const { fileId, path } = await r.json();
+    assert.match(fileId, /^[0-9a-f-]{36}\.png$/);
+    assert.deepStrictEqual(uploadUrls.at(-1), { bucket: CLASSROOM_FILES_BUCKET, path: `${BOOKING_ID}/${fileId}` });
+    assert.strictEqual(path, `${BOOKING_ID}/${fileId}`);
   });
 
-  it('stores a PDF privately and returns a signed URL that ends no later than the hard close', async () => {
-    const res = await upload(T, PDF, 'application/pdf');
+  it('deletes an object whose bytes are not the declared type (415)', async () => {
+    const { path, res } = await addFile(EXE, 'application/pdf');
+    assert.strictEqual(res.status, 415);
+    assert.ok(removed.includes(path));
+    assert.ok(!objects.has(path));
+    const png = await addFile(PNG, 'application/pdf');
+    assert.strictEqual(png.res.status, 415);
+    assert.ok(removed.includes(png.path));
+  });
+
+  it('deletes an object that is really over 20 MB (413), whatever size was declared', async () => {
+    const r = await askUrl(T, 'application/pdf', PDF.length);
+    const { fileId, path } = await r.json();
+    objects.set(path, Buffer.concat([PDF, Buffer.alloc(20 * 1024 * 1024)]));
+    assert.strictEqual((await confirm(T, fileId)).status, 413);
+    assert.ok(removed.includes(path));
+  });
+
+  it('confirms a real PDF and returns a signed URL that ends no later than the hard close', async () => {
+    const { fileId, path, res } = await addFile(PDF, 'application/pdf');
     assert.strictEqual(res.status, 200);
-    const { fileId, url } = await res.json();
-    assert.match(fileId, /^[0-9a-f-]{36}\.pdf$/);
-    assert.deepStrictEqual(uploads[0], { bucket: CLASSROOM_FILES_BUCKET, path: `${BOOKING_ID}/${fileId}`, contentType: 'application/pdf', size: PDF.length });
-    assert.ok(url.startsWith('https://files.test/'));
+    const body = await res.json();
+    assert.strictEqual(body.fileId, fileId);
+    assert.ok(body.url.startsWith(`https://files.test/${path}`));
+    assert.ok(!removed.includes(path));
     const s = signed.at(-1)!;
     assert.ok(s.seconds > 0 && NOW + s.seconds * 1000 <= HARD_CLOSE, `expiry ${s.seconds}s passes the hard close`);
   });
 
+  it('refuses a confirm for a file that never arrived or a bad id', async () => {
+    assert.strictEqual((await confirm(T, '22222222-2222-4222-8222-222222222222.pdf')).status, 404);
+    assert.strictEqual((await confirm(T, '../other.pdf')).status, 404);
+  });
+
   it('gives any ticket of the booking a fresh signed URL, and refuses bad ids', async () => {
-    const res = await upload(T, JPG, 'image/jpeg');
-    const { fileId } = await res.json();
+    const { fileId } = await addFile(JPG, 'image/jpeg');
     const get = (t: string, id: string) => fetch(`${base}/api/classroom/${BOOKING_ID}/files/${id}`, { headers: { 'x-room-ticket': t } });
     const r = await get(L, fileId);
     assert.strictEqual(r.status, 200);
