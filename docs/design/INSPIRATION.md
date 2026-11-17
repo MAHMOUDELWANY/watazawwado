@@ -17,11 +17,22 @@ plan; the research below comes from these files, public docs and the iOS web-app
 | **Sparkle (promo video)** | `site-ui/sparkle-promo-video.jpg` (sparkle.ankatms.com video) | A 29s app promo: big two-word headlines ("Little wins.", "Tasks."), a 3D kid character, phone mockups tilting in, short scenes ("Every profile. One glance.", "Check in. Cheer on."), ending on the app icon and tagline. | The model for our app promo video (with the video skills): one idea per scene, real app screens in a phone frame, our Kids cast, a closing card with the icon. No music (RULES §1.6). |
 | **Sparkle (scroll story)** | `site-ui/sparkle-scroll-story.jpg` (sparkle.ankatms.com page) | A landing page told as you scroll: a star counter in the header goes up as each section arrives ("Tasks become stars", "Progress you can see", "Something worth working toward", "Small wins become habits", "Built for the whole family" with kid view and parent view side by side), numbered principles, ends on the App Store button. Copy promises "No account needed · No ads · No tracking". | A scroll-told page for our app: lesson → homework → review → progress → certificate, each section a real screen; the kid view and parent view side by side. Our counter could be ayat reviewed, not stars. Note: Sparkle shows a "day streak"; we do not (NX-01: no streaks). |
 
+## Competitor sites (owner, 2026-11-17)
+
+Two screen recordings of competing academies, sent for the homepage rework. **Inspire only, never copy** (owner said it
+three times). Their colours (Bilqalam's deep green and orange, Arabic101's yellow) are theirs; we use none of them.
+
+| Name we use | File | What it shows | What we took |
+|---|---|---|---|
+| **Bilqalam** | `competitors/bilqalam-home-about.jpg`, `bilqalam-programs-pathfinder.jpg`, `bilqalam-course-page.jpg` | Hero is a captioned animated explainer video. Three promise columns with illustrations. "Where would you like to begin?" track cards. A two-step "who is this journey for? Child / Teen / Adult / Family → your best-fit path" finder. Course pages with "Watch before you start" and "Who will teach you". Rating line, payment FAQ. | The idea of a visitor reaching the right page in two taps: our **"Who is the learning for?"** finder (`PathFinder.tsx`), one tap, our own subject pages. The **"Who will teach you"** block and a drawn start path on our subject pages. The film-in-the-hero idea, done as our own Zad film. |
+| **Arabic101** | `competitors/arabic101-hero-video.jpg`, `arabic101-academy.jpg` | Hero video on a chalkboard: hand-drawn arrows, a crossed-out list ("Arabic ✗ Tajweed ✗ Understand the Quran ✗"), "after years" timeline. Cut-out teacher photo with a sketchy outline. "Start your journey in 3 simple steps" joined by a line. | Only the lesson that one clear story beats many effects. Our hero became one idea: **Zad's bag being packed** (`HeroBag.tsx`), the same story the intro film tells. |
+
 ## Folders
 
 | Folder | Topic |
 |---|---|
 | `site-ui/` | Site and app chrome: buttons, bars, intro, install, promo/scroll story. |
+| `competitors/` | Other academies' sites, for inspiration only. |
 | `zaadi-mascot/` | Zaadi, our mascot: how a simple mascot is built, poses, moods, motion. |
 | `badges-and-rewards/` | Badge, level-up and reward reveals for homework and progress. |
 

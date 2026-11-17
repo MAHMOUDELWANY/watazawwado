@@ -142,7 +142,6 @@ describe('MK-04: homepage copy', () => {
     assert.doesNotMatch(home, /Online 1-on-1 classes/);
     assert.match(home, /Provision that lasts/);
     assert.match(home, /Pick your teacher from real profiles\. After every class, we tell you how it went, before you have to ask\./);
-    assert.match(read('src/components/public/homepage/TeacherDuo.tsx'), /See each teacher's story before you book\./);
     assert.match(read('src/components/public/homepage/TwoWays.tsx'), /Drifted\? Start where you are\. No lectures\./);
   });
 });

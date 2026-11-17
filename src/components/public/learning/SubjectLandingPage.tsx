@@ -51,9 +51,32 @@ export function SubjectLandingPage() {
           </section>
 
           <section className="space-y-4">
+            <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'Who will teach you' : 'من سيعلّمك'}</h2>
+            <Card className="p-5 sm:p-6 space-y-3">
+              <p className="text-foreground/90 leading-relaxed">
+                {isEn
+                  ? 'Our male and female teachers. You pick yours from real profiles when you sign up, and they stay with you lesson after lesson, so they always know where you are.'
+                  : 'معلّمونا ومعلّماتنا. تختار معلّمك من ملفات حقيقية عند التسجيل، ويبقى معك حصة بعد حصة، فيعرف دائمًا أين وصلت.'}
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {isEn ? 'If the fit is not right, tell us and we move you to another teacher.' : 'وإن لم يناسبك المعلم، أخبرنا وننقلك إلى معلم آخر.'}
+              </p>
+              <Link to="/about" className="inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-primary">
+                {isEn ? 'Meet our teachers' : 'تعرّف على معلّمينا'}<Arrow className="w-4 h-4" aria-hidden="true" />
+              </Link>
+            </Card>
+          </section>
+
+          <section className="space-y-4">
             <h2 className="font-editorial font-bold text-2xl text-foreground">{isEn ? 'How to start' : 'كيف تبدأ'}</h2>
-            <ol className="list-decimal ps-6 space-y-2 text-foreground/90 leading-relaxed">
-              {(isEn ? STEPS_EN : STEPS_AR).map((s) => <li key={s}>{s}</li>)}
+            {/* A short path: numbered stops joined by a gold line. */}
+            <ol className="relative space-y-5 ps-12 before:absolute before:top-3 before:bottom-3 before:start-[1.05rem] before:w-px before:bg-gradient-to-b before:from-[#E5A93C] before:to-[#087D91]/40">
+              {(isEn ? STEPS_EN : STEPS_AR).map((s, i) => (
+                <li key={s} className="relative text-foreground/90 leading-relaxed">
+                  <span aria-hidden="true" className="absolute -start-12 top-0 grid place-items-center w-9 h-9 rounded-full bg-[#C51F24] text-[#FAF7F2] text-sm font-bold shadow-[0_0_0_4px_var(--background)] tabular-nums">{i + 1}</span>
+                  {s}
+                </li>
+              ))}
             </ol>
           </section>
 

@@ -55,7 +55,6 @@ describe('P4-022/024/029/037 access', () => {
     assert.ok(rec.includes("const EVENTS = ['touchend', 'pointerup', 'click'] as const;"));
     assert.ok(rec.includes("(prefers-reduced-motion: reduce)"));
     assert.ok(rec.includes("e.key === 'Escape'"));
-    assert.ok(src('src/components/public/homepage/WeekWithUs.tsx').includes('aria-label={isEn ? `Step ${i + 1} of ${STEPS.length}'));
   });
 
   it('44 px targets, wrapping buttons, and a teen asks a parent instead of becoming one', () => {

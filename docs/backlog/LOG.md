@@ -4,6 +4,20 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Simpler homepage: Zad's bag in the hero, path finder, subject pages (2026-11-17)
+
+- Owner: replace the teacher photos with a general intro, remove the 3D phones, simpler and more creative; take
+  inspiration (never copy) from two competitor recordings (Bilqalam, Arabic101; notes in docs/design/INSPIRATION.md).
+- Removed: the 3D phone ring (`WeekWithUs`), the turning pain cube (`PainCube`, `FamiliarIcons`), the teacher-photo
+  hero (`TeacherDuo`) and their CSS.
+- Added: `HeroBag.tsx` (the four kinds of learning drop into Zad's bag, looping; static for reduced motion),
+  `PathFinder.tsx` ("Who is the learning for?", one tap shows the matching subject pages), and on every subject page
+  a "Who will teach you" card and a drawn start path.
+- Intro film: script approved (docs/marketing/HOMEPAGE-INTRO-FILM.md); voice-over blocked because the connected
+  ElevenLabs account has no credits.
+- Checks: changed files type-check on their own (full tsc runs out of memory on this machine), source tests pass,
+  screenshots on desktop and phone (Arabic and English) with headless Playwright. Not checked: dark mode.
+
 ### Camel and fennec companions with their dances and newborn stage (2026-11-16)
 
 - Owner asked for the two remaining companions, their dances and growth stages, live on the site.

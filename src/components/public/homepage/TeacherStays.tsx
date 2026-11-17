@@ -4,7 +4,7 @@ import { useTheme } from '../../ThemeProvider';
 import type { CarpetScene } from './carpetScene';
 
 /**
- * "Here, your teacher stays." right after "Sound familiar?": the teacher arrives on a flying carpet, lifts the child
+ * "Here, your teacher stays.": the teacher arrives on a flying carpet, lifts the child
  * up beside them, and they fly into the infinity together (owner's idea 1, 2026-11-05). The 3D scene (three.js) is
  * loaded only when the visitor gets close; the words are plain text, so they read without it.
  */

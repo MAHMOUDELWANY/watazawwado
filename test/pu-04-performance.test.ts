@@ -3,10 +3,10 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 
 describe('PU-04 performance', () => {
-  it('the hero photos (LCP) never start invisible', () => {
-    const duo = fs.readFileSync('src/components/public/homepage/TeacherDuo.tsx', 'utf8');
-    assert.ok(duo.includes('initial={reduce ? false : { y: 36 }}'));
-    assert.ok(!/initial=\{reduce \? false : \{ opacity: 0, y: 36 \}\}/.test(duo));
+  it('the hero visual never starts invisible', () => {
+    const hero = fs.readFileSync('src/components/public/homepage/HeroBag.tsx', 'utf8');
+    assert.ok(!/initial=\{[^}]*opacity: 0[,\s}]/.test(hero));
+    assert.ok(hero.includes("opacity: [1, 1, 0, 0, 0, 1]"));
   });
 
   it('hashed bundles are cached for a year, fonts and media for shorter', () => {

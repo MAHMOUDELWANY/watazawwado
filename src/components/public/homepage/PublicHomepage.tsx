@@ -1,4 +1,3 @@
-import { PainCube } from './PainCube';
 import { TeacherStays } from './TeacherStays';
 import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
@@ -9,10 +8,10 @@ import { PublicSection, PublicButton } from '../PublicDesignSystem';
 import { Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
-import { TeacherDuo } from './TeacherDuo';
+import { HeroBag } from './HeroBag';
+import { PathFinder } from './PathFinder';
 import { HeroSubjects } from './HeroSubjects';
 import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem, DoorAjarEmblem } from '../emblems/DoorEmblems';
-import { WeekWithUs } from './WeekWithUs';
 import { FamilyVoices } from './FamilyVoices';
 import { TwoWays } from './TwoWays';
 import { NewToIslamDoor } from '../NewToIslamDoor';
@@ -90,7 +89,7 @@ export function PublicHomepage() {
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
 
-      {/* ─── 1. HERO ─── phones: headline, teachers, then the rest; wide screens: text beside the teachers */}
+      {/* ─── 1. HERO ─── phones: headline, Zad's bag, then the rest; wide screens: text beside the bag */}
       <section className="khatam-field brand-lights relative overflow-hidden">
         <div className="public-container pt-8 pb-14 lg:pt-14 lg:pb-24">
           <div className="grid gap-8 lg:gap-x-14 lg:grid-cols-2 [grid-template-areas:'title'_'duo'_'body'] lg:[grid-template-areas:'title_duo'_'body_duo'] items-center">
@@ -106,7 +105,7 @@ export function PublicHomepage() {
             </h1>
 
             <div className="[grid-area:duo]">
-              <TeacherDuo isEn={isEn} />
+              <HeroBag isEn={isEn} />
             </div>
 
             <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
@@ -187,6 +186,9 @@ export function PublicHomepage() {
         </div>
       </section>
 
+      {/* ─── 2b. WHO IS THE LEARNING FOR? ─── two taps to the right subject page (owner, 2026-11-17). */}
+      <PathFinder isEn={isEn} onTrial={() => onOpenTrialModal()} />
+
       {/* ─── 3. TWO WAYS TO LEARN ─── */}
       <PublicSection>
         <div className="max-w-5xl mx-auto">
@@ -206,14 +208,8 @@ export function PublicHomepage() {
         </div>
       </PublicSection>
 
-      {/* ─── 3a. SOUND FAMILIAR? ─── the pains on a turning cube, after the visitor has seen what we offer (owner, 2026-11-05). */}
-      <PainCube isEn={isEn} />
-
       {/* ─── 3a'. THE ANSWER ─── the teacher lifts the child onto the carpet and they fly into the infinity together. */}
       <TeacherStays isEn={isEn} />
-
-      {/* ─── 3b. THE WEEK AROUND THE LESSON ─── */}
-      <WeekWithUs isEn={isEn} />
 
       {/* ─── 4. WHY WE EXIST ─── */}
       <section className="khatam-field relative">
