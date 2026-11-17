@@ -18,8 +18,11 @@ date.
 5. **No images of prophets, companions or angels**, not even silhouettes with faces. Stories use places, objects,
    hands, landscapes, calligraphy, or our own curriculum art.
 6. **Sound**: no musical instruments. Voice, natural sound, our CC0 sound effects or a soft drone only. Never put any
-   sound over recitation.
-7. **Respect**: no jokes about religion, no trending audio with music, no trends that mock other Muslims or groups.
+   sound over recitation. **Exception (owner, 2026-11-17): carousels only** may carry a few soft, widely spaced piano
+   notes as background (`marketing/brand-assets/soft-notes.mp3`, a generated 24 s loop, no melody). Videos, Shorts and
+   anything with recitation stay instrument-free. Carousels with this sound are published as a 9:16 video version
+   (platforms cannot attach our own audio to a photo carousel); the silent photo carousel stays as its own post.
+7. **Respect**: no jokes about religion, no trending audio with music (we never attach in-app trending sounds; the soft notes above are our only exception), no trends that mock other Muslims or groups.
    Disagreements between scholars are not content.
 
 ## 2. Voice
@@ -82,7 +85,7 @@ moment, enough to show the quality. Curriculum content itself is still owned by 
 
 - [ ] Quran/hadith verified and sourced (§1)
 - [ ] Recitation re-listened by a teacher (§1.3)
-- [ ] No music, no forbidden images (§1.5–1.6)
+- [ ] No music (soft notes allowed on carousels only), no forbidden images (§1.5–1.6)
 - [ ] Academy voice, humanized, short (§2)
 - [ ] No invented claims; prices exact (§3)
 - [ ] No child's face/name; demo data only (§4)

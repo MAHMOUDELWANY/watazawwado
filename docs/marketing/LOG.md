@@ -42,3 +42,12 @@ Change next week: <one thing>
   scripts are written item by item with `mahmoud-voice`.
 - 2026-11-05: Week 1 scripts written into Notion (B1 What I kept seeing as a teacher, T1 the Daad, B2 What parents told me, P1 Five minutes a day), two hooks and two wise lines each, captions per platform, pinned comment, UTM links; all four moved to Review. T1 needs a teacher to confirm the makhraj on camera; B1/B2 need the owner to confirm the stories are his own.
 - 2026-11-05: Week 2 scripts written into Notion (B3 a mentor who stays, A1 three phrases for Teta, B4 what annoyed you most, T2 the ح in al-ḥamd with Al-Fatiha 1:2 verified via quran.ai, Saheeh International); all four moved to Review.
+
+## 2026-11-17
+- Owner decision: carousels may carry soft piano notes (`RULES.md` §1.6 exception); no trending in-app sounds. Carousels
+  are republished as 9:16 videos with `brand-assets/soft-notes.mp3` next to the silent originals (nothing deleted).
+- V1 video version built from the PNG slides in one high-quality encode (`public/social/v1hq/v1.mp4`). Facebook Reel
+  scheduled 18 Nov 12:00 Warsaw (Metricool). Instagram and TikTok are Buffer, which was at its 10/10 limit: add them
+  after V2 publishes (17 Nov 18:00/20:00). Next: V3, V6, V8, V10 the same way.
+- Media check: videos are 1080x1920, 30 fps, H.264 High, 2-3 Mbps (static slides need no more); Metricool does not
+  re-encode. Published V1 carousel on Instagram/Facebook cannot be edited and was kept.
