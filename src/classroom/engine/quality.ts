@@ -62,11 +62,14 @@ export function blameSide(local: LinkStats, remoteReport: LinkStats | null): 'me
 export const audioConstraints = (recitationMode: boolean) => ({ echoCancellation: true, autoGainControl: true, noiseSuppression: !recitationMode });
 export const opusBitrate = (recitationMode: boolean) => (recitationMode ? 128_000 : 64_000);
 
-/** Sets stereo off and maxaveragebitrate on the Opus fmtp line of an SDP (adds the line when missing). */
-export function setOpusParams(sdp: string, bitrate: number): string {
+/** The fmtp ceiling is negotiated once; the live rate is sender maxBitrate (opusBitrate), so recitation can raise it mid-lesson. */
+export const OPUS_FMTP_MAX_BITRATE = 128_000;
+
+/** Sets stereo off and maxaveragebitrate=128000 on the Opus fmtp line of an SDP (adds the line when missing). */
+export function setOpusParams(sdp: string): string {
   const pt = /a=rtpmap:(\d+) opus\/48000/i.exec(sdp)?.[1];
   if (!pt) return sdp;
-  const want: Array<[string, string]> = [['stereo', '0'], ['sprop-stereo', '0'], ['maxaveragebitrate', String(bitrate)]];
+  const want: Array<[string, string]> = [['stereo', '0'], ['sprop-stereo', '0'], ['maxaveragebitrate', String(OPUS_FMTP_MAX_BITRATE)]];
   const fmtp = new RegExp(`^a=fmtp:${pt} ([^\\r\\n]*)`, 'm');
   const m = fmtp.exec(sdp);
   if (!m) {

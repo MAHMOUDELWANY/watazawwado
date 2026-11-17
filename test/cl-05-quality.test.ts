@@ -57,12 +57,12 @@ describe('CL-05 adaptive layers and link quality', () => {
     assert.deepStrictEqual([opusBitrate(false), opusBitrate(true)], [64000, 128000]);
   });
 
-  it('setOpusParams rewrites the Opus fmtp: stereo off and the bitrate', () => {
+  it('setOpusParams rewrites the Opus fmtp: stereo off and always the 128 kbps ceiling', () => {
     const sdp = 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 0\r\na=rtpmap:111 opus/48000/2\r\na=fmtp:111 minptime=10;useinbandfec=1;stereo=1;maxaveragebitrate=32000\r\na=rtpmap:0 PCMU/8000\r\n';
-    const out = setOpusParams(sdp, 128000);
+    const out = setOpusParams(sdp);
     assert.match(out, /a=fmtp:111 minptime=10;useinbandfec=1;stereo=0;maxaveragebitrate=128000;sprop-stereo=0\r\n/);
-    const noFmtp = setOpusParams('m=audio 9 UDP 109\r\na=rtpmap:109 opus/48000/2\r\n', 64000);
-    assert.match(noFmtp, /a=rtpmap:109 opus\/48000\/2\r\na=fmtp:109 stereo=0;sprop-stereo=0;maxaveragebitrate=64000\r\n/);
+    const noFmtp = setOpusParams('m=audio 9 UDP 109\r\na=rtpmap:109 opus/48000/2\r\n');
+    assert.match(noFmtp, /a=rtpmap:109 opus\/48000\/2\r\na=fmtp:109 stereo=0;sprop-stereo=0;maxaveragebitrate=128000\r\n/);
   });
 
   it('filterIceServers drops TURN on port 53', () => {

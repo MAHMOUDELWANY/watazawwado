@@ -19,7 +19,10 @@ export interface MediaEngine {
   publishCamera(stream: MediaStream): Promise<void>;
   publishScreen(stream: MediaStream): Promise<void>;
   stopScreen(): Promise<void>;
+  /** Subscribing to a new sessionId of the same side first unsubscribes that side's old session. */
   subscribe(remote: { sessionId: string; trackNames: string[] }): Promise<MediaStream>;
+  /** Closes and stops every track pulled from that remote session. */
+  unsubscribe(remoteSessionId: string): Promise<void>;
   setPreferredLayer(layer: Layer): Promise<void>;
   setRecitationMode(on: boolean): Promise<void>;
   getStats(): Promise<LinkStats>;

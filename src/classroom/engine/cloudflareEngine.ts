@@ -17,6 +17,9 @@ const VIDEO_LAYERS = [
 ] as const;
 // The proxy allows 120 rtc calls/min per join; layer changes are throttled well under that.
 const UPDATE_MIN_GAP_MS = 2_000;
+const isVideo = (n: string) => n.endsWith('-video');
+/** 'teacher-video' -> 'teacher': which side a pulled track belongs to. */
+const sideOfTrack = (n: string) => n.split('-')[0];
 
 type TrackResult = { mid?: string; trackName?: string; sessionId?: string; errorCode?: string; errorDescription?: string };
 type TracksResponse = { sessionDescription?: RTCSessionDescriptionInit; requiresImmediateRenegotiation?: boolean; tracks?: TrackResult[] };
@@ -45,7 +48,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
   let audioSender: RTCRtpSender | null = null;
   let screenTransceivers: RTCRtpTransceiver[] = [];
   const localTracks = new Set<MediaStreamTrack>();
-  const pulledVideo: Pulled[] = [];
+  let pulled: Pulled[] = [];
   let layer: Layer | null = null;
   let lastUpdateAt = 0;
   let updateTimer: ReturnType<typeof setTimeout> | null = null;
@@ -125,7 +128,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
       tracks: entries.map((e) => ({ location: 'local', mid: e.transceiver.mid, trackName: e.trackName })),
     });
     if (!r.sessionDescription?.sdp) throw new RoomEngineError('no_answer', 'The media service sent no answer.');
-    await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp, opusBitrate(recitation)) });
+    await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
     if (goodTracks(r).length < entries.length) throw new RoomEngineError('track_failed', 'Some of your media could not be sent.');
   }
 
@@ -144,6 +147,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
 
   async function sendUpdate() {
     updateTimer = null;
+    const pulledVideo = pulled.filter((t) => isVideo(t.trackName));
     if (!layer || !pulledVideo.length || isFinal()) return;
     lastUpdateAt = Date.now();
     // shortcut: 'audio_only' asks for the 180p layer and the UI hides the video; Cloudflare has no pause in tracks/update.
@@ -151,6 +155,28 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     const r: TracksResponse = await rtc('update', {
       tracks: pulledVideo.map((t) => ({ location: 'remote', mid: t.mid, sessionId: t.sessionId, trackName: t.trackName, simulcast: { preferredRid: rid } })),
     });
+    goodTracks(r);
+  }
+
+  /** Close the pulled tracks of one remote session (unserialized: callers hold the queue). */
+  async function closePulled(remoteSessionId: string) {
+    const p = needPc();
+    const gone = pulled.filter((t) => t.sessionId === remoteSessionId);
+    if (!gone.length) return;
+    pulled = pulled.filter((t) => t.sessionId !== remoteSessionId);
+    for (const t of gone) {
+      const tr = p.getTransceivers().find((x) => x.mid === t.mid);
+      tr?.receiver.track.stop();
+      tr?.stop();
+    }
+    await p.setLocalDescription(await p.createOffer());
+    // Only mids: the old session may already be gone from the room, and observers may not name 'local'.
+    const r: TracksResponse = await rtc('close', {
+      sessionDescription: { type: 'offer', sdp: p.localDescription!.sdp },
+      tracks: gone.map((t) => ({ mid: t.mid })),
+      force: false,
+    });
+    if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
     goodTracks(r);
   }
 
@@ -255,7 +281,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
           tracks: list.map((tr) => ({ location: 'local', mid: tr.mid })),
           force: false,
         });
-        if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp, opusBitrate(recitation)) });
+        if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
         goodTracks(r);
       });
     },
@@ -263,7 +289,10 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     subscribe(remote) {
       return serial(async () => {
         const p = needPc();
-        const isVideo = (n: string) => n.endsWith('-video');
+        // The other side rejoined with a new session: drop what we pulled from its old one first.
+        const sides = new Set(remote.trackNames.map(sideOfTrack));
+        const stale = new Set(pulled.filter((t) => t.sessionId !== remote.sessionId && sides.has(sideOfTrack(t.trackName))).map((t) => t.sessionId));
+        for (const id of stale) await closePulled(id);
         const r: TracksResponse = await rtc('tracks', {
           tracks: remote.trackNames.map((n) => ({
             location: 'remote',
@@ -283,11 +312,15 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
           const tr = p.getTransceivers().find((x) => x.mid === t.mid);
           if (!tr) continue;
           out.addTrack(tr.receiver.track);
-          if (t.mid && t.trackName && isVideo(t.trackName)) pulledVideo.push({ mid: t.mid, sessionId: remote.sessionId, trackName: t.trackName });
+          if (t.mid && t.trackName) pulled.push({ mid: t.mid, sessionId: remote.sessionId, trackName: t.trackName });
         }
         if (!out.getTracks().length) throw new RoomEngineError('track_failed', 'The other side is not sending yet.');
         return out;
       });
+    },
+
+    unsubscribe(remoteSessionId) {
+      return serial(() => closePulled(remoteSessionId));
     },
 
     async setPreferredLayer(next) {
