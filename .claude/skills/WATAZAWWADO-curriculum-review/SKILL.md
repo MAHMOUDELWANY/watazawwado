@@ -1,5 +1,5 @@
 ---
-name: curriculum-review
+name: WATAZAWWADO-curriculum-review
 description: Use when the owner asks to review, critique, audit, evaluate or judge curriculum (المنهج) lessons before launch, for any subject, age band or level, at any scope (one lesson, a subject and band, everything), even from a short prompt ("راجع المنهج", "راجع درس كذا", "قيّم زاد للكبار", "review seerah kids", "is this lesson ready?"). Also when he comments on a review report or asks to fix accepted findings.
 argument-hint: "[lesson | content folder | subject | all] [--redo]"
 ---
@@ -64,6 +64,12 @@ subagents are unavailable, run the briefs one after another yourself and say so 
 ## 5. Course review (per folder, after its lessons)
 The course panel in [panel.md](panel.md) reads all lesson text and all surviving findings and judges the web between
 lessons, progression, consistency and the design system. Runs even for a one-lesson folder only if asked.
+The owner's first question is always **"does accumulation work?"**: the panel builds a callback ledger (every later
+page that recalls an earlier lesson: on the slide or only in the notes; recalled from memory or only told), lists the
+callbacks that should exist, and ends with a blunt verdict and the smallest set of line-level changes. It writes
+`<pack>/course-findings.md` (English, copied to `docs/curriculum/reviews/<folder>/<date>-course.md`) and
+`<pack>/course-ar.json`, which the report script renders as its own section. Write both into the pack root: a subagent
+was blocked from creating a new subfolder (2026-11-17).
 
 ## 6. Output
 1. **Repo record (English):** `docs/curriculum/reviews/<folder>/<YYYY-MM-DD>-LNN.md` and `<YYYY-MM-DD>-course.md`:

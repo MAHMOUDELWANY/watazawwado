@@ -36,14 +36,14 @@ def img(lesson_dir, a):
 
 def card(lesson, lesson_dir, f, a):
     sev = f['severity']
-    meta = [f'<span class="sev sev-{sev}">{SEV[sev]}</span>', f'<code>{E(f["id"])}</code>', f'<span>{EXPERT.get(f["expert"], f["expert"])}</span>']
+    meta = [f'<span class="sev sev-{sev}">{SEV[sev]}</span>', f'<code>{E(f["id"])}</code>', f'<span>{EXPERT.get(f["expert"], "لجنة المادة")}</span>']
     extra = []
     if f.get('raised_as') and f['raised_as'] != sev: extra.append(f'خفّضه المراجع المضاد من «{SEV[f["raised_as"]]}»')
     if f.get('also_raised_by'): extra.append('أثاره أيضًا: ' + '، '.join(EXPERT.get(x.rsplit('-', 1)[0], x) for x in f['also_raised_by']))
     rows = [('العيب', a.get('problem')), ('الدليل', a.get('evidence')), ('ليه ده عيب', a.get('why')), ('الإصلاح', a.get('fix'))]
     body = ''.join(f'<div class="row"><dt>{k}</dt><dd>{T(v)}</dd></div>' for k, v in rows if v)
     return (f'<article class="card c-{sev}" id="L{lesson}-{E(f["id"])}"><header><div class="meta">{"".join(meta)}</div>'
-            f'<h4>{E(a.get("title") or f["id"])}</h4><p class="where">الدرس {lesson} · {T(a.get("where") or f["where"])}</p></header>'
+            f'<h4>{E(a.get("title") or f["id"])}</h4><p class="where">{"المادة" if lesson == "course" else "الدرس " + lesson} · {T(a.get("where") or f["where"])}</p></header>'
             f'{img(lesson_dir, a)}<dl>{body}</dl>' + (f'<p class="note">{" · ".join(E(x) for x in extra)}</p>' if extra else '') + '</article>')
 
 lessons, cards = {}, {}
@@ -91,7 +91,7 @@ section {{ display:grid; gap:14px; min-width:0; }}
 .sev-blocker {{ color:#fff; background:var(--crimson); border-color:var(--crimson); }} .sev-major {{ color:var(--crimson); }}
 .sev-minor {{ color:var(--copper); }} .sev-polish {{ color:var(--muted); }} .sev-rule-challenge {{ color:var(--teal); }}
 .scroll {{ overflow-x:auto; }} table {{ border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; }}
-th,td {{ border-bottom:1px solid var(--line); padding:7px 8px; text-align:start; white-space:nowrap; }} th {{ color:var(--muted); font-weight:500; }}
+th,td {{ border-bottom:1px solid var(--line); padding:7px 8px; text-align:start; vertical-align:top; min-width:6.5em; }} th {{ color:var(--muted); font-weight:500; }}
 .bar {{ display:inline-block; height:8px; border-radius:4px; background:var(--gold); vertical-align:middle; }}
 ul,ol {{ margin:0; padding-inline-start:1.3em; display:grid; gap:6px; }}
 .card {{ background:var(--card); border:1px solid var(--line); border-inline-start:4px solid var(--line); border-radius:8px; padding:14px 16px; display:grid; gap:10px; min-width:0; }}
@@ -127,11 +127,25 @@ for key, (d, data, ar) in lessons.items():
 h.append('</div>' + ''.join(f'<p>{E(x)}</p>' for x in chair['summary']) + '</section>')
 
 h.append('<section><h2>أهم ما يجب إصلاحه</h2><p class="muted">مرتبة بالأولوية عبر الدرسين. كل بطاقة كاملة بدليلها، والباقي داخل قسم كل درس.</p>')
-h += [cards[(str(t['lesson']), t['id'])] for t in chair['top']]
+h += [cards[(str(t['lesson']), t['id'])] for t in chair['top'] if (str(t['lesson']), t['id']) in cards]
 h.append('</section>')
 
+cpath = os.path.join(root, 'course-ar.json')
+if os.path.exists(cpath):  # course panel: accumulation across lessons
+    c = json.load(open(cpath, encoding='utf8'))
+    tbl = lambda rows: '<div class="scroll"><table><thead><tr>' + ''.join(f'<th>{E(x)}</th>' for x in rows[0]) + '</tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<td>{T(x)}</td>' for x in r) + '</tr>' for r in rows[1:]) + '</tbody></table></div>'
+    lst = lambda xs: '<ul>' + ''.join(f'<li>{T(x)}</li>' for x in xs) + '</ul>'
+    h.append(f'<section><h2>التراكم: هل الدروس تبني على بعض؟</h2><div class="callout"><h3>{E(c["verdict_title"])}</h3><p>{T(c["verdict"])}</p></div>')
+    fs = sorted(c['findings'].items(), key=lambda kv: (ORDER.index(kv[1]['severity']), int(kv[0].split('-')[1])))
+    h += [card('course', root, {'id': k, 'severity': v['severity'], 'expert': 'course', 'where': ''}, v) for k, v in fs if v['severity'] in ('blocker', 'major')]
+    rest = [card('course', root, {'id': k, 'severity': v['severity'], 'expert': 'course', 'where': ''}, v) for k, v in fs if v['severity'] not in ('blocker', 'major')]
+    h.append(f'<details><summary>باقي ملاحظات المادة ({len(rest)})</summary><div class="inner">' + ''.join(rest) + '</div></details>')
+    h.append('<details><summary>جدول الروابط بين الدروس</summary><div class="inner">' + tbl(c['ledger_rows']) + f'<p>{T(c["ledger_totals"])}</p><h3>روابط كان يجب أن توجد ولا توجد</h3>' + lst(c['missing']) + '<h3>الخيوط</h3>' + tbl(c['threads']) + '</div></details>')
+    d = c['design']
+    h.append('<details open><summary>أصغر مجموعة تغييرات تجعل الدروس تراكمية</summary><div class="inner">' + ''.join(f'<h3>الدرس {k[1]}</h3>' + lst(d[k]) for k in ('L1', 'L2', 'L3') if d.get(k)) + '<h3>قاعدة الشبكة لكل درس قادم</h3>' + lst(d.get('rule', [])) + '</div></details>')
+    h.append('<details><summary>يُحفظ · لم يُفحص</summary><div class="inner">' + lst(c.get('keep', [])) + lst(c.get('not_checked', [])) + '</div></details></section>')
 if chair.get('course'):
-    h.append('<section><h2>على مستوى المادة</h2>' + ''.join(f'<div class="callout"><h3>{E(x["title"])}</h3><p>{E(x["body"])}</p></div>' for x in chair['course']) + '</section>')
+    h.append('<section><h2>ملاحظات الرئيس وقرارات تنتظرك</h2>' + ''.join(f'<div class="callout"><h3>{E(x["title"])}</h3><p>{T(x["body"])}</p></div>' for x in chair['course']) + '</section>')
 
 top = {(str(t['lesson']), t['id']) for t in chair['top']}
 for key, (d, data, ar) in lessons.items():

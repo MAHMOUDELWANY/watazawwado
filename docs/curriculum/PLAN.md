@@ -985,3 +985,8 @@ B3–B5 → continue lesson by lesson.
   checked each image, wired the covers in `catalog.ts`. New `test/curriculum-art.test.ts`: no two doors share a cover,
   every cover file and every stage landmark exists. Prompts and script: `scripts/curriculum/meshy-prompts-2026-11-16.json`,
   `meshy-images.py`. No lesson images were duplicated or low-res (only Zad Kids L2 `key.webp` is 708×380 and shown small).
+- **2026-11-17 · `WATAZAWWADO-curriculum-review` (renamed with the project prefix): Zad Adults L3 + course panel.**
+  L3 in lean mode: needs fixes (72.9/100, 7 major). Course panel on L1–L3: accumulation **partly works and weakens**:
+  every callback is one lesson back and told, never recalled; L1's models vanish by L3; L2's hooks for L3 are dropped.
+  It proposes ~20 line-level edits and a "web rule" for every later lesson (waits for the owner). Records:
+  `docs/curriculum/reviews/zad-adults/2026-11-17-L03.md`, `2026-11-17-course.md`. No lesson content changed.
