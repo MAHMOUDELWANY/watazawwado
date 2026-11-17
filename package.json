@@ -18,6 +18,7 @@
     "qa:purge": "tsx scripts/qa/purge.ts"
   },
   "dependencies": {
+    "@excalidraw/excalidraw": "0.18.1",
     "@google/genai": "^2.4.0",
     "@heroui/react": "^3.2.6",
     "@heroui/styles": "^3.2.6",
@@ -36,6 +37,7 @@
     "lucide-react": "^0.546.0",
     "luxon": "^3.7.2",
     "motion": "^12.23.24",
+    "pdfjs-dist": "6.5.438",
     "react": "^19.0.1",
     "react-dom": "^19.3.0",
     "react-router-dom": "^7.18.3",

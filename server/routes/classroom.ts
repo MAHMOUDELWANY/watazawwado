@@ -27,6 +27,22 @@ const MAX_EVENTS = 50;
 const MAX_EVENTS_BODY = 256 * 1024;
 const EVENT_SKEW_MS = 10 * 60_000;
 
+// Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
+export const CLASSROOM_FILES_BUCKET = 'classroom-files';
+export const MAX_FILE_BYTES = 20 * 1024 * 1024;
+const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
+const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
+// shortcut: on Vercel a function body is capped near 4.5 MB, so larger files fail there; move to a signed upload link + magic-byte confirm if teachers need big PDFs.
+const rawFile = express.raw({ type: () => true, limit: MAX_FILE_BYTES });
+
+/** The real type from the first bytes; the Content-Type header alone is never trusted. */
+export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
+  if (b.length >= 5 && b.subarray(0, 5).toString('latin1') === '%PDF-') return 'application/pdf';
+  if (b.length >= 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+  return null;
+}
+
 /**
  * Who may persist which timeline type (Task 7). Observers persist nothing. Everything else on the channel (session,
  * ink, pointer, focus_warning_off, observer) is live only. Board: the teacher always; the learner only while the
@@ -281,6 +297,62 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ stored: rows.length });
     } catch (err) {
       return fail(res, err, 'events');
+    }
+  });
+
+  /** A signed link to a stored room file that ends no later than the room's hard close. */
+  const fileLink = async (client: any, booking: RoomBooking, fileId: string) => {
+    const seconds = Math.floor((roomHardCloseMs(booking) - now()) / 1000);
+    if (seconds < 1) return null;
+    const { data, error } = await client.storage.from(CLASSROOM_FILES_BUCKET).createSignedUrl(`${booking.id}/${fileId}`, seconds);
+    if (error || !data?.signedUrl) throw new Error(`signed url: ${error?.message || 'none'}`);
+    return data.signedUrl as string;
+  };
+
+  // Task 8: the teacher adds a PDF or image to the lesson. The role is checked before the body is read.
+  app.post('/api/classroom/:id/files', withTicket, deps.roomRateLimit,
+    (req: any, res: any, next: any) => (req.roomTicket.role === 'teacher' ? next() : res.status(403).json({ error: 'Only the teacher can add files.' })),
+    (req: any, res: any, next: any) => rawFile(req, res, (err: any) => (err
+      ? res.status(err.status === 413 ? 413 : 400).json({ error: err.status === 413 ? 'The file is larger than 20 MB.' : 'The file did not arrive.' })
+      : next())),
+    async (req: any, res: any) => {
+      try {
+        const body: Buffer = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+        const type = detectFileType(body);
+        const header = String(req.headers['content-type'] || '').split(';')[0].trim().toLowerCase();
+        if (!type || header !== type) return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' });
+        const client = deps.getClient();
+        if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+        const t: TicketPayload = req.roomTicket;
+        const live = await liveSeat(client, t, res);
+        if (!live) return;
+        const booking = await loadBooking(client, t.bookingId);
+        if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+        const fileId = `${crypto.randomUUID()}.${FILE_EXT[type]}`;
+        const { error } = await client.storage.from(CLASSROOM_FILES_BUCKET).upload(`${t.bookingId}/${fileId}`, body, { contentType: type, upsert: false });
+        if (error) throw new Error(`upload: ${error.message}`);
+        const url = await fileLink(client, booking, fileId);
+        if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
+        return res.json({ fileId, url });
+      } catch (err) {
+        return fail(res, err, 'files');
+      }
+    });
+
+  // Any pass of this lesson (learner and observers too) gets a fresh link, e.g. after a pdf event or a rejoin.
+  app.get('/api/classroom/:id/files/:fileId', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const fileId = String(req.params.fileId || '');
+      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const booking = await loadBooking(client, req.roomTicket.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      const url = await fileLink(client, booking, fileId);
+      if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
+      return res.json({ url });
+    } catch (err) {
+      return fail(res, err, 'files/get');
     }
   });
 
