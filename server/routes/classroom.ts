@@ -30,6 +30,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   verifyStudentAuth: Middleware;
   getLearners: (client: any, req: any) => Promise<Array<{ id: string; name: string; learnerType?: string }>>;
   rateLimit: Middleware;
+  /** Runs after the ticket check and keys on req.roomTicket: WebRTC setup and layer changes need many calls. */
+  roomRateLimit: Middleware;
   secret?: () => string;
   now?: () => number;
 }) {
@@ -94,7 +96,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
       const role = access.role;
       const hardClose = roomHardCloseMs(booking);
-      const ticketPayload: TicketPayload = { bookingId: id, role, userId: requester.userId, exp: hardClose, joinId: crypto.randomUUID() };
+      const ticketPayload: TicketPayload = { bookingId: id, role, userId: requester.userId, exp: hardClose, joinId: crypto.randomUUID(), studentId: booking.student_id };
       const at = new Date(now()).toISOString();
       await saveSeat(client, id, await loadSnapshot(client, id), seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
 
@@ -151,6 +153,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!['confirmed', 'rescheduled'].includes(booking.status)) return res.status(409).json({ error: 'This lesson is not active.', ended: true });
       if (roomJoinState(booking, now()) !== 'open') return res.status(423).json({ error: 'The room is closed.', ended: true });
       if (t.role === 'teacher' && booking.teacher_id !== t.userId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
+      // A lesson moved to another learner ends the old family's pass, as a reassigned teacher's does.
+      if ((t.role === 'learner' || t.role === 'guardian_observer') && booking.student_id !== t.studentId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
 
       const snapshot = await loadSnapshot(client, t.bookingId);
       const seat = seatOf(t);
@@ -197,7 +201,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   };
 
   for (const action of ['session', 'tracks', 'renegotiate', 'update', 'close'] as const) {
-    app.post(`/api/classroom/:id/rtc/${action}`, deps.rateLimit, withTicket, rtc(action));
+    app.post(`/api/classroom/:id/rtc/${action}`, withTicket, deps.roomRateLimit, rtc(action));
   }
 
   app.post('/api/classroom/:id/leave', deps.rateLimit, withTicket, async (req: any, res: any) => {

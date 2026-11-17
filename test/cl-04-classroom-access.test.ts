@@ -161,6 +161,7 @@ describe('CL-04 classroom routes', () => {
       verifyStudentAuth: studentAuth,
       getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child', isPrimary: false }],
       rateLimit: (_q: any, _s: any, next: any) => next(),
+      roomRateLimit: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
       now: () => NOW,
     });
@@ -271,5 +272,52 @@ describe('CL-04 classroom routes', () => {
       assert.strictEqual((await enter({ 'x-teacher': 'teacher-1' }, 'dashboard')).status, 409);
       assert.strictEqual((await rtc(t.ticket, 'rtc/session', {})).status, 409);
     } finally { db.tables.bookings[0].status = 'confirmed'; }
+  });
+});
+
+describe('CL-04 review fixes', () => {
+  let server: http.Server;
+  let base: string;
+  const db = fakeDb({ bookings: [{ ...booking }] });
+  const SECRET = 'room-secret';
+  const roomKeys: string[] = [];
+
+  before(async () => {
+    const app = express();
+    app.use(express.json());
+    registerClassroomRoutes(app, {
+      getClient: () => db,
+      cloudflare: () => fakeCloudflare() as any,
+      verifyTeacherAuth: (req: any, _res: any, next: any) => { req.teacherUser = { id: 'teacher-1', role: 'teacher' }; next(); },
+      verifyStudentAuth: (req: any, _res: any, next: any) => { req.studentUser = { auth_id: 'parent-1' }; next(); },
+      getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }],
+      // The shared per-IP limiter is spent; media calls must use the per-ticket limiter instead.
+      rateLimit: (req: any, res: any, next: any) => (req.path.endsWith('/enter') ? next() : res.status(429).json({ error: 'slow' })),
+      roomRateLimit: (req: any, _res: any, next: any) => { roomKeys.push(req.roomTicket?.joinId); next(); },
+      secret: () => SECRET,
+      now: () => NOW,
+    });
+    await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
+  });
+  after(async () => { await new Promise<void>((r) => server.close(() => r())); });
+
+  const enterAs = async (portal: 'dashboard' | 'student') => (await fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter`)).json() as Promise<any>;
+  const post = (ticket: string, path: string, body: unknown = {}) =>
+    fetch(`${base}/api/classroom/${BOOKING_ID}/${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify(body) });
+
+  it('media calls are limited per room pass, not by the shared per-IP limiter', async () => {
+    const t = await enterAs('dashboard');
+    const res = await post(t.ticket, 'rtc/session');
+    assert.strictEqual(res.status, 200);
+    assert.deepStrictEqual(roomKeys, [verifyTicket(t.ticket, SECRET, NOW)!.joinId]);
+  });
+
+  it('a learner pass stops working when the lesson moves to another learner', async () => {
+    const t = await enterAs('student');
+    db.tables.bookings[0].student_id = 'someone-else';
+    try {
+      const res = await post(t.ticket, 'rtc/session');
+      assert.strictEqual(res.status, 403);
+    } finally { db.tables.bookings[0].student_id = 'child-1'; }
   });
 });

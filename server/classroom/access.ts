@@ -38,7 +38,7 @@ export function decideRoomAccess(input: {
   return { ok: true, role };
 }
 
-export type TicketPayload = { bookingId: string; role: RoomRole; userId: string; exp: number; joinId?: string };
+export type TicketPayload = { bookingId: string; role: RoomRole; userId: string; exp: number; joinId?: string; studentId?: string | null };
 
 const mac = (body: string, secret: string) => crypto.createHmac('sha256', secret).update(`room-ticket:${body}`).digest();
 

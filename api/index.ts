@@ -289,30 +289,39 @@ function getClientIp(req: express.Request): string {
   return first || req.socket.remoteAddress || 'unknown';
 }
 
-function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
-  // One bucket per route, so a family on one Wi-Fi using the portal normally never trips another action's limit.
-  const ip = `${getClientIp(req)}|${req.method}|${req.route?.path ?? req.path}`;
+function rateLimitHit(key: string, max: number, res: express.Response, next: express.NextFunction) {
   const now = Date.now();
 
   if (rateLimitStore.size > 10000) {
-    for (const [key, entry] of rateLimitStore) {
-      if (now > entry.resetTime) rateLimitStore.delete(key);
+    for (const [k, entry] of rateLimitStore) {
+      if (now > entry.resetTime) rateLimitStore.delete(k);
     }
   }
 
-  let record = rateLimitStore.get(ip);
+  let record = rateLimitStore.get(key);
   if (!record || now > record.resetTime) {
     record = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
   }
 
   record.count++;
-  rateLimitStore.set(ip, record);
+  rateLimitStore.set(key, record);
 
-  if (record.count > MAX_REQUESTS) {
+  if (record.count > max) {
     return res.status(429).json({ error: 'Too many requests. Please try again later.' });
   }
 
   next();
+}
+
+function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
+  // One bucket per route, so a family on one Wi-Fi using the portal normally never trips another action's limit.
+  return rateLimitHit(`${getClientIp(req)}|${req.method}|${req.route?.path ?? req.path}`, MAX_REQUESTS, res, next);
+}
+
+// Classroom media proxy: runs after the ticket check, one bucket per room pass (WebRTC setup and layer changes are chatty).
+function roomRateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const t = (req as any).roomTicket;
+  return rateLimitHit(`room|${t?.joinId ?? `${t?.bookingId}|${t?.userId}`}`, 120, res, next);
 }
 
 // rawBody is kept for the Stripe webhook signature check.
@@ -10857,7 +10866,7 @@ registerMonthlyDraftRoute(app, jalilaDraftDeps);
 // NX-12: the lesson room (teacher shows slides, the learner follows live).
 registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent });
 // Classroom Release 1: room tickets, roles and the Cloudflare media proxy.
-registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit });
+registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit, roomRateLimit });
 
 // NX-03: recitation recordings and the teacher's reply.
 registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });
