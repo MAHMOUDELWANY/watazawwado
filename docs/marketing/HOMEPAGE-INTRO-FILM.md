@@ -7,9 +7,11 @@ English clone for English), written first; scenes are timed to the VO.
 
 Status (2026-11-17): script approved by the owner. The hero already shows the film's opening idea as a live motion
 piece (`src/components/public/homepage/HeroBag.tsx`: the four kinds of learning drop into Zad's bag), replacing the
-teacher photos. The voice-over is blocked: the ElevenLabs connectors in this workspace point to the old account (no
-credits; both takes failed); the new account's connector must be added again. Next: VO on the new account, owner
-records clips A–E, then the voiced film goes into the hero (tap to play) on top of the same visual.
+teacher photos. Voice-over recorded on the new account (eleven_v4, `mahmoud-fusha` kO4IhVkRM0Oyq7qfKk0l and `mahmoud-english`
+qcy21eeEO3C1xHhSLn3U), two takes each in `marketing/intro-film/vo/` (`ar-take1/2.mp3` ~26 s, `en-take1/2.mp3`
+~27 s). The VO runs ~27 s, so the film is ~30 s (scenes retimed to the VO, short tail on the logo). Next: owner
+picks a take per language and records clips A–E, then the voiced film goes into the hero (tap to play) on top of
+the same visual.
 
 ## Hero behaviour
 
