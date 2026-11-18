@@ -126,11 +126,7 @@ function Dust({ reduce }: { reduce: boolean }) {
 /** One phrase at a time: mask reveal, a crimson bar under the lifted word, a slice for the turn. */
 function Kinetic({ beat, reduce, big }: { beat: Beat; reduce: boolean; big?: boolean }) {
   return (
-    <motion.div
-      className="relative inline-block overflow-hidden px-3 pb-1"
-      exit={reduce ? { opacity: 0 } : { y: '-35%', opacity: 0, filter: 'blur(8px)' }}
-      transition={{ duration: 0.18, ease: 'easeIn' }}
-    >
+    <div className="relative inline-block overflow-hidden px-3 pb-1">
       {beat.hl && (
         <motion.span
           aria-hidden="true"
@@ -159,7 +155,7 @@ function Kinetic({ beat, reduce, big }: { beat: Beat; reduce: boolean; big?: boo
           transition={{ duration: 0.45, delay: 0.2, ease: 'easeInOut' }}
         />
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -419,33 +415,30 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         {running ? (
           <>
             <Dust reduce={reduce} />
-            <AnimatePresence mode="wait" initial={false}>
-              {/* Whip pan between scenes: a fast slide with motion blur. */}
-              <motion.div
-                key={scene}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-[5%] px-6 pb-[13%] pt-[8%]"
-                initial={reduce ? { opacity: 0 } : { x: isEn ? '30%' : '-30%', filter: 'blur(16px)', opacity: 0, scale: 1.04 }}
-                animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
-                exit={reduce ? { opacity: 0 } : { x: isEn ? '-30%' : '30%', filter: 'blur(16px)', opacity: 0 }}
-                transition={{ duration: 0.22, ease: 'easeOut' }}
-              >
-                <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`}>
-                  <AnimatePresence mode="wait" initial={false}>
-                    {beatIdx >= 0 && (
-                      textOnly && beat.hl ? (
-                        // The name in gold foil, with a light sweep.
-                        <motion.span key={beat.text} className="relative block font-editorial font-bold text-[5rem] sm:text-[9rem] lg:text-[11rem] leading-none" style={{ backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : { scale: 1.6, opacity: 0, filter: 'blur(12px)' }} animate={{ scale: 1, opacity: 1, filter: 'blur(0px)', backgroundPosition: ['0% 0%', '100% 0%'] }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.7, ease: EASE, backgroundPosition: { duration: 1.6, ease: 'easeInOut' } }}>
-                          {beat.text}
-                        </motion.span>
-                      ) : (
-                        <Kinetic key={beat.text} beat={beat} reduce={reduce} big={textOnly} />
-                      )
-                    )}
-                  </AnimatePresence>
-                </div>
-                <div className="relative w-full flex justify-center"><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
-              </motion.div>
-            </AnimatePresence>
+            {/* Hard cut between scenes, with a whip-in and a gold flash. No exit animations: a scene never waits for
+                the last one to leave (an exit that never finished once froze the film on one scene). */}
+            <motion.div
+              key={scene}
+              className="absolute inset-0 flex flex-col items-center justify-center gap-[5%] px-6 pb-[13%] pt-[8%]"
+              initial={reduce ? { opacity: 0 } : { x: isEn ? '12%' : '-12%', filter: 'blur(14px)', opacity: 0, scale: 1.05 }}
+              animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
+              transition={{ duration: 0.28, ease: EASE }}
+            >
+              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`}>
+                {beatIdx >= 0 && (
+                  textOnly && beat.hl ? (
+                    // The name in gold foil, with a light sweep.
+                    <motion.span key={beat.text} className="relative block font-editorial font-bold text-[5rem] sm:text-[9rem] lg:text-[11rem] leading-none" style={{ backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : { scale: 1.6, opacity: 0, filter: 'blur(12px)' }} animate={{ scale: 1, opacity: 1, filter: 'blur(0px)', backgroundPosition: ['0% 0%', '100% 0%'] }} transition={{ duration: 0.7, ease: EASE, backgroundPosition: { duration: 1.6, ease: 'easeInOut' } }}>
+                      {beat.text}
+                    </motion.span>
+                  ) : (
+                    <Kinetic key={beat.text} beat={beat} reduce={reduce} big={textOnly} />
+                  )
+                )}
+              </div>
+              <div className="relative w-full flex justify-center"><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
+            </motion.div>
+            {!reduce && <motion.div key={`flash-${scene}`} aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(closest-side,rgba(255,241,201,0.55),transparent)]" initial={{ opacity: scene === 0 ? 0 : 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.35 }} />}
           </>
         ) : (
           // Poster: Zad waves next to the title and the play button. Painted on first load, nothing else to fetch.

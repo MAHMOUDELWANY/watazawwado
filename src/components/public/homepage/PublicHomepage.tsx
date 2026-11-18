@@ -150,7 +150,8 @@ export function PublicHomepage() {
   const total = STATIONS.length;
   const trial = () => onOpenTrialModal();
   // The ad export: ?film=record shows only the film, full screen (scripts record it with the voice-over).
-  const [record] = React.useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('film') === 'record');
+  const [record, setRecord] = React.useState(false);
+  React.useEffect(() => { setRecord(new URLSearchParams(window.location.search).get('film') === 'record'); }, []);
 
   return (
     <main id="main-content" className="pt-16 sm:pt-20">

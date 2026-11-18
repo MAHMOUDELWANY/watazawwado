@@ -40,13 +40,18 @@ export function ZadGuide({ stations, stops, isEn }: { stations: Station[]; stops
 
   const shown = index >= 0;
   const stop = stops[Math.max(0, Math.min(index, stops.length - 1))];
-  // Wide screens: the side gutters at the station's height. Phones: the bottom corners only, small.
-  const wide = vp.w >= 1024;
-  const left = (stop.side === 'start') === isEn;
-  const size = wide ? 104 : 66;
-  const gap = wide ? Math.max(12, vp.w * 0.02) : 8;
+  // Wide screens: the side gutters at the station's height; the journey rail's side only where its gutter is wide
+  // enough. Smaller screens: the bottom right corner (back-to-top sits bottom left), small.
+  const wide = vp.w >= 1280;
+  const roomy = vp.w >= 1500;
+  const railLeft = isEn; // the rail sits on the start side
+  let left = (stop.side === 'start') === isEn;
+  if (wide && !roomy && left === railLeft) left = !left;
+  if (!wide) left = false;
+  const size = wide ? 104 : 64;
+  const gap = wide ? (left === railLeft ? 170 : Math.max(24, vp.w * 0.025)) : 10;
   const x = left ? gap : vp.w - gap - size;
-  const y = wide ? (vp.h * stop.y) / 100 : vp.h - size - 18;
+  const y = wide ? (vp.h * stop.y) / 100 : vp.h - size - 16;
   const flip = left ? 1 : -1;
 
   return (
@@ -84,7 +89,7 @@ export function ZadGuide({ stations, stops, isEn }: { stations: Station[]; stops
                 <motion.div
                   key={`say-${index}`}
                   role="status"
-                  className={`absolute bottom-[78%] ${left ? 'left-[62%]' : 'right-[62%]'} w-max max-w-[min(15rem,60vw)]`}
+                  className={`absolute bottom-[96%] ${left ? 'left-0' : 'right-0'} w-max max-w-[min(12rem,70vw)]`}
                   initial={{ opacity: 0, y: 8, scale: 0.85 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -4, scale: 0.92 }}
