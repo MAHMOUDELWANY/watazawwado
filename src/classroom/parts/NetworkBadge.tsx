@@ -1,11 +1,10 @@
 import React from 'react';
-import { WifiOff } from 'lucide-react';
 import { useT } from '../../lib/language';
 import { cn } from '../../lib/utils';
 import type { LinkClass } from '../engine/types';
 
 // No green anywhere: good = teal, weak = gold, poor = crimson.
-const DOT: Record<LinkClass, string> = { good: 'bg-teal', weak: 'bg-gold', poor: 'bg-crimson' };
+const DOT: Record<LinkClass, string> = { good: 'bg-[#12A4BC]', weak: 'bg-[#F0B54A]', poor: 'bg-[#E82C32]' };
 
 /** Good, weak or poor, next to a name. Colour plus a word, so it never relies on colour alone. */
 export function NetworkBadge({ link, onDark = false }: { link: LinkClass; onDark?: boolean }) {
@@ -21,18 +20,11 @@ export function NetworkBadge({ link, onDark = false }: { link: LinkClass; onDark
   );
 }
 
-/** "Your connection is weak" (or, to the teacher, the learner's), from blameSide. */
-export function WeakLinkNotice({ who, teacher }: { who: 'me' | 'them'; teacher: boolean }) {
-  const { t } = useT();
-  const text = who === 'me'
+/** "Your connection is weak" (or, to the teacher, the learner's), from blameSide. Shown in the room's notice slot. */
+export function weakLinkText(who: 'me' | 'them', teacher: boolean, t: (en: string, ar: string) => string) {
+  return who === 'me'
     ? t('Your connection is weak. Video may pause so the sound stays clear.', 'الاتصال عندك ضعيف. الفيديو ممكن يقف علشان الصوت يفضل واضح.')
     : teacher
       ? t("The learner's connection is weak. Ask them to move closer to the router.", 'اتصال الطالب ضعيف. اطلب منه يقرّب من الراوتر.')
       : t("Your teacher's connection is weak for a moment.", 'اتصال المعلم ضعيف شوية.');
-  return (
-    <p role="status" className="glass-2 flex items-center gap-2 rounded-[var(--r-pill)] px-4 py-2 text-sm text-foreground">
-      <WifiOff className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-      {text}
-    </p>
-  );
 }

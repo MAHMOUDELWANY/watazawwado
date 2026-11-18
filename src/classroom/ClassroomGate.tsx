@@ -4,9 +4,9 @@ import { useT } from '../lib/language';
 import { dashboardFetch } from '../dashboard/lib/dashboardApi';
 import { authedJson } from '../lib/authedJson';
 import { BrandLoader } from '../components/ui/BrandLoader';
-import { Card } from '../components/ui/Card';
 import type { RoomRole } from './engine/types';
 import { FallbackNotice } from './parts/FallbackNotice';
+import { Khatam } from './parts/Khatam';
 
 // The room (engine, board, player) is its own chunk; this gate stays tiny inside each app.
 const ClassroomPage = lazy(() => import('./ClassroomPage'));
@@ -21,6 +21,12 @@ export type RoomEntry = {
   hardCloseAt: string;
   durationMinutes: number;
   learnerName: string | null;
+  /** Coming from the enter endpoints (optional until the server sends them): the learner sees who teaches. */
+  teacherName?: string | null;
+  /** e.g. "Quran" / "القرآن", already in the viewer's language. */
+  subjectLabel?: string | null;
+  /** students.learner_type: 'child' turns on child mode in the room. */
+  learnerType?: 'child' | 'adult' | null;
 };
 
 const HOME: Record<Portal, string> = { teacher: '/dashboard', student: '/student/lessons', kid: '/kid/lessons' };
@@ -60,11 +66,12 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
   if ('fallback' in result) return <>{fallback}</>;
   if ('error' in result) {
     return (
-      <Card className="mx-auto mt-10 grid max-w-md gap-3 p-6 text-center">
+      <div className="glass-2 arch-top mx-auto mt-10 grid max-w-md justify-items-center gap-3 px-6 pb-8 pt-14 text-center">
+        <Khatam size={44} />
         <p role="alert" className="text-base font-semibold text-foreground">{result.error}</p>
         {result.zoomUrl && <FallbackNotice url={result.zoomUrl} teacher={portal === 'teacher'} variant="screen" />}
-        <Link to={HOME[portal]} className="text-sm text-teal underline underline-offset-4">{t('Back to my lessons', 'رجوع لحصصي')}</Link>
-      </Card>
+        <Link to={HOME[portal]} className="inline-flex min-h-11 items-center text-sm text-teal underline underline-offset-4 focus-ring">{t('Back to my lessons', 'رجوع لحصصي')}</Link>
+      </div>
     );
   }
   return (

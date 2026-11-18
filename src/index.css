@@ -2380,3 +2380,90 @@ html.sig-revealing[dir='rtl'] main h1 { animation-name: sig-wipe-rtl; }
 .badge-silhouette { filter: grayscale(1) brightness(.42) contrast(1.1); opacity: .6; }
 .badge-spot { background: radial-gradient(closest-side, rgba(246, 213, 142, .38), rgba(229, 169, 60, .12) 55%, transparent 75%); }
 .badge-ledge { height: 10px; border-radius: 9999px; background: linear-gradient(180deg, rgba(229, 169, 60, .55), rgba(139, 73, 53, .35) 40%, rgba(0, 0, 0, 0) 100%); box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .8); }
+
+/* ===== Lesson room (docs/classroom/DESIGN-BRIEF.md, 2026-11-18) =====
+   "A lit page in a quiet room": the stage is warm espresso in both themes, the controls are dark glass on it, and
+   the lesson page is the one paper-coloured thing. `.room-ink` gives the chrome the night tokens in either theme;
+   `.room-paper` hands the lesson page back the page's own theme. Tailwind's --color-* are re-pointed in both scopes
+   because they resolve once at :root otherwise. */
+.room-ink, .room-paper {
+  --color-background: var(--background); --color-foreground: var(--foreground); --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground); --color-surface-subtle: var(--surface-subtle);
+  --color-surface-warm: var(--surface-warm); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border); --color-border-subtle: var(--border-subtle); --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground); --color-accent: var(--accent); --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground); --color-teal-light: var(--teal-light); --color-crimson: var(--crimson);
+  --color-crimson-light: var(--crimson-light); --color-gold: var(--gold); --color-sand: var(--sand);
+  --color-sand-foreground: var(--sand-foreground); --color-sand-light: var(--sand-light); --color-sand-border: var(--sand-border);
+  --color-destructive: var(--destructive); --color-focus: var(--focus);
+}
+.room-ink {
+  color-scheme: dark; color: var(--foreground);
+  --background: #110F0E; --foreground: #FAF7F2; --surface: #1B1816; --surface-foreground: #FAF7F2; --surface-subtle: #24201D;
+  --surface-warm: #2E2824; --muted: #38312B; --muted-foreground: #C4B9AA; --border: #443B33; --border-subtle: #2E2721;
+  --primary: #E82C32; --primary-foreground: #FFFFFF; --accent: #DA7960; --copper: #DA7960; --teal: #12A4BC;
+  --teal-foreground: #110F0E; --teal-light: rgba(18, 164, 188, 0.18); --crimson: #E82C32; --crimson-light: rgba(232, 44, 50, 0.18);
+  --gold: #F0B54A; --sand: #3D352D; --sand-foreground: #FAF7F2; --sand-light: #25201C; --sand-border: #4E4338;
+  --destructive: #F26468; --focus: #12A4BC;
+  --glass-1: rgba(38, 33, 30, 0.55); --glass-2: rgba(36, 32, 29, 0.68); --glass-3: rgba(30, 27, 24, 0.82);
+  --glass-hairline: rgba(250, 247, 242, 0.10); --glass-highlight: rgba(255, 255, 255, 0.07); --glass-solid: #1E1B18;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.30), 0 4px 10px -4px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 24px -10px rgba(0, 0, 0, 0.50), 0 28px 56px -32px rgba(0, 0, 0, 0.55);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.30), 0 18px 40px -14px rgba(0, 0, 0, 0.60), 0 52px 90px -44px rgba(0, 0, 0, 0.65);
+}
+html:not(.dark) .room-paper {
+  color-scheme: light; color: var(--foreground);
+  --background: #FAF7F2; --foreground: #12100E; --surface: #FFFFFF; --surface-foreground: #12100E; --surface-subtle: #F6F1EA;
+  --surface-warm: #EFE7DC; --muted: #E2DBD0; --muted-foreground: #453D34; --border: #D4CBBC; --border-subtle: #E8E0D2;
+  --primary: #C51F24; --accent: #8B4935; --copper: #8B4935; --teal: #087D91; --teal-foreground: #FFFFFF;
+  --teal-light: rgba(8, 125, 145, 0.10); --crimson: #C51F24; --crimson-light: rgba(197, 31, 36, 0.10); --gold: #E5A93C;
+  --sand: #D8C6AE; --sand-foreground: #12100E; --sand-light: #F7F3EB; --sand-border: #D8C6AE; --destructive: #C51F24; --focus: #087D91;
+  --glass-1: rgba(255, 255, 255, 0.52); --glass-2: rgba(255, 255, 255, 0.66); --glass-3: rgba(255, 253, 249, 0.80);
+  --glass-hairline: rgba(139, 73, 53, 0.14); --glass-highlight: rgba(255, 255, 255, 0.95); --glass-solid: #FFFDF9;
+  --shadow-1: 0 1px 2px rgba(59, 34, 25, 0.06), 0 4px 10px -4px rgba(59, 34, 25, 0.08);
+  --shadow-2: 0 1px 2px rgba(59, 34, 25, 0.05), 0 10px 24px -10px rgba(59, 34, 25, 0.16), 0 28px 56px -32px rgba(59, 34, 25, 0.18);
+  --shadow-3: 0 2px 4px rgba(59, 34, 25, 0.05), 0 18px 40px -14px rgba(59, 34, 25, 0.24), 0 52px 90px -44px rgba(59, 34, 25, 0.26);
+}
+/* The stage: espresso, one low gold light from above, the khatam at ~7%. Fades in over the paper on entering. */
+.room-stage-bg {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(56rem 22rem at 50% -5rem, rgba(229, 169, 60, 0.13), transparent 72%), linear-gradient(180deg, #1D1916 0%, #110F0E 78%);
+  animation: room-lights var(--dur-scene) var(--ease-out-soft) both;
+}
+.room-stage-bg::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='none' stroke='%23D8C6AE' stroke-opacity='0.07' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='6'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 25%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 25%, transparent 80%);
+}
+.room-rise { animation: room-rise var(--dur-scene) var(--ease-out-soft) 120ms both; }
+.room-rise-sm { --rise: 8px; animation: room-rise var(--dur-move) var(--ease-out-soft) 260ms both; }
+.room-fade { animation: room-lights var(--dur-ui) var(--ease-out-soft) both; }
+@keyframes room-lights { from { opacity: 0; } }
+@keyframes room-rise { from { opacity: 0; transform: translateY(var(--rise, 12px)); } }
+/* A person you face sits under an arch. --arch-h sets how tall the dome is. */
+.arch-face { border-radius: 50% 50% var(--r-3) var(--r-3) / var(--arch-h, 9rem) var(--arch-h, 9rem) var(--r-3) var(--r-3); }
+/* Speaking: a soft gold light along the inside of the frame. In fast, out slow, so it never flickers between words. */
+.face-glow {
+  position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none; opacity: 0;
+  box-shadow: inset 0 0 0 1.5px rgba(246, 213, 142, 0.8), inset 0 0 40px 2px rgba(229, 169, 60, 0.34);
+  transition: opacity var(--dur-ui) ease;
+}
+[data-speaking] > .face-glow { opacity: 1; transition-duration: var(--dur-tap); }
+/* Captions on video: a flat espresso scrim, never a blur over moving pictures. */
+.face-scrim { background-color: rgba(17, 15, 14, 0.62); color: #FAF7F2; }
+/* Reconnecting: the last frame stays, dimmed. */
+.face-dim::after { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(17, 15, 14, 0.42); }
+/* One notice at a time: it arrives 12px from the edge it lives on (the bar on phones, the top on wider screens). */
+.room-notice { --notice-from: 12px; animation: room-notice-in 280ms var(--ease-out-soft) both; }
+@media (min-width: 640px) { .room-notice { --notice-from: -12px; } }
+@keyframes room-notice-in { from { opacity: 0; transform: translateY(var(--notice-from)); } }
+/* Sheets above the bar grow from it. */
+.room-sheet { transform-origin: 50% 100%; animation: room-sheet-in 200ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+@keyframes room-sheet-in { from { opacity: 0; transform: translateY(6px) scale(0.97); } }
+.room-press { transition: transform var(--dur-tap) ease-out, background-color var(--dur-ui) ease, color var(--dur-ui) ease, opacity var(--dur-ui) ease; }
+.room-press:active { transform: scale(0.96); }
+@media (prefers-reduced-motion: reduce) {
+  .room-stage-bg, .room-rise, .room-rise-sm, .room-fade, .room-notice, .room-sheet { animation: room-lights 150ms ease both; }
+  .room-press:active { transform: none; }
+}

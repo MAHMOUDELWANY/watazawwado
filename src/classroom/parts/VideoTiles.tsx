@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MicOff, Volume2 } from 'lucide-react';
+import { MicOff } from 'lucide-react';
 import { useT } from '../../lib/language';
 import { cn } from '../../lib/utils';
 import type { LinkClass } from '../engine/types';
 import { NetworkBadge } from './NetworkBadge';
+import { Khatam } from './Khatam';
 
 let sharedCtx: AudioContext | null = null;
 /** One AudioContext for every level meter in the room (browsers cap how many can run). */
@@ -48,8 +49,18 @@ export function useSpeaking(track: MediaStreamTrack | null | undefined, threshol
   return speaking;
 }
 
-/** Remote sound. Picks the speaker chosen in the waiting room, and asks for one tap when the browser blocks play(). */
-export function RemoteAudio({ stream, speakerId, label }: { stream: MediaStream | null; speakerId?: string; label: string }) {
+/**
+ * Remote sound. Picks the speaker chosen in the waiting room, and asks for one tap when the browser blocks play().
+ * The tap is drawn as an arch with the other person's initial: it blocks the lesson, so it may be the one loud thing.
+ */
+export function RemoteAudio({ stream, speakerId, label, initial = '', muted = false }: {
+  stream: MediaStream | null;
+  speakerId?: string;
+  label: string;
+  initial?: string;
+  /** Observers can turn the room's sound off on their own device. */
+  muted?: boolean;
+}) {
   const { t } = useT();
   const ref = useRef<HTMLAudioElement>(null);
   const [blocked, setBlocked] = useState(false);
@@ -66,6 +77,8 @@ export function RemoteAudio({ stream, speakerId, label }: { stream: MediaStream 
     })();
   }, [stream, speakerId]);
 
+  useEffect(() => { if (ref.current) ref.current.muted = muted; }, [muted]);
+
   const tap = () => {
     audioCtx();
     ref.current?.play().then(() => setBlocked(false), () => setBlocked(true));
@@ -75,19 +88,29 @@ export function RemoteAudio({ stream, speakerId, label }: { stream: MediaStream 
     <>
       <audio ref={ref} autoPlay playsInline />
       {blocked && (
-        <button type="button" onClick={tap}
-          className="fixed inset-x-4 top-1/3 z-[70] mx-auto flex max-w-sm items-center justify-center gap-3 rounded-[var(--r-4)] bg-crimson px-6 py-5 text-lg font-semibold text-white shadow-[var(--shadow-3)] focus-ring active:scale-[0.98] transition-transform">
-          <Volume2 className="h-6 w-6 shrink-0" aria-hidden="true" />
-          {/* "Tap to hear your teacher" / "Tap to hear the learner" */}
-          {t(`Tap to hear ${label}`, `اضغط علشان تسمع ${label}`)}
-        </button>
+        <div className="room-fade fixed inset-0 z-[70] grid place-items-center bg-[rgba(17,15,14,0.6)] p-6">
+          <button type="button" onClick={tap}
+            className="room-press arch-face grid w-full max-w-[17rem] justify-items-center gap-4 bg-[#2E2824] px-6 pb-7 pt-12 text-center text-[#FAF7F2] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)] ring-1 ring-[rgba(246,213,142,0.35)] focus-ring [--arch-h:7.5rem]">
+            <span aria-hidden="true" className="arch-tile grid h-20 w-16 place-items-center bg-[#3B2219] font-editorial text-4xl text-[#F6D58E] shadow-[inset_0_1px_0_rgba(246,213,142,0.3)]">
+              {initial.trim().charAt(0) || '·'}
+            </span>
+            {/* "Tap to hear your teacher" / "Tap to hear the learner" */}
+            <span className="text-lg font-semibold leading-snug">{t(`Tap to hear ${label}`, `اضغط علشان تسمع ${label}`)}</span>
+            <span aria-hidden="true" className="rounded-[var(--r-pill)] bg-[#C51F24] px-5 py-2.5 text-sm font-semibold text-white">{t('Turn the sound on', 'شغّل الصوت')}</span>
+          </button>
+        </div>
       )}
     </>
   );
 }
 
-/** A person in the room: video, or an arch with their initial when there is no picture. Video is always muted here; sound plays in RemoteAudio. */
-export function VideoTile({ stream, name, self = false, speaking = false, micOff = false, videoOff = false, link, note, compact = false, className }: {
+/**
+ * A person in the room: video, or their initial under an arch when there is no picture. Video is always muted here;
+ * sound plays in RemoteAudio. `arch` is for the person you face (never your own tile). `fit="contain"` keeps a held-up
+ * mushaf or board whole on a portrait phone; a double tap fills the frame instead.
+ */
+export function VideoTile({ stream, name, self = false, speaking = false, micOff = false, videoOff = false, link, note, compact = false,
+  arch = false, fit = 'cover', dim = false, connecting = false, overlay, className }: {
   stream: MediaStream | null;
   name: string;
   self?: boolean;
@@ -98,11 +121,20 @@ export function VideoTile({ stream, name, self = false, speaking = false, micOff
   /** Shown instead of the picture, e.g. "video paused to keep the sound clear". */
   note?: string;
   compact?: boolean;
+  arch?: boolean;
+  fit?: 'cover' | 'contain';
+  /** Reconnecting: the last frame stays, dimmed. */
+  dim?: boolean;
+  /** The room is still opening: the khatam breathes where the person will be. */
+  connecting?: boolean;
+  /** Chips that belong to this person (a raised hand), drawn on the tile's lower edge. */
+  overlay?: React.ReactNode;
   className?: string;
 }) {
   const { t } = useT();
   const ref = useRef<HTMLVideoElement>(null);
   const [hasVideo, setHasVideo] = useState(false);
+  const [filled, setFilled] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -117,34 +149,42 @@ export function VideoTile({ stream, name, self = false, speaking = false, micOff
   }, [stream]);
 
   const showVideo = hasVideo && !videoOff && !note;
+  const contain = fit === 'contain' && !filled;
   return (
     <figure
       className={cn(
-        'relative isolate overflow-hidden bg-[#1C1411] text-[#FAF7F2] outline outline-2 outline-offset-2 transition-[outline-color] duration-[var(--dur-ui)]',
-        compact ? 'rounded-[var(--r-2)]' : 'rounded-[var(--r-3)]',
-        speaking ? 'outline-teal' : 'outline-transparent',
+        'relative isolate overflow-hidden bg-[#1C1714] text-[#FAF7F2] shadow-[0_18px_50px_-24px_rgba(0,0,0,0.85)] ring-1 ring-[rgba(250,247,242,0.07)]',
+        arch ? 'arch-face' : compact ? 'rounded-[var(--r-2)]' : 'rounded-[var(--r-3)]',
+        dim && 'face-dim',
         className,
       )}
       data-speaking={speaking || undefined}
+      onDoubleClick={fit === 'contain' ? () => setFilled((f) => !f) : undefined}
     >
       <video ref={ref} autoPlay playsInline muted
-        className={cn('absolute inset-0 h-full w-full object-cover', self && '-scale-x-100', !showVideo && 'invisible')} />
+        className={cn('absolute inset-0 h-full w-full', contain ? 'object-contain' : 'object-cover', self && '-scale-x-100', !showVideo && 'invisible')} />
       {!showVideo && (
-        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(40rem_20rem_at_50%_0%,rgba(229,169,60,0.18),transparent_70%)] p-3">
-          <div className="grid justify-items-center gap-2 text-center">
-            <span aria-hidden="true"
-              className={cn('arch-tile grid place-items-center bg-[#2E2824] font-editorial text-[#F6D58E] shadow-[inset_0_1px_0_rgba(246,213,142,0.25)]', compact ? 'h-12 w-10 text-xl' : 'h-24 w-20 text-4xl')}>
-              {name.trim().charAt(0) || '·'}
-            </span>
-            {note && !compact && <span className="max-w-xs text-sm text-[#D8C6AE]">{note}</span>}
+        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(28rem_18rem_at_50%_0%,rgba(229,169,60,0.16),transparent_70%)] p-3">
+          <div className="grid justify-items-center gap-3 text-center">
+            {connecting ? <Khatam size={compact ? 32 : 56} breathe /> : (
+              <span aria-hidden="true"
+                className={cn('arch-tile grid place-items-center bg-[#2E2824] font-editorial text-[#F6D58E] shadow-[inset_0_1px_0_rgba(246,213,142,0.25),0_10px_30px_-12px_rgba(229,169,60,0.4)]',
+                  compact ? 'h-11 w-9 text-lg' : 'h-24 w-20 text-4xl')}>
+                {name.trim().charAt(0) || '·'}
+              </span>
+            )}
+            {note && !compact && <span className="max-w-[16rem] text-sm leading-relaxed text-[#D8C6AE]">{note}</span>}
           </div>
         </div>
       )}
-      <figcaption className="absolute bottom-2 start-2 flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-[var(--r-pill)] bg-black/45 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
+      <span className="face-glow" aria-hidden="true" />
+      <figcaption className={cn('face-scrim absolute bottom-2 start-2 z-[3] flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-[var(--r-pill)] font-medium',
+        compact ? 'px-2 py-0.5 text-[0.78rem]' : 'px-3 py-1 text-[0.82rem]')}>
         {micOff && <MicOff className="h-3.5 w-3.5 shrink-0 text-[#F6D58E]" aria-label={t('Mic off', 'المايك مقفول')} />}
         <span className="truncate">{self ? t('You', 'إنت') : name}</span>
         {link && <NetworkBadge link={link} onDark />}
       </figcaption>
+      {overlay && <div className="absolute inset-x-2 bottom-11 z-[3] flex flex-col items-start gap-1.5">{overlay}</div>}
     </figure>
   );
 }

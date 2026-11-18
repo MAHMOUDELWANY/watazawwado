@@ -1,26 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { EyeOff, Hourglass } from 'lucide-react';
-import { useT } from '../../lib/language';
+import { useEffect, useRef, useState } from 'react';
 import type { RoomEvent } from '../../lib/roomEvents';
 
 /** Spec §4: the teacher hears about it only after 10 seconds away. */
 export const FOCUS_GRACE_MS = 10_000;
+/** How long the learner's "welcome back" stays in the notice slot. */
+export const WELCOME_BACK_MS = 6000;
 
-const mmss = (ms: number) => {
+export const mmss = (ms: number) => {
   const s = Math.max(0, Math.floor(ms / 1000));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
 
 /**
- * Learner side: reports leaving and coming back (visibilitychange and window blur), and on return after the grace
- * shows "your teacher is waiting" for a few seconds, unless the teacher turned the warning off.
+ * Learner side: reports leaving and coming back (visibilitychange and window blur). True for a few seconds after a
+ * return that came after the grace, unless the teacher turned the warning off; the room shows "welcome back" then.
  */
-export function LearnerFocus({ send, warningOff }: { send: (e: RoomEvent) => void; warningOff: boolean }) {
-  const { t } = useT();
+export function useLearnerFocus(enabled: boolean, send: (e: RoomEvent) => void, warningOff: boolean): boolean {
   const awaySince = useRef<number | null>(null);
   const [waiting, setWaiting] = useState(false);
 
   useEffect(() => {
+    if (!enabled) return;
     const away = () => {
       if (awaySince.current != null) return;
       awaySince.current = Date.now();
@@ -42,39 +42,21 @@ export function LearnerFocus({ send, warningOff }: { send: (e: RoomEvent) => voi
       window.removeEventListener('blur', away);
       window.removeEventListener('focus', back);
     };
-  }, [send, warningOff]);
+  }, [enabled, send, warningOff]);
 
   useEffect(() => {
     if (!waiting) return;
-    const id = window.setTimeout(() => setWaiting(false), 6000);
+    const id = window.setTimeout(() => setWaiting(false), WELCOME_BACK_MS);
     return () => window.clearTimeout(id);
   }, [waiting]);
 
-  if (!waiting) return null;
-  return (
-    <p role="status" className="glass-3 flex items-center gap-2 rounded-[var(--r-pill)] px-4 py-2 text-sm font-medium text-foreground">
-      <Hourglass className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-      {t('Welcome back. Your teacher is waiting for you.', 'أهلاً بيك تاني. المعلم مستنيك.')}
-    </p>
-  );
+  return waiting;
 }
 
-/** Teacher side: "not on the lesson screen · 0:42" once the learner has been away for the grace period. */
-export function TeacherFocus({ awayAt, now, warningOff, onTurnOff }: { awayAt: number | null; now: number; warningOff: boolean; onTurnOff: () => void }) {
-  const { t } = useT();
+/** Teacher side: how long the learner has been off the lesson screen, once past the grace; null otherwise. */
+export function teacherAwayMs(awayAt: number | null, now: number, warningOff: boolean): number | null {
   if (awayAt == null || warningOff) return null;
   // The learner's clock stamps `at`; clamp so a skewed clock never shows a negative or huge time.
   const gone = Math.min(Math.max(0, now - awayAt), 6 * 3600_000);
-  if (gone < FOCUS_GRACE_MS) return null;
-  return (
-    <div role="status" className="glass-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[var(--r-3)] px-4 py-2 text-sm text-foreground">
-      <span className="flex items-center gap-2 font-medium">
-        <EyeOff className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-        <span className="tabular-nums">{t(`Not on the lesson screen · ${mmss(gone)}`, `مش على شاشة الحصة · ${mmss(gone)}`)}</span>
-      </span>
-      <button type="button" onClick={onTurnOff} className="text-teal underline underline-offset-4 focus-ring rounded">
-        {t('I asked them to; stop warning', 'أنا اللي طلبت؛ وقّف التنبيه')}
-      </button>
-    </div>
-  );
+  return gone < FOCUS_GRACE_MS ? null : gone;
 }
