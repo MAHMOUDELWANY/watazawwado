@@ -339,7 +339,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 pt-6 sm:pt-10 lg:grid-cols-[26rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-6 lg:pb-14 lg:pt-16">
+    <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 pt-6 sm:pt-10 lg:min-h-full lg:content-center lg:grid-cols-[26rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-6 lg:pb-14 lg:pt-16">
       <header className="grid justify-items-start gap-2 lg:col-start-2 lg:row-start-1 lg:self-end">
         <h1 className={heading}>{info.title}</h1>
         <p className="text-[0.95rem] text-muted-foreground">{info.when}</p>

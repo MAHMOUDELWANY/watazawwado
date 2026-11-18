@@ -154,7 +154,7 @@ export function VideoTile({ stream, name, self = false, speaking = false, micOff
     <figure
       className={cn(
         'relative isolate overflow-hidden bg-[#1C1714] text-[#FAF7F2] shadow-[0_18px_50px_-24px_rgba(0,0,0,0.85)] ring-1 ring-[rgba(250,247,242,0.07)]',
-        arch ? 'arch-face' : compact ? 'rounded-[var(--r-2)]' : 'rounded-[var(--r-3)]',
+        arch ? 'arch-face bg-[radial-gradient(36rem_20rem_at_50%_0%,rgba(229,169,60,0.13),transparent_70%)]' : compact ? 'rounded-[var(--r-2)]' : 'rounded-[var(--r-3)]',
         dim && 'face-dim',
         className,
       )}

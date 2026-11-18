@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, Eye, FileUp, PenLine, RefreshCw, ShieldCheck } from 'lucide-react';
+import { BookOpen, EyeOff, FileUp, Hourglass, MicOff, MonitorX, PenLine, RefreshCw, ShieldCheck, WifiOff } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
@@ -9,6 +9,7 @@ import { lessonEndMs } from '../lib/lessonWindow';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
+import { ZadRigSvg } from '../components/zad/ZadRig';
 import { createEngine } from './engine/cloudflareEngine';
 import { blameSide, classifyLink, createLayerPicker, layerHeight } from './engine/quality';
 import { sideOf, type Layer, type LinkClass, type LinkStats, type MediaEngine, type Side } from './engine/types';
@@ -18,12 +19,15 @@ import { PdfPages } from './board/PdfPages';
 import { uploadClassroomFile } from './board/upload';
 import type { Portal, RoomEntry } from './ClassroomGate';
 import { RemoteAudio, VideoTile, useSpeaking } from './parts/VideoTiles';
-import { LayoutSwitch, Toolbar, type LayoutMode } from './parts/Toolbar';
+import { CornerPip } from './parts/CornerPip';
+import { Khatam } from './parts/Khatam';
+import { NoticeSlot, type RoomNotice } from './parts/NoticeSlot';
+import { Toolbar, type LayoutMode } from './parts/Toolbar';
 import { Timer } from './parts/Timer';
-import { REACTION_SHOW_MS, ReactionPicker, ReactionStream, type ReactionKind } from './parts/Reactions';
+import { REACTION_SHOW_MS, ReactionStream, type ReactionKind } from './parts/Reactions';
 import { RemotePointer, usePointerSender } from './parts/Pointer';
-import { LearnerFocus, TeacherFocus } from './parts/FocusNotice';
-import { NetworkBadge, WeakLinkNotice } from './parts/NetworkBadge';
+import { mmss, teacherAwayMs, useLearnerFocus } from './parts/FocusNotice';
+import { NetworkBadge, weakLinkText } from './parts/NetworkBadge';
 import { ScreenShareButton, canShareScreen } from './parts/ScreenShare';
 import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
 import { FallbackNotice } from './parts/FallbackNotice';
@@ -62,8 +66,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const observer = role === 'guardian_observer' || role === 'admin_observer';
   const mySide = sideOf(role);
   const watchSides: Side[] = mySide ? [other(mySide)] : ['teacher', 'student'];
-  const teacherName = t('Teacher', 'المعلم');
+  const teacherName = entry.teacherName || t('Your teacher', 'معلمك');
   const learnerName = entry.learnerName || t('Learner', 'الطالب');
+  const subject = entry.subjectLabel || null;
+  // Child mode (DESIGN-BRIEF 3.3): the kid app, or a child learner on the family's device.
+  const kid = role === 'learner' && (portal === 'kid' || entry.learnerType === 'child');
   const nameOf = (s: Side) => (s === 'teacher' ? teacherName : learnerName);
 
   const room = useLessonRoom(entry.roomKey, isTeacher ? 'teacher' : 'learner');
@@ -99,6 +106,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [uploadError, setUploadError] = useState('');
   // Task 12: this side's Zoom link, only after the room failed on our side.
   const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
+  // View only: hide my own picture on my screen, observers' sound, when the other side last said it is in the room.
+  const [selfHidden, setSelfHidden] = useState(false);
+  const [soundOff, setSoundOff] = useState(false);
+  const [otherSeen, setOtherSeen] = useState(0);
+  const [reconnectedAt, setReconnectedAt] = useState(0);
+  const [reconnectingSince, setReconnectingSince] = useState(0);
 
   const engineRef = useRef<MediaEngine | null>(null);
   const batcher = useRef<ReturnType<typeof createTimelineBatcher> | null>(null);
@@ -132,6 +145,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const onReady = useCallback((stream: MediaStream, opts: WaitingRoomReady) => {
     setLocal(stream);
     setReady(opts);
+    setMuted(!!opts.micOff);
+    setCameraOff(!!opts.cameraOff);
     setRecitation(isTeacher && opts.recitationMode);
     recitationRef.current = isTeacher && opts.recitationMode;
     setPhase('room');
@@ -421,9 +436,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     if (phase !== 'room') return;
     const onKey = (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
-      if ((e.key === 'm' || e.key === 'M') && !observer) { e.preventDefault(); toggleMute(); }
+      if (e.code === 'KeyM' && !observer) { e.preventDefault(); toggleMute(); }
       if (!isTeacher) return;
-      const mode = ({ 1: 'conversation', 2: 'content', 3: 'screen' } as Record<string, LayoutMode>)[e.key];
+      const mode = ({ Digit1: 'conversation', Digit2: 'content', Digit3: 'screen', Numpad1: 'conversation', Numpad2: 'content', Numpad3: 'screen' } as Record<string, LayoutMode>)[e.code];
       if (mode && (mode !== 'screen' || sharing)) changeLayout(mode);
     };
     window.addEventListener('keydown', onKey);
@@ -470,6 +485,25 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const studentSpeaking = useSpeaking(remotes.student?.getAudioTracks()[0]);
   const speakingOf = (s: Side) => (s === 'teacher' ? teacherSpeaking : studentSpeaking);
 
+  // Learner: reports leaving the lesson screen and says "welcome back" (FocusNotice).
+  const welcomeBack = useLearnerFocus(role === 'learner', send, warningOff);
+
+  // "Your teacher is here" before joining: the other side's session announce arrives every 15 s on the channel.
+  useEffect(() => onEvent((e) => {
+    if (e.t === 'session' && mySide && e.side !== mySide) setOtherSeen(Date.now());
+    if (e.t === 'session' && !mySide) setOtherSeen(Date.now());
+  }), [onEvent, mySide]);
+
+  // Reconnecting: after 20 s the notice says to check the internet; once back, "Back." for 2 s.
+  const wasReconnecting = useRef(false);
+  useEffect(() => {
+    if (reconnecting) { wasReconnecting.current = true; setReconnectingSince(Date.now()); return; }
+    if (!wasReconnecting.current) return;
+    wasReconnecting.current = false;
+    setReconnectingSince(0);
+    setReconnectedAt(Date.now());
+  }, [reconnecting]);
+
   const board = useMemo<BoardSync>(() => ({
     publishEvent: (e) => { if (e.t === 'board') latestBoard.current = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: e.learnerDraw ?? false }; publishEvent(e); },
     onEvent,
@@ -481,21 +515,29 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   // ---- over -----------------------------------------------------------------------------------------------------
   if (over) {
     const copy: Record<Over, { title: string; body: string }> = {
-      ended: { title: t('The lesson has ended', 'الحصة خلصت'), body: t('Well done today. See you next lesson.', 'برافو عليك النهارده. نشوفك الحصة الجاية.') },
+      ended: kid
+        ? { title: t('Well done today!', 'برافو عليك النهارده!'), body: t('See you next lesson.', 'نشوفك الحصة الجاية.') }
+        : { title: t('The lesson has ended', 'الحصة خلصت'), body: t('Well done today. See you next lesson.', 'برافو عليك النهارده. نشوفك الحصة الجاية.') },
       closed: { title: t('The room has closed', 'الغرفة اتقفلت'), body: t('The lesson time is over, so the room closed for everyone.', 'وقت الحصة خلص، فالغرفة اتقفلت للكل.') },
-      superseded: { title: t('The lesson is open somewhere else', 'الحصة مفتوحة في مكان تاني'), body: t('You joined from another tab or device, so it stopped here.', 'دخلت من تاب أو جهاز تاني، فوقفت هنا.') },
+      superseded: { title: t('This lesson is open on another device', 'الحصة مفتوحة على جهاز تاني'), body: t('You joined from another tab or device, so it stopped here.', 'دخلت من تاب أو جهاز تاني، فوقفت هنا.') },
       failed: { title: t('We lost the connection to the room', 'الاتصال بالغرفة اتقطع'), body: t('Check your internet, then try again. The lesson, the board and the time come back as they were.', 'اتأكد من النت وجرّب تاني. الدرس والسبورة والوقت هيرجعوا زي ما كانوا.') },
     };
     const again = over === 'superseded' || over === 'failed';
+    const zoomFirst = over === 'failed' && !!fallbackUrl;
     return (
-      <Shell>
-        <div className="grid min-h-full place-items-center p-4">
-          <div className="glass-2 arch-top grid w-full max-w-md justify-items-center gap-4 px-6 pb-8 pt-16 text-center">
-            <h1 className={cn('font-editorial text-2xl text-foreground', isAr ? 'font-bold' : 'font-medium tracking-tight')}>{copy[over].title}</h1>
-            <p className="text-sm text-muted-foreground">{copy[over].body}</p>
-            {over === 'failed' && fallbackUrl && <FallbackNotice url={fallbackUrl} teacher={isTeacher} variant="screen" />}
+      <Shell paper>
+        <div className="grid min-h-full place-items-center px-4 py-10">
+          <div className="glass-2 arch-top room-rise grid w-full max-w-md justify-items-center gap-4 px-6 pb-8 pt-14 text-center">
+            {over === 'ended' && kid ? <EndZad /> : <Khatam size={52} />}
+            <h1 className={cn('font-editorial text-[1.75rem] leading-tight text-foreground text-balance', isAr ? 'font-bold' : 'font-medium tracking-tight')}>{copy[over].title}</h1>
+            <p className="max-w-xs text-[0.95rem] leading-relaxed text-muted-foreground">{copy[over].body}</p>
+            {zoomFirst && <FallbackNotice url={fallbackUrl!} teacher={isTeacher} variant="screen" />}
             <div className="flex flex-wrap justify-center gap-2">
-              {again && <Button onClick={onRejoin}><RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{over === 'superseded' ? t('Use this device', 'كمّل من هنا') : t('Try again', 'جرّب تاني')}</Button>}
+              {again && (
+                <Button variant={zoomFirst ? 'outline' : 'primary'} onClick={onRejoin}>
+                  <RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{over === 'superseded' ? t('Use this device', 'كمّل من هنا') : t('Try again', 'جرّب تاني')}
+                </Button>
+              )}
               <Link to={home} className="inline-flex h-11 items-center rounded-xl px-4 text-sm font-medium text-teal underline underline-offset-4 focus-ring">{isTeacher ? t('Back to today', 'رجوع للنهارده') : t('My lessons', 'حصصي')}</Link>
             </div>
           </div>
@@ -506,17 +548,22 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
 
   // ---- waiting room -----------------------------------------------------------------------------------------
   if (phase === 'waiting') {
+    const otherHere = otherSeen > 0 && now - otherSeen < GUARDIAN_STALE_MS;
+    const named = entry.teacherName || null;
+    const title = isTeacher
+      ? (subject ? t(`${subject} with ${learnerName}`, `${subject} مع ${learnerName}`) : t(`Lesson with ${learnerName}`, `حصة ${learnerName}`))
+      : observer
+        ? (entry.learnerName ? t(`${learnerName}'s lesson`, `حصة ${learnerName}`) : t('Watch the lesson', 'متابعة الحصة'))
+        : named ? (subject ? t(`${subject} with ${named}`, `${subject} مع ${named}`) : t(`Your lesson with ${named}`, `حصتك مع ${named}`))
+          : t('Your lesson', 'حصتك');
+    const here = !otherHere ? null
+      : isTeacher ? t(`${learnerName} is here`, `${learnerName} موجود`)
+        : observer ? t('The lesson has started', 'الحصة بدأت')
+          : t('Your teacher is here', 'معلمك موجود');
     return (
-      <Shell>
-        <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 py-6 sm:py-10">
-          <header className="grid gap-1">
-            <h1 className={cn('font-editorial text-2xl text-foreground sm:text-3xl', isAr ? 'font-bold' : 'font-medium tracking-tight')}>
-              {isTeacher ? t(`Lesson with ${learnerName}`, `حصة ${learnerName}`) : observer ? t('Watch the lesson', 'متابعة الحصة') : t('Your lesson', 'حصتك')}
-            </h1>
-            <p className="text-sm text-muted-foreground">{t('Check your camera and sound, then join.', 'اتأكد من الكاميرا والصوت، وبعدين ادخل.')}</p>
-          </header>
-          <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} />
-        </div>
+      <Shell paper>
+        <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid}
+          info={{ title, when: <WhenLine startMs={startMs} now={now} />, here }} />
       </Shell>
     );
   }
@@ -528,24 +575,60 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const tapLabel = isTeacher ? t('the learner', 'الطالب') : observer ? t('the lesson', 'الحصة') : t('your teacher', 'المعلم');
   const shareSupported = canShareScreen();
   const contentBox = layout !== 'conversation';
+  const face = watchSides[0];
+  const myLink = mySide ? links[mySide] : null;
+  const awayMs = isTeacher ? teacherAwayMs(awayAt, now, warningOff) : null;
+  const showSelf = !observer && !selfHidden;
 
-  const remoteTile = (s: Side, compact = false, className?: string) => (
-    <VideoTile key={s} stream={remotes[s]} name={nameOf(s)} speaking={speakingOf(s)} link={links[s]} compact={compact} className={className}
-      note={!remotes[s] ? (s === 'teacher' ? t('Waiting for your teacher…', 'مستنيين المعلم…') : t(`Waiting for ${learnerName}…`, `مستنيين ${learnerName}…`))
-        : audioOnly ? t('Video paused to keep the sound clear', 'الفيديو واقف علشان الصوت يفضل واضح') : undefined} />
+  const reactionOverlay = isTeacher && reactions.length > 0 ? <ReactionStream items={reactions} name={learnerName} /> : undefined;
+  const remoteTile = (s: Side, o: { compact?: boolean; arch?: boolean; fit?: 'cover' | 'contain'; overlay?: boolean; className?: string } = {}) => (
+    <VideoTile key={s} stream={remotes[s]} name={nameOf(s)} speaking={speakingOf(s)} link={observer ? null : links[s]} compact={o.compact}
+      arch={o.arch} fit={o.fit} dim={reconnecting} connecting={!joined} className={o.className}
+      overlay={o.overlay && s === 'student' ? reactionOverlay : undefined}
+      note={!joined ? (o.compact ? undefined : t('Opening the room…', 'بنفتح الغرفة…'))
+        : !remotes[s] ? (s === 'teacher' ? t('Your teacher will be here soon.', 'المعلم جاي حالاً.') : t(`Waiting for ${learnerName}…`, `مستنيين ${learnerName}…`))
+          : audioOnly ? t('Video paused to keep the sound clear', 'الفيديو واقف علشان الصوت يفضل واضح') : undefined} />
   );
-  const selfTile = (compact = false, className?: string) => !observer && (
-    <VideoTile stream={local} name={t('You', 'إنت')} self speaking={selfSpeaking} micOff={muted} videoOff={cameraOff} link={mySide ? links[mySide] : null} compact={compact} className={className} />
+  const selfTile = (className?: string) => showSelf && (
+    <VideoTile stream={local} name={t('You', 'إنت')} self compact speaking={selfSpeaking} micOff={muted} videoOff={cameraOff} link={myLink} className={className} />
   );
+
+  // ---- notices: one at a time, by priority (DESIGN-BRIEF 3.4) -----------------------------------------------------
+  const notices: RoomNotice[] = [];
+  if (fallbackUrl) notices.push({ key: 'fallback', priority: 1, text: null, custom: <FallbackNotice url={fallbackUrl} teacher={isTeacher} variant="banner" /> });
+  if (reconnecting) {
+    notices.push({ key: 'reconnecting', priority: 3, icon: <Khatam size={20} breathe />,
+      text: reconnectingSince && now - reconnectingSince > 20_000 ? t('Still trying. Check your internet.', 'لسه بنحاول. اتأكد من النت.') : t('Reconnecting… The lesson is safe.', 'بنرجّع الاتصال… الحصة محفوظة.') });
+  } else if (reconnectedAt && now - reconnectedAt < 2500) {
+    notices.push({ key: 'back', priority: 3, icon: <Khatam size={20} />, text: t('Back.', 'رجعنا.') });
+  }
+  if (talkingMuted) {
+    notices.push({ key: 'talking-muted', priority: 4, icon: <MicOff className="h-4 w-4" />,
+      text: kid ? t("You're muted. Tap the mic to talk.", 'المايك مقفول. دوس على المايك علشان تتكلم.') : t("You're talking while muted.", 'إنت بتتكلم والمايك مقفول.'),
+      action: <NoticeAction onClick={toggleMute}>{t('Unmute', 'افتح المايك')}</NoticeAction> });
+  }
+  if (!observer && blame !== 'unknown') notices.push({ key: `weak-${blame}`, priority: 5, icon: <WifiOff className="h-4 w-4" />, text: weakLinkText(blame, isTeacher, t) });
+  if (awayMs != null) {
+    notices.push({ key: 'away', priority: 6, icon: <EyeOff className="h-4 w-4" />,
+      text: <>{t('Not on the lesson screen', 'مش على شاشة الحصة')} · <bdi dir="ltr" className="tabular-nums">{mmss(awayMs)}</bdi></>,
+      action: <NoticeAction onClick={() => { setWarningOff(true); publishEvent({ t: 'focus_warning_off', off: true }); }}>{t('I asked them to; stop warning', 'أنا اللي طلبت؛ وقّف التنبيه')}</NoticeAction> });
+  }
+  if (welcomeBack) {
+    notices.push({ key: 'welcome', priority: 7, icon: <Hourglass className="h-4 w-4" />,
+      text: kid ? t('Welcome back!', 'أهلاً بيك تاني!') : t('Welcome back. Your teacher is waiting for you.', 'أهلاً بيك تاني. المعلم مستنيك.') });
+  }
 
   const content = (
     <div className="relative h-full min-h-0" onPointerMove={isTeacher && contentBox ? sendPointer : undefined}>
       {layout === 'screen' ? (
-        <div className="grid h-full place-items-center overflow-hidden rounded-[var(--r-3)] bg-[#1C1411]">
+        <div className="grid h-full place-items-center overflow-hidden rounded-[var(--r-3)] bg-[#1C1714]">
           {isTeacher ? (
-            <p className="p-6 text-center text-sm text-[#D8C6AE]">{t('Your screen is being shared.', 'شاشتك متشاركة دلوقتي.')}</p>
+            <div className="grid justify-items-center gap-3 p-6 text-center text-[#D8C6AE]">
+              <span className="arch-tile grid h-14 w-12 place-items-center bg-teal/15 text-[#5CC9DB]"><MonitorX className="h-6 w-6" aria-hidden="true" /></span>
+              <p className="text-sm">{t('Your screen is being shared. The learner sees it here.', 'شاشتك متشاركة دلوقتي. الطالب شايفها هنا.')}</p>
+            </div>
           ) : (
-            <VideoTile stream={remoteScreen} name={t('Shared screen', 'الشاشة المشتركة')} className="h-full w-full" note={remoteScreen ? undefined : t('Opening the shared screen…', 'بنفتح الشاشة المشتركة…')} />
+            <VideoTile stream={remoteScreen} name={t('Shared screen', 'الشاشة المشتركة')} fit="contain" className="h-full w-full" note={remoteScreen ? undefined : t('Opening the shared screen…', 'بنفتح الشاشة المشتركة…')} />
           )}
         </div>
       ) : pane === 'lesson' ? (
@@ -553,11 +636,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           ? restored && <TeacherCurriculum initial={restored.slide} publish={room.publish} publishInk={room.publishInk} save={(s) => save({ t: 'slide', state: s })} />
           : <LearnerCurriculum state={room.state} ink={room.ink} />
       ) : pane === 'board' ? (
-        <div className="h-full overflow-hidden rounded-[var(--r-3)] border border-border bg-surface">
+        <div className="h-full overflow-hidden">
           {restored && <Board role={role} sync={board} />}
         </div>
       ) : (
-        <div className="h-full overflow-hidden rounded-[var(--r-3)] border border-border bg-surface">
+        <div className="h-full overflow-hidden">
           {pdf?.url ? (
             /\.pdf$/i.test(pdf.fileId) ? (
               <PdfPages fileUrl={pdf.url} page={pdf.page}
@@ -570,10 +653,20 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
                 <div className="absolute inset-0">{restored && <Board role={role} sync={board} transparent />}</div>
               </div>
             )
+          ) : isTeacher ? (
+            <label
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => { e.preventDefault(); void onUpload(e.dataTransfer.files?.[0]); }}
+              className={cn('m-4 grid h-[calc(100%-2rem)] cursor-pointer place-items-center rounded-[var(--r-3)] border-2 border-dashed border-border p-6 text-center hover:bg-surface-subtle focus-within:outline focus-within:outline-2 focus-within:outline-[var(--focus)]', uploading && 'pointer-events-none opacity-60')}>
+              <span className="grid justify-items-center gap-3">
+                <span className="arch-tile grid h-14 w-12 place-items-center bg-sand-light text-accent ring-1 ring-sand-border"><FileUp className="h-6 w-6" aria-hidden="true" /></span>
+                <span className="text-base font-semibold text-foreground">{uploading ? t('Adding…', 'بنضيف…') : t('Add a PDF or a picture', 'ضيف PDF أو صورة')}</span>
+                <span className="text-sm text-muted-foreground">{t('Drop it here, or click to choose. Both of you can write on it.', 'اسحبه هنا، أو دوس واختار. تقدروا تكتبوا عليه انتو الاتنين.')}</span>
+              </span>
+              <input type="file" accept="application/pdf,image/png,image/jpeg" className="sr-only" onChange={(e) => { void onUpload(e.target.files?.[0]); e.target.value = ''; }} />
+            </label>
           ) : (
-            <div className="grid h-full place-items-center p-6 text-center text-sm text-muted-foreground">
-              {isTeacher ? t('Add a PDF or a picture to show it here.', 'ضيف PDF أو صورة علشان تظهر هنا.') : t('Your teacher has not opened a file yet.', 'المعلم لسه ما فتحش ملف.')}
-            </div>
+            <div className="grid h-full place-items-center p-6 text-center text-sm text-muted-foreground">{t('Your teacher has not opened a file yet.', 'المعلم لسه ما فتحش ملف.')}</div>
           )}
         </div>
       )}
@@ -582,18 +675,20 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   );
 
   const paneTabs = isTeacher && layout === 'content' && (
-    <div role="tablist" aria-label={t('What to show', 'تعرض إيه')} className="flex shrink-0 flex-wrap items-center gap-1">
-      {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')]] as const).map(([p, Icon, label]) => (
-        <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => changeLayout('content', p)}
-          className={cn('flex min-h-11 items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium focus-ring transition-colors duration-[var(--dur-ui)]',
-            pane === p ? 'glass-1 text-teal' : 'text-muted-foreground hover:text-foreground')}>
-          <Icon className="h-4 w-4" aria-hidden="true" />{label}
-        </button>
-      ))}
-      {pane === 'pdf' && (
-        <label className={cn('ms-auto flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium text-teal hover:bg-surface-subtle focus-within:outline focus-within:outline-2 focus-within:outline-[var(--focus)]', uploading && 'pointer-events-none opacity-60')}>
+    <div className="room-ink flex shrink-0 flex-wrap items-center gap-2">
+      <div role="tablist" aria-label={t('What to show', 'تعرض إيه')} className="glass-1 flex items-center gap-0.5 rounded-[var(--r-pill)] p-1">
+        {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')]] as const).map(([p, Icon, label]) => (
+          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => changeLayout('content', p)}
+            className={cn('room-press flex min-h-10 items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium focus-ring',
+              pane === p ? 'bg-[#3A332D] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : 'text-muted-foreground hover:text-foreground')}>
+            <Icon className={cn('h-4 w-4', pane === p && 'text-[#F0B54A]')} aria-hidden="true" />{label}
+          </button>
+        ))}
+      </div>
+      {pane === 'pdf' && pdf?.url && (
+        <label className={cn('room-press ms-auto flex min-h-10 cursor-pointer items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium text-[#5CC9DB] hover:bg-white/[0.08] focus-within:outline focus-within:outline-2 focus-within:outline-[var(--focus)]', uploading && 'pointer-events-none opacity-60')}>
           <FileUp className="h-4 w-4" aria-hidden="true" />
-          {uploading ? t('Adding…', 'بنضيف…') : t('Add a PDF or picture', 'ضيف PDF أو صورة')}
+          {uploading ? t('Adding…', 'بنضيف…') : t('Add another file', 'ضيف ملف تاني')}
           <input type="file" accept="application/pdf,image/png,image/jpeg" className="sr-only" onChange={(e) => { void onUpload(e.target.files?.[0]); e.target.value = ''; }} />
         </label>
       )}
@@ -601,83 +696,107 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     </div>
   );
 
+  const minutesLeft = Math.round((endMs - now) / 60_000);
+  const capsuleName = isTeacher ? learnerName : role === 'guardian_observer' ? t(`Watching · ${learnerName}'s lesson`, `متابعة · حصة ${learnerName}`)
+    : role === 'admin_observer' ? t('Watching quietly · nobody in the lesson can see you', 'متابعة بهدوء · محدش في الحصة شايفك')
+      : entry.teacherName || t('Your lesson', 'حصتك');
+
   return (
     <Shell>
-      <div className="flex h-full flex-col">
-        {/* Top bar: who, how the line is, the time. */}
-        <header className="flex shrink-0 flex-wrap items-center gap-2 px-3 pt-3 sm:px-5">
-          <h1 className={cn('me-auto min-w-0 truncate text-base text-foreground sm:text-lg', isAr ? 'font-bold' : 'font-medium tracking-tight')}>
-            {isTeacher ? learnerName : observer ? t('Lesson', 'الحصة') : t('Your lesson', 'حصتك')}
-          </h1>
-          {isTeacher && guardianHere && <GuardianChip />}
-          {role === 'admin_observer' && <Chip icon={<Eye className="h-4 w-4" aria-hidden="true" />}>{t('Watching quietly', 'متابعة بهدوء')}</Chip>}
-          {role === 'guardian_observer' && <Chip icon={<Eye className="h-4 w-4" aria-hidden="true" />}>{t('Watching only. Camera and mic are off.', 'متابعة بس. الكاميرا والمايك مقفولين.')}</Chip>}
-          {mySide && links[mySide] && <span className="glass-1 rounded-[var(--r-pill)] px-3 py-1.5"><NetworkBadge link={links[mySide]!} /></span>}
-          <Timer startMs={startMs} endMs={endMs} now={now} teacher={isTeacher} />
+      <div className="room-ink relative z-10 flex h-full flex-col">
+        {/* Top capsule: who you are with, your line, the time. */}
+        <header className="relative z-20 flex shrink-0 items-start gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-4">
+          <div className="room-fade flex min-w-0 flex-1 flex-wrap items-center gap-2">
+            <div className="glass-1 flex min-h-11 min-w-0 max-w-full items-center gap-2 rounded-[var(--r-pill)] py-1 pe-1.5 ps-4">
+              <h1 className={cn('min-w-0 truncate text-[0.95rem] text-foreground', isAr ? 'font-bold' : 'font-semibold')}>{capsuleName}</h1>
+              {subject && !observer && <span className="hidden shrink-0 text-sm text-muted-foreground sm:inline">{subject}</span>}
+              {myLink && <span className="shrink-0"><NetworkBadge link={myLink} onDark /></span>}
+              {(isTeacher || observer) && <Timer startMs={startMs} endMs={endMs} now={now} mode={isTeacher ? 'teacher' : 'observer'} />}
+            </div>
+            {isTeacher && guardianHere && <GuardianChip />}
+            {isTeacher && sharing && (
+              <span className="glass-1 flex min-h-11 items-center gap-2 rounded-[var(--r-pill)] py-1 pe-1 ps-3 text-[0.82rem] font-medium text-foreground ring-1 ring-teal/50">
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#12A4BC]" />{t("You're sharing", 'بتشارك شاشتك')}
+                <button type="button" onClick={stopShare} className="room-press min-h-9 rounded-[var(--r-pill)] bg-white/10 px-3 font-semibold hover:bg-white/15 focus-ring">{t('Stop', 'وقّف')}</button>
+              </span>
+            )}
+          </div>
+          {!isTeacher && !observer && <Timer startMs={startMs} endMs={endMs} now={now} mode={kid ? 'kid' : 'learner'} />}
         </header>
 
-        {/* Notices, one line each, never covering the faces. */}
-        <div className="pointer-events-none absolute inset-x-0 top-16 z-30 flex flex-col items-center gap-2 px-3 [&>*]:pointer-events-auto">
-          {fallbackUrl && <FallbackNotice url={fallbackUrl} teacher={isTeacher} variant="banner" />}
-          {reconnecting && <p role="status" className="glass-3 rounded-[var(--r-pill)] px-4 py-2 text-sm text-foreground">{t('Reconnecting…', 'بنرجّع الاتصال…')}</p>}
-          {blame !== 'unknown' && <WeakLinkNotice who={blame} teacher={isTeacher} />}
-          {talkingMuted && <p role="status" className="glass-3 rounded-[var(--r-pill)] px-4 py-2 text-sm font-medium text-foreground">{t("You're talking while muted. Press M to unmute.", 'إنت بتتكلم والمايك مقفول. دوس M علشان تفتحه.')}</p>}
-          {isTeacher && <TeacherFocus awayAt={awayAt} now={now} warningOff={warningOff}
-            onTurnOff={() => { setWarningOff(true); publishEvent({ t: 'focus_warning_off', off: true }); }} />}
-          {role === 'learner' && <LearnerFocus send={send} warningOff={warningOff} />}
-        </div>
+        {/* Notices on wider screens: under the capsule, over the stage's top margin. */}
+        <NoticeSlot notices={notices} className="absolute inset-x-0 top-[4.25rem] z-30 hidden sm:flex" />
 
         {/* Stage */}
-        <main className="relative min-h-0 flex-1 p-3 sm:p-5">
+        <main className={cn('relative min-h-0 flex-1 px-3 pb-2 pt-3 sm:px-5 sm:pt-5', isTeacher && sharing && 'after:pointer-events-none after:absolute after:inset-1 after:rounded-[var(--r-4)] after:ring-2 after:ring-[#12A4BC]/70')}>
           {layout === 'conversation' ? (
-            <div className="relative mx-auto grid h-full max-w-6xl place-items-center">
+            <div key="conversation" className="room-rise grid h-full place-items-center">
               {observer ? (
-                <div className="grid h-full w-full content-center gap-3 sm:grid-cols-2">
-                  {(['teacher', 'student'] as Side[]).map((s) => remoteTile(s, false, 'aspect-video w-full'))}
+                <div className="grid w-full max-w-[min(64rem,calc((100svh-11rem)*1.65))] grid-rows-2 gap-3 sm:grid-cols-2 sm:grid-rows-1 h-full sm:h-auto">
+                  {(['teacher', 'student'] as Side[]).map((s) => remoteTile(s, { arch: true, fit: 'contain', className: 'h-full w-full sm:h-auto sm:aspect-[4/5] [--arch-h:6rem] sm:[--arch-h:12rem]' }))}
                 </div>
               ) : (
-                <>
-                  {remoteTile(watchSides[0], false, 'h-full max-h-full w-full sm:aspect-video sm:h-auto')}
-                  {selfTile(true, 'absolute bottom-3 end-3 aspect-[3/4] w-24 shadow-[var(--shadow-3)] sm:aspect-video sm:w-56')}
-                </>
+                <div className="relative h-full w-full sm:h-auto sm:max-h-full sm:max-w-[min(72rem,calc((100svh-11.5rem)*16/9))] sm:aspect-video">
+                  {remoteTile(face, { arch: true, fit: 'contain', overlay: true, className: 'absolute inset-0 h-full w-full [--arch-h:10rem] sm:[--arch-h:19rem]' })}
+                  {showSelf && (
+                    <CornerPip label={t('Your picture. Drag it to another corner.', 'صورتك. اسحبها لأي ركن.')}>
+                      {selfTile('h-32 w-24 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)] sm:h-auto sm:w-56 sm:aspect-video')}
+                    </CornerPip>
+                  )}
+                </div>
               )}
             </div>
           ) : (
-            <div className="flex h-full min-h-0 flex-col gap-3 lg:flex-row-reverse">
-              <aside className="flex shrink-0 gap-2 lg:w-64 lg:flex-col" aria-label={t('People', 'الموجودين')}>
-                {watchSides.map((s) => remoteTile(s, true, 'aspect-video h-20 sm:h-28 lg:h-auto lg:w-full'))}
-                {selfTile(true, 'aspect-video h-20 sm:h-28 lg:h-auto lg:w-full')}
-              </aside>
-              <section className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <div key="content" className="room-fade flex h-full min-h-0 flex-col gap-3 lg:flex-row">
+              {observer && (
+                <div className="grid shrink-0 grid-cols-2 gap-2 lg:hidden" aria-label={t('People', 'الموجودين')}>
+                  {(['teacher', 'student'] as Side[]).map((s) => remoteTile(s, { arch: true, compact: true, className: 'h-28 w-full [--arch-h:3.5rem]' }))}
+                </div>
+              )}
+              <section className="relative flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                 {paneTabs}
-                <div className="min-h-0 flex-1">{content}</div>
+                <div className="room-paper relative min-h-0 flex-1 overflow-hidden rounded-[var(--r-3)] bg-surface dark:bg-[#24201D] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.85)] ring-1 ring-black/5">
+                  {content}
+                </div>
+                {!observer && (
+                  <div className="lg:hidden">
+                    <CornerPip label={t('Picture of the other person. Drag it to another corner.', 'صورة الطرف التاني. اسحبها لأي ركن.')}>
+                      {remoteTile(face, { arch: true, compact: true, className: 'h-28 w-[5.5rem] [--arch-h:3rem] shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]' })}
+                    </CornerPip>
+                  </div>
+                )}
               </section>
+              <aside className="hidden w-72 shrink-0 flex-col gap-3 lg:flex" aria-label={t('People', 'الموجودين')}>
+                {(observer ? (['teacher', 'student'] as Side[]) : [face]).map((s) => remoteTile(s, { arch: true, overlay: true, className: 'aspect-[4/5] w-full [--arch-h:8rem]' }))}
+                {selfTile('aspect-video w-full')}
+              </aside>
             </div>
           )}
-          {isTeacher && <div className="absolute bottom-4 start-4 z-20"><ReactionStream items={reactions} name={learnerName} /></div>}
+          {isTeacher && layout !== 'conversation' && reactions.length > 0 && (
+            <div className="absolute bottom-4 start-6 z-20 lg:hidden"><ReactionStream items={reactions} name={learnerName} /></div>
+          )}
           {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} />}
         </main>
 
-        <footer className="shrink-0 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1 sm:px-5">
-          <Toolbar observer={observer} muted={muted} cameraOff={cameraOff} hasCamera={hasCamera}
-            onMute={toggleMute} onCamera={toggleCamera}
+        <footer className="room-rise-sm relative z-20 shrink-0 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1 sm:px-5 sm:pb-4">
+          {/* Notices on phones: just above the bar, in the thumb zone. */}
+          <NoticeSlot notices={notices} className="mb-2 sm:hidden" />
+          <Toolbar kind={isTeacher ? 'teacher' : observer ? 'observer' : kid ? 'kid' : 'learner'}
+            muted={muted} cameraOff={cameraOff} hasCamera={hasCamera} onMute={toggleMute} onCamera={toggleCamera}
             recitation={recitation} onRecitation={isTeacher ? toggleRecitation : undefined}
-            middle={(
-              <>
-                {isTeacher && <LayoutSwitch mode={layout} onChange={(m) => changeLayout(m)} screenAvailable={sharing} />}
-                {isTeacher && shareSupported && <ScreenShareButton sharing={sharing} onStart={startShare} onStop={stopShare} />}
-                {role === 'learner' && <ReactionPicker onSend={(kind) => send({ t: 'reaction', kind })} />}
-              </>
-            )}
+            layout={layout} onLayout={isTeacher ? (m) => changeLayout(m) : undefined} sharing={sharing}
+            shareSlot={isTeacher && shareSupported ? <ScreenShareButton sharing={sharing} onStart={startShare} onStop={stopShare} /> : undefined}
+            onReact={role === 'learner' ? (kind) => send({ t: 'reaction', kind }) : undefined}
+            selfHidden={selfHidden} onToggleSelf={!observer && !kid ? () => setSelfHidden((v) => !v) : undefined}
+            soundOff={soundOff} onSound={observer ? () => setSoundOff((v) => !v) : undefined}
             onLeave={() => (isTeacher ? setConfirmEnd(true) : leave())}
-            leaveLabel={isTeacher ? t('End lesson', 'إنهاء الحصة') : t('Leave', 'خروج')}
-            endsLesson={isTeacher} />
+            leaveLabel={isTeacher ? t('End lesson', 'إنهاء الحصة') : role === 'admin_observer' ? t('Leave quietly', 'اخرج بهدوء') : t('Leave', 'خروج')} />
         </footer>
-      </div>
 
-      {remotes.teacher && !isTeacher && <RemoteAudio stream={remotes.teacher} speakerId={ready?.speakerId} label={tapLabel} />}
-      {remotes.student && role !== 'learner' && <RemoteAudio stream={remotes.student} speakerId={ready?.speakerId} label={tapLabel} />}
-      {remoteScreen?.getAudioTracks().length ? <RemoteAudio stream={remoteScreen} speakerId={ready?.speakerId} label={tapLabel} /> : null}
+        {remotes.teacher && !isTeacher && <RemoteAudio stream={remotes.teacher} speakerId={ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} />}
+        {remotes.student && role !== 'learner' && <RemoteAudio stream={remotes.student} speakerId={ready?.speakerId} label={tapLabel} initial={learnerName} muted={soundOff} />}
+        {remoteScreen?.getAudioTracks().length ? <RemoteAudio stream={remoteScreen} speakerId={ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} /> : null}
+      </div>
 
       <Modal isOpen={confirmEnd} onClose={() => setConfirmEnd(false)} title={t('End the lesson for everyone?', 'تنهي الحصة للكل؟')} layerClassName="z-[80]"
         footer={(
@@ -686,27 +805,59 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             <Button onClick={endLesson}>{t('End lesson', 'إنهاء الحصة')}</Button>
           </div>
         )}>
-        <p className="text-sm text-muted-foreground">{t('The room closes for the learner too. Next, you write the lesson report.', 'الغرفة هتتقفل عند الطالب كمان. بعدها هتكتب تقرير الحصة.')}</p>
+        <div className="grid gap-2 text-sm text-muted-foreground">
+          {minutesLeft > 5 && <p className="font-medium text-foreground">{t(`There are ${minutesLeft} minutes left.`, `فاضل ${minutesLeft} دقيقة.`)}</p>}
+          <p>{t('The room closes for the learner too. Next, you write the lesson report.', 'الغرفة هتتقفل عند الطالب كمان. بعدها هتكتب تقرير الحصة.')}</p>
+        </div>
       </Modal>
     </Shell>
   );
 }
 
-/** The room takes the whole window, over the app's own chrome, on paper with the khatam field. */
-function Shell({ children }: { children: React.ReactNode }) {
+/**
+ * The room takes the whole window, over the app's own chrome. Waiting room and over screens stay on paper with the
+ * khatam field; the room itself dims to the espresso stage (it fades in over the paper: "the lights dim").
+ */
+function Shell({ children, paper = false }: { children: React.ReactNode; paper?: boolean }) {
   return (
-    <div className="khatam-field brand-lights fixed inset-0 z-[60] overflow-hidden bg-background text-foreground" data-testid="classroom">
+    <div className={cn('fixed inset-0 z-[60] bg-background text-foreground', paper ? 'khatam-field brand-lights overflow-y-auto' : 'overflow-hidden')} data-testid="classroom">
+      {!paper && <div className="room-stage-bg" aria-hidden="true" />}
       {children}
     </div>
   );
 }
 
-function Chip({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
-  return <span className="glass-1 flex items-center gap-1.5 rounded-[var(--r-pill)] px-3 py-1.5 text-[0.78rem] font-medium text-foreground">{icon}{children}</span>;
+/** "Today 17:00 · starts in 2 min" for the waiting room. */
+function WhenLine({ startMs, now }: { startMs: number; now: number }) {
+  const { t, isAr } = useT();
+  const time = new Date(startMs).toLocaleTimeString(isAr ? 'ar-EG-u-nu-latn' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+  const mins = Math.round((startMs - now) / 60_000);
+  const rel = mins > 0 ? t(`starts in ${mins} min`, `هتبدأ بعد ${mins} دقيقة`) : mins < 0 ? t(`started ${-mins} min ago`, `بدأت من ${-mins} دقيقة`) : t('starting now', 'بتبدأ دلوقتي');
+  return <>{t('Today', 'النهارده')} <bdi>{time}</bdi> · {rel}</>;
+}
+
+/** Zad waves once on a child's end card, then stands still. */
+function EndZad() {
+  const [pose, setPose] = useState<'wave' | 'idle'>('wave');
+  useEffect(() => { const id = window.setTimeout(() => setPose('idle'), 2600); return () => window.clearTimeout(id); }, []);
+  return <ZadRigSvg pose={pose} size={120} glow={false} />;
+}
+
+function NoticeAction({ onClick, children }: { onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" onClick={onClick}
+      className="room-press min-h-9 whitespace-nowrap rounded-[var(--r-pill)] bg-white/10 px-3 text-[0.82rem] font-semibold text-foreground hover:bg-white/15 focus-ring">
+      {children}
+    </button>
+  );
 }
 
 /** Teacher only: a guardian observer is in the room (spec §4). The learner never sees it. */
 function GuardianChip() {
   const { t } = useT();
-  return <Chip icon={<ShieldCheck className="h-4 w-4 text-teal" aria-hidden="true" />}>{t('Guardian is watching', 'ولي الأمر بيتابع')}</Chip>;
+  return (
+    <span className="room-fade glass-1 flex min-h-11 items-center gap-1.5 rounded-[var(--r-pill)] px-3.5 text-[0.82rem] font-medium text-foreground">
+      <ShieldCheck className="h-4 w-4 text-[#5CC9DB]" aria-hidden="true" />{t('Guardian watching', 'ولي الأمر بيتابع')}
+    </span>
+  );
 }
