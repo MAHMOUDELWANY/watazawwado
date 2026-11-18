@@ -13,6 +13,8 @@ import { IntroFilm, GRAIN } from './IntroFilm';
 import { JourneyNav, NextDoor, Reveal, MaskLine, StationHead, EXPO, num, type Station } from './journey/Journey';
 import { LessonStory } from './journey/LessonStory';
 import { Struggles } from './journey/Struggles';
+import { HeroStage } from './journey/HeroStage';
+import { Bezel, Tilt, IslandIcon, PageGrain } from './journey/Premium';
 import { ZadRigSvg } from '../../zad/ZadRig';
 import { ParentQuestions } from './ParentQuestions';
 import { HeroSubjects } from './HeroSubjects';
@@ -159,60 +161,69 @@ export function PublicHomepage() {
       <WelcomeRecitation isAr={!isEn} />
       <JourneyNav stations={STATIONS} isEn={isEn} />
 
-      {/* ─── HERO ─── the brand line, one action, then the film (hook in the first second). */}
+      {/* ─── HERO ─── editorial split: the brand line and one action beside Zad's stage; the film below in a bezel. */}
+      <PageGrain />
       <section className="khatam-field brand-lights relative overflow-hidden">
-        <div className="public-container pt-10 pb-16 lg:pt-16 lg:pb-20">
-          <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
-            <h1 className={`font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-7xl text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}>
-              {/* MK-04: no kicker above the brand line; the subjects live in <title>, the meta description and the line below. */}
-              {isEn ? (
-                <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
-              ) : (
-                <>زادٌ يبقى،<br /><span className="text-ribbon whitespace-nowrap">لك ولأهل بيتك.</span></>
-              )}
-            </h1>
-            {/* The thread of the journey starts here and draws itself once. */}
-            <svg aria-hidden="true" viewBox="0 0 300 20" className="mx-auto mt-3 w-48 sm:w-64 h-4 overflow-visible">
-              <motion.path d="M2 12 C 70 2, 120 20, 170 10 S 260 4, 298 12" fill="none" stroke="#E5A93C" strokeWidth="2.5" strokeLinecap="round" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: EXPO, delay: 0.3 }} />
-            </svg>
-            <p className="mt-5 font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-2xl mx-auto">
-              {isEn
-                ? 'Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask.'
-                : 'اختار معلّمك من ملفات حقيقية. وبعد كل حصة، نبلّغك كيف كانت قبل ما تسأل.'}
-            </p>
-            <HeroSubjects isEn={isEn} className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto" />
+        <div className="public-container pt-8 pb-16 lg:pt-14 lg:pb-24">
+          <div className="grid items-center gap-6 lg:gap-10 lg:grid-cols-[1.1fr_1fr]">
+            <div className="text-center lg:text-start animate-fade-in-up">
+              <h1 className={`font-editorial text-[2.7rem] leading-[1.08] sm:text-6xl lg:text-[5.2rem] text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}>
+                {/* MK-04: no kicker above the brand line; the subjects live in <title>, the meta description and the line below. */}
+                {isEn ? (
+                  <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
+                ) : (
+                  <>زادٌ يبقى،<br /><span className="text-ribbon whitespace-nowrap">لك ولأهل بيتك.</span></>
+                )}
+              </h1>
+              {/* The thread of the journey starts here and draws itself once. */}
+              <svg aria-hidden="true" viewBox="0 0 300 20" className="mx-auto lg:mx-0 mt-4 w-48 sm:w-72 h-4 overflow-visible">
+                <motion.path d="M2 12 C 70 2, 120 20, 170 10 S 260 4, 298 12" fill="none" stroke="#E5A93C" strokeWidth="2.5" strokeLinecap="round" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: EXPO, delay: 0.3 }} />
+              </svg>
+              <p className="mt-5 font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-xl mx-auto lg:mx-0">
+                {isEn
+                  ? 'Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask.'
+                  : 'اختار معلّمك من ملفات حقيقية. وبعد كل حصة، نبلّغك كيف كانت قبل ما تسأل.'}
+              </p>
+              <HeroSubjects isEn={isEn} className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto lg:mx-0" />
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
-              <PublicButton
-                variant="primary"
-                size="lg"
-                id="hero-get-started-btn"
-                data-tour="header-get-started-cta"
-                onClick={trial}
-                className="liquid-cta w-full sm:w-auto shadow-lg shadow-primary/25"
-              >
-                <TrialCtaLabel isEn={isEn} />
-              </PublicButton>
-              <a href="#st-child" className="btn-glass px-6 py-3 rounded-xl">
-                {isEn ? 'Start the journey' : 'ابدأ الرحلة'}
-              </a>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-stretch sm:items-center">
+                <PublicButton
+                  variant="primary"
+                  size="lg"
+                  id="hero-get-started-btn"
+                  data-tour="header-get-started-cta"
+                  onClick={trial}
+                  className="group liquid-cta w-full sm:w-auto !rounded-full ps-7 pe-2.5 shadow-[0_18px_40px_-14px_rgba(197,31,36,0.6)] active:scale-[0.98] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+                >
+                  <TrialCtaLabel isEn={isEn} />
+                  <IslandIcon isEn={isEn} />
+                </PublicButton>
+                <a href="#st-child" className="group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 min-h-12 font-bold text-foreground ring-1 ring-border bg-background/60 hover:ring-[#E5A93C] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98]">
+                  {isEn ? 'Start the journey' : 'ابدأ الرحلة'}
+                </a>
+              </div>
+              <ul className="mt-6 flex flex-wrap justify-center lg:justify-start items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+                {[
+                  { en: '30 minutes, free', ar: '٣٠ دقيقة مجاناً' },
+                  { en: 'No card needed', ar: 'بدون بطاقة بنكية' },
+                  { en: 'Choose a male or female teacher', ar: 'تختار معلّم أو معلّمة' },
+                ].map((point) => (
+                  <li key={point.en} className="flex items-center gap-1.5 font-medium">
+                    <Check className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                    <span>{t(point)}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="mt-6 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-              {[
-                { en: '30 minutes, free', ar: '٣٠ دقيقة مجاناً' },
-                { en: 'No card needed', ar: 'بدون بطاقة بنكية' },
-                { en: 'Choose a male or female teacher', ar: 'تختار معلّم أو معلّمة' },
-              ].map((point) => (
-                <li key={point.en} className="flex items-center gap-1.5 font-medium">
-                  <Check className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
-                  <span>{t(point)}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="order-first lg:order-none -mt-2 lg:mt-0">
+              <HeroStage isEn={isEn} />
+            </div>
           </div>
 
-          <Reveal className="mt-12 lg:mt-16" y={60}>
-            <IntroFilm isEn={isEn} onTrial={trial} />
+          <Reveal className="mt-14 lg:mt-20 max-w-5xl mx-auto" y={60}>
+            <Bezel radius="2.6rem" core="overflow-hidden">
+              <IntroFilm isEn={isEn} onTrial={trial} />
+            </Bezel>
           </Reveal>
           <NextDoor to="st-child" label={STATIONS[0].label} isEn={isEn} />
         </div>
@@ -244,7 +255,8 @@ export function PublicHomepage() {
         <div className="mt-12 max-w-5xl mx-auto grid gap-5 sm:grid-cols-2">
           {TEACHERS.map((tc, k) => (
             <Reveal key={tc.src} delay={k * 0.08}>
-              <div className="group h-full flex items-center gap-5 rounded-[1.75rem] border border-border bg-card p-4 sm:p-5 shadow-[0_18px_40px_-30px_rgba(28,20,17,0.45)] transition-transform duration-500 hover:-translate-y-1">
+              <Tilt className="h-full">
+              <Bezel radius="2rem" className="h-full" core="group flex items-center gap-5 p-4 sm:p-6">
                 <span className="relative shrink-0">
                   <span aria-hidden="true" className="absolute -inset-1.5 rounded-t-full rounded-b-3xl bg-[conic-gradient(from_180deg,#C51F24,#E5A93C,#087D91,#C51F24)] opacity-60 blur-md transition-opacity duration-500 group-hover:opacity-100" />
                   <img src={tc.src} alt={t(tc.name)} loading="lazy" decoding="async" className="relative w-24 h-28 sm:w-28 sm:h-32 rounded-t-full rounded-b-2xl object-cover" />
@@ -252,9 +264,10 @@ export function PublicHomepage() {
                 <div className="min-w-0">
                   <p className="flex items-center gap-1.5 font-editorial font-bold text-xl text-foreground">{t(tc.name)}<BadgeCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" /></p>
                   <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{t(tc.fact)}</p>
-                  <Link to="/about" className="mt-2 inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-primary">{isEn ? 'Full profile' : 'الملف كامل'}<Arrow className="w-3.5 h-3.5" aria-hidden="true" /></Link>
+                  <Link to="/about" className="mt-2 inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-primary">{isEn ? 'Full profile' : 'الملف كامل'}<Arrow className="w-3.5 h-3.5" strokeWidth={1.75} aria-hidden="true" /></Link>
                 </div>
-              </div>
+              </Bezel>
+              </Tilt>
             </Reveal>
           ))}
         </div>
@@ -264,8 +277,8 @@ export function PublicHomepage() {
             { en: 'Nothing is recorded', ar: 'مفيش تسجيل للحصص' },
             { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' },
           ].map((f, k) => (
-            <Reveal as="li" key={f.en} delay={0.1 + k * 0.07} className="h-full flex items-start gap-2.5 rounded-2xl border border-border bg-surface-warm/60 p-4 text-sm font-semibold text-foreground">
-                <ShieldCheck className="w-5 h-5 shrink-0 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" />{t(f)}
+            <Reveal as="li" key={f.en} delay={0.1 + k * 0.07} className="h-full flex items-start gap-2.5 rounded-2xl ring-1 ring-[#087D91]/15 bg-[#087D91]/[0.04] p-4 text-sm font-semibold text-foreground">
+                <ShieldCheck className="w-5 h-5 shrink-0 text-[#087D91] dark:text-[#12A4BC]" strokeWidth={1.5} aria-hidden="true" />{t(f)}
               </Reveal>
           ))}
         </ul>
@@ -312,7 +325,7 @@ export function PublicHomepage() {
                 ))}
               </ul>
               <Reveal delay={0.15}>
-                <div className="rounded-[1.5rem] border border-[#F6D58E]/20 bg-[#FAF7F2]/[0.05] p-6 sm:p-8 backdrop-blur-sm">
+                <Bezel dark radius="2rem" core="p-6 sm:p-8">
                   <ol className="relative space-y-7 ps-14">
                     <span aria-hidden="true" className="absolute top-4 bottom-4 start-[1.2rem] w-px bg-[#E5A93C]/20" />
                     <motion.span aria-hidden="true" className="absolute top-4 bottom-4 start-[1.2rem] w-px bg-[#E5A93C] origin-top" initial={reduce ? false : { scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true, amount: 0.6 }} transition={{ duration: 1.4, ease: EXPO }} />
@@ -324,10 +337,11 @@ export function PublicHomepage() {
                       </li>
                     ))}
                   </ol>
-                  <PublicButton variant="primary" size="lg" onClick={trial} className="liquid-cta mt-8 w-full">
+                  <PublicButton variant="primary" size="lg" onClick={trial} className="group liquid-cta mt-8 w-full !rounded-full ps-7 pe-2.5 active:scale-[0.98] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]">
                     <TrialCtaLabel isEn={isEn} />
+                    <IslandIcon isEn={isEn} />
                   </PublicButton>
-                </div>
+                </Bezel>
               </Reveal>
             </div>
             <NextDoor to="st-provisions" label={STATIONS[4].label} isEn={isEn} dark />
@@ -343,17 +357,20 @@ export function PublicHomepage() {
           ribbon={isEn ? 'in the bag.' : 'في الشنطة.'}
           sub={isEn ? '8 subjects, your own teacher.' : '٨ مواد، ومعلم لك أنت.'}
         />
-        <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4 max-w-6xl mx-auto">
+        <ul className="mt-14 grid gap-5 md:grid-cols-6 md:auto-rows-[minmax(0,auto)] max-w-6xl mx-auto">
           {TRACKS.map((tr, k) => {
             const rate = Math.min(...tr.links.map((l) => findSubjectPage(l.slug)?.rateUsd ?? 99));
             return (
-              <Reveal as="li" key={tr.title.en} delay={k * 0.08} className="h-full group h-full flex flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[0_18px_40px_-28px_rgba(28,20,17,0.45)] transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_28px_50px_-28px_rgba(28,20,17,0.55)]">
-                  <div className="khatam-window relative grid place-items-center h-40 overflow-hidden" style={{ background: `radial-gradient(70% 80% at 50% 30%, ${tr.tone[0]}, ${tr.tone[1]})` }}>
+              <Reveal as="li" key={tr.title.en} delay={k * 0.08} className={`list-none ${k === 0 ? 'md:col-span-4 md:row-span-2' : k === 1 ? 'md:col-span-2 md:row-span-2' : 'md:col-span-3'}`}>
+                <Bezel radius="2rem" className="h-full" core={`group flex h-full overflow-hidden ${k === 0 ? 'flex-col sm:flex-row' : k === 1 ? 'flex-col' : 'flex-col sm:flex-row'}`}>
+                  <div className={`khatam-window relative grid place-items-center overflow-hidden shrink-0 ${k === 0 ? 'h-56 sm:h-auto sm:w-1/2' : k === 1 ? 'h-56' : 'h-40 sm:h-auto sm:w-2/5'}`} style={{ background: `radial-gradient(70% 80% at 50% 30%, ${tr.tone[0]}, ${tr.tone[1]})` }}>
                     <span aria-hidden="true" className="absolute inset-0 m-auto w-28 h-28 rounded-full bg-[#F6D58E]/20 blur-2xl transition-transform duration-700 group-hover:scale-150" />
-                    <span className="relative transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3" aria-hidden="true">{tr.emblem}</span>
+                    <span className={`relative transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110 group-hover:-rotate-3 ${k === 0 ? 'scale-150' : ''}`} aria-hidden="true">{tr.emblem}</span>
+                    {/* Light sweep across the portal on hover. */}
+                    <span aria-hidden="true" className="absolute inset-y-0 -start-1/2 w-1/3 bg-gradient-to-r from-transparent via-[#FFF1C9]/25 to-transparent skew-x-[-18deg] transition-transform duration-[1200ms] ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-[400%] rtl:group-hover:-translate-x-[400%]" />
                   </div>
-                  <div className="flex flex-1 flex-col p-5 sm:p-6">
-                    <h3 className="font-editorial font-bold text-2xl text-foreground">{t(tr.title)}</h3>
+                  <div className={`flex flex-1 flex-col ${k === 0 ? 'p-6 sm:p-9' : 'p-5 sm:p-6'}`}>
+                    <h3 className={`font-editorial font-bold text-foreground ${k === 0 ? 'text-3xl sm:text-4xl' : 'text-2xl'}`}>{t(tr.title)}</h3>
                     <p className="mt-2 text-muted-foreground leading-relaxed">{t(tr.body)}</p>
                     <ul className="mt-4 flex flex-wrap gap-2">
                       {tr.links.map((l) => (
@@ -368,6 +385,7 @@ export function PublicHomepage() {
                       {isEn ? <>From <b className="text-foreground">${rate}</b> an hour</> : <>من <b className="text-foreground">{rate}$</b> للساعة</>}
                     </p>
                   </div>
+                </Bezel>
                 </Reveal>
             );
           })}

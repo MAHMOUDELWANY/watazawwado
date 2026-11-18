@@ -4,6 +4,19 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage premium pass (2026-11-18)
+
+- Owner: visuals still not premium; think like a senior. Applied the `soft-skill` rules in our palette (editorial
+  luxury: cream/espresso, serif display, grain): `journey/Premium.tsx` (double-bezel cards, pointer tilt, island
+  trailing icon on primary buttons, page grain, eyebrow pill).
+- Hero is an editorial split: big brand line beside `journey/HeroStage.tsx` (3D Zad on a turning gold khatam
+  medallion, the four subjects orbiting on an ellipse in front of and behind him, mouse parallax in layers); the film
+  sits below in a bezel.
+- Station 01 cards became a Z-axis cascade (turned, offset, drifting at different speeds on scroll; plain stack on
+  phones). Subjects became an asymmetric bento (the Quran tile largest) with a light sweep on hover. Teachers,
+  questions card and offer card in bezels.
+- Checks: type check, related tests 28/28, build, desktop + phone AR light, EN dark.
+
 ### Homepage v4: the page is a journey (2026-11-18)
 
 - Owner: no animation, lost, "don't know what's next", weak organisation and visuals. Direction:

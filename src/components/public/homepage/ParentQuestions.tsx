@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import { Link } from '../LangLink';
 import { findSubjectPage, SUBJECT_PAGES_PATH } from '../../../data/subjectPages';
+import { Bezel } from './journey/Premium';
 
 /**
  * Self-persuasion instead of claims (docs/design/LANDING-LESSONS-2026-11-18.md): three short questions the parent
@@ -64,7 +65,7 @@ export function ParentQuestions({ isEn, onTrial }: { isEn: boolean; onTrial: () 
           <p className="mt-4 text-muted-foreground text-base sm:text-lg">{isEn ? 'Three taps. You answer, we listen.' : 'تلات ضغطات. انت تجاوب، واحنا نسمع.'}</p>
         </div>
 
-        <div className="mt-10 max-w-3xl mx-auto rounded-[2rem] border border-border bg-card p-5 sm:p-8 shadow-[0_24px_60px_-40px_rgba(28,20,17,0.55)]">
+        <Bezel radius="2.25rem" className="mt-10 max-w-3xl mx-auto" core="p-5 sm:p-9">
           {/* Progress: three segments. */}
           <div className="flex gap-2" aria-hidden="true">
             {QUESTIONS.map((_, k) => <span key={k} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${k < step ? 'bg-[#E5A93C]' : 'bg-border'}`} />)}
@@ -82,7 +83,7 @@ export function ParentQuestions({ isEn, onTrial }: { isEn: boolean; onTrial: () 
                         key={o.id}
                         type="button"
                         onClick={() => setAnswers((a) => [...a, o.id])}
-                        className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-5 py-4 min-h-14 text-start font-bold text-foreground transition-[border-color,transform,background-color] duration-200 hover:border-[#E5A93C] hover:bg-[#E5A93C]/[0.06] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]"
+                        className="group flex items-center justify-between gap-3 rounded-2xl ring-1 ring-border bg-background px-5 py-4 min-h-14 text-start font-bold text-foreground transition-[box-shadow,transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:ring-[#E5A93C] hover:bg-[#E5A93C]/[0.06] hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]"
                       >
                         {t(o.label)}
                         <Arrow className="w-4 h-4 shrink-0 text-[#B4552F]" aria-hidden="true" />
@@ -126,7 +127,7 @@ export function ParentQuestions({ isEn, onTrial }: { isEn: boolean; onTrial: () 
               )}
             </AnimatePresence>
           </div>
-        </div>
+        </Bezel>
 
         {/* Not a parent of a young child? One small door each, lower in weight (one avatar first). */}
         <div className="mt-8 max-w-3xl mx-auto text-center text-sm text-muted-foreground">
