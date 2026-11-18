@@ -92,9 +92,9 @@ checklist.
 |---|---|
 | Publish approved legal text (RULES.md, terms, privacy, safety, FAQ, teacher agreement) | in progress |
 | Fix presence on tab crash (heartbeats) | in progress |
-| Deep logic and architecture review (read-only report) | in progress |
-| Design research and brief (`docs/classroom/DESIGN-BRIEF.md`) | in progress |
-| Redesign the room and observer views | todo |
-| Fix review findings | todo |
+| Deep logic and architecture review (read-only report) | done: docs/classroom/REVIEW-2026-11-18.md (2 blockers, 6 high, 8 medium, 4 low) |
+| Design research and brief (`docs/classroom/DESIGN-BRIEF.md`) | done |
+| Redesign the room and observer views | in progress (room UI; admin pages) |
+| Fix review findings | in progress (engine + board first; page and server fixes after the redesign and presence fix) |
 | Real two-browser scenarios on a local server with QA accounts and fake media | todo |
 | Report + owner's live checklist (`docs/classroom/TEST-REPORT.md`) | todo |
