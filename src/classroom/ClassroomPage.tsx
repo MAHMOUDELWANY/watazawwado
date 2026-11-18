@@ -26,6 +26,8 @@ import { LearnerFocus, TeacherFocus } from './parts/FocusNotice';
 import { NetworkBadge, WeakLinkNotice } from './parts/NetworkBadge';
 import { ScreenShareButton, canShareScreen } from './parts/ScreenShare';
 import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
+import { FallbackNotice } from './parts/FallbackNotice';
+import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
 
 type Pane = 'lesson' | 'board' | 'pdf';
 type Over = 'ended' | 'closed' | 'superseded' | 'failed';
@@ -95,6 +97,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  // Task 12: this side's Zoom link, only after the room failed on our side.
+  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
 
   const engineRef = useRef<MediaEngine | null>(null);
   const batcher = useRef<ReturnType<typeof createTimelineBatcher> | null>(null);
@@ -154,8 +158,21 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     const engine = createEngine();
     engineRef.current = engine;
     let live = true;
+    const detector = createFallbackDetector({
+      side: mySide,
+      history: iceHistoryFor(bookingId),
+      report: (kind, detail) => {
+        void fetch(`/api/classroom/${encodeURIComponent(bookingId)}/incident`, {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
+          body: JSON.stringify({ kind, detail }),
+        }).then((r) => r.json()).then((b) => { if (live && typeof b?.fallback?.url === 'string') setFallbackUrl(b.fallback.url); }, () => {});
+      },
+    });
+    const offError = engine.on('error', (e) => { if (live) detector.onError(e); });
     const offState = engine.on('state', (s) => {
       if (!live) return;
+      detector.onState(s);
       setReconnecting(s === 'reconnecting');
       if (s === 'reconnecting') totals.current.reconnects += 1;
       if (s === 'superseded') setOver('superseded');
@@ -175,6 +192,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       }
       setRestored(snap?.snapshot ?? {});
       try {
+        detector.start();
         await engine.join({ bookingId, ticket, iceServers: entry.iceServers, role });
         if (!observer && local.getTracks().length) await engine.publishCamera(local);
         if (recitationRef.current) await engine.setRecitationMode(true);
@@ -189,6 +207,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     window.addEventListener('pagehide', onHide);
     return () => {
       live = false;
+      detector.stop();
+      offError();
       offState();
       window.removeEventListener('pagehide', onHide);
       if (role === 'guardian_observer') publishEvent({ t: 'observer', kind: 'guardian', present: false });
@@ -469,6 +489,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           <div className="glass-2 arch-top grid w-full max-w-md justify-items-center gap-4 px-6 pb-8 pt-16 text-center">
             <h1 className={cn('font-editorial text-2xl text-foreground', isAr ? 'font-bold' : 'font-medium tracking-tight')}>{copy[over].title}</h1>
             <p className="text-sm text-muted-foreground">{copy[over].body}</p>
+            {over === 'failed' && fallbackUrl && <FallbackNotice url={fallbackUrl} teacher={isTeacher} variant="screen" />}
             <div className="flex flex-wrap justify-center gap-2">
               {again && <Button onClick={onRejoin}><RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{over === 'superseded' ? t('Use this device', 'كمّل من هنا') : t('Try again', 'جرّب تاني')}</Button>}
               <Link to={home} className="inline-flex h-11 items-center rounded-xl px-4 text-sm font-medium text-teal underline underline-offset-4 focus-ring">{isTeacher ? t('Back to today', 'رجوع للنهارده') : t('My lessons', 'حصصي')}</Link>
@@ -593,6 +614,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
 
         {/* Notices, one line each, never covering the faces. */}
         <div className="pointer-events-none absolute inset-x-0 top-16 z-30 flex flex-col items-center gap-2 px-3 [&>*]:pointer-events-auto">
+          {fallbackUrl && <FallbackNotice url={fallbackUrl} teacher={isTeacher} variant="banner" />}
           {reconnecting && <p role="status" className="glass-3 rounded-[var(--r-pill)] px-4 py-2 text-sm text-foreground">{t('Reconnecting…', 'بنرجّع الاتصال…')}</p>}
           {blame !== 'unknown' && <WeakLinkNotice who={blame} teacher={isTeacher} />}
           {talkingMuted && <p role="status" className="glass-3 rounded-[var(--r-pill)] px-4 py-2 text-sm font-medium text-foreground">{t("You're talking while muted. Press M to unmute.", 'إنت بتتكلم والمايك مقفول. دوس M علشان تفتحه.')}</p>}

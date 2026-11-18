@@ -6,6 +6,7 @@ import { authedJson } from '../lib/authedJson';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { Card } from '../components/ui/Card';
 import type { RoomRole } from './engine/types';
+import { FallbackNotice } from './parts/FallbackNotice';
 
 // The room (engine, board, player) is its own chunk; this gate stays tiny inside each app.
 const ClassroomPage = lazy(() => import('./ClassroomPage'));
@@ -36,7 +37,7 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
   // Only parent mode may watch: a child's own app never asks to observe.
   const observe = portal === 'student' && search.get('observe') === '1';
   const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { error: string } | null>(null);
+  const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { error: string; zoomUrl?: string } | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -47,7 +48,11 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
       .catch((e: any) => {
         if (!live) return;
         if (e?.status === 503) setResult({ fallback: true });
-        else setResult({ error: e?.message || t('The lesson room could not open.', 'غرفة الحصة ما فتحتش.') });
+        else {
+          // Task 12: the media service failed on our side; the server sent this side's Zoom link when it is open.
+          const zoomUrl = (e?.data?.fallback ?? e?.fallback)?.url;
+          setResult({ error: e?.message || t('The lesson room could not open.', 'غرفة الحصة ما فتحتش.'), ...(typeof zoomUrl === 'string' ? { zoomUrl } : {}) });
+        }
       });
     return () => { live = false; };
   }, [id, portal, observe, attempt]);
@@ -58,6 +63,7 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
     return (
       <Card className="mx-auto mt-10 grid max-w-md gap-3 p-6 text-center">
         <p role="alert" className="text-base font-semibold text-foreground">{result.error}</p>
+        {result.zoomUrl && <FallbackNotice url={result.zoomUrl} teacher={portal === 'teacher'} variant="screen" />}
         <Link to={HOME[portal]} className="text-sm text-teal underline underline-offset-4">{t('Back to my lessons', 'رجوع لحصصي')}</Link>
       </Card>
     );

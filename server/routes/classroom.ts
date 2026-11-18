@@ -7,6 +7,7 @@ import { ROOM_CLOSE_GRACE_MIN, remainingMs, roomHardCloseMs, roomJoinState } fro
 import { isRoomEvent, type RoomEvent } from '../../src/lib/roomEvents.js';
 import { recordTeacherLateness } from '../classroom/lateness.js';
 import { alertTeacherIfNeeded, lessonFailedForSide } from '../classroom/qualityAlerts.js';
+import { CLIENT_INCIDENT_KINDS, recordIncident, type IncidentKind } from '../classroom/incidents.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 
 /**
@@ -30,6 +31,7 @@ const MAX_EVENTS_BODY = 256 * 1024;
 const EVENT_SKEW_MS = 10 * 60_000;
 /** Quality totals above this (6 h) are cut: no lesson is longer. */
 const MAX_QUALITY_SECONDS = 6 * 3600;
+const MAX_INCIDENT_DETAIL = 2000;
 
 // Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
 export const CLASSROOM_FILES_BUCKET = 'classroom-files';
@@ -110,19 +112,32 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     if (error) throw new Error(`lesson_room_state: ${error.message}`);
   };
 
-  const fail = (res: any, err: unknown, where: string) => {
+  const fail = (res: any, err: unknown, where: string, extra: object = {}) => {
     if (err instanceof CloudflareRealtimeError) {
       console.error(`[classroom ${where}] Cloudflare`, err.status, err.errorCode);
       // Never forward the provider message: only our wording and its error code.
-      return res.status(502).json({ error: 'The media service did not answer. Please try again.', code: err.errorCode });
+      return res.status(502).json({ error: 'The media service did not answer. Please try again.', code: err.errorCode, ...extra });
     }
     console.error(`[classroom ${where}]`, err);
     return res.status(500).json({ error: 'The lesson room is not available right now.' });
   };
 
-  const enter = (portal: 'teacher' | 'student') => async (req: any, res: any) => {
+  /** Task 12: a Cloudflare error on our side is an incident for the caller's side (observers have none). */
+  const providerIncident = async (client: any, err: unknown, bookingId: string, role: RoomRole | null) => {
+    if (!(err instanceof CloudflareRealtimeError) || !role || isObserver(role) || !client) return {};
     try {
-      const client = deps.getClient();
+      return await recordIncident(client, { bookingId, kind: 'provider_error', side: attendanceRole(role), detail: { code: err.errorCode, status: err.status } }, now());
+    } catch (e) {
+      console.error('[classroom] provider incident', e);
+      return {};
+    }
+  };
+
+  const enter = (portal: 'teacher' | 'student') => async (req: any, res: any) => {
+    let incidentRole: RoomRole | null = null;
+    let client: any = null;
+    try {
+      client = deps.getClient();
       const cf = deps.cloudflare();
       const key = secret();
       if (!client || !cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
@@ -152,7 +167,10 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (access.ok === false) return res.status(access.status).json({ error: access.reason });
 
       const role = access.role;
+      incidentRole = role;
       const hardClose = roomHardCloseMs(booking);
+      // Task 12: asked before anything is written, so a media service that is down stores no join (Review Focus 5).
+      const iceServers = await cf.iceServers(Math.max(60, Math.ceil((hardClose - now()) / 1000)));
       const ticketPayload: TicketPayload = { bookingId: id, role, userId: requester.userId, exp: hardClose, joinId: crypto.randomUUID(), studentId: booking.student_id };
       const at = new Date(now()).toISOString();
       await saveSeat(client, id, await loadSnapshot(client, id), seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
@@ -178,7 +196,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         if (error) throw new Error(`admin_observations: ${error.message}`);
       }
 
-      const iceServers = await cf.iceServers(Math.max(60, Math.ceil((hardClose - now()) / 1000)));
       const start = new Date(booking.scheduled_start).getTime();
       return res.json({
         role,
@@ -191,7 +208,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         learnerName: family.find((l) => l.id === booking.student_id)?.name || booking.contact_name || null,
       });
     } catch (err) {
-      return fail(res, err, 'enter');
+      return fail(res, err, 'enter', await providerIncident(client, err, String(req.params.id || ''), incidentRole));
     }
   };
 
@@ -227,8 +244,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
   /** Media calls re-check the booking and seat every time (liveSeat). */
   const rtc = (action: 'session' | 'tracks' | 'renegotiate' | 'update' | 'close') => async (req: any, res: any) => {
+    const client = deps.getClient();
     try {
-      const client = deps.getClient();
       const cf = deps.cloudflare();
       if (!client || !cf?.configured) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
@@ -272,6 +289,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (action === 'update') return res.json(await cf.tracksUpdate(mine.sessionId, { tracks }));
       return res.json(await cf.tracksClose(mine.sessionId, { tracks, sessionDescription, force: body.force === true }));
     } catch (err) {
+      await providerIncident(client, err, req.roomTicket.bookingId, req.roomTicket.role);
       return fail(res, err, `rtc/${action}`);
     }
   };
@@ -446,6 +464,29 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ ok: true });
     } catch (err) {
       return fail(res, err, 'precheck');
+    }
+  });
+
+  // Task 12: the client detector says the room failed for this side. The answer carries the side's Zoom link while
+  // its Zoom window is open. Observers get nothing and store nothing.
+  app.post('/api/classroom/:id/incident', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      const kind = req.body?.kind as IncidentKind;
+      if (!CLIENT_INCIDENT_KINDS.includes(kind)) return res.status(400).json({ error: 'kind must be connect_timeout, ice_failed or engine_error.' });
+      const raw = req.body?.detail;
+      const detail = raw && typeof raw === 'object' && !Array.isArray(raw) && JSON.stringify(raw).length <= MAX_INCIDENT_DETAIL ? raw : {};
+      if (isObserver(t.role)) return res.json({ fallback: null });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (!['confirmed', 'rescheduled'].includes(booking.status)) return res.status(409).json({ error: 'This lesson is not active.', ended: true });
+      // Same checks as liveSeat, but a superseded or failed device may still report: it is the one that failed.
+      if (t.role === 'teacher' ? booking.teacher_id !== t.userId : booking.student_id !== t.studentId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
+      return res.json(await recordIncident(client, { bookingId: t.bookingId, kind, side: attendanceRole(t.role), detail }, now()));
+    } catch (err) {
+      return fail(res, err, 'incident');
     }
   });
 
