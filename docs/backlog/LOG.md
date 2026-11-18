@@ -1332,3 +1332,15 @@ professional, call it Zad instead of Zadi, colours that express our identity."
   hours so families cannot choose him; no female teacher holds a Quran licence (P4-003, P4-004).
 - Top 10 proposals ranked in the findings file and added to `REVIEW-ISSUES.md` section H for the owner's pick.
 - FLOWS.md: 17 rows annotated with the P4 journey and finding ids.
+
+## 2026-11-18 — Homepage v5: film v2, Zad guides the page, real portal screens (owner: "ابهرني المره دي")
+- Film v2: new eleven_v4 voice in both languages (8 lines, one emotion each, full diacritics), 3 takes each, take 1
+  live; word cues from Scribe forced alignment. Eight scenes with medals, real portal screens, Zad in each; record mode
+  `?film=record` for the ad export. Doc: `docs/marketing/HOMEPAGE-INTRO-FILM.md`.
+- Zad walks the page (`journey/ZadGuide.tsx`): a pose and a short line per station; tap opens the learning guide. The
+  floating chat button is hidden on the homepage only (`LearningGuide hideLauncher`).
+- Removed: "tell us about your child" (ParentQuestions) and the teacher profiles. Struggles are learner-neutral.
+- The lesson, and after: real student-portal screens (sample learner) with 3D badges lifting out; link to `/badges`.
+- Subjects show the academy's 3D medals (hero orbit, tracks, struggles) instead of letter glyphs.
+- Start small: three medal steps on one gold line, four promises, one button.
+- Built on a preview branch first: the local build ran out of memory (OneDrive holding ~28 GB of commit).
