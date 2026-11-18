@@ -65,7 +65,7 @@ export const V15Ask: React.FC = () => {
   const f = useCurrentFrame();
   return [
     <S1 />,
-    <Q n={2} k="1" color={TEAL_DEEP} q="“What’s one new word you learned today?”" why="One word is easy to answer. It also tells you what the lesson was about." />,
+    <Q n={2} k="1" color={TEAL_DEEP} q="“What’s one thing today’s ayah asks us to do?”" why="Not just the words. Pick one small thing and try it together this week." />,
     <Q n={3} k="2" color={COPPER} q="“Can you read me one line, the way your teacher does?”" why="Kids love being the teacher. You get to hear the progress for yourself." />,
     <Q n={4} k="3" color={CRIMSON} q="“What did your teacher say you did well?”" why="It keeps the good part of class fresh, and it shows you care about more than the mistakes." />,
     <S5 />,
