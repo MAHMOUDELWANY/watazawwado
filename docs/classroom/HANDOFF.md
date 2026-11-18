@@ -34,10 +34,10 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 8 | Whiteboard, PDF, Arabic keyboard | done (bucket migration 20261118000000 not applied; signed direct uploads up to 20 MB) | acc5bbd6, 25957e0c |
 | 9 | The room screen | done, NOT yet seen in a browser (needs migration applied + a booking in its window) | 092e7f08 |
 | 10 | Attendance and teacher punctuality | done (gate + admin page mounted; rejoin-after-leave counted) | 6c8b10fb, 8133b71d, 916c810e |
-| 11 | Quality records and alerts | in progress | |
-| 12 | Automatic Zoom fallback | in progress | |
-| 13 | Observers and rollout switch | todo | |
-| 14 | Room becomes the lesson link | todo | |
+| 11 | Quality records and alerts | done | eafe9d67 |
+| 12 | Automatic Zoom fallback | done (manual block-Cloudflare check still to do in a browser) | 4fac2e1f |
+| 13 | Observers and rollout switch | in progress | |
+| 14 | Room becomes the lesson link | in progress | |
 | 15 | Rules, legal (owner approves first), security review, ship off, pilot | todo | |
 
 ## Notes for the next tasks (learned while building)
