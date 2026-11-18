@@ -7,7 +7,7 @@ const read = (p: string) => fs.readFileSync(p, 'utf8');
 
 describe('ready to measure content (2026-10-20 external research review)', () => {
   it('homepage counts the 8 bookable subjects (RULES.md §2b)', () => {
-    const home = read('src/components/public/homepage/PublicHomepage.tsx');
+    const home = read('src/components/public/homepage/Tracks.tsx');
     assert.ok(home.includes("'8 subjects, your own teacher.'") && home.includes('٨ مواد'));
     assert.ok(!home.includes('14 subjects'));
   });

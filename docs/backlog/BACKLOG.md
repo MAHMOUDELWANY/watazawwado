@@ -389,6 +389,121 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
 
 ---
 
+## TU: Teacher onboarding and University (owner request 2026-11-17)
+
+Content plan and progress: `docs/teacher-university/PLAN.md`. Builds on NX-15 (subject licences) and TE-04 (checklist).
+Order: TU-01, TU-02, TU-08, TU-03 first (the entry path), then TU-04, TU-05, then TU-06, TU-07, and TU-09 (design) last. Content must be reviewed first
+(RULES.md: curriculum content waits for the owner). Do not build the course UI before the first unit of a curriculum
+is finished and the owner says "build".
+
+### TU-01 Invite a teacher with their subject(s)
+- Priority P1 · Zone 🔴 (auth, invites) · Size M · Status todo
+- Do: in the super admin invite form, choose one or more subjects (the 8 subject ids from NX-15) at the moment of the
+  invite; stored with the invite and applied when the teacher accepts. The admin can add or remove subjects later.
+  A teacher teaches only licensed subjects. Test: the invite carries the subjects; an unlicensed subject is refused
+  by the server.
+
+### TU-02 First sign-in path: password, agreement, profile (mandatory), tour
+- Priority P1 · Zone 🔴 (auth, legal) · Size L · Status todo · Depends on TU-01
+- Do: the order after the invite link: set a password, read and accept the agreement, then a **mandatory profile
+  step that cannot be skipped**: name, assigned subject(s) shown and locked, short bio, experience, photo, what is
+  shown publicly (decide fields below). Then the guided tour of the teacher dashboard, then the home page with the
+  setup checklist. The profile does not go public until the admin approves it.
+- Decided (owner, 2026-11-17): no bookings and no public profile until the teacher finishes the whole path (course,
+  test, and any stage that needs staff). When the last stage needs no staff, the teacher opens automatically
+  (profile public, bookings on). Stages that need staff are part of the visible progress.
+- Decided: extra fields are languages spoken and qualifications or ijazah (optional). No intro video for now (idea
+  kept for later: it would favour teachers who are good on camera). Photo is mandatory with written standards shown
+  at upload: clear, good light, face visible, not AI, current (looks like the teacher today, so a child is not
+  surprised on the first lesson).
+- Experience and every other field is free text in the teacher's own words. No fixed headings on the public page (see TU-08).
+
+### TU-03 Setup checklist on the teacher home: add "your subject course"
+- Priority P1 · Zone 🟢 · Size S · Status todo · Depends on TU-02 (extends TE-04)
+- Do: the checklist shows the first thing to do: start the course of the assigned subject, with progress; items tick
+  from real data. Locked subjects are not shown here.
+
+### TU-04 University: one mandatory course per subject group
+- Priority P1 · Zone 🟢 · Size L · Status todo · Depends on TU-03 and the content
+- Do: three groups: Quran, Islamic sciences, Languages. A teacher sees the course of each group they are licensed
+  for (mandatory) and the others as locked. Each course is one connected course: the teaching-craft modules applied
+  to our curriculum, with each subject's own section (hifz, tajweed, Zad, Seerah, age bands, Fusha, Egyptian,
+  English). Progress per module; the existing NX-15 steps stay (curriculum, guide, test, observed lesson). A new
+  course unlocks only after the subject is added or approved.
+- Content: `docs/teacher-university/` (shared text plus an application layer per group).
+
+### TU-05 Request a new subject and the qualification path
+- Priority P2 · Zone 🔴 (permissions) · Size L · Status todo · Depends on TU-04
+- Do: a locked subject shows "Request this subject". The request reaches the admin. The path is professional:
+  entry check, the subject's course, a test on that course (unit questions plus a short final, 80% pass, see TU-06; scenario questions from our
+  curriculum), an interview, a mock lesson observed by the admin, then approval. The teacher sees progress through
+  each stage; the admin records result and a note at each stage. Approval grants the subject and opens its course.
+- Decided (owner, 2026-11-17): interviews, mock lessons and approvals are done by the new staff roles (HR and
+  Supervision, see lane ST), not only the super admin. Super admin can do everything they can.
+
+### TU-06 Course test per subject group
+- Priority P2 · Zone 🔴 (grants a licence) · Size M · Status todo · Depends on TU-04
+- Decided (owner, 2026-11-17): not one big test at the end. The course is units (stages) like Preply, with visible
+  progress. Each unit ends with questions that come straight from that unit's points. The final test is short, with
+  indirect questions that test understanding and emotional intelligence (how the teacher would react), not recall.
+  Free-text answers are marked by AI: "good" or notes on how to improve. All answers and feedback are stored and the
+  teacher can reopen them any time. Pass mark 80%.
+- Do: question bank per unit plus a short final scenario set, per group, drawn from the course. Server-side marking
+  and storage; the score cannot be set from the browser; retakes allowed with a record. A pass records
+  `test_passed_at` on the existing track row. AI marking must not change the pass rule silently: store the rubric
+  and the model output with each answer.
+
+### TU-07 Self-observation and reflection tools inside the course
+- Priority P3 · Zone 🟢 · Size M · Status todo · Depends on TU-04
+- Do: the self-observation form (teacher talking time), the lesson plan template and the reflection page as
+  fill-in tools inside the course; the teacher's recorded-lesson consent line included. Private to the teacher.
+
+### TU-08 Teacher profile: review before publishing, and a public page that shows only what exists
+- Priority P1 · Zone 🔴 (public content, review gate) · Size M · Status todo · Depends on TU-02
+- Do: (1) a profile is never published on submit: it goes to review (HR, or super admin), is approved or returned with a
+  note ("remove this, add that"), and an edit by the teacher after approval goes back to review. (2) While writing, the
+  teacher sees short tips next to each field (what families look for, length, tone), to reduce review rounds.
+  (3) The public page is built from what the teacher filled: a section (ijazah, languages, qualifications...) appears
+  only if it has content, no empty headings. The teacher's own words lead; the system picks what to highlight per
+  teacher (their subjects, what they are strong in) instead of a fixed template.
+- Design note: fields are optional data, sections are optional render blocks; the card on the teachers list uses
+  the same rule.
+
+### TU-09 Design pass for the teacher entry path, the course and the public profile
+- Priority P2 · Zone 🟢 · Size L · Status todo · Last, after the backend items (backlog order: backend first, design last)
+- Do: design (do not just build) these screens: the course player (cards, progress, motion tied to meaning, mobile
+  first), the first sign-in steps (agreement, mandatory profile with tips, photo standards, tour, home checklist), the
+  subject-request progress view, and the public teacher page built only from filled fields. Use `brainstorming`, then
+  `impeccable`, `apple-design` and the motion skills; site tokens only, no green, check desktop and phone.
+  Videos and motion graphics stay last and voiced (Zad in each piece).
+
+---
+
+## ST: Staff roles: HR and Supervision (owner request 2026-11-17)
+
+Why: the super admin area (CRM, teachers, customers, courses, finance) is too big for one screen and one person.
+The owner will work as super admin, and also sign in as HR or Supervision to see only that domain, so it does not
+scatter attention; later staff can run these accounts.
+
+### ST-01 Two restricted staff roles with permission sets
+- Priority P2 · Zone 🔴 (new roles, RLS, auth) · Size L · Status todo
+- Do: add roles `hr` and `supervision` (migration via `new-migration`, server checks in `verifyAdminAuth` style, RLS).
+  Permissions are a named set per role, not hard-coded screens. Suggested split:
+  - **HR:** teacher invites, onboarding progress, profile review, interviews, mock lessons, subject requests, contracts.
+  - **Supervision:** lesson quality, observed lessons, course test review, complaints and refunds, teacher follow-up.
+  - **Both restricted from:** revenue, profit, payouts, pricing, site-wide numbers and reports, other staff, settings.
+  - Super admin has every permission. The owner can change a role's set without a code change if feasible (decide in design).
+- Test: a restricted account gets 403 from the server on a forbidden route, not only a hidden button.
+
+### ST-02 Reorganize the admin area by domain
+- Priority P2 · Zone 🟢 · Size L · Status todo · Depends on ST-01 design
+- Do: the super admin dashboard grouped by domain (People: teachers, students, parents; Teaching: lessons,
+  courses, University; Money: payments, packages, reports; Growth: CRM, marketing), with links between related items
+  (a teacher's page shows their lessons, their course progress and their reviews). Each role sees only its domains.
+  Start with a design pass (impeccable, brainstorming) before building; the owner decides the grouping.
+
+---
+
 ## AD: Super admin (beyond the CRM)
 
 ### AD-01 Admin overview that answers "what needs me today"
@@ -623,6 +738,90 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   "Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask." and a
   caption by the teacher photos ("You choose. See each teacher's story before you book."). Add one line for young
   adults ("Drifted? Start where you are. No lectures."). Arabic versions, humanizer, desktop and 375px.
+
+---
+
+## CL: Classroom (owner request 2026-11-17)
+
+The whole lane is planned in `docs/superpowers/specs/2026-11-17-classroom-design.md`, built by the classroom
+session, not picked from here. It is listed so other sessions know about it and do not overlap.
+
+### CL-01 Super admin silent observer in any live lesson
+- Priority P1 · Zone 🔴 (privacy, room credentials) · Size M · Status todo (classroom plan, Release 1)
+- Do: from the admin lessons list, "watch" any live lesson at any time, receive-only, with no notice to the
+  teacher. Notes go to the teacher's quality record, and each visit is logged. The teacher agreement and the privacy
+  policy state that the academy may observe lessons for quality and safeguarding. Later, the owner decides whether HR
+  or Supervision (lane ST) get it.
+
+---
+
+## FN: Admin finance and business advisor (owner request 2026-11-17)
+
+Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
+loss surprises him. Feasibility study and calculator (private artifact):
+https://claude.ai/artifact/KE5UvwKsCD3cdndUcRRGqz. Manual ledger until FN-02 exists: `docs/business/LEDGER.md`.
+Fits the "Money" domain of ST-02 (super admin only; HR and Supervision never see it). The classroom itself (and the
+old NX-12) is planned separately: `docs/superpowers/specs/2026-11-17-classroom-design.md`.
+
+### FN-01 Stripe money sync
+- Priority P1 · Zone 🔴 (money) · Size L · Status todo
+- Do: import every Stripe balance transaction (gross, fee, net, currency, conversion) and payout, by webhook plus a
+  daily catch-up job; reconcile each month against Stripe's payout reconciliation report. Settlement currencies at
+  2026-11-17: USD (default), EUR and GBP to nsave accounts, PLN to Erste. Alert the admin before a refund can make the
+  balance negative (Stripe then debits the bank account). Amounts come from Stripe, never computed in the browser.
+
+### FN-02 Expenses, subscriptions and debts
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo
+- Do: an admin page to record costs once (recurring ones repeat by themselves): run the site (Vercel, Supabase,
+  Brevo, domain, Cloudflare, Gemini API), dev and content tools (Claude, ChatGPT, ElevenLabs, Gemini Pro, Meshy),
+  marketing, staff, and any debt with its schedule. Seed it from `docs/business/LEDGER.md`, including the startup
+  spending to date (~$204).
+
+### FN-03 Teacher pay transfers on record
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo · Builds on the existing Payroll page
+- Do: next to each month's calculated pay, record the actual transfer (method, date, reference, currency). The
+  owner's own teacher pay is recorded like any teacher's, so platform profit stays separate from his teaching income.
+  Lateness deductions decided in the classroom lateness review flow show here.
+
+### FN-04 Monthly profit, reserve and allocation
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo · Depends on FN-01 to FN-03
+- Do: per month: revenue, teacher pay, bonus pool, payment fees, subscriptions, other costs, net, margin, profit per
+  lesson hour, break-even hours. Reserve in months of fixed costs (target 3). The owner sets the split of net
+  (for example marketing, tools, scholarships) and the page shows what each bucket has.
+
+### FN-05 The advisor: rules that say what to look at
+- Priority P2 · Zone 🟢 · Size L · Status todo · Depends on FN-04 and the classroom quality data
+- Do: a "3 things that need you today" card and mid-month alerts, from written rules with thresholds (no AI
+  guessing), each showing the number it is based on. Examples: fixed costs up 20% month on month; reserve reached
+  3 months, ads can start with $X; net has been twice a support salary for 2 months; a teacher's connection failed in
+  3 lessons in 2 weeks; a teacher was late more than 2 minutes again; learners with no booking for 2 weeks; a
+  subscription with no recorded use for 60 days. Rules and thresholds editable by the super admin.
+
+### FN-06 Monthly business report
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on FN-04
+- Do: on the 1st of each month, a report page (and a short email to the super admin): money (FN-04), lessons and
+  hours, new and leaving learners, teacher quality (lateness, connection, report compliance), compared with the
+  month before.
+
+---
+
+## PARKED: ideas kept for later (owner 2026-11-17; agents: do not build)
+
+When the owner asks "what ideas haven't we done yet?", read this list. Each has notes in the classroom feasibility
+artifact and design document.
+
+- **Lesson recording (teacher-only).** Dropped for now because of storage cost when many teachers use it. Draft rules
+  if revived: teacher-only button framed as "your library", guardian consent once, visible indicator, view-only for
+  children's lessons, auto-delete after 30 days with up to 5 pinned, 10 hours per teacher per month, admin opens a
+  recording only for a formal safeguarding complaint (logged, teacher told). Recorded in the teacher's browser,
+  stored on Cloudflare R2.
+- **Audio bookmark** (save the last 30 seconds of a moment). Depends on recording consent.
+- **Live captions** (speech to text on screen). Chrome sends audio to Google; off by default, consent needed.
+- **LiveKit as a second fallback** behind Zoom; the classroom keeps an engine interface so it can be added.
+- **Direct peer-to-peer video for 1-on-1** to cut bandwidth cost 70–80%; worth it only at scale.
+- **Self-hosted media server** (LiveKit on Hetzner) when Cloudflare bandwidth costs grow.
+- **Automatic tajweed hints for students**, if the accuracy test with our teachers falls below 90%.
+- **Low-light camera enhancement** and **region capture** (share part of a page).
 
 ---
 

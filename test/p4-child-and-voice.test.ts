@@ -46,7 +46,7 @@ describe('P4-010/031/032 plain words', () => {
   it('Arabic subject names come with their meaning, and a newcomer has a door', () => {
     for (const id of ['tajweed', 'quran-memorization', 'zad-essentials', 'seerah', 'modern-standard-arabic']) assert.ok(SUBJECT_MEANING_EN[id]);
     assert.ok(!src('src/booking/mockData.ts').includes('Makhaarij, Sifaat'));
-    assert.ok(src('src/components/public/homepage/PublicHomepage.tsx').includes('<NewToIslamDoor'));
+    assert.ok(src('src/components/public/homepage/Tracks.tsx').includes('<NewToIslamDoor'));
     assert.ok(src('src/components/public/learning/LearningPage.tsx').includes("get('family')"));
     assert.ok(!src('src/booking/mockData.ts').includes('My child knows nothing yet'));
   });

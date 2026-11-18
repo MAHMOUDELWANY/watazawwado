@@ -1,29 +1,33 @@
-import { TeacherStays } from './TeacherStays';
-import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { Volume2, VolumeX } from 'lucide-react';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, PublicButton } from '../PublicDesignSystem';
-import { Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
+import { PublicButton } from '../PublicDesignSystem';
+import { TrialCtaLabel } from '../TrialCtaLabel';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
-import { HeroBag } from './HeroBag';
-import { PathFinder } from './PathFinder';
-import { HeroSubjects } from './HeroSubjects';
-import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem, DoorAjarEmblem } from '../emblems/DoorEmblems';
-import { FamilyVoices } from './FamilyVoices';
-import { TwoWays } from './TwoWays';
-import { NewToIslamDoor } from '../NewToIslamDoor';
 import { FAQS } from '../../../data/content';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { useWelcomeAudio } from '../../../lib/welcomeAudio';
+import { HomeHero } from './HomeHero';
+import { Promises } from './Promises';
+import { Tracks } from './Tracks';
+import { PackYourZaad } from './PackYourZaad';
+import { StartRoad } from './StartRoad';
+import { FamilyVoices } from './FamilyVoices';
+import { useReveal, rv } from './useReveal';
 
-type L = { en: string; ar: string };
+/**
+ * The homepage, redesigned 2026-11-18 around one idea: the zaad, the provision for a journey our name comes from
+ * (﴿وتزودوا فإن خير الزاد التقوى﴾). It opens on the bag, tells what we promise and can prove, lets the visitor pack
+ * their own bag, shows the road in, and closes on footsteps in the sand with "Pack your zaad." No person is at the
+ * centre: every teacher is one teacher of the academy (RULES.md §6b).
+ */
 
 const VERSE = '﴿ وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ ﴾';
 const MISSION_VERSE = '﴿ وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ ﴾';
-// Thmanyah has no ornate Quranic brackets, so the verse uses Amiri Quran, loaded for these letters only.
+// Thmanyah has no ornate Quranic brackets, so the verses use Amiri Quran, loaded for these letters only.
 function useVerseFont() {
   React.useEffect(() => {
     if (document.getElementById('verse-font')) return;
@@ -35,302 +39,154 @@ function useVerseFont() {
   }, []);
 }
 
-// Each door's portal: [top, bottom] of its deep gradient. Teal, copper and crimson take turns.
-type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L; cta: L };
+// The questions a family asks first that the page has not answered yet (the teacher staying is answered above).
+const HOME_FAQ = [2, 3, 8, 9];
 
-const EXPLORE: Door[] = [
-  {
-    to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
-    title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم لك أنت.' },
-    cta: { en: 'See subjects', ar: 'شوف المواد' }
-  },
-  {
-    to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],
-    title: { en: 'How it works', ar: 'كيف نعمل' },
-    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادئة.' },
-    cta: { en: 'See the steps', ar: 'شوف الخطوات' }
-  },
-  {
-    to: '/about', emblem: TeachersEmblem, tone: ['#A3271F', '#3F0E10'],
-    title: { en: 'About us', ar: 'من نحن' },
-    body: { en: 'Who we are, who teaches.', ar: 'من نحن، ومن سيعلّمك.' },
-    cta: { en: 'Meet us', ar: 'اتعرّف علينا' }
-  },
-  {
-    to: '/pricing', emblem: EnvelopeEmblem, tone: ['#0A5866', '#05262D'],
-    title: { en: 'Prices and packages', ar: 'الأسعار والباقات' },
-    body: { en: 'From $10 an hour.', ar: 'من 10$ للساعة.' },
-    cta: { en: 'See prices', ar: 'شوف الأسعار' }
-  },
-  {
-    to: '/articles', emblem: LanternEmblem, tone: ['#6E3324', '#241008'],
-    title: { en: 'Articles', ar: 'مقالات' },
-    body: { en: 'Practical reading for families.', ar: 'قراية عملية للأسرة.' },
-    cta: { en: 'Read', ar: 'اقرا' }
-  },
-  {
-    to: '/community', emblem: DoorAjarEmblem, tone: ['#8E1F1C', '#2E0B0C'],
-    title: { en: 'Our community', ar: 'مجتمعنا' },
-    body: { en: 'Hall of Honor and class board.', ar: 'لوحة الشرف ولوحة الحلقة.' },
-    cta: { en: 'Step inside', ar: 'ادخل' }
-  }
-];
+function NameVerse({ isEn }: { isEn: boolean }) {
+  const ref = useReveal<HTMLElement>(0.3);
+  const audio = useWelcomeAudio();
+  return (
+    <section ref={ref} className="relative" aria-labelledby="home-verse">
+      <div className="public-container py-20 sm:py-28 lg:py-32 text-center">
+        <h2 id="home-verse" {...rv(0)} className="rv text-base sm:text-lg font-semibold text-muted-foreground">
+          {isEn ? 'Our name comes from one verse' : 'اسمنا من آية'}
+        </h2>
+        <p
+          {...rv(1)}
+          lang="ar"
+          dir="rtl"
+          className="rv mt-6 text-[1.75rem] min-[400px]:text-[2rem] leading-[1.85] sm:text-6xl sm:leading-[1.7] lg:text-[5rem] text-ribbon mx-auto max-w-5xl"
+          style={{ ...rv(1).style, fontFamily: "'Amiri Quran', var(--font-serif)" }}
+        >
+          {VERSE}
+        </p>
+        <p {...rv(2)} className="rv mt-6 text-lg sm:text-xl text-foreground max-w-2xl mx-auto leading-relaxed">
+          {isEn
+            ? '“And take provisions, but indeed, the best provision is fear of Allah.” Every lesson is zaad: something you carry for the rest of the road.'
+            : 'كل حصة زاد: شيء تحمله معك بقية الطريق، وخير الزاد التقوى.'}
+        </p>
+        <p {...rv(3)} className="rv mt-2 text-sm text-muted-foreground">
+          {isEn ? 'Al-Baqarah 2:197, Saheeh International' : 'البقرة ١٩٧'}
+        </p>
+        <button
+          type="button"
+          id="verse-sound-btn"
+          onClick={() => (audio.playing ? audio.stop() : void audio.play())}
+          aria-pressed={audio.playing}
+          className="btn-glass is-pill mt-8"
+        >
+          {audio.playing ? <VolumeX className="w-4 h-4 text-[#C51F24]" aria-hidden="true" /> : <Volume2 className="w-4 h-4 text-[#087D91]" aria-hidden="true" />}
+          {audio.playing ? (isEn ? 'Stop the recitation' : 'إيقاف التلاوة') : (isEn ? 'Listen to the recitation' : 'استمع للتلاوة')}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function HomeFaq({ isEn }: { isEn: boolean }) {
+  const ref = useReveal<HTMLElement>(0.15);
+  return (
+    <section ref={ref} aria-labelledby="home-faq">
+      <div className="public-container py-20 sm:py-28 lg:py-32 grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <h2 id="home-faq" {...rv(0)} className={`rv home-display text-foreground text-[2.4rem] sm:text-5xl lg:text-[3.6rem] ${isEn ? 'font-medium' : ''}`}>
+            {isEn ? 'What families ask first' : 'أول ما تسأل عنه الأسر'}
+          </h2>
+          <Link {...rv(1)} to="/faq" className="rv inline-flex items-center min-h-11 mt-6 font-bold text-foreground underline decoration-[var(--gold)] decoration-2 underline-offset-[6px] hover:decoration-[var(--crimson)] focus-ring rounded-md">
+            {isEn ? 'All questions and answers' : 'كل الأسئلة والإجابات'}
+          </Link>
+        </div>
+        <div className="lg:col-span-7 space-y-3">
+          {HOME_FAQ.map((i, k) => FAQS[i]).filter(Boolean).map((f, k) => (
+            <details key={f.question} {...rv(k + 2)} className="rv group rounded-[var(--r-3)] bg-surface-warm/70 dark:bg-surface-subtle px-5 sm:px-7 open:pb-6 transition-colors">
+              <summary className="flex items-center justify-between gap-4 min-h-[4.25rem] py-4 cursor-pointer list-none text-lg sm:text-xl font-bold text-foreground focus-ring rounded-[var(--r-2)]">
+                {isEn ? f.question : f.arabicQuestion}
+                <span aria-hidden="true" className="grid place-items-center w-9 h-9 shrink-0 rounded-full bg-background text-xl leading-none text-foreground transition-transform duration-300 group-open:rotate-45">+</span>
+              </summary>
+              <p className="text-lg leading-relaxed text-foreground max-w-[60ch]">{isEn ? f.answer : f.arabicAnswer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Where the lamp's flame sits in public/home/road.webp (2:1) and road-900.webp (1:1).
+const LAMP_WIDE = { x: 72.5, y: 33 };
+const LAMP_SQUARE = { x: 72.5, y: 22.5 };
+
+function Closing({ isEn, onTrial }: { isEn: boolean; onTrial: () => void }) {
+  const ref = useReveal<HTMLElement>(0.25);
+  const lamp = (p: { x: number; y: number }) => (
+    <span
+      className="home-flame absolute w-[22%] aspect-square rounded-full"
+      style={{ left: `${p.x}%`, top: `${p.y}%`, transform: 'translate(-50%, -50%)', background: 'radial-gradient(closest-side, rgba(255,214,140,0.5), rgba(229,169,60,0.18) 45%, transparent 72%)' }}
+    />
+  );
+  return (
+    <section ref={ref} id="contact" className="relative overflow-hidden bg-[#1C1411] text-[#FAF7F2]" aria-labelledby="home-close">
+      {/* Footsteps in the sand, a closed book, a lamp still lit: the road goes on. */}
+      <div className="absolute inset-0" style={{ containerType: 'size' }} aria-hidden="true">
+        <div className="hidden sm:block absolute top-1/2 right-0 -translate-y-1/2" style={{ width: 'max(100cqw, 200cqh)', aspectRatio: '2 / 1' }}>
+          <img src="/home/road.webp" alt="" width={2000} height={1000} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+          {lamp(LAMP_WIDE)}
+        </div>
+        <div className="sm:hidden absolute inset-x-0 top-0 aspect-square">
+          <img src="/home/road-900.webp" alt="" width={900} height={900} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+          {lamp(LAMP_SQUARE)}
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_25%,rgba(28,20,17,0.92)_62%)] sm:bg-[linear-gradient(90deg,rgba(28,20,17,0.92)_0%,rgba(28,20,17,0.7)_38%,transparent_70%)] sm:rtl:bg-[linear-gradient(270deg,rgba(28,20,17,0.92)_0%,rgba(28,20,17,0.7)_38%,transparent_70%)]" />
+      </div>
+
+      <div className="public-container relative pt-[78vw] pb-16 sm:py-32 lg:py-44 sm:min-h-[min(90svh,52rem)] flex flex-col justify-center">
+        <h2 id="home-close" {...rv(0)} className={`rv home-display text-[3.4rem] sm:text-7xl lg:text-[7rem] ${isEn ? 'font-medium' : ''}`}>
+          {isEn ? 'Pack your zaad.' : 'جهّز زادك.'}
+        </h2>
+        <p {...rv(1)} className="rv mt-5 text-lg sm:text-xl leading-relaxed text-[#FAF7F2]/90 max-w-md">
+          {isEn
+            ? 'The first lesson is free: thirty minutes to meet, listen, and find your way.'
+            : 'والحصة الأولى مجانًا: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
+        </p>
+        <div {...rv(2)} className="rv mt-9 flex flex-col sm:flex-row gap-3 sm:items-center">
+          <PublicButton variant="primary" size="lg" onClick={onTrial} className="liquid-cta !rounded-full w-full sm:w-auto px-8">
+            <TrialCtaLabel isEn={isEn} />
+          </PublicButton>
+          <a
+            href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 min-h-[3.25rem] px-6 rounded-full font-bold bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F6D58E]"
+          >
+            <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#F6D58E]" />
+            <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function PublicHomepage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
-  const t = (l: L) => (isEn ? l.en : l.ar);
-  const audio = useWelcomeAudio();
   useVerseFont();
+  const trial = () => onOpenTrialModal();
 
   return (
     <main id="main-content" className="pt-16 sm:pt-20">
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
 
-      {/* ─── 1. HERO ─── phones: headline, Zad's bag, then the rest; wide screens: text beside the bag */}
-      <section className="khatam-field brand-lights relative overflow-hidden">
-        <div className="public-container pt-8 pb-14 lg:pt-14 lg:pb-24">
-          <div className="grid gap-8 lg:gap-x-14 lg:grid-cols-2 [grid-template-areas:'title'_'duo'_'body'] lg:[grid-template-areas:'title_duo'_'body_duo'] items-center">
-            <h1
-              className={`[grid-area:title] self-end font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-[4rem] text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}
-            >
-              {/* MK-04: no kicker above the brand line; the subjects live in <title>, the meta description and the hero paragraph. */}
-              {isEn ? (
-                <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
-              ) : (
-                <>زادٌ يبقى،<br /><span className="text-ribbon whitespace-nowrap">لك ولأهل بيتك.</span></>
-              )}
-            </h1>
-
-            <div className="[grid-area:duo]">
-              <HeroBag isEn={isEn} />
-            </div>
-
-            <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
-              <p className="font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-xl">
-                {isEn
-                  ? 'Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask.'
-                  : 'اختار معلّمك من ملفات حقيقية. وبعد كل حصة، نبلّغك كيف كانت قبل ما تسأل.'}
-              </p>
-              <HeroSubjects isEn={isEn} className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl" />
-
-              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-                <PublicButton
-                  variant="primary"
-                  size="lg"
-                  id="hero-get-started-btn"
-                  data-tour="header-get-started-cta"
-                  onClick={() => onOpenTrialModal()}
-                  className="liquid-cta w-full sm:w-auto shadow-lg shadow-primary/25"
-                >
-                  <TrialCtaLabel isEn={isEn} />
-                </PublicButton>
-                <Link
-                  to="/about"
-                  className="btn-glass px-6 py-3 rounded-xl"
-                >
-                  {isEn ? 'Get to know us' : 'اتعرّف علينا'}
-                </Link>
-              </div>
-
-              <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                {[
-                  { en: '30 minutes, free', ar: '٣٠ دقيقة مجاناً' },
-                  { en: 'No card needed', ar: 'بدون بطاقة بنكية' },
-                  { en: 'Choose a male or female teacher', ar: 'تختار معلّم أو معلّمة' },
-                  { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' }
-                ].map((point) => (
-                  <li key={point.en} className="flex items-center gap-1.5 font-medium">
-                    <Check className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
-                    <span>{t(point)}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
-                <ShieldCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
-                {isEn ? 'How we keep children safe: the teacher opens the room, nothing is recorded' : 'كيف نحافظ على الأطفال: المعلم هو من يفتح الغرفة، ولا يوجد تسجيل'}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 2. THE VERSE THE ACADEMY IS NAMED AFTER ─── */}
-      <section className="relative border-y border-border/70 bg-surface-warm/60">
-        <div className="public-container py-14 lg:py-20 text-center">
-          <p
-            lang="ar"
-            dir="rtl"
-            className="text-[2.4rem] leading-[1.9] sm:text-6xl sm:leading-[1.7] text-ribbon mx-auto max-w-4xl"
-            style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}
-          >
-            {VERSE}
-          </p>
-          <p className="mt-4 text-sm sm:text-base text-muted-foreground">
-            {isEn
-              ? '“And take provisions, but indeed, the best provision is fear of Allah.” Al-Baqarah 2:197, Saheeh International'
-              : 'البقرة ١٩٧. ومنها اسمنا: نتزوّد بالعلم، وخير الزاد التقوى.'}
-          </p>
-          <button
-            type="button"
-            id="verse-sound-btn"
-            onClick={() => (audio.playing ? audio.stop() : void audio.play())}
-            aria-pressed={audio.playing}
-            className="btn-glass is-pill mt-6"
-          >
-            {audio.playing ? <VolumeX className="w-4 h-4 text-[#C51F24]" aria-hidden="true" /> : <Volume2 className="w-4 h-4 text-[#087D91]" aria-hidden="true" />}
-            {audio.playing ? (isEn ? 'Stop the recitation' : 'إيقاف التلاوة') : (isEn ? 'Listen to the recitation' : 'استمع للتلاوة')}
-          </button>
-        </div>
-      </section>
-
-      {/* ─── 2b. WHO IS THE LEARNING FOR? ─── two taps to the right subject page (owner, 2026-11-17). */}
-      <PathFinder isEn={isEn} onTrial={() => onOpenTrialModal()} />
-
-      {/* ─── 3. TWO WAYS TO LEARN ─── */}
-      <PublicSection>
-        <div className="max-w-5xl mx-auto">
-          <div className="max-w-2xl mb-10 lg:mb-14">
-            <h2 className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
-              {isEn ? 'One home, for you and everyone you love.' : 'بيت واحد، لك ولكل من تحبهم.'}
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mt-4">
-              {isEn
-                ? 'Learn on your own, or walk alongside your children, from the same place.'
-                : 'اتعلّم لوحدك، أو امشِ جنب أولادك في رحلتهم، من نفس المكان.'}
-            </p>
-          </div>
-
-          <TwoWays isEn={isEn} />
-          <NewToIslamDoor isEn={isEn} />
-        </div>
-      </PublicSection>
-
-      {/* ─── 3a'. THE ANSWER ─── the teacher lifts the child onto the carpet and they fly into the infinity together. */}
-      <TeacherStays isEn={isEn} />
-
-      {/* ─── 4. WHY WE EXIST ─── */}
-      <section className="khatam-field relative">
-        <div className="public-container py-16 lg:py-24 text-center">
-          <p
-            lang="ar"
-            dir="rtl"
-            className="text-[2.1rem] leading-[1.9] sm:text-5xl sm:leading-[1.8] text-ribbon mx-auto max-w-4xl"
-            style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}
-          >
-            {MISSION_VERSE}
-          </p>
-          {isEn ? (
-            <p className="mt-3 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              “But as for that which benefits the people, it remains on the earth.”
-              <span className="block mt-1 text-sm">Ar-Ra‘d 13:17, Saheeh International</span>
-            </p>
-          ) : (
-            <p className="mt-2 text-sm text-muted-foreground">الرعد ١٧</p>
-          )}
-          <p className="mt-6 font-editorial text-xl sm:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
-            {isEn
-              ? 'We measure our work by what stays: a word said right, a verse kept, a good habit that lives on at home.'
-              : 'نقيس عملنا بما يبقى: كلمة قيلت صحيحة، وآية حُفظت، وعادة طيبة بقيت في البيت.'}
-          </p>
-        </div>
-      </section>
-
-      {/* ─── 5. DOORS INTO THE SITE ─── */}
-      {/* Six arched glass doors, each holding a deep portal with its own lit emblem. */}
-      <PublicSection className="khatam-field brand-lights pt-4 md:pt-6 lg:pt-8">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground mb-10">
-            {isEn ? 'Come in through any door' : 'ادخل من أي باب'}
-          </h2>
-          <nav aria-label={isEn ? 'Site sections' : 'أقسام الموقع'}>
-            <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5">
-              {EXPLORE.map(({ to, emblem: Emblem, tone, title, body, cta }) => (
-                <li key={to} className="door-slot">
-                  <Link
-                    to={to}
-                    className="door-card"
-                    style={{ '--door-a': tone[0], '--door-b': tone[1] } as React.CSSProperties}
-                  >
-                    <span className="door-portal khatam-window" aria-hidden="true">
-                      <span className="door-glow" />
-                      <Emblem className="door-emblem" />
-                    </span>
-                    <span className="door-title">{t(title)}</span>
-                    <span className="door-tagline">{t(body)}</span>
-                    <span className="door-enter" aria-hidden="true">
-                      {t(cta)}
-                      <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 8h9.5M8.5 4l4 4-4 4" />
-                      </svg>
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </PublicSection>
-
-      {/* ─── 5a. WHAT FAMILIES SAY ─── after the doors, before the questions (owner, 2026-11-06). */}
+      <HomeHero isEn={isEn} onTrial={trial} />
+      <NameVerse isEn={isEn} />
+      <Promises isEn={isEn} />
+      <Tracks isEn={isEn} />
+      <PackYourZaad isEn={isEn} onTrial={(id) => onOpenTrialModal(id)} />
+      <StartRoad isEn={isEn} />
       <FamilyVoices isEn={isEn} />
-
-      {/* ─── 5b. THE FIRST QUESTIONS FAMILIES ASK ─── */}
-      <section className="public-container pb-16 lg:pb-20" aria-labelledby="home-faq">
-        <div className="max-w-3xl mx-auto">
-          <h2 id="home-faq" className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground">
-            {isEn ? 'Questions families ask first' : 'أول ما تسأل عنه الأسر'}
-          </h2>
-          <div className="mt-6 divide-y divide-border border-y border-border">
-            {FAQS.slice(0, 3).map((f) => (
-              <details key={f.question} className="group py-3">
-                <summary className="flex items-center justify-between gap-4 min-h-11 cursor-pointer list-none font-bold text-foreground">
-                  {isEn ? f.question : f.arabicQuestion}
-                  <span aria-hidden="true" className="text-xl leading-none text-muted-foreground transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-2 text-muted-foreground leading-relaxed max-w-[70ch]">{isEn ? f.answer : f.arabicAnswer}</p>
-              </details>
-            ))}
-          </div>
-          <Link to="/faq" className="inline-flex items-center min-h-11 mt-2 text-sm font-semibold text-foreground underline underline-offset-4">
-            {isEn ? 'All questions and answers' : 'كل الأسئلة والإجابات'}
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── 5. CLOSING CALL TO ACTION ─── */}
-      <section id="contact" className="public-container pb-16 lg:pb-24">
-        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
-          <svg aria-hidden="true" viewBox="0 0 800 200" className="absolute inset-x-0 bottom-0 w-full h-auto opacity-40" preserveAspectRatio="none">
-            <path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" />
-          </svg>
-          <h2 className="relative font-editorial text-3xl sm:text-5xl font-bold leading-tight">
-            {isEn ? 'Every journey starts with one lesson.' : 'كل رحلة تبدأ بحصة.'}
-          </h2>
-          <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
-            {isEn
-              ? 'The first one is free: thirty minutes to meet, listen, and find your way.'
-              : 'والأولى مجاناً: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
-          </p>
-          <div className="relative mt-8 flex flex-col sm:flex-row justify-center gap-3">
-            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta w-full sm:w-auto">
-              <TrialCtaLabel isEn={isEn} />
-            </PublicButton>
-            <a
-              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-[#FAF7F2]/35 bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#F6D58E]"
-            >
-              <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#12A4BC]" />
-              <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
+      <HomeFaq isEn={isEn} />
+      <Closing isEn={isEn} onTrial={trial} />
     </main>
   );
 }
