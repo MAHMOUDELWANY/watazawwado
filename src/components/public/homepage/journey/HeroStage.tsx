@@ -47,6 +47,17 @@ function Khatam({ className }: { className?: string }) {
 function RingText({ isEn, reduce }: { isEn: boolean; reduce: boolean }) {
   const top = isEn ? 'Provision that lasts,' : 'زادٌ يبقى،';
   const bottom = isEn ? 'for you and your family.' : 'لك ولأهل بيتك.';
+  // Arabic cannot follow a curved path in Chrome (the letters lose their joins), so it sits on two straight lines,
+  // above and below Zad, each sliding in from its own side.
+  if (!isEn) {
+    const slide = (from: string, delay: number) => (reduce ? {} : { initial: { x: from, opacity: 0 }, animate: { x: 0, opacity: 1 }, transition: { type: 'spring' as const, stiffness: 70, damping: 16, delay } });
+    return (
+      <div className="lg:hidden absolute inset-0 z-30 pointer-events-none" aria-hidden="true">
+        <motion.p className="absolute inset-x-0 top-[1%] text-center font-editorial font-bold text-[2.6rem] leading-none text-foreground" {...slide('60%', 0.2)}>{top}</motion.p>
+        <motion.p className="absolute inset-x-0 bottom-[0%] text-center font-editorial font-bold text-[2.4rem] leading-tight text-ribbon" {...slide('-60%', 0.45)}>{bottom}</motion.p>
+      </div>
+    );
+  }
   const enter = (from: number, delay: number) => (reduce ? {} : {
     initial: { rotate: from, opacity: 0 },
     animate: { rotate: 0, opacity: 1 },
@@ -56,18 +67,18 @@ function RingText({ isEn, reduce }: { isEn: boolean; reduce: boolean }) {
     <svg viewBox="0 0 400 400" className="lg:hidden absolute inset-0 z-30 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
       <defs>
         <path id="ring-top" d="M 22 200 A 178 178 0 0 1 378 200" />
-        <path id="ring-bottom" d="M 8 200 A 192 192 0 0 0 392 200" />
+        <path id="ring-bottom" d="M 2 200 A 198 198 0 0 0 398 200" />
         <linearGradient id="ring-ribbon" x1="0" x2="1">
           <stop offset="0" stopColor="#C51F24" /><stop offset=".5" stopColor="#E5A93C" /><stop offset="1" stopColor="#087D91" />
         </linearGradient>
       </defs>
-      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? -100 : 100, 0.2)}>
-        <text className={`font-editorial ${isEn ? 'font-medium' : 'font-bold'}`} fontSize={isEn ? 34 : 40} fill="currentColor" style={{ color: 'var(--foreground)' }} direction={isEn ? 'ltr' : 'rtl'}>
+      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(-100, 0.2)}>
+        <text className="font-editorial font-medium" fontSize={34} style={{ fill: 'var(--foreground)' }}>
           <textPath href="#ring-top" startOffset="50%" textAnchor="middle">{top}</textPath>
         </text>
       </motion.g>
-      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? 100 : -100, 0.45)}>
-        <text className="font-editorial font-bold" fontSize={isEn ? 30 : 36} fill="url(#ring-ribbon)" direction={isEn ? 'ltr' : 'rtl'} dominantBaseline="hanging">
+      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(100, 0.45)}>
+        <text className="font-editorial font-bold" fontSize={30} fill="url(#ring-ribbon)">
           <textPath href="#ring-bottom" startOffset="50%" textAnchor="middle">{bottom}</textPath>
         </text>
       </motion.g>
