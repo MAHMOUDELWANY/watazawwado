@@ -66,7 +66,7 @@ function RingText({ isEn, reduce }: { isEn: boolean; reduce: boolean }) {
   return (
     <svg viewBox="0 0 400 400" className="lg:hidden absolute inset-0 z-30 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
       <defs>
-        <path id="ring-top" d="M 22 200 A 178 178 0 0 1 378 200" />
+        <path id="ring-top" d="M -12 200 A 212 212 0 0 1 412 200" />
         <path id="ring-bottom" d="M 2 200 A 198 198 0 0 0 398 200" />
         <linearGradient id="ring-ribbon" x1="0" x2="1">
           <stop offset="0" stopColor="#C51F24" /><stop offset=".5" stopColor="#E5A93C" /><stop offset="1" stopColor="#087D91" />

@@ -38,9 +38,11 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
 
   // The intro: while the film is on screen.
   React.useEffect(() => {
-    const el = intro && document.getElementById(intro.targetId);
+    const mark = intro && document.getElementById(intro.targetId);
+    // The target may be a zero-height marker: watch the block it sits in.
+    const el = mark && mark.offsetHeight < 2 ? mark.parentElement : mark;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setIntroOn(e.intersectionRatio > 0.35), { threshold: [0, 0.35, 0.6] });
+    const io = new IntersectionObserver(([e]) => setIntroOn(e.intersectionRatio > 0.6), { threshold: [0, 0.35, 0.6, 0.8] });
     io.observe(el);
     return () => io.disconnect();
   }, [intro]);
@@ -61,7 +63,9 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
     measure();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); if (raf) cancelAnimationFrame(raf); };
+    // The page keeps settling after a scroll (accordions, images): re-measure a few times a second too.
+    const tick = window.setInterval(onScroll, 300);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); window.clearInterval(tick); if (raf) cancelAnimationFrame(raf); };
   }, [dockId]);
 
   const stationStop = index >= 0 ? stops[Math.min(index, stops.length - 1)] : null;
