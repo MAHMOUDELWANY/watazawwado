@@ -1,6 +1,7 @@
 # Lesson room: design brief
 
-Research and direction for every surface of the classroom (2026-11-18). Nothing here is built yet. Binding rules
+Research and direction for every surface of the classroom (2026-11-18). The room and waiting room are built (see
+"Built" at the end); the dashboard surfaces (4.6, 4.7) and the admin notes panel are separate tasks. Binding rules
 still come from `RULES.md`, `docs/design-system.md` and the classroom spec
 (`docs/superpowers/specs/2026-11-17-classroom-design.md`). References are filed in `docs/design/INSPIRATION.md`
 under "Lesson room". We take principles from them, never their look or their colours.
@@ -642,3 +643,31 @@ dark, Arabic and English.
 - Auto-hiding controls for learners: children lose them.
 - Dribbble and Mobbin concept shots were skimmed. None is filed: they are concepts, not shipped rooms, and Mobbin is
   a paid library not on our plan.
+
+## Built (2026-11-18)
+
+Changes 1, 2, 4, 5, 6, 7, 8, 9 and 10 from section 6 are in `src/classroom/**` (commit 3dc5d1fd; the page view went in
+with 3d15bfe6). Also built from the surfaces: the guardian and admin observer copy (14), the teacher timer line, copper
+last 5 minutes and "+2:10" over time, the child lantern (13), the self picture that drags to any corner and "Hide my
+picture" (12), reactions on the learner's tile and the child "I need..." grid (part of 11, without the sticky "Seen"),
+the child end card with Zad (18), the File pane drop zone and "There are N minutes left" when ending early.
+
+Not built yet: the teacher capsule dimming after 4 s, the sticky raised hand with "Seen", permission-lost and
+unplugged-device notices (the engine's new `device` event is ready for them), landscape phone layout, the weak-line
+detail on tap, swap-on-tap for the phone picture.
+
+Server fields the room reads when present (optional on `RoomEntry` in `ClassroomGate.tsx`; without them the learner sees
+"Your lesson" and the default stays adult): `teacherName: string | null`, `subjectLabel: string | null` (already in the
+viewer's language), `learnerType: 'child' | 'adult' | null`.
+
+Screenshots (`docs/classroom/shots/`, taken on a local preview with canvas video, desktop 1280-1440 px and phone 375 px):
+
+| Surface | Files |
+|---|---|
+| Waiting room | `waiting-desktop-en-light.png`, `waiting-teacher-desktop-en-light.png`, `waiting-phone-ar-dark.png`, `waiting-child-phone-en-light.png`, `waiting-guardian-phone-ar-light.png`, `waiting-denied-desktop-ar-light.png` |
+| Teacher | `room-teacher-conversation-ar-light.png`, `room-teacher-content-reaction-en.png`, `room-teacher-focus-notice-en.png`, `room-teacher-board-more-en.png`, `room-teacher-end-confirm-en.png` |
+| Learner | `room-learner-phone-ar-dark.png`, `room-learner-phone-content-ar-dark.png`, `room-learner-reconnecting-speaking-en.png`, `room-learner-talking-muted-en.png`, `room-learner-screen-share-en.png`, `room-tap-to-hear-en.png` |
+| Child | `room-child-phone-ineed-en.png`, `room-child-phone-ar-dark-lantern.png`, `over-child-ended-ar-dark.png` |
+| Observers | `room-guardian-phone-ar.png`, `room-admin-observer-desktop-en-dark.png` |
+| Over screens | `over-failed-en-light.png` (closed and superseded use the same card) |
+
