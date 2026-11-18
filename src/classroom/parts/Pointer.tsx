@@ -3,21 +3,23 @@ import type { RoomEvent } from '../../lib/roomEvents';
 
 /** Pointer positions travel as 0–1000 of the content box, so they land in the same place on any screen size. */
 const SCALE = 1000;
-const SEND_EVERY_MS = 60;
+/** About 5 messages a second per room: Supabase Realtime allows 100 a second per project, shared by every lesson. */
+export const SEND_EVERY_MS = 180;
 const HIDE_AFTER_MS = 3000;
 
-/** Teacher: pointer moves over the content box go out at most every 60 ms. Returns the handler for that box. */
+/** Teacher: pointer moves inside the content box go out at most every 180 ms. Returns the handler for that box. */
 export function usePointerSender(send: (e: RoomEvent) => void) {
   const last = useRef(0);
   return useCallback((e: React.PointerEvent<HTMLElement>) => {
     const now = performance.now();
-    if (now - last.current < SEND_EVERY_MS) return;
-    last.current = now;
+    if (now - last.current < SEND_EVERY_MS || document.hidden) return;
     const r = e.currentTarget.getBoundingClientRect();
     if (!r.width || !r.height) return;
     const x = Math.round(((e.clientX - r.left) / r.width) * SCALE);
     const y = Math.round(((e.clientY - r.top) / r.height) * SCALE);
+    // Only while the pointer is over the content (captured drags report positions outside it).
     if (x < 0 || y < 0 || x > SCALE || y > SCALE) return;
+    last.current = now;
     send({ t: 'pointer', x, y });
   }, [send]);
 }

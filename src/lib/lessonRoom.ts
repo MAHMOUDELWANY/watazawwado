@@ -13,7 +13,8 @@ const roundInk = (ink: RoomInk): RoomInk => ({
   strokes: ink.strokes.map((s) => ({ ...s, points: s.points.map(([x, y]) => [Math.round(x), Math.round(y)] as Pt) })),
   laser: ink.laser.map(([x, y]) => [Math.round(x), Math.round(y)] as Pt),
 });
-const INK_EVERY_MS = 80;
+/** About 7 messages a second while drawing: Supabase Realtime allows 100 a second per project, shared by every room. */
+export const INK_EVERY_MS = 150;
 
 /**
  * The live channel for one lesson. The teacher publishes; the learner asks for the current state when they join
