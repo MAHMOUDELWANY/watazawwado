@@ -298,8 +298,8 @@ export const HOW_IT_WORKS_STEPS = [
     step: '01',
     title: 'Book your free trial',
     arabicTitle: 'احجز حصتك المجانية',
-    description: 'Pick a time in your own time zone. Thirty minutes on Zoom, no card and nothing to pay.',
-    arabicDescription: 'اختر موعدًا بتوقيتك. ٣٠ دقيقة على Zoom، بلا بطاقة ودون أن تدفع شيئًا.',
+    description: 'Pick a time in your own time zone. Thirty minutes in our lesson room, no card and nothing to pay.',
+    arabicDescription: 'اختر موعدًا بتوقيتك. ٣٠ دقيقة في غرفة الحصص على موقعنا، بلا بطاقة ودون أن تدفع شيئًا.',
     highlight: 'No obligation',
     arabicHighlight: 'من غير أي التزام'
   },
@@ -325,8 +325,8 @@ export const HOW_IT_WORKS_STEPS = [
     step: '04',
     title: 'Learn, week after week',
     arabicTitle: 'اتعلّم أسبوع ورا أسبوع',
-    description: 'Private lessons on Zoom, and the on-site chat between them. Move a lesson yourself up to 1 hour before, or cancel up to 3 hours before.',
-    arabicDescription: 'حصص فردية على Zoom، والمحادثة على الموقع بين الحصص. غيّر موعد حصتك بنفسك حتى ساعة قبلها، أو ألغِها حتى ٣ ساعات قبلها.',
+    description: 'Private lessons in our lesson room on the site, and the on-site chat between them. Move a lesson yourself up to 1 hour before, or cancel up to 3 hours before.',
+    arabicDescription: 'حصص فردية في غرفة الحصص على موقعنا، والمحادثة على الموقع بين الحصص. غيّر موعد حصتك بنفسك حتى ساعة قبلها، أو ألغِها حتى ٣ ساعات قبلها.',
     highlight: 'Flexible',
     arabicHighlight: 'بمرونة'
   }
@@ -378,8 +378,8 @@ export const FAQS: FAQItem[] = [
   {
     question: 'How does the free trial work?',
     arabicQuestion: 'كيف تكون الحصة التجريبية المجانية؟',
-    answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed), one per new student. Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson, then suggests a plan. No card, no pressure. You can move it once, up to 1 hour before; if it is missed or cancelled, you can book again after 48 hours.',
-    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وقد تصل إلى ٤٥ عند الحاجة)، واحدة لكل طالب جديد. يتعرّف معلمك على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرح لك درسًا قصيرًا حقيقيًا، ثم يقترح عليك خطة. بلا بطاقة وبلا أي ضغط. يمكنك تغيير موعدها مرة واحدة حتى ساعة قبلها، وإن فاتتك أو أُلغيت يمكنك الحجز من جديد بعد ٤٨ ساعة.',
+    answer: 'It is a free 30-minute lesson in our lesson room on the site (up to 45 if needed), one per new student. Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson, then suggests a plan. No card, no pressure. You can move it once, up to 1 hour before; if it is missed or cancelled, you can book again after 48 hours.',
+    arabicAnswer: 'حصة مجانية في غرفة الحصص على موقعنا مدتها ٣٠ دقيقة (وقد تصل إلى ٤٥ عند الحاجة)، واحدة لكل طالب جديد. يتعرّف معلمك على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرح لك درسًا قصيرًا حقيقيًا، ثم يقترح عليك خطة. بلا بطاقة وبلا أي ضغط. يمكنك تغيير موعدها مرة واحدة حتى ساعة قبلها، وإن فاتتك أو أُلغيت يمكنك الحجز من جديد بعد ٤٨ ساعة.',
     category: 'trial'
   },
   {
@@ -448,9 +448,23 @@ export const FAQS: FAQItem[] = [
   {
     question: 'Do I need an account to book?',
     arabicQuestion: 'هل أحتاج إلى حساب لأحجز؟',
-    answer: 'Yes, every booking needs a free account, the free trial too. It takes a minute, and it is where you see your lessons, Zoom links and packages, and talk to your teacher.',
-    arabicAnswer: 'نعم، كل حجز يحتاج إلى حساب مجاني، حتى الحصة التجريبية. يستغرق دقيقة، ومنه تتابع حصصك وروابط Zoom وباقاتك، وتراسل معلمك.',
+    answer: 'Yes, every booking needs a free account, the free trial too. It takes a minute, and it is where you see your lessons and packages, join the lesson room and talk to your teacher.',
+    arabicAnswer: 'نعم، كل حجز يحتاج إلى حساب مجاني، حتى الحصة التجريبية. يستغرق دقيقة، ومنه تتابع حصصك وباقاتك، وتدخل غرفة الحصص، وتراسل معلمك.',
     category: 'booking'
+  },
+  {
+    question: 'Do I need Zoom?',
+    arabicQuestion: 'هل أحتاج إلى Zoom؟',
+    answer: 'No. Lessons open inside Watazawwado from your lesson card or the email link. A Zoom link appears only if our room has a technical problem.',
+    arabicAnswer: 'لا. تفتح الحصة داخل وتزودوا من بطاقة الحصة في حسابك أو من الرابط في البريد. ولا يظهر رابط Zoom إلا إذا حدثت مشكلة تقنية في غرفتنا.',
+    category: 'general'
+  },
+  {
+    question: 'Can I join from my phone?',
+    arabicQuestion: 'أقدر أدخل الحصة من الموبايل؟',
+    answer: 'Yes, learners can join from a phone or tablet. Teachers teach from a computer.',
+    arabicAnswer: 'نعم، يمكن للمتعلم الدخول من الموبايل أو التابلت. أما المعلم فيدرّس من كمبيوتر.',
+    category: 'general'
   },
   {
     question: 'From what age can my child start?',

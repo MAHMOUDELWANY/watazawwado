@@ -155,8 +155,8 @@ export function PrivacyPolicyPage() {
                 <div className="grid sm:grid-cols-2 gap-3 pt-2">
                   {[
                     {
-                      en: 'Scheduling and conducting 1-on-1 lessons via video conferencing (Zoom / Google Meet).',
-                      ar: 'جدولة وتنظيم الدروس الفردية عبر منصات الاتصال المرئي (Zoom / Google Meet).'
+                      en: 'Scheduling and conducting 1-on-1 lessons in our own lesson room on the site (with a backup Zoom link only when the room has a technical problem).',
+                      ar: 'جدولة وتقديم الدروس الفردية في غرفة الدروس الخاصة بنا داخل الموقع (مع رابط Zoom احتياطي فقط عند حدوث مشكلة تقنية في الغرفة).'
                     },
                     {
                       en: 'Sending automated booking confirmations, meeting links, and an email lesson reminder 3 hours before via Brevo email service.',
@@ -192,7 +192,7 @@ export function PrivacyPolicyPage() {
                   <li>{isEn ? 'Security, fraud and abuse prevention, and handling complaints: our legitimate interests (Art. 6(1)(f)).' : 'الأمان ومنع الاحتيال وإساءة الاستخدام ومعالجة الشكاوى: مصلحتنا المشروعة (المادة 6(1)(و)).'}</li>
                   <li>{isEn ? 'The AI learning guide and learning-plan chat: providing the service you ask for (Art. 6(1)(b)). We send the AI only what the task needs (for example a first name, never your email or payment data).' : 'المرشد التعليمي ومحادثة خطة التعلم بالذكاء الاصطناعي: تقديم الخدمة التي تطلبها (المادة 6(1)(ب)). ونرسل للذكاء الاصطناعي ما تحتاجه المهمة فقط (مثل الاسم الأول، وليس بريدك أو بيانات الدفع أبداً).'}</li>
                   <li>{isEn ? 'AI help for teachers: a teacher may use our AI assistant to prepare a lesson or to draft the short summary for the family from their own lesson notes. It receives the learner’s first name and those notes, never contact or payment data, and the teacher reviews every draft before the family sees anything. Legal basis: our legitimate interest in giving good, well-prepared lessons (Art. 6(1)(f)).' : 'مساعدة الذكاء الاصطناعي للمعلمين: يمكن للمعلم أن يستخدم مساعدنا بالذكاء الاصطناعي لتحضير الدرس أو لكتابة مسودة الملخص القصير للأسرة من ملاحظاته عن الدرس. ويصل إليه الاسم الأول للمتعلم وهذه الملاحظات فقط، دون بيانات التواصل أو الدفع، ويراجع المعلم كل مسودة قبل أن تراها الأسرة. الأساس القانوني: مصلحتنا المشروعة في تقديم دروس جيدة ومُعدّة جيداً (المادة 6(1)(و)).'}</li>
-                  <li>{isEn ? 'Lesson attendance: for each lesson we record when the teacher and the learner opened the lesson link on our site, and the times Zoom reports for the lesson starting and ending and for each person joining, leaving or waiting in the waiting room (with the name they show in Zoom). Only the lesson’s teacher and our admin team see it, and it is kept with the lesson record while your account is open. We use it to check that lessons took place on time and to sort out any disagreement about a lesson. Legal basis: our legitimate interest in running lessons reliably and fairly for families and teachers (Art. 6(1)(f)).' : 'حضور الحصص: نسجّل لكل حصة متى فتح المعلم والمتعلم رابط الحصة على موقعنا، والأوقات التي يرسلها Zoom لبداية الحصة ونهايتها ولدخول كل شخص وخروجه وانتظاره في غرفة الانتظار (مع الاسم الظاهر له في Zoom). ولا يرى ذلك إلا معلم الحصة وفريق الإدارة، ونحتفظ به مع سجل الحصة ما دام حسابك مفتوحاً. ونستخدمه للتأكد من أن الحصص تمت في موعدها ولحل أي خلاف حول حصة. الأساس القانوني: مصلحتنا المشروعة في تنظيم الحصص بشكل موثوق وعادل للأسر والمعلمين (المادة 6(1)(و)).'}</li>
+                  <li>{isEn ? 'What our lesson room records: during a lesson in our room we record when each person joins and leaves; the quality of the connection (video resolution, interruptions, reconnects); the time a learner spends away from the lesson screen; and what happened in the lesson (slides shown, board changes, files shared, reactions). We use this to run lessons, calculate attendance and teacher pay, keep teaching quality high, and keep learners safe. We do not record audio or video of lessons. Video and audio pass through our provider Cloudflare and are not stored. Files a teacher shares in a lesson are stored privately and available only to that lesson’s participants. If a lesson moves to the backup Zoom link, we also keep the times Zoom reports for each person joining and leaving. Only the lesson’s teacher and our admin team see these records, and they are kept with the lesson record while your account is open. Legal basis: our legitimate interest in running lessons reliably and fairly for families and teachers (Art. 6(1)(f)).' : 'ما تسجّله غرفة الحصص: أثناء الحصة في غرفتنا نسجّل متى دخل كل شخص وخرج؛ وجودة الاتصال (دقة الصورة، والتقطيع، ومرات إعادة الاتصال)؛ والوقت الذي قضاه المتعلم بعيداً عن شاشة الحصة؛ وما حدث في الحصة (الشرائح المعروضة، والسبورة، والملفات المشارَكة، والتفاعلات). ونستخدم ذلك لتشغيل الحصص، وحساب الحضور وأجر المعلم، والحفاظ على جودة التعليم وأمان المتعلمين. ونحن لا نسجّل صوت الحصص ولا صورتها؛ فالصوت والصورة يمرّان عبر مزوّد الخدمة Cloudflare ولا يُخزَّنان. والملفات التي يشاركها المعلم في الحصة تُخزَّن بشكل خاص، ولا يصل إليها إلا أطراف تلك الحصة. وإذا انتقلت الحصة إلى رابط Zoom الاحتياطي، نحتفظ أيضاً بالأوقات التي يرسلها Zoom لدخول كل شخص وخروجه. ولا يرى هذه السجلات إلا معلم الحصة وفريق الإدارة، ونحتفظ بها مع سجل الحصة ما دام حسابك مفتوحاً. الأساس القانوني: مصلحتنا المشروعة في تنظيم الحصص بشكل موثوق وعادل للأسر والمعلمين (المادة 6(1)(و)).'}</li>
                   <li>{isEn ? 'Emails about your own lessons that you can switch off in your account (a monthly progress note, package renewal reminders, and a check-in after a few quiet weeks): our legitimate interest in supporting your learning (Art. 6(1)(f)). Each one has an off switch in your account settings.' : 'رسائل البريد عن دروسك أنت والتي يمكنك إيقافها من حسابك (ملخص التقدم الشهري، وتذكير تجديد الباقة، ورسالة اطمئنان بعد أسابيع بلا دروس): مصلحتنا المشروعة في دعم تعلمك (المادة 6(1)(و)). ولكل منها زر إيقاف في إعدادات حسابك.'}</li>
                   <li>{isEn ? 'Marketing messages: we do not send any. If we ever do, we will ask for your consent first.' : 'الرسائل التسويقية: لا نرسل أي رسائل تسويقية، وإذا فعلنا يوماً فسنطلب موافقتك أولاً.'}</li>
                 </ul>
@@ -282,7 +282,13 @@ export function PrivacyPolicyPage() {
                     <strong>Brevo (Sendinblue)</strong> — {isEn ? 'Transactional email delivery for booking confirmations, invoices, and lesson reminders via verified domain noreply@watazawwado.academy.' : 'إرسال الإيميلات التشغيلية لتأكيدات الحجز والفواتير والتذكيرات عبر النطاق المعتمد.'}
                   </li>
                   <li>
-                    <strong>Google Calendar & Zoom Video Communications</strong> — {isEn ? 'Scheduling lesson events and hosting secure virtual classroom sessions.' : 'مزامنة مواعيد الدروس واستضافة الفصول الافتراضية المباشرة.'}
+                    <strong>Google Calendar</strong> — {isEn ? 'Scheduling lesson events in the teacher’s calendar.' : 'مزامنة مواعيد الدروس مع تقويم المعلم.'}
+                  </li>
+                  <li>
+                    <strong>Cloudflare, Inc.</strong> — {isEn ? 'Carries the live video and audio of lessons in our lesson room. Nothing is stored.' : 'تنقل صوت الحصص وصورتها مباشرةً في غرفة الحصص لدينا، دون تخزين أي شيء.'}
+                  </li>
+                  <li>
+                    <strong>Zoom Video Communications</strong> — {isEn ? 'The backup lesson link, used only when our lesson room has a technical problem.' : 'رابط الحصة الاحتياطي، ولا يُستخدم إلا عند حدوث مشكلة تقنية في غرفة الحصص لدينا.'}
                   </li>
                   <li>
                     <strong>Stripe & PayPal</strong> — {isEn ? 'Processing lesson and package payments. Card details go straight to them; we never see or store them.' : 'معالجة مدفوعات الدروس والباقات. بيانات البطاقة تذهب إليهم مباشرة، ولا نراها ولا نخزنها.'}
@@ -340,8 +346,8 @@ export function PrivacyPolicyPage() {
                 </p>
                 <p>
                   {isEn
-                    ? 'Lessons are not recorded. Our rules for teachers working with children are in the Terms of Service, section “Children and safeguarding”.'
-                    : 'الدروس لا تُسجَّل. وقواعدنا للمعلمين في التعامل مع الأطفال موجودة في شروط الخدمة، قسم "الأطفال وحمايتهم".'}
+                    ? 'Lessons are not recorded. A parent can watch their child’s live lesson from their own account, and our team may observe lessons for quality and safeguarding. Our rules for teachers working with children are in the Terms of Service, section “Children and safeguarding”.'
+                    : 'الدروس لا تُسجَّل. ويستطيع ولي الأمر متابعة حصة طفله المباشرة من حسابه، وقد يحضر فريقنا الحصص حفاظاً على الجودة والأمان. وقواعدنا للمعلمين في التعامل مع الأطفال موجودة في شروط الخدمة، قسم "الأطفال وحمايتهم".'}
                 </p>
               </div>
             </section>

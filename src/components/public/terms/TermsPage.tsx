@@ -6,7 +6,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-11-12.1, last updated 12 November 2026', ar: 'الإصدار 2026-11-12.1، آخر تحديث 12 نوفمبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-11-18.1, last updated 18 November 2026', ar: 'الإصدار 2026-11-18.1، آخر تحديث 18 نوفمبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -43,12 +43,16 @@ const SECTIONS: Section[] = [
   {
     id: 'lessons',
     en: { title: 'Lessons and teachers', items: [
-      'Lessons are live and online (usually on Zoom). The joining link is sent after the booking is confirmed.',
+      'Lessons take place live in our own online lesson room on Watazawwado. You join from your lesson card on the site or the link in your confirmation email.',
+      'To protect the quality of teaching and the safety of our learners, the academy may observe live lessons. A parent or guardian may also watch their child’s live lesson from their own account, without taking part. We do not record lessons.',
+      'If our lesson room has a technical problem, you may be offered a backup Zoom link for that lesson. A lesson completed on the backup link counts as a held lesson.',
       'Each student has an assigned teacher. Parents can ask to change the teacher at any time; the change applies to new bookings.',
       'Lessons start and end on time. If the student joins late, the lesson still ends at its scheduled time; when the teacher is free, they may add a few minutes, but this is not guaranteed.',
     ] },
     ar: { title: 'الدروس والمعلمون', items: [
-      'الدروس مباشرة عبر الإنترنت (غالباً على Zoom)، ويصلك رابط الدخول بعد تأكيد الحجز.',
+      'تُعقد الدروس مباشرةً في غرفة الدروس الخاصة بوتزودوا داخل الموقع، وتدخلها من بطاقة الدرس على الموقع أو من الرابط في بريد تأكيد الحجز.',
+      'حفاظاً على جودة التعليم وأمان طلابنا، يحق للأكاديمية حضور الدروس المباشرة ومتابعتها. ويمكن لولي الأمر أيضاً متابعة درس ابنه أو ابنته المباشر من حسابه دون أن يشارك فيه. ونحن لا نسجّل الدروس.',
+      'إذا حدثت مشكلة تقنية في غرفة الدروس لدينا، فقد يظهر لك رابط Zoom احتياطي لهذا الدرس، والدرس الذي يكتمل على الرابط الاحتياطي يُحتسب درساً تم.',
       'لكل طالب معلم مخصص، ويمكن لولي الأمر طلب تغيير المعلم في أي وقت، ويطبق التغيير على الحجوزات الجديدة.',
       'تبدأ الدروس وتنتهي في موعدها. إذا تأخر الطالب، ينتهي الدرس في موعده المحدد؛ وقد يضيف المعلم بضع دقائق إن كان متفرغاً، دون أن يكون ذلك مضموناً.',
     ] },
@@ -195,15 +199,15 @@ const SECTIONS: Section[] = [
     id: 'children',
     en: { title: 'Children and safeguarding', items: [
       'A parent or legal guardian books and pays for a child and is the contracting party. The child is the learner.',
-      'Parents may sit in on any lesson and may ask for a different teacher at any time.',
-      'Teachers talk to students only through the platform: Zoom lessons and the on-site chat, which the platform owner can read. Teachers must not move contact to private accounts or ask for personal information that the lesson does not need.',
+      'Parents may watch any of their child’s live lessons from their own account and may ask for a different teacher at any time.',
+      'Teachers talk to students only through the platform: our lesson room and the on-site chat, which our team can read. Teachers must not move contact to private accounts or ask for personal information that the lesson does not need.',
       'Lessons are not recorded by us. Teachers may not record, photograph or screenshot a student without the parent’s permission.',
       'If anything in a lesson worries you, tell us straight away on WhatsApp or by email. We look into every report, may pause the teacher’s access while we do, and remove a teacher’s access to student data when they stop teaching here.',
     ] },
     ar: { title: 'الأطفال وحمايتهم', items: [
       'ولي الأمر أو الوصي القانوني هو من يحجز ويدفع للطفل وهو الطرف المتعاقد، والطفل هو المتعلم.',
-      'يحق لولي الأمر حضور أي درس، وطلب تغيير المعلم في أي وقت.',
-      'يتواصل المعلمون مع الطلاب عبر المنصة فقط: دروس Zoom والمحادثة داخل الموقع التي يستطيع صاحب المنصة الاطلاع عليها. ولا يجوز للمعلم نقل التواصل إلى حسابات خاصة أو طلب معلومات شخصية لا يحتاجها الدرس.',
+      'يحق لولي الأمر متابعة أي درس مباشر لطفله من حسابه، وطلب تغيير المعلم في أي وقت.',
+      'يتواصل المعلمون مع الطلاب عبر المنصة فقط: غرفة الدروس والمحادثة داخل الموقع التي يستطيع فريقنا الاطلاع عليها. ولا يجوز للمعلم نقل التواصل إلى حسابات خاصة أو طلب معلومات شخصية لا يحتاجها الدرس.',
       'نحن لا نسجّل الدروس، ولا يجوز للمعلم تسجيل الطالب أو تصويره أو أخذ لقطة شاشة له دون إذن ولي الأمر.',
       'إذا أقلقك أي شيء في درس، أخبرنا فوراً عبر واتساب أو البريد الإلكتروني. نراجع كل بلاغ، وقد نوقف وصول المعلم أثناء المراجعة، ونلغي وصول المعلم لبيانات الطلاب عند توقفه عن التدريس معنا.',
     ] },

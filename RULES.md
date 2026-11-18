@@ -54,7 +54,24 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-16] Admin alerts on the website only.** New AI-guide requests and placement results reach the super admin as on-site notifications in the site's design (no emails). "Request more info" was removed; the admin continues with the student in the chat instead.
 - **[Decided 2026-10-16] Teacher AI assistant is named Jalila (جليلة).**
 - **[Decided 2026-10-16, changed same day] Chat.** Text only. Every account (student, parent, teacher) has a pinned conversation with the super admin; from sign-up, a student also has a conversation with their assigned teacher (and any teacher they book with). The super admin can read and write in all of them.
-- **[Decided 2026-10-16] Zoom host.** The teacher starts every lesson as the Zoom host (fresh host link from the dashboard); students join through the waiting room, so a student who arrives first never becomes the host.
+- **[Decided 2026-11-17, replaces the 2026-10-16 "Zoom host" rule] Our own lesson room.** Lessons take place in the Watazawwado room inside the site.
+  - **Room window:** the room opens 10 minutes before the start for teacher and learner, and closes 15 minutes after the booked end. Only the teacher can end a lesson earlier.
+  - **Timer:** the teacher always sees elapsed and remaining time. The learner's timer is hidden unless they open it.
+  - **Teacher requirements:** a laptop or desktop and a headset. Before each lesson, the waiting room checks the camera and connection against 720p. A failed check never blocks entry, but it is recorded.
+  - **Video quality:** it adapts during the lesson, from a 1080p cap down to audio with the synced lesson content.
+  - **Connection quality is recorded per lesson.** The super admin gets a monthly report per teacher, and an alert when a teacher's connection fails in 3 lessons within 2 weeks.
+- **[Decided 2026-11-17] Teacher punctuality.** A teacher may be up to 2 minutes late.
+  - Later than that, the dashboard asks for a written reason after the lesson and stays locked until it is sent.
+  - The super admin reviews the reason, then excuses it or deducts pay.
+  - No reason is asked when the delay came from a failure on our side.
+- **[Decided 2026-11-17] Zoom fallback.** When the room fails on our side, the system tells the super admin and shows a "Continue on Zoom" button. The Zoom link keeps the old Zoom window.
+  - A lesson finished on Zoom counts as held: the teacher is paid, the learner gets no credit, and the teacher makes up lost minutes.
+  - A lesson that does not happen follows "What is paid" (§2c).
+  - Zoom stays as a fallback until the owner removes it.
+- **[Decided 2026-11-17] Observers.** A guardian may silently watch their child's live lesson from parent mode. Adult learners' lessons have no guardian observer. The teacher sees that a guardian is watching, and the child does not.
+  - The super admin may silently watch any live lesson for quality and safeguarding, without notifying the teacher. Each visit is logged.
+- **[Decided 2026-11-17] No lesson recording.** Lessons are not recorded.
+- **[Decided 2026-11-18] Published** in the terms (version 2026-11-18.1), the teacher agreement (version 2026-11-18.1, every teacher accepts it again), the privacy policy, the safety page and the FAQ, as drafted in `docs/classroom/LEGAL-DRAFT.md`.
 
 ## 2c. Lesson outcomes and teacher pay
 

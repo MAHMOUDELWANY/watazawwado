@@ -1,8 +1,18 @@
-# Classroom: rules and legal text, draft for the owner's approval
+# Classroom: rules and legal text
 
-Status: **draft, not published.** Nothing here goes into RULES.md, the terms, the privacy policy, the safety page, the
-FAQ or the teacher agreement until the owner approves it (plan Task 15, step 1). After approval, the wording below is
-placed in each page in that page's own style.
+Status: **approved and published 2026-11-18.** The owner approved this draft on 2026-11-18 (plan Task 15, step 1).
+Each section was placed in its page in that page's own style (formal Arabic on the legal pages):
+
+- `RULES.md` §2: section 1 replaces the 2026-10-16 "Zoom host" rule.
+- `src/components/public/terms/TermsPage.tsx`: section 2 ("Lessons and teachers", "Children and safeguarding");
+  terms version 2026-11-18.1 (`TERMS_VERSION` in `api/index.ts`).
+- `src/components/public/privacy/PrivacyPolicyPage.tsx`: section 3 (what the room records, Cloudflare and Zoom as
+  backup in the providers list).
+- `src/components/public/safety/SafetyPage.tsx`: section 4.
+- `src/data/content.ts` (FAQ entries and the how-it-works steps) and `src/components/public/faq/FAQPage.tsx`: section 5.
+- `src/pages/StaffAgreementPage.tsx`: section 6; agreement version 2026-11-18.1 (`TEACHER_AGREEMENT_VERSION` in
+  `api/index.ts`), so every teacher accepts it again.
+- Tests: `test/classroom-legal-published.test.ts`; version pins in `test/mk-01-04-strategy.test.ts`.
 
 ## 1. RULES.md (replaces the 2026-10-16 "Zoom host" rule)
 

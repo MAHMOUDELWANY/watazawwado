@@ -7,7 +7,7 @@ import { useT } from '../lib/language';
 import { dashboardFetch } from '../dashboard/lib/dashboardApi';
 
 // Keep in sync with TEACHER_AGREEMENT_VERSION in api/index.ts.
-const AGREEMENT_VERSION = '2026-11-12.1';
+const AGREEMENT_VERSION = '2026-11-18.1';
 
 type Clause = { en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -25,9 +25,15 @@ const CLAUSES: Clause[] = [
     ] },
   },
   {
+    // 2026-11-18.1 (classroom, owner approved): our own lesson room, equipment, punctuality, Zoom only as a backup,
+    // observation and no recording (RULES.md §2, docs/classroom/LEGAL-DRAFT.md §6).
     en: { title: 'Lessons and quality', items: [
       'Keep your weekly hours on “My hours” up to date. Students book from those hours, so only open times you can really teach.',
-      'Prepare each lesson, start on time as the Zoom host from the dashboard, and teach the full booked time.',
+      'Prepare each lesson, open it on time in our lesson room from the dashboard, and teach the full booked time.',
+      'Teach from a laptop or desktop computer with a headset and a stable internet connection.',
+      'Join each lesson on time. If you are more than 2 minutes late, write the reason after the lesson. Watazawwado may excuse the delay or deduct pay according to the pay rules.',
+      'If our lesson room fails on our side, continue on the backup Zoom link the room shows. A lesson finished there counts as held, and you make up the lost minutes.',
+      'Watazawwado records attendance, connection quality and lesson activity for each lesson, as described in the privacy policy. Lessons are not recorded.',
       'If you cannot teach a booked lesson, move it yourself from the dashboard, as early as possible, to tomorrow or a later day, and write the reason; the student gets an email and a notice, and the platform owner is told on the site. You cannot cancel lessons; only the platform owner can.',
       'Moving a lesson less than 3 hours before it starts is still possible, but then you also send the platform owner the ready WhatsApp message that opens, so we can apologise to the family properly.',
       'Write a short note after each lesson so the student, the parent and the next lesson benefit from it.',
@@ -35,7 +41,11 @@ const CLAUSES: Clause[] = [
     ] },
     ar: { title: 'الدروس والجودة', items: [
       'حدّث ساعاتك الأسبوعية في صفحة "ساعاتي" باستمرار. الطلاب يحجزون من هذه الساعات، فافتح فقط الأوقات التي تستطيع التدريس فيها فعلاً.',
-      'حضّر كل درس، وابدأ في موعده كمضيف Zoom من لوحة التحكم، ودرّس الوقت المحجوز كاملاً.',
+      'حضّر كل درس، وافتحه في موعده في غرفة الدروس من لوحة التحكم، ودرّس الوقت المحجوز كاملاً.',
+      'درّس من كمبيوتر محمول أو مكتبي، مع سماعة رأس واتصال إنترنت مستقر.',
+      'ادخل كل درس في موعده. وإذا تأخرت أكثر من دقيقتين، اكتب السبب بعد الدرس. ويجوز لوتزودوا أن تعذرك في التأخير أو تخصم من الأجر وفق قواعد الأجر.',
+      'إذا تعطلت غرفة الدروس من جهتنا، أكمل الدرس على رابط Zoom الاحتياطي الذي تعرضه الغرفة. والدرس الذي يكتمل عليه يُحتسب درساً تم، وتعوّض الدقائق الضائعة.',
+      'تسجّل وتزودوا الحضور وجودة الاتصال ونشاط الدرس لكل درس، كما توضح سياسة الخصوصية. ولا تُسجَّل الدروس.',
       'إذا لم تستطع تقديم درس محجوز، غيّر موعده بنفسك من لوحة التحكم في أقرب وقت، إلى الغد أو يوم بعده، واكتب السبب؛ فيصل للطالب بريد وإشعار، ويُبلَّغ صاحب المنصة على الموقع. ولا يمكنك إلغاء الدروس؛ الإلغاء لصاحب المنصة وحده.',
       'تغيير موعد الدرس قبل أقل من ٣ ساعات من بدايته ممكن، لكن عليك حينها أيضاً إرسال رسالة واتساب الجاهزة التي تُفتح لصاحب المنصة، حتى نعتذر للأسرة كما يليق.',
       'اكتب ملاحظة قصيرة بعد كل درس، ليستفيد منها الطالب وولي الأمر والدرس التالي.',
@@ -68,18 +78,20 @@ const CLAUSES: Clause[] = [
   },
   {
     en: { title: 'Working with children (safeguarding)', items: [
-      'Talk to students only through the platform: Zoom lessons and the on-site chat. Never move contact to personal phone numbers, social media or private accounts.',
+      'Talk to students only through the platform: our lesson room and the on-site chat. Never move contact to personal phone numbers, social media or private accounts.',
       'Do not ask a student for personal information the lesson does not need (address, photos, passwords, family matters).',
       'Do not record, photograph or screenshot a student, and do not keep lesson content that shows a student, without the parent’s written permission given through the platform.',
-      'Parents may join any lesson. Keep your camera background and language appropriate at all times.',
+      'A parent may watch their child’s live lesson from their own account; you will see when a parent is watching. Keep your camera background and language appropriate at all times.',
+      'Watazawwado may observe your live lessons, without prior notice, for quality and safeguarding. Observation visits are logged.',
       'If a student tells you something worrying, or you see a sign of harm, tell the platform owner the same day. Do not investigate on your own.',
       'You confirm that you have no conviction for any offence against children. Where the law of your country allows, you will provide a criminal record certificate when asked.',
     ] },
     ar: { title: 'التعامل مع الأطفال (حمايتهم)', items: [
-      'تواصل مع الطلاب عبر المنصة فقط: دروس Zoom والمحادثة داخل الموقع. ولا تنقل التواصل أبداً إلى أرقام هواتف شخصية أو وسائل تواصل اجتماعي أو حسابات خاصة.',
+      'تواصل مع الطلاب عبر المنصة فقط: غرفة الدروس والمحادثة داخل الموقع. ولا تنقل التواصل أبداً إلى أرقام هواتف شخصية أو وسائل تواصل اجتماعي أو حسابات خاصة.',
       'لا تطلب من الطالب معلومات شخصية لا يحتاجها الدرس (العنوان، الصور، كلمات المرور، الشؤون العائلية).',
       'لا تسجّل الطالب ولا تصوّره ولا تأخذ لقطة شاشة له، ولا تحتفظ بمحتوى من الدرس يظهر فيه الطالب، دون إذن كتابي من ولي الأمر عبر المنصة.',
-      'يحق لولي الأمر حضور أي درس. حافظ على خلفية كاميرا وألفاظ لائقة في كل الأوقات.',
+      'يحق لولي الأمر متابعة درس طفله المباشر من حسابه، وسترى أن ولي الأمر يتابع. حافظ على خلفية كاميرا وألفاظ لائقة في كل الأوقات.',
+      'يجوز لوتزودوا حضور دروسك المباشرة ومتابعتها دون إشعار مسبق، حفاظاً على الجودة وحماية الطلاب. وتُسجَّل كل زيارة متابعة.',
       'إذا أخبرك طالب بشيء مقلق، أو لاحظت علامة على أذى، أخبر صاحب المنصة في نفس اليوم، ولا تحقق في الأمر بنفسك.',
       'تقر بأنه لا توجد ضدك أي إدانة في جريمة بحق الأطفال، وأنك ستقدم شهادة خلو سوابق عند الطلب حيث يسمح قانون بلدك بذلك.',
     ] },

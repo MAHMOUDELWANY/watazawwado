@@ -9,27 +9,27 @@ import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 // Every point restates a rule already in the terms ("Children and safeguarding", /terms#children), RULES.md §2
-// (Zoom host and waiting room) or the privacy policy. No new promises here: change those first.
+// (our own lesson room, observers, no recording) or the privacy policy. No new promises here: change those first.
 const POINTS = [
   {
     icon: Eye,
-    en: ['You can sit in', 'Join any lesson whenever you like, and ask for a different teacher at any time.'],
-    ar: ['يمكنك الحضور معهم', 'احضر أي حصة في أي وقت، ويمكنك طلب معلم آخر متى شئت.']
+    en: ['You can watch live', 'Watch your child’s live lesson at any time from your parent account, without your child being disturbed. You can ask for a different teacher at any time.'],
+    ar: ['تابع الحصة مباشرة', 'تابع حصة ابنك المباشرة في أي وقت من حساب ولي الأمر، دون أن يتشتت الطفل. ويمكنك طلب معلم آخر متى شئت.']
   },
   {
     icon: DoorClosed,
-    en: ['The teacher opens the room', 'The teacher starts every lesson as the Zoom host. Your child waits in the waiting room until the teacher lets them in.'],
-    ar: ['المعلم هو من يفتح الحصة', 'يبدأ المعلم كل حصة مضيفًا على Zoom، وينتظر ابنك في غرفة الانتظار حتى يُدخله المعلم.']
+    en: ['Our own lesson room', 'Lessons happen in our own lesson room on the site. Our academy staff may also observe lessons to make sure every lesson meets our standards.'],
+    ar: ['غرفة الحصص الخاصة بنا', 'تُعقد الحصص في غرفة الحصص الخاصة بوتزودوا داخل الموقع. وقد يحضر فريق الأكاديمية الحصص ليتأكد أن كل حصة على المستوى الذي نلتزم به.']
   },
   {
     icon: MessagesSquare,
-    en: ['Talk stays on our platform', 'Teachers talk to students only in our Zoom lessons and the chat on our site, which our team can read. They never move contact to a private account and never ask for personal details the lesson doesn’t need.'],
-    ar: ['الحديث كله على المنصة', 'يتواصل المعلم مع الطالب في حصص Zoom والمحادثة على موقعنا فقط، ويستطيع فريقنا قراءتها. لا ينتقل الحديث إلى أي حساب خاص، ولا يُسأل الطفل عن بيانات شخصية لا تحتاجها الحصة.']
+    en: ['Talk stays on our platform', 'Teachers talk to students only in our lesson room and the chat on our site, which our team can read. They never move contact to a private account and never ask for personal details the lesson doesn’t need.'],
+    ar: ['الحديث كله على المنصة', 'يتواصل المعلم مع الطالب في غرفة الحصص والمحادثة على موقعنا فقط، ويستطيع فريقنا قراءتها. لا ينتقل الحديث إلى أي حساب خاص، ولا يُسأل الطفل عن بيانات شخصية لا تحتاجها الحصة.']
   },
   {
     icon: VideoOff,
-    en: ['No recording', 'We don’t record lessons. A teacher may not record, photograph or screenshot your child without your permission.'],
-    ar: ['لا تسجيل', 'نحن لا نسجّل الحصص. ويُمنع المعلم من تسجيل ابنك أو تصويره أو أخذ لقطة شاشة له دون إذنك.']
+    en: ['No recording', 'Lessons are never recorded. A teacher may not record, photograph or screenshot your child without your permission.'],
+    ar: ['لا تسجيل', 'الحصص لا تُسجَّل أبدًا. ويُمنع المعلم من تسجيل ابنك أو تصويره أو أخذ لقطة شاشة له دون إذنك.']
   },
   {
     icon: UserRound,

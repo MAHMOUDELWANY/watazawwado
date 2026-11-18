@@ -44,7 +44,7 @@ describe('MK-01: $10 an hour for Quran, Tajweed and Islamic studies', () => {
       // "$9" alone is now a real package price ($9.00 an hour for 12 lessons), so look for the old list-price wording.
       assert.doesNotMatch(s, /\$9 an hour|\$9\/h|\b9\$ للساعة|٩\$|٩ دولار|\b9 دولار|hourlyRateUsd: 9\b|[Ff]rom \$9/, f);
     }
-    assert.match(read('api/index.ts'), /TERMS_VERSION = '2026-11-12\.1'/);
+    assert.match(read('api/index.ts'), /TERMS_VERSION = '2026-11-18\.1'/);
   });
 
   const founding: DiscountCode = {
@@ -118,9 +118,9 @@ describe('MK-02: quarterly retention bonus', () => {
     assert.match(routes, /app\.get\('\/api\/dashboard\/payroll\/retention', deps\.verifyTeacherAuth, deps\.requireSuperAdmin/);
     assert.match(routes, /app\.put\('\/api\/dashboard\/payroll\/retention\/settings', deps\.rateLimit, deps\.verifyTeacherAuth, deps\.requireSuperAdmin/);
     assert.match(read('src/dashboard/components/RetentionBonus.tsx'), /\/api\/dashboard\/payroll\/adjustments/);
-    assert.match(read('api/index.ts'), /TEACHER_AGREEMENT_VERSION = '2026-11-12\.1'/);
+    assert.match(read('api/index.ts'), /TEACHER_AGREEMENT_VERSION = '2026-11-18\.1'/);
     const agreement = read('src/pages/StaffAgreementPage.tsx');
-    assert.match(agreement, /AGREEMENT_VERSION = '2026-11-12\.1'/);
+    assert.match(agreement, /AGREEMENT_VERSION = '2026-11-18\.1'/);
     assert.match(agreement, /retention bonus/);
     assert.doesNotMatch(agreement, /10%|full-price/);
   });

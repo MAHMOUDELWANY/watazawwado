@@ -20,8 +20,8 @@ export function FAQPage() {
           <PageHero
             title={isEn ? <>Questions, <span className="text-ribbon">answered simply.</span></> : <>أسئلتك، <span className="text-ribbon">بإجابات بسيطة.</span></>}
             intro={isEn
-              ? 'Booking, lessons, payment and Zoom. If something is missing, ask us on WhatsApp.'
-              : 'الحجز والدروس والدفع وZoom. وإن لم تجد سؤالك، اسألنا على واتساب.'}
+              ? 'Booking, lessons, payment and the lesson room. If something is missing, ask us on WhatsApp.'
+              : 'الحجز والدروس والدفع وغرفة الحصص. وإن لم تجد سؤالك، اسألنا على واتساب.'}
           />
 
           <div className="pt-2 space-y-8">
@@ -31,8 +31,8 @@ export function FAQPage() {
               </h2>
               <p className="text-muted-foreground leading-relaxed text-base max-w-[70ch]">
                 {isEn
-                  ? 'You can sit in on any lesson, the teacher hosts the Zoom room with a waiting room, lessons are not recorded, and teachers talk to students only on our platform. '
-                  : 'يمكنك حضور أي حصة، والمعلم هو مضيف غرفة Zoom ومعها غرفة انتظار، والحصص لا تُسجَّل، ويتواصل المعلم مع الطالب على منصتنا فقط. '}
+                  ? 'You can watch your child’s live lesson from your account, our team may observe lessons to keep standards high, lessons are not recorded, and teachers talk to students only on our platform. '
+                  : 'يمكنك متابعة حصة ابنك المباشرة من حسابك، وقد يحضر فريقنا الحصص ليحافظ على مستواها، والحصص لا تُسجَّل، ويتواصل المعلم مع الطالب على منصتنا فقط. '}
                 <Link to="/safety" className="underline text-primary font-semibold">{isEn ? 'Read how it works' : 'اعرف التفاصيل'}</Link>
               </p>
             </div>

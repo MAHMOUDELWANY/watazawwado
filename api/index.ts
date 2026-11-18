@@ -229,9 +229,9 @@ const MAX_LOST_TRIALS = 5;
 const MAX_FAMILY_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-11-12.1';
+const TERMS_VERSION = '2026-11-18.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
-const TEACHER_AGREEMENT_VERSION = '2026-11-12.1';
+const TEACHER_AGREEMENT_VERSION = '2026-11-18.1';
 
 /** True when the learner already has a lesson (held, confirmed or moved) overlapping this time, with any teacher (P2-004). */
 async function learnerHasLessonAt(client: any, studentId: string | null, startIso: string, endIso: string, exceptBookingId?: string): Promise<boolean> {
