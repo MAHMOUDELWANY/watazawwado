@@ -33,7 +33,7 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 7 | Lesson timeline, persistence, rejoin | done (85 classroom tests pass) | 578fd38b |
 | 8 | Whiteboard, PDF, Arabic keyboard | done (bucket migration 20261118000000 not applied; signed direct uploads up to 20 MB) | acc5bbd6, 25957e0c |
 | 9 | The room screen | in progress | |
-| 10 | Attendance and teacher punctuality | in progress (gate + admin page to be mounted in DashboardApp after Task 9) | |
+| 10 | Attendance and teacher punctuality | done (gate + admin page NOT yet mounted in DashboardApp: mount after Task 9; rejoin-after-leave fix running) | 6c8b10fb |
 | 11 | Quality records and alerts | todo | |
 | 12 | Automatic Zoom fallback | todo | |
 | 13 | Observers and rollout switch | todo | |
@@ -54,3 +54,8 @@ Read this first if you are continuing the classroom work in a new session or on 
 - `remainingMs` in `src/lib/roomWindow.ts` counts to the **hard close**. For the teacher's timer (remaining of the
   booked time and the 5-minute warning), use `lessonEndMs` from `src/lib/lessonWindow.ts`.
 - Legal and RULES.md text (Task 15) must be approved by the owner before publishing.
+- Mount Task 10 UI in `src/dashboard/DashboardApp.tsx` once Task 9 is committed:
+  `import LateReasonGate from './components/LateReasonGate'; import LateReasonsPage from './pages/LateReasonsPage';`,
+  render `{!isSuperAdmin && <LateReasonGate />}` next to `<FeedbackHost />`, and add
+  `<Route path="/late-reasons" element={isSuperAdmin ? <LateReasonsPage /> : <Navigate to="/dashboard/month" replace />} />`
+  next to the `/payroll` route.
