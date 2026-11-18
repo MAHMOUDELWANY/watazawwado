@@ -491,7 +491,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                     </span>
                   </button>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E0907]/70 px-3 py-1 text-xs sm:text-sm font-bold text-[#FAF7F2]/90">
-                    <Volume2 className="w-4 h-4 text-[#F6D58E]" aria-hidden="true" />{isEn ? 'Sound on · 35 seconds' : 'علّي الصوت · ٣٥ ثانية'}
+                    <Volume2 className="w-4 h-4 text-[#F6D58E]" aria-hidden="true" />{isEn ? 'Sound on · 35 seconds' : 'علّي الصوت، ٣٥ ثانية'}
                   </span>
                 </div>
               </>
