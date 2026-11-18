@@ -10,6 +10,7 @@ import { alertTeacherIfNeeded, lessonFailedForSide } from '../classroom/qualityA
 import { CLIENT_INCIDENT_KINDS, recordIncident, type IncidentKind } from '../classroom/incidents.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 import { classroomEnabledFor } from '../classroom/mode.js';
+import { roomSideIn } from './attendance.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -194,14 +195,16 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
       if (!isObserver(role)) {
         // A side joins when it is not already in: a second device while in writes nothing (Review Focus 2), a rejoin
-        // after room_left is a new join so the time after it counts. The first keeps the fixed key lateness reads.
+        // after room_left, or after a crash (no heartbeat for 90 s), is a new join so the time after it counts. The
+        // first keeps the fixed key lateness reads.
         const r = attendanceRole(role);
-        const { data: last, error: lastErr } = await client.from('lesson_attendance_events').select('event')
-          .eq('booking_id', id).eq('source', 'room').eq('role', r).order('occurred_at', { ascending: false }).limit(1).maybeSingle();
+        const { data: roomRows, error: lastErr } = await client.from('lesson_attendance_events').select('event, role, occurred_at')
+          .eq('booking_id', id).eq('source', 'room').order('occurred_at', { ascending: true }).limit(200);
         let error = lastErr;
-        if (!lastErr && (!last || last.event === 'room_left')) {
+        if (!lastErr && !roomSideIn(roomRows || [], r, now())) {
+          const before = (roomRows || []).some((e: any) => e.role === r);
           ({ error } = await client.from('lesson_attendance_events').upsert(
-            { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: at, dedupe_key: last ? `room:${id}:${r}:joined:${ticketPayload.joinId}` : `room:${id}:${r}:joined` },
+            { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: at, dedupe_key: before ? `room:${id}:${r}:joined:${ticketPayload.joinId}` : `room:${id}:${r}:joined` },
             { onConflict: 'dedupe_key', ignoreDuplicates: true },
           ));
         }
@@ -556,6 +559,13 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         { onConflict: 'booking_id,side' },
       );
       if (error) throw new Error(`lesson_quality: ${error.message}`);
+      // The heartbeat for attendance: one row per join, moved forward, so a side whose tab dies stops counting 90 s
+      // after it (attendance.ts ROOM_BEAT_GRACE_MS). Logged, never failing the quality write.
+      const { error: beatErr } = await client.from('lesson_attendance_events').upsert(
+        { booking_id: t.bookingId, source: 'room', event: 'room_heartbeat', role: side, occurred_at: new Date(now()).toISOString(), dedupe_key: `room:${t.bookingId}:${side}:hb:${t.joinId}` },
+        { onConflict: 'dedupe_key' },
+      );
+      if (beatErr) console.error('[classroom quality] heartbeat', beatErr.message);
       // Only a failed teacher row can tip the alert, so healthy heartbeats skip its queries. The teacher's user id is
       // the booking's teacher_id (notYours checked it). The alert never fails the write.
       if (side === 'teacher' && lessonFailedForSide(merged)) await alertTeacherIfNeeded(client, t.userId, now()).catch((err) => console.error('[classroom quality] alert', err));

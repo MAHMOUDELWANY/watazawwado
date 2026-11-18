@@ -15,7 +15,7 @@ type Middleware = (req: any, res: any, next: any) => any;
 type AttendanceRow = {
   booking_id: string;
   source: 'site' | 'zoom' | 'room';
-  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined' | 'room_joined' | 'room_left' | 'room_ended';
+  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined' | 'room_joined' | 'room_left' | 'room_ended' | 'room_heartbeat';
   role: 'teacher' | 'student' | 'unknown';
   participant_name?: string | null;
   occurred_at: string;
@@ -106,15 +106,38 @@ export type AttendanceSummary = {
 const ROOM_AS: Record<string, string> = { room_joined: 'joined', room_left: 'left' };
 const asJoinLeave = <T extends { event: string }>(events: T[]): T[] => events.map((e) => (ROOM_AS[e.event] ? { ...e, event: ROOM_AS[e.event] } : e));
 
-/** Who is in the Zoom room now: the last Zoom join/leave of each side. */
-export function inRoomNow(events: Array<{ event: string; role: string; occurred_at?: string }>): { teacherIn: boolean; studentIn: boolean } {
+/**
+ * The room's quality call (every 60 s) moves a room_heartbeat row forward for each join. A crashed tab or a dead phone
+ * sends no room_left, so a room side with no heartbeat for this long has gone. Zoom presence is never cut this way.
+ */
+export const ROOM_BEAT_GRACE_MS = 90_000;
+const msOf = (e: { occurred_at?: string }) => new Date(e.occurred_at || 0).getTime();
+const byTime = <T extends { occurred_at?: string }>(events: T[]) => [...events].sort((a, b) => msOf(a) - msOf(b));
+// Heartbeats are trusted only once the lesson has one: lessons before the heartbeat (or before its migration) keep
+// presence until room_left, as before.
+const hasBeats = (events: Array<{ event: string }>) => events.some((e) => e.event === 'room_heartbeat');
+
+/** Is this side in our room now: its last room join/leave is a join, and it sent a heartbeat within the grace. */
+export function roomSideIn(events: Array<{ event: string; role: string; occurred_at?: string }>, role: string, nowMs = Date.now()): boolean {
+  let move: string | null = null;
+  let seen = -Infinity;
+  for (const e of byTime(events)) {
+    if (e.role !== role || !['room_joined', 'room_left', 'room_heartbeat'].includes(e.event)) continue;
+    if (e.event !== 'room_heartbeat') move = e.event;
+    seen = Math.max(seen, msOf(e));
+  }
+  return move === 'room_joined' && (!hasBeats(events) || nowMs - seen <= ROOM_BEAT_GRACE_MS);
+}
+
+/** Who is in the lesson now: the last Zoom join/leave of each side, or in our room by roomSideIn. */
+export function inRoomNow(events: Array<{ event: string; role: string; occurred_at?: string }>, nowMs = Date.now()): { teacherIn: boolean; studentIn: boolean } {
   const last: Record<string, string> = {};
-  const sorted = asJoinLeave(events).sort((a, b) => new Date(a.occurred_at || 0).getTime() - new Date(b.occurred_at || 0).getTime());
-  for (const e of sorted) {
+  for (const e of byTime(events)) {
     if (e.event === 'joined' || e.event === 'left') last[e.role] = e.event;
     if (e.event === 'meeting_ended') { last.teacher = 'left'; last.student = 'left'; }
   }
-  return { teacherIn: last.teacher === 'joined', studentIn: last.student === 'joined' };
+  const isIn = (role: string) => last[role] === 'joined' || roomSideIn(events, role, nowMs);
+  return { teacherIn: isIn('teacher'), studentIn: isIn('student') };
 }
 
 /**
@@ -153,29 +176,46 @@ export type AttendanceAnalysis = {
 
 type Ev = { event: string; role: string; occurred_at: string; participant_name?: string | null };
 
-/** Time spans each side was in the Zoom room, cut to the lesson time. */
-function presence(events: Ev[], role: 'teacher' | 'student', from: number, to: number): Array<[number, number]> {
-  const spans: Array<[number, number]> = [];
+/** Spans from one source's join/leave events. In our room (beats on) a span also ends 90 s after its last heartbeat. */
+function spans(events: Ev[], role: string, to: number, join: string, leave: string, beats: boolean): Array<[number, number]> {
+  const out: Array<[number, number]> = [];
   let open: number | null = null;
+  let seen = 0;
   for (const e of events) {
     if (e.role !== role) continue;
     const t = new Date(e.occurred_at).getTime();
-    if (e.event === 'joined' && open === null) open = t;
-    else if (e.event === 'left' && open !== null) { spans.push([open, t]); open = null; }
+    // A heartbeat row is the last beat of a join that beat until then (one row per join), so only other events find a gap.
+    if (beats && open !== null && e.event !== 'room_heartbeat' && t > seen + ROOM_BEAT_GRACE_MS) { out.push([open, seen + ROOM_BEAT_GRACE_MS]); open = null; }
+    if (e.event === join && open === null) open = seen = t;
+    else if (beats && e.event === 'room_heartbeat' && open !== null) seen = t;
+    else if (e.event === leave && open !== null) { out.push([open, t]); open = null; }
   }
-  if (open !== null) spans.push([open, Math.min(Date.now(), to)]);
-  return spans.map(([a, b]) => [Math.max(a, from), Math.min(b, to)] as [number, number]).filter(([a, b]) => b > a);
+  if (open !== null) out.push([open, Math.min(Date.now(), to, beats ? seen + ROOM_BEAT_GRACE_MS : Infinity)]);
+  return out;
+}
+
+/** Time spans each side was in the lesson (Zoom and our room merged), cut to the lesson time. */
+function presence(events: Ev[], role: 'teacher' | 'student', from: number, to: number): Array<[number, number]> {
+  const all = [...spans(events, role, to, 'joined', 'left', false), ...spans(events, role, to, 'room_joined', 'room_left', hasBeats(events))]
+    .map(([a, b]) => [Math.max(a, from), Math.min(b, to)] as [number, number]).filter(([a, b]) => b > a).sort((x, y) => x[0] - y[0]);
+  const merged: Array<[number, number]> = [];
+  for (const [a, b] of all) {
+    const last = merged[merged.length - 1];
+    if (last && a <= last[1]) last[1] = Math.max(last[1], b); else merged.push([a, b]);
+  }
+  return merged;
 }
 
 export function analyzeAttendance(
   rawEvents: Ev[],
   lesson: { scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null },
 ): AttendanceAnalysis {
-  const events = asJoinLeave(rawEvents).sort((a, b) => new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime());
+  const sorted = byTime(rawEvents);
+  const events = asJoinLeave(sorted);
   const from = new Date(lesson.scheduled_start).getTime() - 10 * 60_000;
   const to = lesson.scheduled_end ? new Date(lesson.scheduled_end).getTime() : new Date(lesson.scheduled_start).getTime() + (Number(lesson.duration_minutes) || 60) * 60_000;
-  const teacher = presence(events, 'teacher', from, to);
-  const student = presence(events, 'student', from, to);
+  const teacher = presence(sorted, 'teacher', from, to);
+  const student = presence(sorted, 'student', from, to);
   let together = 0;
   for (const [a1, b1] of teacher) for (const [a2, b2] of student) together += Math.max(0, Math.min(b1, b2) - Math.max(a1, a2));
   const joins = { teacher: 0, student: 0 };
@@ -217,7 +257,8 @@ export async function attachAttendance<T extends { id: string; scheduled_start: 
   const endOf = new Map(lessons.map((l) => [l.id, l.scheduled_end ? new Date(l.scheduled_end).getTime() : Infinity]));
   const byLesson = new Map<string, any[]>();
   for (const row of data || []) {
-    if (new Date(row.occurred_at).getTime() > (endOf.get(row.booking_id) ?? Infinity)) continue;
+    // A join's one heartbeat row moves past the end when that side stays on; it still holds the join's beats.
+    if (row.event !== 'room_heartbeat' && new Date(row.occurred_at).getTime() > (endOf.get(row.booking_id) ?? Infinity)) continue;
     byLesson.set(row.booking_id, [...(byLesson.get(row.booking_id) || []), row]);
   }
   return lessons.map((l) => {
@@ -326,6 +367,6 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
     const a = analyzeAttendance(data || [], booking);
     const summary = { ...summarizeAttendance(data || []), held: a.held, togetherMinutes: a.togetherMinutes, requiredMinutes: a.requiredMinutes, joins: a.joins, unstable: a.unstable };
     // Owner review 2026-11-09: exact click and join times are for the super admin; the teacher gets the summary only.
-    res.json({ events: isAdmin ? data || [] : [], summary });
+    res.json({ events: isAdmin ? (data || []).filter((e: any) => e.event !== 'room_heartbeat') : [], summary });
   });
 }

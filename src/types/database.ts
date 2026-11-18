@@ -1082,7 +1082,7 @@ export interface LessonAttendanceEventRow {
   source: 'site' | 'zoom' | 'room';
   event:
     | 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined'
-    | 'room_joined' | 'room_left' | 'room_ended';
+    | 'room_joined' | 'room_left' | 'room_ended' | 'room_heartbeat';
   role: 'teacher' | 'student' | 'unknown' | 'observer';
   participant_name: string | null;
   occurred_at: string;

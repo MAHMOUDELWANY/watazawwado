@@ -96,7 +96,7 @@ function fakeDb(tables: Record<string, any[]>) {
       const match = () => {
         const m = rows(t).filter((r) => filters.every((f) => f(r)));
         // Equal timestamps (the clock is frozen): the row written later counts as the newer one.
-        if (sortBy) { const { c, asc } = sortBy; m.reverse().sort((x, y) => (x[c] < y[c] ? -1 : x[c] > y[c] ? 1 : 0) * (asc ? 1 : -1)); }
+        if (sortBy) { const { c, asc } = sortBy; (asc ? m : m.reverse()).sort((x, y) => (x[c] < y[c] ? -1 : x[c] > y[c] ? 1 : 0) * (asc ? 1 : -1)); }
         return m;
       };
       const b: any = {
@@ -113,7 +113,7 @@ function fakeDb(tables: Record<string, any[]>) {
           return { error: null };
         },
         update: (p: any) => { patch = p; return b; },
-        then: (ok: any, ko: any) => Promise.resolve().then(() => { for (const r of match()) Object.assign(r, patch); return { error: null }; }).then(ok, ko),
+        then: (ok: any, ko: any) => Promise.resolve().then(() => { for (const r of match()) Object.assign(r, patch); return { data: match(), error: null }; }).then(ok, ko),
       };
       return b;
     },
