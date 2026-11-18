@@ -12,8 +12,8 @@ import { handleLiveLessonEvent } from '../notifications/lessonLive.js';
 type Middleware = (req: any, res: any, next: any) => any;
 type AttendanceRow = {
   booking_id: string;
-  source: 'site' | 'zoom';
-  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined';
+  source: 'site' | 'zoom' | 'room';
+  event: 'link_opened' | 'meeting_started' | 'meeting_ended' | 'joined' | 'left' | 'waiting_room_joined' | 'room_joined' | 'room_left' | 'room_ended';
   role: 'teacher' | 'student' | 'unknown';
   participant_name?: string | null;
   occurred_at: string;
@@ -97,10 +97,17 @@ export type AttendanceSummary = {
   unstable?: 'teacher' | 'student' | 'both' | null;
 };
 
+/**
+ * Classroom (Task 10): our own room's room_joined/room_left count as joined/left. Zoom events stay as they are, so a
+ * lesson that fell back to Zoom counts both.
+ */
+const ROOM_AS: Record<string, string> = { room_joined: 'joined', room_left: 'left' };
+const asJoinLeave = <T extends { event: string }>(events: T[]): T[] => events.map((e) => (ROOM_AS[e.event] ? { ...e, event: ROOM_AS[e.event] } : e));
+
 /** Who is in the Zoom room now: the last Zoom join/leave of each side. */
 export function inRoomNow(events: Array<{ event: string; role: string; occurred_at?: string }>): { teacherIn: boolean; studentIn: boolean } {
   const last: Record<string, string> = {};
-  const sorted = [...events].sort((a, b) => new Date(a.occurred_at || 0).getTime() - new Date(b.occurred_at || 0).getTime());
+  const sorted = asJoinLeave(events).sort((a, b) => new Date(a.occurred_at || 0).getTime() - new Date(b.occurred_at || 0).getTime());
   for (const e of sorted) {
     if (e.event === 'joined' || e.event === 'left') last[e.role] = e.event;
     if (e.event === 'meeting_ended') { last.teacher = 'left'; last.student = 'left'; }
@@ -114,7 +121,7 @@ export function inRoomNow(events: Array<{ event: string; role: string; occurred_
  */
 export function summarizeAttendance(events: Array<{ event: string; role: string }>): AttendanceSummary {
   const sum: AttendanceSummary = { teacher: false, student: false };
-  for (const e of events) {
+  for (const e of asJoinLeave(events)) {
     if (e.event === 'meeting_started') sum.teacher = true;
     if (!['link_opened', 'joined', 'waiting_room_joined'].includes(e.event)) continue;
     if (e.role === 'teacher') sum.teacher = true;
@@ -162,7 +169,7 @@ export function analyzeAttendance(
   rawEvents: Ev[],
   lesson: { scheduled_start: string; scheduled_end?: string | null; duration_minutes?: number | null },
 ): AttendanceAnalysis {
-  const events = [...rawEvents].sort((a, b) => new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime());
+  const events = asJoinLeave(rawEvents).sort((a, b) => new Date(a.occurred_at).getTime() - new Date(b.occurred_at).getTime());
   const from = new Date(lesson.scheduled_start).getTime() - 10 * 60_000;
   const to = lesson.scheduled_end ? new Date(lesson.scheduled_end).getTime() : new Date(lesson.scheduled_start).getTime() + (Number(lesson.duration_minutes) || 60) * 60_000;
   const teacher = presence(events, 'teacher', from, to);

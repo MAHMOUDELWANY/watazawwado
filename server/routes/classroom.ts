@@ -5,6 +5,7 @@ import { roomKey, roomSecret } from './lessonRoom.js';
 import { isUuid } from './progress.js';
 import { ROOM_CLOSE_GRACE_MIN, remainingMs, roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
 import { isRoomEvent, type RoomEvent } from '../../src/lib/roomEvents.js';
+import { recordTeacherLateness } from '../classroom/lateness.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 
 /**
@@ -161,6 +162,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
           { onConflict: 'dedupe_key', ignoreDuplicates: true },
         );
         if (error) console.error('[classroom enter] room_joined', error.message);
+        // Task 10: judged on the stored first join, so rejoins change nothing. Never blocks the teacher's entry.
+        else if (role === 'teacher') await recordTeacherLateness(client, booking).catch((err) => console.error('[classroom enter] lateness', err));
       } else if (role === 'admin_observer') {
         const { error } = await client.from('admin_observations').insert({ booking_id: id, admin_user_id: requester.userId, started_at: at });
         if (error) throw new Error(`admin_observations: ${error.message}`);
