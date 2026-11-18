@@ -83,7 +83,7 @@ export function registerLateReasonRoutes(app: express.Express, deps: {
     }
   });
 
-  app.get('/api/admin/late-reasons', deps.verifyTeacherAuth, deps.requireSuperAdmin, async (_req: any, res: any) => {
+  app.get('/api/admin/late-reasons', deps.rateLimit, deps.verifyTeacherAuth, deps.requireSuperAdmin, async (_req: any, res: any) => {
     const client = db(res); if (!client) return;
     try {
       const { data, error } = await client.from('teacher_late_reasons')
