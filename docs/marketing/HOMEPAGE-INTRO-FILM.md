@@ -6,7 +6,7 @@ appears as one of our teachers, never as the platform. No price. Voice-over in t
 English clone for English), written first; scenes are timed to the VO.
 
 Status (2026-11-17): script approved by the owner. The hero already shows the film's opening idea as a live motion
-piece (the bag-packing loop `HeroBag.tsx`, replaced on 2026-11-18 by the painted zaad in `HomeHero.tsx`), replacing the
+piece (`src/components/public/homepage/HeroBag.tsx`: the four kinds of learning drop into Zad's bag), replacing the
 teacher photos. Voice-over recorded on the new account (eleven_v4, `mahmoud-fusha` kO4IhVkRM0Oyq7qfKk0l and `mahmoud-english`
 qcy21eeEO3C1xHhSLn3U), takes in `marketing/intro-film/vo/` (`ar-take1.mp3` ~26 s, `en-take1.mp3`
 ~27 s). The VO runs ~27 s, so the film is ~30 s (scenes retimed to the VO, short tail on the logo). Owner picked

@@ -3,13 +3,10 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 
 describe('PU-04 performance', () => {
-  it('the hero never starts invisible and its painting loads first', () => {
-    const hero = fs.readFileSync('src/components/public/homepage/HomeHero.tsx', 'utf8');
+  it('the hero visual never starts invisible', () => {
+    const hero = fs.readFileSync('src/components/public/homepage/HeroBag.tsx', 'utf8');
     assert.ok(!/initial=\{[^}]*opacity: 0[,\s}]/.test(hero));
-    // The words only animate once the browser marks the hero ready, so prerendered HTML shows the full headline.
-    assert.ok(hero.includes("classList.add('home-hero-ready')"));
-    assert.match(fs.readFileSync('src/index.css', 'utf8'), /\.home-hero-ready \.home-word > span \{ animation/);
-    assert.ok(hero.includes("fetchPriority={priority ? 'high' : 'auto'}"));
+    assert.ok(hero.includes("opacity: [1, 1, 0, 0, 0, 1]"));
   });
 
   it('hashed bundles are cached for a year, fonts and media for shorter', () => {

@@ -137,11 +137,11 @@ describe('MK-03: About page credentials', () => {
 });
 
 describe('MK-04: homepage copy', () => {
-  it('opens on the brand line with no kicker, and names the subjects and the free lesson (redesign 2026-11-18)', () => {
-    const hero = read('src/components/public/homepage/HomeHero.tsx');
-    assert.doesNotMatch(hero, /Online 1-on-1 classes/);
-    for (const s of ["'Not', 'just', 'lessons.'", "'A', 'mentor', 'who', 'stays.'", "'مش', 'مجرد', 'حصص.'", 'Quran, Tajweed, the Zad Path, Arabic and English', 'The first lesson is free: 30 minutes, no card.']) {
-      assert.ok(hero.includes(s), s);
-    }
+  it('drops the kicker and adds the sub-line, the caption and the young-adult line', () => {
+    const home = read('src/components/public/homepage/PublicHomepage.tsx');
+    assert.doesNotMatch(home, /Online 1-on-1 classes/);
+    assert.match(home, /Provision that lasts/);
+    assert.match(home, /Pick your teacher from real profiles\. After every class, we tell you how it went, before you have to ask\./);
+    assert.match(read('src/components/public/homepage/TwoWays.tsx'), /Drifted\? Start where you are\. No lectures\./);
   });
 });
