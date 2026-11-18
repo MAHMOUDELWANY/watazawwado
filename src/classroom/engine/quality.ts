@@ -1,20 +1,50 @@
 import type { Layer, LinkClass, LinkStats } from './types';
 
-/** Kbps each simulcast layer needs, best first. */
-export const LAYER_NEED_KBPS: Record<Exclude<Layer, 'audio_only'>, number> = { f: 2500, h: 1200, q: 500, l: 150 };
-const LADDER: Layer[] = ['f', 'h', 'q', 'l', 'audio_only'];
+/** Kbps each simulcast layer needs on our 720p capture (a 1080p sender's 'a' needs more; the SFU's asciibetical priority then falls back to 'b'). */
+export const LAYER_NEED_KBPS: Record<Exclude<Layer, 'audio_only'>, number> = { a: 1200, b: 450, c: 150 };
+const LADDER: Layer[] = ['a', 'b', 'c', 'audio_only'];
 export const STEP_DOWN_LOSS_PCT = 8;
 export const STEP_UP_STABLE_MS = 10_000;
+/** After falling from the top layer, wait this long before climbing back to it blind (bandwidth unknown). */
+export const TOP_RETRY_MS = 60_000;
+
+/** Publisher ladder: height and max bitrate, best first. Three layers are sent, never more. */
+const RUNGS = [
+  { height: 1080, maxBitrate: 2_500_000 },
+  { height: 720, maxBitrate: 1_200_000 },
+  { height: 360, maxBitrate: 450_000 },
+  { height: 180, maxBitrate: 150_000 },
+];
+const topRung = (captureHeight: number) => (captureHeight >= 1080 ? 0 : 1);
+
+/** Simulcast encodings for a camera of this height: a/b/c, 1080p on top only when the camera really gives 1080p. */
+export function simulcastEncodings(captureHeight = 720): RTCRtpEncodingParameters[] {
+  const h = captureHeight > 0 ? captureHeight : 720;
+  const top = topRung(h);
+  return RUNGS.slice(top, top + 3).map((r, i) => ({ rid: 'abc'[i], maxBitrate: r.maxBitrate, scaleResolutionDownBy: Math.max(1, h / r.height) }));
+}
+
+/** Height a received layer shows; topHeight is the sender's capture height (720 unless known). */
+export function layerHeight(layer: Layer, topHeight = 720): number | null {
+  if (layer === 'audio_only') return null;
+  const top = topRung(topHeight);
+  return RUNGS[top + 'abc'.indexOf(layer)].height;
+}
 
 const known = (kbps: number) => kbps >= 0;
 const fits = (layer: Layer, kbps: number) => layer === 'audio_only' || !known(kbps) || kbps >= LAYER_NEED_KBPS[layer];
 
+/** What createLayerPicker knows beyond one reading: how long loss has been exactly 0, and whether we just fell from 'a'. */
+export type ClimbGuard = { zeroLossMs: number; fellFromTopRecently: boolean };
+
 /**
  * Receiver-side layer choice. Steps down one layer on loss over 8%, and to the best layer that fits when the
  * incoming bitrate is below the current layer's need. Steps up one layer only after `stableForMs` >= 10 s of a
- * clean link (the caller times stability; see createLayerPicker).
+ * clean link (the caller times stability; see createLayerPicker). When the browser does not report the incoming
+ * bitrate (-1, usual in Chrome), it never climbs above the middle layer unless loss has been 0 for 10 s and it did
+ * not fall from the top layer in the last minute (`guard`; without one it stays at 'b').
  */
-export function pickLayer(s: LinkStats, current: Layer, stableForMs = 0): Layer {
+export function pickLayer(s: LinkStats, current: Layer, stableForMs = 0, guard?: ClimbGuard): Layer {
   const i = LADDER.indexOf(current);
   if (s.inLossPct > STEP_DOWN_LOSS_PCT) {
     const down = Math.min(i + 1, LADDER.length - 1);
@@ -22,34 +52,44 @@ export function pickLayer(s: LinkStats, current: Layer, stableForMs = 0): Layer 
   }
   if (!fits(current, s.availableInKbps)) return LADDER.slice(i).find((l) => fits(l, s.availableInKbps))!;
   const up = LADDER[i - 1];
-  if (up && stableForMs >= STEP_UP_STABLE_MS && fits(up, s.availableInKbps)) return up;
-  return current;
+  if (!up || stableForMs < STEP_UP_STABLE_MS || !fits(up, s.availableInKbps)) return current;
+  if (up === 'a' && !known(s.availableInKbps) && (!guard || guard.zeroLossMs < STEP_UP_STABLE_MS || guard.fellFromTopRecently)) return current;
+  return up;
 }
 
-/** Stateful wrapper: times how long the link has been clean before letting pickLayer step up. */
-export function createLayerPicker(start: Layer = 'h', now: () => number = Date.now) {
+/** Stateful wrapper: times the clean link and the zero-loss run, and remembers the last fall from 'a'. */
+export function createLayerPicker(start: Layer = 'b', now: () => number = Date.now) {
   let layer = start;
   let cleanSince: number | null = null;
+  let zeroSince: number | null = null;
+  let fellFromTopAt = -Infinity;
   return (s: LinkStats): Layer => {
     const t = now();
     const clean = s.inLossPct <= STEP_DOWN_LOSS_PCT && fits(layer, s.availableInKbps);
     cleanSince = clean ? cleanSince ?? t : null;
-    const next = pickLayer(s, layer, cleanSince == null ? 0 : t - cleanSince);
-    if (next !== layer) cleanSince = null;
+    zeroSince = s.inLossPct === 0 ? zeroSince ?? t : null;
+    const next = pickLayer(s, layer, cleanSince == null ? 0 : t - cleanSince, {
+      zeroLossMs: zeroSince == null ? 0 : t - zeroSince,
+      fellFromTopRecently: t - fellFromTopAt < TOP_RETRY_MS,
+    });
+    if (next !== layer) {
+      cleanSince = null;
+      if (layer === 'a') fellFromTopAt = t;
+    }
     return (layer = next);
   };
 }
 
 export function classifyLink(s: LinkStats): LinkClass {
   const loss = Math.max(s.inLossPct, s.outLossPct);
-  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.l)) return 'poor';
-  if (loss > 3 || s.rttMs > 300 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.q)) return 'weak';
+  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.c)) return 'poor';
+  if (loss > 3 || s.rttMs > 300 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.b)) return 'weak';
   return 'good';
 }
 
-const weakOut = (s: LinkStats) => s.outLossPct > STEP_DOWN_LOSS_PCT || (known(s.availableOutKbps) && s.availableOutKbps < LAYER_NEED_KBPS.q);
+const weakOut = (s: LinkStats) => s.outLossPct > STEP_DOWN_LOSS_PCT || (known(s.availableOutKbps) && s.availableOutKbps < LAYER_NEED_KBPS.b);
 // Incoming loss is caused by the sender's uplink, so "incoming fine" means bandwidth and delay, not loss.
-const fineIn = (s: LinkStats) => s.rttMs <= 600 && (!known(s.availableInKbps) || s.availableInKbps >= LAYER_NEED_KBPS.q);
+const fineIn = (s: LinkStats) => s.rttMs <= 600 && (!known(s.availableInKbps) || s.availableInKbps >= LAYER_NEED_KBPS.b);
 
 /** Who to tell "your connection is weak": the side whose outgoing link is weak while the other's incoming is fine. */
 export function blameSide(local: LinkStats, remoteReport: LinkStats | null): 'me' | 'them' | 'unknown' {

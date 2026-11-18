@@ -1,4 +1,4 @@
-import { audioConstraints, filterIceServers, opusBitrate, setOpusParams } from './quality';
+import { audioConstraints, filterIceServers, opusBitrate, setOpusParams, simulcastEncodings } from './quality';
 import type { EngineError, EngineState, Layer, LinkStats, MediaEngine, RoomRole, Side } from './types';
 import { sideOf, trackName } from './types';
 
@@ -8,13 +8,15 @@ import { sideOf, trackName } from './types';
  * One RTCPeerConnection per join; negotiations run one at a time.
  */
 
-/** Simulcast layers by rid: target height and max bitrate. Scale is computed from the captured height (never < 1). */
-const VIDEO_LAYERS = [
-  { rid: 'f', height: 1080, maxBitrate: 2_500_000 },
-  { rid: 'h', height: 720, maxBitrate: 1_200_000 },
-  { rid: 'q', height: 360, maxBitrate: 500_000 },
-  { rid: 'l', height: 180, maxBitrate: 150_000 },
-] as const;
+/**
+ * Pull preferences (Cloudflare OpenAPI 2024-05-21): the preferred rid, falling to the next rid a-z when bandwidth is
+ * short or the publisher stops sending it, so a missing layer never freezes the picture.
+ */
+export const simulcastPull = (layer: Layer | null) => ({
+  preferredRid: layer == null ? 'b' : layer === 'audio_only' ? 'c' : layer,
+  priorityOrdering: 'asciibetical',
+  ridNotAvailable: 'asciibetical',
+});
 // The proxy allows 120 rtc calls/min per join; layer changes are throttled well under that.
 const UPDATE_MIN_GAP_MS = 2_000;
 const isVideo = (n: string) => n.endsWith('-video');
@@ -32,10 +34,34 @@ export class RoomEngineError extends Error {
   }
 }
 
+/**
+ * A camera or mic that ended (unplugged, permission revoked): open the same device again, else the default one.
+ * `prev` is the old track's getConstraints(); only a pinned deviceId is dropped for the fallback.
+ */
+export async function reacquireTrack(
+  kind: 'audio' | 'video',
+  prev: MediaTrackConstraints = {},
+  getUserMedia: (c: MediaStreamConstraints) => Promise<MediaStream> = (c) => navigator.mediaDevices.getUserMedia(c),
+): Promise<MediaStreamTrack> {
+  const open = async (c: MediaTrackConstraints | true) => {
+    const t = (await getUserMedia({ [kind]: c })).getTracks().find((x) => x.kind === kind);
+    if (!t) throw new RoomEngineError('no_tracks', `No ${kind} track.`);
+    return t;
+  };
+  try {
+    return await open(prev);
+  } catch (e) {
+    if (prev.deviceId === undefined) throw e;
+  }
+  const { deviceId: _gone, ...rest } = prev;
+  return open(Object.keys(rest).length ? rest : true);
+}
+
 export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch } = {}): MediaEngine {
   const apiBase = opts.apiBase ?? '';
   const doFetch = opts.fetchImpl ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
-  const listeners = { state: new Set<(v: any) => void>(), error: new Set<(v: any) => void>() };
+  type Ev = 'state' | 'error' | 'device' | 'remote-mute';
+  const listeners: Record<Ev, Set<(v: any) => void>> = { state: new Set(), error: new Set(), device: new Set(), 'remote-mute': new Set() };
 
   let pc: RTCPeerConnection | null = null;
   let bookingId = '';
@@ -46,6 +72,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
   let recitation = false;
   let queue: Promise<unknown> = Promise.resolve();
   let audioSender: RTCRtpSender | null = null;
+  let videoSender: RTCRtpSender | null = null;
   let screenTransceivers: RTCRtpTransceiver[] = [];
   const localTracks = new Set<MediaStreamTrack>();
   let pulled: Pulled[] = [];
@@ -54,7 +81,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
   let updateTimer: ReturnType<typeof setTimeout> | null = null;
   let prevIn = { lost: 0, received: 0 };
 
-  const emit = (event: 'state' | 'error', v: unknown) => listeners[event].forEach((cb) => { try { cb(v); } catch { /* a listener must not break the engine */ } });
+  const emit = (event: Ev, v: unknown) => listeners[event].forEach((cb) => { try { cb(v); } catch { /* a listener must not break the engine */ } });
   const setState = (s: EngineState) => {
     if (state === s) return;
     state = s;
@@ -74,6 +101,10 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     localTracks.clear();
     pc?.close();
     pc = null;
+    sessionId = null;
+    pulled = [];
+    audioSender = videoSender = null;
+    screenTransceivers = [];
     setState(final);
   }
 
@@ -119,17 +150,55 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     return pc;
   };
 
+  /**
+   * Sends our offer with `call` and applies the answer (Opus fmtp set). If the call fails, the offer is rolled back
+   * so the connection is stable again; otherwise the next SFU offer (subscribe renegotiation) would throw.
+   */
+  async function offerTo(p: RTCPeerConnection, call: (offer: { type: 'offer'; sdp: string }) => Promise<TracksResponse>): Promise<TracksResponse> {
+    await p.setLocalDescription(await p.createOffer());
+    let r: TracksResponse;
+    try {
+      r = await call({ type: 'offer', sdp: p.localDescription!.sdp });
+    } catch (e) {
+      if (p.signalingState === 'have-local-offer') await p.setLocalDescription({ type: 'rollback' }).catch(() => undefined);
+      throw e;
+    }
+    if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
+    return r;
+  }
+
   /** Offer our new local transceivers, push them to the SFU, apply the answer (with the Opus fmtp set). */
   async function pushLocal(entries: Array<{ transceiver: RTCRtpTransceiver; trackName: string }>) {
     const p = needPc();
-    await p.setLocalDescription(await p.createOffer());
-    const r: TracksResponse = await rtc('tracks', {
-      sessionDescription: { type: 'offer', sdp: p.localDescription!.sdp },
+    const r = await offerTo(p, (sessionDescription) => rtc('tracks', {
+      sessionDescription,
       tracks: entries.map((e) => ({ location: 'local', mid: e.transceiver.mid, trackName: e.trackName })),
-    });
+    }));
     if (!r.sessionDescription?.sdp) throw new RoomEngineError('no_answer', 'The media service sent no answer.');
-    await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
     if (goodTracks(r).length < entries.length) throw new RoomEngineError('track_failed', 'Some of your media could not be sent.');
+  }
+
+  /** Our camera or mic ended on its own (stop() does not fire 'ended'): get it back, same device else default. */
+  function watchEnded(kind: 'audio' | 'video', track: MediaStreamTrack) {
+    track.addEventListener('ended', () => {
+      if (isFinal() || !localTracks.has(track)) return;
+      reacquireTrack(kind, track.getConstraints())
+        .then((next) => engine.replaceLocalTrack(kind, next).then(
+          () => emit('device', { kind, ok: true, track: next }),
+          (e) => { next.stop(); throw e; },
+        ))
+        .catch(() => emit('device', { kind, ok: false }));
+    }, { once: true });
+  }
+
+  /** Tells the UI when a pulled track waits for media ("waiting for video...") and when it flows again. */
+  function watchRemote(track: MediaStreamTrack, name: string) {
+    const s = sideOfTrack(name) as Side;
+    const kind = name.slice(s.length + 1);
+    const tell = (muted: boolean) => emit('remote-mute', { side: s, kind, muted });
+    track.addEventListener('mute', () => tell(true));
+    track.addEventListener('unmute', () => tell(false));
+    if (track.muted) tell(true);
   }
 
   async function applyAudioBitrate() {
@@ -150,10 +219,10 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     const pulledVideo = pulled.filter((t) => isVideo(t.trackName));
     if (!layer || !pulledVideo.length || isFinal()) return;
     lastUpdateAt = Date.now();
-    // shortcut: 'audio_only' asks for the 180p layer and the UI hides the video; Cloudflare has no pause in tracks/update.
-    const rid = layer === 'audio_only' ? 'l' : layer;
+    // shortcut: 'audio_only' keeps the lowest rid ('c') and the UI hides the video. tracks/update has no pause, and closing
+    // the pull would end the track the UI holds and cost a renegotiation per flip; revisit if 180p still costs too much.
     const r: TracksResponse = await rtc('update', {
-      tracks: pulledVideo.map((t) => ({ location: 'remote', mid: t.mid, sessionId: t.sessionId, trackName: t.trackName, simulcast: { preferredRid: rid } })),
+      tracks: pulledVideo.map((t) => ({ location: 'remote', mid: t.mid, sessionId: t.sessionId, trackName: t.trackName, simulcast: simulcastPull(layer) })),
     });
     goodTracks(r);
   }
@@ -169,14 +238,8 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
       tr?.receiver.track.stop();
       tr?.stop();
     }
-    await p.setLocalDescription(await p.createOffer());
     // Only mids: the old session may already be gone from the room, and observers may not name 'local'.
-    const r: TracksResponse = await rtc('close', {
-      sessionDescription: { type: 'offer', sdp: p.localDescription!.sdp },
-      tracks: gone.map((t) => ({ mid: t.mid })),
-      force: false,
-    });
-    if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
+    const r = await offerTo(p, (sessionDescription) => rtc('close', { sessionDescription, tracks: gone.map((t) => ({ mid: t.mid })), force: false }));
     goodTracks(r);
   }
 
@@ -221,15 +284,14 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
           const tr = p.addTransceiver(audio, { direction: 'sendonly' });
           audioSender = tr.sender;
           localTracks.add(audio);
+          watchEnded('audio', audio);
           entries.push({ transceiver: tr, trackName: trackName(s, 'audio') });
         }
         if (video) {
-          const h = video.getSettings().height || 720;
-          const tr = p.addTransceiver(video, {
-            direction: 'sendonly',
-            sendEncodings: VIDEO_LAYERS.map((l) => ({ rid: l.rid, maxBitrate: l.maxBitrate, scaleResolutionDownBy: Math.max(1, h / l.height) })),
-          });
+          const tr = p.addTransceiver(video, { direction: 'sendonly', sendEncodings: simulcastEncodings(video.getSettings().height) });
+          videoSender = tr.sender;
           localTracks.add(video);
+          watchEnded('video', video);
           entries.push({ transceiver: tr, trackName: trackName(s, 'video') });
         }
         if (!entries.length) throw new RoomEngineError('no_tracks', 'No camera or microphone track.');
@@ -275,13 +337,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
           }
           tr.stop();
         }
-        await p.setLocalDescription(await p.createOffer());
-        const r: TracksResponse = await rtc('close', {
-          sessionDescription: { type: 'offer', sdp: p.localDescription!.sdp },
-          tracks: list.map((tr) => ({ location: 'local', mid: tr.mid })),
-          force: false,
-        });
-        if (r.sessionDescription?.sdp) await p.setRemoteDescription({ type: 'answer', sdp: setOpusParams(r.sessionDescription.sdp) });
+        const r = await offerTo(p, (sessionDescription) => rtc('close', { sessionDescription, tracks: list.map((tr) => ({ location: 'local', mid: tr.mid })), force: false }));
         goodTracks(r);
       });
     },
@@ -289,16 +345,16 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     subscribe(remote) {
       return serial(async () => {
         const p = needPc();
-        // The other side rejoined with a new session: drop what we pulled from its old one first.
+        // The other side may have rejoined with a new session. Its old one is closed only after this pull worked, so a
+        // pull of a stale or wrong id never drops the picture that is still playing.
         const sides = new Set(remote.trackNames.map(sideOfTrack));
         const stale = new Set(pulled.filter((t) => t.sessionId !== remote.sessionId && sides.has(sideOfTrack(t.trackName))).map((t) => t.sessionId));
-        for (const id of stale) await closePulled(id);
         const r: TracksResponse = await rtc('tracks', {
           tracks: remote.trackNames.map((n) => ({
             location: 'remote',
             sessionId: remote.sessionId,
             trackName: n,
-            ...(isVideo(n) ? { simulcast: { preferredRid: layer && layer !== 'audio_only' ? layer : 'h' } } : {}),
+            ...(isVideo(n) ? { simulcast: simulcastPull(layer) } : {}),
           })),
         });
         const ok = goodTracks(r);
@@ -312,9 +368,14 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
           const tr = p.getTransceivers().find((x) => x.mid === t.mid);
           if (!tr) continue;
           out.addTrack(tr.receiver.track);
-          if (t.mid && t.trackName) pulled.push({ mid: t.mid, sessionId: remote.sessionId, trackName: t.trackName });
+          if (t.mid && t.trackName) {
+            pulled.push({ mid: t.mid, sessionId: remote.sessionId, trackName: t.trackName });
+            watchRemote(tr.receiver.track, t.trackName);
+          }
         }
         if (!out.getTracks().length) throw new RoomEngineError('track_failed', 'The other side is not sending yet.');
+        // The old session is usually gone already: a failed close is reported as an error and must not lose the new pull.
+        for (const id of stale) await closePulled(id).catch(() => undefined);
         return out;
       });
     },
@@ -330,6 +391,24 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
       const wait = lastUpdateAt + UPDATE_MIN_GAP_MS - Date.now();
       if (wait <= 0) return serial(sendUpdate);
       updateTimer = setTimeout(() => { serial(sendUpdate).catch(() => undefined); }, wait);
+    },
+
+    replaceLocalTrack(kind, track) {
+      return serial(async () => {
+        needPc();
+        const sender = kind === 'audio' ? audioSender : videoSender;
+        if (!sender) throw new RoomEngineError('not_publishing', `No ${kind} is being sent.`);
+        if (kind === 'audio') await track.applyConstraints(audioConstraints(recitation)).catch(() => undefined);
+        const old = sender.track;
+        // Same kind on the same sender: no renegotiation; the simulcast scales set at publish time stay.
+        await sender.replaceTrack(track);
+        if (old && old !== track) {
+          localTracks.delete(old);
+          old.stop();
+        }
+        localTracks.add(track);
+        watchEnded(kind, track);
+      });
     },
 
     async setRecitationMode(on) {
@@ -374,7 +453,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
       if (wasActive) await api('leave', {}, true).catch(() => undefined);
     },
 
-    on(event: 'state' | 'error', cb: (v: any) => void) {
+    on(event: Ev, cb: (v: any) => void) {
       listeners[event].add(cb);
       return () => { listeners[event].delete(cb); };
     },

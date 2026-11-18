@@ -26,7 +26,7 @@ const every: RoomEvent[] = [
   { t: 'reaction', kind: 'hand' },
   { t: 'focus', away: true, at: NOW },
   { t: 'focus_warning_off', off: true },
-  { t: 'quality', side: 'student', layer: 'h', link: 'weak' },
+  { t: 'quality', side: 'student', layer: 'b', link: 'weak' },
   { t: 'observer', kind: 'guardian', present: true },
   { t: 'layout', mode: 'content' },
   { t: 'end' },
@@ -143,7 +143,7 @@ describe('CL-07 events and state routes', () => {
   it('a learner cannot persist teacher-only types or the other side’s quality', async () => {
     const res = await post(L, [
       { t: 'end' }, { t: 'layout', mode: 'screen' }, { t: 'slide', state: { track: 'a', number: 1, page: 1, step: 1 } },
-      { t: 'pdf', fileId: 'f', page: 1 }, { t: 'quality', side: 'teacher', layer: 'l', link: 'poor' },
+      { t: 'pdf', fileId: 'f', page: 1 }, { t: 'quality', side: 'teacher', layer: 'c', link: 'poor' },
       { t: 'board', sceneVersion: 9, elements: [] },
     ]);
     assert.strictEqual(res.status, 200);
@@ -154,7 +154,7 @@ describe('CL-07 events and state routes', () => {
 
   it('a learner persists reactions, focus and its own quality; non-persisted types are skipped', async () => {
     const res = await post(L, [
-      { t: 'reaction', kind: 'slower' }, { t: 'focus', away: true, at: NOW }, { t: 'quality', side: 'student', layer: 'q', link: 'weak' },
+      { t: 'reaction', kind: 'slower' }, { t: 'focus', away: true, at: NOW }, { t: 'quality', side: 'student', layer: 'b', link: 'weak' },
       { t: 'pointer', x: 1, y: 1 }, { t: 'ink', ink: { track: 'a', number: 1, page: 1, strokes: [], laser: [] } },
     ]);
     assert.strictEqual(res.status, 200);
@@ -179,7 +179,7 @@ describe('CL-07 events and state routes', () => {
       { t: 'board', sceneVersion: 5, elements: [{ id: 'a' }] },
       { t: 'pdf', fileId: 'file-1', page: 7 },
       { t: 'layout', mode: 'content' },
-      { t: 'quality', side: 'teacher', layer: 'f', link: 'good' },
+      { t: 'quality', side: 'teacher', layer: 'a', link: 'good' },
     ]);
     assert.strictEqual(res.status, 200);
     // board is snapshot-only (latest wins), not a timeline row

@@ -66,8 +66,8 @@ describe('CL-09 room screen', () => {
     assert.strictEqual(isRoomEvent({ t: 'layout', mode: 'content', pane: 'board' }), true);
     assert.strictEqual(isRoomEvent({ t: 'layout', mode: 'content', pane: 'video' }), false);
     const stats = { outLossPct: 1, inLossPct: 0, availableInKbps: 900, availableOutKbps: -1, rttMs: 80 };
-    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'h', link: 'good', stats }), true);
-    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'h', link: 'good', stats: { ...stats, rttMs: 'x' } }), false);
-    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'h', link: 'good', stats: { ...stats, extra: 1 } }), false);
+    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'b', link: 'good', stats }), true);
+    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'b', link: 'good', stats: { ...stats, rttMs: 'x' } }), false);
+    assert.strictEqual(isRoomEvent({ t: 'quality', side: 'student', layer: 'b', link: 'good', stats: { ...stats, extra: 1 } }), false);
   });
 });

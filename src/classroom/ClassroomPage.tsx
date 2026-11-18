@@ -10,7 +10,7 @@ import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
 import { createEngine } from './engine/cloudflareEngine';
-import { blameSide, classifyLink, createLayerPicker } from './engine/quality';
+import { blameSide, classifyLink, createLayerPicker, layerHeight } from './engine/quality';
 import { sideOf, type Layer, type LinkClass, type LinkStats, type MediaEngine, type Side } from './engine/types';
 import { createTimelineBatcher, restoreState, type RoomSnapshot } from './timeline';
 import { Board, type BoardSync } from './board/Board';
@@ -36,7 +36,6 @@ type BoardScene = NonNullable<RoomSnapshot['board']>;
 
 const STATS_EVERY_MS = 3000;
 const QUALITY_EVERY_MS = 60_000;
-const LAYER_HEIGHT: Record<Layer, number | null> = { f: 1080, h: 720, q: 360, l: 180, audio_only: null };
 type QualityTotals = { degradedSeconds: number; audioOnlySeconds: number; reconnects: number; minHeight: number | null };
 const ANNOUNCE_EVERY_MS = 15_000;
 /** The guardian's tab says "still here" with each announce; a closed tab drops the chip after this. */
@@ -79,7 +78,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [remotes, setRemotes] = useState<Record<Side, MediaStream | null>>({ teacher: null, student: null });
   const [remoteScreen, setRemoteScreen] = useState<MediaStream | null>(null);
   const [links, setLinks] = useState<Record<Side, LinkClass | null>>({ teacher: null, student: null });
-  const [myLayer, setMyLayer] = useState<Layer>('h');
+  const [myLayer, setMyLayer] = useState<Layer>('b');
   const [blame, setBlame] = useState<'me' | 'them' | 'unknown'>('unknown');
   const [layout, setLayout] = useState<LayoutMode>('conversation');
   const [pane, setPane] = useState<Pane>('lesson');
@@ -331,7 +330,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   // ---- link quality ------------------------------------------------------------------------------------------
   useEffect(() => {
     if (!joined) return;
-    const picker = createLayerPicker('h');
+    const picker = createLayerPicker();
     let tick = 0;
     let lastSaved = '';
     const id = window.setInterval(async () => {
@@ -350,8 +349,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         const q = totals.current;
         const step = STATS_EVERY_MS / 1000;
         if (layer === 'audio_only') q.audioOnlySeconds += step;
-        if (layer === 'audio_only' || layer === 'q' || layer === 'l') q.degradedSeconds += step;
-        const h = LAYER_HEIGHT[layer];
+        if (layer === 'audio_only' || layer === 'b' || layer === 'c') q.degradedSeconds += step;
+        const h = layerHeight(layer);
         if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
       }
       if (!mySide) return;

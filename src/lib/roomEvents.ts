@@ -65,7 +65,7 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   reaction: { kind: oneOf(['hand', 'confused', 'slower', 'repeat', 'thinking']) },
   focus: { away: bool, at: (v) => Number.isFinite(v) && v >= 0 },
   focus_warning_off: { off: bool },
-  quality: { side: oneOf(SIDES), layer: oneOf(['f', 'h', 'q', 'l', 'audio_only']), link: oneOf(['good', 'weak', 'poor']), stats: (v) => v === undefined || isStats(v) },
+  quality: { side: oneOf(SIDES), layer: oneOf(['a', 'b', 'c', 'audio_only']), link: oneOf(['good', 'weak', 'poor']), stats: (v) => v === undefined || isStats(v) },
   observer: { kind: oneOf(['guardian']), present: bool },
   layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf'])(v) },
   recitation: { on: bool },

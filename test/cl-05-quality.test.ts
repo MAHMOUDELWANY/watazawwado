@@ -1,38 +1,79 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { pickLayer, classifyLink, blameSide, audioConstraints, opusBitrate, setOpusParams, filterIceServers, STEP_UP_STABLE_MS } from '../src/classroom/engine/quality.js';
+import { pickLayer, createLayerPicker, layerHeight, simulcastEncodings, classifyLink, blameSide, audioConstraints, opusBitrate, setOpusParams, filterIceServers, STEP_UP_STABLE_MS, TOP_RETRY_MS } from '../src/classroom/engine/quality.js';
 import type { LinkStats } from '../src/classroom/engine/types.js';
 
 const clean = (kbps: number, extra: Partial<LinkStats> = {}): LinkStats => ({ outLossPct: 0, inLossPct: 0, availableInKbps: kbps, availableOutKbps: kbps, rttMs: 80, ...extra });
 
 describe('CL-05 adaptive layers and link quality', () => {
-  it('10% loss at h steps down to q', () => {
-    assert.strictEqual(pickLayer(clean(3000, { inLossPct: 10 }), 'h'), 'q');
+  it('a 720p camera sends three distinct layers a/b/c (720/360/180), never two 720p ones', () => {
+    assert.deepStrictEqual(simulcastEncodings(720), [
+      { rid: 'a', maxBitrate: 1_200_000, scaleResolutionDownBy: 1 },
+      { rid: 'b', maxBitrate: 450_000, scaleResolutionDownBy: 2 },
+      { rid: 'c', maxBitrate: 150_000, scaleResolutionDownBy: 4 },
+    ]);
+    assert.deepStrictEqual(simulcastEncodings(undefined), simulcastEncodings(720));
   });
 
-  it('3 Mbps clean at q waits 10 s before stepping up, one layer at a time, never above f', () => {
+  it('1080p is the top layer only when the camera really gives 1080p, and there are never more than 3 layers', () => {
+    const full = simulcastEncodings(1080);
+    assert.deepStrictEqual(full.map((e) => [e.rid, e.scaleResolutionDownBy]), [['a', 1], ['b', 1.5], ['c', 3]]);
+    assert.strictEqual(full[0].maxBitrate, 2_500_000);
+    for (const h of [480, 720, 1080, 1440]) assert.strictEqual(simulcastEncodings(h).length, 3);
+    assert.ok(simulcastEncodings(480).every((e) => e.scaleResolutionDownBy! >= 1));
+  });
+
+  it('layerHeight maps a received layer to its height', () => {
+    assert.deepStrictEqual(['a', 'b', 'c', 'audio_only'].map((l) => layerHeight(l as any)), [720, 360, 180, null]);
+    assert.strictEqual(layerHeight('a', 1080), 1080);
+    assert.strictEqual(layerHeight('c', 1080), 360);
+  });
+
+  it('10% loss at a steps down to b', () => {
+    assert.strictEqual(pickLayer(clean(3000, { inLossPct: 10 }), 'a'), 'b');
+  });
+
+  it('3 Mbps clean at c waits 10 s before stepping up, one layer at a time, never above a', () => {
     assert.strictEqual(STEP_UP_STABLE_MS, 10_000);
-    assert.strictEqual(pickLayer(clean(3000), 'q'), 'q');
-    assert.strictEqual(pickLayer(clean(3000), 'q', 9_999), 'q');
-    assert.strictEqual(pickLayer(clean(3000), 'q', 10_000), 'h');
-    assert.strictEqual(pickLayer(clean(3000), 'h', 10_000), 'f');
-    assert.strictEqual(pickLayer(clean(3000), 'f', 60_000), 'f');
+    assert.strictEqual(pickLayer(clean(3000), 'c'), 'c');
+    assert.strictEqual(pickLayer(clean(3000), 'c', 9_999), 'c');
+    assert.strictEqual(pickLayer(clean(3000), 'c', 10_000), 'b');
+    assert.strictEqual(pickLayer(clean(3000), 'b', 10_000), 'a');
+    assert.strictEqual(pickLayer(clean(3000), 'a', 60_000), 'a');
   });
 
   it('bitrate below a layer need drops to the layer that fits', () => {
-    assert.strictEqual(pickLayer(clean(1000), 'f'), 'q');
-    assert.strictEqual(pickLayer(clean(1000), 'q', 60_000), 'q');
-    assert.strictEqual(pickLayer(clean(200), 'h'), 'l');
+    assert.strictEqual(pickLayer(clean(1000), 'a'), 'b');
+    assert.strictEqual(pickLayer(clean(1000), 'b', 60_000), 'b');
+    assert.strictEqual(pickLayer(clean(200), 'a'), 'c');
   });
 
   it('0.1 Mbps is audio only', () => {
-    assert.strictEqual(pickLayer(clean(100), 'f'), 'audio_only');
+    assert.strictEqual(pickLayer(clean(100), 'a'), 'audio_only');
     assert.strictEqual(pickLayer(clean(100), 'audio_only', 60_000), 'audio_only');
   });
 
-  it('unknown incoming bitrate (-1) adapts on loss only', () => {
-    assert.strictEqual(pickLayer(clean(-1), 'q', 10_000), 'h');
-    assert.strictEqual(pickLayer(clean(-1, { inLossPct: 9 }), 'l'), 'audio_only');
+  it('unknown incoming bitrate (-1) adapts on loss, and climbs above b only with the zero-loss guard', () => {
+    assert.strictEqual(pickLayer(clean(-1), 'c', 10_000), 'b');
+    assert.strictEqual(pickLayer(clean(-1, { inLossPct: 9 }), 'c'), 'audio_only');
+    assert.strictEqual(pickLayer(clean(-1), 'b', 60_000), 'b', 'no guard: stays at the middle layer');
+    assert.strictEqual(pickLayer(clean(-1), 'b', 10_000, { zeroLossMs: 9_999, fellFromTopRecently: false }), 'b');
+    assert.strictEqual(pickLayer(clean(-1), 'b', 10_000, { zeroLossMs: 10_000, fellFromTopRecently: true }), 'b');
+    assert.strictEqual(pickLayer(clean(-1), 'b', 10_000, { zeroLossMs: 10_000, fellFromTopRecently: false }), 'a');
+  });
+
+  it('createLayerPicker, bitrate unknown: starts at b, needs 10 s of zero loss for a, and waits a minute after falling from a', () => {
+    let t = 0;
+    const pick = createLayerPicker(undefined, () => t);
+    const at = (ms: number, s: LinkStats) => { t = ms; return pick(s); };
+    assert.strictEqual(at(0, clean(-1)), 'b');
+    assert.strictEqual(at(5_000, clean(-1, { inLossPct: 1 })), 'b', 'small loss: clean but not zero');
+    assert.strictEqual(at(14_000, clean(-1)), 'b', 'clean 14 s but zero loss only 0 s');
+    assert.strictEqual(at(24_000, clean(-1)), 'a');
+    assert.strictEqual(at(26_000, clean(-1, { inLossPct: 12 })), 'b', 'fell from a');
+    assert.strictEqual(at(40_000, clean(-1)), 'b');
+    assert.strictEqual(at(26_000 + TOP_RETRY_MS - 1, clean(-1)), 'b', 'still inside the retry window');
+    assert.strictEqual(at(26_000 + TOP_RETRY_MS, clean(-1)), 'a');
   });
 
   it('classifyLink', () => {
