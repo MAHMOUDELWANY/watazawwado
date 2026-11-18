@@ -185,7 +185,7 @@ function Picture({ i, t, c, isEn, reduce }: { i: number; t: number; c: number[];
         })}
         <motion.div key={landed} animate={reduce ? undefined : { scaleY: [1, 0.9, 1.04, 1], scaleX: [1, 1.06, 0.98, 1] }} transition={{ duration: 0.3 }} style={{ originY: 1 }}><Bag /></motion.div>
         {t > c[0] && (
-          <motion.span className="absolute -top-16 sm:-top-24 left-1/2 -translate-x-1/2 font-editorial font-bold text-7xl sm:text-9xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }} {...pop(reduce)}>
+          <motion.span className="absolute top-[-6%] -end-16 sm:-end-28 font-editorial font-bold text-7xl sm:text-9xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }} {...pop(reduce)}>
             {isEn ? '?' : '؟'}
           </motion.span>
         )}
@@ -403,7 +403,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
     if (!record) return;
     const on = () => {
       const w = window.innerWidth, h = window.innerHeight;
-      setZoom(h > w ? { pic: w / 600, text: 1.6 } : { pic: h / 640, text: 1.6 });
+      setZoom(h > w ? { pic: w / 600, text: 1.6 } : { pic: h / 820, text: 1.5 });
     };
     on();
     window.addEventListener('resize', on);
