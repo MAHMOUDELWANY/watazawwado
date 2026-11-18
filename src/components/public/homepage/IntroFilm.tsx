@@ -463,26 +463,26 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                   </p>
                 </div>
                 {/* The bag glows from inside; the answer rises out of it; everyday things are left behind, crossed out. */}
-                <div className="absolute left-1/2 top-[63%] -translate-x-1/2 -translate-y-1/2 w-[34%] sm:w-[22%] max-w-[230px]" aria-hidden="true">
+                <div className="absolute left-1/2 top-[56%] -translate-x-1/2 -translate-y-1/2 w-[30%] sm:w-[17%] max-w-[200px]" aria-hidden="true">
                   <span className="absolute inset-[-55%] rounded-full bg-[radial-gradient(closest-side,rgba(255,241,201,0.7),rgba(229,169,60,0.28)_50%,transparent)]" />
                   <span className="absolute left-1/2 -translate-x-1/2 bottom-[62%] w-[78%]"><Medal id="surah" eager className="w-full h-auto drop-shadow-[0_0_30px_rgba(255,241,201,0.9)]" /></span>
                   <div className="relative drop-shadow-[0_30px_40px_rgba(0,0,0,0.65)]"><Bag /></div>
-                  {[{ I: Smartphone, x: '-120%', y: '-20%', r: -14 }, { I: Wallet, x: '-150%', y: '55%', r: 10 }, { I: KeyRound, x: '175%', y: '-10%', r: 12 }, { I: Shirt, x: '160%', y: '62%', r: -10 }].map(({ I, x, y, r }, k) => (
-                    <span key={k} className="absolute top-0 left-0 grid place-items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF7F2]/90 text-[#1C1411]/70 shadow-[0_14px_24px_-10px_rgba(0,0,0,0.7)]" style={{ transform: `translate(${x}, ${y}) rotate(${r}deg)` }}>
+                  {[{ I: Smartphone, x: '-75%', y: '-5%', r: -14 }, { I: Wallet, x: '-95%', y: '60%', r: 10 }, { I: KeyRound, x: '150%', y: '-12%', r: 12 }, { I: Shirt, x: '165%', y: '55%', r: -10 }].map(({ I, x, y, r }, k) => (
+                    <span key={k} className="absolute top-0 left-0 grid place-items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF7F2]/90 text-[#1C1411]/70 shadow-[0_14px_24px_-10px_rgba(0,0,0,0.7)]" style={{ left: x, top: y, transform: `rotate(${r}deg)` }}>
                       <I className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
                       <span className="absolute h-[3px] w-[130%] rounded-full bg-[#C51F24] rotate-[-35deg]" />
                     </span>
                   ))}
                 </div>
-                {/* Zad, wide-eyed, points at the bag. */}
-                <div className="absolute bottom-[22%] start-[4%] sm:start-[10%]" aria-hidden="true"><ZadRigSvg pose="wow" size={120} /></div>
+                {/* Zad, wide-eyed, beside the bag. */}
+                <div className="absolute top-[44%] start-[3%] sm:start-[22%]" aria-hidden="true"><ZadRigSvg pose="wow" size={110} /></div>
                 {/* One big play button: glass ring, crimson core, a slow pulse. */}
-                <div className="absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-2.5">
+                <div className="absolute inset-x-0 bottom-[4%] flex flex-col items-center gap-2">
                   <button
                     id="intro-film-play"
                     type="button"
                     onClick={play}
-                    className="group relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/70"
+                    className="group relative grid place-items-center w-[4.5rem] h-[4.5rem] sm:w-20 sm:h-20 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/70"
                     aria-label={isEn ? 'Play our story, 35 seconds, with sound' : 'شغّل قصتنا، ٣٥ ثانية بالصوت'}
                   >
                     <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.2s]" />
