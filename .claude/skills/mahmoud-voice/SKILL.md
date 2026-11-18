@@ -59,7 +59,10 @@ Word rules:
 
 ## 3. Stage cues (body language)
 
-Write them in square brackets in the Shot/Delivery column, short and filmable:
+**[Owner, 2026-11-18] Cues are written in Egyptian Arabic and describe the feeling and intent of the line first**
+(«هنا بتطمّنه إن ابنه مش لوحده», «دي حتة الهزار، ابتسامة فيها مكر»). A gesture is added only when it obviously comes
+from the words; prescribed gestures felt arbitrary to him. The English examples below are a vocabulary, not the
+output language:
 
 - **Hands:** [counts on fingers: 1… 2…], [points to the throat], [open palm toward camera: your turn], [small "stop"
   hand: wait, listen again], [taps the Mushaf line with the pen].
@@ -74,10 +77,13 @@ letters, never an ayah read wrongly.
 
 ## 4. Script format (what goes into the Notion item page)
 
-One table row per beat:
+**[Owner, 2026-11-18, P1 is the model]** He reads from a screen while filming, so the page is:
 
-| Time | On-screen text | Spoken line (video language) | Delivery / shot | Viewer action |
-|---|---|---|---|---|
+1. A blue callout: version, date, what changed.
+2. «الإحساس العام»: the tone, length and place, in Arabic, two or three lines.
+3. «السكريبت (اقرأ من هنا)»: continuous teleprompter text. Per spoken line: a grey line
+   `<span color="gray">🎭 …</span>` with the Arabic cue, then the spoken line in bold. No table, no timings here.
+4. A divider, then «للمونتاج (مش هتقرأه وإنت بتصوّر)»: a two-column table, line → on-screen text.
 
 Then: caption per platform, pinned comment, CTA with UTM link (`watazawwado-content` §3), and a line for the owner in
 Arabic: «اللي محتاج تراجعه: …» (any Quran word, any claim, any line you might not say this way).
@@ -100,4 +106,57 @@ line each, dated): a word he prefers, a phrase he cut, a gesture he added. Over 
 accurate description of his voice; it wins over the general rules above when they disagree (but never over
 `docs/marketing/RULES.md`).
 
-- 2026-10-21: (first entry pending the owner's first review)
+- 2026-11-18 (P1 review, pilot for all scripts): **format beats §4.** He reads from a screen while filming, so the
+  script is continuous teleprompter text, one spoken line per paragraph, each preceded by a grey cue line **in
+  Egyptian Arabic** saying how to say it (feeling, face, hands, pauses). The beat table, on-screen text and captions
+  go below, under "for the editor". Delivery cues in English lose him.
+- 2026-11-18: the tone is **chatting with a friend** (يابينج/دردشة) who also teaches you something. He cut lines that
+  sound professional or lecture-like ("What we just learned fades fastest… a short review helps most") and flat
+  instruction lists with no feeling ("Five minutes. Same time every day… that's all").
+- 2026-11-18: "Tomorrow, then in a few days, then next week" read as AI to him: avoid neat list cadences; say it the
+  way you'd explain it across a table.
+- 2026-11-18: he likes naming the real science in plain words ("It's called spaced repetition. Fancy name. Simple
+  idea.") so we sound informed, never complicated.
+- 2026-11-18: kept "Listen like a fan, not a judge" and "A smile does more than a correction"; picked the image hook
+  ("a bucket with a hole in it") over the plain one. Endings that ask "which time works in your home" are weak; close
+  on the hook's image plus "Pack your zaad".
+- 2026-11-18 (P1 v2 → v3): cues that prescribe gestures ("count on your fingers", "hands move apart") felt arbitrary
+  to him. Write the **feeling and intent** behind the line (reassure him, tease him, slow down because it's the key
+  point); add a gesture only when it obviously comes from the words.
+- 2026-11-18: he repeats the key line so it lands ("…That's it. Five minutes."). Questions to the viewer should be
+  playful dares ("Ask your child for last month's surah. Go ahead, I'll wait."), not quiz questions ("Do they still
+  have it?"). His phrasing: "A fancy name, but a simple idea."
+- 2026-11-18 (P1 v3 → v4): the core idea must be **told as a story**, not stated as advice. Disconnected tip lines
+  ("Five minutes a day… every couple of days…") could not be filmed. Put the method inside a short scene with a
+  child, days of the week and a small tension (he gets stuck, mom waits), then name the science as the payoff.
+  An illustrative child is fine if never presented as a real student; a true anonymised story is better.
+- 2026-11-18 (P1 v4 → v5): a story is not enough if the viewer leaves without **practical help for their own
+  situation**. Fit the problem to the audience (a quiz on "last month's surah" assumes a struggling child). For parents
+  he wants: don't push, one ayah beats a page, stop early, keep coming back, make dua for the child, all with a human
+  touch. His own real teaching moment ("we go back to one ayah, slowly, together") beats an invented child.
+- 2026-11-18: one audience per video stays the rule: when an idea serves two audiences, split it into two short
+  videos filmed the same day (P1 parents, T4 the 5×5 method for adults) instead of merging.
+
+## 7. How the owner thinks (P1 review, 2026-11-18; use this as the source of ideas, not only style)
+
+These are his beliefs as a teacher. Build scripts on them and the scripts will sound like him.
+
+- **Impact over memorizing.** The point is the effect in life (﴿وأما ما ينفع الناس فيمكث في الأرض﴾, the brand's root):
+  "said well, understood well, lived well". Never treat the Quran as words or sounds to store; always connect to
+  meaning and to acting on it.
+- **The Companions' way:** learn a little, understand it, live it, then move on. Cite only verified reports: the
+  Sulami report (ten ayat, knowledge and action, Musnad Ahmad 23482, isnad hasan) is usable; the "Umar learned
+  al-Baqarah in 12 years" report has no verified grading yet, so it stays out until a sourced grading is found.
+- **Explain the science simply:** short-term → long-term memory, spaced repetition ("a fancy name, but a simple
+  idea"). Sounding informed is good; sounding complicated is not.
+- **No pressure on children.** No pages, no quotas; keep it comfortable and stop while they still want more.
+- **The challenge trick** (his own observation from teaching): "Just one ayah today. I don't think you can do two."
+  Children love a challenge and want to prove you wrong.
+- **Parents on the child's side:** make dua for the child where he can hear it, instead of anger or dua against him.
+- **A friend, with limits:** warmth, smiles, compassion and companionship, while still correcting mistakes. No
+  harshness, no laxity.
+- **His real teaching method for non-Arabic speakers** (T4): one ayah 5× from the Mushaf, 5× eyes closed, next ayah
+  the same, both together 5×, then self-test; stuck → go back.
+- **Speaks from experience:** "a trick I learned teaching kids", "when a student of mine gets stuck". Prefer his real
+  moments over invented examples; ask him for one when a script needs a story.
+- **Western context:** "by the weekend" over "by Friday".
