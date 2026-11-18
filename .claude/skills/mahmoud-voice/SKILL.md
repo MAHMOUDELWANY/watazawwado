@@ -145,8 +145,11 @@ These are his beliefs as a teacher. Build scripts on them and the scripts will s
   "said well, understood well, lived well". Never treat the Quran as words or sounds to store; always connect to
   meaning and to acting on it.
 - **The Companions' way:** learn a little, understand it, live it, then move on. Cite only verified reports: the
-  Sulami report (ten ayat, knowledge and action, Musnad Ahmad 23482, isnad hasan) is usable; the "Umar learned
-  al-Baqarah in 12 years" report has no verified grading yet, so it stays out until a sourced grading is found.
+  Sulami report (ten ayat, knowledge and action, Musnad Ahmad 23482, isnad hasan) is usable. **He prefers a named,
+  well-known Companion over "the Companions"** (people know their rank): use Ibn Mas'ud's "ten ayat… their meanings
+  and acting on them" (Tafsir al-Tabari 81, sahih), with "one of the four the Prophet ﷺ told us to learn the Quran
+  from" (Bukhari 3758). The "Umar learned al-Baqarah in 12 years" report is not established (Abu Bilal al-Ash'ari
+  in its chain), so it is never used.
 - **Explain the science simply:** short-term → long-term memory, spaced repetition ("a fancy name, but a simple
   idea"). Sounding informed is good; sounding complicated is not.
 - **No pressure on children.** No pages, no quotas; keep it comfortable and stop while they still want more.
