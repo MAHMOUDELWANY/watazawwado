@@ -6,7 +6,7 @@ describe('PU-04 performance', () => {
   it('the hero visual never starts invisible', () => {
     // The intro film's poster (bag + play button) is plain markup, painted on first load; scenes animate only after play.
     const film = fs.readFileSync('src/components/public/homepage/IntroFilm.tsx', 'utf8');
-    const poster = film.slice(film.indexOf('// Poster:'), film.indexOf('{/* Burned-in captions. */}'));
+    const poster = film.slice(film.indexOf('// Poster:'), film.indexOf('{/* Zad rides along'));
     assert.ok(poster.length > 100);
     assert.ok(!/initial=/.test(poster));
     assert.ok(film.includes('preload="none"'), 'the voice-over loads only on play');

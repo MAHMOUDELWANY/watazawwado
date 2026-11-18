@@ -4,6 +4,20 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage v3 from the 7 teaching videos: one avatar, questions, proof, offer; kinetic intro film (2026-11-18)
+
+- Basis: docs/design/LANDING-LESSONS-2026-11-18.md (reactance and self-persuasion, proof over promise, one avatar,
+  offer stack, start small, remind don't teach; Khaam's named motion moves).
+- Order: hero + film → "Tell us about your child" (3 questions, answers read back with one page + the free lesson,
+  `ParentQuestions.tsx`, replaces PathFinder; other learners get small doors below) → proof (real teacher cards with
+  only checkable facts, `ProgressShowcase` labelled examples, safety facts) → offer (6 plain items + 3 tiny steps) →
+  subjects → carpet → reviews → FAQ → closing (verse + the three reminders).
+- Film rebuilt as kinetic typography on the audio clock: one phrase at a time, crimson bar under the key word, mask
+  reveal, zoom-through hook, whip-pan between scenes, slice on "never starts from zero", Zad (SVG rig) in every scene,
+  film grain + vignette, caption line. Poster: Zad waving + "Our story in 30 seconds".
+- Checks: changed files type-checked, related tests 28/28, build, desktop + phone in light and dark, film played
+  headless (AR desktop, EN phone). External GitHub skills from the videos were not installed (untrusted sources).
+
 ### Homepage rebuilt on one rhythm + voiced intro film without people (2026-11-18)
 
 - Owner: drop the plan to film him; the landing page still looked bad; watch the competitor recordings in full.

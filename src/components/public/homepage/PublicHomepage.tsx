@@ -5,13 +5,14 @@ import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicButton } from '../PublicDesignSystem';
-import { ArrowLeft, ArrowRight, Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BadgeCheck, Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
 import { IntroFilm } from './IntroFilm';
-import { PathFinder } from './PathFinder';
+import { ParentQuestions } from './ParentQuestions';
+import { ProgressShowcase } from '../how-it-works/ProgressShowcase';
 import { HeroSubjects } from './HeroSubjects';
-import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem } from '../emblems/DoorEmblems';
+import { MushafEmblem, PathEmblem } from '../emblems/DoorEmblems';
 import { FamilyVoices } from './FamilyVoices';
 import { NewToIslamDoor } from '../NewToIslamDoor';
 import { FAQS } from '../../../data/content';
@@ -90,16 +91,26 @@ const TRACKS: Track[] = [
   },
 ];
 
-const PROMISES: { emblem: React.ComponentType<{ className?: string }>; title: L; body: L }[] = [
-  { emblem: TeachersEmblem, title: { en: 'Your teacher stays', ar: 'معلّمك يبقى معك' }, body: { en: 'The same teacher, lesson after lesson, who knows where you stopped.', ar: 'نفس المعلّم حصة بعد حصة، يعرف أين توقّفت.' } },
-  { emblem: EnvelopeEmblem, title: { en: 'A note after every lesson', ar: 'تقرير بعد كل حصة' }, body: { en: 'What was learned and what to practise, before you have to ask.', ar: 'ماذا تعلّم وماذا يراجع، قبل أن تسأل.' } },
-  { emblem: LanternEmblem, title: { en: 'Children kept safe', ar: 'أمان أطفالك أولًا' }, body: { en: 'The teacher opens the room, nothing is recorded, and you can sit in on any lesson.', ar: 'المعلّم يفتح الغرفة، ولا يوجد تسجيل، وتقدر تحضر أي حصة.' } },
+// The offer, said once and plainly next to the button (risk reversal): everything a family gets.
+const OFFER: L[] = [
+  { en: 'A free first lesson, 30 minutes, no card', ar: 'أول حصة مجانية، ٣٠ دقيقة، بدون بطاقة' },
+  { en: 'The same teacher, lesson after lesson', ar: 'نفس المعلّم، حصة بعد حصة' },
+  { en: 'Not the right fit? We switch the teacher, free', ar: 'المعلّم مش مناسب؟ نغيّره مجانًا' },
+  { en: 'A note after every lesson, before you ask', ar: 'تقرير بعد كل حصة، قبل ما تسأل' },
+  { en: 'A male or female teacher, your choice', ar: 'معلّم أو معلّمة، انت تختار' },
+  { en: 'Sit in on any lesson; nothing is recorded', ar: 'تحضر أي حصة، ومفيش تسجيل' },
 ];
 
 const STEPS: { title: L; body: L }[] = [
-  { title: { en: 'Book a free lesson', ar: 'احجز حصة مجانية' }, body: { en: '30 minutes. No card needed.', ar: '٣٠ دقيقة، بدون بطاقة بنكية.' } },
-  { title: { en: 'Meet and find your level', ar: 'نتعرّف ونحدّد المستوى' }, body: { en: 'Your teacher listens and sets a plan with you.', ar: 'المعلّم يسمعك ويضع معك خطة.' } },
-  { title: { en: 'Start, and follow along', ar: 'ابدأ وتابع' }, body: { en: 'A note after every lesson. Book at times that suit you.', ar: 'تقرير بعد كل حصة، ومواعيد تناسبك.' } },
+  { title: { en: 'Book 30 free minutes', ar: 'احجز ٣٠ دقيقة مجانًا' }, body: { en: 'Pick a time. No card.', ar: 'اختار ميعاد. من غير بطاقة.' } },
+  { title: { en: 'The teacher listens', ar: 'المعلّم يسمع' }, body: { en: 'Finds the level and sets a plan with you.', ar: 'يحدد المستوى ويحط معاك خطة.' } },
+  { title: { en: 'Then decide', ar: 'وبعدين قرّر' }, body: { en: 'Continue only if it felt right.', ar: 'تكمّل بس لو ارتحت.' } },
+];
+
+// Proof over promise: the real teachers, with only checkable facts (AboutPage.tsx is the source of these lines).
+const TEACHERS: { src: string; name: L; fact: L }[] = [
+  { src: '/ustadh-mahmoud.jpg', name: { en: 'Ustadh Mahmoud', ar: 'الأستاذ محمود' }, fact: { en: "Ijazah in the Quran (Hafs 'an 'Asim). Quran, Tajweed, Arabic, the Zad Path.", ar: 'إجازة في القرآن برواية حفص عن عاصم. قرآن وتجويد وعربية ومنهج زاد.' } },
+  { src: '/ustadha-afnan.jpg', name: { en: 'Ustadha Afnan', ar: 'الأستاذة أفنان' }, fact: { en: 'Quran, Tajweed, Arabic, the Zad Path and English. For families who prefer a female teacher.', ar: 'قرآن وتجويد وعربية ومنهج زاد وإنجليزي. للأسر اللي تفضّل معلّمة.' } },
 ];
 
 export function PublicHomepage() {
@@ -145,8 +156,8 @@ export function PublicHomepage() {
               >
                 <TrialCtaLabel isEn={isEn} />
               </PublicButton>
-              <a href="#path-finder" className="btn-glass px-6 py-3 rounded-xl">
-                {isEn ? 'Who is the learning for?' : 'لمن التعلّم؟'}
+              <a href="#parent-questions" className="btn-glass px-6 py-3 rounded-xl">
+                {isEn ? 'Tell us about your child' : 'احكِ لنا عن طفلك'}
               </a>
             </div>
 
@@ -170,7 +181,88 @@ export function PublicHomepage() {
         </div>
       </section>
 
-      {/* ─── 2. WHAT WE TEACH ─── four tracks, each opening its subject pages. */}
+      {/* ─── 2. YOUR CHILD, IN YOUR WORDS ─── three questions; the parent names the goal (self-persuasion). */}
+      <ParentQuestions isEn={isEn} onTrial={() => onOpenTrialModal()} />
+
+      {/* ─── 3. PROOF, NOT PROMISES ─── the real teachers, what a family really sees, the safety facts. */}
+      <section className="public-container py-16 lg:py-24" aria-labelledby="home-proof">
+        <SectionHead
+          id="home-proof"
+          eyebrow={isEn ? 'See it for yourself' : 'شوف بنفسك'}
+          before={isEn ? 'Not promises. ' : 'مش وعود. '}
+          ribbon={isEn ? 'What you will see.' : 'ده اللي هتشوفه.'}
+          sub={isEn ? 'Who teaches your child, what lands on your phone, and how the room is kept safe.' : 'مين يعلّم طفلك، وإيه اللي يوصل موبايلك، وإزاي الحصة آمنة.'}
+        />
+        <div className="mt-12 max-w-6xl mx-auto space-y-12">
+          <ul className="grid gap-5 sm:grid-cols-2">
+            {TEACHERS.map((tc) => (
+              <li key={tc.src} className="flex items-center gap-5 rounded-[1.75rem] border border-border bg-card p-4 sm:p-5 shadow-[0_18px_40px_-30px_rgba(28,20,17,0.45)]">
+                <img src={tc.src} alt={t(tc.name)} loading="lazy" decoding="async" className="w-24 h-28 sm:w-28 sm:h-32 shrink-0 rounded-t-full rounded-b-2xl object-cover ring-2 ring-[#E5A93C]/40" />
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1.5 font-editorial font-bold text-xl text-foreground">{t(tc.name)}<BadgeCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" /></p>
+                  <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{t(tc.fact)}</p>
+                  <Link to="/about" className="mt-2 inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-primary">{isEn ? 'Full profile' : 'الملف كامل'}<Arrow className="w-3.5 h-3.5" aria-hidden="true" /></Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <ProgressShowcase isEn={isEn} />
+          <ul className="grid gap-3 sm:grid-cols-3">
+            {[
+              { en: 'The teacher opens the room; no one else can join', ar: 'المعلّم هو اللي يفتح الغرفة، ومحدش غيره يدخل' },
+              { en: 'Nothing is recorded', ar: 'مفيش تسجيل للحصص' },
+              { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' },
+            ].map((f) => (
+              <li key={f.en} className="flex items-start gap-2.5 rounded-2xl border border-border bg-surface-warm/60 p-4 text-sm font-semibold text-foreground">
+                <ShieldCheck className="w-5 h-5 shrink-0 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" />{t(f)}
+              </li>
+            ))}
+          </ul>
+          <p className="text-center">
+            <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
+              {isEn ? 'How we keep children safe' : 'كيف نحافظ على الأطفال'}
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* ─── 4. THE OFFER ─── everything a family gets, said once, next to a small first step. */}
+      <section className="public-container pb-16 lg:pb-24" aria-labelledby="home-offer">
+        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:px-16 lg:py-16 max-w-6xl mx-auto grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+          <div>
+            <p className="inline-flex items-center gap-3 text-xs sm:text-sm font-bold tracking-wide text-[#F6D58E]">
+              <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />{isEn ? 'What you get' : 'اللي هتاخده'}
+            </p>
+            <h2 id="home-offer" className="mt-3 font-editorial font-bold text-[2rem] leading-[1.2] sm:text-5xl text-[#FAF7F2]">
+              {isEn ? <>Nothing to lose. <span className="text-[#F6D58E]">Start small.</span></> : <>مفيش حاجة تخسرها. <span className="text-[#F6D58E]">ابدأ صغير.</span></>}
+            </h2>
+            <ul className="mt-8 grid gap-3">
+              {OFFER.map((o) => (
+                <li key={o.en} className="flex items-start gap-3 text-[#FAF7F2] text-base sm:text-lg">
+                  <span className="mt-0.5 grid place-items-center w-6 h-6 shrink-0 rounded-full bg-[#087D91] text-[#FAF7F2]"><Check className="w-3.5 h-3.5" aria-hidden="true" /></span>
+                  {t(o)}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-[1.5rem] border border-[#F6D58E]/20 bg-[#FAF7F2]/[0.05] p-6 sm:p-8">
+            <ol className="relative space-y-7 ps-14 before:absolute before:top-4 before:bottom-4 before:start-[1.2rem] before:w-px before:bg-gradient-to-b before:from-[#E5A93C] before:to-[#E5A93C]/20">
+              {STEPS.map((s, i) => (
+                <li key={s.title.en} className="relative">
+                  <span aria-hidden="true" className="absolute -start-14 top-0 grid place-items-center w-10 h-10 rounded-full bg-[#E5A93C] text-[#1C1411] font-bold tabular-nums shadow-[0_0_0_6px_rgba(229,169,60,0.18)]">{i + 1}</span>
+                  <h3 className="font-editorial font-bold text-xl sm:text-2xl text-[#FAF7F2]">{t(s.title)}</h3>
+                  <p className="mt-1 text-[#FAF7F2]/70 leading-relaxed">{t(s.body)}</p>
+                </li>
+              ))}
+            </ol>
+            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta mt-8 w-full">
+              <TrialCtaLabel isEn={isEn} />
+            </PublicButton>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 5. WHAT WE TEACH ─── four tracks, each opening its subject pages. */}
       <section className="public-container py-16 lg:py-24" aria-labelledby="home-tracks">
         <SectionHead
           id="home-tracks"
@@ -213,68 +305,8 @@ export function PublicHomepage() {
         </div>
       </section>
 
-      {/* ─── 3. WHO IS THE LEARNING FOR? ─── two taps to the right subject page. */}
-      <PathFinder isEn={isEn} onTrial={() => onOpenTrialModal()} />
-
-      {/* ─── 4. WHY US ─── three promises. */}
-      <section className="public-container py-16 lg:py-24" aria-labelledby="home-why">
-        <SectionHead
-          id="home-why"
-          eyebrow={isEn ? 'Why Watazawwado' : 'لماذا وتزوّدوا'}
-          before={isEn ? 'Learning that ' : 'تعليمٌ '}
-          ribbon={isEn ? 'knows you' : 'يعرفك'}
-          after={isEn ? ' by name.' : ' باسمك.'}
-        />
-        <ul className="mt-12 grid gap-10 sm:gap-6 md:grid-cols-3 max-w-5xl mx-auto text-center">
-          {PROMISES.map(({ emblem: Emblem, title, body }) => (
-            <li key={title.en} className="flex flex-col items-center">
-              <span className="khatam-window grid place-items-center w-28 h-32 rounded-t-full rounded-b-3xl band-espresso shadow-[0_20px_40px_-24px_rgba(28,20,17,0.7)]">
-                <Emblem className="w-20 h-20" />
-              </span>
-              <h3 className="mt-5 font-editorial font-bold text-2xl text-foreground">{t(title)}</h3>
-              <p className="mt-2 max-w-xs text-muted-foreground leading-relaxed">{t(body)}</p>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-10 text-center">
-          <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
-            <ShieldCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
-            {isEn ? 'How we keep children safe' : 'كيف نحافظ على الأطفال'}
-          </Link>
-        </p>
-      </section>
-
-      {/* ─── 5. THE TEACHER STAYS ─── the flying carpet (owner's idea, 2026-11-05). */}
+      {/* ─── 6. THE TEACHER STAYS ─── the flying carpet (owner's idea, 2026-11-05). */}
       <TeacherStays isEn={isEn} />
-
-      {/* ─── 6. HOW TO START ─── three stops on a gold line. */}
-      <section className="public-container py-16 lg:py-24" aria-labelledby="home-start">
-        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:px-16 lg:py-16 max-w-6xl mx-auto grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-          <div className="text-center lg:text-start">
-            <p className="inline-flex items-center gap-3 text-xs sm:text-sm font-bold tracking-wide text-[#F6D58E]">
-              <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />{isEn ? 'How to start' : 'كيف تبدأ'}
-            </p>
-            <h2 id="home-start" className="mt-3 font-editorial font-bold text-[2rem] leading-[1.2] sm:text-5xl text-[#FAF7F2]">
-              {isEn ? <>The first step is <span className="text-[#F6D58E]">on us.</span></> : <>الخطوة الأولى <span className="text-[#F6D58E]">علينا.</span></>}
-            </h2>
-            <p className="mt-4 text-base sm:text-lg leading-relaxed text-[#FAF7F2]/75 max-w-md mx-auto lg:mx-0">
-              {isEn ? 'Not sure which subject or level? That is what the free lesson is for.' : 'مش متأكد من المادة أو المستوى؟ الحصة المجانية لهذا بالضبط.'}
-            </p>
-            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta mt-8 w-full sm:w-auto">
-              <TrialCtaLabel isEn={isEn} />
-            </PublicButton>
-          </div>
-          <ol className="relative space-y-8 ps-14 before:absolute before:top-4 before:bottom-4 before:start-[1.2rem] before:w-px before:bg-gradient-to-b before:from-[#E5A93C] before:to-[#E5A93C]/20">
-            {STEPS.map((s, i) => (
-              <li key={s.title.en} className="relative">
-                <span aria-hidden="true" className="absolute -start-14 top-0 grid place-items-center w-10 h-10 rounded-full bg-[#E5A93C] text-[#1C1411] font-bold tabular-nums shadow-[0_0_0_6px_rgba(229,169,60,0.18)]">{i + 1}</span>
-                <h3 className="font-editorial font-bold text-xl sm:text-2xl text-[#FAF7F2]">{t(s.title)}</h3>
-                <p className="mt-1 text-[#FAF7F2]/70 leading-relaxed">{t(s.body)}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
 
       {/* ─── 7. WHAT FAMILIES SAY ─── */}
       <FamilyVoices isEn={isEn} />
@@ -332,6 +364,14 @@ export function PublicHomepage() {
               ? 'The first one is free: thirty minutes to meet, listen, and find your way.'
               : 'والأولى مجاناً: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
           </p>
+          {/* Remind, don't teach: the three things that matter, one last time. */}
+          <ul className="relative mt-6 flex flex-wrap justify-center gap-2">
+            {[{ en: 'The same teacher', ar: 'نفس المعلّم' }, { en: 'A note after every lesson', ar: 'تقرير بعد كل حصة' }, { en: 'First lesson free', ar: 'أول حصة مجانًا' }].map((r) => (
+              <li key={r.en} className="inline-flex items-center gap-1.5 rounded-full border border-[#F6D58E]/30 px-3.5 py-1.5 text-sm font-semibold text-[#F6D58E]">
+                <Check className="w-3.5 h-3.5" aria-hidden="true" />{t(r)}
+              </li>
+            ))}
+          </ul>
           <div className="relative mt-8 flex flex-col sm:flex-row justify-center gap-3">
             <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta w-full sm:w-auto">
               <TrialCtaLabel isEn={isEn} />

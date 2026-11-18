@@ -1,6 +1,6 @@
 # Homepage intro film (owner request, 2026-11-17)
 
-Sits in the homepage hero, under the headline. One short voiced film (~27 s) in the site identity. **No people on
+Sits in the homepage hero, under the headline. One short voiced film (~27 s) in the site identity. Since 2026-11-18 it is kinetic typography (see docs/design/LANDING-LESSONS-2026-11-18.md): one phrase at a time on the voice, Zad in every scene. **No people on
 camera** (owner, 2026-11-17: drop the owner clips, the film is about the academy, not one person). Six motion scenes
 drawn in the page itself (`src/components/public/homepage/IntroFilm.tsx`), timed to the voice-over. No price.
 
