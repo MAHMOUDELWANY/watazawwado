@@ -16,7 +16,7 @@ Read this first if you are continuing the classroom work in a new session or on 
   `CLOUDFLARE_REALTIME_APP_TOKEN`, `CLOUDFLARE_TURN_KEY_ID`, `CLOUDFLARE_TURN_KEY_API_TOKEN`,
   `QURAN_FOUNDATION_CLIENT_ID`, `QURAN_FOUNDATION_CLIENT_SECRET`. Not set yet: `CLASSROOM_MODE` (defaults to off)
   and `CLASSROOM_PILOT_TEACHERS`.
-- **Supabase project:** `fmwxqyroyxgigvpahpri`. The Task 2 migration
+- **Supabase project:** `fmwxqyroyxgigvpahpri`. The Task 2 migration (APPLIED 2026-11-18, with the files bucket migration)
   (`20261117000000_classroom_release_1.sql`) is **not applied yet**. Apply it at release time (Task 15). Its
   constraint names were checked against production on 2026-11-17 and match.
 
@@ -38,7 +38,7 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 12 | Automatic Zoom fallback | done (manual block-Cloudflare check still to do in a browser) | 4fac2e1f |
 | 13 | Observers and rollout switch | done | 10794af0 |
 | 14 | Room becomes the lesson link | done (full npm test: 1 pre-existing-in-branch a11y failure in ScreenShare dialog, fix running) | df1c7508 |
-| 15 | Rules, legal (owner approves first), security review, ship off, pilot | todo | |
+| 15 | Rules, legal (owner approves first), security review, ship off, pilot | code shipped to main with CLASSROOM_MODE off; both migrations applied 2026-11-18; legal draft in docs/classroom/LEGAL-DRAFT.md WAITING for owner approval; pilot not started | 7fc78a08 |
 
 ## Notes for the next tasks (learned while building)
 
@@ -67,3 +67,16 @@ Read this first if you are continuing the classroom work in a new session or on 
   (`lesson_quality.updated_at`, sent every 60 s) when no `room_left` follows.
 - Before the first real browser test: apply both migrations (`20261117000000_classroom_release_1.sql`,
   `20261118000000_classroom_files_bucket.sql`) and use a booking whose time window is open.
+
+## Next steps (after 2026-11-18 ship)
+
+1. Owner approves `docs/classroom/LEGAL-DRAFT.md`, then publish it into RULES.md, terms, privacy, safety, FAQ and the
+   teacher agreement.
+2. Before the pilot, fix the known gap: room presence without `room_left` (a crashed tab counts as present until the
+   lesson ends). Plan: end room presence at the side's last quality heartbeat (60 s).
+3. First real browser test (no one has seen the room on screen yet): set `CLASSROOM_MODE=pilot` and
+   `CLASSROOM_PILOT_TEACHERS=<Ahmed's QA teacher id>` in Vercel, then book a test lesson and run the checklist in plan
+   Task 15 step 4 (desktop Chrome, Safari Mac, iPhone tap-to-hear, Android, weak network, screen and tab share, PDF
+   upload, block Cloudflare for the Zoom fallback, rejoin, lateness gate, guardian and admin observers).
+4. Then real lessons for Mahmoud and Afnan with the Zoom fallback. Zoom stays until the owner says otherwise.
+5. Later plans: the Quran tab with homework and the detector (spec §9), Release 2, Release 3.
