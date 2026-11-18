@@ -442,15 +442,15 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
             <motion.div
               key={scene}
               className="absolute inset-0 flex flex-col items-center justify-center gap-[5%] px-6 pb-[13%] pt-[8%]"
-              initial={reduce ? { opacity: 0 } : { x: isEn ? '12%' : '-12%', filter: 'blur(14px)', opacity: 0, scale: 1.05 }}
-              animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
+              initial={reduce ? { opacity: 0 } : record ? { x: isEn ? '12%' : '-12%', opacity: 0, scale: 1.05 } : { x: isEn ? '12%' : '-12%', filter: 'blur(14px)', opacity: 0, scale: 1.05 }}
+              animate={record ? { x: 0, opacity: 1, scale: 1 } : { x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
               transition={{ duration: 0.28, ease: EASE }}
             >
               <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom.text > 1 ? { zoom: zoom.text } : undefined}>
                 {beatIdx >= 0 && (
                   textOnly && beat.hl ? (
                     // The name in gold foil, with a light sweep.
-                    <motion.span key={beat.text} className="relative block font-editorial font-bold text-[5rem] sm:text-[9rem] lg:text-[11rem] leading-none" style={{ backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : { scale: 1.6, opacity: 0, filter: 'blur(12px)' }} animate={{ scale: 1, opacity: 1, filter: 'blur(0px)', backgroundPosition: ['0% 0%', '100% 0%'] }} transition={{ duration: 0.7, ease: EASE, backgroundPosition: { duration: 1.6, ease: 'easeInOut' } }}>
+                    <motion.span key={beat.text} className="relative block font-editorial font-bold text-[5rem] sm:text-[9rem] lg:text-[11rem] leading-none" style={{ backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : record ? { scale: 1.6, opacity: 0 } : { scale: 1.6, opacity: 0, filter: 'blur(12px)' }} animate={record ? { scale: 1, opacity: 1, backgroundPosition: ['0% 0%', '100% 0%'] } : { scale: 1, opacity: 1, filter: 'blur(0px)', backgroundPosition: ['0% 0%', '100% 0%'] }} transition={{ duration: 0.7, ease: EASE, backgroundPosition: { duration: 1.6, ease: 'easeInOut' } }}>
                       {beat.text}
                     </motion.span>
                   ) : (
@@ -511,7 +511,8 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         {running && <span aria-hidden="true" className="absolute bottom-0 start-0 h-[3px] bg-[linear-gradient(90deg,#C51F24,#E5A93C)]" style={{ width: `${Math.min(100, (now / LENGTH) * 100)}%` }} />}
 
         {/* Film grain and a soft vignette over everything. */}
-        <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.09] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+        {/* (The ad export skips the blend: full-screen blending stalls the recorder.) */}
+        <div aria-hidden="true" className={`absolute inset-0 pointer-events-none ${record ? 'opacity-[0.04]' : 'opacity-[0.09] mix-blend-overlay'}`} style={{ backgroundImage: GRAIN }} />
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none shadow-[inset_0_0_140px_rgba(0,0,0,0.6)]" />
 
         {running && !record && (
