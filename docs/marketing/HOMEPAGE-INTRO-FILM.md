@@ -17,7 +17,7 @@ qcy21eeEO3C1xHhSLn3U. Written to the v4 guide: one emotion tag before each line,
 stressed word in English, Arabic fully diacritized so every ending is pronounced.
 
 Three takes each in `marketing/intro-film/vo/{ar,en}-v2-t{1,2,3}.mp3` (~42 s). Take 1 is live
-(`public/media/intro-film/{ar,en}.mp3`): clean pauses between lines and every word aligned. Scene starts and word
+(`public/media/intro-film/{ar,en}-v2.mp3`; a new take gets a new file name, since mp3s are cached for a day): clean pauses between lines and every word aligned. Scene starts and word
 cues (`STARTS`, `BEATS`, `CUES`) come from ElevenLabs Scribe forced alignment of take 1; re-measure if a take changes.
 
 ## Script and pictures
@@ -46,3 +46,19 @@ Real portal screens in `public/media/portal/{ar,en}-{note,level,milestones,badge
 from `/student/progress?preview=active` (the portal's own sample learner, a dev-only preview) with the dev student
 session. The homepage says so under the phone: "real screens, sample data". Medals are the portal's badge renders in
 `public/badges/shelf`.
+
+## Script v3 (draft, 2026-11-18): waiting for the voice
+
+Owner on v2: the script and the voice sound cheap. v3 trades the list of features for one feeling: what we are afraid
+to lose far from home cannot go in a suitcase. One idea per line, no subject list, the verse said in full near the end.
+Needs the ElevenLabs connector back in this workspace (eleven_v4, same voices, one emotion tag per line, full diacritics).
+
+| # | Emotion | Arabic | English |
+|---|---------|--------|---------|
+| 1 | hushed, intimate | كُلُّ مُسَافِرٍ... يَحْزِمُ حَقِيبَتَهُ بِعِنَايَةٍ. | Every traveller packs with care. |
+| 2 | slower, reflective | لَكِنَّ أَثْقَلَ مَا نَخَافُ أَنْ نَنْسَاهُ... لَا يُوضَعُ فِي حَقِيبَةٍ. | But what we fear forgetting most... doesn't fit in a suitcase. |
+| 3 | tender, a little emotional | كَلِمَاتُ اللهِ... وَلِسَانُ أَجْدَادِنَا... وَدِينٌ نُرِيدُهُ أَنْ يَبْقَى فِي أَبْنَائِنَا. | The words of Allah... the language of our grandparents... a faith we want our children to keep. |
+| 4 | warm, rising | هُنَا... مُعَلِّمٌ يَعْرِفُكَ بِاسْمِكَ، يَسْمَعُكَ حَرْفًا حَرْفًا، وَلَا يَبْدَأُ مَعَكَ مِنَ الصِّفْرِ. | Here, a teacher who knows you by name. Who hears every letter... and never starts from zero. |
+| 5 | bright, light | وَبَعْدَ كُلِّ حِصَّةٍ... يَصِلُكَ مَا تَعَلَّمْتَ. وَكُلُّ خُطْوَةٍ... تَصِيرُ وِسَامًا. | After every lesson, you see what you learned... and every step becomes a badge. |
+| 6 | proud, steady, slow | ﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾ | "Take provision... and the best provision is mindfulness of Allah." |
+| 7 | inviting, smiling | الحِصَّةُ الأُولَى عَلَيْنَا. ابْدَأْ زَادَكَ. | Your first lesson is on us. Start your Zad. |

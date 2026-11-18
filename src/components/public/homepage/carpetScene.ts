@@ -372,7 +372,8 @@ export function mountCarpetScene({ section, stage, canvas, dark, still, onFrame 
   const loop = (now: number) => {
     raf = 0; if (!visible) return;
     const dt = Math.min(0.05, (now - last) / 1000); last = now; clock += dt;
-    pS += (progress() - pS) * (1 - Math.exp(-dt * 6));
+    // A fast flick still plays the story: the scene eases toward the scroll and never moves faster than ~0.3 of the story a second.
+    { const d = (progress() - pS) * (1 - Math.exp(-dt * 3)); const cap = dt * 0.3; pS += Math.max(-cap * 2, Math.min(cap, d)); }
     frame(pS, clock, dt); R.render(S, cam); raf = requestAnimationFrame(loop);
   };
   // With reduced motion the scene is one still frame of the ending; otherwise it runs only while on screen.

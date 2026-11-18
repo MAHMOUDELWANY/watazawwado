@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
 import { useTheme } from '../../ThemeProvider';
 import type { CarpetScene } from './carpetScene';
+import { ZadRigSvg } from '../../zad/ZadRig';
 
 /**
  * "Here, your teacher stays.": the teacher arrives on a flying carpet, lifts the child
@@ -88,19 +89,25 @@ export function TeacherStays({ isEn }: { isEn: boolean }) {
     : `inset(-20% calc((1 - var(${v},0)) * 100%) -20% 0)`);
 
   return (
-    <section ref={sectionRef} className={still ? 'relative h-[100svh]' : 'relative h-[300vh]'} aria-labelledby="home-stays">
+    <section ref={sectionRef} className={still ? 'relative h-[100svh]' : 'relative h-[380vh]'} aria-labelledby="home-stays">
       <div
         ref={stageRef}
         className="sticky top-0 h-[100svh] overflow-hidden bg-[linear-gradient(180deg,#F0DCC6,var(--background)_72%)] dark:bg-[linear-gradient(180deg,#0A1219,#1E150E_72%)]"
       >
         <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 w-full h-full" />
-        <p
+        {/* Zad tells the story as it plays (owner, 2026-11-18): his bubble carries each moment's line. */}
+        <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-[calc(4.5rem+env(safe-area-inset-top,0px))] sm:top-24 text-center text-sm sm:text-base font-semibold text-muted-foreground transition-opacity duration-500"
+          className="absolute inset-x-0 top-[calc(4.5rem+env(safe-area-inset-top,0px))] sm:top-24 flex justify-center px-4 transition-opacity duration-500"
           style={{ opacity: beat >= 0 && !full ? 1 : 0 }}
         >
-          {beat >= 0 ? (isEn ? BEATS[beat][2].en : BEATS[beat][2].ar) : ' '}
-        </p>
+          <div className="flex items-end gap-2">
+            <ZadRigSvg pose={beat >= 3 ? 'love' : beat >= 1 ? 'point' : 'think'} size={56} glow={false} />
+            <p key={beat} className="mb-6 rounded-2xl rounded-es-md bg-[#1C1411] px-4 py-2 text-sm sm:text-base font-bold text-[#FAF7F2] shadow-[0_14px_30px_-12px_rgba(28,20,17,0.6)] animate-fade-in-up">
+              {beat >= 0 ? (isEn ? BEATS[beat][2].en : BEATS[beat][2].ar) : ' '}
+            </p>
+          </div>
+        </div>
         <div ref={vowRef} className="absolute inset-x-0 bottom-0 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(1.75rem+env(safe-area-inset-bottom,0px))] text-center pointer-events-none">
           <h2
             id="home-stays"

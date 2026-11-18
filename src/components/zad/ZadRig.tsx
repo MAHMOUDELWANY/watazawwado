@@ -272,10 +272,10 @@ export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?
   const flat = <ZadRigSvg pose={pose} size={size} glow={glow} />;
   const slot = <span aria-hidden="true" className="inline-block shrink-0 align-middle" style={{ width: size, height: size }} />;
   if (mode === 'svg') return flat;
-  if (mode === 'pending') return slot;
+  if (mode === 'pending') return flat; // show Zad at once (owner: he used to vanish until the 3D loaded)
   return (
     <Fallback fallback={flat}>
-      <Suspense fallback={slot}>
+      <Suspense fallback={flat}>
         <ZadLive pose={pose} size={size} still={Boolean(reduce)} />
       </Suspense>
     </Fallback>

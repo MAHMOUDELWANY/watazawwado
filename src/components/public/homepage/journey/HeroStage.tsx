@@ -40,7 +40,42 @@ function Khatam({ className }: { className?: string }) {
   );
 }
 
-export function HeroStage({ isEn }: { isEn: boolean }) {
+/**
+ * Phones (owner, 2026-11-18): the brand line written around Zad, the first half over the top of the circle, the
+ * second under it. Each half slides in from its own side and settles on the circle.
+ */
+function RingText({ isEn, reduce }: { isEn: boolean; reduce: boolean }) {
+  const top = isEn ? 'Provision that lasts,' : 'زادٌ يبقى،';
+  const bottom = isEn ? 'for you and your family.' : 'لك ولأهل بيتك.';
+  const enter = (from: number, delay: number) => (reduce ? {} : {
+    initial: { rotate: from, opacity: 0 },
+    animate: { rotate: 0, opacity: 1 },
+    transition: { type: 'spring' as const, stiffness: 60, damping: 16, delay },
+  });
+  return (
+    <svg viewBox="0 0 400 400" className="lg:hidden absolute inset-0 z-30 w-full h-full pointer-events-none overflow-visible" aria-hidden="true">
+      <defs>
+        <path id="ring-top" d="M 22 200 A 178 178 0 0 1 378 200" />
+        <path id="ring-bottom" d="M 8 200 A 192 192 0 0 0 392 200" />
+        <linearGradient id="ring-ribbon" x1="0" x2="1">
+          <stop offset="0" stopColor="#C51F24" /><stop offset=".5" stopColor="#E5A93C" /><stop offset="1" stopColor="#087D91" />
+        </linearGradient>
+      </defs>
+      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? -100 : 100, 0.2)}>
+        <text className={`font-editorial ${isEn ? 'font-medium' : 'font-bold'}`} fontSize={isEn ? 34 : 40} fill="currentColor" style={{ color: 'var(--foreground)' }} direction={isEn ? 'ltr' : 'rtl'}>
+          <textPath href="#ring-top" startOffset="50%" textAnchor="middle">{top}</textPath>
+        </text>
+      </motion.g>
+      <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? 100 : -100, 0.45)}>
+        <text className="font-editorial font-bold" fontSize={isEn ? 30 : 36} fill="url(#ring-ribbon)" direction={isEn ? 'ltr' : 'rtl'} dominantBaseline="hanging">
+          <textPath href="#ring-bottom" startOffset="50%" textAnchor="middle">{bottom}</textPath>
+        </text>
+      </motion.g>
+    </svg>
+  );
+}
+
+export function HeroStage({ isEn, ringText = false }: { isEn: boolean; ringText?: boolean }) {
   const reduce = useReducedMotion();
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -71,9 +106,11 @@ export function HeroStage({ isEn }: { isEn: boolean }) {
         </motion.div>
       </motion.div>
 
-      {/* Middle: the orbit ring (an ellipse read as a tilted circle). */}
+      {/* Middle: a small world behind Zad: a lit sphere, and two rings on different tilts (read as 3D orbits). */}
       <motion.div className="absolute inset-0" style={mid}>
+        <div className="absolute inset-[22%] rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,241,201,0.55),rgba(229,169,60,0.22)_45%,rgba(180,85,47,0.12)_70%,transparent_72%)] shadow-[inset_-18px_-24px_50px_rgba(180,85,47,0.18)]" />
         <div className="absolute left-[6%] right-[6%] top-[39%] bottom-[39%] rounded-[50%] border border-[#E5A93C]/45 shadow-[0_0_30px_rgba(229,169,60,0.25)]" />
+        <div className={`absolute inset-[10%] rounded-[50%] border border-dashed border-[#B4552F]/30 [transform:rotateX(70deg)_rotateY(-28deg)] ${reduce ? '' : 'animate-[spin_40s_linear_infinite_reverse]'}`} />
       </motion.div>
       {/* Front: Zad, standing on a soft pedestal of light (between the far and near halves of the orbit). */}
       <motion.div className="absolute inset-0 z-10 grid place-items-center" style={front}>
@@ -83,6 +120,7 @@ export function HeroStage({ isEn }: { isEn: boolean }) {
         </div>
       </motion.div>
       {ORBIT.map((o, k) => <OrbitToken key={o.l.en} k={k} o={o} isEn={isEn} reduce={!!reduce} style={mid} />)}
+      {ringText && <RingText isEn={isEn} reduce={!!reduce} />}
     </div>
   );
 }

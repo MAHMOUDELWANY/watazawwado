@@ -46,10 +46,21 @@ function Player({ pose, still }: { pose: ZadPose; still: boolean }) {
 
 export default function ZadLive({ pose, size, still }: { pose: ZadPose; size: number; still: boolean }) {
   const box = size * BLEED;
+  // Draw only while on screen: an off-screen Zad kept rendering every frame and made scrolling heavy.
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const [onScreen, setOnScreen] = React.useState(true);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { rootMargin: '120px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   return (
-    <span aria-hidden="true" className="relative inline-block shrink-0 align-middle" style={{ width: size, height: size }}>
+    <span ref={ref} aria-hidden="true" className="relative inline-block shrink-0 align-middle" style={{ width: size, height: size }}>
       <span className="pointer-events-none absolute" style={{ width: box, height: box, left: (size - box) / 2, top: (size - box) / 2 }}>
         <Canvas
+          frameloop={onScreen ? 'always' : 'never'}
           dpr={[1, isLiteDevice() ? 1.5 : 2]}
           camera={{ position: [0, 0.82, 5.6], fov: 30 }}
           gl={{ antialias: true, alpha: true, powerPreference: 'low-power' }}

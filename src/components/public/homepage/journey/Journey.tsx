@@ -166,28 +166,38 @@ export function JourneyNav({ stations, isEn }: { stations: Station[]; isEn: bool
         </div>
       </motion.nav>
 
-      {/* Phones and tablets: where you are, and what is next. */}
+      {/* Phones and tablets: a floating pill. A ring fills with the page, the station's name, one segment per station,
+          and a tap goes to the next one. Solid colours only (no backdrop blur: it made scrolling heavy). */}
       <motion.div
-        className="xl:hidden fixed inset-x-0 top-16 sm:top-20 z-30 border-b border-border/70 bg-background/90 backdrop-blur-md"
+        className="xl:hidden fixed inset-x-0 top-[4.6rem] sm:top-[5.6rem] z-30 flex justify-center px-3 pointer-events-none"
         initial={false}
-        animate={{ opacity: inside ? 1 : 0, y: inside ? 0 : -12, pointerEvents: inside ? 'auto' : 'none' }}
-        transition={{ duration: 0.3, ease: EXPO }}
+        animate={{ opacity: inside ? 1 : 0, y: inside ? 0 : -14, scale: inside ? 1 : 0.96 }}
+        transition={{ duration: 0.35, ease: EXPO }}
         aria-hidden={!inside}
       >
-        <div className="public-container flex items-center justify-between gap-3 py-2 text-xs sm:text-sm">
-          <span className="font-bold text-foreground truncate">
-            <span className="text-[#C51F24] tabular-nums">{num(Math.max(1, index + 1), isEn)}</span>
-            <span className="text-muted-foreground"> / {num(stations.length, isEn)} · </span>{t(cur.label)}
+        <a
+          href={next ? `#${next.id}` : `#${cur.id}`}
+          className={`${inside ? 'pointer-events-auto' : ''} flex items-center gap-3 rounded-full bg-[#1C1411] text-[#FAF7F2] ps-1.5 pe-4 py-1.5 shadow-[0_14px_30px_-12px_rgba(28,20,17,0.7)] ring-1 ring-[#F6D58E]/25`}
+          aria-label={next ? `${isEn ? 'Next:' : 'التالي:'} ${t(next.label)}` : t(cur.label)}
+        >
+          <span className="relative grid place-items-center w-9 h-9 shrink-0">
+            <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90" aria-hidden="true">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F6D58E" strokeOpacity=".18" strokeWidth="3" />
+              <motion.circle cx="18" cy="18" r="15.5" fill="none" stroke="url(#jn-ring)" strokeWidth="3" strokeLinecap="round" style={{ pathLength: reduce ? fill : thread }} />
+              <defs><linearGradient id="jn-ring"><stop offset="0" stopColor="#C51F24" /><stop offset="1" stopColor="#E5A93C" /></linearGradient></defs>
+            </svg>
+            <span className="relative font-editorial font-bold text-xs tabular-nums">{num(Math.max(1, index + 1), isEn).replace(/^[0٠]/, '')}</span>
           </span>
-          {next && (
-            <a href={`#${next.id}`} className="shrink-0 inline-flex items-center gap-1 min-h-9 font-semibold text-muted-foreground">
-              {isEn ? 'Next:' : 'التالي:'} <span className="text-foreground">{t(next.label)}</span>
-            </a>
-          )}
-        </div>
-        <div className="h-[3px] bg-border/60">
-          <motion.div className="h-full bg-[linear-gradient(90deg,#C51F24,#E5A93C,#087D91)] rtl:bg-[linear-gradient(270deg,#C51F24,#E5A93C,#087D91)] origin-[0%] rtl:origin-[100%]" style={{ scaleX: reduce ? fill : thread }} />
-        </div>
+          <span className="min-w-0">
+            <span className="block text-[13px] font-bold leading-tight truncate max-w-[42vw]">{t(cur.label)}</span>
+            <span className="mt-1 flex gap-1" aria-hidden="true">
+              {stations.map((s2, k) => (
+                <span key={s2.id} className={`h-1 rounded-full transition-all duration-500 ${k === index ? 'w-5 bg-[#C51F24]' : k < index ? 'w-2 bg-[#E5A93C]' : 'w-2 bg-[#FAF7F2]/20'}`} />
+              ))}
+            </span>
+          </span>
+          {next && <span className="ms-1 text-[11px] font-semibold text-[#F6D58E]/80 whitespace-nowrap">{isEn ? 'Next ›' : '‹ التالي'}</span>}
+        </a>
       </motion.div>
     </>
   );

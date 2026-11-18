@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Camera, Check, KeyRound, Pause, Play, Plane, RotateCcw, Shirt, Smartphone, Wallet } from 'lucide-react';
+import { Camera, Check, KeyRound, Pause, Play, Plane, RotateCcw, Shirt, Smartphone, Volume2, Wallet } from 'lucide-react';
 import { ZadRigSvg, type ZadPose } from '../../zad/ZadRig';
 import { Medal } from './journey/HeroStage';
 
@@ -432,7 +432,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         className={`relative overflow-hidden ${record ? 'h-full w-full' : 'aspect-[4/5] sm:aspect-video rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)]'}`}
         style={{ background: LIGHT[running ? scene : 7], transition: 'background 0.6s ease' }}
       >
-        <audio ref={audioRef} src={isEn ? '/media/intro-film/en.mp3' : '/media/intro-film/ar.mp3'} preload="none" onEnded={() => setState('done')} onPause={() => setState((s) => (s === 'playing' ? 'paused' : s))} />
+        <audio ref={audioRef} src={isEn ? '/media/intro-film/en-v2.mp3' : '/media/intro-film/ar-v2.mp3'} preload="none" onEnded={() => setState('done')} onPause={() => setState((s) => (s === 'playing' ? 'paused' : s))} />
 
         {running ? (
           <>
@@ -463,33 +463,64 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
             {!reduce && <motion.div key={`flash-${scene}`} aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(closest-side,rgba(255,241,201,0.55),transparent)]" initial={{ opacity: scene === 0 ? 0 : 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.35 }} />}
           </>
         ) : (
-          // Poster: Zad waves next to the title and the play button. Painted on first load, nothing else to fetch.
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 sm:gap-6 px-6 text-center">
-            <div className="absolute left-1/2 top-[42%] w-[62%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none" style={{ background: 'radial-gradient(closest-side, rgba(246,213,142,0.45), rgba(229,169,60,0.16) 55%, transparent)' }} />
-            <div className="relative"><ZadRigSvg pose={state === 'done' ? 'cheer' : 'wave'} size={120} /></div>
-            <p className="relative font-editorial font-bold text-3xl sm:text-5xl text-[#FAF7F2] leading-tight">
-              {state === 'done'
-                ? (isEn ? <>The first lesson is <span className="text-[#F6D58E]">on us</span></> : <>الحصّة الأولى <span className="text-[#F6D58E]">علينا</span></>)
-                : (isEn ? <>If you left tomorrow, <span className="text-[#F6D58E]">what would you pack?</span></> : <>لو سافرتَ غدًا، <span className="text-[#F6D58E]">ماذا تضع في حقيبتك؟</span></>)}
-            </p>
-            <div className="relative flex flex-col sm:flex-row items-center gap-3">
-              <button
-                type="button"
-                onClick={play}
-                className="group inline-flex items-center gap-2.5 rounded-full bg-[#FAF7F2] ps-2 pe-5 py-2 min-h-11 text-[#1C1411] font-bold text-sm sm:text-base shadow-[0_12px_40px_-8px_rgba(229,169,60,0.6)] transition-transform duration-200 hover:scale-[1.04] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60"
-                aria-label={state === 'done' ? (isEn ? 'Watch again' : 'شاهد مرة أخرى') : (isEn ? 'Play our story, 40 seconds, with sound' : 'شغّل قصتنا، ٤٠ ثانية بالصوت')}
-              >
-                <span className="grid place-items-center w-9 h-9 rounded-full bg-[#C51F24] text-[#FAF7F2]">
-                  {state === 'done' ? <RotateCcw className="w-4 h-4" aria-hidden="true" /> : <Play className="w-4 h-4 fill-current" aria-hidden="true" />}
-                </span>
-                {state === 'done' ? (isEn ? 'Watch again' : 'شاهد مرة أخرى') : (isEn ? 'Play with sound · 40s' : 'شغّل بالصوت · ٤٠ ثانية')}
-              </button>
-              {state === 'done' && (
-                <button type="button" onClick={onTrial} className="rounded-full bg-[#C51F24] px-5 py-2.5 min-h-11 text-sm sm:text-base font-bold text-[#FAF7F2] shadow-lg hover:bg-[#A8191E] transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60">
-                  {isEn ? 'Book the free first lesson' : 'احجز الحصة الأولى مجانًا'}
-                </button>
-              )}
-            </div>
+          // Poster: the thumbnail (owner, 2026-11-18): the hook in gold, the bag with Zad peeking out, travel things and two
+          // medals around it, one big play button. Plain markup and CSS only, painted on first load; the medals are
+          // already on the page (hero orbit), so nothing new is fetched.
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute left-1/2 top-[52%] w-[70%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none" style={{ background: 'radial-gradient(closest-side, rgba(246,213,142,0.42), rgba(229,169,60,0.14) 55%, transparent)' }} />
+            {state !== 'done' ? (
+              <>
+                <p className="absolute inset-x-0 top-[7%] px-6 text-center font-editorial font-bold leading-[1.1] text-[1.9rem] sm:text-5xl lg:text-6xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }}>
+                  {isEn ? 'If you left tomorrow, what would you pack?' : 'لو سافرتَ غدًا، ماذا تضع في حقيبتك؟'}
+                </p>
+                {/* The bag, Zad peeking out, and what flies in. */}
+                <div className="absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 w-[38%] sm:w-[26%] max-w-[260px]" aria-hidden="true">
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-[55%] w-[62%]"><ZadRigSvg pose="peek" size={150} glow={false} /></div>
+                  <div className="relative rotate-[-6deg] drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"><Bag /></div>
+                  {[{ I: Plane, x: '-78%', y: '-40%', r: -18 }, { I: Smartphone, x: '128%', y: '-55%', r: 14 }, { I: Shirt, x: '-92%', y: '48%', r: 10 }, { I: KeyRound, x: '138%', y: '40%', r: -12 }].map(({ I, x, y, r }, k) => (
+                    <span key={k} className="absolute top-0 left-0 grid place-items-center w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#FAF7F2] text-[#1C1411] shadow-[0_18px_30px_-10px_rgba(0,0,0,0.7)]" style={{ transform: `translate(${x}, ${y}) rotate(${r}deg)` }}>
+                      <I className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
+                    </span>
+                  ))}
+                  <span className="absolute -start-[70%] top-[78%] w-[44%] rotate-[-12deg]"><Medal id="surah" eager className="w-full h-auto" /></span>
+                  <span className="absolute -end-[72%] top-[70%] w-[42%] rotate-[14deg]"><Medal id="tajweed" eager className="w-full h-auto" /></span>
+                </div>
+                {/* One big play button: glass ring, crimson core, a slow pulse. */}
+                <div className="absolute inset-x-0 bottom-[7%] flex flex-col items-center gap-2.5">
+                  <button
+                    id="intro-film-play"
+                    type="button"
+                    onClick={play}
+                    className="group relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 backdrop-blur-sm transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/70"
+                    aria-label={isEn ? 'Play our story, 40 seconds, with sound' : 'شغّل قصتنا، ٤٠ ثانية بالصوت'}
+                  >
+                    <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.2s]" />
+                    <span className="grid place-items-center w-14 h-14 sm:w-[4.2rem] sm:h-[4.2rem] rounded-full bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#FAF7F2] shadow-[0_12px_30px_-6px_rgba(197,31,36,0.9),inset_0_1px_1px_rgba(255,255,255,0.35)]">
+                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current translate-x-[2px] rtl:-translate-x-[2px] rtl:-scale-x-100" aria-hidden="true" />
+                    </span>
+                  </button>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E0907]/60 px-3 py-1 text-xs sm:text-sm font-bold text-[#FAF7F2]/90">
+                    <Volume2 className="w-4 h-4 text-[#F6D58E]" aria-hidden="true" />{isEn ? 'Sound on · 40 seconds' : 'علّي الصوت · ٤٠ ثانية'}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 sm:gap-6 px-6 text-center">
+                <div className="relative"><ZadRigSvg pose="cheer" size={120} /></div>
+                <p className="relative font-editorial font-bold text-3xl sm:text-5xl text-[#FAF7F2] leading-tight">
+                  {isEn ? <>The first lesson is <span className="text-[#F6D58E]">on us</span></> : <>الحصّة الأولى <span className="text-[#F6D58E]">علينا</span></>}
+                </p>
+                <div className="relative flex flex-col sm:flex-row items-center gap-3">
+                  <button type="button" id="intro-film-play" onClick={play} className="inline-flex items-center gap-2.5 rounded-full bg-[#FAF7F2] ps-2 pe-5 py-2 min-h-11 text-[#1C1411] font-bold text-sm sm:text-base transition-transform duration-200 hover:scale-[1.04] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60">
+                    <span className="grid place-items-center w-9 h-9 rounded-full bg-[#C51F24] text-[#FAF7F2]"><RotateCcw className="w-4 h-4" aria-hidden="true" /></span>
+                    {isEn ? 'Watch again' : 'شاهد مرة أخرى'}
+                  </button>
+                  <button type="button" onClick={onTrial} className="rounded-full bg-[#C51F24] px-5 py-2.5 min-h-11 text-sm sm:text-base font-bold text-[#FAF7F2] shadow-lg hover:bg-[#A8191E] transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60">
+                    {isEn ? 'Book the free first lesson' : 'احجز الحصة الأولى مجانًا'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

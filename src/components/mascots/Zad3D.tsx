@@ -501,7 +501,10 @@ export function ZadModel({ emote, startedAt, onDone, still }: { emote: ZadEmote;
   const tickGeo = useMemo(() => new TubeGeometry(tickCurve, 60, 0.035, 10), [tickCurve]);
   const tex = useMemo(() => ({
     heart: spriteTexture('heart'), star: spriteTexture('star'), confetti: spriteTexture('confetti'), puff: spriteTexture('puff'),
-    rays: raysTexture(), bubble: bubbleTexture('السلام عليكم'), welcome: bubbleTexture('أهلاً بيك'),
+    // Greetings in the page's language (owner, 2026-11-18: most visitors read English); a wave alternates the two.
+    rays: raysTexture(),
+    bubble: bubbleTexture(document.documentElement.lang === 'en' ? 'Hello!' : 'السلام عليكم'),
+    welcome: bubbleTexture(document.documentElement.lang === 'en' ? 'Salam!' : 'أهلاً بيك'),
     z: glyphTexture('Z', { font: "'IBM Plex Sans', 'Segoe UI', sans-serif", px: 170 }),
     page: pageTexture(),
     letters: ['ا', 'ق', 'ر', 'أ'].map((ch) => glyphTexture(ch, { fill: GOLD_LIGHT, stroke: '#6A2A12', px: 170 })),
@@ -564,7 +567,7 @@ export function ZadModel({ emote, startedAt, onDone, still }: { emote: ZadEmote;
         rotZ += Math.sin(u * 7) * 0.05 * pulse(u, 0, 2);
         open = pulse(u, 0.1, 1.9) * 0.55;
         happy = u > 0.4 && u < 1.8 ? 1 : 0;
-        bubbleS = popIn(u, 0.25, 2.1);
+        bubbleS = popIn(u, 0.25, 2.1); bubbleWelcome = Math.floor(startedAt) % 2 === 1;
         break;
       }
       case 'cheer': {

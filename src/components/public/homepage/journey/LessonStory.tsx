@@ -30,29 +30,28 @@ const shot = (key: Step['key'], isEn: boolean) => `/media/portal/${isEn ? 'en' :
 
 function Phone({ step, isEn, still }: { step: Step; isEn: boolean; still?: boolean }) {
   return (
-    <div className="relative w-[230px] sm:w-[290px]">
+    <div className={`relative ${still ? 'w-[260px]' : 'h-[min(60svh,620px)] lg:h-[min(78svh,760px)] aspect-[390/844]'}`}>
       {/* Titanium frame, side keys, the island. */}
-      <div className="relative aspect-[390/844] rounded-[2.9rem] p-[7px] bg-[linear-gradient(145deg,#5A4A42,#1C1411_40%,#3B2E28_70%,#120C09)] shadow-[0_60px_120px_-40px_rgba(28,20,17,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)]">
+      <div className="relative h-full aspect-[390/844] rounded-[2.9rem] p-[7px] bg-[linear-gradient(145deg,#5A4A42,#1C1411_40%,#3B2E28_70%,#120C09)] shadow-[0_60px_120px_-40px_rgba(28,20,17,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)]">
         <span aria-hidden="true" className="absolute -end-[3px] top-[22%] h-16 w-[3px] rounded-e bg-[#2A201B]" />
         <span aria-hidden="true" className="absolute -start-[3px] top-[18%] h-10 w-[3px] rounded-s bg-[#2A201B]" />
         <div className="relative h-full w-full overflow-hidden rounded-[2.4rem] bg-[#FAF7F2]">
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.img
-              key={step.key + (isEn ? 'en' : 'ar')}
-              src={shot(step.key, isEn)}
-              alt={isEn ? `The student portal: ${step.title.en}` : `بوابة الطالب: ${step.title.ar}`}
+          {/* All four screens stay mounted and crossfade inside the glass: nothing slides out of the phone. */}
+          {(still ? [step] : STEPS).map((sc) => (
+            <img
+              key={sc.key + (isEn ? 'en' : 'ar')}
+              src={shot(sc.key, isEn)}
+              alt={sc.key === step.key ? (isEn ? `The student portal: ${sc.title.en}` : `بوابة الطالب: ${sc.title.ar}`) : ''}
+              aria-hidden={sc.key === step.key ? undefined : true}
               width={780}
               height={1688}
               loading="lazy"
               decoding="async"
               draggable={false}
-              className="absolute inset-0 h-full w-full object-cover object-top select-none"
-              initial={still ? false : { opacity: 0, scale: 1.06, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: -20, transition: { duration: 0.25 } }}
-              transition={{ duration: 0.7, ease: EXPO }}
+              className="absolute inset-0 h-full w-full object-cover object-top select-none transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{ opacity: sc.key === step.key ? 1 : 0, transform: sc.key === step.key ? 'none' : 'scale(1.03)' }}
             />
-          </AnimatePresence>
+          ))}
           {/* Glass glare. */}
           <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.22),transparent_32%,transparent_70%,rgba(255,255,255,0.06))]" />
           <span aria-hidden="true" className="absolute top-2.5 left-1/2 -translate-x-1/2 h-[22px] w-[34%] rounded-full bg-[#0B0806]" />
@@ -130,15 +129,15 @@ export function LessonStory({ isEn }: { isEn: boolean }) {
               {isEn ? 'Real screens, sample learner' : 'شاشات حقيقية، طالب توضيحي'}
             </p>
           </div>
-          <div className="order-1 lg:order-2 text-center lg:text-start pt-24 lg:pt-0">
+          <div className="order-1 lg:order-2 text-center lg:text-start pt-20 lg:pt-0">
             <div className="flex justify-center lg:justify-start gap-2" aria-hidden="true">
               {STEPS.map((_, k) => <span key={k} className={`h-1.5 rounded-full transition-all duration-500 ${k === i ? 'w-10 bg-[#C51F24]' : k < i ? 'w-4 bg-[#E5A93C]' : 'w-4 bg-border'}`} />)}
             </div>
             <AnimatePresence mode="wait" initial={false}>
-              <motion.div key={i} initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }} animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, y: -14, transition: { duration: 0.18 } }} transition={{ duration: 0.55, ease: EXPO }} aria-live="polite">
+              <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14, transition: { duration: 0.18 } }} transition={{ duration: 0.55, ease: EXPO }} aria-live="polite">
                 <p className="mt-4 font-editorial text-base sm:text-lg text-[#B4552F] dark:text-[#E5A93C] tabular-nums">{num(i + 1, isEn)} / {num(STEPS.length, isEn)}</p>
-                <h3 className="mt-1 font-editorial font-bold text-[1.7rem] sm:text-5xl leading-tight text-foreground">{t(STEPS[i].title)}</h3>
-                <p className="mt-3 text-sm sm:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">{t(STEPS[i].body)}</p>
+                <h3 className="mt-1 font-editorial font-bold text-[1.5rem] sm:text-5xl leading-tight text-foreground">{t(STEPS[i].title)}</h3>
+                <p className="mt-2 text-sm sm:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">{t(STEPS[i].body)}</p>
               </motion.div>
             </AnimatePresence>
           </div>
