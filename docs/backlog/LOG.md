@@ -1344,3 +1344,15 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Subjects show the academy's 3D medals (hero orbit, tracks, struggles) instead of letter glyphs.
 - Start small: three medal steps on one gold line, four promises, one button.
 - Built on a preview branch first: the local build ran out of memory (OneDrive holding ~28 GB of commit).
+
+## 2026-11-18 — Homepage v6 (owner review of v5)
+- Old voice played on the live site: mp3s are cached a day under the same name; the takes are now `*-v2.mp3`.
+- Hero: sub-line and the arrow removed; phones write the brand line around Zad (English on the circle, Arabic on two
+  straight lines: Chrome breaks Arabic joins on a curve); a lit sphere and a second orbit; Zad shows at once and
+  greets in the page language.
+- Film: a thumbnail poster with one big play button; Zad appears beside the film (sound on, then play).
+- Zad tour in 3D; steps aside at the carpet (Zad narrates it there); lands in the closing slot.
+- Lighter scroll: no page-wide blend layer, no blur entrances, 3D Zad pauses off screen, carpet eases on fast scrolls.
+- Struggles answered by Zad; four equal subjects without prices; teacher who/what/when picker; bigger phone with
+  crossfading screens; start small is light; FAQ accordion; the verse is the closing's centrepiece.
+- Film script v3 drafted in `docs/marketing/HOMEPAGE-INTRO-FILM.md`; voice waits for the ElevenLabs connector.
