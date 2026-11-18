@@ -295,7 +295,7 @@ function Picture({ i, t, c, isEn, reduce }: { i: number; t: number; c: number[];
     }
     return (
       <div className="relative grid place-items-center">
-        <span className="font-editorial font-bold text-[7rem] sm:text-[11rem] leading-none text-transparent [-webkit-text-stroke:3px_#F6D58E]">{isEn ? '0' : '٠'}</span>
+        <span lang="en" className="font-editorial font-bold text-[7rem] sm:text-[11rem] leading-none text-transparent [-webkit-text-stroke:3px_#F6D58E]">0</span>
         {t > c[3] && !reduce && <motion.span aria-hidden="true" className="absolute h-3 w-[140%] rounded-full bg-[#C51F24] shadow-[0_0_30px_rgba(197,31,36,0.9)]" style={{ rotate: -28 }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.25, ease: EASE }} />}
       </div>
     );
@@ -388,6 +388,25 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
     void a.play().then(() => setState('playing')).catch(() => setState('idle'));
   };
 
+  // On play, fetch every picture the film uses, so nothing pops in late.
+  React.useEffect(() => {
+    if (state !== 'playing') return;
+    const L = isEn ? 'en' : 'ar';
+    ['surah', 'tajweed', 'juz', 'zad-level', 'language-level', 'teacher', isEn ? 'homework-10' : 'homework-10-ar'].map((m) => `/badges/shelf/${m}.webp`)
+      .concat([`/media/portal/${L}-note.webp`, `/media/portal/${L}-badges.webp`])
+      .forEach((src) => { const im = new Image(); im.src = src; });
+  }, [state, isEn]);
+
+  // The ad export: larger pictures on a full screen (the scenes are drawn for a ~1024 px stage).
+  const [zoom, setZoom] = React.useState(1);
+  React.useEffect(() => {
+    if (!record) return;
+    const on = () => setZoom(Math.max(1, Math.min(window.innerWidth, window.innerHeight) / 700));
+    on();
+    window.addEventListener('resize', on);
+    return () => window.removeEventListener('resize', on);
+  }, [record]);
+
   // The ad export (?film=record) starts the film from a page script once the page is ready.
   React.useEffect(() => {
     if (!record) return;
@@ -424,7 +443,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
               animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
               transition={{ duration: 0.28, ease: EASE }}
             >
-              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`}>
+              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom > 1 ? { transform: `scale(${zoom})`, marginBottom: `${(zoom - 1) * 2.5}rem` } : undefined}>
                 {beatIdx >= 0 && (
                   textOnly && beat.hl ? (
                     // The name in gold foil, with a light sweep.
@@ -436,7 +455,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                   )
                 )}
               </div>
-              <div className="relative w-full flex justify-center"><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
+              <div className="relative w-full flex justify-center" style={zoom > 1 ? { transform: `scale(${zoom})`, marginTop: `${(zoom - 1) * 4}rem` } : undefined}><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
             </motion.div>
             {!reduce && <motion.div key={`flash-${scene}`} aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(closest-side,rgba(255,241,201,0.55),transparent)]" initial={{ opacity: scene === 0 ? 0 : 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.35 }} />}
           </>
