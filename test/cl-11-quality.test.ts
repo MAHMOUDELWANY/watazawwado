@@ -133,6 +133,11 @@ describe('CL-11 quality routes', () => {
     ],
     teacher_accounts: [{ email: 'admin@x.test', role: 'super_admin', is_active: true }],
     profiles: [{ id: 'admin-profile', email: 'admin@x.test' }],
+    // M1: a heartbeat counts only from the join that holds the seat.
+    lesson_room_seats: [
+      { booking_id: '4049fa58-7428-44e4-926b-5e3eb315c5cb', seat: 'teacher', join_id: 'j1', user_id: TEACHER, session_id: null },
+      { booking_id: '4049fa58-7428-44e4-926b-5e3eb315c5cb', seat: 'learner', join_id: 'j1', user_id: 'parent-1', session_id: null },
+    ],
   }, () => NOW);
   let server: http.Server;
   let base: string;

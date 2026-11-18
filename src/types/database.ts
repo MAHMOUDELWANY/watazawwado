@@ -1036,6 +1036,11 @@ export interface Database {
         Insert: Partial<LessonRoomStateRow> & Pick<LessonRoomStateRow, 'booking_id'>;
         Update: Partial<LessonRoomStateRow>;
       };
+      lesson_room_seats: {
+        Row: LessonRoomSeatRow;
+        Insert: Partial<LessonRoomSeatRow> & Pick<LessonRoomSeatRow, 'booking_id' | 'seat' | 'join_id' | 'user_id'>;
+        Update: Partial<LessonRoomSeatRow>;
+      };
       lesson_timeline_events: {
         Row: LessonTimelineEventRow;
         Insert: Partial<LessonTimelineEventRow> & Pick<LessonTimelineEventRow, 'booking_id' | 'type' | 'actor_role'>;
@@ -1094,6 +1099,18 @@ export interface LessonAttendanceEventRow {
 export interface LessonRoomStateRow {
   booking_id: string;
   snapshot: Record<string, unknown>;
+  updated_at: string;
+  /** Migration 20261118000002: when the teacher ended the lesson; the room refuses everything after it. */
+  ended_at: string | null;
+}
+
+// Migration 20261118000002: one row per seat ('teacher', 'learner', '<observer role>:<user id>'); newest join wins.
+export interface LessonRoomSeatRow {
+  booking_id: string;
+  seat: string;
+  join_id: string;
+  user_id: string;
+  session_id: string | null;
   updated_at: string;
 }
 

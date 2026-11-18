@@ -74,8 +74,9 @@ function fakeDb(tables: Record<string, any[]>) {
         },
         insert: async (row: any) => { for (const r of [row].flat()) rows(t).push({ ...r }); return { error: null }; },
         upsert: async (row: any, opts: { onConflict: string }) => {
-          const i = rows(t).findIndex((r) => r[opts.onConflict] === row[opts.onConflict]);
-          if (i < 0) rows(t).push({ ...row }); else rows(t)[i] = { ...row };
+          const keys = opts.onConflict.split(',');
+          const i = rows(t).findIndex((r) => keys.every((k) => r[k] === row[k]));
+          if (i < 0) rows(t).push({ ...row }); else if (!(opts as any).ignoreDuplicates) rows(t)[i] = { ...rows(t)[i], ...row };
           return { error: null };
         },
       };
@@ -88,12 +89,12 @@ function fakeDb(tables: Record<string, any[]>) {
 describe('CL-07 events and state routes', () => {
   let server: http.Server;
   let base: string;
-  const sessions = {
-    teacher: { joinId: 'jt', userId: 'teacher-1', at: 'x', sessionId: 'sess-t' },
-    learner: { joinId: 'jl', userId: 'parent-1', at: 'x' },
-    'guardian_observer:parent-2': { joinId: 'jg', userId: 'parent-2', at: 'x' },
-  };
-  const db = fakeDb({ bookings: [{ ...booking }], lesson_room_state: [{ booking_id: BOOKING_ID, snapshot: { sessions } }] });
+  const seats = [
+    { booking_id: BOOKING_ID, seat: 'teacher', join_id: 'jt', user_id: 'teacher-1', session_id: 'sess-t' },
+    { booking_id: BOOKING_ID, seat: 'learner', join_id: 'jl', user_id: 'parent-1', session_id: null },
+    { booking_id: BOOKING_ID, seat: 'guardian_observer:parent-2', join_id: 'jg', user_id: 'parent-2', session_id: null },
+  ];
+  const db = fakeDb({ bookings: [{ ...booking }], lesson_room_seats: seats, lesson_room_state: [{ booking_id: BOOKING_ID, snapshot: {} }] });
   let limited = 0;
 
   before(async () => {
@@ -171,7 +172,7 @@ describe('CL-07 events and state routes', () => {
     assert.strictEqual(timeline().length, before);
   });
 
-  it('teacher events land in the timeline and the latest slide/board/pdf/layout merge into the snapshot, sessions kept', async () => {
+  it('teacher events land in the timeline and the latest slide/board/pdf/layout merge into the snapshot; seats stay in their own rows', async () => {
     const before = timeline().length;
     const res = await post(T, [
       { t: 'slide', state: { track: 'zad-kids', number: 1, page: 1, step: 0 } },
@@ -189,20 +190,19 @@ describe('CL-07 events and state routes', () => {
     assert.deepStrictEqual(s.board, { sceneVersion: 5, elements: [{ id: 'a' }], learnerDraw: false });
     assert.deepStrictEqual(s.pdf, { fileId: 'file-1', page: 7 });
     assert.strictEqual(s.layout, 'content');
-    assert.deepStrictEqual(s.sessions, sessions);
+    assert.strictEqual(s.sessions, undefined);
+    assert.strictEqual(db.tables.lesson_room_seats.length, 3);
   });
 
-  it('a seat saved between the flush read and its write is kept (the write re-reads the latest snapshot)', async () => {
-    // Fires right after liveSeat reads the snapshot: another request replaces the row, as saveSeat would.
+  it('content saved between the seat check and the write is kept (the write re-reads the latest snapshot)', async () => {
+    // Fires right after liveSeat reads the room row: another flush stores a new pdf page.
     db.afterRead = { table: 'lesson_room_state', fn: () => {
       const row = db.tables.lesson_room_state[0];
-      row.snapshot = { ...row.snapshot, sessions: { ...row.snapshot.sessions, 'admin_observer:admin-1': { joinId: 'ja', userId: 'admin-1', at: 'x' } } };
+      row.snapshot = { ...row.snapshot, pdf: { fileId: 'file-1', page: 8 } };
     } };
     assert.strictEqual((await post(T, [{ t: 'layout', mode: 'conversation' }])).status, 200);
     assert.strictEqual(snapshot().layout, 'conversation');
-    assert.deepStrictEqual(snapshot().sessions['admin_observer:admin-1'], { joinId: 'ja', userId: 'admin-1', at: 'x' });
-    assert.deepStrictEqual(snapshot().sessions.teacher, sessions.teacher);
-    delete snapshot().sessions['admin_observer:admin-1'];
+    assert.deepStrictEqual(snapshot().pdf, { fileId: 'file-1', page: 8 });
     await post(T, [{ t: 'layout', mode: 'content' }]);
   });
 
@@ -220,11 +220,6 @@ describe('CL-07 events and state routes', () => {
     // the learner can never switch the permission off or on for itself
     await post(L, [{ t: 'board', sceneVersion: 9, elements: [], learnerDraw: false }]);
     assert.strictEqual(snapshot().board.learnerDraw, true);
-  });
-
-  it('the teacher ends the lesson; end is stored', async () => {
-    await post(T, [{ t: 'end' }]);
-    assert.strictEqual(timeline().filter((r) => r.type === 'end').length, 1);
   });
 
   it('rejects invalid events, too many events and an oversize body', async () => {
@@ -249,6 +244,7 @@ describe('CL-07 events and state routes', () => {
       assert.strictEqual(body.snapshot.board.sceneVersion, 9);
       assert.deepStrictEqual(body.snapshot.slide, { track: 'zad-kids', number: 1, page: 3, step: 2 });
       assert.strictEqual(body.remainingMs, roomHardCloseMs(booking) - NOW);
+      assert.strictEqual(body.serverNow, NOW);
     }
   });
 
@@ -270,6 +266,21 @@ describe('CL-07 events and state routes', () => {
     assert.strictEqual(snapshot().board.learnerDraw, false);
     await post(L, [{ t: 'board', sceneVersion: 2e12, elements: [{ id: 'after' }] }]);
     assert.strictEqual(snapshot().board.sceneVersion, 1e12, 'nothing more from the learner once drawing is off');
+  });
+
+  it("the teacher's end is stored, ends the room once (room_ended), and from then events and state answer 423 ended", async () => {
+    assert.strictEqual((await post(L, [{ t: 'end' }])).status, 200);
+    assert.strictEqual(db.tables.lesson_room_state[0].ended_at, undefined, 'a learner cannot end the room');
+    await post(T, [{ t: 'end' }]);
+    assert.strictEqual(timeline().filter((r) => r.type === 'end').length, 1);
+    assert.strictEqual(db.tables.lesson_room_state[0].ended_at, new Date(NOW).toISOString());
+    assert.ok(snapshot().board, 'ending keeps the snapshot');
+    assert.strictEqual((db.tables.lesson_attendance_events || []).filter((e) => e.event === 'room_ended').length, 1);
+    for (const res of [await post(T, [{ t: 'end' }]), await post(L, [{ t: 'reaction', kind: 'hand' }]), await state(L)]) {
+      assert.strictEqual(res.status, 423);
+      assert.deepStrictEqual({ ...(await res.json()), error: undefined }, { error: undefined, ended: true, reason: 'ended' });
+    }
+    assert.strictEqual((db.tables.lesson_attendance_events || []).filter((e) => e.event === 'room_ended').length, 1);
   });
 });
 

@@ -129,7 +129,12 @@ describe('CL-15 enter and quality routes', () => {
   const events = () => db.tables.lesson_attendance_events || [];
   const teacherAuth = (req: any, _res: any, next: any) => { req.teacherUser = { id: 'teacher-1', role: 'teacher' }; next(); };
   const pass = (_q: any, _s: any, next: any) => next();
-  const enter = async () => (await fetch(`${base}/api/dashboard/classroom/${BOOKING}/enter`)).json() as Promise<any>;
+  // M2: the join is counted when media connects, so entering here means enter + connected.
+  const enter = async () => {
+    const e: any = await (await fetch(`${base}/api/dashboard/classroom/${BOOKING}/enter`)).json();
+    if (e.ticket) await fetch(`${base}/api/classroom/${BOOKING}/connected`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': e.ticket }, body: '{}' });
+    return e;
+  };
   const beat = (ticket: string) => fetch(`${base}/api/classroom/${BOOKING}/quality`, {
     method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify({ degradedSeconds: 0, audioOnlySeconds: 0, reconnects: 0 }),
   });
@@ -160,6 +165,10 @@ describe('CL-15 enter and quality routes', () => {
     assert.strictEqual(beats[0].source, 'room');
     await enter(); // a second device while the first still beats
     assert.strictEqual(events().filter((e) => e.event === 'room_joined').length, 1);
+    // M1: the replaced device's heartbeat no longer counts.
+    clock = Date.parse(at(3));
+    assert.strictEqual((await beat(first.ticket)).status, 409);
+    assert.strictEqual(events().filter((e) => e.event === 'room_heartbeat').length, 1);
     assert.strictEqual(events().find((e) => e.event === 'room_joined').dedupe_key, `room:${BOOKING}:teacher:joined`);
   });
 

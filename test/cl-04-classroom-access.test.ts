@@ -108,8 +108,9 @@ function fakeDb(tables: Record<string, any[]>) {
         maybeSingle: async () => ({ data: match()[0] ?? null, error: null }),
         insert: async (row: any) => { rows(t).push({ ...row }); return { error: null }; },
         upsert: async (row: any, opts: { onConflict: string; ignoreDuplicates?: boolean }) => {
-          const i = rows(t).findIndex((r) => r[opts.onConflict] === row[opts.onConflict]);
-          if (i < 0) rows(t).push({ ...row }); else if (!opts.ignoreDuplicates) rows(t)[i] = { ...row };
+          const keys = opts.onConflict.split(',');
+          const i = rows(t).findIndex((r) => keys.every((k) => r[k] === row[k]));
+          if (i < 0) rows(t).push({ ...row }); else if (!opts.ignoreDuplicates) rows(t)[i] = { ...rows(t)[i], ...row };
           return { error: null };
         },
         update: (p: any) => { patch = p; return b; },
@@ -183,6 +184,7 @@ describe('CL-04 classroom routes', () => {
   const rtc = (ticket: string, path: string, body: unknown) =>
     fetch(`${base}/api/classroom/${BOOKING_ID}/${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify(body) });
   const joins = () => db.tables.lesson_attendance_events?.filter((e) => e.event === 'room_joined') || [];
+  const seat = (name: string) => db.tables.lesson_room_seats.find((r) => r.booking_id === BOOKING_ID && r.seat === name);
 
   it('enter needs sign-in', async () => {
     assert.strictEqual((await enter({}, 'dashboard')).status, 401);
@@ -202,6 +204,9 @@ describe('CL-04 classroom routes', () => {
     assert.strictEqual(t.bookingId, BOOKING_ID); assert.strictEqual(t.role, 'teacher'); assert.strictEqual(t.userId, 'teacher-1');
     assert.ok(t.exp <= roomHardCloseMs(booking));
     assert.strictEqual(body.hardCloseAt, new Date(roomHardCloseMs(booking)).toISOString());
+    // M2: opening the room is not the join; media connecting is.
+    assert.strictEqual(joins().filter((e) => e.role === 'teacher').length, 0);
+    assert.strictEqual((await rtc(body.ticket, 'connected', {})).status, 200);
     assert.strictEqual(joins().filter((e) => e.role === 'teacher').length, 1);
   });
 
@@ -219,15 +224,17 @@ describe('CL-04 classroom routes', () => {
     const first: any = await (await enter({ 'x-student': 'parent-1' }, 'student')).json();
     assert.strictEqual(first.role, 'learner');
     const s1: any = await (await rtc(first.ticket, 'rtc/session', {})).json();
+    await rtc(first.ticket, 'connected', {});
     const second: any = await (await enter({ 'x-student': 'parent-1' }, 'student')).json();
-    const state = db.tables.lesson_room_state.find((r) => r.booking_id === BOOKING_ID).snapshot;
-    assert.strictEqual(state.sessions.learner.joinId, verifyTicket(second.ticket, SECRET, NOW)!.joinId);
+    assert.strictEqual(seat('learner').join_id, verifyTicket(second.ticket, SECRET, NOW)!.joinId);
+    assert.strictEqual(seat('learner').session_id, null);
+    assert.strictEqual((await rtc(second.ticket, 'connected', {})).status, 200);
     assert.strictEqual(joins().filter((e) => e.role === 'student').length, 1);
     // The older device is superseded: its proxy calls are refused.
     assert.strictEqual((await rtc(first.ticket, 'rtc/tracks', { sessionId: s1.sessionId, tracks: [{ location: 'local', mid: '0', trackName: 'cam' }] })).status, 409);
     const s2: any = await (await rtc(second.ticket, 'rtc/session', {})).json();
     assert.notStrictEqual(s2.sessionId, s1.sessionId);
-    assert.strictEqual(db.tables.lesson_room_state.find((r) => r.booking_id === BOOKING_ID).snapshot.sessions.learner.sessionId, s2.sessionId);
+    assert.strictEqual(seat('learner').session_id, s2.sessionId);
   });
 
   it('per-track Cloudflare errors reach the client, and provider errors never leak details', async () => {
@@ -248,7 +255,7 @@ describe('CL-04 classroom routes', () => {
     const o: any = await (await enter({ 'x-student': 'parent-1' }, 'student', true)).json();
     assert.strictEqual(o.role, 'guardian_observer');
     const s: any = await (await rtc(o.ticket, 'rtc/session', {})).json();
-    const teacherSession = db.tables.lesson_room_state.find((r) => r.booking_id === BOOKING_ID).snapshot.sessions.teacher.sessionId;
+    const teacherSession = seat('teacher').session_id;
     const push = await rtc(o.ticket, 'rtc/tracks', { sessionId: s.sessionId, tracks: [{ location: 'remote', sessionId: teacherSession, trackName: 'cam' }, { location: 'local', mid: '1', trackName: 'mic' }] });
     assert.strictEqual(push.status, 403);
     const pull = await rtc(o.ticket, 'rtc/tracks', { sessionId: s.sessionId, tracks: [{ location: 'remote', sessionId: teacherSession, trackName: 'cam' }] });
@@ -308,7 +315,11 @@ describe('CL-04 rejoin after leaving', () => {
   });
   after(async () => { await new Promise<void>((r) => server.close(() => r())); });
 
-  const enterAs = async (portal: 'dashboard' | 'student') => (await fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter`)).json() as Promise<any>;
+  const enterAs = async (portal: 'dashboard' | 'student') => {
+    const e: any = await (await fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter`)).json();
+    await fetch(`${base}/api/classroom/${BOOKING_ID}/connected`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': e.ticket }, body: '{}' });
+    return e;
+  };
   const events = (role: string, event: string) => (db.tables.lesson_attendance_events || []).filter((e) => e.role === role && e.event === event);
 
   it('the teacher enters, leaves and enters again: two room_joined and one room_left', async () => {

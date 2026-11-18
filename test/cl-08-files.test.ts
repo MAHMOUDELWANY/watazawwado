@@ -38,16 +38,14 @@ describe('CL-08 files routes', () => {
   const uploadUrls: Array<{ bucket: string; path: string }> = [];
   const removed: string[] = [];
   const signed: Array<{ path: string; seconds: number }> = [];
-  const sessions = {
-    teacher: { joinId: 'jt', userId: 'teacher-1', at: 'x' },
-    learner: { joinId: 'jl', userId: 'parent-1', at: 'x' },
-  };
+  // eq() is ignored here: the teacher's seat is the only one a file upload checks.
+  const teacherSeat = { join_id: 'jt', user_id: 'teacher-1', session_id: null };
   const db = {
     from(t: string) {
       const b: any = {
         select: () => b,
         eq: () => b,
-        maybeSingle: async () => ({ data: t === 'bookings' ? booking : t === 'lesson_room_state' ? { snapshot: { sessions } } : null, error: null }),
+        maybeSingle: async () => ({ data: t === 'bookings' ? booking : t === 'lesson_room_state' ? { snapshot: {}, ended_at: null } : t === 'lesson_room_seats' ? teacherSeat : null, error: null }),
       };
       return b;
     },

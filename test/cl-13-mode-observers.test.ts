@@ -52,8 +52,9 @@ function fakeDb(tables: Record<string, any[]>) {
         maybeSingle: async () => ({ data: match()[0] ?? null, error: null }),
         insert: async (row: any) => { rows(t).push({ ...row }); return { error: null }; },
         upsert: async (row: any, opts: { onConflict: string; ignoreDuplicates?: boolean }) => {
-          const i = rows(t).findIndex((r) => r[opts.onConflict] === row[opts.onConflict]);
-          if (i < 0) rows(t).push({ ...row }); else if (!opts.ignoreDuplicates) rows(t)[i] = { ...row };
+          const keys = opts.onConflict.split(',');
+          const i = rows(t).findIndex((r) => keys.every((k) => r[k] === row[k]));
+          if (i < 0) rows(t).push({ ...row }); else if (!opts.ignoreDuplicates) rows(t)[i] = { ...rows(t)[i], ...row };
           return { error: null };
         },
         update: (p: any) => { patch = p; return b; },

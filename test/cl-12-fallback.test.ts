@@ -27,8 +27,10 @@ function fakeDb(tables: Record<string, any[]>) {
       const filters: Array<(r: any) => boolean> = [];
       let sortBy: { c: string; asc: boolean } | null = null;
       let max = Infinity;
+      let patch: any = null;
       const run = () => {
         let m = rows(t).filter((r) => filters.every((f) => f(r)));
+        if (patch) for (const r of m) Object.assign(r, patch);
         if (sortBy) { const { c, asc } = sortBy; m = [...m].reverse().sort((x, y) => (x[c] < y[c] ? -1 : x[c] > y[c] ? 1 : 0) * (asc ? 1 : -1)); }
         return m.slice(0, max).map((r) => ({ ...r }));
       };
@@ -49,6 +51,7 @@ function fakeDb(tables: Record<string, any[]>) {
           if (i < 0) rows(t).push({ ...row }); else if (!opts.ignoreDuplicates) rows(t)[i] = { ...rows(t)[i], ...row };
           return { error: null };
         },
+        update: (p: any) => { patch = p; return b; },
         then: (res: any, rej: any) => Promise.resolve().then(() => ({ data: run(), error: null })).then(res, rej),
       };
       return b;
@@ -125,6 +128,13 @@ describe('CL-12 incident routes and lateness', () => {
   const ticket = (role: string, userId: string) => signTicket({ bookingId: BOOKING, role: role as any, userId, exp: min(45), joinId: 'j1', studentId: 'child-1' }, SECRET);
   const incident = (tk: string, body: unknown) => fetch(`${base}/api/classroom/${BOOKING}/incident`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': tk }, body: JSON.stringify(body) });
   const lateRows = () => db.tables.teacher_late_reasons || [];
+  // M2: the join (and lateness) is counted when media connects, after enter.
+  const teacherIn = async (id: string) => {
+    const res = await fetch(`${base}/api/dashboard/classroom/${id}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
+    if (res.status !== 200) return res.status;
+    const { ticket: tk } = await res.json() as any;
+    return (await fetch(`${base}/api/classroom/${id}/connected`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': tk }, body: '{}' })).status;
+  };
 
   before(async () => {
     const app = express();
@@ -171,7 +181,7 @@ describe('CL-12 incident routes and lateness', () => {
     // +6: the room works again and the teacher gets in, 6 minutes late.
     clock = min(6);
     cf.state.failIce = false;
-    assert.strictEqual((await fetch(`${base}/api/dashboard/classroom/${BOOKING}/enter`, { headers: { 'x-teacher': 'teacher-1' } })).status, 200);
+    assert.strictEqual(await teacherIn(BOOKING), 200);
     assert.strictEqual(db.tables.lesson_attendance_events.length, 1);
     assert.strictEqual(lateRows().length, 0);
   });
@@ -185,8 +195,8 @@ describe('CL-12 incident routes and lateness', () => {
     const res = await fetch(`${base}/api/classroom/${other}/incident`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': entry.ticket }, body: JSON.stringify({ kind: 'ice_failed', detail: { failures: 2 } }) });
     assert.deepStrictEqual(await res.json(), { fallback: { url: `${studentJoinPath(other, JOIN)!}?zoom=1` } });
     clock = min(5);
-    await fetch(`${base}/api/dashboard/classroom/${other}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
-    await fetch(`${base}/api/dashboard/classroom/${third}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
+    await teacherIn(other);
+    await teacherIn(third);
     // Only incidents that are ours for the teacher (teacher side, or a provider error on any side) excuse it.
     assert.deepStrictEqual(lateRows().map((r: any) => [r.booking_id, r.late_minutes]), [[other, 5], [third, 5]]);
   });
