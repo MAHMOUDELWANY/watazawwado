@@ -36,8 +36,8 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 10 | Attendance and teacher punctuality | done (gate + admin page mounted; rejoin-after-leave counted) | 6c8b10fb, 8133b71d, 916c810e |
 | 11 | Quality records and alerts | done | eafe9d67 |
 | 12 | Automatic Zoom fallback | done (manual block-Cloudflare check still to do in a browser) | 4fac2e1f |
-| 13 | Observers and rollout switch | in progress | |
-| 14 | Room becomes the lesson link | in progress | |
+| 13 | Observers and rollout switch | done | 10794af0 |
+| 14 | Room becomes the lesson link | done (full npm test: 1 pre-existing-in-branch a11y failure in ScreenShare dialog, fix running) | df1c7508 |
 | 15 | Rules, legal (owner approves first), security review, ship off, pilot | todo | |
 
 ## Notes for the next tasks (learned while building)
