@@ -92,11 +92,19 @@ function fakeDb(tables: Record<string, any[]>) {
     from(t: string) {
       const filters: Array<(r: any) => boolean> = [];
       let patch: any = null;
-      const match = () => rows(t).filter((r) => filters.every((f) => f(r)));
+      let sortBy: { c: string; asc: boolean } | null = null;
+      const match = () => {
+        const m = rows(t).filter((r) => filters.every((f) => f(r)));
+        // Equal timestamps (the clock is frozen): the row written later counts as the newer one.
+        if (sortBy) { const { c, asc } = sortBy; m.reverse().sort((x, y) => (x[c] < y[c] ? -1 : x[c] > y[c] ? 1 : 0) * (asc ? 1 : -1)); }
+        return m;
+      };
       const b: any = {
         select: () => b,
         eq: (c: string, v: any) => { filters.push((r) => r[c] === v); return b; },
         is: (c: string, v: any) => { filters.push((r) => (r[c] ?? null) === v); return b; },
+        order: (c: string, o?: { ascending?: boolean }) => { sortBy = { c, asc: o?.ascending !== false }; return b; },
+        limit: () => b,
         maybeSingle: async () => ({ data: match()[0] ?? null, error: null }),
         insert: async (row: any) => { rows(t).push({ ...row }); return { error: null }; },
         upsert: async (row: any, opts: { onConflict: string; ignoreDuplicates?: boolean }) => {
@@ -272,6 +280,50 @@ describe('CL-04 classroom routes', () => {
       assert.strictEqual((await enter({ 'x-teacher': 'teacher-1' }, 'dashboard')).status, 409);
       assert.strictEqual((await rtc(t.ticket, 'rtc/session', {})).status, 409);
     } finally { db.tables.bookings[0].status = 'confirmed'; }
+  });
+});
+
+describe('CL-04 rejoin after leaving', () => {
+  let server: http.Server;
+  let base: string;
+  const db = fakeDb({ bookings: [{ ...booking }] });
+
+  before(async () => {
+    const app = express();
+    app.use(express.json());
+    registerClassroomRoutes(app, {
+      getClient: () => db,
+      cloudflare: () => fakeCloudflare() as any,
+      verifyTeacherAuth: (req: any, _res: any, next: any) => { req.teacherUser = { id: 'teacher-1', role: 'teacher' }; next(); },
+      verifyStudentAuth: (req: any, _res: any, next: any) => { req.studentUser = { auth_id: 'parent-1' }; next(); },
+      getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }],
+      rateLimit: (_q: any, _s: any, next: any) => next(),
+      roomRateLimit: (_q: any, _s: any, next: any) => next(),
+      secret: () => 'room-secret',
+      now: () => NOW,
+    });
+    await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
+  });
+  after(async () => { await new Promise<void>((r) => server.close(() => r())); });
+
+  const enterAs = async (portal: 'dashboard' | 'student') => (await fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter`)).json() as Promise<any>;
+  const events = (role: string, event: string) => (db.tables.lesson_attendance_events || []).filter((e) => e.role === role && e.event === event);
+
+  it('the teacher enters, leaves and enters again: two room_joined and one room_left', async () => {
+    const t = await enterAs('dashboard');
+    const left = await fetch(`${base}/api/classroom/${BOOKING_ID}/leave`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': t.ticket }, body: '{}' });
+    assert.strictEqual(left.status, 200);
+    await enterAs('dashboard');
+    assert.strictEqual(events('teacher', 'room_joined').length, 2);
+    assert.strictEqual(events('teacher', 'room_left').length, 1);
+    // The first join keeps the fixed key lateness reads.
+    assert.ok(events('teacher', 'room_joined').some((e) => e.dedupe_key === `room:${BOOKING_ID}:teacher:joined`));
+  });
+
+  it('the learner on two devices without leaving is still one room_joined', async () => {
+    await enterAs('student');
+    await enterAs('student');
+    assert.strictEqual(events('student', 'room_joined').length, 1);
   });
 });
 

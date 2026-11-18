@@ -155,12 +155,18 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       await saveSeat(client, id, await loadSnapshot(client, id), seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
 
       if (!isObserver(role)) {
-        // One room_joined per side per lesson: a second device or a rejoin is not a new join (Review Focus 2 and 4).
+        // A side joins when it is not already in: a second device while in writes nothing (Review Focus 2), a rejoin
+        // after room_left is a new join so the time after it counts. The first keeps the fixed key lateness reads.
         const r = attendanceRole(role);
-        const { error } = await client.from('lesson_attendance_events').upsert(
-          { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: at, dedupe_key: `room:${id}:${r}:joined` },
-          { onConflict: 'dedupe_key', ignoreDuplicates: true },
-        );
+        const { data: last, error: lastErr } = await client.from('lesson_attendance_events').select('event')
+          .eq('booking_id', id).eq('source', 'room').eq('role', r).order('occurred_at', { ascending: false }).limit(1).maybeSingle();
+        let error = lastErr;
+        if (!lastErr && (!last || last.event === 'room_left')) {
+          ({ error } = await client.from('lesson_attendance_events').upsert(
+            { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: at, dedupe_key: last ? `room:${id}:${r}:joined:${ticketPayload.joinId}` : `room:${id}:${r}:joined` },
+            { onConflict: 'dedupe_key', ignoreDuplicates: true },
+          ));
+        }
         if (error) console.error('[classroom enter] room_joined', error.message);
         // Task 10: judged on the stored first join, so rejoins change nothing. Never blocks the teacher's entry.
         else if (role === 'teacher') await recordTeacherLateness(client, booking).catch((err) => console.error('[classroom enter] lateness', err));
