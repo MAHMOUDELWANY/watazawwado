@@ -18,56 +18,53 @@ type L = { en: string; ar: string };
 type Lang = 'en' | 'ar';
 type Beat = { at: number; text: string; hl?: boolean; slice?: boolean };
 
-// Scene start times (s), from the word alignment of each take.
+// Scene start times (s), from the word alignment of each take (marketing/intro-film/vo/*-v3-t1.mp3).
 const STARTS: Record<Lang, number[]> = {
-  ar: [0, 4.4, 6.16, 9.2, 16.23, 21.92, 29.68, 36.88],
-  en: [0, 4.16, 5.6, 9.76, 16.48, 22.56, 30.33, 36.96],
+  ar: [0, 6.3, 10.7, 16.72, 23.44, 28.56, 32.31],
+  en: [0, 5.67, 9.84, 16.32, 22.64, 27.41, 32.24],
 };
-const LENGTH = 42.2;
+const LENGTH = 35.7;
 
 // What the voice says, for the caption line.
 const LINES: L[] = [
-  { en: 'If you left tomorrow... what would you pack?', ar: 'لو سافرتَ غدًا... ماذا تضعُ في حقيبتك؟' },
-  { en: 'We know the answer.', ar: 'نحن نعرفُ الجواب.' },
-  { en: 'Zad. Provision... for you, and your family.', ar: 'زادٌ... لك، ولأهلِ بيتك.' },
-  { en: "Far from home, the Quran and Arabic don't come on their own... they need a teacher who knows you by name.", ar: 'في الغربة، لا يأتي القرآنُ والعربيّةُ وحدهما... يحتاجان معلّمًا، يعرفُك باسمك.' },
-  { en: 'Quran and Tajweed... memorisation and revision... the Zad Path... Arabic, and English.', ar: 'قرآنٌ وتجويد... حفظٌ ومراجعة... منهجُ زاد... والعربيّة، والإنجليزيّة.' },
-  { en: 'A male or female teacher you choose. Who stays with you, lesson after lesson... and never starts from zero.', ar: 'معلّمٌ أو معلّمةٌ تختارُه أنت، يبقى معك حصّةً بعد حصّة... ولا يبدأُ من الصفر، أبدًا.' },
-  { en: 'After every lesson, a note reaches you before you ask... and every homework you finish earns you a new badge!', ar: 'وبعد كلِّ حصّة، يصلُك تقريرٌ قبل أن تسأل... وكلُّ واجبٍ تُنجزُه، تكسبُ به شارةً جديدة!' },
-  { en: 'The first lesson... is on us. Come and meet us... and start your Zad, today.', ar: 'الحصّةُ الأولى... علينا. تعالَ نتعرّف... وابدأ زادَك، اليوم.' },
+  { en: 'If you could carry just one thing... far from home... what would it be?', ar: 'لو كان لك أن تحمل شيئًا واحدًا فقط... إلى الغربة... ماذا تحمل؟' },
+  { en: "The things we fear losing most... don't fit in a suitcase.", ar: 'أثمن ما نخاف أن نفقده... لا تتّسع له حقيبة.' },
+  { en: 'The words of Allah... the language of our grandparents... a faith we want our children to keep.', ar: 'كلام الله... ولسان أجدادنا... ودينٌ نريده أن يبقى في أبنائنا.' },
+  { en: 'Here, a teacher who knows you by name. Who hears every letter... and never starts from zero.', ar: 'هنا... معلّمٌ يعرفك باسمك، يسمعك حرفًا حرفًا... ولا يبدأ معك من الصفر.' },
+  { en: 'After every lesson, you see what you learned... and every step becomes a badge.', ar: 'وبعد كلّ حصّة... يصلك ما تعلّمت، وكلّ خطوة... تصير وسامًا.' },
+  { en: '“Take provision, and the best provision is mindfulness of Allah.” (2:197)', ar: '﴿وتزوّدوا فإنّ خير الزاد التقوى﴾ البقرة ١٩٧' },
+  { en: 'Your first lesson is on us... start your Zad, today.', ar: 'الحصّة الأولى علينا... ابدأ زادك، اليوم.' },
 ];
 
-// The words on screen, by seconds from the start of each scene, on the voice.
+// The words on screen, by seconds from the start of each scene, on the voice. The verse scene (5) shows the verse itself.
 const BEATS: Record<Lang, Beat[][]> = {
   ar: [
-    [{ at: 0.3, text: 'لو سافرتَ غدًا' }, { at: 1.75, text: 'ماذا تضع' }, { at: 2.4, text: 'في حقيبتك؟', hl: true }],
-    [{ at: 0, text: 'نحن نعرف' }, { at: 0.7, text: 'الجواب', hl: true }],
-    [{ at: 0, text: 'زاد', hl: true }, { at: 0.88, text: 'لك' }, { at: 1.6, text: 'ولأهل بيتك' }],
-    [{ at: 0, text: 'في الغربة' }, { at: 0.88, text: 'القرآن والعربيّة' }, { at: 2.7, text: 'لا يأتيان وحدهما', hl: true }, { at: 3.76, text: 'يحتاجان معلّمًا' }, { at: 5.36, text: 'يعرفك باسمك', hl: true }],
-    [{ at: 0, text: 'قرآن وتجويد' }, { at: 1.2, text: 'حفظ ومراجعة' }, { at: 2.58, text: 'منهج زاد', hl: true }, { at: 3.62, text: 'العربيّة' }, { at: 4.58, text: 'الإنجليزيّة' }],
-    [{ at: 0, text: 'معلّم أو معلّمة' }, { at: 1.72, text: 'تختاره أنت', hl: true }, { at: 3.1, text: 'يبقى معك' }, { at: 3.88, text: 'حصّة بعد حصّة' }, { at: 5.52, text: 'ولا يبدأ من الصفر' }, { at: 7.04, text: 'أبدًا', hl: true, slice: true }],
-    [{ at: 0, text: 'بعد كلّ حصّة' }, { at: 1.2, text: 'يصلك تقرير', hl: true }, { at: 2.24, text: 'قبل أن تسأل' }, { at: 3.44, text: 'وكلّ واجب تنجزه' }, { at: 5.12, text: 'شارة جديدة!', hl: true }],
-    [{ at: 0, text: 'الحصّة الأولى' }, { at: 1.28, text: 'علينا', hl: true }, { at: 2.16, text: 'تعالَ نتعرّف' }, { at: 3.48, text: 'ابدأ زادك اليوم', hl: true }],
+    [{ at: 0.16, text: 'لو كان لك أن تحمل' }, { at: 1.6, text: 'شيئًا واحدًا فقط', hl: true }, { at: 3.68, text: 'إلى الغربة' }, { at: 4.96, text: 'ماذا تحمل؟', hl: true }],
+    [{ at: 0, text: 'أثمن ما نخاف أن نفقده' }, { at: 2.26, text: 'لا تتّسع له حقيبة', hl: true, slice: true }],
+    [{ at: 0, text: 'كلام الله', hl: true }, { at: 1.06, text: 'ولسان أجدادنا' }, { at: 2.82, text: 'ودينٌ يبقى' }, { at: 4.9, text: 'في أبنائنا', hl: true }],
+    [{ at: 0, text: 'هنا' }, { at: 0.72, text: 'معلّمٌ يعرفك باسمك', hl: true }, { at: 2.72, text: 'يسمعك حرفًا حرفًا' }, { at: 4.8, text: 'ولا يبدأ من الصفر', hl: true, slice: true }],
+    [{ at: 0, text: 'بعد كلّ حصّة' }, { at: 1.28, text: 'يصلك ما تعلّمت', hl: true }, { at: 2.67, text: 'وكلّ خطوة' }, { at: 3.76, text: 'تصير وسامًا', hl: true }],
+    [{ at: 0, text: '' }],
+    [{ at: 0, text: 'الحصّة الأولى' }, { at: 0.81, text: 'علينا', hl: true }, { at: 1.61, text: 'ابدأ زادك اليوم', hl: true }],
   ],
   en: [
-    [{ at: 0.3, text: 'If you left tomorrow' }, { at: 2.32, text: 'what would you pack?', hl: true }],
-    [{ at: 0, text: 'We know' }, { at: 0.4, text: 'the answer', hl: true }],
-    [{ at: 0, text: 'Zad', hl: true }, { at: 0.88, text: 'Provision' }, { at: 1.84, text: 'for you' }, { at: 2.72, text: 'and your family' }],
-    [{ at: 0, text: 'Far from home' }, { at: 1.28, text: 'the Quran and Arabic' }, { at: 2.4, text: "don't come on their own", hl: true }, { at: 4.0, text: 'they need a teacher' }, { at: 5.08, text: 'who knows you by name', hl: true }],
-    [{ at: 0, text: 'Quran & Tajweed' }, { at: 1.36, text: 'Memorisation' }, { at: 3.24, text: 'the Zad Path', hl: true }, { at: 4.4, text: 'Arabic' }, { at: 5.28, text: 'English' }],
-    [{ at: 0, text: 'A male or female teacher' }, { at: 1.92, text: 'you choose', hl: true }, { at: 2.88, text: 'who stays with you' }, { at: 4.08, text: 'lesson after lesson' }, { at: 5.76, text: 'never starts' }, { at: 7.04, text: 'from zero', hl: true, slice: true }],
-    [{ at: 0, text: 'After every lesson' }, { at: 1.2, text: 'a note reaches you', hl: true }, { at: 2.16, text: 'before you ask' }, { at: 3.4, text: 'every homework' }, { at: 4.88, text: 'a new badge!', hl: true }],
-    [{ at: 0, text: 'The first lesson' }, { at: 1.08, text: 'is on us', hl: true }, { at: 2.16, text: 'Come and meet us' }, { at: 3.36, text: 'start your Zad today', hl: true }],
+    [{ at: 0.08, text: 'If you could carry' }, { at: 1.12, text: 'just ONE thing', hl: true }, { at: 2.72, text: 'far from home' }, { at: 4.24, text: 'what would it be?', hl: true }],
+    [{ at: 0, text: 'What we fear losing most' }, { at: 2.33, text: "doesn't fit in a suitcase", hl: true, slice: true }],
+    [{ at: 0, text: 'The words of Allah', hl: true }, { at: 1.6, text: "our grandparents' language" }, { at: 3.84, text: 'a faith' }, { at: 5.16, text: 'our children keep', hl: true }],
+    [{ at: 0, text: 'Here' }, { at: 0.75, text: 'a teacher who knows your name', hl: true }, { at: 2.8, text: 'who hears every letter' }, { at: 4.72, text: 'never starts from zero', hl: true, slice: true }],
+    [{ at: 0, text: 'After every lesson' }, { at: 1.2, text: 'see what you learned', hl: true }, { at: 2.72, text: 'every step' }, { at: 3.44, text: 'becomes a badge', hl: true }],
+    [{ at: 0, text: '' }],
+    [{ at: 0, text: 'Your first lesson' }, { at: 0.96, text: 'is on us', hl: true }, { at: 1.68, text: 'start your Zad today', hl: true }],
   ],
 };
 
 // Cues inside a scene that change the picture (seconds from the scene start).
 const CUES: Record<Lang, number[][]> = {
-  ar: [[2.4], [0.5], [1.6], [0.9, 3.76, 5.36], [0, 1.2, 2.58, 3.62, 4.58], [1.72, 3.1, 5.52, 7.04], [1.2, 3.44, 5.12], [3.48]],
-  en: [[2.32], [0.3], [2.72], [1.0, 4.0, 5.08], [0, 1.36, 3.24, 4.4, 5.28], [1.92, 2.88, 5.76, 7.04], [1.2, 3.4, 4.88], [3.36]],
+  ar: [[1.6, 3.68, 4.96], [2.26], [0, 1.06, 2.82], [0.72, 2.72, 4.8], [1.28, 2.67, 3.76], [1.28], [1.61]],
+  en: [[1.12, 2.72, 4.24], [2.33], [0, 1.6, 3.84], [0.75, 2.8, 4.72], [1.2, 2.72, 3.44], [1.36], [1.68]],
 };
 
-const ZAD: ZadPose[] = ['think', 'wow', 'proud', 'love', 'excited', 'point', 'clap', 'cheer'];
+const ZAD: ZadPose[] = ['think', 'sad', 'love', 'wave', 'clap', 'dua', 'cheer'];
 const EASE = [0.22, 1, 0.36, 1] as const;
 const FOIL = 'linear-gradient(100deg,#B4552F 0%,#F6D58E 30%,#FFF1C9 45%,#E5A93C 60%,#F6D58E 75%,#B4552F 100%)';
 
@@ -163,158 +160,125 @@ const pop = (reduce: boolean, delay = 0) => (reduce ? {} : { initial: { opacity:
 
 /** The picture of each scene. `t` is seconds since the scene began, `c` its cues. */
 function Picture({ i, t, c, isEn, reduce }: { i: number; t: number; c: number[]; isEn: boolean; reduce: boolean }) {
-  // 0. The hook: things fly into the bag, one every half second, then the question mark.
+  // 0. The hook: everyday things circle the bag; at "one thing" they fall away and the bag glows; a plane leaves; "?".
   if (i === 0) {
     const items = [Plane, Smartphone, Shirt, Wallet, KeyRound, Camera];
-    const landed = Math.max(0, Math.floor((t - 0.25) / 0.4));
+    const one = t >= c[0];
     return (
-      <div className="relative w-[150px] sm:w-[210px]">
+      <div className="relative w-[150px] sm:w-[200px]">
         {items.map((Icon, k) => {
-          const a = (k / items.length) * Math.PI * 2 - Math.PI / 2;
-          return t > k * 0.4 && !reduce ? (
-            <motion.span
+          const a = (k / items.length) * Math.PI * 2 + (reduce ? 0 : t * 0.9);
+          return (
+            <span
               key={k}
-              className="absolute left-1/2 top-1/2 grid place-items-center w-14 h-14 -ml-7 -mt-7 rounded-2xl bg-[#FAF7F2] text-[#1C1411] shadow-xl"
-              initial={{ x: Math.cos(a) * 260, y: Math.sin(a) * 170 - 40, rotate: -30 + k * 12, scale: 1.1 }}
-              animate={{ x: 0, y: 30, rotate: 0, scale: 0.2, opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.55, 0, 1, 0.45] }}
+              className="absolute left-1/2 top-1/2 grid place-items-center w-12 h-12 -ml-6 -mt-6 rounded-2xl bg-[#FAF7F2] text-[#1C1411] shadow-xl transition-[opacity,transform] duration-700"
+              style={{ transform: one ? `translate(${Math.cos(a) * 160}px, ${260}px) rotate(40deg)` : `translate(${Math.cos(a) * 170}px, ${Math.sin(a) * 105}px)`, opacity: one ? 0 : 1 }}
             >
-              <Icon className="w-7 h-7" aria-hidden="true" />
-            </motion.span>
-          ) : null;
+              <Icon className="w-6 h-6" aria-hidden="true" />
+            </span>
+          );
         })}
-        <motion.div key={landed} animate={reduce ? undefined : { scaleY: [1, 0.9, 1.04, 1], scaleX: [1, 1.06, 0.98, 1] }} transition={{ duration: 0.3 }} style={{ originY: 1 }}><Bag /></motion.div>
-        {t > c[0] && (
-          <motion.span className="absolute top-[-6%] -end-16 sm:-end-28 font-editorial font-bold text-7xl sm:text-9xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }} {...pop(reduce)}>
+        {one && <motion.span aria-hidden="true" className="absolute inset-[-40%] rounded-full bg-[radial-gradient(closest-side,rgba(255,241,201,0.75),rgba(229,169,60,0.25)_55%,transparent)]" initial={reduce ? false : { scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8, ease: EASE }} />}
+        <div className="relative"><Bag /></div>
+        {t >= c[1] && !reduce && (
+          <svg viewBox="0 0 400 140" className="absolute -top-24 -inset-x-28 sm:-inset-x-40 h-auto overflow-visible" aria-hidden="true">
+            <motion.path d="M10 130 C 120 -10, 280 -10, 390 40" fill="none" stroke="#F6D58E" strokeWidth="2" strokeDasharray="6 8" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.1, ease: EASE }} />
+          </svg>
+        )}
+        {t >= c[2] && (
+          <motion.span className="absolute top-[-8%] -end-16 sm:-end-24 font-editorial font-bold text-7xl sm:text-9xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }} {...pop(reduce)}>
             {isEn ? '?' : '؟'}
           </motion.span>
         )}
       </div>
     );
   }
-  // 1. "We know the answer": Zad rises out of the bag under a spotlight.
+  // 1. The precious thing glows above the bag; the bag tries to close and cannot hold it.
   if (i === 1) return (
-    <div className="relative w-[170px] sm:w-[230px]">
-      <span aria-hidden="true" className="absolute left-1/2 -top-[120%] h-[220%] w-[160%] -translate-x-1/2 bg-[conic-gradient(from_180deg_at_50%_0%,transparent_42%,rgba(246,213,142,0.28)_50%,transparent_58%)]" />
-      <motion.div className="absolute left-1/2 -translate-x-1/2 bottom-[48%]" initial={reduce ? false : { y: 90, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 14 }}>
-        <ZadRigSvg pose={t > c[0] ? 'wow' : 'peek'} size={130} />
+    <div className="relative w-[150px] sm:w-[200px] pt-24 sm:pt-32">
+      <motion.div className="absolute left-1/2 top-0 -translate-x-1/2" animate={reduce ? undefined : { y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
+        <span aria-hidden="true" className="absolute inset-[-35%] rounded-full bg-[radial-gradient(closest-side,rgba(255,241,201,0.8),transparent)]" />
+        <Medal id="surah" eager className={`relative ${t >= c[0] ? 'w-36 h-36 sm:w-48 sm:h-48' : 'w-28 h-28 sm:w-36 sm:h-36'} transition-[width,height] duration-700`} />
       </motion.div>
-      <div className="relative"><Bag /></div>
+      <motion.div className="relative" animate={t >= c[0] && !reduce ? { x: [0, -10, 10, -8, 8, 0], rotate: [0, -3, 3, -2, 2, 0] } : undefined} transition={{ duration: 0.6 }}><Bag /></motion.div>
     </div>
   );
-  // 2. The name, in gold foil, and who it is for.
-  if (i === 2) return (
-    <div className="flex items-end justify-center gap-4 sm:gap-6 h-24 sm:h-32">
-      {t > c[0] && [{ s: 'h-20 sm:h-28', cov: false }, { s: 'h-20 sm:h-28', cov: true }, { s: 'h-12 sm:h-16', cov: false }, { s: 'h-14 sm:h-20', cov: true }].map((f, k) => (
-        <motion.span key={k} className="text-[#F6D58E] drop-shadow-[0_0_18px_rgba(246,213,142,0.5)]" {...pop(reduce, k * 0.12)}>
-          <Figure covered={f.cov} className={`${f.s} w-auto`} />
-        </motion.span>
-      ))}
-    </div>
-  );
-  // 3. Far from home: a night city, one window lit; then a teacher who knows your name.
-  if (i === 3) {
-    if (t < c[1]) return (
-      <svg viewBox="0 0 400 170" className="w-[300px] sm:w-[520px] h-auto" aria-hidden="true">
-        <circle cx="330" cy="34" r="16" fill="#F6D58E" opacity=".85" />
-        <circle cx="338" cy="28" r="14" fill="#2A1A14" />
-        {[[10, 70, 50], [64, 40, 44], [112, 90, 36], [152, 55, 60], [216, 30, 40], [260, 75, 52], [316, 50, 46], [366, 85, 30]].map(([x, y, w], k) => (
-          <g key={k}>
-            <rect x={x} y={y} width={w} height={170 - y} fill="#140E0B" stroke="#F6D58E" strokeOpacity=".18" />
-            {Array.from({ length: 6 }, (_, r) => Array.from({ length: 2 }, (_, q) => (
-              <rect key={`${r}-${q}`} x={x + 8 + q * (w / 2 - 4)} y={y + 10 + r * 16} width="8" height="8" rx="1" fill="#F6D58E" opacity={k === 3 && r === 2 && q === 1 && t > c[0] ? 1 : 0.07} />
-            )))}
-          </g>
-        ))}
-        {t > c[0] && <motion.circle cx="190" cy="102" r="26" fill="#F6D58E" initial={{ opacity: 0 }} animate={{ opacity: 0.25 }} transition={{ duration: 0.6 }} style={{ filter: 'blur(10px)' }} />}
-      </svg>
-    );
-    const name = isEn ? 'Hi, Yusuf' : 'أهلًا يا يوسف';
-    const shown = reduce ? name.length : Math.min(name.length, Math.floor((t - c[1]) * 14));
+  // 2. What we carry instead: the words of Allah, our grandparents' language, a faith that stays in our children.
+  if (i === 2) {
+    const n = c.filter((at) => t >= at).length;
     return (
-      <motion.div className="flex items-center gap-4 rounded-[1.75rem] bg-[#FAF7F2] px-5 py-4 sm:px-7 sm:py-5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]" {...pop(reduce)}>
-        <Medal id="teacher" eager className="w-16 h-16 sm:w-20 sm:h-20" />
-        <div className="text-start">
-          <p className="text-xs sm:text-sm font-bold text-[#B4552F]">{isEn ? 'Your teacher' : 'معلّمك'}</p>
-          <p className="relative font-editorial font-bold text-2xl sm:text-4xl text-[#1C1411]">
-            {name.slice(0, shown)}<span className="inline-block w-[2px] h-[0.9em] align-middle bg-[#C51F24] animate-pulse" />
-            {t > c[2] && <motion.span aria-hidden="true" className="absolute -bottom-1 inset-x-0 h-[3px] rounded-full bg-[#E5A93C]" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} style={{ originX: isEn ? 0 : 1 }} transition={{ duration: 0.5, ease: EASE }} />}
-          </p>
-        </div>
-      </motion.div>
-    );
-  }
-  // 4. The provisions: each medal lands big, then joins the row in the bag.
-  if (i === 4) {
-    const sets = [['surah', 'tajweed'], ['juz'], ['zad-level'], ['language-level'], ['language-level']];
-    let cur = 0;
-    c.forEach((at, k) => { if (t >= at) cur = k; });
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div key={cur} className="flex gap-2" initial={reduce ? false : { scale: 0.3, rotate: -20, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} exit={{ scale: 0.4, y: 80, opacity: 0, transition: { duration: 0.22 } }} transition={{ type: 'spring', stiffness: 260, damping: 16 }}>
-            {sets[cur].map((id) => <Medal key={id} id={id} eager className="w-28 h-28 sm:w-44 sm:h-44" />)}
+      <div className="flex items-end justify-center gap-6 sm:gap-12">
+        {n >= 1 && <motion.div className="flex flex-col items-center gap-2" {...pop(reduce)}><Medal id="surah" eager className={n === 1 ? 'w-36 h-36 sm:w-44 sm:h-44' : 'w-24 h-24 sm:w-28 sm:h-28'} /></motion.div>}
+        {n >= 2 && (
+          <motion.div className="relative grid place-items-center" {...pop(reduce)}>
+            <Medal id="language-level" eager className={n === 2 ? 'w-36 h-36 sm:w-44 sm:h-44' : 'w-24 h-24 sm:w-28 sm:h-28'} />
+            {['أ', 'ب', 'ض'].map((ch, k) => (
+              <motion.span key={ch} lang="ar" className="absolute font-bold text-2xl sm:text-3xl text-[#F6D58E]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }} initial={reduce ? false : { y: 0, opacity: 0 }} animate={{ y: -90 - k * 18, x: (k - 1) * 40, opacity: [0, 1, 0.7] }} transition={{ duration: 1.6, delay: 0.2 + k * 0.2, ease: EASE }}>{ch}</motion.span>
+            ))}
           </motion.div>
-        </AnimatePresence>
-        <div className="flex gap-1.5 h-9 sm:h-11">
-          {sets.slice(0, cur).flat().map((id, k) => <motion.span key={k} {...pop(reduce)}><Medal id={id} eager className="w-9 h-9 sm:w-11 sm:h-11" /></motion.span>)}
-        </div>
+        )}
+        {n >= 3 && (
+          <motion.div className="flex items-end gap-1 text-[#F6D58E] drop-shadow-[0_0_18px_rgba(246,213,142,0.55)]" {...pop(reduce)}>
+            <Figure className="h-24 sm:h-32 w-auto" />
+            <Figure covered className="h-14 sm:h-20 w-auto" />
+            <Figure className="h-12 sm:h-16 w-auto" />
+          </motion.div>
+        )}
       </div>
     );
   }
-  // 5. You choose → the same teacher, lesson after lesson → never from zero.
-  if (i === 5) {
-    if (t < c[1]) return (
-      <div className="flex gap-4 sm:gap-8">
-        {[{ cov: false, l: { en: 'Male teacher', ar: 'معلّم' } }, { cov: true, l: { en: 'Female teacher', ar: 'معلّمة' } }].map((p, k) => {
-          const on = t > c[0] && k === 1;
-          return (
-            <motion.div key={k} className={`relative flex flex-col items-center gap-2 w-28 sm:w-40 rounded-t-full rounded-b-3xl pt-6 pb-4 border transition-colors duration-500 ${on ? 'border-[#F6D58E] bg-[#F6D58E]/10' : 'border-[#F6D58E]/25 bg-[#FAF7F2]/[0.05]'}`} animate={{ scale: on ? 1.08 : t > c[0] ? 0.92 : 1, opacity: t > c[0] && !on ? 0.5 : 1 }} transition={{ type: 'spring', stiffness: 260, damping: 18 }}>
-              <Figure covered={p.cov} className="w-14 h-14 sm:w-20 sm:h-20 text-[#F6D58E]" />
-              <span className="text-xs sm:text-sm font-bold text-[#FAF7F2]/85">{isEn ? p.l.en : p.l.ar}</span>
-              {on && <motion.span className="absolute -top-2 -end-2 grid place-items-center w-8 h-8 rounded-full bg-[#087D91] text-[#FAF7F2]" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 420, damping: 16 }}><Check className="w-4 h-4" aria-hidden="true" /></motion.span>}
-            </motion.div>
-          );
-        })}
-      </div>
-    );
-    if (t < c[2]) {
-      const done = Math.min(6, 1 + Math.floor((t - c[1]) / 0.38));
+  // 3. A teacher who knows your name → hears every letter → never starts from zero.
+  if (i === 3) {
+    if (t < c[1]) {
+      const name = isEn ? 'Hi, Yusuf' : 'أهلًا يا يوسف';
+      const shown = reduce ? name.length : Math.max(0, Math.min(name.length, Math.floor((t - c[0]) * 14)));
       return (
-        <div className="relative w-[300px] sm:w-[520px] h-24">
-          <span className="absolute inset-x-0 top-1/2 h-[2px] bg-[#F6D58E]/20" />
-          <motion.span className="absolute top-1/2 h-[2px] bg-[#E5A93C]" style={{ insetInlineStart: 0 }} animate={{ width: `${(done - 1) * 20}%` }} transition={{ duration: 0.35 }} />
-          {Array.from({ length: 6 }, (_, k) => (
-            <span key={k} className={`absolute top-1/2 w-4 h-4 -mt-2 -ms-2 rounded-full transition-colors duration-300 ${k < done ? 'bg-[#F6D58E] shadow-[0_0_12px_rgba(246,213,142,0.8)]' : 'bg-[#F6D58E]/20'}`} style={{ insetInlineStart: `${k * 20}%` }} />
-          ))}
-          <motion.span className="absolute top-0 -ms-8" animate={{ insetInlineStart: `${(done - 1) * 20}%` }} transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
-            <Medal id="teacher" eager className="w-16 h-16 -mt-6" />
-          </motion.span>
+        <motion.div className="flex items-center gap-4 rounded-[1.75rem] bg-[#FAF7F2] px-5 py-4 sm:px-7 sm:py-5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]" {...pop(reduce)}>
+          <Medal id="teacher" eager className="w-16 h-16 sm:w-20 sm:h-20" />
+          <div className="text-start">
+            <p className="text-xs sm:text-sm font-bold text-[#B4552F]">{isEn ? 'Your teacher' : 'معلّمك'}</p>
+            <p className="font-editorial font-bold text-2xl sm:text-4xl text-[#1C1411] min-w-[7ch]">{name.slice(0, shown)}<span className="inline-block w-[2px] h-[0.9em] align-middle bg-[#C51F24] animate-pulse" /></p>
+          </div>
+        </motion.div>
+      );
+    }
+    if (t < c[2]) {
+      // Every letter heard: a word lights letter by letter over a live sound wave.
+      const word = 'بِسْمِ اللهِ';
+      const lit = reduce ? 99 : Math.floor((t - c[1]) * 5);
+      return (
+        <div className="flex flex-col items-center gap-4">
+          <p lang="ar" dir="rtl" className="text-5xl sm:text-7xl" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
+            {Array.from(word).map((ch, k) => <span key={k} className="transition-colors duration-300" style={{ color: k <= lit ? '#F6D58E' : 'rgba(250,247,242,0.25)' }}>{ch}</span>)}
+          </p>
+          <div className="flex items-end gap-1.5 h-12" aria-hidden="true">
+            {Array.from({ length: 18 }, (_, k) => <span key={k} className="w-1.5 rounded-full bg-[#E5A93C]" style={{ height: `${reduce ? 40 : 20 + Math.abs(Math.sin(t * 9 + k * 0.7)) * 80}%` }} />)}
+          </div>
         </div>
       );
     }
     return (
       <div className="relative grid place-items-center">
         <span lang="en" className="font-editorial font-bold text-[7rem] sm:text-[11rem] leading-none text-transparent [-webkit-text-stroke:3px_#F6D58E]">0</span>
-        {t > c[3] && !reduce && <motion.span aria-hidden="true" className="absolute h-3 w-[140%] rounded-full bg-[#C51F24] shadow-[0_0_30px_rgba(197,31,36,0.9)]" style={{ rotate: -28 }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.25, ease: EASE }} />}
+        {!reduce && <motion.span aria-hidden="true" className="absolute h-3 w-[140%] rounded-full bg-[#C51F24] shadow-[0_0_30px_rgba(197,31,36,0.9)]" style={{ rotate: -28 }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.3, delay: 0.35, ease: EASE }} />}
       </div>
     );
   }
-  // 6. The real portal: the teacher's note, a notification, the badges, and a new badge bursting out.
-  if (i === 6) {
+  // 4. The real portal: the teacher's note, a notification, the badges, and a new badge bursting out.
+  if (i === 4) {
     const screen = t < c[1] ? 'note' : 'badges';
     return (
       <div className="relative">
         <motion.div className="relative w-[150px] sm:w-[200px] aspect-[390/844] rounded-[1.9rem] p-[5px] bg-[linear-gradient(145deg,#5A4A42,#1C1411_40%,#3B2E28_70%,#120C09)] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.85)]" initial={reduce ? false : { y: 140, rotate: -8, opacity: 0 }} animate={{ y: 0, rotate: t > c[2] ? -4 : 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 160, damping: 18 }}>
           <div className="relative h-full w-full overflow-hidden rounded-[1.55rem] bg-[#FAF7F2]">
-            <AnimatePresence initial={false}>
-              <motion.img key={screen} src={`/media/portal/${isEn ? 'en' : 'ar'}-${screen}.webp`} alt="" className="absolute inset-0 h-full w-full object-cover object-top" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease: EASE }} />
-            </AnimatePresence>
+            {(['note', 'badges'] as const).map((sc) => (
+              <img key={sc} src={`/media/portal/${isEn ? 'en' : 'ar'}-${sc}.webp`} alt="" className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-500" style={{ opacity: sc === screen ? 1 : 0 }} />
+            ))}
             <span className="absolute top-1.5 left-1/2 -translate-x-1/2 h-3.5 w-[34%] rounded-full bg-[#0B0806]" />
           </div>
         </motion.div>
-        {t > c[0] && t < c[1] + 0.6 && (
-          <motion.div className="absolute -top-4 -start-16 sm:-start-28 w-[210px] sm:w-[260px] rounded-2xl bg-[#FAF7F2]/95 backdrop-blur px-3 py-2.5 shadow-2xl text-start" initial={reduce ? false : { y: -30, opacity: 0, scale: 0.9 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ type: 'spring', stiffness: 320, damping: 22 }}>
+        {t > c[0] && t < c[1] + 0.5 && (
+          <motion.div className="absolute -top-4 -start-16 sm:-start-28 w-[210px] sm:w-[260px] rounded-2xl bg-[#FAF7F2] px-3 py-2.5 shadow-2xl text-start" initial={reduce ? false : { y: -30, opacity: 0, scale: 0.9 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 320, damping: 22 }}>
             <p className="flex items-center gap-1.5 text-[11px] font-bold text-[#087D91]"><span className="grid place-items-center w-4 h-4 rounded-full bg-[#087D91] text-[#FAF7F2]"><Check className="w-2.5 h-2.5" aria-hidden="true" /></span>{isEn ? 'From your teacher' : 'من المعلّم'}</p>
             <p className="mt-0.5 text-xs sm:text-sm font-bold text-[#1C1411] leading-snug">{isEn ? 'Beautiful recitation today. Homework: verses 1–30.' : 'ما شاء الله، تلاوة هادئة اليوم. الواجب: الآيات ١–٣٠.'}</p>
           </motion.div>
@@ -332,16 +296,32 @@ function Picture({ i, t, c, isEn, reduce }: { i: number; t: number; c: number[];
       </div>
     );
   }
-  // 7. The invitation.
+  // 5. The verse we are named after, said in full: gold calligraphy, a slow khatam turning behind it.
+  if (i === 5) return (
+    <div className="relative grid place-items-center w-full">
+      <motion.svg viewBox="0 0 200 200" className="absolute w-[320px] sm:w-[440px] opacity-40" aria-hidden="true" animate={reduce ? undefined : { rotate: 30 }} transition={{ duration: 6, ease: 'linear' }}>
+        <g transform="translate(100 100)" fill="none" stroke="#E5A93C" strokeWidth="1.2">
+          <rect x="-62" y="-62" width="124" height="124" rx="8" />
+          <rect x="-62" y="-62" width="124" height="124" rx="8" transform="rotate(45)" />
+          <circle r="86" strokeDasharray="2 5" />
+        </g>
+      </motion.svg>
+      <motion.p lang="ar" dir="rtl" className="relative px-4 text-center text-[2.6rem] leading-[1.7] sm:text-7xl sm:leading-[1.5]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)", backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, backgroundPosition: ['0% 0%', '100% 0%'] }} transition={{ duration: 1, ease: EASE, backgroundPosition: { duration: 3, ease: 'easeInOut' } }}>
+        <span className="block">﴿ وَتَزَوَّدُوا</span>
+        {t >= c[0] && <motion.span className="block" initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE }}>فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ ﴾</motion.span>}
+      </motion.p>
+    </div>
+  );
+  // 6. The invitation.
   return (
     <div className="flex flex-col items-center gap-4">
-      <ZadRigSvg pose="cheer" size={120} />
-      {t > c[0] && (
-        <motion.span className="rounded-full bg-[#C51F24] px-6 py-3 text-base sm:text-xl font-bold text-[#FAF7F2] shadow-[0_18px_40px_-12px_rgba(197,31,36,0.8)]" {...pop(reduce)}>
+      <ZadRigSvg pose="cheer" size={130} />
+      {t >= c[0] && (
+        <motion.span className="rounded-full bg-[#C51F24] px-7 py-3.5 text-lg sm:text-2xl font-bold text-[#FAF7F2] shadow-[0_18px_40px_-12px_rgba(197,31,36,0.8)]" {...pop(reduce)}>
           {isEn ? 'Book the free first lesson' : 'احجز الحصة الأولى مجانًا'}
         </motion.span>
       )}
-      <p lang="ar" dir="rtl" className="text-base sm:text-2xl text-[#F6D58E]/85" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>﴿ وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ ﴾</p>
+      <p className="font-editorial font-bold text-xl sm:text-3xl text-[#F6D58E]">{isEn ? 'Watazawwado' : 'وتزوّدوا'}</p>
     </div>
   );
 }
@@ -424,15 +404,16 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
   beats.forEach((b, k) => { if (local >= b.at) beatIdx = k; });
   const beat = beats[Math.max(0, beatIdx)];
   const running = state === 'playing' || state === 'paused';
-  const textOnly = scene === 2; // the name scene: the word is the picture
+  const textOnly = false;
+  const noWords = scene === 5; // the verse scene: the verse is the picture
 
   return (
-    <figure className={record ? 'fixed inset-0 z-[100] bg-black' : 'relative mx-auto w-full max-w-5xl'} aria-label={isEn ? 'Our story in 40 seconds' : 'قصتنا في ٤٠ ثانية'}>
+    <figure className={record ? 'fixed inset-0 z-[100] bg-black' : 'relative mx-auto w-full max-w-5xl'} aria-label={isEn ? 'Our story in 35 seconds' : 'قصتنا في ٣٥ ثانية'}>
       <div
         className={`relative overflow-hidden ${record ? 'h-full w-full' : 'aspect-[4/5] sm:aspect-video rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)]'}`}
-        style={{ background: LIGHT[running ? scene : 7], transition: 'background 0.6s ease' }}
+        style={{ background: LIGHT[running ? scene : 6], transition: 'background 0.6s ease' }}
       >
-        <audio ref={audioRef} src={isEn ? '/media/intro-film/en-v2.mp3' : '/media/intro-film/ar-v2.mp3'} preload="none" onEnded={() => setState('done')} onPause={() => setState((s) => (s === 'playing' ? 'paused' : s))} />
+        <audio ref={audioRef} src={isEn ? '/media/intro-film/en-v3.mp3' : '/media/intro-film/ar-v3.mp3'} preload="none" onEnded={() => setState('done')} onPause={() => setState((s) => (s === 'playing' ? 'paused' : s))} />
 
         {running ? (
           <>
@@ -447,7 +428,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
               transition={{ duration: 0.28, ease: EASE }}
             >
               <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom.text > 1 ? { zoom: zoom.text } : undefined}>
-                {beatIdx >= 0 && (
+                {beatIdx >= 0 && !noWords && (
                   textOnly && beat.hl ? (
                     // The name in gold foil, with a light sweep.
                     <motion.span key={beat.text} className="relative block font-editorial font-bold text-[5rem] sm:text-[9rem] lg:text-[11rem] leading-none" style={{ backgroundImage: FOIL, backgroundSize: '200% 100%', WebkitBackgroundClip: 'text', color: 'transparent' }} initial={reduce ? false : record ? { scale: 1.6, opacity: 0 } : { scale: 1.6, opacity: 0, filter: 'blur(12px)' }} animate={record ? { scale: 1, opacity: 1, backgroundPosition: ['0% 0%', '100% 0%'] } : { scale: 1, opacity: 1, filter: 'blur(0px)', backgroundPosition: ['0% 0%', '100% 0%'] }} transition={{ duration: 0.7, ease: EASE, backgroundPosition: { duration: 1.6, ease: 'easeInOut' } }}>
@@ -470,37 +451,47 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
             <div className="absolute left-1/2 top-[52%] w-[70%] aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none" style={{ background: 'radial-gradient(closest-side, rgba(246,213,142,0.42), rgba(229,169,60,0.14) 55%, transparent)' }} />
             {state !== 'done' ? (
               <>
-                <p className="absolute inset-x-0 top-[7%] px-6 text-center font-editorial font-bold leading-[1.1] text-[1.9rem] sm:text-5xl lg:text-6xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }}>
-                  {isEn ? 'If you left tomorrow, what would you pack?' : 'لو سافرتَ غدًا، ماذا تضع في حقيبتك؟'}
-                </p>
-                {/* The bag, Zad peeking out, and what flies in. */}
-                <div className="absolute left-1/2 top-[60%] -translate-x-1/2 -translate-y-1/2 w-[38%] sm:w-[26%] max-w-[260px]" aria-hidden="true">
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-[55%] w-[62%]"><ZadRigSvg pose="peek" size={150} glow={false} /></div>
-                  <div className="relative rotate-[-6deg] drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)]"><Bag /></div>
-                  {[{ I: Plane, x: '-78%', y: '-40%', r: -18 }, { I: Smartphone, x: '128%', y: '-55%', r: 14 }, { I: Shirt, x: '-92%', y: '48%', r: 10 }, { I: KeyRound, x: '138%', y: '40%', r: -12 }].map(({ I, x, y, r }, k) => (
-                    <span key={k} className="absolute top-0 left-0 grid place-items-center w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#FAF7F2] text-[#1C1411] shadow-[0_18px_30px_-10px_rgba(0,0,0,0.7)]" style={{ transform: `translate(${x}, ${y}) rotate(${r}deg)` }}>
-                      <I className="w-6 h-6 sm:w-7 sm:h-7" aria-hidden="true" />
+                {/* A beam of light falls on the open bag. */}
+                <div aria-hidden="true" className="absolute left-1/2 top-0 h-full w-[55%] -translate-x-1/2 bg-[linear-gradient(180deg,rgba(255,241,201,0.22),rgba(255,241,201,0.06)_55%,transparent_80%)] [clip-path:polygon(38%_0,62%_0,100%_100%,0_100%)]" />
+                {/* The hook, in two strokes: gold foil, then the question on a crimson bar. */}
+                <div className="absolute inset-x-0 top-[6%] px-5 text-center">
+                  <p className="font-editorial font-bold leading-[1.05] text-[2.4rem] sm:text-6xl lg:text-7xl" style={{ backgroundImage: FOIL, WebkitBackgroundClip: 'text', color: 'transparent' }}>
+                    {isEn ? 'Just ONE thing…' : 'شيءٌ واحدٌ فقط…'}
+                  </p>
+                  <p className="mt-2 sm:mt-3 inline-block rounded-xl bg-[#C51F24] px-4 py-1 font-editorial font-bold text-[1.6rem] sm:text-4xl lg:text-5xl text-[#FAF7F2] shadow-[0_14px_30px_-10px_rgba(197,31,36,0.9)] -rotate-1">
+                    {isEn ? 'what would you carry?' : 'ماذا تحمل معك؟'}
+                  </p>
+                </div>
+                {/* The bag glows from inside; the answer rises out of it; everyday things are left behind, crossed out. */}
+                <div className="absolute left-1/2 top-[63%] -translate-x-1/2 -translate-y-1/2 w-[34%] sm:w-[22%] max-w-[230px]" aria-hidden="true">
+                  <span className="absolute inset-[-55%] rounded-full bg-[radial-gradient(closest-side,rgba(255,241,201,0.7),rgba(229,169,60,0.28)_50%,transparent)]" />
+                  <span className="absolute left-1/2 -translate-x-1/2 bottom-[62%] w-[78%]"><Medal id="surah" eager className="w-full h-auto drop-shadow-[0_0_30px_rgba(255,241,201,0.9)]" /></span>
+                  <div className="relative drop-shadow-[0_30px_40px_rgba(0,0,0,0.65)]"><Bag /></div>
+                  {[{ I: Smartphone, x: '-120%', y: '-20%', r: -14 }, { I: Wallet, x: '-150%', y: '55%', r: 10 }, { I: KeyRound, x: '175%', y: '-10%', r: 12 }, { I: Shirt, x: '160%', y: '62%', r: -10 }].map(({ I, x, y, r }, k) => (
+                    <span key={k} className="absolute top-0 left-0 grid place-items-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#FAF7F2]/90 text-[#1C1411]/70 shadow-[0_14px_24px_-10px_rgba(0,0,0,0.7)]" style={{ transform: `translate(${x}, ${y}) rotate(${r}deg)` }}>
+                      <I className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden="true" />
+                      <span className="absolute h-[3px] w-[130%] rounded-full bg-[#C51F24] rotate-[-35deg]" />
                     </span>
                   ))}
-                  <span className="absolute -start-[70%] top-[78%] w-[44%] rotate-[-12deg]"><Medal id="surah" eager className="w-full h-auto" /></span>
-                  <span className="absolute -end-[72%] top-[70%] w-[42%] rotate-[14deg]"><Medal id="tajweed" eager className="w-full h-auto" /></span>
                 </div>
+                {/* Zad, wide-eyed, points at the bag. */}
+                <div className="absolute bottom-[22%] start-[4%] sm:start-[10%]" aria-hidden="true"><ZadRigSvg pose="wow" size={120} /></div>
                 {/* One big play button: glass ring, crimson core, a slow pulse. */}
-                <div className="absolute inset-x-0 bottom-[7%] flex flex-col items-center gap-2.5">
+                <div className="absolute inset-x-0 bottom-[6%] flex flex-col items-center gap-2.5">
                   <button
                     id="intro-film-play"
                     type="button"
                     onClick={play}
-                    className="group relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 backdrop-blur-sm transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/70"
-                    aria-label={isEn ? 'Play our story, 40 seconds, with sound' : 'شغّل قصتنا، ٤٠ ثانية بالصوت'}
+                    className="group relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 transition-transform duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/70"
+                    aria-label={isEn ? 'Play our story, 35 seconds, with sound' : 'شغّل قصتنا، ٣٥ ثانية بالصوت'}
                   >
                     <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.2s]" />
                     <span className="grid place-items-center w-14 h-14 sm:w-[4.2rem] sm:h-[4.2rem] rounded-full bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#FAF7F2] shadow-[0_12px_30px_-6px_rgba(197,31,36,0.9),inset_0_1px_1px_rgba(255,255,255,0.35)]">
                       <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current translate-x-[2px] rtl:-translate-x-[2px] rtl:-scale-x-100" aria-hidden="true" />
                     </span>
                   </button>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E0907]/60 px-3 py-1 text-xs sm:text-sm font-bold text-[#FAF7F2]/90">
-                    <Volume2 className="w-4 h-4 text-[#F6D58E]" aria-hidden="true" />{isEn ? 'Sound on · 40 seconds' : 'علّي الصوت · ٤٠ ثانية'}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E0907]/70 px-3 py-1 text-xs sm:text-sm font-bold text-[#FAF7F2]/90">
+                    <Volume2 className="w-4 h-4 text-[#F6D58E]" aria-hidden="true" />{isEn ? 'Sound on · 35 seconds' : 'علّي الصوت · ٣٥ ثانية'}
                   </span>
                 </div>
               </>
@@ -525,7 +516,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         )}
 
         {/* Zad rides along in a corner of every scene where he is not the picture. */}
-        {running && ![1, 7].includes(scene) && (
+        {running && scene !== 6 && (
           <motion.div key={`zad-${scene}`} className="absolute top-3 start-3 sm:top-5 sm:start-5 pointer-events-none" aria-hidden="true" initial={reduce ? false : { scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 18 }}>
             <ZadRigSvg pose={ZAD[scene]} size={record ? 170 : 64} glow={false} />
           </motion.div>
