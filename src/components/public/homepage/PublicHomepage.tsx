@@ -1,6 +1,7 @@
 import { TeacherStays } from './TeacherStays';
 import { TrialCtaLabel } from "../TrialCtaLabel";
 import React from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
@@ -8,9 +9,12 @@ import { PublicButton } from '../PublicDesignSystem';
 import { ArrowLeft, ArrowRight, BadgeCheck, Check, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
-import { IntroFilm } from './IntroFilm';
+import { IntroFilm, GRAIN } from './IntroFilm';
+import { JourneyNav, NextDoor, Reveal, MaskLine, StationHead, EXPO, num, type Station } from './journey/Journey';
+import { LessonStory } from './journey/LessonStory';
+import { Struggles } from './journey/Struggles';
+import { ZadRigSvg } from '../../zad/ZadRig';
 import { ParentQuestions } from './ParentQuestions';
-import { ProgressShowcase } from '../how-it-works/ProgressShowcase';
 import { HeroSubjects } from './HeroSubjects';
 import { MushafEmblem, PathEmblem } from '../emblems/DoorEmblems';
 import { FamilyVoices } from './FamilyVoices';
@@ -113,22 +117,51 @@ const TEACHERS: { src: string; name: L; fact: L }[] = [
   { src: '/ustadha-afnan.jpg', name: { en: 'Ustadha Afnan', ar: 'الأستاذة أفنان' }, fact: { en: 'Quran, Tajweed, Arabic, the Zad Path and English. For families who prefer a female teacher.', ar: 'قرآن وتجويد وعربية ومنهج زاد وإنجليزي. للأسر اللي تفضّل معلّمة.' } },
 ];
 
+const STATIONS: Station[] = [
+  { id: 'st-child', label: { en: 'Your child', ar: 'طفلك' } },
+  { id: 'st-guide', label: { en: 'Who walks with you', ar: 'مين معاكم' } },
+  { id: 'st-lesson', label: { en: 'The lesson, and after', ar: 'الحصة وبعدها' } },
+  { id: 'st-plan', label: { en: 'The plan', ar: 'الخطة' } },
+  { id: 'st-provisions', label: { en: 'The provisions', ar: 'الزاد' } },
+  { id: 'st-stay', label: { en: 'The teacher stays', ar: 'المعلّم يبقى' } },
+];
+const ARRIVAL = { id: 'arrival', label: { en: 'Families and questions', ar: 'الأهالي والأسئلة' } };
+
+/** Slow light drifting inside dark bands, so the background is never frozen. */
+function DriftLight() {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="absolute -inset-1/4 pointer-events-none"
+      style={{ background: 'radial-gradient(30rem 22rem at 30% 30%, rgba(229,169,60,0.22), transparent 60%), radial-gradient(26rem 20rem at 75% 70%, rgba(197,31,36,0.18), transparent 60%)' }}
+      animate={{ x: ['0%', '6%', '-4%', '0%'], y: ['0%', '-5%', '4%', '0%'] }}
+      transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+    />
+  );
+}
+
 export function PublicHomepage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
   const t = (l: L) => (isEn ? l.en : l.ar);
   const Arrow = isEn ? ArrowRight : ArrowLeft;
   const audio = useWelcomeAudio();
+  const reduce = useReducedMotion();
   useVerseFont();
+  const total = STATIONS.length;
+  const trial = () => onOpenTrialModal();
 
   return (
     <main id="main-content" className="pt-16 sm:pt-20">
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
+      <JourneyNav stations={STATIONS} isEn={isEn} />
 
-      {/* ─── 1. HERO ─── one centred promise, one action, then the film. */}
+      {/* ─── HERO ─── the brand line, one action, then the film (hook in the first second). */}
       <section className="khatam-field brand-lights relative overflow-hidden">
-        <div className="public-container pt-10 pb-16 lg:pt-16 lg:pb-24">
+        <div className="public-container pt-10 pb-16 lg:pt-16 lg:pb-20">
           <div className="max-w-3xl mx-auto text-center animate-fade-in-up">
             <h1 className={`font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-7xl text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}>
               {/* MK-04: no kicker above the brand line; the subjects live in <title>, the meta description and the line below. */}
@@ -138,7 +171,11 @@ export function PublicHomepage() {
                 <>زادٌ يبقى،<br /><span className="text-ribbon whitespace-nowrap">لك ولأهل بيتك.</span></>
               )}
             </h1>
-            <p className="mt-6 font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-2xl mx-auto">
+            {/* The thread of the journey starts here and draws itself once. */}
+            <svg aria-hidden="true" viewBox="0 0 300 20" className="mx-auto mt-3 w-48 sm:w-64 h-4 overflow-visible">
+              <motion.path d="M2 12 C 70 2, 120 20, 170 10 S 260 4, 298 12" fill="none" stroke="#E5A93C" strokeWidth="2.5" strokeLinecap="round" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: EXPO, delay: 0.3 }} />
+            </svg>
+            <p className="mt-5 font-editorial text-xl sm:text-2xl leading-snug text-foreground max-w-2xl mx-auto">
               {isEn
                 ? 'Pick your teacher from real profiles. After every class, we tell you how it went, before you have to ask.'
                 : 'اختار معلّمك من ملفات حقيقية. وبعد كل حصة، نبلّغك كيف كانت قبل ما تسأل.'}
@@ -151,16 +188,15 @@ export function PublicHomepage() {
                 size="lg"
                 id="hero-get-started-btn"
                 data-tour="header-get-started-cta"
-                onClick={() => onOpenTrialModal()}
+                onClick={trial}
                 className="liquid-cta w-full sm:w-auto shadow-lg shadow-primary/25"
               >
                 <TrialCtaLabel isEn={isEn} />
               </PublicButton>
-              <a href="#parent-questions" className="btn-glass px-6 py-3 rounded-xl">
-                {isEn ? 'Tell us about your child' : 'احكِ لنا عن طفلك'}
+              <a href="#st-child" className="btn-glass px-6 py-3 rounded-xl">
+                {isEn ? 'Start the journey' : 'ابدأ الرحلة'}
               </a>
             </div>
-
             <ul className="mt-6 flex flex-wrap justify-center items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
               {[
                 { en: '30 minutes, free', ar: '٣٠ دقيقة مجاناً' },
@@ -175,155 +211,197 @@ export function PublicHomepage() {
             </ul>
           </div>
 
-          <div className="mt-12 lg:mt-16">
-            <IntroFilm isEn={isEn} onTrial={() => onOpenTrialModal()} />
-          </div>
+          <Reveal className="mt-12 lg:mt-16" y={60}>
+            <IntroFilm isEn={isEn} onTrial={trial} />
+          </Reveal>
+          <NextDoor to="st-child" label={STATIONS[0].label} isEn={isEn} />
         </div>
       </section>
 
-      {/* ─── 2. YOUR CHILD, IN YOUR WORDS ─── three questions; the parent names the goal (self-persuasion). */}
-      <ParentQuestions isEn={isEn} onTrial={() => onOpenTrialModal()} />
-
-      {/* ─── 3. PROOF, NOT PROMISES ─── the real teachers, what a family really sees, the safety facts. */}
-      <section className="public-container py-16 lg:py-24" aria-labelledby="home-proof">
-        <SectionHead
-          id="home-proof"
-          eyebrow={isEn ? 'See it for yourself' : 'شوف بنفسك'}
-          before={isEn ? 'Not promises. ' : 'مش وعود. '}
-          ribbon={isEn ? 'What you will see.' : 'ده اللي هتشوفه.'}
-          sub={isEn ? 'Who teaches your child, what lands on your phone, and how the room is kept safe.' : 'مين يعلّم طفلك، وإيه اللي يوصل موبايلك، وإزاي الحصة آمنة.'}
+      {/* ─── 01 YOUR CHILD ─── recognition, then the parent names the goal (self-persuasion). */}
+      <section id="st-child" className="public-container pt-20 lg:pt-28" aria-labelledby="st-child-h">
+        <StationHead
+          id="st-child-h" n={1} total={total} label={STATIONS[0].label} isEn={isEn}
+          title={isEn ? 'If this sounds like home, ' : 'لو ده بيتكم، '}
+          ribbon={isEn ? 'you are not alone.' : 'انت مش لوحدك.'}
+          sub={isEn ? 'What parents in the West tell us, in their words.' : 'اللي بيحكيه لنا الأهالي في الغرب، بكلامهم.'}
         />
-        <div className="mt-12 max-w-6xl mx-auto space-y-12">
-          <ul className="grid gap-5 sm:grid-cols-2">
-            {TEACHERS.map((tc) => (
-              <li key={tc.src} className="flex items-center gap-5 rounded-[1.75rem] border border-border bg-card p-4 sm:p-5 shadow-[0_18px_40px_-30px_rgba(28,20,17,0.45)]">
-                <img src={tc.src} alt={t(tc.name)} loading="lazy" decoding="async" className="w-24 h-28 sm:w-28 sm:h-32 shrink-0 rounded-t-full rounded-b-2xl object-cover ring-2 ring-[#E5A93C]/40" />
+        <div className="mt-12"><Struggles isEn={isEn} /></div>
+      </section>
+      <div className="mt-16">
+        <ParentQuestions isEn={isEn} onTrial={trial} />
+      </div>
+      <div className="public-container"><NextDoor to="st-guide" label={STATIONS[1].label} isEn={isEn} /></div>
+
+      {/* ─── 02 WHO WALKS WITH YOU ─── the guide: real teachers, checkable facts, the safety facts. */}
+      <section id="st-guide" className="public-container py-20 lg:py-28" aria-labelledby="st-guide-h">
+        <StationHead
+          id="st-guide-h" n={2} total={total} label={STATIONS[1].label} isEn={isEn}
+          title={isEn ? 'A teacher who ' : 'معلّم '}
+          ribbon={isEn ? 'knows your child by name.' : 'يعرف طفلك باسمه.'}
+          sub={isEn ? 'You pick from real profiles. They stay, lesson after lesson.' : 'بتختار من ملفات حقيقية. ويفضل معاكم، حصة بعد حصة.'}
+        />
+        <div className="mt-12 max-w-5xl mx-auto grid gap-5 sm:grid-cols-2">
+          {TEACHERS.map((tc, k) => (
+            <Reveal key={tc.src} delay={k * 0.08}>
+              <div className="group h-full flex items-center gap-5 rounded-[1.75rem] border border-border bg-card p-4 sm:p-5 shadow-[0_18px_40px_-30px_rgba(28,20,17,0.45)] transition-transform duration-500 hover:-translate-y-1">
+                <span className="relative shrink-0">
+                  <span aria-hidden="true" className="absolute -inset-1.5 rounded-t-full rounded-b-3xl bg-[conic-gradient(from_180deg,#C51F24,#E5A93C,#087D91,#C51F24)] opacity-60 blur-md transition-opacity duration-500 group-hover:opacity-100" />
+                  <img src={tc.src} alt={t(tc.name)} loading="lazy" decoding="async" className="relative w-24 h-28 sm:w-28 sm:h-32 rounded-t-full rounded-b-2xl object-cover" />
+                </span>
                 <div className="min-w-0">
                   <p className="flex items-center gap-1.5 font-editorial font-bold text-xl text-foreground">{t(tc.name)}<BadgeCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" /></p>
                   <p className="mt-1 text-sm text-muted-foreground leading-relaxed">{t(tc.fact)}</p>
                   <Link to="/about" className="mt-2 inline-flex items-center gap-1 min-h-11 text-sm font-semibold text-primary">{isEn ? 'Full profile' : 'الملف كامل'}<Arrow className="w-3.5 h-3.5" aria-hidden="true" /></Link>
                 </div>
-              </li>
-            ))}
-          </ul>
-          <ProgressShowcase isEn={isEn} />
-          <ul className="grid gap-3 sm:grid-cols-3">
-            {[
-              { en: 'The teacher opens the room; no one else can join', ar: 'المعلّم هو اللي يفتح الغرفة، ومحدش غيره يدخل' },
-              { en: 'Nothing is recorded', ar: 'مفيش تسجيل للحصص' },
-              { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' },
-            ].map((f) => (
-              <li key={f.en} className="flex items-start gap-2.5 rounded-2xl border border-border bg-surface-warm/60 p-4 text-sm font-semibold text-foreground">
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <ul className="mt-6 max-w-5xl mx-auto grid gap-3 sm:grid-cols-3">
+          {[
+            { en: 'The teacher opens the room; no one else can join', ar: 'المعلّم هو اللي يفتح الغرفة، ومحدش غيره يدخل' },
+            { en: 'Nothing is recorded', ar: 'مفيش تسجيل للحصص' },
+            { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' },
+          ].map((f, k) => (
+            <Reveal as="li" key={f.en} delay={0.1 + k * 0.07} className="h-full flex items-start gap-2.5 rounded-2xl border border-border bg-surface-warm/60 p-4 text-sm font-semibold text-foreground">
                 <ShieldCheck className="w-5 h-5 shrink-0 text-[#087D91] dark:text-[#12A4BC]" aria-hidden="true" />{t(f)}
-              </li>
-            ))}
-          </ul>
-          <p className="text-center">
-            <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
-              {isEn ? 'How we keep children safe' : 'كيف نحافظ على الأطفال'}
-            </Link>
-          </p>
+              </Reveal>
+          ))}
+        </ul>
+        <p className="mt-4 text-center">
+          <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
+            {isEn ? 'How we keep children safe' : 'كيف نحافظ على الأطفال'}
+          </Link>
+        </p>
+        <NextDoor to="st-lesson" label={STATIONS[2].label} isEn={isEn} />
+      </section>
+
+      {/* ─── 03 THE LESSON, AND AFTER ─── success shown: the pinned phone story. */}
+      <section id="st-lesson" className="relative bg-surface-warm/60 border-y border-border/70" aria-labelledby="st-lesson-h">
+        <div className="public-container pt-20 lg:pt-28">
+          <StationHead
+            id="st-lesson-h" n={3} total={total} label={STATIONS[2].label} isEn={isEn}
+            title={isEn ? 'What lands ' : 'اللي هيوصل '}
+            ribbon={isEn ? 'on your phone.' : 'موبايلك.'}
+            sub={isEn ? 'Scroll: one week with us, screen by screen.' : 'انزل لتحت: أسبوع معانا، شاشة بشاشة.'}
+          />
+        </div>
+        <div className="public-container"><LessonStory isEn={isEn} /></div>
+        <div className="public-container pb-20"><NextDoor to="st-plan" label={STATIONS[3].label} isEn={isEn} /></div>
+      </section>
+
+      {/* ─── 04 THE PLAN ─── everything a family gets, said once, next to three tiny steps. */}
+      <section id="st-plan" className="public-container py-20 lg:py-28" aria-labelledby="st-plan-h">
+        <div className="band-espresso relative overflow-hidden rounded-[2.25rem] px-6 py-14 sm:px-12 lg:px-16 lg:py-20 max-w-6xl mx-auto">
+          <DriftLight />
+          <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
+          <div className="relative">
+            <StationHead
+              id="st-plan-h" n={4} total={total} label={STATIONS[3].label} isEn={isEn} dark
+              title={isEn ? 'Nothing to lose. ' : 'مفيش حاجة تخسرها. '}
+              ribbon={isEn ? 'Start small.' : 'ابدأ صغير.'}
+            />
+            <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+              <ul className="grid gap-3">
+                {OFFER.map((o, k) => (
+                  <Reveal as="li" key={o.en} delay={k * 0.06} y={18} className="flex items-start gap-3 text-[#FAF7F2] text-base sm:text-lg">
+                      <span className="mt-0.5 grid place-items-center w-7 h-7 shrink-0 rounded-full bg-[#087D91] text-[#FAF7F2] shadow-[0_0_0_5px_rgba(8,125,145,0.2)]"><Check className="w-4 h-4" aria-hidden="true" /></span>
+                      {t(o)}
+                    </Reveal>
+                ))}
+              </ul>
+              <Reveal delay={0.15}>
+                <div className="rounded-[1.5rem] border border-[#F6D58E]/20 bg-[#FAF7F2]/[0.05] p-6 sm:p-8 backdrop-blur-sm">
+                  <ol className="relative space-y-7 ps-14">
+                    <span aria-hidden="true" className="absolute top-4 bottom-4 start-[1.2rem] w-px bg-[#E5A93C]/20" />
+                    <motion.span aria-hidden="true" className="absolute top-4 bottom-4 start-[1.2rem] w-px bg-[#E5A93C] origin-top" initial={reduce ? false : { scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true, amount: 0.6 }} transition={{ duration: 1.4, ease: EXPO }} />
+                    {STEPS.map((s, i) => (
+                      <li key={s.title.en} className="relative">
+                        <span aria-hidden="true" className="absolute -start-14 top-0 grid place-items-center w-10 h-10 rounded-full bg-[#E5A93C] text-[#1C1411] font-bold tabular-nums shadow-[0_0_0_6px_rgba(229,169,60,0.18)]">{num(i + 1, isEn).replace(/^[0٠]/, '')}</span>
+                        <h3 className="font-editorial font-bold text-xl sm:text-2xl text-[#FAF7F2]">{t(s.title)}</h3>
+                        <p className="mt-1 text-[#FAF7F2]/70 leading-relaxed">{t(s.body)}</p>
+                      </li>
+                    ))}
+                  </ol>
+                  <PublicButton variant="primary" size="lg" onClick={trial} className="liquid-cta mt-8 w-full">
+                    <TrialCtaLabel isEn={isEn} />
+                  </PublicButton>
+                </div>
+              </Reveal>
+            </div>
+            <NextDoor to="st-provisions" label={STATIONS[4].label} isEn={isEn} dark />
+          </div>
         </div>
       </section>
 
-      {/* ─── 4. THE OFFER ─── everything a family gets, said once, next to a small first step. */}
-      <section className="public-container pb-16 lg:pb-24" aria-labelledby="home-offer">
-        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:px-16 lg:py-16 max-w-6xl mx-auto grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          <div>
-            <p className="inline-flex items-center gap-3 text-xs sm:text-sm font-bold tracking-wide text-[#F6D58E]">
-              <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />{isEn ? 'What you get' : 'اللي هتاخده'}
-            </p>
-            <h2 id="home-offer" className="mt-3 font-editorial font-bold text-[2rem] leading-[1.2] sm:text-5xl text-[#FAF7F2]">
-              {isEn ? <>Nothing to lose. <span className="text-[#F6D58E]">Start small.</span></> : <>مفيش حاجة تخسرها. <span className="text-[#F6D58E]">ابدأ صغير.</span></>}
-            </h2>
-            <ul className="mt-8 grid gap-3">
-              {OFFER.map((o) => (
-                <li key={o.en} className="flex items-start gap-3 text-[#FAF7F2] text-base sm:text-lg">
-                  <span className="mt-0.5 grid place-items-center w-6 h-6 shrink-0 rounded-full bg-[#087D91] text-[#FAF7F2]"><Check className="w-3.5 h-3.5" aria-hidden="true" /></span>
-                  {t(o)}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="rounded-[1.5rem] border border-[#F6D58E]/20 bg-[#FAF7F2]/[0.05] p-6 sm:p-8">
-            <ol className="relative space-y-7 ps-14 before:absolute before:top-4 before:bottom-4 before:start-[1.2rem] before:w-px before:bg-gradient-to-b before:from-[#E5A93C] before:to-[#E5A93C]/20">
-              {STEPS.map((s, i) => (
-                <li key={s.title.en} className="relative">
-                  <span aria-hidden="true" className="absolute -start-14 top-0 grid place-items-center w-10 h-10 rounded-full bg-[#E5A93C] text-[#1C1411] font-bold tabular-nums shadow-[0_0_0_6px_rgba(229,169,60,0.18)]">{i + 1}</span>
-                  <h3 className="font-editorial font-bold text-xl sm:text-2xl text-[#FAF7F2]">{t(s.title)}</h3>
-                  <p className="mt-1 text-[#FAF7F2]/70 leading-relaxed">{t(s.body)}</p>
-                </li>
-              ))}
-            </ol>
-            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta mt-8 w-full">
-              <TrialCtaLabel isEn={isEn} />
-            </PublicButton>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 5. WHAT WE TEACH ─── four tracks, each opening its subject pages. */}
-      <section className="public-container py-16 lg:py-24" aria-labelledby="home-tracks">
-        <SectionHead
-          id="home-tracks"
-          eyebrow={isEn ? 'Our subjects' : 'موادّنا'}
-          before={isEn ? 'What will you ' : 'ماذا '}
-          ribbon={isEn ? 'learn with us?' : 'تتعلّم معنا؟'}
+      {/* ─── 05 THE PROVISIONS ─── four tracks, each opening its subject pages. */}
+      <section id="st-provisions" className="public-container pb-20 lg:pb-28" aria-labelledby="st-provisions-h">
+        <StationHead
+          id="st-provisions-h" n={5} total={total} label={STATIONS[4].label} isEn={isEn}
+          title={isEn ? 'What goes ' : 'إيه اللي '}
+          ribbon={isEn ? 'in the bag.' : 'في الشنطة.'}
           sub={isEn ? '8 subjects, your own teacher.' : '٨ مواد، ومعلم لك أنت.'}
         />
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-4 max-w-6xl mx-auto">
-          {TRACKS.map((tr) => {
+          {TRACKS.map((tr, k) => {
             const rate = Math.min(...tr.links.map((l) => findSubjectPage(l.slug)?.rateUsd ?? 99));
             return (
-              <li key={tr.title.en} className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[0_18px_40px_-28px_rgba(28,20,17,0.45)] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_28px_50px_-28px_rgba(28,20,17,0.55)]">
-                <div className="khatam-window relative grid place-items-center h-40" style={{ background: `radial-gradient(70% 80% at 50% 30%, ${tr.tone[0]}, ${tr.tone[1]})` }}>
-                  <span aria-hidden="true" className="absolute inset-0 m-auto w-28 h-28 rounded-full bg-[#F6D58E]/20 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-70" />
-                  <span className="relative transition-transform duration-300 group-hover:scale-105" aria-hidden="true">{tr.emblem}</span>
-                </div>
-                <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <h3 className="font-editorial font-bold text-2xl text-foreground">{t(tr.title)}</h3>
-                  <p className="mt-2 text-muted-foreground leading-relaxed">{t(tr.body)}</p>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {tr.links.map((l) => (
-                      <li key={l.slug}>
-                        <Link to={`${SUBJECT_PAGES_PATH}/${l.slug}`} className="inline-flex items-center gap-1 min-h-11 rounded-full border border-border px-3.5 text-sm font-semibold text-foreground hover:border-[#087D91]/60 hover:text-[#087D91] transition-colors">
-                          {t(l.label)}<Arrow className="w-3.5 h-3.5" aria-hidden="true" />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-auto pt-5 text-sm text-muted-foreground">
-                    {isEn ? <>From <b className="text-foreground">${rate}</b> an hour</> : <>من <b className="text-foreground">{rate}$</b> للساعة</>}
-                  </p>
-                </div>
-              </li>
+              <Reveal as="li" key={tr.title.en} delay={k * 0.08} className="h-full group h-full flex flex-col overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-[0_18px_40px_-28px_rgba(28,20,17,0.45)] transition-[transform,box-shadow] duration-500 hover:-translate-y-1.5 hover:shadow-[0_28px_50px_-28px_rgba(28,20,17,0.55)]">
+                  <div className="khatam-window relative grid place-items-center h-40 overflow-hidden" style={{ background: `radial-gradient(70% 80% at 50% 30%, ${tr.tone[0]}, ${tr.tone[1]})` }}>
+                    <span aria-hidden="true" className="absolute inset-0 m-auto w-28 h-28 rounded-full bg-[#F6D58E]/20 blur-2xl transition-transform duration-700 group-hover:scale-150" />
+                    <span className="relative transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3" aria-hidden="true">{tr.emblem}</span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-5 sm:p-6">
+                    <h3 className="font-editorial font-bold text-2xl text-foreground">{t(tr.title)}</h3>
+                    <p className="mt-2 text-muted-foreground leading-relaxed">{t(tr.body)}</p>
+                    <ul className="mt-4 flex flex-wrap gap-2">
+                      {tr.links.map((l) => (
+                        <li key={l.slug}>
+                          <Link to={`${SUBJECT_PAGES_PATH}/${l.slug}`} className="inline-flex items-center gap-1 min-h-11 rounded-full border border-border px-3.5 text-sm font-semibold text-foreground hover:border-[#087D91]/60 hover:text-[#087D91] transition-colors">
+                            {t(l.label)}<Arrow className="w-3.5 h-3.5" aria-hidden="true" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-auto pt-5 text-sm text-muted-foreground">
+                      {isEn ? <>From <b className="text-foreground">${rate}</b> an hour</> : <>من <b className="text-foreground">{rate}$</b> للساعة</>}
+                    </p>
+                  </div>
+                </Reveal>
             );
           })}
         </ul>
         <div className="max-w-6xl mx-auto">
           <NewToIslamDoor isEn={isEn} />
         </div>
+        <NextDoor to="st-stay" label={STATIONS[5].label} isEn={isEn} />
       </section>
 
-      {/* ─── 6. THE TEACHER STAYS ─── the flying carpet (owner's idea, 2026-11-05). */}
-      <TeacherStays isEn={isEn} />
+      {/* ─── 06 THE TEACHER STAYS ─── the flying carpet (owner's idea, 2026-11-05). */}
+      <div id="st-stay">
+        <TeacherStays isEn={isEn} />
+      </div>
 
-      {/* ─── 7. WHAT FAMILIES SAY ─── */}
-      <FamilyVoices isEn={isEn} />
+      {/* ─── ARRIVAL ─── families, questions, the verse and the first lesson. */}
+      <div id={ARRIVAL.id}>
+        <FamilyVoices isEn={isEn} />
+      </div>
 
-      {/* ─── 8. THE FIRST QUESTIONS FAMILIES ASK ─── */}
-      <section className="public-container pb-16 lg:pb-20" aria-labelledby="home-faq">
+      <section className="public-container pt-8 pb-16 lg:pb-20" aria-labelledby="home-faq">
         <div className="max-w-3xl mx-auto">
           <SectionHead id="home-faq" eyebrow={isEn ? 'Good to know' : 'قبل أن تبدأ'} before={isEn ? 'Questions families ' : 'أول ما '} ribbon={isEn ? 'ask first' : 'تسأل عنه الأسر'} />
           <div className="mt-10 space-y-3">
-            {FAQS.slice(0, 4).map((f) => (
-              <details key={f.question} className="group rounded-2xl border border-border bg-card px-5 open:shadow-[0_14px_30px_-24px_rgba(28,20,17,0.5)]">
-                <summary className="flex items-center justify-between gap-4 min-h-14 cursor-pointer list-none font-bold text-foreground">
-                  {isEn ? f.question : f.arabicQuestion}
-                  <span aria-hidden="true" className="grid place-items-center w-8 h-8 shrink-0 rounded-full bg-[#E5A93C]/15 text-[#B4552F] text-xl leading-none transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="pb-5 text-muted-foreground leading-relaxed max-w-[70ch]">{isEn ? f.answer : f.arabicAnswer}</p>
-              </details>
+            {FAQS.slice(0, 4).map((f, k) => (
+              <Reveal key={f.question} delay={k * 0.05} y={14}>
+                <details className="group rounded-2xl border border-border bg-card px-5 open:shadow-[0_14px_30px_-24px_rgba(28,20,17,0.5)]">
+                  <summary className="flex items-center justify-between gap-4 min-h-14 cursor-pointer list-none font-bold text-foreground">
+                    {isEn ? f.question : f.arabicQuestion}
+                    <span aria-hidden="true" className="grid place-items-center w-8 h-8 shrink-0 rounded-full bg-[#E5A93C]/15 text-[#B4552F] text-xl leading-none transition-transform group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="pb-5 text-muted-foreground leading-relaxed max-w-[70ch]">{isEn ? f.answer : f.arabicAnswer}</p>
+                </details>
+              </Reveal>
             ))}
           </div>
           <p className="mt-4 text-center">
@@ -334,13 +412,16 @@ export function PublicHomepage() {
         </div>
       </section>
 
-      {/* ─── 9. CLOSING ─── the verse we are named after, then the first lesson. */}
+      {/* ─── CLOSING ─── the verse we are named after, the three reminders, the first lesson. */}
       <section id="contact" className="public-container pb-16 lg:pb-24">
-        <div className="band-espresso relative overflow-hidden rounded-[2rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
+        <div className="band-espresso relative overflow-hidden rounded-[2.25rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
+          <DriftLight />
+          <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay" style={{ backgroundImage: GRAIN }} />
           <svg aria-hidden="true" viewBox="0 0 800 200" className="absolute inset-x-0 bottom-0 w-full h-auto opacity-40" preserveAspectRatio="none">
-            <path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" />
+            <motion.path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" initial={reduce ? false : { pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 2, ease: EXPO }} />
           </svg>
-          <p lang="ar" dir="rtl" className="relative text-[2rem] leading-[1.9] sm:text-5xl sm:leading-[1.7] text-[#F6D58E]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
+          <div className="relative flex justify-center"><ZadRigSvg pose="cheer" size={110} /></div>
+          <p lang="ar" dir="rtl" className="relative mt-2 text-[2rem] leading-[1.9] sm:text-5xl sm:leading-[1.7] text-[#F6D58E]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
             {VERSE}
           </p>
           <p className="relative mt-2 text-sm text-[#FAF7F2]/60">
@@ -357,7 +438,7 @@ export function PublicHomepage() {
             {audio.playing ? (isEn ? 'Stop the recitation' : 'إيقاف التلاوة') : (isEn ? 'Listen to the recitation' : 'استمع للتلاوة')}
           </button>
           <h2 className="relative mt-10 font-editorial text-3xl sm:text-5xl font-bold leading-tight text-[#FAF7F2]">
-            {isEn ? 'Every journey starts with one lesson.' : 'كل رحلة تبدأ بحصة.'}
+            <MaskLine>{isEn ? 'Every journey starts with one lesson.' : 'كل رحلة تبدأ بحصة.'}</MaskLine>
           </h2>
           <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
             {isEn
@@ -373,7 +454,7 @@ export function PublicHomepage() {
             ))}
           </ul>
           <div className="relative mt-8 flex flex-col sm:flex-row justify-center gap-3">
-            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="liquid-cta w-full sm:w-auto">
+            <PublicButton variant="primary" size="lg" onClick={trial} className="liquid-cta w-full sm:w-auto">
               <TrialCtaLabel isEn={isEn} />
             </PublicButton>
             <a

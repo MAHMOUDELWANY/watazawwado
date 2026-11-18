@@ -4,6 +4,18 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage v4: the page is a journey (2026-11-18)
+
+- Owner: no animation, lost, "don't know what's next", weak organisation and visuals. Direction:
+  docs/design/HOMEPAGE-V4-JOURNEY.md (StoryBrand SB7 backbone; motion rules read from the Bang Motion,
+  claude-remotion-skill and video-shotcraft READMEs, nothing installed).
+- Six numbered stations with a "Next: …" door each; wide screens get a side rail (Zad's bag glowing fuller per
+  station, gold thread drawn by scroll), phones a bar under the header ("02 / 06 · label · Next: …" + progress).
+- New: `journey/Journey.tsx` (Reveal, MaskLine, StationHead, NextDoor, JourneyNav), `journey/Struggles.tsx`
+  (four familiar moments, each turned), `journey/LessonStory.tsx` (pinned phone: booked → live → note → path,
+  labelled examples). Drifting light + grain in dark bands, Zad cheering in the closing band.
+- Checks: type check, related tests 28/28, build, station screenshots desktop + phone, AR dark, EN light.
+
 ### Homepage v3 from the 7 teaching videos: one avatar, questions, proof, offer; kinetic intro film (2026-11-18)
 
 - Basis: docs/design/LANDING-LESSONS-2026-11-18.md (reactance and self-persuasion, proof over promise, one avatar,
