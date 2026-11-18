@@ -34,6 +34,31 @@ portals (Quran, Zad Path, Arabic, English) and links to the subject pages, "who 
 in espresso arches, the carpet (shorter scroll), three steps on a gold line in an espresso band, family reviews, FAQ
 cards, and the verse in the closing band. Copy is ours; no Bilqalam or Arabic101 headline was reused.
 
+## Lesson room (2026-11-18)
+
+Research for the classroom (`docs/classroom/DESIGN-BRIEF.md`, which says per surface what we take). **Inspire only,
+never copy**: no product's look or colours, our espresso stage, arch, khatam and palette stay. Links only so far; no
+contact sheets yet (folder `lesson-room/` when the owner sends screen recordings).
+
+| Name we use | Source | What it shows | What we take |
+|---|---|---|---|
+| **Meet join screen** | [Meet M3 Expressive (9to5Google)](https://9to5google.com/2025/06/21/google-meet-material-3-expressive/), [Meet controls update](https://workspaceupdates.googleblog.com/2024/06/updated-design-for-meeting-controls-google-meet.html) | Big self preview, mic and camera toggles on it, shapes and colours that change with state. | Waiting room: arch preview with the toggles on it, one big Join. |
+| **Meet mobile bar** | [9to5Google, 2025-02](https://9to5google.com/2025/02/20/google-meet-controls-redesign) | Reactions one tap from a floating bar; the rest in an overflow on phones. | Phone bar with four items and More; reactions one tap away. |
+| **Zoom 6.7 toolbar** | [Zoom blog](https://www.zoom.com/en/blog/zoom-workplace-simplicity-ui-updates/), [U-M notes](https://its.umich.edu/communication/videoconferencing/zoom/update/changes-zoom-desktop-app-interface-vers-670) | Essentials only in the bar, More for the rest, settings in a side panel instead of a pop-up. | No horizontal scroll in our bar; device settings in a side panel. |
+| **Riverside lobby** | [What changed in the studio](https://support.riverside.com/hc/en-us/articles/36653757939485-What-s-changed-in-the-studio) | Larger lobby preview, devices chosen automatically, manual test on request. | Device pickers behind a disclosure when all checks pass. |
+| **Whereby pre-call test** | [Announcement](https://whereby.launchnotes.io/announcements/ann_Ig1E3Ej4Jpln5) | Device and connection test before entering, with a "help me fix this" link. | Every waiting-room problem comes with its next step. |
+| **Preply classroom** | [Tutor guide](https://help.preply.com/en/articles/4182374-preply-classroom-features-for-tutors-a-complete-guide) | Preview before joining shows whether the other person is in; notes feed the next lesson. | "Your teacher is here" in the waiting room. |
+| **italki classroom** | [italki Classroom](https://www.italki.com/en/italki-classroom) | One setup screen, board and materials in the room, same layout on phone and desktop. | One room for everything; one setup step. |
+| **Cambly Kids** | [Tutoring on Cambly Kids](https://support.cambly.com/hc/en-us/articles/4413976520973-Part-5-Tutoring-on-Cambly-Kids) | One tutor, one child, a shared lesson screen beside the faces; parent nearby; kids may keep the camera off. | Child mode: page and faces together, a calm guardian view. |
+| **FaceTime** | [Apple: FaceTime reactions on Mac](https://support.apple.com/guide/facetime/fctm7d415422/mac) | The other person fills the screen; a small self tile you can move; very few controls. | Draggable self tile that snaps to corners. We skip the effect reactions. |
+| **Liquid Glass (HIG)** | [HIG Materials](https://developer.apple.com/design/human-interface-guidelines/materials) | Glass is for the controls layer only, sparingly; clear glass over media needs a dim layer (~35%). | Glass only on the bar, capsule and notices; espresso scrims on video, no blur over video. |
+| **tldraw presence** | [Collaboration docs](https://tldraw.dev/docs/collaboration), [laser release](https://tldraw.dev/blog/release-notes-20230526) | Named live cursors, a fading laser, follow-my-view. | Teacher pointer keeps a name tag and fades. |
+| **Duolingo warmth** | [Shape language](https://blog.duolingo.com/shape-language-duolingos-art-style/), [illustration guide](https://design.duolingo.com/illustration) | Few colours, big simple shapes, humour that lowers the fear of mistakes. | Child "I need…" grid and Zad on the child's waiting and end screens. Not their green. |
+| **Contact-centre monitoring** | [Zoom Contact Center](https://library.zoom.com/business-services/zoom-contact-center/zoom-customer-experience/supervisor-experience/call-monitoring), [Dialpad](https://help.dialpad.com/docs/call-monitoring-features) | Silent Listen from a live list, one supervisor per call, explicit escalation. | Admin observe = Listen only; a live-lessons list later. No whisper or barge. |
+| **Proctoring review** | [Honorlock review](https://honorlock.com/blog/reviewing-proctored-exams/), [TAO multi-session](https://userguide.taotesting.com/user-documentation/latest/public/monitoring-multiple-sessions) | Timed flags, "needs attention" filter, a visit logged but not a mark against anyone. | Admin notes with "Mark this moment"; late-reasons filter. |
+| **Self-view fatigue** | [Springer 2024](https://link.springer.com/article/10.1007/s12599-024-00874-7), [Stanford via New Atlas](https://newatlas.com/telecommunications/zoom-fatigue-video-exhaustion-tips-help-stanford) | Watching yourself all call adds strain. | Small self tile, "Hide my picture". |
+| **Thumb reach** | [Hoober, UXmatters](https://www.uxmatters.com/mt/archives/2013/02/how-do-users-really-hold-mobile-devices.php), [Smashing](https://smashingmagazine.com/2020/02/design-mobile-apps-one-hand-usage/) | How people hold phones; the bottom-middle is easiest to reach. | Phone bar and Join at the bottom; notices above the bar. |
+
 ## Folders
 
 | Folder | Topic |
@@ -42,6 +67,7 @@ cards, and the verse in the closing band. Copy is ours; no Bilqalam or Arabic101
 | `competitors/` | Other academies' sites, for inspiration only. |
 | `zaadi-mascot/` | Zaadi, our mascot: how a simple mascot is built, poses, moods, motion. |
 | `badges-and-rewards/` | Badge, level-up and reward reveals for homework and progress. |
+| `lesson-room/` | The classroom: pre-join, call rooms, observer views (links only so far, see "Lesson room"). |
 
 ## Zaadi and rewards (owner, 2026-11-09)
 
