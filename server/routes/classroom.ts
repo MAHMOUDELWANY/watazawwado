@@ -6,6 +6,7 @@ import { isUuid } from './progress.js';
 import { ROOM_CLOSE_GRACE_MIN, remainingMs, roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
 import { isRoomEvent, type RoomEvent } from '../../src/lib/roomEvents.js';
 import { recordTeacherLateness } from '../classroom/lateness.js';
+import { alertTeacherIfNeeded, lessonFailedForSide } from '../classroom/qualityAlerts.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 
 /**
@@ -27,6 +28,8 @@ const attendanceRole = (r: RoomRole) => (r === 'teacher' ? 'teacher' : 'student'
 const MAX_EVENTS = 50;
 const MAX_EVENTS_BODY = 256 * 1024;
 const EVENT_SKEW_MS = 10 * 60_000;
+/** Quality totals above this (6 h) are cut: no lesson is longer. */
+const MAX_QUALITY_SECONDS = 6 * 3600;
 
 // Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
 export const CLASSROOM_FILES_BUCKET = 'classroom-files';
@@ -443,6 +446,86 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ ok: true });
     } catch (err) {
       return fail(res, err, 'precheck');
+    }
+  });
+
+  // Task 11: running totals for the caller's side, every 60 s and on leave. A total never goes down (max merge), and
+  // min_height keeps the lowest seen. Observers send nothing worth keeping.
+  app.post('/api/classroom/:id/quality', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      const b = req.body || {};
+      const count = (v: unknown, cap: number) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.min(Math.round(v), cap) : null);
+      const degraded = count(b.degradedSeconds, MAX_QUALITY_SECONDS);
+      const audioOnly = count(b.audioOnlySeconds, MAX_QUALITY_SECONDS);
+      const reconnects = count(b.reconnects, 1000);
+      const focusAway = b.focusAwaySeconds == null ? 0 : count(b.focusAwaySeconds, MAX_QUALITY_SECONDS);
+      const minHeight = b.minHeight == null ? null : count(b.minHeight, 4320);
+      if (degraded == null || audioOnly == null || reconnects == null || focusAway == null || (b.minHeight != null && minHeight == null)) {
+        return res.status(400).json({ error: 'degradedSeconds, audioOnlySeconds and reconnects must be numbers of 0 or more.' });
+      }
+      if (isObserver(t.role)) return res.status(204).end();
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const side = attendanceRole(t.role);
+      const { data: was, error: readErr } = await client.from('lesson_quality')
+        .select('min_height, degraded_seconds, audio_only_seconds, reconnects, focus_away_seconds').eq('booking_id', t.bookingId).eq('side', side).maybeSingle();
+      if (readErr) throw new Error(`lesson_quality: ${readErr.message}`);
+      const lowest = [was?.min_height, minHeight].filter((h): h is number => typeof h === 'number');
+      const { error } = await client.from('lesson_quality').upsert({
+        booking_id: t.bookingId,
+        side,
+        min_height: lowest.length ? Math.min(...lowest) : null,
+        degraded_seconds: Math.max(was?.degraded_seconds ?? 0, degraded),
+        audio_only_seconds: Math.max(was?.audio_only_seconds ?? 0, audioOnly),
+        reconnects: Math.max(was?.reconnects ?? 0, reconnects),
+        focus_away_seconds: Math.max(was?.focus_away_seconds ?? 0, focusAway),
+        updated_at: new Date(now()).toISOString(),
+      }, { onConflict: 'booking_id,side' });
+      if (error) throw new Error(`lesson_quality: ${error.message}`);
+      // The teacher's user id is the booking's teacher_id (enter checked it). The alert never fails the write.
+      if (side === 'teacher') await alertTeacherIfNeeded(client, t.userId, now()).catch((err) => console.error('[classroom quality] alert', err));
+      return res.json({ ok: true });
+    } catch (err) {
+      return fail(res, err, 'quality');
+    }
+  });
+
+  // Task 11: the super admin's monthly connection view for one teacher: every room lesson that month with both sides.
+  app.get('/api/admin/teachers/:teacherId/connection', deps.rateLimit, deps.verifyTeacherAuth, async (req: any, res: any) => {
+    try {
+      if ((req.teacherUser?.appRole || req.teacherUser?.role) !== 'super_admin') return res.status(403).json({ error: 'Super admins only.' });
+      const teacherId = String(req.params.teacherId || '');
+      const month = String(req.query.month || '');
+      if (!isUuid(teacherId)) return res.status(404).json({ error: 'Teacher not found.' });
+      const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(month);
+      if (!m) return res.status(400).json({ error: 'month must look like 2026-11.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'Database integration is not configured.' });
+      const from = new Date(Date.UTC(+m[1], +m[2] - 1, 1)).toISOString();
+      const to = new Date(Date.UTC(+m[1], +m[2], 1)).toISOString();
+      const { data: lessons, error } = await client.from('bookings').select('id, scheduled_start, contact_name, status')
+        .eq('teacher_id', teacherId).gte('scheduled_start', from).lt('scheduled_start', to);
+      if (error) throw new Error(`bookings: ${error.message}`);
+      const ids = (lessons || []).map((l: any) => l.id);
+      const { data: rows, error: qErr } = ids.length
+        ? await client.from('lesson_quality').select('booking_id, side, precheck_720, start_height, min_height, degraded_seconds, audio_only_seconds, reconnects, focus_away_seconds').in('booking_id', ids)
+        : { data: [], error: null };
+      if (qErr) throw new Error(`lesson_quality: ${qErr.message}`);
+      const pick = (id: string, side: string) => {
+        const r = (rows || []).find((x: any) => x.booking_id === id && x.side === side);
+        if (!r) return null;
+        const { booking_id: _b, side: _s, ...numbers } = r;
+        return numbers;
+      };
+      const out = (lessons || [])
+        .map((l: any) => ({ bookingId: l.id, scheduledStart: l.scheduled_start, learner: l.contact_name || null, status: l.status, teacher: pick(l.id, 'teacher'), student: pick(l.id, 'student') }))
+        .filter((l: any) => l.teacher || l.student)
+        .map((l: any) => ({ ...l, teacherFailed: l.teacher ? lessonFailedForSide(l.teacher) : false }))
+        .sort((a: any, b: any) => String(a.scheduledStart).localeCompare(String(b.scheduledStart)));
+      return res.json({ month, lessons: out });
+    } catch (err) {
+      return fail(res, err, 'admin/connection');
     }
   });
 

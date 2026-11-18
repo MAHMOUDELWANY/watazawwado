@@ -12,7 +12,8 @@ import {
   Power,
   PowerOff,
   Search,
-  Trash2
+  Trash2,
+  Wifi
 } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import { Button } from '../../components/ui/Button';
@@ -21,6 +22,7 @@ import { TeacherAccountItem } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { confirmAction, notify } from '../../components/ui/Feedback';
+import { TeacherConnection } from '../components/TeacherConnection';
 
 export default function TeachersPage() {
   const { t } = useT();
@@ -40,6 +42,8 @@ export default function TeachersPage() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  // Classroom Task 11: the connection numbers; the quality alert links here with ?connection=<teacher id>.
+  const [connectionOf, setConnectionOf] = useState<{ id: string; display_name: string } | null>(null);
 
   const fetchTeachers = useCallback(async (isManual = false) => {
     if (isManual) setRefreshing(true);
@@ -60,6 +64,12 @@ export default function TeachersPage() {
   useEffect(() => {
     fetchTeachers();
   }, [fetchTeachers]);
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('connection');
+    const tc = id ? teachers.find((x) => x.id === id) : null;
+    if (tc?.id) setConnectionOf({ id: tc.id, display_name: tc.display_name });
+  }, [teachers]);
 
   const handleToggleActive = async (email: string, currentStatus: boolean) => {
     const confirmMsg = currentStatus
@@ -306,7 +316,7 @@ export default function TeachersPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-between gap-2 pt-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
               <Link
                 to={`/dashboard/students?teacher=${encodeURIComponent(tc.email)}`}
                 className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold glass-surface glass-hover hover:bg-surface border-none text-foreground transition-colors"
@@ -314,6 +324,16 @@ export default function TeachersPage() {
                 <Users className="w-3.5 h-3.5 text-accent" />
                 <span>{t('Their students', 'طلابه')}</span>
               </Link>
+
+              {tc.id && (
+                <button
+                  onClick={() => setConnectionOf({ id: tc.id!, display_name: tc.display_name })}
+                  className="tap-44 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold glass-surface glass-hover border-none text-foreground cursor-pointer"
+                >
+                  <Wifi className="w-3.5 h-3.5 text-accent" />
+                  <span>{t('Connection', 'الاتصال')}</span>
+                </button>
+              )}
 
               {tc.id_card_uploaded_at && (
                 <button
@@ -363,6 +383,8 @@ export default function TeachersPage() {
           </div>
         ))}
       </div>
+
+      <TeacherConnection teacher={connectionOf} onClose={() => setConnectionOf(null)} />
 
       <Modal
         isOpen={Boolean(deleting)}

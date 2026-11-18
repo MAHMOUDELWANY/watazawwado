@@ -32,6 +32,9 @@ type Over = 'ended' | 'closed' | 'superseded' | 'failed';
 type BoardScene = NonNullable<RoomSnapshot['board']>;
 
 const STATS_EVERY_MS = 3000;
+const QUALITY_EVERY_MS = 60_000;
+const LAYER_HEIGHT: Record<Layer, number | null> = { f: 1080, h: 720, q: 360, l: 180, audio_only: null };
+type QualityTotals = { degradedSeconds: number; audioOnlySeconds: number; reconnects: number; minHeight: number | null };
 const ANNOUNCE_EVERY_MS = 15_000;
 /** The guardian's tab says "still here" with each announce; a closed tab drops the chip after this. */
 const GUARDIAN_STALE_MS = 40_000;
@@ -103,6 +106,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const recitationRef = useRef(false);
   const layoutBeforeShare = useRef<LayoutMode>('content');
   const reactionId = useRef(0);
+  // Task 11: this side's running totals, sent every 60 s and on leave.
+  const totals = useRef<QualityTotals>({ degradedSeconds: 0, audioOnlySeconds: 0, reconnects: 0, minHeight: null });
 
   const startMs = Date.parse(entry.startsAt);
   const endMs = lessonEndMs(entry.startsAt, null, entry.durationMinutes);
@@ -152,6 +157,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     const offState = engine.on('state', (s) => {
       if (!live) return;
       setReconnecting(s === 'reconnecting');
+      if (s === 'reconnecting') totals.current.reconnects += 1;
       if (s === 'superseded') setOver('superseded');
       else if (s === 'ended') setOver('closed');
       else if (s === 'failed') setOver('failed');
@@ -317,6 +323,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       void engine.setPreferredLayer(layer).catch(() => {});
       setMyLayer(layer);
       setBlame(blameSide(s, remoteStats.current));
+      const q = totals.current;
+      const step = STATS_EVERY_MS / 1000;
+      if (layer === 'audio_only') q.audioOnlySeconds += step;
+      if (layer === 'audio_only' || layer === 'q' || layer === 'l') q.degradedSeconds += step;
+      const h = LAYER_HEIGHT[layer];
+      if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
       if (!mySide) return;
       setLinks((l) => (l[mySide] === link ? l : { ...l, [mySide]: link }));
       const e: RoomEvent = { t: 'quality', side: mySide, layer, link, stats: s };
@@ -326,6 +338,20 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     }, STATS_EVERY_MS);
     return () => window.clearInterval(id);
   }, [joined, mySide, publishEvent, save]);
+
+  useEffect(() => {
+    if (!joined || observer) return;
+    const send = () => {
+      void fetch(`/api/classroom/${encodeURIComponent(bookingId)}/quality`, {
+        method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
+        body: JSON.stringify(totals.current),
+      }).catch(() => { /* the next send carries the same totals */ });
+    };
+    const id = window.setInterval(send, QUALITY_EVERY_MS);
+    window.addEventListener('pagehide', send);
+    return () => { window.clearInterval(id); window.removeEventListener('pagehide', send); send(); };
+  }, [joined, observer, bookingId, ticket]);
 
   // ---- controls ---------------------------------------------------------------------------------------------
   const toggleMute = useCallback(() => {
