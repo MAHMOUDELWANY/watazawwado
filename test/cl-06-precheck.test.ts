@@ -37,7 +37,7 @@ describe('CL-06 precheck route', () => {
     const app = express();
     app.use(express.json());
     registerClassroomRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       cloudflare: () => null,
       verifyTeacherAuth: (_q: any, _s: any, next: any) => next(),
       verifyStudentAuth: (_q: any, _s: any, next: any) => next(),

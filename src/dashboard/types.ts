@@ -22,6 +22,8 @@ export interface DashboardLesson {
   zoom_meeting_link?: string | null;
   zoom_host_url?: string | null;
   zoom_join_url?: string | null;
+  /** Classroom Task 13: our own room is the lesson link for this teacher (rollout switch, from the server). */
+  classroom?: boolean;
   zoom_meeting_id?: string | null;
   google_calendar_event_id?: string | null;
   integration_status: 'synced' | 'pending' | 'failed' | 'manual_action_required' | 'active';
@@ -101,6 +103,8 @@ export interface DashboardTrial {
   zoom_meeting_link?: string | null;
   zoom_host_url?: string | null;
   zoom_join_url?: string | null;
+  /** Classroom Task 13: our own room is the lesson link for this teacher (rollout switch, from the server). */
+  classroom?: boolean;
   zoom_meeting_id?: string | null;
   google_calendar_event_id?: string | null;
   integration_status: 'synced' | 'pending' | 'failed' | 'manual_action_required' | 'active';
@@ -440,6 +444,8 @@ export interface DashboardBookingListItem {
   zoom_meeting_link: string | null;
   zoom_host_url?: string | null;
   zoom_join_url?: string | null;
+  /** Classroom Task 13: our own room is the lesson link for this teacher (rollout switch, from the server). */
+  classroom?: boolean;
   google_calendar_event_id?: string | null;
   integration_status: 'synced' | 'pending' | 'failed' | 'manual_action_required' | 'active';
   created_at: string;

@@ -130,7 +130,7 @@ describe('CL-12 incident routes and lateness', () => {
     app.use(express.json());
     const pass = (_q: any, _s: any, next: any) => next();
     registerClassroomRoutes(app, {
-      getClient: () => db, cloudflare: () => cf as any, verifyTeacherAuth: teacherAuth, verifyStudentAuth: studentAuth,
+      getClient: () => db, classroomEnabled: () => true, cloudflare: () => cf as any, verifyTeacherAuth: teacherAuth, verifyStudentAuth: studentAuth,
       getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }], rateLimit: pass, roomRateLimit: pass,
       secret: () => SECRET, now: () => clock,
     });

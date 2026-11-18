@@ -75,7 +75,7 @@ describe('CL-08 files routes', () => {
     const app = express();
     app.use(express.json({ limit: '1mb' }));
     registerClassroomRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       cloudflare: () => null,
       verifyTeacherAuth: (_q: any, _s: any, next: any) => next(),
       verifyStudentAuth: (_q: any, _s: any, next: any) => next(),

@@ -4,6 +4,7 @@ import { Clock, ExternalLink, MessageCircle, NotebookPen, Video } from 'lucide-r
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { authedJson } from '../../lib/authedJson';
 import { TeacherFace } from '../../components/TeacherFace';
+import { WatchLessonButton } from './WatchLessonButton';
 
 /** Join opens 10 minutes before the start (ST-01). */
 // The Zoom link is shown only from 5 minutes before the start, on every page (owner, 2026-11-06).
@@ -167,6 +168,7 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
             {isAr ? 'شرائح الدرس' : 'Lesson slides'}
           </a>
         )}
+        <WatchLessonButton booking={booking} isAr={isAr} now={now.getTime()} />
         <a
           href={buildWhatsAppUrl(runningLateMessage(booking.referenceCode, booking.learnerName, isAr))}
           target="_blank"

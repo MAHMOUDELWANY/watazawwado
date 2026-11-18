@@ -163,7 +163,7 @@ describe('CL-04 classroom routes', () => {
     const app = express();
     app.use(express.json());
     registerClassroomRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       cloudflare: () => cf as any,
       verifyTeacherAuth: teacherAuth,
       verifyStudentAuth: studentAuth,
@@ -292,7 +292,7 @@ describe('CL-04 rejoin after leaving', () => {
     const app = express();
     app.use(express.json());
     registerClassroomRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       cloudflare: () => fakeCloudflare() as any,
       verifyTeacherAuth: (req: any, _res: any, next: any) => { req.teacherUser = { id: 'teacher-1', role: 'teacher' }; next(); },
       verifyStudentAuth: (req: any, _res: any, next: any) => { req.studentUser = { auth_id: 'parent-1' }; next(); },
@@ -338,7 +338,7 @@ describe('CL-04 review fixes', () => {
     const app = express();
     app.use(express.json());
     registerClassroomRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       cloudflare: () => fakeCloudflare() as any,
       verifyTeacherAuth: (req: any, _res: any, next: any) => { req.teacherUser = { id: 'teacher-1', role: 'teacher' }; next(); },
       verifyStudentAuth: (req: any, _res: any, next: any) => { req.studentUser = { auth_id: 'parent-1' }; next(); },

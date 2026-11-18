@@ -157,7 +157,7 @@ describe('CL-10 late reason routes', () => {
     const app = express();
     app.use(express.json());
     registerLateReasonRoutes(app, {
-      getClient: () => db,
+      getClient: () => db, classroomEnabled: () => true,
       verifyTeacherAuth: auth,
       requireSuperAdmin: superOnly,
       rateLimit: (_q: any, _s: any, n: any) => n(),

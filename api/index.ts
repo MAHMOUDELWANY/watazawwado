@@ -69,6 +69,7 @@ import { registerPushRoutes } from '../server/routes/push.js';
 import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
@@ -2284,6 +2285,7 @@ function transformBookingToDashboardLesson(b: any) {
     zoom_host_url: null,
     zoom_join_url: lessonJoinUrl(b),
     zoom_meeting_id: b.zoom_meeting_id || null,
+    classroom: classroomEnabledFor(b.teacher_id),
     google_calendar_event_id: b.google_calendar_event_id || null,
     integration_status: integrationStatus,
     student_timezone: studentTimezone,
@@ -4512,6 +4514,7 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
           zoom_meeting_link: lessonJoinUrl(b),
           zoom_host_url: null,
           zoom_join_url: lessonJoinUrl(b),
+          classroom: classroomEnabledFor(b.teacher_id),
           google_calendar_event_id: b.google_calendar_event_id || null,
           integration_status: b.integration_status || 'pending',
           created_at: b.created_at,
@@ -4575,6 +4578,7 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
           zoom_meeting_link: lessonJoinUrl(b),
           zoom_host_url: null,
           zoom_join_url: lessonJoinUrl(b),
+          classroom: classroomEnabledFor(b.teacher_id),
           google_calendar_event_id: b.google_calendar_event_id || null,
           integration_status: b.integration_status || 'pending',
           created_at: b.created_at,
@@ -4664,6 +4668,7 @@ app.get('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
       booking: {
         ...booking,
         ...contactFields,
+        classroom: classroomEnabledFor(booking.teacher_id),
         service_name: service?.title || (booking.service_id ? booking.service_id.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Teaching Session'),
         service_arabic_title: service?.arabic_title || null,
         payment_status: reconciliation.payment_status,
@@ -6735,6 +6740,7 @@ function transformBookingToDashboardTrial(b: any, leadMap?: Map<string, any>, se
     zoom_host_url: zoomHostUrl,
     zoom_join_url: zoomJoinUrl,
     zoom_meeting_id: b.zoom_meeting_id || null,
+    classroom: classroomEnabledFor(b.teacher_id),
     google_calendar_event_id: b.google_calendar_event_id || null,
     integration_status: integrationStatus,
     assessment: assessment,
@@ -9435,6 +9441,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     const learners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
     const learnerIds = learners.length ? learners.map(l => l.id) : [studentId];
     const learnerNameById = new Map(learners.map(l => [l.id, l.name]));
+    const learnerTypeById = new Map(learners.map(l => [l.id, l.learnerType]));
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
       .select('id, student_id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, hold_expires_at, reschedule_requested_at, reschedule_request_note')
@@ -9540,6 +9547,9 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         notes: b.notes || null,
         feeAmountUsd: b.fee_amount_usd,
         zoomMeetingLink: studentJoinPath(b.id, zoomUrl),
+        // Classroom Task 13/14: our own room for this lesson (rollout switch, computed here, never by the client).
+        classroom: classroomEnabledFor(b.teacher_id),
+        learnerType: learnerTypeById.get(b.student_id) || null,
         packageEntitlementId: b.package_entitlement_id || null,
         teacherId: b.teacher_id || null,
         teacherName: isUpcoming && b.teacher_id ? teacherNameById.get(b.teacher_id) || null : null,

@@ -26,16 +26,15 @@ export type RoomEntry = {
 const HOME: Record<Portal, string> = { teacher: '/dashboard', student: '/student/lessons', kid: '/kid/lessons' };
 
 /**
- * `/room/:id` in the three apps. Asks the server for a room pass; with one, the classroom opens. When the classroom is
- * not set up on this server (503), the NX-12 slides page shows instead. Task 13 replaces the 503 check with the
- * rollout flag.
+ * `/room/:id` in the three apps. Asks the server for a room pass; with one, the classroom opens. When the rollout
+ * switch is off for this lesson's teacher (409 classroom:false), the NX-12 slides page and Zoom show as before.
  */
 export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: React.ReactNode }) {
   const { t } = useT();
   const { id = '' } = useParams();
   const [search] = useSearchParams();
-  // Only parent mode may watch: a child's own app never asks to observe.
-  const observe = portal === 'student' && search.get('observe') === '1';
+  // Parent mode (guardian) and the dashboard (super admin) may watch; a child's own app never asks to observe.
+  const observe = portal !== 'kid' && search.get('observe') === '1';
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { error: string; zoomUrl?: string } | null>(null);
 
@@ -47,7 +46,7 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
       .then((entry) => live && setResult({ entry }))
       .catch((e: any) => {
         if (!live) return;
-        if (e?.status === 503) setResult({ fallback: true });
+        if (e?.status === 409 && (e?.data ?? e)?.classroom === false) setResult({ fallback: true });
         else {
           // Task 12: the media service failed on our side; the server sent this side's Zoom link when it is open.
           const zoomUrl = (e?.data?.fallback ?? e?.fallback)?.url;

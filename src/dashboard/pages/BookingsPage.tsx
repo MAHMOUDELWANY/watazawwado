@@ -11,8 +11,11 @@ import {
   Plus,
   Globe,
   ChevronRight,
-  RefreshCw
+  RefreshCw,
+  Eye
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { roomJoinState } from '../../lib/roomWindow';
 import { useTeacherAuth } from '../../lib/auth';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { DashboardBookingListItem, BookingsOperationalSummary, BookingPaymentStatus } from '../types';
@@ -411,6 +414,16 @@ export default function BookingsPage() {
                       )}
 
                       <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                        {/* Classroom Task 13: the super admin watches a live room lesson silently; the visit is logged. */}
+                        {isSuperAdmin && b.classroom && roomJoinState(b) === 'open' && (
+                          <Link
+                            to={`/dashboard/room/${encodeURIComponent(b.id)}?observe=1`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-foreground glass-card hover:bg-surface-subtle border border-border rounded-xl transition-colors min-h-[36px]"
+                          >
+                            <Eye className="w-4 h-4" aria-hidden="true" />
+                            {t('Watch', 'تابع')}
+                          </Link>
+                        )}
                         {isSuperAdmin && b.payment_status === 'pending_review' && (
                           <button
                             onClick={() => setSelectedBookingId(b.id)}

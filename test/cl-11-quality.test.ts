@@ -151,7 +151,7 @@ describe('CL-11 quality routes', () => {
     app.use(express.json());
     const pass = (_q: any, _s: any, next: any) => next();
     registerClassroomRoutes(app, {
-      getClient: () => db, cloudflare: () => null, verifyTeacherAuth: teacherAuth, verifyStudentAuth: pass,
+      getClient: () => db, classroomEnabled: () => true, cloudflare: () => null, verifyTeacherAuth: teacherAuth, verifyStudentAuth: pass,
       getLearners: async () => [], rateLimit: pass, roomRateLimit: pass, secret: () => SECRET, now: () => NOW,
     });
     await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });

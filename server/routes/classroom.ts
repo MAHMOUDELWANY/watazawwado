@@ -9,6 +9,7 @@ import { recordTeacherLateness } from '../classroom/lateness.js';
 import { alertTeacherIfNeeded, lessonFailedForSide } from '../classroom/qualityAlerts.js';
 import { CLIENT_INCIDENT_KINDS, recordIncident, type IncidentKind } from '../classroom/incidents.js';
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
+import { classroomEnabledFor } from '../classroom/mode.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -32,6 +33,7 @@ const EVENT_SKEW_MS = 10 * 60_000;
 /** Quality totals above this (6 h) are cut: no lesson is longer. */
 const MAX_QUALITY_SECONDS = 6 * 3600;
 const MAX_INCIDENT_DETAIL = 2000;
+const MAX_OBSERVER_NOTES = 4000;
 
 // Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
 export const CLASSROOM_FILES_BUCKET = 'classroom-files';
@@ -93,8 +95,11 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   roomRateLimit: Middleware;
   secret?: () => string;
   now?: () => number;
+  /** Task 13: the rollout switch for this lesson's teacher (CLASSROOM_MODE by default). */
+  classroomEnabled?: (teacherId: string) => boolean;
 }) {
   const now = deps.now ?? Date.now;
+  const classroomEnabled = deps.classroomEnabled ?? ((teacherId: string) => classroomEnabledFor(teacherId));
   const secret = deps.secret ?? roomSecret;
 
   const loadBooking = async (client: any, id: string): Promise<(RoomBooking & { contact_name?: string | null }) | null> => {
@@ -138,13 +143,16 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     let client: any = null;
     try {
       client = deps.getClient();
-      const cf = deps.cloudflare();
-      const key = secret();
-      if (!client || !cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const id = String(req.params.id || '');
       if (!isUuid(id)) return res.status(404).json({ error: 'Lesson not found.' });
       const booking = await loadBooking(client, id);
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      // Task 13: switched off for this teacher, every role stays on the NX-12 page and Zoom, as before.
+      if (!classroomEnabled(booking.teacher_id)) return res.status(409).json({ classroom: false });
+      const cf = deps.cloudflare();
+      const key = secret();
+      if (!cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
 
       let requester: Requester;
       let family: Array<{ id: string; name: string; learnerType?: string }> = [];
@@ -198,6 +206,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
       const start = new Date(booking.scheduled_start).getTime();
       return res.json({
+        classroom: true,
         role,
         ticket: signTicket(ticketPayload, key),
         roomKey: roomKey(id, key),
@@ -567,6 +576,24 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ month, lessons: out });
     } catch (err) {
       return fail(res, err, 'admin/connection');
+    }
+  });
+
+  // Task 13: the super admin's private notes on the visit open now. Never shown to the teacher or the family.
+  app.patch('/api/classroom/:id/observation', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      if (t.role !== 'admin_observer') return res.status(403).json({ error: 'Only the admin observer keeps notes.' });
+      const notes = req.body?.notes;
+      if (typeof notes !== 'string' || notes.length > MAX_OBSERVER_NOTES) return res.status(400).json({ error: `notes must be text of up to ${MAX_OBSERVER_NOTES} characters.` });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const { error } = await client.from('admin_observations').update({ notes })
+        .eq('booking_id', t.bookingId).eq('admin_user_id', t.userId).is('ended_at', null);
+      if (error) throw new Error(`admin_observations: ${error.message}`);
+      return res.json({ ok: true });
+    } catch (err) {
+      return fail(res, err, 'observation');
     }
   });
 

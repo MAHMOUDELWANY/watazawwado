@@ -32,8 +32,8 @@ describe('CL-09 room screen', () => {
     const kid = read('src/kid/KidApp.tsx');
     assert.match(kid, /<ClassroomGate portal="kid"/);
     assert.doesNotMatch(kid, /observe|GuardianChip/i);
-    // Only the parent portal passes ?observe=1 on to the server.
-    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal === 'student' && search\.get\('observe'\) === '1'/);
+    // The kid app never passes ?observe=1 on to the server (parent mode and the admin dashboard may).
+    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal !== 'kid' && search\.get\('observe'\) === '1'/);
     // The chip is drawn for the teacher only.
     assert.match(read('src/classroom/ClassroomPage.tsx'), /isTeacher && guardianHere && <GuardianChip/);
   });

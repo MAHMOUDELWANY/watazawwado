@@ -27,6 +27,7 @@ import { NetworkBadge, WeakLinkNotice } from './parts/NetworkBadge';
 import { ScreenShareButton, canShareScreen } from './parts/ScreenShare';
 import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
 import { FallbackNotice } from './parts/FallbackNotice';
+import { ObserverNotes } from './parts/ObserverNotes';
 import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
 
 type Pane = 'lesson' | 'board' | 'pdf';
@@ -651,6 +652,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             </div>
           )}
           {isTeacher && <div className="absolute bottom-4 start-4 z-20"><ReactionStream items={reactions} name={learnerName} /></div>}
+          {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} />}
         </main>
 
         <footer className="shrink-0 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1 sm:px-5">
