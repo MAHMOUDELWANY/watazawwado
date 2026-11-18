@@ -398,10 +398,13 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
   }, [state, isEn]);
 
   // The ad export: larger pictures on a full screen (the scenes are drawn for a ~1024 px stage).
-  const [zoom, setZoom] = React.useState(1);
+  const [zoom, setZoom] = React.useState({ pic: 1, text: 1 });
   React.useEffect(() => {
     if (!record) return;
-    const on = () => setZoom(Math.max(1, Math.min(window.innerWidth, window.innerHeight) / 700));
+    const on = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      setZoom(h > w ? { pic: w / 560, text: 1.25 } : { pic: h / 600, text: 1.5 });
+    };
     on();
     window.addEventListener('resize', on);
     return () => window.removeEventListener('resize', on);
@@ -443,7 +446,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
               animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
               transition={{ duration: 0.28, ease: EASE }}
             >
-              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom > 1 ? { transform: `scale(${zoom})`, marginBottom: `${(zoom - 1) * 2.5}rem` } : undefined}>
+              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom.text > 1 ? { transform: `scale(${zoom.text})`, marginBottom: `${(zoom.text - 1) * 2.5}rem` } : undefined}>
                 {beatIdx >= 0 && (
                   textOnly && beat.hl ? (
                     // The name in gold foil, with a light sweep.
@@ -455,7 +458,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                   )
                 )}
               </div>
-              <div className="relative w-full flex justify-center" style={zoom > 1 ? { transform: `scale(${zoom})`, marginTop: `${(zoom - 1) * 4}rem` } : undefined}><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
+              <div className="relative w-full flex justify-center" style={zoom.pic > 1 ? { transform: `scale(${zoom.pic})`, marginTop: `${(zoom.pic - 1) * 4}rem` } : undefined}><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
             </motion.div>
             {!reduce && <motion.div key={`flash-${scene}`} aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(closest-side,rgba(255,241,201,0.55),transparent)]" initial={{ opacity: scene === 0 ? 0 : 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.35 }} />}
           </>
@@ -493,14 +496,14 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         {/* Zad rides along in a corner of every scene where he is not the picture. */}
         {running && ![1, 7].includes(scene) && (
           <motion.div key={`zad-${scene}`} className="absolute top-3 start-3 sm:top-5 sm:start-5 pointer-events-none" aria-hidden="true" initial={reduce ? false : { scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 18 }}>
-            <ZadRigSvg pose={ZAD[scene]} size={record ? 110 : 64} glow={false} />
+            <ZadRigSvg pose={ZAD[scene]} size={record ? 170 : 64} glow={false} />
           </motion.div>
         )}
 
         {/* Caption line: the whole sentence, for watching muted. */}
         {running && (
           <figcaption className="absolute inset-x-0 bottom-0 px-5 pb-5 pt-10 sm:px-10 sm:pb-7 bg-gradient-to-t from-[#0E0907]/95 to-transparent pointer-events-none">
-            <p className="mx-auto max-w-3xl text-center text-sm sm:text-lg leading-snug text-[#FAF7F2]/85">{isEn ? LINES[scene].en : LINES[scene].ar}</p>
+            <p className={`mx-auto max-w-3xl text-center leading-snug text-[#FAF7F2]/85 ${record ? 'text-3xl px-6 pb-10' : 'text-sm sm:text-lg'}`}>{isEn ? LINES[scene].en : LINES[scene].ar}</p>
           </figcaption>
         )}
 
