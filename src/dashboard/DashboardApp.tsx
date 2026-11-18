@@ -69,6 +69,8 @@ import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications, useUnreadDashboardChats } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
+import LateReasonGate from './components/LateReasonGate';
+import LateReasonsPage from './pages/LateReasonsPage';
 import HonorPage from './pages/HonorPage';
 import ProgramsPage from './pages/ProgramsPage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -277,6 +279,7 @@ export function DashboardApp() {
     { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet, group: G.money },
     { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag, group: G.money },
     { name: L('Teacher pay', 'مرتبات المعلمين'), path: '/dashboard/payroll', icon: Banknote, group: G.money },
+    { name: L('Late reasons', 'أسباب التأخير'), path: '/dashboard/late-reasons', icon: Banknote, group: G.money },
     { name: L('Sponsorship', 'صندوق الكفالة'), path: '/dashboard/sponsorship', icon: HeartHandshake, group: G.money },
     { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield, group: G.academy },
     { name: L('University', 'جامعة وتزودوا'), path: '/dashboard/university', icon: School, group: G.academy },
@@ -624,6 +627,7 @@ export function DashboardApp() {
           <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
             <FeedbackHost />
+            {!isSuperAdmin && <LateReasonGate />}
             <TimezoneCheck isAr={ar} />
             <PushPrompt isAr={ar} role="teacher" hold={showGlobalTour} />
             {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
@@ -650,6 +654,7 @@ export function DashboardApp() {
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/month" replace />} />
+                <Route path="/late-reasons" element={isSuperAdmin ? <LateReasonsPage /> : <Navigate to="/dashboard/month" replace />} />
                 <Route path="/month" element={<MyMonthPage />} />
                 <Route path="/honor" element={isSuperAdmin ? <HonorPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/programs" element={isSuperAdmin ? <ProgramsPage /> : <Navigate to="/dashboard" replace />} />
