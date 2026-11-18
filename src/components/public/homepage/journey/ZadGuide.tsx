@@ -41,13 +41,13 @@ export function ZadGuide({ stations, stops, isEn }: { stations: Station[]; stops
   const shown = index >= 0;
   const stop = stops[Math.max(0, Math.min(index, stops.length - 1))];
   // Wide screens: the side gutters at the station's height; the journey rail's side only where its gutter is wide
-  // enough. Smaller screens: the bottom right corner (back-to-top sits bottom left), small.
+  // enough. Smaller screens: the bottom corner on the end side, small.
   const wide = vp.w >= 1280;
   const roomy = vp.w >= 1500;
   const railLeft = isEn; // the rail sits on the start side
   let left = (stop.side === 'start') === isEn;
   if (wide && !roomy && left === railLeft) left = !left;
-  if (!wide) left = false;
+  if (!wide) left = !isEn; // the end side: back-to-top sits on the start side
   const size = wide ? 104 : 64;
   const gap = wide ? (left === railLeft ? 170 : Math.max(24, vp.w * 0.025)) : 10;
   const x = left ? gap : vp.w - gap - size;
