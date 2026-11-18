@@ -96,7 +96,7 @@ export function NextDoor({ to, label, isEn, dark }: { to: string; label: L; isEn
 }
 
 /** Which station is on screen, from the stations' positions (no observers to leak). */
-function useCurrentStation(ids: string[]) {
+export function useCurrentStation(ids: string[]) {
   const [state, setState] = React.useState<{ index: number; inside: boolean }>({ index: -1, inside: false });
   React.useEffect(() => {
     let raf = 0;

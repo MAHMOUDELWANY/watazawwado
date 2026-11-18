@@ -3,6 +3,7 @@ import { RichText } from './ui/RichText';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send, Sparkles, User, Bot } from 'lucide-react';
 import { Language } from '../booking/types';
+import { ZadRigSvg } from './zad/ZadRig';
 
 interface Message {
   role: 'user' | 'model';
@@ -11,11 +12,18 @@ interface Message {
 
 interface LearningGuideProps {
   lang: Language;
+  /** The homepage hides the floating button: Zad walks the page and opens the guide (event `zad:open-guide`). */
+  hideLauncher?: boolean;
 }
 
-export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
+export const LearningGuide: React.FC<LearningGuideProps> = ({ lang, hideLauncher = false }) => {
   const isEn = lang === 'en';
   const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    const open = () => setIsOpen(true);
+    window.addEventListener('zad:open-guide', open);
+    return () => window.removeEventListener('zad:open-guide', open);
+  }, []);
   // QA-04: on a phone the floating button sat on top of the hero's trial button; it appears once the visitor scrolls.
   // Starts shown like the prerendered page, then hides before the first paint on a phone (keeps hydration matching).
   const [revealed, setRevealed] = useState(true);
@@ -32,8 +40,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
     {
       role: 'model',
       content: isEn
-        ? "Assalamu alaikum! I am the Watazawwado guide. Tell me what you would like to learn, and I will help you find the right path."
-        : "السلام عليكم! أنا مرشد وتزودوا. قولّي عايز تتعلم إيه، وأساعدك تلاقي الطريق المناسب ليك."
+        ? "Assalamu alaikum! I am Zad, the Watazawwado guide. Tell me what you would like to learn, and I will help you find the right path."
+        : "السلام عليكم! أنا زاد، مرشد وتزودوا. قولّي عايز تتعلم إيه، وأساعدك تلاقي الطريق المناسب ليك."
     }
   ]);
   const [input, setInput] = useState('');
@@ -93,7 +101,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
     <>
       {/* Floating Button */}
       <AnimatePresence>
-        {!isOpen && revealed && (
+        {!isOpen && revealed && !hideLauncher && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -124,9 +132,9 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             {/* Header */}
             <div className="flex items-center justify-between p-4 glass-surface border-b border-border">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-accent" />
+                <ZadRigSvg pose="wave" size={34} glow={false} />
                 <h3 className="font-display font-medium text-foreground">
-                  {isEn ? 'Learning guide' : 'مرشد التعلم'}
+                  {isEn ? 'Zad, your learning guide' : 'زاد، مرشد التعلم'}
                 </h3>
               </div>
               <button

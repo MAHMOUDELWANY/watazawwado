@@ -1,20 +1,25 @@
 import React from 'react';
 import { motion, useMotionValue, useReducedMotion, useSpring, useTime, useTransform, type MotionValue } from 'motion/react';
-import { MushafEmblem, PathEmblem } from '../../emblems/DoorEmblems';
 import { ZadRig } from '../../../zad/ZadRig';
 
 /**
  * The hero's right side: Zad (3D where WebGL is there, SVG otherwise) standing on a gold khatam medallion, the four
- * kinds of provision orbiting him on a tilted ring, and the whole stage leaning toward the mouse in layers (parallax
+ * kinds of provision (the academy's 3D medals) orbiting him on a tilted ring, and the whole stage leaning toward the mouse in layers (parallax
  * depth: back glow, medallion, orbit, Zad). Decorative; the heading says the same in words.
  */
 
-const ORBIT = [
-  { l: { en: 'Quran', ar: 'القرآن' }, g: <MushafEmblem className="w-9 h-9 sm:w-11 sm:h-11" /> },
-  { l: { en: 'Zad Path', ar: 'منهج زاد' }, g: <PathEmblem className="w-9 h-9 sm:w-11 sm:h-11" /> },
-  { l: { en: 'Arabic', ar: 'العربية' }, g: <span lang="ar" className="font-editorial font-bold text-3xl text-[#F6D58E] leading-none">ض</span> },
-  { l: { en: 'English', ar: 'الإنجليزية' }, g: <span lang="en" className="font-editorial font-bold text-2xl text-[#F6D58E] leading-none">Aa</span> },
-];
+// The four kinds of provision as the academy's own 3D medals (public/badges/shelf, the student portal's badge renders).
+export const SUBJECT_MEDALS = [
+  { id: 'surah', l: { en: 'Quran', ar: 'القرآن' } },
+  { id: 'tajweed', l: { en: 'Tajweed', ar: 'التجويد' } },
+  { id: 'zad-level', l: { en: 'Zad Path', ar: 'منهج زاد' } },
+  { id: 'language-level', l: { en: 'Arabic · English', ar: 'العربية · الإنجليزية' } },
+] as const;
+const ORBIT = SUBJECT_MEDALS;
+
+export function Medal({ id, className, eager }: { id: string; className?: string; eager?: boolean }) {
+  return <img src={`/badges/shelf/${id}.webp`} alt="" aria-hidden="true" width={180} height={180} loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} className={`select-none object-contain drop-shadow-[0_18px_22px_rgba(28,20,17,0.45)] ${className ?? ''}`} />;
+}
 
 function Khatam({ className }: { className?: string }) {
   // Eight-point khatam: two squares turned 45° to each other, gold foil gradient, fine inner line.
@@ -90,12 +95,14 @@ function OrbitToken({ k, o, isEn, reduce, style }: { k: number; o: (typeof ORBIT
   const top = useTransform(angle, (a) => `${50 + Math.sin(a) * 11}%`);
   const scale = useTransform(angle, (a) => 0.78 + 0.3 * ((Math.sin(a) + 1) / 2));
   const zIndex = useTransform(angle, (a) => (Math.sin(a) > 0 ? 20 : 5));
-  const opacity = useTransform(angle, (a) => 0.65 + 0.35 * ((Math.sin(a) + 1) / 2));
+  const opacity = useTransform(angle, (a) => 0.55 + 0.45 * ((Math.sin(a) + 1) / 2));
+  // The medal turns a little as it travels, so the gold catches the light.
+  const spin = useTransform(angle, (a) => Math.cos(a) * 28);
   return (
     <motion.div className="absolute" style={{ left, top, zIndex, x: style.x, y: style.y }}>
       <motion.div className="-translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1" style={{ scale, opacity }}>
-        <span className="grid place-items-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[linear-gradient(160deg,#3B2219,#1C1411)] ring-1 ring-[#F6D58E]/30 shadow-[inset_0_1px_1px_rgba(246,213,142,0.25),0_18px_30px_-12px_rgba(28,20,17,0.6)]">{o.g}</span>
-        <span className="rounded-full bg-background/90 px-2 py-0.5 text-[10px] sm:text-xs font-bold text-foreground ring-1 ring-border whitespace-nowrap">{isEn ? o.l.en : o.l.ar}</span>
+        <motion.span className="block" style={{ rotateY: spin }}><Medal id={o.id} eager className="w-[70px] h-[70px] sm:w-[92px] sm:h-[92px]" /></motion.span>
+        <span className="-mt-1 rounded-full bg-background/90 px-2 py-0.5 text-[10px] sm:text-xs font-bold text-foreground ring-1 ring-border whitespace-nowrap backdrop-blur">{isEn ? o.l.en : o.l.ar}</span>
       </motion.div>
     </motion.div>
   );

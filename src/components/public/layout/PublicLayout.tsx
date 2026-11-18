@@ -222,7 +222,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         </Suspense>
 
         {/* AI Learning Guide (end corner) and back to top (the opposite corner) */}
-        <LearningGuide lang={lang} />
+        <LearningGuide lang={lang} hideLauncher={stripLangPrefix(location.pathname) === '/'} />
         <BackToTop isAr={lang === 'ar'} />
         <InstallAppNudge isAr={lang === 'ar'} />
         <WelcomeMuteButton isAr={lang === 'ar'} />
