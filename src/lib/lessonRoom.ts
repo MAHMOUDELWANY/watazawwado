@@ -29,6 +29,7 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
   const lastInk = useRef<RoomInk | null>(null);
   const inkTimer = useRef<number | null>(null);
   const listeners = useRef(new Set<(e: RoomEvent) => void>());
+  const helloListeners = useRef(new Set<() => void>());
 
   useEffect(() => {
     if (!roomKey) return;
@@ -42,6 +43,7 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
       if (role !== 'teacher') return;
       if (last.current) ch.send({ type: 'broadcast', event: 'state', payload: last.current });
       if (lastInk.current) ch.send({ type: 'broadcast', event: 'ink', payload: lastInk.current });
+      helloListeners.current.forEach((fn) => fn());
     });
     ch.subscribe((status) => {
       setConnected(status === 'SUBSCRIBED');
@@ -80,5 +82,11 @@ export function useLessonRoom(roomKey: string | null, role: 'teacher' | 'learner
     return () => { listeners.current.delete(fn); };
   }, []);
 
-  return { connected, state, ink, publish, publishInk, publishEvent, onEvent };
+  /** Teacher: someone joined the channel and asked for the current state (M7: the page answers with layout and file). */
+  const onHello = useCallback((fn: () => void) => {
+    helloListeners.current.add(fn);
+    return () => { helloListeners.current.delete(fn); };
+  }, []);
+
+  return { connected, state, ink, publish, publishInk, publishEvent, onEvent, onHello };
 }

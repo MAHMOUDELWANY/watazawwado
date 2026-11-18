@@ -24,7 +24,7 @@ export function lessonClock(ms: number): string {
  * the lesson clock at the cursor, and the panel is opaque (it holds text being typed) and small enough to leave the
  * lesson in view. `startMs` is the scheduled lesson start; without it the clock counts from when the panel opened.
  */
-export function ObserverNotes({ bookingId, ticket, startMs }: { bookingId: string; ticket: string; startMs?: number }) {
+export function ObserverNotes({ bookingId, ticket, startMs, onOpenChange }: { bookingId: string; ticket: string; startMs?: number; onOpenChange?: (open: boolean) => void }) {
   const { t, isAr } = useT();
   // Open from the start on laptops (the notes are the admin's work); a capsule on phones, so the lesson stays in view.
   const [open, setOpen] = useState(() => typeof window === 'undefined' || window.matchMedia('(min-width: 640px)').matches);
@@ -38,6 +38,8 @@ export function ObserverNotes({ bookingId, ticket, startMs }: { bookingId: strin
   const seq = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   latest.current = notes;
+  // The room docks the open panel beside the content on desktop instead of under it.
+  useEffect(() => { onOpenChange?.(open); }, [open, onOpenChange]);
 
   const url = `/api/classroom/${encodeURIComponent(bookingId)}/observation`;
   const request = useCallback((text: string, keepalive = false) => fetch(url, {

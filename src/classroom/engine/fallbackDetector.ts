@@ -4,6 +4,8 @@ import type { EngineError, EngineState, Side } from './types';
  * Classroom Task 12: decides when the room has failed on our side, so the server is told and the Zoom button shows.
  * No 'connected' within CONNECT_TIMEOUT_MS of join, the connection failing twice within ICE_WINDOW_MS (counted
  * across rejoins of the same lesson), or an engine error. Reports at most once per join. Framework-free.
+ * M3: the room page arms the connect clock (arm) when it first publishes or subscribes, so a learner without a camera
+ * who waits for the teacher is not reported.
  */
 export const CONNECT_TIMEOUT_MS = 20_000;
 export const ICE_WINDOW_MS = 2 * 60_000;
@@ -31,6 +33,7 @@ export function createFallbackDetector(o: {
   const clearTimer = o.clearTimer ?? ((id: any) => clearTimeout(id));
   let timer: unknown = null;
   let done = false;
+  let connected = false;
   const stop = () => { if (timer != null) clearTimer(timer); timer = null; };
   const fire = (kind: IncidentKind, detail: Record<string, unknown>) => {
     // Observers watch only: their network is not the lesson's.
@@ -40,12 +43,17 @@ export function createFallbackDetector(o: {
     o.report(kind, detail);
   };
   return {
-    /** Call right before engine.join(). */
+    /** Starts the connect clock now. */
     start() {
       stop();
       timer = setTimer(() => { timer = null; fire('connect_timeout', { ms: CONNECT_TIMEOUT_MS }); }, CONNECT_TIMEOUT_MS);
     },
+    /** Starts the connect clock unless it runs already or the media connected: call before the first publish or subscribe. */
+    arm() {
+      if (timer == null && !done && !connected) this.start();
+    },
     onState(s: EngineState) {
+      if (s === 'connected') connected = true;
       if (s === 'connected' || s === 'superseded' || s === 'ended' || s === 'left') stop();
       if (s !== 'failed') return;
       const t = now();

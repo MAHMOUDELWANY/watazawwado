@@ -23,8 +23,8 @@ export type RoomEntry = {
   learnerName: string | null;
   /** Coming from the enter endpoints (optional until the server sends them): the learner sees who teaches. */
   teacherName?: string | null;
-  /** e.g. "Quran" / "القرآن", already in the viewer's language. */
-  subjectLabel?: string | null;
+  /** The lesson's subject in both languages, e.g. { en: 'Quran', ar: 'القرآن' }. */
+  subjectLabel?: { en: string; ar: string } | null;
   /** students.learner_type: 'child' turns on child mode in the room. */
   learnerType?: 'child' | 'adult' | null;
 };

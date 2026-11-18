@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, EyeOff, FileUp, Hourglass, MicOff, MonitorX, PenLine, RefreshCw, ShieldCheck, WifiOff } from 'lucide-react';
+import { BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
@@ -11,7 +11,7 @@ import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
 import { ZadRigSvg } from '../components/zad/ZadRig';
 import { createEngine } from './engine/cloudflareEngine';
-import { blameSide, classifyLink, createLayerPicker, layerHeight } from './engine/quality';
+import { blameSide, classifyLink, createLayerPicker } from './engine/quality';
 import { sideOf, type Layer, type LinkClass, type LinkStats, type MediaEngine, type Side } from './engine/types';
 import { createTimelineBatcher, restoreState, type RoomSnapshot } from './timeline';
 import { Board, type BoardSync } from './board/Board';
@@ -33,14 +33,16 @@ import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
 import { FallbackNotice } from './parts/FallbackNotice';
 import { ObserverNotes } from './parts/ObserverNotes';
 import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
+import { addQualityStep, clockOffsetMs, readRoomAnswer, subscribeRetryMs, type EndReason, type QualityTotals } from './roomWiring';
 
 type Pane = 'lesson' | 'board' | 'pdf';
-type Over = 'ended' | 'closed' | 'superseded' | 'failed';
+type Over = EndReason | 'superseded' | 'failed';
 type BoardScene = NonNullable<RoomSnapshot['board']>;
 
 const STATS_EVERY_MS = 3000;
 const QUALITY_EVERY_MS = 60_000;
-type QualityTotals = { degradedSeconds: number; audioOnlySeconds: number; reconnects: number; minHeight: number | null };
+/** M6: how often the page asks the server whether the room is still open (and for its clock). */
+const STATE_EVERY_MS = 30_000;
 const ANNOUNCE_EVERY_MS = 15_000;
 /** The guardian's tab says "still here" with each announce; a closed tab drops the chip after this. */
 const GUARDIAN_STALE_MS = 40_000;
@@ -68,7 +70,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const watchSides: Side[] = mySide ? [other(mySide)] : ['teacher', 'student'];
   const teacherName = entry.teacherName || t('Your teacher', 'معلمك');
   const learnerName = entry.learnerName || t('Learner', 'الطالب');
-  const subject = entry.subjectLabel || null;
+  const subject = entry.subjectLabel ? t(entry.subjectLabel.en, entry.subjectLabel.ar) : null;
   // Child mode (DESIGN-BRIEF 3.3): the kid app, or a child learner on the family's device.
   const kid = role === 'learner' && (portal === 'kid' || entry.learnerType === 'child');
   const nameOf = (s: Side) => (s === 'teacher' ? teacherName : learnerName);
@@ -112,6 +114,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [otherSeen, setOtherSeen] = useState(0);
   const [reconnectedAt, setReconnectedAt] = useState(0);
   const [reconnectingSince, setReconnectingSince] = useState(0);
+  // M5: server clock minus this device's clock, from /state.
+  const [skew, setSkew] = useState(0);
+  // H4/L3: a lost or recovered camera or mic, and which remote videos wait for media.
+  const [device, setDevice] = useState<{ kind: 'audio' | 'video'; ok: boolean; at: number } | null>(null);
+  const [remoteWaiting, setRemoteWaiting] = useState<Record<Side, boolean>>({ teacher: false, student: false });
+  const [notesOpen, setNotesOpen] = useState(false);
+  const [ending, setEnding] = useState(false);
+  const [endError, setEndError] = useState('');
 
   const engineRef = useRef<MediaEngine | null>(null);
   const batcher = useRef<ReturnType<typeof createTimelineBatcher> | null>(null);
@@ -119,16 +129,28 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const wanted = useRef<Record<Side, string>>({ teacher: '', student: '' });
   const inFlight = useRef<Record<Side, boolean>>({ teacher: false, student: false });
   const remoteStats = useRef<LinkStats | null>(null);
+  // M4: the layer the other side last said it receives of me.
+  const remoteLayer = useRef<Layer | null>(null);
+  const retries = useRef<Record<Side, { n: number; timer: number | null }>>({ teacher: { n: 0, timer: null }, student: { n: 0, timer: null } });
+  const detectorRef = useRef<ReturnType<typeof createFallbackDetector> | null>(null);
+  const overRef = useRef<Over | null>(null);
+  overRef.current = over;
+  // What the teacher shows now, read by the answers to hello and new sessions (M7).
+  const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null }>({ layout: 'conversation', pane: 'lesson', pdf: null });
+  shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null };
+  const heardLayout = useRef(false);
   const latestBoard = useRef<BoardScene | undefined>(undefined);
   const recitationRef = useRef(false);
   const layoutBeforeShare = useRef<LayoutMode>('content');
   const reactionId = useRef(0);
   // Task 11: this side's running totals, sent every 60 s and on leave.
   const totals = useRef<QualityTotals>({ degradedSeconds: 0, audioOnlySeconds: 0, reconnects: 0, minHeight: null });
+  const flushQuality = useRef<() => Promise<unknown>>(async () => {});
 
   const startMs = Date.parse(entry.startsAt);
   const endMs = lessonEndMs(entry.startsAt, null, entry.durationMinutes);
   const hardCloseMs = Date.parse(entry.hardCloseAt);
+  const serverNow = now + skew;
 
   /** Live on the channel, and saved when the server keeps that type. */
   const save = useCallback((e: RoomEvent) => batcher.current?.push(e), []);
@@ -139,7 +161,35 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     const id = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(id);
   }, []);
-  useEffect(() => { if (now >= hardCloseMs && !over) setOver('closed'); }, [now, hardCloseMs, over]);
+  useEffect(() => { if (serverNow >= hardCloseMs && !over) setOver('closed'); }, [serverNow, hardCloseMs, over]);
+
+  // L1: a page restored from the back/forward cache holds a dead room; load it fresh.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => { if (e.persisted) window.location.reload(); };
+    window.addEventListener('pageshow', onShow);
+    return () => window.removeEventListener('pageshow', onShow);
+  }, []);
+
+  /** Any classroom answer can say the room is over (M6) or that a newer device took the seat (B1). */
+  const roomCall = useCallback(async (path: string, init: RequestInit = {}) => {
+    const res = await fetch(`/api/classroom/${encodeURIComponent(bookingId)}/${path}`, {
+      ...init, headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
+    });
+    const r = readRoomAnswer(res.status, await res.json().catch(() => ({})));
+    if (r.kind === 'superseded') setOver((o) => o ?? 'superseded');
+    else if (r.kind === 'over') setOver((o) => o ?? r.reason);
+    return r;
+  }, [bookingId, ticket]);
+
+  /** M5/M6: is the room still open, and the server's clock. */
+  const checkState = useCallback(async () => {
+    if (overRef.current) return;
+    const sentAt = Date.now();
+    try {
+      const r = await roomCall('state');
+      if (r.kind === 'open' && r.serverNow != null) setSkew(clockOffsetMs(r.serverNow, sentAt, Date.now()));
+    } catch { /* offline: the next check asks again */ }
+  }, [roomCall]);
 
   // ---- joining ----------------------------------------------------------------------------------------------
   const onReady = useCallback((stream: MediaStream, opts: WaitingRoomReady) => {
@@ -152,20 +202,30 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     setPhase('room');
   }, [isTeacher]);
 
-  const subscribeSide = useCallback(async (side: Side) => {
+  // H2: retried with backoff until the wanted session is pulled; an id that arrives mid-subscribe is pulled after it.
+  const subscribeSide = useCallback(async function pull(side: Side) {
     const engine = engineRef.current;
     const sessionId = wanted.current[side];
-    if (!engine || !sessionId || inFlight.current[side] || subscribed.current[side] === sessionId) return;
+    const retry = retries.current[side];
+    if (!engine || !sessionId || overRef.current || inFlight.current[side] || subscribed.current[side] === sessionId) return;
+    if (retry.timer != null) { window.clearTimeout(retry.timer); retry.timer = null; }
     inFlight.current[side] = true;
+    detectorRef.current?.arm();
+    let ok = false;
     try {
       const stream = await engine.subscribe({ sessionId, trackNames: [`${side}-audio`, `${side}-video`] });
+      if (engineRef.current !== engine) return;
       subscribed.current[side] = sessionId;
       setRemotes((r) => ({ ...r, [side]: stream }));
+      retry.n = 0;
+      ok = true;
     } catch {
-      // Usually "not sending yet": their next announce tries again.
+      // Usually "not sending yet": tried again below.
     } finally {
       inFlight.current[side] = false;
     }
+    if (engineRef.current !== engine || overRef.current || wanted.current[side] === subscribed.current[side]) return;
+    retry.timer = window.setTimeout(() => { retry.timer = null; void pull(side); }, ok ? 0 : subscribeRetryMs(retry.n++));
   }, []);
 
   useEffect(() => {
@@ -184,10 +244,26 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         }).then((r) => r.json()).then((b) => { if (live && typeof b?.fallback?.url === 'string') setFallbackUrl(b.fallback.url); }, () => {});
       },
     });
+    detectorRef.current = detector;
+    let told = false;
     const offError = engine.on('error', (e) => { if (live) detector.onError(e); });
+    const offDevice = engine.on('device', (d) => {
+      if (!live) return;
+      // The engine already sends the new track; swap it into the self-view's stream, keeping mute and camera-off.
+      if (d.ok && d.track) {
+        const old = d.kind === 'audio' ? local.getAudioTracks() : local.getVideoTracks();
+        d.track.enabled = old[0]?.enabled ?? true;
+        old.forEach((tr) => local.removeTrack(tr));
+        local.addTrack(d.track);
+      }
+      setDevice({ kind: d.kind, ok: d.ok, at: Date.now() });
+    });
+    const offMute = engine.on('remote-mute', (m) => { if (live && m.kind === 'video') setRemoteWaiting((w) => ({ ...w, [m.side]: m.muted })); });
     const offState = engine.on('state', (s) => {
       if (!live) return;
       detector.onState(s);
+      // M2: this side joined when its media first connects, once per join.
+      if (s === 'connected' && !told && !observer) { told = true; void roomCall('connected', { method: 'POST' }).catch(() => {}); }
       setReconnecting(s === 'reconnecting');
       if (s === 'reconnecting') totals.current.reconnects += 1;
       if (s === 'superseded') setOver('superseded');
@@ -200,16 +276,20 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       if (!live) return;
       if (snap) {
         const s = snap.snapshot;
-        if (s.layout) setLayout(s.layout === 'screen' ? 'content' : s.layout);
-        setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
+        // The teacher's answer to hello may have come first and is newer (M7). The teacher's own share ended with the
+        // old tab; a learner keeps 'screen' while the teacher still shares.
+        if (!heardLayout.current) {
+          if (s.layout) setLayout(s.layout === 'screen' && isTeacher ? 'content' : s.layout);
+          setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
+        }
         if (s.board) latestBoard.current = s.board;
         if (s.pdf) setPdf({ ...s.pdf, url: null });
       }
       setRestored(snap?.snapshot ?? {});
       try {
-        detector.start();
         await engine.join({ bookingId, ticket, iceServers: entry.iceServers, role });
-        if (!observer && local.getTracks().length) await engine.publishCamera(local);
+        // M3: the connect clock starts with the first publish or subscribe, not with the join.
+        if (!observer && local.getTracks().length) { detector.arm(); await engine.publishCamera(local); }
         if (recitationRef.current) await engine.setRecitationMode(true);
         if (!live) return;
         setJoined(true);
@@ -223,8 +303,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     return () => {
       live = false;
       detector.stop();
+      detectorRef.current = null;
       offError();
       offState();
+      offDevice();
+      offMute();
+      for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; r.n = 0; }
       window.removeEventListener('pagehide', onHide);
       if (role === 'guardian_observer') publishEvent({ t: 'observer', kind: 'guardian', present: false });
       void batcher.current?.stop(); // flushes what is left
@@ -239,6 +323,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   useEffect(() => () => { local?.getTracks().forEach((tr) => tr.stop()); }, [local]);
   useEffect(() => {
     if (!over) return;
+    for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; }
     void batcher.current?.stop();
     batcher.current = null;
     void engineRef.current?.leave();
@@ -247,7 +332,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
 
   // Tell the other side (and observers) which session to pull; repeat so late joiners find us.
   useEffect(() => {
-    if (!joined || !room.connected) return;
+    if (!joined || !room.connected || over) return;
     const announce = () => {
       const id = engineRef.current?.sessionId;
       if (mySide && id) publishEvent({ t: 'session', side: mySide, sessionId: id });
@@ -257,7 +342,27 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     announce();
     const id = window.setInterval(announce, ANNOUNCE_EVERY_MS);
     return () => window.clearInterval(id);
-  }, [joined, room.connected, mySide, role, isTeacher, publishEvent]);
+  }, [joined, room.connected, over, mySide, role, isTeacher, publishEvent]);
+
+  // M5/M6: ask the server every 30 s, when the tab comes back and after a reconnect.
+  useEffect(() => {
+    if (phase !== 'room' || over) return;
+    void checkState();
+    const id = window.setInterval(() => void checkState(), STATE_EVERY_MS);
+    const onVisible = () => { if (document.visibilityState === 'visible') void checkState(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { window.clearInterval(id); document.removeEventListener('visibilitychange', onVisible); };
+  }, [phase, over, checkState]);
+
+  // M7: the teacher tells a late joiner or a rejoiner what is on screen now. The board comes from the saved snapshot.
+  const shareShown = useCallback(() => {
+    if (!isTeacher || overRef.current) return;
+    const s = shown.current;
+    publishEvent({ t: 'layout', mode: s.layout, ...(s.layout === 'content' ? { pane: s.pane } : {}) });
+    if (s.pdf) publishEvent({ t: 'pdf', fileId: s.pdf.fileId, page: s.pdf.page });
+  }, [isTeacher, publishEvent]);
+  const { onHello } = room;
+  useEffect(() => onHello(shareShown), [onHello, shareShown]);
 
   // ---- events from the room ----------------------------------------------------------------------------------
   const loadPdfUrl = useCallback(async (fileId: string) => {
@@ -273,18 +378,27 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   useEffect(() => onEvent((e) => {
     switch (e.t) {
       case 'session': {
+        if (overRef.current) return;
+        // B1: another device of my side. The server knows which join holds the seat; the older one ends on its answer.
+        if (mySide && e.side === mySide) {
+          if (e.sessionId !== engineRef.current?.sessionId) void checkState();
+          return;
+        }
         if (!watchSides.includes(e.side) || wanted.current[e.side] === e.sessionId) return;
         wanted.current[e.side] = e.sessionId;
+        retries.current[e.side].n = 0;
         void subscribeSide(e.side);
-        // Answer a new session at once, so a rejoin does not wait for our next announce.
+        // Answer a new session at once, so a rejoin does not wait for our next announce, and show it the screen.
         const id = engineRef.current?.sessionId;
         if (mySide && id) publishEvent({ t: 'session', side: mySide, sessionId: id });
+        shareShown();
         return;
       }
       case 'quality':
         if (e.side === mySide) return;
         setLinks((l) => ({ ...l, [e.side]: e.link }));
         if (e.stats) remoteStats.current = e.stats;
+        remoteLayer.current = e.layer;
         return;
       case 'board':
         latestBoard.current = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: e.learnerDraw ?? latestBoard.current?.learnerDraw ?? false };
@@ -308,6 +422,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         return;
       case 'layout':
         if (isTeacher) return;
+        heardLayout.current = true;
         setLayout(e.mode);
         if (e.pane) setPane(e.pane);
         return;
@@ -322,12 +437,13 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         if (!isTeacher) void engineRef.current?.setRecitationMode(e.on).catch(() => {});
         return;
       case 'end':
-        if (!isTeacher) setOver('ended');
+        // H3/L4: anyone with the room key can send this; the server says whether the lesson really ended.
+        if (!isTeacher) void checkState();
         return;
       default:
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [onEvent, subscribeSide, publishEvent, isTeacher, mySide]);
+  }), [onEvent, subscribeSide, publishEvent, isTeacher, mySide, checkState, shareShown]);
 
   // The teacher's shared screen: pulled while the layout is "screen".
   useEffect(() => {
@@ -344,7 +460,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
 
   // ---- link quality ------------------------------------------------------------------------------------------
   useEffect(() => {
-    if (!joined) return;
+    if (!joined || over) return;
     const picker = createLayerPicker();
     let tick = 0;
     let lastSaved = '';
@@ -359,15 +475,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       setMyLayer(layer);
       const blame = blameSide(s, remoteStats.current);
       setBlame(blame);
-      // The layer is what this side receives, so it lands on this side's record only when this side's uplink is the cause.
-      if (blame === 'me') {
-        const q = totals.current;
-        const step = STATS_EVERY_MS / 1000;
-        if (layer === 'audio_only') q.audioOnlySeconds += step;
-        if (layer === 'audio_only' || layer === 'b' || layer === 'c') q.degradedSeconds += step;
-        const h = layerHeight(layer);
-        if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
-      }
+      // M4: my weak uplink shows in what the other side receives of me, so their reported layer lands on my record.
+      if (blame === 'me') addQualityStep(totals.current, remoteLayer.current, STATS_EVERY_MS / 1000);
       if (!mySide) return;
       setLinks((l) => (l[mySide] === link ? l : { ...l, [mySide]: link }));
       const e: RoomEvent = { t: 'quality', side: mySide, layer, link, stats: s };
@@ -376,21 +485,21 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       if (`${link}:${layer}` !== lastSaved) { lastSaved = `${link}:${layer}`; save(e); }
     }, STATS_EVERY_MS);
     return () => window.clearInterval(id);
-  }, [joined, mySide, publishEvent, save]);
+  }, [joined, over, mySide, publishEvent, save]);
 
   useEffect(() => {
-    if (!joined || observer) return;
+    if (!joined || observer || over) return;
     const send = () => {
-      void fetch(`/api/classroom/${encodeURIComponent(bookingId)}/quality`, {
-        method: 'POST', keepalive: true,
-        headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
-        body: JSON.stringify(totals.current),
-      }).catch(() => { /* the next send carries the same totals */ });
+      // M1: a room that is over sends nothing more (the server refuses it anyway).
+      if (overRef.current) return Promise.resolve();
+      return roomCall('quality', { method: 'POST', keepalive: true, body: JSON.stringify(totals.current) })
+        .catch(() => { /* the next send carries the same totals */ });
     };
+    flushQuality.current = send;
     const id = window.setInterval(send, QUALITY_EVERY_MS);
     window.addEventListener('pagehide', send);
     return () => { window.clearInterval(id); window.removeEventListener('pagehide', send); send(); };
-  }, [joined, observer, bookingId, ticket]);
+  }, [joined, observer, over, roomCall]);
 
   // ---- controls ---------------------------------------------------------------------------------------------
   const toggleMute = useCallback(() => {
@@ -420,6 +529,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
 
   const startShare = async (stream: MediaStream) => {
     if (!engineRef.current) throw new Error('not joined');
+    detectorRef.current?.arm();
     await engineRef.current.publishScreen(stream);
     setSharing(true);
     layoutBeforeShare.current = layout === 'screen' ? 'content' : layout;
@@ -445,7 +555,19 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     return () => window.removeEventListener('keydown', onKey);
   }, [phase, observer, isTeacher, sharing, toggleMute, changeLayout]);
 
+  // H3: the server ends the lesson first (200, or 423 'ended' on a repeat), then the learner is told, then we leave.
   const endLesson = async () => {
+    setEnding(true);
+    setEndError('');
+    await flushQuality.current();
+    const r = await roomCall('end', { method: 'POST' }).catch(() => ({ kind: 'unknown' as const }));
+    if (r.kind === 'superseded') return;
+    if (r.kind !== 'open' && !(r.kind === 'over' && r.reason === 'ended')) {
+      setEnding(false);
+      if (r.kind === 'unknown') setEndError(t('The lesson did not end. Check your internet and try again.', 'الحصة ما خلصتش. اتأكد من النت وجرّب تاني.'));
+      return;
+    }
+    overRef.current = 'ended'; // the heartbeat and the announce stop while we leave
     send({ t: 'end' });
     await batcher.current?.stop();
     batcher.current = null;
@@ -502,7 +624,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     wasReconnecting.current = false;
     setReconnectingSince(0);
     setReconnectedAt(Date.now());
-  }, [reconnecting]);
+    void checkState();
+  }, [reconnecting, checkState]);
 
   const board = useMemo<BoardSync>(() => ({
     publishEvent: (e) => { if (e.t === 'board') latestBoard.current = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: e.learnerDraw ?? false }; publishEvent(e); },
@@ -519,6 +642,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         ? { title: t('Well done today!', 'برافو عليك النهارده!'), body: t('See you next lesson.', 'نشوفك الحصة الجاية.') }
         : { title: t('The lesson has ended', 'الحصة خلصت'), body: t('Well done today. See you next lesson.', 'برافو عليك النهارده. نشوفك الحصة الجاية.') },
       closed: { title: t('The room has closed', 'الغرفة اتقفلت'), body: t('The lesson time is over, so the room closed for everyone.', 'وقت الحصة خلص، فالغرفة اتقفلت للكل.') },
+      cancelled: { title: t('This lesson was cancelled', 'الحصة دي اتلغت'), body: t('Your lessons page shows what comes next.', 'صفحة حصصك فيها اللي جاي.') },
+      moved: { title: t('This lesson was moved', 'الحصة دي اتنقلت لميعاد تاني'), body: t('Your lessons page shows the new time.', 'الميعاد الجديد في صفحة حصصك.') },
+      reassigned: { title: t('This lesson changed hands', 'الحصة دي اتغيرت'), body: t('It is now with another teacher or learner. Your lessons page has the details.', 'بقت مع معلم أو طالب تاني. التفاصيل في صفحة حصصك.') },
       superseded: { title: t('This lesson is open on another device', 'الحصة مفتوحة على جهاز تاني'), body: t('You joined from another tab or device, so it stopped here.', 'دخلت من تاب أو جهاز تاني، فوقفت هنا.') },
       failed: { title: t('We lost the connection to the room', 'الاتصال بالغرفة اتقطع'), body: t('Check your internet, then try again. The lesson, the board and the time come back as they were.', 'اتأكد من النت وجرّب تاني. الدرس والسبورة والوقت هيرجعوا زي ما كانوا.') },
     };
@@ -563,7 +689,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     return (
       <Shell paper>
         <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid}
-          info={{ title, when: <WhenLine startMs={startMs} now={now} />, here }} />
+          info={{ title, when: <WhenLine startMs={startMs} now={serverNow} />, here }} />
       </Shell>
     );
   }
@@ -587,7 +713,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       overlay={o.overlay && s === 'student' ? reactionOverlay : undefined}
       note={!joined ? (o.compact ? undefined : t('Opening the room…', 'بنفتح الغرفة…'))
         : !remotes[s] ? (s === 'teacher' ? t('Your teacher will be here soon.', 'المعلم جاي حالاً.') : t(`Waiting for ${learnerName}…`, `مستنيين ${learnerName}…`))
-          : audioOnly ? t('Video paused to keep the sound clear', 'الفيديو واقف علشان الصوت يفضل واضح') : undefined} />
+          : audioOnly ? t('Video paused to keep the sound clear', 'الفيديو واقف علشان الصوت يفضل واضح')
+            : remoteWaiting[s] ? t('Waiting for video…', 'مستنيين الفيديو…') : undefined} />
   );
   const selfTile = (className?: string) => showSelf && (
     <VideoTile stream={local} name={t('You', 'إنت')} self compact speaking={selfSpeaking} micOff={muted} videoOff={cameraOff} link={myLink} className={className} />
@@ -601,6 +728,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       text: reconnectingSince && now - reconnectingSince > 20_000 ? t('Still trying. Check your internet.', 'لسه بنحاول. اتأكد من النت.') : t('Reconnecting… The lesson is safe.', 'بنرجّع الاتصال… الحصة محفوظة.') });
   } else if (reconnectedAt && now - reconnectedAt < 2500) {
     notices.push({ key: 'back', priority: 3, icon: <Khatam size={20} />, text: t('Back.', 'رجعنا.') });
+  }
+  if (device && (!device.ok || now - device.at < 4000)) {
+    const mic = device.kind === 'audio';
+    notices.push({ key: `device-${device.kind}-${device.ok}`, priority: 2,
+      icon: mic ? (device.ok ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />) : (device.ok ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />),
+      text: device.ok
+        ? (mic ? t('Your microphone reconnected.', 'المايك رجع اشتغل.') : t('Your camera reconnected.', 'الكاميرا رجعت اشتغلت.'))
+        : (mic ? t('Microphone lost. Check it.', 'المايك وقف. اتأكد منه.') : t('Camera lost. Check it.', 'الكاميرا وقفت. اتأكد منها.')) });
   }
   if (talkingMuted) {
     notices.push({ key: 'talking-muted', priority: 4, icon: <MicOff className="h-4 w-4" />,
@@ -696,7 +831,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     </div>
   );
 
-  const minutesLeft = Math.round((endMs - now) / 60_000);
+  const minutesLeft = Math.round((endMs - serverNow) / 60_000);
   const capsuleName = isTeacher ? learnerName : role === 'guardian_observer' ? t(`Watching · ${learnerName}'s lesson`, `متابعة · حصة ${learnerName}`)
     : role === 'admin_observer' ? t('Watching quietly · nobody in the lesson can see you', 'متابعة بهدوء · محدش في الحصة شايفك')
       : entry.teacherName || t('Your lesson', 'حصتك');
@@ -711,7 +846,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               <h1 className={cn('min-w-0 truncate text-[0.95rem] text-foreground', isAr ? 'font-bold' : 'font-semibold')}>{capsuleName}</h1>
               {subject && !observer && <span className="hidden shrink-0 text-sm text-muted-foreground sm:inline">{subject}</span>}
               {myLink && <span className="shrink-0"><NetworkBadge link={myLink} onDark /></span>}
-              {(isTeacher || observer) && <Timer startMs={startMs} endMs={endMs} now={now} mode={isTeacher ? 'teacher' : 'observer'} />}
+              {(isTeacher || observer) && <Timer startMs={startMs} endMs={endMs} now={serverNow} mode={isTeacher ? 'teacher' : 'observer'} />}
             </div>
             {isTeacher && guardianHere && <GuardianChip />}
             {isTeacher && sharing && (
@@ -721,14 +856,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               </span>
             )}
           </div>
-          {!isTeacher && !observer && <Timer startMs={startMs} endMs={endMs} now={now} mode={kid ? 'kid' : 'learner'} />}
+          {!isTeacher && !observer && <Timer startMs={startMs} endMs={endMs} now={serverNow} mode={kid ? 'kid' : 'learner'} />}
         </header>
 
         {/* Notices on wider screens: under the capsule, over the stage's top margin. */}
         <NoticeSlot notices={notices} className="absolute inset-x-0 top-[4.25rem] z-30 hidden sm:flex" />
 
         {/* Stage */}
-        <main className={cn('relative min-h-0 flex-1 px-3 pb-2 pt-3 sm:px-5 sm:pt-5', isTeacher && sharing && 'after:pointer-events-none after:absolute after:inset-1 after:rounded-[var(--r-4)] after:ring-2 after:ring-[#12A4BC]/70')}>
+        <main className={cn('relative min-h-0 flex-1 px-3 pb-2 pt-3 sm:px-5 sm:pt-5', role === 'admin_observer' && notesOpen && 'lg:ps-[24rem]', isTeacher && sharing && 'after:pointer-events-none after:absolute after:inset-1 after:rounded-[var(--r-4)] after:ring-2 after:ring-[#12A4BC]/70')}>
           {layout === 'conversation' ? (
             <div key="conversation" className="room-rise grid h-full place-items-center">
               {observer ? (
@@ -775,7 +910,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           {isTeacher && layout !== 'conversation' && reactions.length > 0 && (
             <div className="absolute bottom-4 start-6 z-20 lg:hidden"><ReactionStream items={reactions} name={learnerName} /></div>
           )}
-          {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} />}
+          {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} startMs={startMs} onOpenChange={setNotesOpen} />}
         </main>
 
         <footer className="room-rise-sm relative z-20 shrink-0 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1 sm:px-5 sm:pb-4">
@@ -802,12 +937,13 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         footer={(
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setConfirmEnd(false)}>{t('Keep teaching', 'كمّل الحصة')}</Button>
-            <Button onClick={endLesson}>{t('End lesson', 'إنهاء الحصة')}</Button>
+            <Button onClick={endLesson} disabled={ending}>{ending ? t('Ending…', 'بننهي…') : t('End lesson', 'إنهاء الحصة')}</Button>
           </div>
         )}>
         <div className="grid gap-2 text-sm text-muted-foreground">
           {minutesLeft > 5 && <p className="font-medium text-foreground">{t(`There are ${minutesLeft} minutes left.`, `فاضل ${minutesLeft} دقيقة.`)}</p>}
           <p>{t('The room closes for the learner too. Next, you write the lesson report.', 'الغرفة هتتقفل عند الطالب كمان. بعدها هتكتب تقرير الحصة.')}</p>
+          {endError && <p role="alert" className="text-destructive">{endError}</p>}
         </div>
       </Modal>
     </Shell>
