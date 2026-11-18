@@ -1,5 +1,5 @@
 /** Pure shapes and checks for the lesson room channel, shared by the browser and the server (no React, no Supabase). */
-import type { Layer, Side } from '../classroom/engine/types';
+import type { Layer, LinkStats, Side } from '../classroom/engine/types';
 
 /** What travels in the lesson room (NX-12): which lesson is open, where the teacher is, and the teacher's ink. Nothing else. */
 export interface RoomState { track: string; number: number; page: number; step: number }
@@ -36,9 +36,11 @@ export type RoomEvent =
   | { t: 'reaction'; kind: 'hand' | 'confused' | 'slower' | 'repeat' | 'thinking' }
   | { t: 'focus'; away: boolean; at: number }
   | { t: 'focus_warning_off'; off: boolean }
-  | { t: 'quality'; side: Side; layer: Layer; link: 'good' | 'weak' | 'poor' }
+  | { t: 'quality'; side: Side; layer: Layer; link: 'good' | 'weak' | 'poor'; stats?: LinkStats }
   | { t: 'observer'; kind: 'guardian'; present: boolean }
-  | { t: 'layout'; mode: 'conversation' | 'content' | 'screen' }
+  | { t: 'layout'; mode: 'conversation' | 'content' | 'screen'; pane?: 'lesson' | 'board' | 'pdf' }
+  /** Teacher's recitation mode, applied on both sides (live only). */
+  | { t: 'recitation'; on: boolean }
   | { t: 'end' };
 
 export const MAX_EVENT_BYTES = 16_384; // lesson_timeline_events.payload limit
@@ -48,6 +50,9 @@ const oneOf = (list: readonly unknown[]) => (v: unknown) => list.includes(v);
 const bool = (v: unknown) => typeof v === 'boolean';
 const coord = (v: unknown) => Number.isFinite(v) && Math.abs(v as number) < 10000;
 const idStr = (max: number) => (v: unknown) => typeof v === 'string' && v.length > 0 && v.length <= max;
+const num = (v: unknown) => Number.isFinite(v) && Math.abs(v as number) < 1e7;
+const STAT_KEYS = ['outLossPct', 'inLossPct', 'availableInKbps', 'availableOutKbps', 'rttMs'];
+const isStats = (v: any) => Boolean(v) && typeof v === 'object' && Object.keys(v).length === STAT_KEYS.length && STAT_KEYS.every((k) => num(v[k]));
 const intIn = (max: number) => (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) < max;
 // One checker per key; an event with a missing, wrong or extra key is refused.
 const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = {
@@ -60,9 +65,10 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   reaction: { kind: oneOf(['hand', 'confused', 'slower', 'repeat', 'thinking']) },
   focus: { away: bool, at: (v) => Number.isFinite(v) && v >= 0 },
   focus_warning_off: { off: bool },
-  quality: { side: oneOf(SIDES), layer: oneOf(['f', 'h', 'q', 'l', 'audio_only']), link: oneOf(['good', 'weak', 'poor']) },
+  quality: { side: oneOf(SIDES), layer: oneOf(['f', 'h', 'q', 'l', 'audio_only']), link: oneOf(['good', 'weak', 'poor']), stats: (v) => v === undefined || isStats(v) },
   observer: { kind: oneOf(['guardian']), present: bool },
-  layout: { mode: oneOf(['conversation', 'content', 'screen']) },
+  layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf'])(v) },
+  recitation: { on: bool },
   end: {},
 };
 

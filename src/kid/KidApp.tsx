@@ -16,6 +16,7 @@ import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components
 import { HomeworkCard } from '../student/components/HomeworkCard';
 import { ReviewCard } from '../student/components/ReviewCard';
 import StudentLessonRoomPage from '../student/pages/StudentLessonRoomPage';
+import { ClassroomGate } from '../classroom/ClassroomGate';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from '../student/pages/StudentCurriculumPage';
 import StudentProgressPage from '../student/pages/StudentProgressPage';
 import StudentProgressReportPage from '../student/pages/StudentProgressReportPage';
@@ -140,7 +141,7 @@ export default function KidApp() {
           <Routes>
             <Route path="/" element={<KidHome isAr={isAr} me={me} />} />
             <Route path="/lessons" element={<KidLessons isAr={isAr} lessons={me.lessons} />} />
-            <Route path="/room/:id" element={<StudentLessonRoomPage lang={lang} backTo="/kid/lessons" />} />
+            <Route path="/room/:id" element={<ClassroomGate portal="kid" fallback={<StudentLessonRoomPage lang={lang} backTo="/kid/lessons" />} />} />
             <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
             <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
             <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
