@@ -33,10 +33,12 @@ export function WatchLessonButton({ booking, isAr, now }: { booking: WatchableLe
   return (
     <Link
       to={`/student/room/${encodeURIComponent(booking.id)}?observe=1`}
-      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-surface-subtle min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-teal/30 bg-teal/10 text-sm font-semibold text-teal hover:bg-teal/15 transition-colors duration-[var(--dur-ui)] active:scale-[0.98] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
     >
-      <Eye className="w-4 h-4 text-accent" aria-hidden="true" />
-      {isAr ? 'تابع الحصة' : 'Watch the lesson'}
+      {/* The room is open now: a still dot says "live" without a blinking light. */}
+      <span className="h-2 w-2 shrink-0 rounded-full bg-teal" aria-hidden="true" />
+      <Eye className="w-4 h-4" aria-hidden="true" />
+      {isAr ? 'تابع الحصة' : 'Watch the lesson now'}
     </Link>
   );
 }

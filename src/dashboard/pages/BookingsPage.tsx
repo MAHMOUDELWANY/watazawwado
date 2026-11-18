@@ -418,10 +418,12 @@ export default function BookingsPage() {
                         {isSuperAdmin && b.classroom && roomJoinState(b) === 'open' && (
                           <Link
                             to={`/dashboard/room/${encodeURIComponent(b.id)}?observe=1`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-foreground glass-card hover:bg-surface-subtle border border-border rounded-xl transition-colors min-h-[36px]"
+                            title={t('Watch quietly. Nobody in the lesson sees you.', 'تابع في هدوء. محدش في الحصة هيشوفك.')}
+                            className="tap-44 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-teal bg-teal/10 hover:bg-teal/15 border border-teal/30 rounded-full transition-colors duration-[var(--dur-ui)] min-h-[36px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
                           >
+                            <span className="h-2 w-2 shrink-0 rounded-full bg-teal" aria-hidden="true" />
                             <Eye className="w-4 h-4" aria-hidden="true" />
-                            {t('Watch', 'تابع')}
+                            {t('Watch live', 'تابع مباشر')}
                           </Link>
                         )}
                         {isSuperAdmin && b.payment_status === 'pending_review' && (
