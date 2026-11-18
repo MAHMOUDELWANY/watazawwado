@@ -15,7 +15,11 @@ function fakeDb(tables: Record<string, any[]>) {
   return {
     tables,
     from(t: string) {
-      return {
+      const filters: Array<(r: any) => boolean> = [];
+      const b: any = {
+        select: () => b,
+        eq: (c: string, v: any) => { filters.push((r) => r[c] === v); return b; },
+        maybeSingle: async () => ({ data: rows(t).find((r) => filters.every((f) => f(r))) ?? null, error: null }),
         upsert: async (row: any, opts: { onConflict: string }) => {
           const keys = opts.onConflict.split(',').map((k) => k.trim());
           const i = rows(t).findIndex((r) => keys.every((k) => r[k] === row[k]));
@@ -23,6 +27,7 @@ function fakeDb(tables: Record<string, any[]>) {
           return { error: null };
         },
       };
+      return b;
     },
   };
 }
@@ -30,7 +35,7 @@ function fakeDb(tables: Record<string, any[]>) {
 describe('CL-06 precheck route', () => {
   let server: http.Server;
   let base: string;
-  const db = fakeDb({});
+  const db = fakeDb({ bookings: [{ id: BOOKING_ID, teacher_id: 'u-1', student_id: 'child-1', status: 'confirmed' }] });
   const pass = (n: any) => n();
 
   before(async () => {
@@ -44,6 +49,7 @@ describe('CL-06 precheck route', () => {
       getLearners: async () => [],
       rateLimit: (_q: any, _s: any, next: any) => pass(next),
       roomRateLimit: (_q: any, _s: any, next: any) => pass(next),
+      requireSuperAdmin: (_q: any, _s: any, next: any) => pass(next),
       secret: () => SECRET,
       now: () => NOW,
     });
@@ -51,7 +57,7 @@ describe('CL-06 precheck route', () => {
   });
   after(async () => { await new Promise<void>((r) => server.close(() => r())); });
 
-  const ticket = (role: string, userId = 'u-1') => signTicket({ bookingId: BOOKING_ID, role: role as any, userId, exp: NOW + 60_000, joinId: 'j' }, SECRET);
+  const ticket = (role: string, userId = 'u-1', studentId = 'child-1') => signTicket({ bookingId: BOOKING_ID, role: role as any, userId, exp: NOW + 60_000, joinId: 'j', studentId }, SECRET);
   const precheck = (t: string, body: unknown) =>
     fetch(`${base}/api/classroom/${BOOKING_ID}/precheck`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': t }, body: JSON.stringify(body) });
   const quality = () => db.tables.lesson_quality || [];
@@ -84,6 +90,16 @@ describe('CL-06 precheck route', () => {
     assert.ok(row);
     assert.strictEqual(row.precheck_720, false);
     assert.strictEqual(row.start_height, null);
+  });
+
+  it('a pass from before the lesson was given to another teacher or learner is refused and stores nothing', async () => {
+    const before = quality().length;
+    for (const t of [ticket('teacher', 'teacher-old'), ticket('learner', 'parent-9', 'child-old')]) {
+      const res = await precheck(t, { precheck720: true, startHeight: 720 });
+      assert.strictEqual(res.status, 403);
+      assert.strictEqual((await res.json()).ended, true);
+    }
+    assert.strictEqual(quality().length, before);
   });
 
   it('an invalid body is 400', async () => {

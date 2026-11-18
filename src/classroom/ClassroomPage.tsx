@@ -343,13 +343,17 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       const layer = picker(s);
       void engine.setPreferredLayer(layer).catch(() => {});
       setMyLayer(layer);
-      setBlame(blameSide(s, remoteStats.current));
-      const q = totals.current;
-      const step = STATS_EVERY_MS / 1000;
-      if (layer === 'audio_only') q.audioOnlySeconds += step;
-      if (layer === 'audio_only' || layer === 'q' || layer === 'l') q.degradedSeconds += step;
-      const h = LAYER_HEIGHT[layer];
-      if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
+      const blame = blameSide(s, remoteStats.current);
+      setBlame(blame);
+      // The layer is what this side receives, so it lands on this side's record only when this side's uplink is the cause.
+      if (blame === 'me') {
+        const q = totals.current;
+        const step = STATS_EVERY_MS / 1000;
+        if (layer === 'audio_only') q.audioOnlySeconds += step;
+        if (layer === 'audio_only' || layer === 'q' || layer === 'l') q.degradedSeconds += step;
+        const h = LAYER_HEIGHT[layer];
+        if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
+      }
       if (!mySide) return;
       setLinks((l) => (l[mySide] === link ? l : { ...l, [mySide]: link }));
       const e: RoomEvent = { t: 'quality', side: mySide, layer, link, stats: s };

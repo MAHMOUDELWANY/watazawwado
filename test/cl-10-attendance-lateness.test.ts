@@ -119,6 +119,19 @@ describe('CL-10 recordTeacherLateness (first room_joined)', () => {
     assert.strictEqual(db.tables.teacher_late_reasons.length, 1);
   });
 
+  it('a student-side ice_failed before the late join is not ours: the reason is still asked', async () => {
+    const db = fakeDb({ lesson_attendance_events: [join(5)], classroom_incidents: [{ booking_id: BOOKING_ID, kind: 'ice_failed', side: 'student', created_at: at(1) }] });
+    await recordTeacherLateness(db, booking);
+    assert.strictEqual(db.tables.teacher_late_reasons.length, 1);
+    assert.strictEqual(db.tables.teacher_late_reasons[0].status, 'pending');
+  });
+
+  it('a student-side provider_error before the late join is ours: no row', async () => {
+    const db = fakeDb({ lesson_attendance_events: [join(5)], classroom_incidents: [{ booking_id: BOOKING_ID, kind: 'provider_error', side: 'student', created_at: at(1) }] });
+    await recordTeacherLateness(db, booking);
+    assert.strictEqual((db.tables.teacher_late_reasons || []).length, 0);
+  });
+
   it('a rejoin at +20 min after an on-time join: no row (the first join is what counts)', async () => {
     // The rejoin at +20 finds the first (deduped) room_joined from +0.
     const db = fakeDb({ lesson_attendance_events: [join(0)] });

@@ -54,6 +54,12 @@ describe('CL-09 room screen', () => {
     }
   });
 
+  it('quality totals count only time this side is to blame (its own uplink), never the layer it receives', () => {
+    const src = read('src/classroom/ClassroomPage.tsx');
+    assert.match(src, /const blame = blameSide\(s, remoteStats\.current\);\s*setBlame\(blame\);/);
+    assert.match(src, /if \(blame === 'me'\) \{[^}]*audioOnlySeconds[^}]*degradedSeconds[^}]*minHeight[^}]*\}/);
+  });
+
   it('room events: recitation, layout pane and quality stats are checked', () => {
     assert.strictEqual(isRoomEvent({ t: 'recitation', on: true }), true);
     assert.strictEqual(isRoomEvent({ t: 'recitation', on: 'yes' }), false);

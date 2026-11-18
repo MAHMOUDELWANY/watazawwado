@@ -61,5 +61,9 @@ Read this first if you are continuing the classroom work in a new session or on 
   next to the `/payroll` route.
 - Task 9 shortcuts to finish later: after the teacher stops screen share the learner keeps the old screen tracks until
   the teacher's next session; a rejoin guesses which pane (lesson, board, file) was open.
+- Known gap (code review, finding 5, not fixed yet): room presence ends only on `room_left`, which the leave call
+  writes. A crashed tab or a phone that dies never sends it, so that side stays "joined" until the lesson ends, and
+  attendance counts it as present. Fix later by ending room presence at that side's last quality heartbeat
+  (`lesson_quality.updated_at`, sent every 60 s) when no `room_left` follows.
 - Before the first real browser test: apply both migrations (`20261117000000_classroom_release_1.sql`,
   `20261118000000_classroom_files_bucket.sql`) and use a booking whose time window is open.

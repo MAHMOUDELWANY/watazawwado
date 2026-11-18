@@ -53,17 +53,25 @@ describe('CL-07 isRoomEvent', () => {
   });
 });
 
-// In-memory database: select/eq/maybeSingle, insert (rows or arrays), upsert by key.
+// In-memory database: select/eq/maybeSingle, insert (rows or arrays), upsert by key. afterRead runs once after the
+// next read of its table, to simulate another request writing between this request's read and its write.
 function fakeDb(tables: Record<string, any[]>) {
   const rows = (t: string) => (tables[t] ||= []);
-  return {
+  const db: any = {
     tables,
+    afterRead: null as null | { table: string; fn: () => void },
     from(t: string) {
       const filters: Array<(r: any) => boolean> = [];
       const b: any = {
         select: () => b,
         eq: (c: string, v: any) => { filters.push((r) => r[c] === v); return b; },
-        maybeSingle: async () => ({ data: rows(t).filter((r) => filters.every((f) => f(r)))[0] ?? null, error: null }),
+        maybeSingle: async () => {
+          const found = rows(t).filter((r) => filters.every((f) => f(r)))[0];
+          const data = found ? { ...found } : null;
+          const hook = db.afterRead;
+          if (hook?.table === t) { db.afterRead = null; hook.fn(); }
+          return { data, error: null };
+        },
         insert: async (row: any) => { for (const r of [row].flat()) rows(t).push({ ...r }); return { error: null }; },
         upsert: async (row: any, opts: { onConflict: string }) => {
           const i = rows(t).findIndex((r) => r[opts.onConflict] === row[opts.onConflict]);
@@ -74,6 +82,7 @@ function fakeDb(tables: Record<string, any[]>) {
       return b;
     },
   };
+  return db;
 }
 
 describe('CL-07 events and state routes', () => {
@@ -98,6 +107,7 @@ describe('CL-07 events and state routes', () => {
       getLearners: async () => [],
       rateLimit: (_q: any, _s: any, next: any) => next(),
       roomRateLimit: (q: any, _s: any, next: any) => { if (q.roomTicket) limited++; next(); },
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
       now: () => NOW,
     });
@@ -180,6 +190,20 @@ describe('CL-07 events and state routes', () => {
     assert.deepStrictEqual(s.pdf, { fileId: 'file-1', page: 7 });
     assert.strictEqual(s.layout, 'content');
     assert.deepStrictEqual(s.sessions, sessions);
+  });
+
+  it('a seat saved between the flush read and its write is kept (the write re-reads the latest snapshot)', async () => {
+    // Fires right after liveSeat reads the snapshot: another request replaces the row, as saveSeat would.
+    db.afterRead = { table: 'lesson_room_state', fn: () => {
+      const row = db.tables.lesson_room_state[0];
+      row.snapshot = { ...row.snapshot, sessions: { ...row.snapshot.sessions, 'admin_observer:admin-1': { joinId: 'ja', userId: 'admin-1', at: 'x' } } };
+    } };
+    assert.strictEqual((await post(T, [{ t: 'layout', mode: 'conversation' }])).status, 200);
+    assert.strictEqual(snapshot().layout, 'conversation');
+    assert.deepStrictEqual(snapshot().sessions['admin_observer:admin-1'], { joinId: 'ja', userId: 'admin-1', at: 'x' });
+    assert.deepStrictEqual(snapshot().sessions.teacher, sessions.teacher);
+    delete snapshot().sessions['admin_observer:admin-1'];
+    await post(T, [{ t: 'layout', mode: 'content' }]);
   });
 
   it('an older board version does not replace a newer one', async () => {

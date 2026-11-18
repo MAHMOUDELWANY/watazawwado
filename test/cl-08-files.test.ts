@@ -82,6 +82,7 @@ describe('CL-08 files routes', () => {
       getLearners: async () => [],
       rateLimit: (_q: any, _s: any, next: any) => next(),
       roomRateLimit: (_q: any, _s: any, next: any) => next(),
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
       now: () => NOW,
     });

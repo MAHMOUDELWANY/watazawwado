@@ -86,6 +86,7 @@ describe('CL-13 enter follows the rollout switch, and the admin keeps private no
       getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }],
       rateLimit: (_q: any, _s: any, next: any) => next(),
       roomRateLimit: (_q: any, _s: any, next: any) => next(),
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => 'room-secret',
       now: () => NOW,
     });
@@ -112,6 +113,12 @@ describe('CL-13 enter follows the rollout switch, and the admin keeps private no
     }
     assert.strictEqual((db.tables.admin_observations || []).length, 0);
     assert.strictEqual((db.tables.lesson_attendance_events || []).length, 0);
+  });
+
+  it('off: a stranger gets the same refusal as when it is on, never classroom:false', async () => {
+    const res = await enter('dashboard', 'teacher-2');
+    assert.ok(res.status === 403 || res.status === 404, String(res.status));
+    assert.strictEqual((await res.json()).classroom, undefined);
   });
 
   it('pilot without this teacher is off; with this teacher the room opens and says classroom: true', async () => {

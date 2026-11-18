@@ -96,6 +96,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   rateLimit: Middleware;
   /** Runs after the ticket check and keys on req.roomTicket: WebRTC setup and layer changes need many calls. */
   roomRateLimit: Middleware;
+  requireSuperAdmin: Middleware;
   secret?: () => string;
   now?: () => number;
   /** Task 13: the rollout switch for this lesson's teacher (CLASSROOM_MODE by default). */
@@ -113,11 +114,15 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     const { data } = await client.from('lesson_room_state').select('snapshot').eq('booking_id', id).maybeSingle();
     return data?.snapshot && typeof data.snapshot === 'object' ? data.snapshot : {};
   };
-  // shortcut: read-modify-write of the jsonb snapshot; two joins in the same instant can race. Move to an RPC if seen.
-  const saveSeat = async (client: any, id: string, snapshot: any, seat: string, entry: SessionEntry) => {
-    const next = { ...snapshot, sessions: { ...(snapshot.sessions || {}), [seat]: entry } };
-    const { error } = await client.from('lesson_room_state').upsert({ booking_id: id, snapshot: next, updated_at: new Date(now()).toISOString() }, { onConflict: 'booking_id' });
+  const writeSnapshot = async (client: any, id: string, snapshot: any) => {
+    const { error } = await client.from('lesson_room_state').upsert({ booking_id: id, snapshot, updated_at: new Date(now()).toISOString() }, { onConflict: 'booking_id' });
     if (error) throw new Error(`lesson_room_state: ${error.message}`);
+  };
+  // shortcut: still read-modify-write of the jsonb snapshot, but the read is right before the write and only this
+  // seat changes, so the race window is tiny. Move to an RPC (jsonb_set) if a lost write is ever seen.
+  const saveSeat = async (client: any, id: string, seat: string, entry: SessionEntry) => {
+    const fresh = await loadSnapshot(client, id);
+    await writeSnapshot(client, id, { ...fresh, sessions: { ...(fresh.sessions || {}), [seat]: entry } });
   };
 
   const fail = (res: any, err: unknown, where: string, extra: object = {}) => {
@@ -151,11 +156,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!isUuid(id)) return res.status(404).json({ error: 'Lesson not found.' });
       const booking = await loadBooking(client, id);
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-      // Task 13: switched off for this teacher, every role stays on the NX-12 page and Zoom, as before.
-      if (!classroomEnabled(booking.teacher_id)) return res.status(409).json({ classroom: false });
-      const cf = deps.cloudflare();
-      const key = secret();
-      if (!cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
 
       let requester: Requester;
       let family: Array<{ id: string; name: string; learnerType?: string }> = [];
@@ -176,6 +176,12 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         now: now(),
       });
       if (access.ok === false) return res.status(access.status).json({ error: access.reason });
+      // Task 13: switched off for this teacher, every role stays on the NX-12 page and Zoom, as before. Asked only
+      // after access, so a stranger learns nothing about the teacher's rollout.
+      if (!classroomEnabled(booking.teacher_id)) return res.status(409).json({ classroom: false });
+      const cf = deps.cloudflare();
+      const key = secret();
+      if (!cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
 
       const role = access.role;
       incidentRole = role;
@@ -184,7 +190,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const iceServers = await cf.iceServers(Math.max(60, Math.ceil((hardClose - now()) / 1000)));
       const ticketPayload: TicketPayload = { bookingId: id, role, userId: requester.userId, exp: hardClose, joinId: crypto.randomUUID(), studentId: booking.student_id };
       const at = new Date(now()).toISOString();
-      await saveSeat(client, id, await loadSnapshot(client, id), seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
+      await saveSeat(client, id, seatOf(ticketPayload), { joinId: ticketPayload.joinId!, userId: requester.userId, at });
 
       if (!isObserver(role)) {
         // A side joins when it is not already in: a second device while in writes nothing (Review Focus 2), a rejoin
@@ -239,7 +245,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
    * Re-checks the booking and the caller's seat, so a moved, cancelled or reassigned lesson stops the room and an
    * older device is refused. Sends the error and returns null when the call must stop.
    */
-  const liveSeat = async (client: any, t: TicketPayload, res: any): Promise<{ snapshot: any; mine: SessionEntry } | null> => {
+  const liveSeat = async (client: any, t: TicketPayload, res: any): Promise<{ booking: RoomBooking; snapshot: any; mine: SessionEntry } | null> => {
     const stop = (status: number, body: object) => { res.status(status).json(body); return null; };
     const booking = await loadBooking(client, t.bookingId);
     if (!booking) return stop(404, { error: 'Lesson not found.' });
@@ -251,7 +257,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     const snapshot = await loadSnapshot(client, t.bookingId);
     const mine: SessionEntry | undefined = snapshot.sessions?.[seatOf(t)];
     if (!mine || mine.joinId !== t.joinId) return stop(409, { error: 'The room was opened on another device.', superseded: true });
-    return { snapshot, mine };
+    return { booking, snapshot, mine };
   };
 
   /** Media calls re-check the booking and seat every time (liveSeat). */
@@ -264,11 +270,10 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const live = await liveSeat(client, t, res);
       if (!live) return;
       const { snapshot, mine } = live;
-      const seat = seatOf(t);
 
       if (action === 'session') {
         const { sessionId } = await cf.newSession();
-        await saveSeat(client, t.bookingId, snapshot, seat, { ...mine, sessionId });
+        await saveSeat(client, t.bookingId, seatOf(t), { ...mine, sessionId });
         return res.json({ sessionId });
       }
 
@@ -326,37 +331,41 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const live = await liveSeat(client, t, res);
       if (!live) return;
 
-      const snapshot = { ...live.snapshot };
       const rows: any[] = [];
-      let merged = false;
+      const boards: Array<Extract<RoomEvent, { t: 'board' }>> = [];
+      const patch: { slide?: unknown; pdf?: unknown; layout?: unknown } = {};
       for (const { at, event: e } of items as Array<{ at: unknown; event: RoomEvent }>) {
-        if (!mayPersist(e, t.role, snapshot)) continue;
-        merged ||= e.t === 'board' || e.t === 'slide' || e.t === 'pdf' || e.t === 'layout';
-        if (e.t === 'board') {
-          // Latest board only, in the snapshot (no timeline row); an older scene never replaces a newer one.
-          if (e.sceneVersion < (snapshot.board?.sceneVersion ?? -1)) {
-            // The teacher's permission always lands, even when a learner pushed the version ahead.
-            if (t.role === 'teacher' && snapshot.board) snapshot.board = { ...snapshot.board, learnerDraw: e.learnerDraw === true };
-            continue;
-          }
-          snapshot.board = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
-          continue;
-        }
+        // Board permission is checked later, against the fresh board.
+        if (e.t === 'board') { if (t.role === 'teacher' || t.role === 'learner') boards.push(e); continue; }
+        if (!mayPersist(e, t.role, live.snapshot)) continue;
         const { t: type, ...payload } = e;
         const ms = typeof at === 'number' && at <= now() && at >= now() - EVENT_SKEW_MS ? at : now();
         rows.push({ booking_id: t.bookingId, type, actor_role: attendanceRole(t.role), payload, occurred_at: new Date(ms).toISOString() });
-        if (e.t === 'slide') snapshot.slide = e.state;
-        if (e.t === 'pdf') snapshot.pdf = { fileId: e.fileId, page: e.page };
-        if (e.t === 'layout') snapshot.layout = e.mode;
+        if (e.t === 'slide') patch.slide = e.state;
+        if (e.t === 'pdf') patch.pdf = { fileId: e.fileId, page: e.page };
+        if (e.t === 'layout') patch.layout = e.mode;
       }
       if (rows.length) {
         const { error } = await client.from('lesson_timeline_events').insert(rows);
         if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
       }
-      if (merged) {
-        // Same read-modify-write shortcut as saveSeat; sessions are the ones read a moment ago in liveSeat.
-        const { error } = await client.from('lesson_room_state').upsert({ booking_id: t.bookingId, snapshot, updated_at: new Date(now()).toISOString() }, { onConflict: 'booking_id' });
-        if (error) throw new Error(`lesson_room_state: ${error.message}`);
+      if (boards.length || Object.keys(patch).length) {
+        // Same shortcut as saveSeat: re-read right before the write and change only board/slide/pdf/layout, so
+        // sessions (and anything else) stay as the latest writer left them.
+        const fresh = await loadSnapshot(client, t.bookingId);
+        let changed = Object.keys(patch).length > 0;
+        for (const e of boards) {
+          if (!mayPersist(e, t.role, fresh)) continue;
+          changed = true;
+          // Latest board only, in the snapshot (no timeline row); an older scene never replaces a newer one.
+          if (e.sceneVersion < (fresh.board?.sceneVersion ?? -1)) {
+            // The teacher's permission always lands, even when a learner pushed the version ahead.
+            if (t.role === 'teacher' && fresh.board) fresh.board = { ...fresh.board, learnerDraw: e.learnerDraw === true };
+            continue;
+          }
+          fresh.board = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
+        }
+        if (changed) await writeSnapshot(client, t.bookingId, { ...fresh, ...patch });
       }
       return res.json({ stored: rows.length });
     } catch (err) {
@@ -387,10 +396,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
-      if (!(await liveSeat(client, t, res))) return;
-      const booking = await loadBooking(client, t.bookingId);
-      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
-      if (roomHardCloseMs(booking) <= now()) return res.status(423).json({ error: 'The room is closed.', ended: true });
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      if (roomHardCloseMs(live.booking) <= now()) return res.status(423).json({ error: 'The room is closed.', ended: true });
       const fileId = `${crypto.randomUUID()}.${FILE_EXT[contentType]}`;
       const path = `${t.bookingId}/${fileId}`;
       const { data, error } = await client.storage.from(CLASSROOM_FILES_BUCKET).createSignedUploadUrl(path);
@@ -409,9 +417,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
-      if (!(await liveSeat(client, t, res))) return;
-      const booking = await loadBooking(client, t.bookingId);
-      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      const { booking } = live;
       const bucket = client.storage.from(CLASSROOM_FILES_BUCKET);
       const path = `${t.bookingId}/${fileId}`;
       const info = await bucket.info(path);
@@ -474,6 +482,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (isObserver(t.role)) return res.status(204).end();
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (notYours(booking, t)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       const { error } = await client.from('lesson_quality').upsert(
         { booking_id: t.bookingId, side: attendanceRole(t.role), precheck_720: precheck720, start_height: startHeight, updated_at: new Date(now()).toISOString() },
         { onConflict: 'booking_id,side' },
@@ -533,19 +544,21 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         .select('min_height, degraded_seconds, audio_only_seconds, reconnects, focus_away_seconds').eq('booking_id', t.bookingId).eq('side', side).maybeSingle();
       if (readErr) throw new Error(`lesson_quality: ${readErr.message}`);
       const lowest = [was?.min_height, minHeight].filter((h): h is number => typeof h === 'number');
-      const { error } = await client.from('lesson_quality').upsert({
-        booking_id: t.bookingId,
-        side,
+      const merged = {
         min_height: lowest.length ? Math.min(...lowest) : null,
         degraded_seconds: Math.max(was?.degraded_seconds ?? 0, degraded),
         audio_only_seconds: Math.max(was?.audio_only_seconds ?? 0, audioOnly),
         reconnects: Math.max(was?.reconnects ?? 0, reconnects),
         focus_away_seconds: Math.max(was?.focus_away_seconds ?? 0, focusAway),
-        updated_at: new Date(now()).toISOString(),
-      }, { onConflict: 'booking_id,side' });
+      };
+      const { error } = await client.from('lesson_quality').upsert(
+        { booking_id: t.bookingId, side, ...merged, updated_at: new Date(now()).toISOString() },
+        { onConflict: 'booking_id,side' },
+      );
       if (error) throw new Error(`lesson_quality: ${error.message}`);
-      // The teacher's user id is the booking's teacher_id (enter checked it). The alert never fails the write.
-      if (side === 'teacher') await alertTeacherIfNeeded(client, t.userId, now()).catch((err) => console.error('[classroom quality] alert', err));
+      // Only a failed teacher row can tip the alert, so healthy heartbeats skip its queries. The teacher's user id is
+      // the booking's teacher_id (notYours checked it). The alert never fails the write.
+      if (side === 'teacher' && lessonFailedForSide(merged)) await alertTeacherIfNeeded(client, t.userId, now()).catch((err) => console.error('[classroom quality] alert', err));
       return res.json({ ok: true });
     } catch (err) {
       return fail(res, err, 'quality');
@@ -553,9 +566,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   });
 
   // Task 11: the super admin's monthly connection view for one teacher: every room lesson that month with both sides.
-  app.get('/api/admin/teachers/:teacherId/connection', deps.rateLimit, deps.verifyTeacherAuth, async (req: any, res: any) => {
+  app.get('/api/admin/teachers/:teacherId/connection', deps.rateLimit, deps.verifyTeacherAuth, deps.requireSuperAdmin, async (req: any, res: any) => {
     try {
-      if ((req.teacherUser?.appRole || req.teacherUser?.role) !== 'super_admin') return res.status(403).json({ error: 'Super admins only.' });
       const teacherId = String(req.params.teacherId || '');
       const month = String(req.query.month || '');
       if (!isUuid(teacherId)) return res.status(404).json({ error: 'Teacher not found.' });

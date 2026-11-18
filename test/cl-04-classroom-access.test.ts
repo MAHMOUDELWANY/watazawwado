@@ -170,6 +170,7 @@ describe('CL-04 classroom routes', () => {
       getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child', isPrimary: false }],
       rateLimit: (_q: any, _s: any, next: any) => next(),
       roomRateLimit: (_q: any, _s: any, next: any) => next(),
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
       now: () => NOW,
     });
@@ -299,6 +300,7 @@ describe('CL-04 rejoin after leaving', () => {
       getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }],
       rateLimit: (_q: any, _s: any, next: any) => next(),
       roomRateLimit: (_q: any, _s: any, next: any) => next(),
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => 'room-secret',
       now: () => NOW,
     });
@@ -346,6 +348,7 @@ describe('CL-04 review fixes', () => {
       // The shared per-IP limiter is spent; media calls must use the per-ticket limiter instead.
       rateLimit: (req: any, res: any, next: any) => (req.path.endsWith('/enter') ? next() : res.status(429).json({ error: 'slow' })),
       roomRateLimit: (req: any, _res: any, next: any) => { roomKeys.push(req.roomTicket?.joinId); next(); },
+      requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
       now: () => NOW,
     });

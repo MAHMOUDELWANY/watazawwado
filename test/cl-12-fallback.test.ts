@@ -132,7 +132,7 @@ describe('CL-12 incident routes and lateness', () => {
     const pass = (_q: any, _s: any, next: any) => next();
     registerClassroomRoutes(app, {
       getClient: () => db, classroomEnabled: () => true, cloudflare: () => cf as any, verifyTeacherAuth: teacherAuth, verifyStudentAuth: studentAuth,
-      getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }], rateLimit: pass, roomRateLimit: pass,
+      getLearners: async () => [{ id: 'child-1', name: 'Yusuf', learnerType: 'child' }], rateLimit: pass, roomRateLimit: pass, requireSuperAdmin: pass,
       secret: () => SECRET, now: () => clock,
     });
     await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
@@ -176,7 +176,7 @@ describe('CL-12 incident routes and lateness', () => {
     assert.strictEqual(lateRows().length, 0);
   });
 
-  it('a learner incident through the route before the teacher joins also excuses lateness; without one the reason is asked', async () => {
+  it("a learner's own ice_failed through the route before the teacher joins does not excuse lateness", async () => {
     const other = '5049fa58-7428-44e4-926b-5e3eb315c5cc';
     const third = '6049fa58-7428-44e4-926b-5e3eb315c5cd';
     db.tables.bookings.push(lesson({ id: other }), lesson({ id: third }));
@@ -187,7 +187,8 @@ describe('CL-12 incident routes and lateness', () => {
     clock = min(5);
     await fetch(`${base}/api/dashboard/classroom/${other}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
     await fetch(`${base}/api/dashboard/classroom/${third}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
-    assert.deepStrictEqual(lateRows().map((r: any) => [r.booking_id, r.late_minutes]), [[third, 5]]);
+    // Only incidents that are ours for the teacher (teacher side, or a provider error on any side) excuse it.
+    assert.deepStrictEqual(lateRows().map((r: any) => [r.booking_id, r.late_minutes]), [[other, 5], [third, 5]]);
   });
 
   it('a provider error on a media call records provider_error for the ticket side', async () => {

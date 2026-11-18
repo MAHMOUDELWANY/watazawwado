@@ -153,6 +153,7 @@ describe('CL-11 quality routes', () => {
     registerClassroomRoutes(app, {
       getClient: () => db, classroomEnabled: () => true, cloudflare: () => null, verifyTeacherAuth: teacherAuth, verifyStudentAuth: pass,
       getLearners: async () => [], rateLimit: pass, roomRateLimit: pass, secret: () => SECRET, now: () => NOW,
+      requireSuperAdmin: (req: any, res: any, next: any) => (req.teacherUser?.role === 'super_admin' ? next() : res.status(403).json({ error: 'no' })),
     });
     await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
   });
@@ -178,6 +179,20 @@ describe('CL-11 quality routes', () => {
     assert.strictEqual(s.reconnects, 1);
     assert.strictEqual(s.min_height, 360);
     assert.ok(s.audio_only_seconds <= 6 * 3600 && s.audio_only_seconds > 0);
+  });
+
+  it('a healthy teacher write never runs the alert queries', async () => {
+    const seen: string[] = [];
+    const from = db.from.bind(db);
+    db.from = (t: string) => { seen.push(t); return from(t); };
+    try {
+      assert.strictEqual((await post(ticket('teacher', TEACHER), { degradedSeconds: 0, audioOnlySeconds: 10, reconnects: 1, minHeight: 720 })).status, 200);
+    } finally {
+      db.from = from;
+    }
+    assert.strictEqual(row('teacher').audio_only_seconds, 10);
+    assert.ok(!seen.includes('user_notifications'), seen.join(','));
+    assert.strictEqual(seen.filter((t) => t === 'bookings').length, 1, 'only the ownership check reads bookings');
   });
 
   it("a teacher's third failed lesson alerts the super admins once", async () => {

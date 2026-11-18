@@ -2,7 +2,8 @@ import { teacherLateMinutes, type LessonTimes } from '../../src/lib/roomWindow.j
 
 /**
  * Classroom Task 10: teacher punctuality. More than TEACHER_LATE_GRACE_MIN late to the room needs a written reason,
- * unless an incident on our side was recorded for that lesson before the teacher got in.
+ * unless an incident on our side was recorded for that lesson before the teacher got in. Ours for the teacher means
+ * the teacher's own side failed, or the media service failed on either side; a learner's own network does not count.
  */
 export function evaluateLateness(input: { booking: LessonTimes; firstTeacherRoomJoin: string | null; incidentBeforeJoin: boolean }): { late: false } | { late: true; minutes: number } {
   if (input.incidentBeforeJoin) return { late: false };
@@ -21,11 +22,12 @@ export async function recordTeacherLateness(client: any, booking: LessonTimes & 
   const joinedAt: string | null = first?.occurred_at ?? null;
   if (!joinedAt || teacherLateMinutes(booking, joinedAt) === 0) return;
 
-  const { data: incidents, error: incErr } = await client.from('classroom_incidents').select('id')
-    .eq('booking_id', booking.id).lt('created_at', joinedAt).limit(1);
+  const { data: incidents, error: incErr } = await client.from('classroom_incidents').select('side, kind')
+    .eq('booking_id', booking.id).lt('created_at', joinedAt);
   if (incErr) throw new Error(`incidents: ${incErr.message}`);
+  const ours = (incidents || []).some((i: { side: string; kind: string }) => i.side === 'teacher' || i.kind === 'provider_error');
 
-  const verdict = evaluateLateness({ booking, firstTeacherRoomJoin: joinedAt, incidentBeforeJoin: (incidents || []).length > 0 });
+  const verdict = evaluateLateness({ booking, firstTeacherRoomJoin: joinedAt, incidentBeforeJoin: ours });
   if (!verdict.late) return;
   const { error: insErr } = await client.from('teacher_late_reasons').upsert(
     { booking_id: booking.id, teacher_user_id: booking.teacher_id, late_minutes: verdict.minutes, status: 'pending' },
