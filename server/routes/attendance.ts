@@ -1,6 +1,8 @@
 import express from 'express';
 import crypto from 'node:crypto';
 import { lessonJoinState } from '../../src/lib/lessonWindow.js';
+import { roomJoinState } from '../../src/lib/roomWindow.js';
+import { classroomEnabledFor } from '../classroom/mode.js';
 import { handleLiveLessonEvent } from '../notifications/lessonLive.js';
 
 /**
@@ -226,13 +228,16 @@ export async function attachAttendance<T extends { id: string; scheduled_start: 
   });
 }
 
-const siteOrigin = () => {
+export const siteOrigin = () => {
   try { return new URL(process.env.APP_URL || 'https://watazawwado.academy').origin; } catch { return 'https://watazawwado.academy'; }
 };
 
+/** Our site's join link for a lesson: it opens our room or Zoom (see /api/join/:id). */
+export const siteJoinPath = (bookingId: string) => `${siteOrigin()}/api/join/${bookingId}`;
+
 /** The student-facing join link: goes through our site so we can log the click, then on to Zoom. */
 export const studentJoinPath = (bookingId: string | null | undefined, zoomUrl: string | null | undefined) =>
-  bookingId && typeof zoomUrl === 'string' && /^https:\/\//.test(zoomUrl.trim()) ? `${siteOrigin()}/api/join/${bookingId}` : zoomUrl || null;
+  bookingId && typeof zoomUrl === 'string' && /^https:\/\//.test(zoomUrl.trim()) ? siteJoinPath(bookingId) : zoomUrl || null;
 
 const isZoomUrl = (value: unknown) => {
   try {
@@ -245,7 +250,10 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
   getClient: () => any;
   verifyTeacherAuth: Middleware;
   rateLimit: Middleware;
+  /** Classroom Task 14: the rollout switch for the lesson's teacher (CLASSROOM_MODE by default). */
+  classroomEnabled?: (teacherId: string) => boolean;
 }) {
+  const classroomEnabled = deps.classroomEnabled ?? ((teacherId: string) => classroomEnabledFor(teacherId));
   app.post('/api/zoom/webhook', async (req: any, res: any) => {
     const secret = (process.env.ZOOM_WEBHOOK_SECRET_TOKEN || '').trim();
     if (!secret) return res.status(503).json({ error: 'Webhook not configured.' });
@@ -281,12 +289,17 @@ export function registerAttendanceRoutes(app: express.Express, deps: {
     const id = String(req.params.id || '');
     const supabase = deps.getClient();
     if (!UUID_RE.test(id) || !supabase) return res.redirect(302, '/student/lessons');
-    const { data: booking } = await supabase.from('bookings').select('id, zoom_meeting_link, scheduled_start, scheduled_end, duration_minutes, status').eq('id', id).maybeSingle();
-    const url = booking?.zoom_meeting_link;
-    if (!booking || !isZoomUrl(url)) return res.redirect(302, '/student/lessons');
-    // Owner review 2026-11-09: the link works only during the lesson (from 5 minutes before to its end).
-    const state = booking.status === 'cancelled' ? 'ended' : lessonJoinState(booking, 'student');
+    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, zoom_meeting_link, scheduled_start, scheduled_end, duration_minutes, status').eq('id', id).maybeSingle();
+    if (!booking) return res.redirect(302, '/student/lessons');
+    // Classroom Task 14: our room is the lesson link, with the room window. ?zoom=1 is the Task 12 fallback link.
+    const room = req.query.zoom !== '1' && classroomEnabled(booking.teacher_id);
+    const url = booking.zoom_meeting_link;
+    if (!room && !isZoomUrl(url)) return res.redirect(302, '/student/lessons');
+    // Owner review 2026-11-09: the Zoom link works only during the lesson (from 5 minutes before to its end).
+    const state = room ? roomJoinState(booking) : booking.status === 'cancelled' ? 'ended' : lessonJoinState(booking, 'student');
     if (state !== 'open') return res.redirect(302, `/student/lessons?lesson=${booking.id}&join=${state}`);
+    // The room records its own join when the learner enters; only the Zoom path logs the click here.
+    if (room) return res.redirect(302, `/student/room/${booking.id}`);
     // Mail scanners and link previews open email links on their own; don't log those as the student.
     const ua = String(req.headers['user-agent'] || '');
     const automated = req.method === 'HEAD' || !ua || LINK_SCANNER_UA.test(ua);

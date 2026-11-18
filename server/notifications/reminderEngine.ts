@@ -13,7 +13,8 @@ import { DateTime } from 'luxon';
 import { createClient } from '@supabase/supabase-js';
 import { dispatchNotification } from './dispatcher.js';
 import { notifyUser, resolveLearnerAccount } from './inbox.js';
-import { studentJoinPath } from '../routes/attendance.js';
+import { siteJoinPath, studentJoinPath } from '../routes/attendance.js';
+import { classroomEnabledFor } from '../classroom/mode.js';
 import { isServerSupabaseConfigured } from '../integrations/availabilityEngine.js';
 
 function getServerSupabase() {
@@ -394,8 +395,11 @@ export async function processDueReminders(): Promise<{
           timeDisplay: timeStr,
           timezone: studentTz,
           durationMinutes: Number(b.duration_minutes),
-          // Through our site so the click is logged in lesson attendance.
-          zoomLink: studentJoinPath(b.id, b.zoom_meeting_link),
+          // Through our site so the click is logged in lesson attendance. Classroom Task 14: with our room on, the
+          // same site link opens the room (no Zoom link needed) and the button says "Join on Watazawwado".
+          ...(classroomEnabledFor(b.teacher_id)
+            ? { zoomLink: siteJoinPath(b.id), classroom: true }
+            : { zoomLink: studentJoinPath(b.id, b.zoom_meeting_link) }),
           cairoTimeDisplay,
           isTrial: b.booking_type === 'trial'
         }

@@ -11,6 +11,8 @@ import { scheduleBookingReminders, cancelBookingReminders, rescheduleBookingRemi
 import { dispatchNotification } from '../notifications/dispatcher.js';
 import { notifyUser } from '../notifications/inbox.js';
 import { DateTime } from 'luxon';
+import { classroomEnabledFor } from '../classroom/mode.js';
+import { siteJoinPath } from '../routes/attendance.js';
 
 function sanitizeErrorMessage(msg: string): string {
   if (!msg) return 'Unknown error';
@@ -300,7 +302,8 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                       durationMinutes: booking.duration_minutes || 60,
                       isTrial: booking.booking_type === 'trial',
                       cairoTimeDisplay: booking.cairo_time_display || null,
-                      zoomLink: booking.zoom_meeting_link?.startsWith('http') ? booking.zoom_meeting_link : null
+                      zoomLink: booking.zoom_meeting_link?.startsWith('http') ? booking.zoom_meeting_link : null,
+                      ...learnerRoomLink(booking)
                     }
                   });
                   await notifyTeacherOnSite(booking.teacher_id, 'lesson_rescheduled', booking.student_name || booking.contact_name || 'Student', newStartLuxon.setZone('Africa/Cairo').toFormat('cccc d LLL, h:mm a') + ' (Cairo)');
@@ -387,6 +390,11 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
   return processedCount;
 }
 
+/** Classroom Task 14: with our room on for the teacher, the email link is our site's join link (it opens the room). */
+function learnerRoomLink(booking: any): { zoomLink?: string; classroom?: true } {
+  return booking?.id && classroomEnabledFor(booking.teacher_id) ? { zoomLink: siteJoinPath(booking.id), classroom: true } : {};
+}
+
 /** Schedules reminders and sends the trial/booking confirmation. Never throws. */
 async function notifyBookingConfirmed(booking: any, zoomLink: string | null) {
   try {
@@ -416,6 +424,7 @@ async function notifyBookingConfirmed(booking: any, zoomLink: string | null) {
         timezone: studentTz,
         durationMinutes: booking.duration_minutes || (isTrial ? 30 : 60),
         zoomLink,
+        ...learnerRoomLink(booking),
         cairoTimeDisplay: booking.cairo_time_display || null,
         isTrial,
         feeAmount: booking.fee_amount_usd ?? null,

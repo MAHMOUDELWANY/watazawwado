@@ -3,6 +3,7 @@ import express from 'express';
 import { notifyUser } from '../notifications/inbox.js';
 import { studentJoinPath } from './attendance.js';
 import { isUuid } from './progress.js';
+import { classroomEnabledFor } from '../classroom/mode.js';
 
 /**
  * NX-16: a child's own phone, linked to the parent's account (owner approved the design 2026-11-02).
@@ -190,7 +191,7 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
     const learner = (await deps.getLearners(client, req)).find((l) => l.id === learnerId);
     if (!learner) return res.status(401).json({ error: 'This device is no longer linked. Ask your parent for a new code.', code: 'CHILD_DEVICE_UNLINKED' });
     const { data, error } = await client.from('bookings')
-      .select('id, scheduled_start, scheduled_end, duration_minutes, status, zoom_meeting_link, services:service_id(title, arabic_title)')
+      .select('id, teacher_id, scheduled_start, scheduled_end, duration_minutes, status, zoom_meeting_link, services:service_id(title, arabic_title)')
       .eq('student_id', learnerId).in('status', ['confirmed', 'rescheduled']).gt('scheduled_end', new Date().toISOString())
       .order('scheduled_start', { ascending: true }).limit(10);
     if (error) { console.error('[kid me]', error.message); return res.status(500).json({ error: 'Could not load your lessons.' }); }
@@ -201,7 +202,9 @@ export function registerChildDeviceRoutes(app: express.Express, deps: {
         return {
           id: b.id, start: b.scheduled_start, end: b.scheduled_end, minutes: b.duration_minutes,
           title: s?.title || 'Lesson', titleAr: s?.arabic_title || '',
-          zoomUrl: studentJoinPath(b.id, typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim() ? b.zoom_meeting_link.trim() : null),
+          // Classroom Task 14: with our room on, the kid joins through /kid/room/:id ("Lesson room"), never the parent's
+          // /api/join path (it leads to /student/room, which a child device cannot open).
+          zoomUrl: classroomEnabledFor(b.teacher_id) ? null : studentJoinPath(b.id, typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim() ? b.zoom_meeting_link.trim() : null),
         };
       }),
     });

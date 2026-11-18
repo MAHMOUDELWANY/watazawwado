@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
-import { joinState, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
+import { RoomJoinLink, joinState, lessonJoin as joinTarget, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
+import { WatchLessonButton } from '../components/WatchLessonButton';
+import { ROOM_OPENS_MIN } from '../../lib/roomWindow';
 import {
   CalendarClock,
   Calendar,
@@ -321,8 +323,10 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
               const hasZoomLink = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
               const zoomStart = b.scheduledStart || b.scheduled_start;
-              const lessonJoin = zoomStart ? joinState(zoomStart, b.scheduledEnd || b.scheduled_end, now) : 'early';
-              const hasValidZoomUrl = hasZoomLink && lessonJoin === 'open';
+              // Classroom Task 14: with our room on for this lesson, Join leads to the room in the room window.
+              const join = joinTarget(b, now);
+              const lessonJoin = join.room ? join.state : zoomStart ? joinState(zoomStart, b.scheduledEnd || b.scheduled_end, now) : 'early';
+              const hasValidZoomUrl = !join.room && hasZoomLink && lessonJoin === 'open';
               const lessonEnded = lessonJoin === 'ended';
               
               const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
@@ -473,6 +477,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <Clock className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'وقت الحصة خلص.' : 'This lesson time has ended.'}</span>
                         </div>
+                      ) : join.room && lessonJoin === 'open' ? (
+                        <div className="flex flex-wrap items-center gap-2">
+                          <RoomJoinLink href={join.href} isAr={isAr} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2" />
+                          <WatchLessonButton booking={b} isAr={isAr} now={now.getTime()} />
+                        </div>
                       ) : hasValidZoomUrl ? (
                         <a
                           href={rawZoom}
@@ -488,7 +497,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
-                            {hasZoomLink
+                            {join.room
+                              ? (isAr ? `زر الدخول يظهر قبل الحصة بـ ${ROOM_OPENS_MIN} دقائق.` : `The Join button appears ${ROOM_OPENS_MIN} minutes before the lesson.`)
+                              : hasZoomLink
                               ? (isAr ? `زر الدخول يظهر قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق.` : `The Join button appears ${JOIN_OPENS_MIN} minutes before the lesson.`)
                               : isAr
                               ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا. المعلم يفتح الفصل وتنتظر أنت لحظات في غرفة الانتظار.'

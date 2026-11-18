@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, CalendarPlus, Link2, Video } from 'lucide-re
 import { authedJson } from '../../lib/authedJson';
 import { buildIcs } from '../../lib/ics';
 import { useActiveLearner } from '../activeLearner';
-import { joinState } from '../components/LessonDayCard';
+import { lessonJoin } from '../components/LessonDayCard';
 import { ErrorState } from '../../components/ErrorState';
 import { BrandLoader } from '../../components/ui/BrandLoader';
 import { zoneCity } from '../../dashboard/lib/labels';
@@ -19,6 +19,7 @@ interface Lesson {
   durationMinutes: number;
   status: string;
   zoomMeetingLink: string | null;
+  classroom?: boolean;
 }
 
 /** One colour per child, in the brand palette, stable by the family's learner order. */
@@ -141,15 +142,17 @@ export default function StudentCalendarPage({ lang = 'ar' }: { lang?: 'en' | 'ar
                 </p>
                 <ul className="space-y-2">
                   {items.map((l) => {
-                    const state = joinState(l.scheduledStart, l.scheduledEnd, now);
+                    // Classroom Task 14: our room (room window) when the flag is on, else Zoom as before.
+                    const join = lessonJoin(l, now);
+                    const state = join.state;
                     const time = DateTime.fromISO(l.scheduledStart).setZone(zone).setLocale(loc).toFormat('h:mm a');
                     return (
                       <li key={l.id} className="rounded-xl p-2 text-xs bg-surface border-s-4" style={{ borderInlineStartColor: colorFor(learnerIds, l.studentId) }}>
                         <p className="font-semibold text-foreground">{time}</p>
                         <p className="text-muted-foreground truncate">{l.serviceTitle}{l.learnerName ? ` · ${l.learnerName.split(' ')[0]}` : ''}</p>
                         <div className="mt-1.5 flex flex-wrap gap-1.5">
-                          {l.status !== 'completed' && state === 'open' && l.zoomMeetingLink && (
-                            <a href={l.zoomMeetingLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 min-h-9 px-2.5 rounded-lg btn-primary-material text-primary-foreground font-semibold">
+                          {l.status !== 'completed' && state === 'open' && join.hasLink && (
+                            <a href={join.href} {...(join.room ? {} : { target: '_blank', rel: 'noopener noreferrer' })} className="inline-flex items-center gap-1 min-h-9 px-2.5 rounded-lg btn-primary-material text-primary-foreground font-semibold">
                               <Video className="w-3.5 h-3.5" aria-hidden="true" />{t('Join', 'ادخل')}
                             </a>
                           )}

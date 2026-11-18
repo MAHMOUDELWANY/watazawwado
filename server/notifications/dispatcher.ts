@@ -47,6 +47,8 @@ export interface NotificationPayload {
     timezone: string;
     durationMinutes: number;
     zoomLink?: string | null;
+    /** Classroom Task 14: the link leads to our own room, so the button says so. */
+    classroom?: boolean;
     cairoTimeDisplay?: string | null;
     isTrial?: boolean;
     feeAmount?: number | null;
@@ -410,6 +412,7 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               durationMinutes: booking.durationMinutes,
               bookingRef: booking.referenceCode,
               zoomLink: booking.zoomLink,
+              classroom: booking.classroom,
               lang
             })
             : renderStudentCancellation({ ...booking, bookingRef: booking.referenceCode, lang }));

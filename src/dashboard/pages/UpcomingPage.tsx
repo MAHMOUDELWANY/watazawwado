@@ -245,7 +245,8 @@ function UpcomingLessonRow({
   locale: string;
 }) {
   const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
-  const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
+  // Classroom Task 14: with our room on, the Start button needs no Zoom link.
+  const hasStartLink = Boolean(lesson.classroom || lesson.zoom_host_url || lesson.zoom_meeting_link);
 
   return (
     <div className="glass-card border-none rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-accent/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -299,7 +300,7 @@ function UpcomingLessonRow({
         {hasStartLink ? (
           <span className="text-sm font-medium text-success bg-success/10 px-2.5 py-1 rounded-lg border border-success/30 hidden sm:inline-flex items-center gap-1">
             <Video className="w-3 h-3" />
-            {t('Zoom ready', 'Zoom جاهز')}
+            {lesson.classroom ? t('Room ready', 'الغرفة جاهزة') : t('Zoom ready', 'Zoom جاهز')}
           </span>
         ) : (
           <span className="text-sm text-warning bg-warning/10 px-2.5 py-1 rounded-lg border border-warning/30 hidden sm:inline-flex items-center gap-1">

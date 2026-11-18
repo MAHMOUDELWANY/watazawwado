@@ -32,7 +32,8 @@ import { Badge } from '../../components/ui/Badge';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { PackageBalance } from '../components/PackageBalance';
-import { LessonDayCard, isLessonDay, joinState, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
+import { LessonDayCard, RoomJoinLink, isLessonDay, joinState, lessonJoin, useNowTick, JOIN_OPENS_MIN } from '../components/LessonDayCard';
+import { ROOM_OPENS_MIN } from '../../lib/roomWindow';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
 import { HomeworkCard } from '../components/HomeworkCard';
@@ -268,6 +269,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   const nextStart = nextBooking?.scheduledStart || nextBooking?.scheduled_start;
   const zoomOpen = Boolean(nextStart) && joinState(nextStart, nextBooking?.scheduledEnd || nextBooking?.scheduled_end, now) === 'open';
   const hasValidZoomUrl = hasZoomLink && zoomOpen;
+  // Classroom Task 14: with our room on for this lesson, Join leads to the room in the room window.
+  const nextJoin = nextBooking ? lessonJoin(nextBooking, now) : null;
 
   const studentFirstName = profile?.name ? profile.name.split(' ')[0] : '';
 
@@ -599,7 +602,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">
-                  {hasValidZoomUrl ? (
+                  {nextJoin?.room && nextJoin.state === 'open' ? (
+                    <RoomJoinLink href={nextJoin.href} isAr={isAr} className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold min-h-[44px]" />
+                  ) : hasValidZoomUrl && !nextJoin?.room ? (
                     <a
                       href={rawZoom}
                       target="_blank"
@@ -614,7 +619,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-sm min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
-                        {hasZoomLink
+                        {nextJoin?.room
+                          ? (nextJoin.state === 'ended'
+                            ? (isAr ? 'وقت الحصة خلص' : 'Lesson time is over')
+                            : (isAr ? `زر الدخول يظهر قبل الحصة بـ ${ROOM_OPENS_MIN} دقائق` : `The Join button appears ${ROOM_OPENS_MIN} minutes before the lesson`))
+                          : hasZoomLink
                           ? (isAr ? `زر الدخول يظهر قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق` : `The Join button appears ${JOIN_OPENS_MIN} minutes before the lesson`)
                           : (isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here')}
                       </span>

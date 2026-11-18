@@ -238,6 +238,10 @@ const LBL = {
   zoom: { en: 'Zoom link', ar: 'رابط Zoom' }
 };
 
+const joinLabel = (classroom?: boolean): L => (classroom
+  ? { en: 'Join on Watazawwado', ar: 'ادخل الحصة على وتزودوا' }
+  : { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' });
+
 function zoomParts(zoomLink?: string | null) {
   const url = sanitizeUrl(zoomLink);
   return {
@@ -262,6 +266,8 @@ export function renderStudentBookingConfirmation(params: {
   durationMinutes: number;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   cairoTimeDisplay?: string | null;
   feeAmount?: number | null;
   currency?: string | null;
@@ -310,7 +316,7 @@ export function renderStudentBookingConfirmation(params: {
       en: 'You can cancel up to 3 hours before (you get a lesson credit) or move it up to 1 hour before, from your account.',
       ar: 'يمكنك الإلغاء حتى 3 ساعات قبل الحصة (وتعود إليك رصيدًا)، أو تغيير الموعد حتى ساعة قبلها من حسابك.'
     },
-    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
+    button: zoom.url ? { url: params.zoomLink!, label: joinLabel(params.classroom) } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
     en: `Lesson confirmed: ${params.serviceName} [${params.bookingRef}]`,
@@ -328,6 +334,8 @@ export function renderStudentTrialConfirmation(params: {
   durationMinutes: number;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   cairoTimeDisplay?: string | null;
   lang?: EmailLang;
 }): EmailRenderResult {
@@ -352,7 +360,7 @@ export function renderStudentTrialConfirmation(params: {
       [LBL.ref, escapeHtml(params.bookingRef)]
     ],
     note: zoom.note || { en: 'You can move your trial once, up to 1 hour before it starts.', ar: 'يمكنك تغيير موعد الحصة التجريبية مرة واحدة حتى ساعة قبلها.' },
-    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
+    button: zoom.url ? { url: params.zoomLink!, label: joinLabel(params.classroom) } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
     en: `Free trial booked [${params.bookingRef}]`,
@@ -445,6 +453,8 @@ export function renderStudentReschedule(params: {
   durationMinutes: number;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   lang?: EmailLang;
 }): EmailRenderResult {
   const name = escapeHtml(params.learnerName);
@@ -462,7 +472,7 @@ export function renderStudentReschedule(params: {
       [LBL.ref, escapeHtml(params.bookingRef)]
     ],
     note: zoom.note,
-    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
+    button: zoom.url ? { url: params.zoomLink!, label: joinLabel(params.classroom) } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
     en: `Lesson rescheduled [${params.bookingRef}]`,
@@ -480,6 +490,8 @@ export function renderStudent24hReminder(params: {
   durationMinutes: number;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   isTrial?: boolean;
   lang?: EmailLang;
 }): EmailRenderResult {
@@ -515,6 +527,8 @@ export function renderStudent3hReminder(params: {
   timezone: string;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   lang?: EmailLang;
 }): EmailRenderResult {
   const name = escapeHtml(params.learnerName);
@@ -533,7 +547,7 @@ export function renderStudent3hReminder(params: {
       [LBL.ref, escapeHtml(params.bookingRef)]
     ],
     note: zoom.note,
-    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
+    button: zoom.url ? { url: params.zoomLink!, label: joinLabel(params.classroom) } : ACCOUNT_BUTTON(),
     reason: STUDENT_REASON
   }, {
     en: 'Your lesson is in 3 hours',
@@ -548,6 +562,8 @@ export function renderStudent1hReminder(params: {
   timezone: string;
   bookingRef: string;
   zoomLink?: string | null;
+  /** Classroom Task 14: our own room is the lesson link (the URL is still /api/join/:id). */
+  classroom?: boolean;
   lang?: EmailLang;
 }): EmailRenderResult {
   const name = escapeHtml(params.learnerName);
@@ -562,7 +578,7 @@ export function renderStudent1hReminder(params: {
       [{ en: 'Time', ar: 'الساعة' }, `${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`]
     ],
     note: zoom.note,
-    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : undefined,
+    button: zoom.url ? { url: params.zoomLink!, label: joinLabel(params.classroom) } : undefined,
     reason: STUDENT_REASON
   }, {
     en: 'Your lesson starts in 1 hour',

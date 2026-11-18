@@ -64,7 +64,8 @@ describe('CL-12 recordIncident', () => {
     const teacher = await recordIncident(db, { bookingId: BOOKING, kind: 'connect_timeout', side: 'teacher', detail: { ms: 20000 } }, min(1));
     assert.deepStrictEqual(teacher, { fallback: { url: HOST } });
     const learner = await recordIncident(db, { bookingId: BOOKING, kind: 'ice_failed', side: 'student', detail: {} }, min(1));
-    assert.deepStrictEqual(learner, { fallback: { url: studentJoinPath(BOOKING, JOIN)! } });
+    // ?zoom=1 keeps the fallback on Zoom while /api/join/:id leads to the room (Task 14).
+    assert.deepStrictEqual(learner, { fallback: { url: `${studentJoinPath(BOOKING, JOIN)!}?zoom=1` } });
     assert.strictEqual(db.tables.classroom_incidents.length, 2);
     assert.deepStrictEqual(db.tables.classroom_incidents.map((r: any) => [r.kind, r.side]), [['connect_timeout', 'teacher'], ['ice_failed', 'student']]);
     assert.strictEqual(db.tables.classroom_incidents[0].created_at, new Date(min(1)).toISOString());
@@ -182,7 +183,7 @@ describe('CL-12 incident routes and lateness', () => {
     clock = min(1);
     const entry: any = await (await fetch(`${base}/api/student/classroom/${other}/enter`, { headers: { 'x-student': 'parent-1' } })).json();
     const res = await fetch(`${base}/api/classroom/${other}/incident`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': entry.ticket }, body: JSON.stringify({ kind: 'ice_failed', detail: { failures: 2 } }) });
-    assert.deepStrictEqual(await res.json(), { fallback: { url: studentJoinPath(other, JOIN)! } });
+    assert.deepStrictEqual(await res.json(), { fallback: { url: `${studentJoinPath(other, JOIN)!}?zoom=1` } });
     clock = min(5);
     await fetch(`${base}/api/dashboard/classroom/${other}/enter`, { headers: { 'x-teacher': 'teacher-1' } });
     await fetch(`${base}/api/dashboard/classroom/${third}/enter`, { headers: { 'x-teacher': 'teacher-1' } });

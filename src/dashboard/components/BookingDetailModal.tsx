@@ -619,7 +619,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     )}
                   </div>
                   <div className="flex items-center gap-2">
-                    {(booking.zoom_host_url || booking.zoom_meeting_link) && (
+                    {(booking.classroom || booking.zoom_host_url || booking.zoom_meeting_link) && (
                       <StartLessonButton lesson={booking as any} t={t} label={t('Start as host', 'ابدأ كمضيف')} compact />
                     )}
                     {booking.zoom_meeting_link && (

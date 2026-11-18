@@ -47,7 +47,9 @@ export async function recordIncident(
     });
   }
 
-  const url = side === 'teacher' ? (booking.zoom_host_url || booking.zoom_meeting_link || null) : studentJoinPath(bookingId, booking.zoom_meeting_link);
+  // ?zoom=1: with the classroom on, /api/join/:id leads to the room; the fallback must reach Zoom (Task 14).
+  const learner = studentJoinPath(bookingId, booking.zoom_meeting_link);
+  const url = side === 'teacher' ? (booking.zoom_host_url || booking.zoom_meeting_link || null) : learner?.includes('/api/join/') ? `${learner}?zoom=1` : learner;
   const open = lessonJoinState(booking, side, now) === 'open';
   return { fallback: url && open ? { url } : null };
 }

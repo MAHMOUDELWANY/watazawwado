@@ -396,7 +396,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
             {/* Zoom Controls */}
             <div className="pt-2 flex flex-wrap items-center gap-2">
-              {hostUrl ? (
+              {hostUrl || trial.classroom ? (
                 <StartLessonButton lesson={{ ...(trial as any), zoom_host_url: hostUrl }} t={t} label={t('Start as host', 'ابدأ كمضيف')} compact />
               ) : (
                 <div className="text-sm text-warning font-medium flex items-center gap-1.5">

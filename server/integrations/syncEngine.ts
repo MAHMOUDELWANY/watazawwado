@@ -18,6 +18,8 @@ import {
   getGoogleOAuthCredentials
 } from './googleCalendar.js';
 import { createOrProvisionZoomMeeting } from './zoom.js';
+import { classroomEnabledFor } from '../classroom/mode.js';
+import { siteOrigin } from '../routes/attendance.js';
 import { encryptToken } from './crypto.js';
 
 export interface BookingSyncResult {
@@ -318,7 +320,9 @@ export async function syncBookingIntegrations(
             googleConn.accessToken,
             {
               ...booking,
-              zoomMeetingLink
+              zoomMeetingLink,
+              // Classroom Task 14: the teacher's event leads to our room; the Zoom meeting above stays as the fallback.
+              ...(booking.id && classroomEnabledFor(targetTeacherId) ? { location: `${siteOrigin()}/dashboard/room/${booking.id}` } : {})
             }
           );
           googleEventId = gcalResult.eventId;

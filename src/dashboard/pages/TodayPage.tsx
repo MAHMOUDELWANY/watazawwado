@@ -164,7 +164,7 @@ export default function TodayPage() {
   const attentionLessons = lessons.filter(l => {
     if (l.status === 'cancelled' || l.status === 'completed' || l.status === 'no_show') return false;
     const isFailed = l.integration_status === 'failed' || l.integration_status === 'manual_action_required';
-    const isMissingZoom = !l.zoom_host_url && !l.zoom_join_url;
+    const isMissingZoom = !l.classroom && !l.zoom_host_url && !l.zoom_join_url;
     const startLesson = DateTime.fromISO(l.scheduled_start).setZone(activeTz);
     const endLesson = l.scheduled_end
       ? DateTime.fromISO(l.scheduled_end).setZone(activeTz)
@@ -512,7 +512,8 @@ function NextLessonSpotlight({
   const isInProgress = nowLesson >= startLesson && nowLesson <= endLesson;
   const diffMinutes = Math.round(startLesson.diff(nowLesson, 'minutes').minutes);
 
-  const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
+  // Classroom Task 14: with our room on, the Start button needs no Zoom link.
+  const hasStartLink = Boolean(lesson.classroom || lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
   return (
@@ -616,7 +617,8 @@ function TodayLessonRow({
   locale: string;
 }) {
   const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
-  const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
+  // Classroom Task 14: with our room on, the Start button needs no Zoom link.
+  const hasStartLink = Boolean(lesson.classroom || lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
   const isCompleted = lesson.status === 'completed';

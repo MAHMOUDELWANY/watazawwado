@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { Clock, ExternalLink, MessageCircle, NotebookPen, Video } from 'lucide-react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { authedJson } from '../../lib/authedJson';
 import { TeacherFace } from '../../components/TeacherFace';
 import { WatchLessonButton } from './WatchLessonButton';
+import { roomJoinState, ROOM_OPENS_MIN } from '../../lib/roomWindow';
 
 /** Join opens 10 minutes before the start (ST-01). */
 // The Zoom link is shown only from 5 minutes before the start, on every page (owner, 2026-11-06).
@@ -32,6 +34,31 @@ export function joinState(startIso: string, endIso: string | null | undefined, n
   const t = DateTime.fromJSDate(now);
   if (t >= end) return 'ended';
   return t >= start.minus({ minutes: JOIN_OPENS_MIN }) ? 'open' : 'early';
+}
+
+/**
+ * Classroom Task 14: where Join goes. With our room on for the lesson (server flag), our room page within the room
+ * window (10 minutes before to 15 after the end); otherwise the Zoom link with its own window, as before.
+ */
+export function lessonJoin(b: any, now: Date = new Date()): { room: boolean; href: string; hasLink: boolean; state: 'early' | 'open' | 'ended' } {
+  const start = b.scheduledStart || b.scheduled_start;
+  const end = b.scheduledEnd || b.scheduled_end;
+  if (b.classroom) {
+    const state = start ? roomJoinState({ scheduled_start: start, scheduled_end: end, duration_minutes: b.durationMinutes ?? b.duration_minutes, status: b.status }, now.getTime()) : 'early';
+    return { room: true, href: `/student/room/${b.id}`, hasLink: true, state };
+  }
+  const zoom = String(b.zoomMeetingLink || b.zoom_join_url || '').trim();
+  return { room: false, href: zoom, hasLink: /^https?:\/\//.test(zoom), state: start ? joinState(start, end, now) : 'early' };
+}
+
+/** Our room's Join button (same tab: the room covers the app). */
+export function RoomJoinLink({ href, isAr, className }: { href: string; isAr: boolean; className: string }) {
+  return (
+    <Link to={href} className={className}>
+      <Video className="w-4 h-4" />
+      <span>{isAr ? 'ادخل الحصة' : 'Join the lesson'}</span>
+    </Link>
+  );
 }
 
 /** "in 2 h 15 min" / "بعد ساعتين و15 دقيقة"; "now" once it has started. */
@@ -102,13 +129,13 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
   const now = useNowTick();
 
   const start = booking.scheduledStart || booking.scheduled_start;
-  const end = booking.scheduledEnd || booking.scheduled_end;
-  const state = joinState(start, end, now);
+  const join = lessonJoin(booking, now);
+  const state = join.state;
   const live = useLessonLive(booking.id, state === 'open');
   if (state === 'ended') return null;
   const line = liveLine(live, now.getTime() >= new Date(start).getTime(), isAr);
-  const zoom = String(booking.zoomMeetingLink || booking.zoom_join_url || '').trim();
-  const hasZoom = /^https?:\/\//.test(zoom);
+  const zoom = join.href;
+  const hasZoom = join.hasLink;
   const subject = isAr && booking.serviceArabicTitle ? booking.serviceArabicTitle : booking.serviceTitle;
   const time = DateTime.fromISO(start).setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.TIME_SIMPLE);
 
@@ -148,7 +175,9 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
       )}
 
       <div className="flex flex-wrap items-center gap-2.5">
-        {hasZoom && state === 'open' ? (
+        {join.room && state === 'open' ? (
+          <RoomJoinLink href={join.href} isAr={isAr} className="inline-flex items-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold min-h-[44px]" />
+        ) : hasZoom && state === 'open' ? (
           <a href={zoom} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 btn-zoom rounded-xl text-sm sm:text-[15px] font-semibold min-h-[44px]">
             <Video className="w-4 h-4" />
             <span>{isAr ? 'ادخل الحصة' : 'Join the lesson'}</span>
@@ -157,13 +186,15 @@ export function LessonDayCard({ booking, isAr }: { booking: any; isAr: boolean }
         ) : (
           <span className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-sm text-muted-foreground min-h-[44px]">
             <Video className="w-4 h-4" aria-hidden="true" />
-            {hasZoom
+            {join.room
+              ? (isAr ? `يعمل زر الدخول قبل الحصة بـ ${ROOM_OPENS_MIN} دقائق` : `Join opens ${ROOM_OPENS_MIN} minutes before`)
+              : hasZoom
               ? (isAr ? `يعمل زر الدخول قبل الحصة بـ ${JOIN_OPENS_MIN} دقائق` : `Join opens ${JOIN_OPENS_MIN} minutes before`)
               : (isAr ? 'يُجهَّز رابط Zoom، وسيصلك على البريد ويظهر هنا' : 'The Zoom link is on its way by email and will show here')}
           </span>
         )}
-        {state === 'open' && (
-          /* NX-12: the slides the teacher is showing, beside the Zoom call. */
+        {state === 'open' && !join.room && (
+          /* NX-12: the slides the teacher is showing, beside the Zoom call (our room has them inside). */
           <a href={`/student/room/${booking.id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-surface-subtle min-h-[44px]">
             {isAr ? 'شرائح الدرس' : 'Lesson slides'}
           </a>

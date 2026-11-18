@@ -30,6 +30,8 @@ export interface CalendarEventPayload {
   cairoTimeDisplay?: string | null;
   durationMinutes: number;
   zoomMeetingLink: string;
+  /** Classroom Task 14: the event's location, our room link, when the classroom is on for the teacher. */
+  location?: string;
   contactEmail: string;
   contactWhatsapp?: string | null;
   notes?: string | null;
@@ -563,6 +565,7 @@ export async function createGoogleCalendarEvent(
   const eventBody = {
     id: deterministicEventId,
     summary,
+    ...(booking.location ? { location: booking.location } : {}),
     description: descriptionLines.join('\n'),
     start: {
       dateTime: booking.scheduledStart,
