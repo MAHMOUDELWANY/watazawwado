@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MonitorUp, MonitorX } from 'lucide-react';
 import { useT } from '../../lib/language';
 import { cn } from '../../lib/utils';
+import FocusTrap from '../../components/FocusTrap';
 
 /** Mobile browsers have no getDisplayMedia: the button is not shown there at all. */
 export const canShareScreen = () => typeof navigator !== 'undefined' && typeof navigator.mediaDevices?.getDisplayMedia === 'function';
@@ -46,6 +47,7 @@ export function ScreenShareButton({ sharing, onStart, onStop, className }: {
         {sharing ? <MonitorX className="h-5 w-5" aria-hidden="true" /> : <MonitorUp className="h-5 w-5" aria-hidden="true" />}
       </button>
       {(note || error) && (
+        <FocusTrap onEscape={() => { setNote(false); setError(''); }}>
         <div role="dialog" aria-label={label} className="glass-3 absolute bottom-14 start-1/2 z-30 grid w-72 -translate-x-1/2 rtl:translate-x-1/2 gap-3 rounded-[var(--r-3)] p-4 text-sm text-foreground">
           {error ? <p role="alert" className="text-destructive">{error}</p> : (
             <p>{t('To share sound too, pick a browser tab and tick "Share tab audio" in the next window.', 'علشان الصوت يوصل كمان، اختار تاب في المتصفح وعلّم على "Share tab audio" في الشاشة الجاية.')}</p>
@@ -55,6 +57,7 @@ export function ScreenShareButton({ sharing, onStart, onStop, className }: {
             {!error && <button type="button" onClick={start} className="min-h-11 rounded-[var(--r-2)] bg-teal px-4 font-semibold text-white focus-ring">{t('Choose what to share', 'اختار هتشارك إيه')}</button>}
           </div>
         </div>
+        </FocusTrap>
       )}
     </div>
   );
