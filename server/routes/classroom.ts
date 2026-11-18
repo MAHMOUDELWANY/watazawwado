@@ -27,6 +27,9 @@ const isObserver = (r: RoomRole) => r === 'guardian_observer' || r === 'admin_ob
 // Teacher and learner have one seat each (two devices replace each other); every observer has their own.
 const seatOf = (t: TicketPayload) => (isObserver(t.role) ? `${t.role}:${t.userId}` : t.role);
 const attendanceRole = (r: RoomRole) => (r === 'teacher' ? 'teacher' : 'student');
+/** A pass from before the lesson was given to another teacher or learner no longer belongs to this lesson. */
+const notYours = (booking: RoomBooking, t: TicketPayload) =>
+  t.role === 'teacher' ? booking.teacher_id !== t.userId : t.role !== 'admin_observer' && booking.student_id !== t.studentId;
 const MAX_EVENTS = 50;
 const MAX_EVENTS_BODY = 256 * 1024;
 const EVENT_SKEW_MS = 10 * 60_000;
@@ -435,6 +438,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const booking = await loadBooking(client, req.roomTicket.bookingId);
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (notYours(booking, req.roomTicket)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       const url = await fileLink(client, booking, fileId);
       if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
       return res.json({ url });
@@ -451,6 +455,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const t: TicketPayload = req.roomTicket;
       const booking = await loadBooking(client, t.bookingId);
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+      if (notYours(booking, t)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       const { sessions: _seats, ...snapshot } = await loadSnapshot(client, t.bookingId);
       return res.json({ snapshot, remainingMs: remainingMs(booking, now()) });
     } catch (err) {
@@ -496,7 +501,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
       if (!['confirmed', 'rescheduled'].includes(booking.status)) return res.status(409).json({ error: 'This lesson is not active.', ended: true });
       // Same checks as liveSeat, but a superseded or failed device may still report: it is the one that failed.
-      if (t.role === 'teacher' ? booking.teacher_id !== t.userId : booking.student_id !== t.studentId) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
+      if (notYours(booking, t)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       return res.json(await recordIncident(client, { bookingId: t.bookingId, kind, side: attendanceRole(t.role), detail }, now()));
     } catch (err) {
       return fail(res, err, 'incident');
@@ -521,6 +526,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (isObserver(t.role)) return res.status(204).end();
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const booking = await loadBooking(client, t.bookingId);
+      if (!booking || notYours(booking, t)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       const side = attendanceRole(t.role);
       const { data: was, error: readErr } = await client.from('lesson_quality')
         .select('min_height, degraded_seconds, audio_only_seconds, reconnects, focus_away_seconds').eq('booking_id', t.bookingId).eq('side', side).maybeSingle();

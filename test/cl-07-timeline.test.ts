@@ -228,6 +228,13 @@ describe('CL-07 events and state routes', () => {
     }
   });
 
+  it('a pass from before the lesson was given to another teacher or learner cannot read the state', async () => {
+    const oldTeacher = signTicket({ bookingId: BOOKING_ID, role: 'teacher', userId: 'teacher-old', exp: NOW + 60_000, joinId: 'jx', studentId: 'child-1' }, SECRET);
+    const oldFamily = signTicket({ bookingId: BOOKING_ID, role: 'learner', userId: 'parent-9', exp: NOW + 60_000, joinId: 'jy', studentId: 'child-old' }, SECRET);
+    assert.strictEqual((await state(oldTeacher)).status, 403);
+    assert.strictEqual((await state(oldFamily)).status, 403);
+  });
+
   it('events and state go through the per-ticket rate limit', () => {
     assert.ok(limited > 5);
   });
