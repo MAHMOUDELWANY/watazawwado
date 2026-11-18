@@ -403,7 +403,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
     if (!record) return;
     const on = () => {
       const w = window.innerWidth, h = window.innerHeight;
-      setZoom(h > w ? { pic: w / 560, text: 1.25 } : { pic: h / 600, text: 1.5 });
+      setZoom(h > w ? { pic: w / 600, text: 1.6 } : { pic: h / 640, text: 1.6 });
     };
     on();
     window.addEventListener('resize', on);
@@ -446,7 +446,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
               animate={{ x: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
               transition={{ duration: 0.28, ease: EASE }}
             >
-              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom.text > 1 ? { transform: `scale(${zoom.text})`, marginBottom: `${(zoom.text - 1) * 2.5}rem` } : undefined}>
+              <div className={`relative text-center leading-tight min-h-[1.3em] ${textOnly ? '' : 'text-[1.9rem] sm:text-5xl lg:text-6xl'}`} style={zoom.text > 1 ? { zoom: zoom.text } : undefined}>
                 {beatIdx >= 0 && (
                   textOnly && beat.hl ? (
                     // The name in gold foil, with a light sweep.
@@ -458,7 +458,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                   )
                 )}
               </div>
-              <div className="relative w-full flex justify-center" style={zoom.pic > 1 ? { transform: `scale(${zoom.pic})`, marginTop: `${(zoom.pic - 1) * 4}rem` } : undefined}><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
+              <div className="relative w-full flex justify-center" style={zoom.pic > 1 ? { zoom: zoom.pic } : undefined}><Picture i={scene} t={local} c={CUES[lang][scene]} isEn={isEn} reduce={reduce} /></div>
             </motion.div>
             {!reduce && <motion.div key={`flash-${scene}`} aria-hidden="true" className="absolute inset-0 pointer-events-none bg-[radial-gradient(closest-side,rgba(255,241,201,0.55),transparent)]" initial={{ opacity: scene === 0 ? 0 : 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.35 }} />}
           </>
@@ -503,7 +503,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
         {/* Caption line: the whole sentence, for watching muted. */}
         {running && (
           <figcaption className="absolute inset-x-0 bottom-0 px-5 pb-5 pt-10 sm:px-10 sm:pb-7 bg-gradient-to-t from-[#0E0907]/95 to-transparent pointer-events-none">
-            <p className={`mx-auto max-w-3xl text-center leading-snug text-[#FAF7F2]/85 ${record ? 'text-3xl px-6 pb-10' : 'text-sm sm:text-lg'}`}>{isEn ? LINES[scene].en : LINES[scene].ar}</p>
+            <p className={`mx-auto max-w-3xl text-center leading-snug text-[#FAF7F2]/85 ${record ? 'text-[2.6rem] px-8 pb-12' : 'text-sm sm:text-lg'}`}>{isEn ? LINES[scene].en : LINES[scene].ar}</p>
           </figcaption>
         )}
 
