@@ -32,10 +32,10 @@ Read this first if you are continuing the classroom work in a new session or on 
 | 6 | Waiting room (720p check) | done (not yet seen in a browser; route comes in Task 9) | ce4e3d0d |
 | 7 | Lesson timeline, persistence, rejoin | done (85 classroom tests pass) | 578fd38b |
 | 8 | Whiteboard, PDF, Arabic keyboard | done (bucket migration 20261118000000 not applied; signed direct uploads up to 20 MB) | acc5bbd6, 25957e0c |
-| 9 | The room screen | in progress | |
-| 10 | Attendance and teacher punctuality | done (gate + admin page NOT yet mounted in DashboardApp: mount after Task 9; rejoin-after-leave fix running) | 6c8b10fb |
-| 11 | Quality records and alerts | todo | |
-| 12 | Automatic Zoom fallback | todo | |
+| 9 | The room screen | done, NOT yet seen in a browser (needs migration applied + a booking in its window) | 092e7f08 |
+| 10 | Attendance and teacher punctuality | done (gate + admin page mounted; rejoin-after-leave counted) | 6c8b10fb, 8133b71d, 916c810e |
+| 11 | Quality records and alerts | in progress | |
+| 12 | Automatic Zoom fallback | in progress | |
 | 13 | Observers and rollout switch | todo | |
 | 14 | Room becomes the lesson link | todo | |
 | 15 | Rules, legal (owner approves first), security review, ship off, pilot | todo | |
@@ -59,3 +59,7 @@ Read this first if you are continuing the classroom work in a new session or on 
   render `{!isSuperAdmin && <LateReasonGate />}` next to `<FeedbackHost />`, and add
   `<Route path="/late-reasons" element={isSuperAdmin ? <LateReasonsPage /> : <Navigate to="/dashboard/month" replace />} />`
   next to the `/payroll` route.
+- Task 9 shortcuts to finish later: after the teacher stops screen share the learner keeps the old screen tracks until
+  the teacher's next session; a rejoin guesses which pane (lesson, board, file) was open.
+- Before the first real browser test: apply both migrations (`20261117000000_classroom_release_1.sql`,
+  `20261118000000_classroom_files_bucket.sql`) and use a booking whose time window is open.
