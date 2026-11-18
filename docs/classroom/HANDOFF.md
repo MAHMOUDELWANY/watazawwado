@@ -80,3 +80,21 @@ Read this first if you are continuing the classroom work in a new session or on 
    upload, block Cloudflare for the Zoom fallback, rejoin, lateness gate, guardian and admin observers).
 4. Then real lessons for Mahmoud and Afnan with the Zoom fallback. Zoom stays until the owner says otherwise.
 5. Later plans: the Quran tab with homework and the detector (spec §9), Release 2, Release 3.
+
+## Phase 2 (started 2026-11-18): owner approved the legal text; finish, review, design, test
+
+Branch `feat/classroom-r1b` (from main b65ad113), same worktree. Owner's ask: finish what is missing, review every
+line of logic and architecture, run every scenario Claude can run itself, redesign the room ("legendary" design
+for learner, teacher and super admin observer, with web inspirations), then report and give the owner a live
+checklist.
+
+| Step | Status |
+|---|---|
+| Publish approved legal text (RULES.md, terms, privacy, safety, FAQ, teacher agreement) | in progress |
+| Fix presence on tab crash (heartbeats) | in progress |
+| Deep logic and architecture review (read-only report) | in progress |
+| Design research and brief (`docs/classroom/DESIGN-BRIEF.md`) | in progress |
+| Redesign the room and observer views | todo |
+| Fix review findings | todo |
+| Real two-browser scenarios on a local server with QA accounts and fake media | todo |
+| Report + owner's live checklist (`docs/classroom/TEST-REPORT.md`) | todo |
