@@ -4,6 +4,19 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Homepage rebuilt on one rhythm + voiced intro film without people (2026-11-18)
+
+- Owner: drop the plan to film him; the landing page still looked bad; watch the competitor recordings in full.
+  All four recordings re-watched every 3 s (notes in docs/design/INSPIRATION.md, "Second pass").
+- New `IntroFilm.tsx`: six motion scenes timed to the chosen voice-over takes (AR Fusha / EN clone, take 1), captions
+  burned in, poster first, audio loads only on play. Doc: docs/marketing/HOMEPAGE-INTRO-FILM.md.
+- `PublicHomepage.tsx` rebuilt: centred hero + film, four subject cards with subject-page links and prices from
+  `subjectPages.ts`, PathFinder (restyled, young-adult line moved there), three promises, carpet (scroll 600vh → 300vh),
+  three-step espresso band, FamilyVoices (restyled), FAQ cards, verse inside the closing band.
+- Removed from the homepage: the six "doors", TwoWays, the mission verse, HeroBag (bag drawing moved into IntroFilm).
+- Checks: changed files type-checked alone (full tsc runs out of memory here), related tests, build, screenshots desktop
+  + phone, film played headless in AR desktop and EN phone. Not checked: dark mode, production after deploy.
+
 ### Simpler homepage: Zad's bag in the hero, path finder, subject pages (2026-11-17)
 
 - Owner: replace the teacher photos with a general intro, remove the 3D phones, simpler and more creative; take

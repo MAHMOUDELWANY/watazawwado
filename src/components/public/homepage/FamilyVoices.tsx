@@ -36,25 +36,30 @@ export function FamilyVoices({ isEn }: { isEn: boolean }) {
   return (
     <section className="public-container py-16 lg:py-24" aria-labelledby="family-voices" data-testid="family-voices">
       <div className="max-w-6xl mx-auto">
-        <h2 id="family-voices" className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
-          {L('What families say', 'كلام الأهالي')}
+        <div className="text-center">
+        <p className="inline-flex items-center gap-3 text-xs sm:text-sm font-bold tracking-wide text-[#B4552F] dark:text-[#E5A93C]">
+          <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />{L('In their words', 'بكلماتهم')}<span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />
+        </p>
+        <h2 id="family-voices" className="mt-3 font-editorial font-bold text-[2rem] leading-[1.2] sm:text-5xl text-foreground">
+          {L('What families ', 'كلام ')}<span className="text-ribbon">{L('say', 'الأهالي')}</span>
         </h2>
         {data.count >= MIN_REVIEWS && data.average && (
-          <p className="mt-4 flex flex-wrap items-center gap-2 text-foreground">
+          <p className="mt-4 flex flex-wrap justify-center items-center gap-2 text-foreground">
             <Stars n={Math.round(data.average)} label={L(`Average ${data.average} of 5`, `المتوسط ${data.average} من ٥`)} />
             <span className="font-bold">{isEn ? data.average.toFixed(1) : data.average.toLocaleString('ar-EG', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
             <span className="text-muted-foreground">{L(`from ${data.count} reviews`, `من ${data.count.toLocaleString('ar-EG')} رأي`)}</span>
           </p>
         )}
-        <p className="mt-2 text-sm text-muted-foreground max-w-[70ch]">
+        <p className="mt-3 mx-auto text-sm text-muted-foreground max-w-[70ch]">
           {L('Written by families, published as they wrote them. We show every genuine review, good or bad, and never reward reviews.',
             'كتبتها الأسر بنفسها، وننشرها كما هي. نعرض كل رأي حقيقي، إيجابيًا كان أو سلبيًا، ولا نقدّم أي مقابل لأي رأي.')}
         </p>
+        </div>
 
         {data.count > 0 && (
-          <ul className="mt-10 columns-1 sm:columns-2 lg:columns-3 gap-5 [&>li]:mb-5">
+          <ul className="mt-10 flex flex-wrap justify-center gap-5">
             {shown.map((r) => (
-              <li key={r.id} className="break-inside-avoid rounded-2xl border border-border bg-surface p-5 space-y-3">
+              <li key={r.id} className="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)] rounded-[1.5rem] border border-border bg-card p-6 space-y-3 shadow-[0_18px_40px_-30px_rgba(28,20,17,0.45)]">
                 <Stars n={r.rating} label={L(`${r.rating} of 5`, `${r.rating} من ٥`)} />
                 <blockquote className="text-foreground leading-relaxed whitespace-pre-line" dir={r.lang === 'ar' ? 'rtl' : 'ltr'} lang={r.lang}>
                   {r.body}

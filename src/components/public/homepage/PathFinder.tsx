@@ -10,12 +10,14 @@ import { findSubjectPage, SUBJECT_PAGES_PATH } from '../../../data/subjectPages'
  */
 
 type L = { en: string; ar: string };
-type Who = { id: string; icon: React.ComponentType<{ className?: string }>; label: L; hint: L; pages: string[] };
+type Who = { id: string; icon: React.ComponentType<{ className?: string }>; label: L; hint: L; pages: string[]; lead?: L };
 
 const WHO: Who[] = [
   { id: 'child', icon: Backpack, label: { en: 'My child', ar: 'طفلي' }, hint: { en: 'ages 6 to 12', ar: 'من ٦ إلى ١٢ سنة' }, pages: ['online-quran-classes-for-kids', 'islamic-classes-for-kids', 'learn-arabic-online'] },
   { id: 'teen', icon: GraduationCap, label: { en: 'My teenager', ar: 'ابني المراهق' }, hint: { en: 'ages 13 to 17', ar: 'من ١٣ إلى ١٧ سنة' }, pages: ['online-quran-memorization', 'online-tajweed-classes', 'online-english-classes'] },
-  { id: 'me', icon: User, label: { en: 'Me', ar: 'أنا' }, hint: { en: 'an adult learner', ar: 'متعلّم بالغ' }, pages: ['online-quran-classes-for-adults', 'online-tajweed-classes', 'learn-arabic-online', 'learn-egyptian-arabic-online'] },
+  { id: 'me', icon: User, label: { en: 'Me', ar: 'أنا' }, hint: { en: 'an adult learner', ar: 'متعلّم بالغ' }, pages: ['online-quran-classes-for-adults', 'online-tajweed-classes', 'learn-arabic-online', 'learn-egyptian-arabic-online'],
+    // MK-04: one line for young adults who drifted away.
+    lead: { en: 'Drifted? Start where you are. No lectures.', ar: 'بعدت شوية؟ ابدأ من مكانك. من غير محاضرات.' } },
   { id: 'family', icon: Users, label: { en: 'The whole family', ar: 'العائلة كلها' }, hint: { en: 'one account for all', ar: 'حساب واحد للجميع' }, pages: ['online-quran-classes-for-kids', 'online-quran-classes-for-adults', 'online-english-classes'] },
 ];
 
@@ -27,12 +29,16 @@ export function PathFinder({ isEn, onTrial }: { isEn: boolean; onTrial: () => vo
   const who = WHO.find((w) => w.id === picked);
 
   return (
-    <section className="public-container py-14 lg:py-20" aria-labelledby="path-finder">
+    <section className="border-y border-border/70 bg-surface-warm/60" aria-labelledby="path-finder">
+      <div className="public-container py-16 lg:py-24">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 id="path-finder" className="font-editorial font-bold text-3xl sm:text-4xl text-foreground">
-          {isEn ? 'Who is the learning for?' : 'لمن التعلّم؟'}
+        <p className="inline-flex items-center gap-3 text-xs sm:text-sm font-bold tracking-wide text-[#B4552F] dark:text-[#E5A93C]">
+          <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />{isEn ? 'Where to start' : 'من أين تبدأ'}<span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />
+        </p>
+        <h2 id="path-finder" className="mt-3 font-editorial font-bold text-[2rem] leading-[1.2] sm:text-5xl text-foreground scroll-mt-28">
+          {isEn ? <>Who is the <span className="text-ribbon">learning for?</span></> : <>لمن <span className="text-ribbon">التعلّم؟</span></>}
         </h2>
-        <p className="mt-3 text-muted-foreground text-base sm:text-lg">
+        <p className="mt-4 text-muted-foreground text-base sm:text-lg">
           {isEn ? 'Tap one, and we show you where to start.' : 'اختر واحدًا، ونريك من أين تبدأ.'}
         </p>
 
@@ -45,7 +51,7 @@ export function PathFinder({ isEn, onTrial }: { isEn: boolean; onTrial: () => vo
                 type="button"
                 aria-pressed={on}
                 onClick={() => setPicked(on ? null : id)}
-                className={`glass-card flex flex-col items-center gap-2 rounded-[1.4rem] border px-3 py-5 min-h-11 transition-[transform,border-color,background-color] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${on ? 'border-[#E5A93C] bg-[#E5A93C]/10' : 'border-border hover:border-[#E5A93C]/50'}`}
+                className={`glass-card bg-background flex flex-col items-center gap-2 rounded-[1.4rem] border px-3 py-5 min-h-11 transition-[transform,border-color,background-color] duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${on ? 'border-[#E5A93C] bg-[#E5A93C]/10' : 'border-border hover:border-[#E5A93C]/50'}`}
               >
                 <span className={`grid place-items-center w-12 h-12 rounded-2xl ${on ? 'bg-[#C51F24] text-[#FAF7F2]' : 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#F0656A]'}`}>
                   <Icon className="w-6 h-6" aria-hidden="true" />
@@ -68,6 +74,7 @@ export function PathFinder({ isEn, onTrial }: { isEn: boolean; onTrial: () => vo
               className="mt-6 text-start"
               aria-live="polite"
             >
+              {who.lead && <p className="mb-3 text-center font-editorial text-lg text-foreground">{t(who.lead)}</p>}
               <ul className="grid gap-2 sm:grid-cols-2">
                 {who.pages.map(findSubjectPage).filter((p) => p !== null).map((p) => (
                   <li key={p.slug}>
@@ -90,6 +97,7 @@ export function PathFinder({ isEn, onTrial }: { isEn: boolean; onTrial: () => vo
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
       </div>
     </section>
   );

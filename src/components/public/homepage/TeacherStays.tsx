@@ -88,7 +88,7 @@ export function TeacherStays({ isEn }: { isEn: boolean }) {
     : `inset(-20% calc((1 - var(${v},0)) * 100%) -20% 0)`);
 
   return (
-    <section ref={sectionRef} className={still ? 'relative h-[100svh]' : 'relative h-[600vh]'} aria-labelledby="home-stays">
+    <section ref={sectionRef} className={still ? 'relative h-[100svh]' : 'relative h-[300vh]'} aria-labelledby="home-stays">
       <div
         ref={stageRef}
         className="sticky top-0 h-[100svh] overflow-hidden bg-[linear-gradient(180deg,#F0DCC6,var(--background)_72%)] dark:bg-[linear-gradient(180deg,#0A1219,#1E150E_72%)]"

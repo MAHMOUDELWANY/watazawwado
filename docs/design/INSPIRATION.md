@@ -27,6 +27,13 @@ three times). Their colours (Bilqalam's deep green and orange, Arabic101's yello
 | **Bilqalam** | `competitors/bilqalam-home-about.jpg`, `bilqalam-programs-pathfinder.jpg`, `bilqalam-course-page.jpg` | Hero is a captioned animated explainer video. Three promise columns with illustrations. "Where would you like to begin?" track cards. A two-step "who is this journey for? Child / Teen / Adult / Family → your best-fit path" finder. Course pages with "Watch before you start" and "Who will teach you". Rating line, payment FAQ. | The idea of a visitor reaching the right page in two taps: our **"Who is the learning for?"** finder (`PathFinder.tsx`), one tap, our own subject pages. The **"Who will teach you"** block and a drawn start path on our subject pages. The film-in-the-hero idea, done as our own Zad film. |
 | **Arabic101** | `competitors/arabic101-hero-video.jpg`, `arabic101-academy.jpg` | Hero video on a chalkboard: hand-drawn arrows, a crossed-out list ("Arabic ✗ Tajweed ✗ Understand the Quran ✗"), "after years" timeline. Cut-out teacher photo with a sketchy outline. "Start your journey in 3 simple steps" joined by a line. | Only the lesson that one clear story beats many effects. Our hero became one idea: **Zad's bag being packed** (`HeroBag.tsx`), the same story the intro film tells. |
 
+**Second pass (2026-11-18, all four recordings watched frame by frame every 3 s).** What makes both pages feel calm is
+one rhythm repeated: small eyebrow, one big heading with one coloured word, one line, then one block. Our homepage now
+does the same in our identity: centred hero + voiced intro film (motion, no people), four subject cards with deep
+portals (Quran, Zad Path, Arabic, English) and links to the subject pages, "who is the learning for?", three promises
+in espresso arches, the carpet (shorter scroll), three steps on a gold line in an espresso band, family reviews, FAQ
+cards, and the verse in the closing band. Copy is ours; no Bilqalam or Arabic101 headline was reused.
+
 ## Folders
 
 | Folder | Topic |

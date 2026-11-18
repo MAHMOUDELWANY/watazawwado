@@ -4,9 +4,12 @@ import fs from 'node:fs';
 
 describe('PU-04 performance', () => {
   it('the hero visual never starts invisible', () => {
-    const hero = fs.readFileSync('src/components/public/homepage/HeroBag.tsx', 'utf8');
-    assert.ok(!/initial=\{[^}]*opacity: 0[,\s}]/.test(hero));
-    assert.ok(hero.includes("opacity: [1, 1, 0, 0, 0, 1]"));
+    // The intro film's poster (bag + play button) is plain markup, painted on first load; scenes animate only after play.
+    const film = fs.readFileSync('src/components/public/homepage/IntroFilm.tsx', 'utf8');
+    const poster = film.slice(film.indexOf('// Poster:'), film.indexOf('{/* Burned-in captions. */}'));
+    assert.ok(poster.length > 100);
+    assert.ok(!/initial=/.test(poster));
+    assert.ok(film.includes('preload="none"'), 'the voice-over loads only on play');
   });
 
   it('hashed bundles are cached for a year, fonts and media for shorter', () => {
