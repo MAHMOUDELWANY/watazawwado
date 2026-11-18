@@ -231,6 +231,15 @@ describe('CL-07 events and state routes', () => {
   it('events and state go through the per-ticket rate limit', () => {
     assert.ok(limited > 5);
   });
+
+  it('the teacher can always take drawing back, even when a learner pushed the board version far ahead', async () => {
+    await post(L, [{ t: 'board', sceneVersion: 1e12, elements: [{ id: 'forged' }] }]);
+    assert.strictEqual(snapshot().board.learnerDraw, true);
+    await post(T, [{ t: 'board', sceneVersion: 20, elements: [], learnerDraw: false }]);
+    assert.strictEqual(snapshot().board.learnerDraw, false);
+    await post(L, [{ t: 'board', sceneVersion: 2e12, elements: [{ id: 'after' }] }]);
+    assert.strictEqual(snapshot().board.sceneVersion, 1e12, 'nothing more from the learner once drawing is off');
+  });
 });
 
 describe('CL-07 client timeline', () => {

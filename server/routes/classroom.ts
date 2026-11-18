@@ -331,7 +331,11 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         merged ||= e.t === 'board' || e.t === 'slide' || e.t === 'pdf' || e.t === 'layout';
         if (e.t === 'board') {
           // Latest board only, in the snapshot (no timeline row); an older scene never replaces a newer one.
-          if (e.sceneVersion < (snapshot.board?.sceneVersion ?? -1)) continue;
+          if (e.sceneVersion < (snapshot.board?.sceneVersion ?? -1)) {
+            // The teacher's permission always lands, even when a learner pushed the version ahead.
+            if (t.role === 'teacher' && snapshot.board) snapshot.board = { ...snapshot.board, learnerDraw: e.learnerDraw === true };
+            continue;
+          }
           snapshot.board = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
           continue;
         }
