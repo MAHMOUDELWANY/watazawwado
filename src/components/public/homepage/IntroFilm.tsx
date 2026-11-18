@@ -487,7 +487,7 @@ export function IntroFilm({ isEn, onTrial, record = false }: { isEn: boolean; on
                   >
                     <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.2s]" />
                     <span className="grid place-items-center w-14 h-14 sm:w-[4.2rem] sm:h-[4.2rem] rounded-full bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#FAF7F2] shadow-[0_12px_30px_-6px_rgba(197,31,36,0.9),inset_0_1px_1px_rgba(255,255,255,0.35)]">
-                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current translate-x-[2px] rtl:-translate-x-[2px] rtl:-scale-x-100" aria-hidden="true" />
+                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current translate-x-[2px]" aria-hidden="true" />
                     </span>
                   </button>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0E0907]/70 px-3 py-1 text-xs sm:text-sm font-bold text-[#FAF7F2]/90">

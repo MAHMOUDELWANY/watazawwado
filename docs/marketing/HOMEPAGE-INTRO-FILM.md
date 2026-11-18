@@ -47,11 +47,11 @@ from `/student/progress?preview=active` (the portal's own sample learner, a dev-
 session. The homepage says so under the phone: "real screens, sample data". Medals are the portal's badge renders in
 `public/badges/shelf`.
 
-## Script v3 (draft, 2026-11-18): waiting for the voice
+## Script v3 (live since 2026-11-18, 35 s)
 
 Owner on v2: the script and the voice sound cheap. v3 trades the list of features for one feeling: what we are afraid
 to lose far from home cannot go in a suitcase. One idea per line, no subject list, the verse said in full near the end.
-Needs the ElevenLabs connector back in this workspace (eleven_v4, same voices, one emotion tag per line, full diacritics).
+Recorded on eleven_v4, 3 takes each (`marketing/intro-film/vo/*-v3-t{1,2,3}.mp3`); take 1 is live as `public/media/intro-film/{ar,en}-v3.mp3`, timed by Scribe alignment. As recorded, line 1 is a question: «لَوْ كَانَ لَكَ أَنْ تَحْمِلَ شَيْئًا وَاحِدًا فَقَطْ... إِلَى الغُرْبَةِ... مَاذَا تَحْمِلُ؟» / "If you could carry just ONE thing... far from home... what would it be?". Thumbnail: "Just ONE thing… what would you carry?" over the bag glowing with the answer rising out of it. Ad exports and thumbnails: `marketing/intro-film/export`.
 
 | # | Emotion | Arabic | English |
 |---|---------|--------|---------|
