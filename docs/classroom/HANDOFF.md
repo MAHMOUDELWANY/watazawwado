@@ -90,11 +90,19 @@ checklist.
 
 | Step | Status |
 |---|---|
-| Publish approved legal text (RULES.md, terms, privacy, safety, FAQ, teacher agreement) | in progress |
-| Fix presence on tab crash (heartbeats) | in progress |
+| Publish approved legal text (RULES.md, terms, privacy, safety, FAQ, teacher agreement) | done (91208939) |
+| Fix presence on tab crash (heartbeats) | done (room_heartbeat, last heartbeat + 90 s) |
 | Deep logic and architecture review (read-only report) | done: docs/classroom/REVIEW-2026-11-18.md (2 blockers, 6 high, 8 medium, 4 low) |
 | Design research and brief (`docs/classroom/DESIGN-BRIEF.md`) | done |
-| Redesign the room and observer views | in progress (room UI; admin pages) |
-| Fix review findings | in progress (engine + board first; page and server fixes after the redesign and presence fix) |
+| Redesign the room and observer views | done (screenshots in docs/classroom/shots/) |
+| Fix review findings | done: all 20 (see REVIEW-2026-11-18.md) |
 | Real two-browser scenarios on a local server with QA accounts and fake media | done 2026-11-19: 14/14 pass (`e2e/classroom-live.spec.ts`, `QA_CLASSROOM=1`); 6 bugs fixed, see TEST-REPORT.md |
 | Report + owner's live checklist (`docs/classroom/TEST-REPORT.md`) | done (live checklist in its "could not be tested" section) |
+| Ship phase 2 to main (CLASSROOM_MODE still off) | done 2026-11-19: tsc clean, 262 classroom tests pass, build passes |
+
+### Next: start the pilot (owner or next session)
+
+1. In Vercel set `CLASSROOM_MODE=pilot` and `CLASSROOM_PILOT_TEACHERS=<teacher id>` (id from `teacher_accounts`), then redeploy.
+2. Book a test lesson with that teacher and run the live checklist in `docs/classroom/TEST-REPORT.md`.
+3. The QA p5 accounts were purged after the E2E run; recreate them (`scripts/qa/create-accounts.ts`) before re-running
+   `QA_CLASSROOM=1` E2E.

@@ -130,6 +130,7 @@ export function JourneyNav({ stations, isEn }: { stations: Station[]; isEn: bool
   const thread = useSpring(useTransform(scrollYProgress, [0.08, 0.85], [0, 1]), { stiffness: 120, damping: 30 });
   const t = (l: L) => (isEn ? l.en : l.ar);
   const fill = (index + 1) / stations.length;
+  const ring = useTransform(thread, (v) => (reduce ? fill : v));
   const cur = stations[Math.max(0, index)];
   const next = stations[index + 1];
 
@@ -183,7 +184,7 @@ export function JourneyNav({ stations, isEn }: { stations: Station[]; isEn: bool
           <span className="relative grid place-items-center w-9 h-9 shrink-0">
             <svg viewBox="0 0 36 36" className="absolute inset-0 -rotate-90" aria-hidden="true">
               <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F6D58E" strokeOpacity=".18" strokeWidth="3" />
-              <motion.circle cx="18" cy="18" r="15.5" fill="none" stroke="url(#jn-ring)" strokeWidth="3" strokeLinecap="round" style={{ pathLength: reduce ? fill : thread }} />
+              <motion.circle cx="18" cy="18" r="15.5" fill="none" stroke="url(#jn-ring)" strokeWidth="3" strokeLinecap="round" style={{ pathLength: ring }} />
               <defs><linearGradient id="jn-ring"><stop offset="0" stopColor="#C51F24" /><stop offset="1" stopColor="#E5A93C" /></linearGradient></defs>
             </svg>
             <span className="relative font-editorial font-bold text-xs tabular-nums">{num(Math.max(1, index + 1), isEn).replace(/^[0٠]/, '')}</span>
