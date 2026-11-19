@@ -1,0 +1,291 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Film v5 (2026-11-19): rendered frame by frame by render.mjs (window.frame(t)). Motion graphics: kinetic words,
+     a khatam that opens each scene, light leaks, gold dust, the real curriculum covers fanning out, a path of steps,
+     the verses in the site ribbon. 16:9 (169) and phone 9:16 (916). -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=block" rel="stylesheet">
+<style>
+@font-face { font-family: 'TSD'; src: url('../../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TSD'; src: url('../../../public/fonts/thmanyah/thmanyahserifdisplay-Medium.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'TS'; src: url('../../../public/fonts/thmanyah/thmanyahsans-Bold.woff2') format('woff2'); font-weight: 700; }
+html, body { margin: 0; background: #0E0907; overflow: hidden; }
+#stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; --u: calc(100vw / 1280); }
+.tall #stage { --u: calc(100vw / 760); }
+.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.grade { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(14,9,7,.75) 100%), linear-gradient(180deg, rgba(14,9,7,.3), transparent 28%, transparent 45%, rgba(14,9,7,.88) 100%); }
+.tall .grade { background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgba(14,9,7,.75) 100%), linear-gradient(180deg, rgba(14,9,7,.35), transparent 25%, transparent 40%, rgba(14,9,7,.9) 78%); }
+#dark { position: absolute; inset: 0; background: #0E0907; opacity: 0; }
+#leak { position: absolute; inset: -20%; opacity: 0; background: radial-gradient(40% 50% at 50% 50%, rgba(255,214,150,.75), rgba(229,120,60,.25) 45%, transparent 70%); mix-blend-mode: screen; }
+canvas#dust { position: absolute; inset: 0; width: 100%; height: 100%; }
+#khatam { position: absolute; left: 50%; top: 46%; width: calc(var(--u) * 260); height: calc(var(--u) * 260); margin: calc(var(--u) * -130) 0 0 calc(var(--u) * -130); opacity: 0; }
+#kin { position: absolute; inset-inline: 6%; bottom: 10%; text-align: center; color: #FAF7F2; font-family: 'TSD', serif; font-weight: 700; font-size: calc(var(--u) * 54); line-height: 1.45; text-shadow: 0 3px 24px rgba(0,0,0,.8); }
+.en #kin { font-size: calc(var(--u) * 50); line-height: 1.25; }
+.tall #kin { bottom: 16%; font-size: calc(var(--u) * 58); }
+.tall.en #kin { font-size: calc(var(--u) * 54); }
+#kin span, #verse span { display: inline-block; }
+.hl { background: linear-gradient(100deg, #FF6066 0%, #F6D58E 50%, #4CC6D8 100%); -webkit-background-clip: text; background-clip: text; color: transparent !important; text-shadow: none; filter: drop-shadow(0 3px 14px rgba(0,0,0,.7)); }
+.strike { background-image: linear-gradient(#FF6066, #FF6066); background-repeat: no-repeat; background-position: 0 58%; background-size: var(--s, 0%) calc(var(--u) * 6); }
+.ar .strike { background-position: 100% 58%; }
+#chips { position: absolute; inset-inline: 5%; bottom: 25%; display: flex; flex-wrap: wrap; justify-content: center; gap: calc(var(--u) * 14); }
+.tall #chips { bottom: 31%; flex-direction: column; align-items: center; }
+#chips div { font-family: 'TSD', serif; font-weight: 700; color: #FFF1C9; font-size: calc(var(--u) * 32); padding: calc(var(--u) * 10) calc(var(--u) * 26); border-radius: 999px; background: rgba(28,20,17,.55); box-shadow: inset 0 0 0 calc(var(--u) * 2) rgba(246,213,142,.7), 0 0 calc(var(--u) * 40) rgba(229,169,60,.35); opacity: 0; }
+#verse { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: calc(var(--u) * 16); padding: 0 7%; }
+#verse .pre { font-family: 'TSD', serif; font-weight: 500; color: #FAF7F2; font-size: calc(var(--u) * 40); }
+#verse .ar { font-family: 'Amiri', serif; font-weight: 700; font-size: calc(var(--u) * 70); line-height: 1.75; }
+.tall #verse .ar { font-size: calc(var(--u) * 66); }
+#verse .head { font-size: calc(var(--u) * 54); }
+.tall #verse .head { font-size: calc(var(--u) * 50); }
+#verse .ar span, #verse .head { background: linear-gradient(100deg, #FF6066 0%, #F6D58E 50%, #4CC6D8 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+#verse .tr { font-family: 'TSD', serif; font-weight: 500; color: #FAF7F2; font-size: calc(var(--u) * 36); line-height: 1.4; }
+#verse .ref { font-family: 'TS', sans-serif; font-weight: 700; color: #F6D58E; font-size: calc(var(--u) * 20); letter-spacing: .1em; }
+#cards { position: absolute; left: 50%; top: 40%; width: 0; height: 0; }
+.tall #cards { top: 36%; }
+#cards figure { position: absolute; margin: 0; width: calc(var(--u) * 230); height: calc(var(--u) * 230); left: calc(var(--u) * -115); top: calc(var(--u) * -115); border-radius: calc(var(--u) * 24); overflow: hidden; box-shadow: 0 0 0 calc(var(--u) * 5) #FAF7F2, 0 calc(var(--u) * 30) calc(var(--u) * 50) rgba(0,0,0,.6); opacity: 0; }
+.tall #cards figure { width: calc(var(--u) * 260); height: calc(var(--u) * 260); left: calc(var(--u) * -130); top: calc(var(--u) * -130); }
+#cards img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#cards figcaption { position: absolute; inset-inline: 0; bottom: 0; padding: calc(var(--u) * 26) 0 calc(var(--u) * 10); text-align: center; background: linear-gradient(transparent, rgba(0,0,0,.8)); color: #FAF7F2; font-family: 'TS', sans-serif; font-weight: 700; font-size: calc(var(--u) * 22); }
+#steps { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+#zad { position: absolute; bottom: 6%; width: calc(var(--u) * 120); }
+.ar #zad { left: 3.5%; } .en #zad { right: 3.5%; }
+.tall #zad { bottom: auto; top: 4%; width: calc(var(--u) * 120); }
+#zad img { position: absolute; inset: 0; width: 100%; }
+#end { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: calc(var(--u) * 14); opacity: 0; background: radial-gradient(60% 60% at 50% 45%, #3A1A14 0%, #0E0907 75%); }
+#end img.z { width: calc(var(--u) * 200); }
+#end .name { font-family: 'TSD', serif; font-weight: 700; font-size: calc(var(--u) * 60); }
+#end .sub { font-family: 'TS', sans-serif; color: #FAF7F2; opacity: .8; font-size: calc(var(--u) * 22); }
+#grain { position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); }
+</style></head>
+<body><div id="stage">
+  <img class="bg" id="bgB"><img class="bg" id="bgA">
+  <div class="grade"></div>
+  <div id="dark"></div>
+  <div id="leak"></div>
+  <canvas id="dust"></canvas>
+  <svg id="khatam" viewBox="-60 -60 120 120"><g fill="none" stroke="#F6D58E" stroke-width="2.2"><rect x="-40" y="-40" width="80" height="80" /><rect x="-40" y="-40" width="80" height="80" transform="rotate(45)" /><circle r="22" stroke-width="1.4" /></g></svg>
+  <svg id="steps" preserveAspectRatio="none"><path id="stepPath" fill="none" stroke="#F6D58E" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 14" /><g id="stepDots"></g></svg>
+  <div id="cards"></div>
+  <div id="chips"></div>
+  <div id="verse"></div>
+  <div id="kin"></div>
+  <div id="zad"></div>
+  <div id="end"><img class="z" src="zad/wave.svg"><div class="name hl"></div><div class="sub"></div></div>
+  <div id="grain"></div>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const LANG = q.get('lang') || 'ar', TALL = q.get('fmt') === '916';
+document.body.className = LANG + (TALL ? ' tall' : '');
+document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
+const A = (n) => '../art/' + n + '.png';
+const COVERS = { quran: '../../../public/curriculum/banners/quran-reading.webp', tajweed: '../../../public/curriculum/banners/tajweed.webp', seerah: '../../../public/curriculum/banners/seerah.webp', fusha: '../../../public/curriculum/banners/fusha-kids.webp' };
+// Timings: ElevenLabs Scribe word alignment of the v5 take 1 voice. [time, text, style] with style hl | strike.
+const FILM = {
+  ar: {
+    length: 57, endAt: 54.6, name: 'وتزوّدوا', sub: 'زادٌ يبقى، لك ولأهل بيتك',
+    scenes: [
+      { img: 's0', t: 0, pose: 'think', blocks: [[[0.23, 'لو كان لك أن تحمل '], [1.6, 'شيئًا واحدًا ', 'hl'], [2.96, 'فقط…']], [[3.84, 'إلى الغربة… '], [5.12, 'ماذا تحمل؟', 'hl']]] },
+      { img: 's1', t: 6.4, pose: 'sad', blocks: [[[6.56, 'أثمنُ ما نخاف أن نفقده…']], [[9.12, 'لا تتّسع له '], [10.24, 'حقيبة.', 'hl']]] },
+      { img: 's2', t: 11.2, pose: 'love', blocks: [[[11.36, 'كلامُ الله…', 'hl']]] },
+      { img: 's3', t: 12.6, pose: 'love', blocks: [[[12.72, 'ولسانُ أجدادنا…']], [[14.56, 'ودينٌ نريده أن يبقى '], [16.8, 'في أبنائنا.', 'hl']]] },
+      { img: 'home', dim: true, t: 17.8, pose: 'cheer', cards: { at: 17.9, hi: [[24.41, ['quran', 'tajweed']], [25.29, ['seerah']], [26.2, ['fusha']]] },
+        blocks: [[[17.93, 'لذلك صنعنا لهم '], [19.69, 'زادًا…', 'hl']], [[20.49, 'منهجًا يرونه، '], [21.93, 'ويلعبون به، '], [23.13, 'ويحبّونه…', 'hl']], [[24.41, 'في القرآن، '], [25.29, 'والسيرة، '], [26.2, 'والعربية…']]] },
+      { img: 's4g', t: 27.15, pose: 'wave', steps: [27.3, 30.7], blocks: [[[27.29, 'ومعلّمًا يمشي معهم، '], [29.29, 'خطوةً بخطوة.', 'hl']]] },
+      { img: 'home', t: 30.9, pose: 'dua', chips: [[34.1, 'آيةٌ تُحفظ'], [35.5, 'ولسانٌ يستقيم'], [37.18, 'وعادةٌ طيبة في البيت']],
+        blocks: [[[31.08, 'لا نعدّ '], [31.58, 'الحصص…', 'strike']], [[32.5, 'بل نعدّ '], [33.2, 'ما يبقى', 'hl']]] },
+      { img: 'foam', t: 39.45, pose: 'proud', verse: { words: [[39.61, 'فَأَمَّا'], [39.94, 'الزَّبَدُ'], [40.58, 'فَيَذْهَبُ'], [41.14, 'جُفَاءً ۖ'], [42.1, 'وَأَمَّا'], [42.58, 'مَا'], [42.74, 'يَنفَعُ'], [43.18, 'النَّاسَ'], [43.94, 'فَيَمْكُثُ'], [44.58, 'فِي'], [44.74, 'الْأَرْضِ']], ref: 'الرعد ١٧' } },
+      { img: 's6', t: 45.5, pose: 'dua', verse: { pre: [45.62, 'وهذا هو الزاد…'], words: [[47.34, 'وَتَزَوَّدُوا'], [48.42, 'فَإِنَّ'], [48.82, 'خَيْرَ'], [49.22, 'الزَّادِ'], [49.94, 'التَّقْوَى']], ref: 'البقرة ١٩٧' } },
+      { img: 'thumb169', t: 50.95, pose: 'wave', blocks: [[[51.13, 'فجهّز زادك… ', 'hl'], [52.54, 'قبل أن يفوتك الكثير.']]] },
+    ],
+  },
+  en: {
+    length: 55.9, endAt: 53.5, name: 'Watazawwado', sub: 'Provision that lasts, for you and your family',
+    scenes: [
+      { img: 's0', t: 0, pose: 'think', blocks: [[[0.085, 'If you could carry '], [1.045, 'just one thing…', 'hl']], [[2.725, 'far from home… '], [4.325, 'what would it be?', 'hl']]] },
+      { img: 's1', t: 5.6, pose: 'sad', blocks: [[[5.79, 'The things we fear losing most…']], [[8.085, 'don’t fit in a '], [8.805, 'suitcase.', 'hl']]] },
+      { img: 's2', t: 10.0, pose: 'love', blocks: [[[10.16, 'The words of Allah…', 'hl']]] },
+      { img: 's3', t: 11.55, pose: 'love', blocks: [[[11.685, 'the language of our grandparents…']], [[13.845, 'a faith we want '], [15.245, 'our children to keep.', 'hl']]] },
+      { img: 'home', dim: true, t: 16.75, pose: 'cheer', cards: { at: 16.9, hi: [[22.8, ['quran', 'tajweed']], [23.85, ['seerah']], [24.57, ['fusha']]] },
+        blocks: [[[16.95, 'So we made them '], [17.53, 'a provision of their own…', 'hl']], [[19.2, 'lessons they can see, '], [20.69, 'play with, '], [21.6, 'and love…', 'hl']], [[22.56, 'in the Quran, '], [23.69, 'the Seerah, '], [24.4, 'and Arabic…']]] },
+      { img: 's4g', t: 25.3, pose: 'wave', steps: [25.5, 28.9], blocks: [[[25.49, 'with a teacher who walks beside them, '], [27.8, 'step by step.', 'hl']]] },
+      { img: 'home', t: 29.0, pose: 'dua', chips: [[32.57, 'a verse kept by heart'], [34.25, 'a tongue made right'], [35.85, 'a good habit at home']],
+        blocks: [[[29.21, 'We don’t count '], [29.85, 'lessons…', 'strike']], [[30.89, 'we count '], [31.29, 'what stays', 'hl']]] },
+      { img: 'foam', t: 37.55, pose: 'proud', verse: { ar: 'فَأَمَّا الزَّبَدُ فَيَذْهَبُ جُفَاءً ۖ وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ', words: [[37.76, '“As for the foam, '], [38.89, 'it vanishes… '], [40.17, 'but what benefits people '], [41.61, 'remains on the earth.”']], ref: 'AR-RA‘D 13:17' } },
+      { img: 's6', t: 43.3, pose: 'dua', verse: { pre: [43.46, 'That is the provision…'], ar: 'وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَى', words: [[45.22, '“Take provision, '], [46.42, 'and the best provision '], [47.7, 'is mindfulness of Allah.”']], ref: 'AL-BAQARAH 2:197' } },
+      { img: 'thumb169', t: 49.8, pose: 'wave', blocks: [[[50.02, 'So pack your Zad… ', 'hl'], [51.3, 'before too much passes you by.']]] },
+    ],
+  },
+}[LANG];
+
+const $ = (s) => document.querySelector(s);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+const out3 = (x) => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+const bell = (x) => (x <= 0 || x >= 1 ? 0 : Math.sin(Math.PI * x));
+const S = FILM.scenes;
+const DISSOLVE = 0.8;
+$('#end .name').textContent = FILM.name;
+$('#end .sub').textContent = FILM.sub;
+
+// Zad: one picture per pose.
+const poses = [...new Set(S.map((s) => s.pose))];
+const zadImgs = Object.fromEntries(poses.map((p) => { const i = document.createElement('img'); i.src = 'zad/' + p + '.svg'; $('#zad').appendChild(i); return [p, i]; }));
+$('#zad').style.height = getComputedStyle($('#zad')).width;
+
+// Curriculum covers.
+const coverEls = Object.fromEntries(Object.entries(COVERS).map(([k, src]) => {
+  const f = document.createElement('figure');
+  const label = { quran: { ar: 'القراءة', en: 'Quran reading' }, tajweed: { ar: 'التجويد', en: 'Tajweed' }, seerah: { ar: 'السيرة', en: 'Seerah' }, fusha: { ar: 'الفصحى', en: 'Fusha' } }[k][LANG];
+  f.innerHTML = `<img src="${src}"><figcaption>${label}</figcaption>`;
+  $('#cards').appendChild(f);
+  return [k, f];
+}));
+
+// The path of steps.
+const W = innerWidth, H = innerHeight;
+const svg = $('#steps'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+const P = TALL ? [[0.15, 0.62], [0.35, 0.55], [0.5, 0.6], [0.68, 0.52], [0.86, 0.46]] : [[0.1, 0.72], [0.3, 0.62], [0.5, 0.67], [0.7, 0.57], [0.9, 0.5]];
+const pts = (LANG === 'ar' ? P.map(([x, y]) => [1 - x, y]) : P).map(([x, y]) => [x * W, y * H]);
+$('#stepPath').setAttribute('d', 'M' + pts.map((p) => p.join(' ')).join(' L'));
+const len = (() => { const p = $('#stepPath'); return p.getTotalLength(); })();
+$('#stepPath').style.strokeDasharray = `${len}`;
+pts.forEach(([x, y]) => { $('#stepDots').insertAdjacentHTML('beforeend', `<g transform="translate(${x} ${y})"><circle r="${W / 70}" fill="#C51F24" stroke="#F6D58E" stroke-width="3"/><circle r="${W / 200}" fill="#FFF1C9"/></g>`); });
+
+// Gold dust.
+const cv = $('#dust'); cv.width = W; cv.height = H; const cx = cv.getContext('2d');
+const DUST = Array.from({ length: 70 }, (_, k) => ({ x: ((k * 7919) % 1000) / 1000, s: 0.02 + ((k * 31) % 17) / 400, r: 1 + (k % 4), ph: k * 1.7 }));
+function dust(t) {
+  cx.clearRect(0, 0, W, H);
+  for (const d of DUST) {
+    const y = H - ((t * d.s * H * 0.6 + d.ph * 97) % (H + 40));
+    const x = d.x * W + Math.sin(t * 0.6 + d.ph) * 18;
+    const a = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 2 + d.ph));
+    cx.fillStyle = `rgba(246,213,142,${a})`; cx.beginPath(); cx.arc(x, y, d.r * (W / 1280), 0, 7); cx.fill();
+  }
+}
+
+function sceneAt(t) { let k = 0; S.forEach((s, i) => { if (t >= s.t) k = i; }); return k; }
+const end = (k) => (k + 1 < S.length ? S[k + 1].t : FILM.endAt);
+function setSrc(img, name) { if (img.dataset.n !== name) { img.src = A(name); img.dataset.n = name; } }
+function kb(img, k, t) {
+  const s = S[k], p = clamp((t - s.t) / (end(k) - s.t + DISSOLVE));
+  const dir = k % 2 ? -1 : 1;
+  img.style.objectPosition = TALL ? `${50 + dir * (-16 + 32 * p)}% 50%` : '50% 50%';
+  img.style.transform = `scale(${1.06 + 0.1 * p}) translateX(${TALL ? 0 : dir * (p - 0.5) * 2}%)`;
+  img.style.filter = s.dim ? 'blur(10px) brightness(.38) saturate(.8)' : 'none';
+}
+
+function words(container, key, items, t, makeSpan) {
+  if (container.dataset.k !== key) { container.innerHTML = items.map(makeSpan).join(' '); container.dataset.k = key; }
+  [...container.querySelectorAll('span[data-i]')].forEach((el) => {
+    const it = items[+el.dataset.i];
+    const a = out3((t - it[0] + 0.12) / 0.55);
+    el.style.opacity = a;
+    el.style.transform = `translateY(${(1 - a) * 22}px) scale(${0.92 + 0.08 * a})`;
+    el.style.filter = `blur(${(1 - a) * 8}px)`;
+    if (it[2] === 'strike') el.style.setProperty('--s', `${100 * out3((t - it[0] - 0.45) / 0.5)}%`);
+  });
+}
+
+function kinetic(t, k) {
+  const s = S[k], kin = $('#kin');
+  if (!s.blocks) { kin.style.opacity = 0; kin.dataset.k = ''; return; }
+  let b = 0; s.blocks.forEach((blk, i) => { if (t >= blk[0][0] - 0.05) b = i; });
+  const blk = s.blocks[b];
+  words(kin, k + ':' + b, blk, t, (w, i) => `<span data-i="${i}" class="${w[2] || ''}">${w[1].trim()}</span>`);
+  const next = b + 1 < s.blocks.length ? s.blocks[b + 1][0][0] : end(k) + 0.15;
+  // the block lifts away before the next one
+  const o = ease((t - (next - 0.4)) / 0.35);
+  kin.style.opacity = 1 - o; kin.style.transform = `translateY(${-o * 20}px)`;
+}
+
+function chips(t, k) {
+  const s = S[k], el = $('#chips');
+  if (!s.chips) { el.innerHTML = ''; el.dataset.k = ''; return; }
+  if (el.dataset.k !== String(k)) { el.innerHTML = s.chips.map(([, x]) => `<div>${x}</div>`).join(''); el.dataset.k = String(k); }
+  const leave = 1 - ease((t - (end(k) - 0.4)) / 0.4);
+  [...el.children].forEach((c, i) => { const a = out3((t - s.chips[i][0] + 0.1) / 0.6); c.style.opacity = a * leave; c.style.transform = `translateY(${(1 - a) * 30}px) scale(${0.8 + 0.2 * a})`; });
+}
+
+function verse(t, k) {
+  const v = S[k].verse, el = $('#verse');
+  if (!v) { el.style.opacity = 0; el.dataset.k = ''; return; }
+  if (el.dataset.k !== String(k)) {
+    const pre = v.pre ? `<div class="pre"><span data-p="1">${v.pre[1]}</span></div>` : '';
+    el.innerHTML = LANG === 'ar'
+      ? `${pre}<div class="ar" dir="rtl">﴿ ${v.words.map(([, w], i) => `<span data-i="${i}">${w}</span>`).join(' ')} ﴾</div><div class="ref">${v.ref}</div>`
+      : `${pre}<div class="ar head" dir="rtl">﴿ ${v.ar} ﴾</div><div class="tr">${v.words.map(([, w], i) => `<span data-i="${i}">${w.trim()}</span>`).join(' ')}</div><div class="ref">${v.ref}</div>`;
+    el.dataset.k = String(k);
+  }
+  el.querySelectorAll('span[data-i]').forEach((sp) => { const a = out3((t - v.words[+sp.dataset.i][0] + 0.1) / 0.7); sp.style.opacity = a; sp.style.filter = `blur(${(1 - a) * 10}px)`; sp.style.transform = `translateY(${(1 - a) * 14}px)`; });
+  const p = el.querySelector('[data-p]'); if (p) { const a = out3((t - v.pre[0]) / 0.6); p.style.opacity = a * (1 - ease((t - v.words[0][0] + 0.2) / 0.5)) + 0.0; }
+  const head = el.querySelector('.head'); if (head) head.style.opacity = out3((t - (v.pre ? v.words[0][0] - 0.3 : S[k].t + 0.2)) / 0.9);
+  el.querySelector('.ref').style.opacity = ease((t - v.words[v.words.length - 1][0]) / 0.8);
+  el.style.opacity = 1 - ease((t - (end(k) - 0.35)) / 0.4);
+}
+
+function cards(t, k) {
+  const s = S[k];
+  Object.values(coverEls).forEach((f) => { f.style.opacity = 0; });
+  if (!s.cards) return;
+  const keys = Object.keys(COVERS), mid = (keys.length - 1) / 2;
+  const leave = ease((t - (end(k) - 0.6)) / 0.6);
+  keys.forEach((key, i) => {
+    const f = coverEls[key];
+    const o = (LANG === 'ar' ? mid - i : i - mid);
+    const a = out3((t - (s.cards.at + 0.35 + i * 0.28)) / 0.9);
+    let hi = 0; s.cards.hi.forEach(([at, ks]) => { if (ks.includes(key)) hi = Math.max(hi, out3((t - at) / 0.4)); });
+    const spread = TALL ? 0.48 : 0.62;
+    const x = o * (TALL ? 150 : 210) * (W / (TALL ? 760 : 1280)) * spread * 1.6 * a;
+    const y = (1 - a) * H * 0.5 + Math.abs(o) * 18 - hi * 26 + leave * H * 0.5;
+    f.style.opacity = a * (1 - leave);
+    f.style.zIndex = String(10 + Math.round(hi * 10) - Math.round(Math.abs(o)));
+    f.style.transform = `translate(${x}px, ${y}px) rotate(${o * 8 * a * (1 - hi * 0.7)}deg) scale(${0.9 + 0.1 * a + hi * 0.14})`;
+    f.style.boxShadow = `0 0 0 ${5 * W / 1280}px #FAF7F2, 0 0 ${hi * 60}px rgba(246,213,142,${hi * 0.9}), 0 30px 50px rgba(0,0,0,.6)`;
+  });
+}
+
+function steps(t, k) {
+  const s = S[k];
+  if (!s.steps) { $('#steps').style.opacity = 0; return; }
+  const [a, b] = s.steps, p = clamp((t - a) / (b - a));
+  $('#steps').style.opacity = 1 - ease((t - (end(k) - 0.4)) / 0.4);
+  $('#stepPath').style.strokeDashoffset = `${len * (1 - p)}`;
+  [...$('#stepDots').children].forEach((g, i) => { const on = out3((p - i / 4.2) * 6); const [x, y] = pts[i]; g.setAttribute('transform', `translate(${x} ${y}) scale(${on})`); g.style.opacity = on; });
+}
+
+function zad(t, k) {
+  poses.forEach((p) => { let a = 0; S.forEach((s, i) => { if (s.pose === p) a = Math.max(a, ease((t - s.t) / 0.4) * (1 - ease((t - end(i)) / 0.4))); }); zadImgs[p].style.opacity = a; });
+  const since = t - S[k].t;
+  const pop = k > 0 ? bell(since / 0.6) * 0.18 : 0;
+  $('#zad').style.transform = `translateY(${Math.sin(t * 2.1) * 5}px) rotate(${Math.sin(t * 1.3) * 3}deg) scale(${1 + pop})`;
+  $('#zad').style.opacity = ease(t / 0.6) * (1 - ease((t - FILM.endAt + 0.2) / 0.5));
+}
+
+window.frame = (t) => {
+  const k = sceneAt(t), A1 = $('#bgA'), B1 = $('#bgB');
+  const since = t - S[k].t;
+  setSrc(A1, S[k].img); kb(A1, k, t);
+  if (k > 0 && since < DISSOLVE) { setSrc(B1, S[k - 1].img); kb(B1, k - 1, t); A1.style.opacity = ease(since / DISSOLVE); B1.style.opacity = 1; }
+  else { A1.style.opacity = k === 0 ? ease(t / 0.8) : 1; B1.style.opacity = 0; }
+  // a khatam opens each new scene; a warm light leak crosses the cut
+  const kp = since / 1.1;
+  const kh = $('#khatam');
+  if (k > 0 && kp < 1) { kh.style.opacity = 0.85 * (1 - kp); kh.style.transform = `scale(${0.3 + 3.2 * out3(kp)}) rotate(${kp * 45}deg)`; } else kh.style.opacity = 0;
+  const lp = since / 1.0;
+  $('#leak').style.opacity = k > 0 ? 0.5 * bell(lp) : 0;
+  $('#leak').style.transform = `translateX(${(lp - 0.5) * 60 * (LANG === 'ar' ? -1 : 1)}%)`;
+  $('#dark').style.opacity = S[k].verse ? 0.62 * ease(since / 0.8) * (1 - ease((t - (end(k) - 0.3)) / 0.6)) : 0;
+  dust(t); kinetic(t, k); chips(t, k); verse(t, k); cards(t, k); steps(t, k); zad(t, k);
+  const e = ease((t - FILM.endAt) / 0.9);
+  $('#end').style.opacity = e;
+  $('#end img.z').style.transform = `translateY(${(1 - e) * 40 + Math.sin(t * 2.1) * 5}px) scale(${0.85 + 0.15 * out3((t - FILM.endAt) / 1.2)})`;
+  return FILM.length;
+};
+window.ready = async () => {
+  await document.fonts.ready;
+  const names = [...new Set(S.map((s) => s.img))];
+  await Promise.all(names.map((n) => new Promise((r) => { const i = new Image(); i.onload = r; i.onerror = r; i.src = A(n); })));
+  await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = r; i.onerror = r; })));
+  return FILM.length;
+};
+</script></body></html>

@@ -5,7 +5,7 @@ import path from 'node:path';
 const { chromium } = createRequire(import.meta.url)('../../../node_modules/playwright');
 const out = process.argv[2];
 const browser = await chromium.launch({ executablePath: process.env.CHROME });
-for (const lang of ['ar', 'en']) for (const [fmt, W, H] of [['169', 1280, 720], ['45', 864, 1080]]) {
+for (const lang of ['ar', 'en']) for (const [fmt, W, H] of [['169', 1280, 720], ['916', 720, 1280]]) {
   const page = await browser.newPage({ viewport: { width: W, height: H } });
   await page.goto(pathToFileURL(path.resolve('thumb.html')).href + `?lang=${lang}&fmt=${fmt}`);
   await page.evaluate(() => window.ready());

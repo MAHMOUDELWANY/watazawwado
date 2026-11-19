@@ -1369,3 +1369,11 @@ professional, call it Zad instead of Zadi, colours that express our identity."
   screen), then two cards: the community (Hall of Honor, class board, no ranks) and our own classroom.
 - Closing: the verse is solid gold again; Zad is drawn inside the closing slot when it is on screen, so he no longer
   lags or leaves the screen. The teacher picker band is light instead of espresso (less brown on the page).
+
+## 2026-11-19 (second round): film v5, vision, curriculum, community and classroom
+
+- Film v5 with motion graphics, our curriculum, our vision and both verses; 9:16 on phones (docs/marketing/HOMEPAGE-INTRO-FILM.md).
+- Homepage: "Our own curriculum" card in the provisions station (the real lesson covers fan out); "Our vision" section
+  with Ar-Ra‘d 13:17 in the site ribbon; the closing verse back in the ribbon gradient on a light band.
+- "The lesson, and after": community and classroom rebuilt as picture panels (Meshy) with three explained points each.
+- Hero: the English top line bends letter by letter on its arc.

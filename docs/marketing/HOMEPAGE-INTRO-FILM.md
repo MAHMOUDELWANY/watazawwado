@@ -95,3 +95,24 @@ He also asked that the thumbnail be a real image that starts the video when tapp
 | 7 | فَجَهِّزْ زَادَكَ... قَبْلَ أَنْ يَفُوتَكَ الكَثِيرُ. | So pack your Zad... before too much passes you by. | thumb169, end card |
 
 The owner watches it on the live site. Do not send him video files.
+
+## Version 5 (live since 2026-11-19, 56 s): what we made, what we count, two verses
+
+Owner on v4: the pictures are good, but there were no motion graphics; from second 18 the words turned into selling
+ourselves and did not hang together; we never said we have our own curriculum or our vision; the verse «وأما ما ينفع
+الناس فيمكث في الأرض» was gone; and on a phone he had to go full screen and turn the phone.
+
+- **Script.** Lines 1–3 stay. Then: the curriculum we made for our children (lessons they see, play with and love, in
+  the Quran, the Seerah and Arabic, with a teacher who walks beside them), what we count (not lessons, but what stays:
+  a verse kept, a tongue made right, a good habit at home), Ar-Ra‘d 13:17 in full ﴿فَأَمَّا الزَّبَدُ فَيَذْهَبُ جُفَاءً
+  وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ﴾, then Al-Baqarah 2:197, then the soft close. Same steady tag on every
+  line. Take 1 of each: `marketing/intro-film/vo/{ar,en}-v5-t1.mp3`, timed by Scribe.
+- **Motion graphics** (`render/film5.html`): words arrive one phrase at a time with key words in the site ribbon; a
+  khatam opens every scene; a warm light leak crosses each cut; gold dust; the real curriculum covers
+  (`public/curriculum/banners`) fly in and fan out, each lifting as its subject is named; a path of five steps draws
+  itself under "step by step"; "lessons" is struck through and what stays rises as three gold pills; both verses
+  appear word by word in the ribbon gradient; Zad changes pose and pops at each scene.
+- **New Meshy pictures:** `art/foam.png` (gold poured, the foam drifting off), `art/home.png` (a rehal and a child's
+  notebook at dawn), plus `honor.png` and `class.png` for the homepage.
+- **Phone:** a 9:16 render (720×1280) and a 9:16 cover; the page uses it below 640 px, so it fills the phone upright.
+  Files: `public/media/intro-film/{ar,en}-{169,916}-v5.mp4`, `cover-{ar,en}-{169,916}.webp`. `render/run.sh` renders all four.

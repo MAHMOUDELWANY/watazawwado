@@ -107,7 +107,18 @@ function RingText({ isEn, reduce }: { isEn: boolean; reduce: boolean }) {
         </linearGradient>
       </defs>
       <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? -110 : 110, 0.2)}>
-        <ArcLine words={top} r={178} top size={isEn ? 30 : 36} fill="var(--foreground)" rtl={!isEn} className={`font-editorial ${isEn ? 'font-medium' : 'font-bold'}`} />
+        {isEn ? (
+          // English bends letter by letter along the arc (owner, 2026-11-19: word by word looked straight). Arabic stays
+          // word by word: a whole Arabic line on a path loses its letter joins.
+          <>
+            <path id="ring-top" d="M 22 200 A 178 178 0 0 1 378 200" fill="none" />
+            <text fontSize={30} className="font-editorial font-medium" style={{ fill: 'var(--foreground)' }}>
+              <textPath href="#ring-top" startOffset="50%" textAnchor="middle">{top.join(' ')}</textPath>
+            </text>
+          </>
+        ) : (
+          <ArcLine words={top} r={178} top size={36} fill="var(--foreground)" rtl className="font-editorial font-bold" />
+        )}
       </motion.g>
       <motion.g style={{ transformBox: 'view-box', transformOrigin: '200px 200px' }} {...enter(isEn ? 110 : -110, 0.45)}>
         <ArcLine words={bottom} r={178} top={false} size={isEn ? 27 : 33} fill="url(#ring-ribbon)" rtl={!isEn} className="font-editorial font-bold" />

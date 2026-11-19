@@ -9,9 +9,10 @@ import { PublicButton } from '../PublicDesignSystem';
 import { ArrowLeft, ArrowRight, Check, Volume2, VolumeX, ShieldCheck, Lock, EyeOff, Eye } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
-import { IntroFilm, GRAIN } from './IntroFilm';
+import { IntroFilm } from './IntroFilm';
 import { JourneyNav, NextDoor, Reveal, MaskLine, StationHead, EXPO, num, type Station } from './journey/Journey';
 import { LessonStory } from './journey/LessonStory';
+import { OwnCurriculum } from './journey/OwnCurriculum';
 import { Struggles } from './journey/Struggles';
 import { HeroStage, Medal } from './journey/HeroStage';
 import { ZadGuide, type GuideStop } from './journey/ZadGuide';
@@ -28,6 +29,7 @@ import { useWelcomeAudio } from '../../../lib/welcomeAudio';
 type L = { en: string; ar: string };
 
 const VERSE = '﴿ وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ ﴾';
+const MISSION_VERSE = '﴿ فَأَمَّا الزَّبَدُ فَيَذْهَبُ جُفَاءً ۖ وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ ﴾';
 // Thmanyah has no ornate Quranic brackets, so the verse uses Amiri Quran, loaded for these letters only.
 function useVerseFont() {
   React.useEffect(() => {
@@ -35,7 +37,7 @@ function useVerseFont() {
     const link = document.createElement('link');
     link.id = 'verse-font';
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE)).join(''));
+    link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE + MISSION_VERSE)).join(''));
     document.head.appendChild(link);
   }, []);
 }
@@ -321,6 +323,7 @@ export function PublicHomepage() {
             </Reveal>
           ))}
         </ul>
+        <OwnCurriculum isEn={isEn} />
         <div className="max-w-6xl mx-auto">
           <NewToIslamDoor isEn={isEn} />
         </div>
@@ -440,23 +443,40 @@ export function PublicHomepage() {
         </div>
       </section>
 
+      {/* ─── OUR VISION ─── what we measure our work by (owner, 2026-11-19: bring this verse back). */}
+      <section id="vision" className="public-container pb-16 lg:pb-24" aria-labelledby="vision-h">
+        <Reveal className="relative max-w-4xl mx-auto text-center">
+          <h2 id="vision-h" className="font-editorial text-base sm:text-lg text-[#B4552F] dark:text-[#E5A93C]">{isEn ? 'Our vision' : 'رؤيتنا'}</h2>
+          <p lang="ar" dir="rtl" className="mt-4 text-[2.1rem] leading-[1.9] sm:text-5xl sm:leading-[1.8] text-ribbon mx-auto" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
+            {MISSION_VERSE}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {isEn ? '“As for the foam, it vanishes, cast off; but as for that which benefits the people, it remains on the earth.” Ar-Ra‘d 13:17, Saheeh International' : 'الرعد ١٧'}
+          </p>
+          <p className="mt-6 font-editorial text-xl sm:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
+            {isEn
+              ? 'We don’t count lessons. We count what stays: a verse kept by heart, a word said right, a good habit that lives on at home.'
+              : 'لا نعدّ الحصص، بل نعدّ ما يبقى: آيةٌ تُحفظ، وكلمةٌ تُقال صحيحة، وعادةٌ طيبة تبقى في البيت.'}
+          </p>
+        </Reveal>
+      </section>
+
       {/* ─── CLOSING ─── the verse we are named after, the three reminders, the first lesson. */}
       <section id="contact" className="public-container pb-16 lg:pb-24">
-        <div className="band-espresso relative overflow-hidden rounded-[2.25rem] px-6 py-14 sm:px-12 lg:py-20 text-center">
+        <div className="relative overflow-hidden rounded-[2.25rem] px-6 py-14 sm:px-12 lg:py-20 text-center ring-1 ring-[#E5A93C]/25 bg-[radial-gradient(50rem_26rem_at_80%_0%,rgba(229,169,60,0.2),transparent_60%),radial-gradient(36rem_22rem_at_0%_100%,rgba(197,31,36,0.08),transparent_60%),linear-gradient(160deg,#FBF6EC,#F3E7D2)] dark:bg-none dark:bg-card">
           <DriftLight />
-          <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: GRAIN }} />
-          {/* Zad lands here at the end of his tour (ZadGuide dockId): one Zad on the page, not a second, static one. */}
+                    {/* Zad lands here at the end of his tour (ZadGuide dockId): one Zad on the page, not a second, static one. */}
           <div id="zad-dock" className="relative mx-auto w-[130px] h-[130px] sm:w-[150px] sm:h-[150px]" />
-          {/* The verse we are named after, as the centrepiece: solid gold calligraphy under a small ornament (owner: the foil read worse). */}
+          {/* The verse we are named after, as the centrepiece: in the site ribbon (crimson to gold to teal), as it was first (owner, 2026-11-19). */}
           <div aria-hidden="true" className="relative mt-4 flex items-center justify-center gap-4">
             <span className="h-px w-16 sm:w-24 bg-gradient-to-l from-[#E5A93C] to-transparent" />
             <span className="text-[#E5A93C] text-xl">۞</span>
             <span className="h-px w-16 sm:w-24 bg-gradient-to-r from-[#E5A93C] to-transparent" />
           </div>
-          <p lang="ar" dir="rtl" className="relative mt-3 text-[2.2rem] leading-[1.9] sm:text-6xl sm:leading-[1.6] text-[#F6D58E] [text-shadow:0_0_28px_rgba(229,169,60,0.35)]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
+          <p lang="ar" dir="rtl" className="relative mt-3 text-[2.2rem] leading-[1.9] sm:text-6xl sm:leading-[1.6] text-ribbon mx-auto max-w-4xl" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
             {VERSE}
           </p>
-          <p className="relative mt-2 text-sm text-[#FAF7F2]/60">
+          <p className="relative mt-2 text-sm text-muted-foreground">
             {isEn ? '“And take provisions, but indeed, the best provision is fear of Allah.” Al-Baqarah 2:197, Saheeh International' : 'البقرة ١٩٧. ومنها اسمنا: نتزوّد بالعلم، وخير الزاد التقوى.'}
           </p>
           <button
@@ -464,15 +484,15 @@ export function PublicHomepage() {
             id="verse-sound-btn"
             onClick={() => (audio.playing ? audio.stop() : void audio.play())}
             aria-pressed={audio.playing}
-            className="relative mt-4 inline-flex items-center gap-2 min-h-11 rounded-full px-4 text-sm font-semibold text-[#FAF7F2]/85 border border-[#FAF7F2]/25 hover:bg-[#FAF7F2]/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F6D58E]"
+            className="relative mt-4 inline-flex items-center gap-2 min-h-11 rounded-full px-4 text-sm font-semibold text-foreground border border-[#087D91]/40 bg-white/60 dark:bg-transparent hover:bg-[#087D91]/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F6D58E]"
           >
-            {audio.playing ? <VolumeX className="w-4 h-4 text-[#F0656A]" aria-hidden="true" /> : <Volume2 className="w-4 h-4 text-[#12A4BC]" aria-hidden="true" />}
+            {audio.playing ? <VolumeX className="w-4 h-4 text-[#C51F24]" aria-hidden="true" /> : <Volume2 className="w-4 h-4 text-[#087D91]" aria-hidden="true" />}
             {audio.playing ? (isEn ? 'Stop the recitation' : 'إيقاف التلاوة') : (isEn ? 'Listen to the recitation' : 'استمع للتلاوة')}
           </button>
-          <h2 className="relative mt-10 font-editorial text-3xl sm:text-5xl font-bold leading-tight text-[#FAF7F2]">
+          <h2 className="relative mt-10 font-editorial text-3xl sm:text-5xl font-bold leading-tight text-foreground">
             <MaskLine>{isEn ? 'Every journey starts with one lesson.' : 'كل رحلة تبدأ بحصة.'}</MaskLine>
           </h2>
-          <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
+          <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-muted-foreground">
             {isEn
               ? 'The first one is free: thirty minutes to meet, listen, and find your way.'
               : 'والأولى مجاناً: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
@@ -485,9 +505,9 @@ export function PublicHomepage() {
               href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-[#FAF7F2]/35 bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#F6D58E]"
+              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-border bg-white/70 dark:bg-transparent text-foreground hover:bg-[#087D91]/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91]"
             >
-              <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#12A4BC]" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#087D91]" />
               <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
             </a>
           </div>

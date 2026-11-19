@@ -2,10 +2,11 @@ import React from 'react';
 import { Play } from 'lucide-react';
 
 /**
- * The homepage film (docs/marketing/HOMEPAGE-INTRO-FILM.md, v4, 2026-11-19): a real video, not an ad. Seven calm
- * scenes on painted pictures, one steady voice (the clone, eleven_v4), the verse near the end, and a soft close:
- * "So pack your Zad… before too much passes you by." Rendered frame by frame from marketing/intro-film/render
- * (film.html + render.mjs) to MP4, 16:9 for wide screens and 4:5 for phones.
+ * The homepage film (docs/marketing/HOMEPAGE-INTRO-FILM.md, v5, 2026-11-19): a real video, not an ad. Painted
+ * pictures with motion graphics, one steady voice, our own curriculum, what we count (what stays), two verses and a
+ * soft close: "So pack your Zad… before too much passes you by." Rendered frame by frame from
+ * marketing/intro-film/render (film5.html + render.mjs) to MP4: 16:9 for wide screens, 9:16 for phones (it fills
+ * the phone upright, no turning).
  * Only the cover image loads with the page; the video loads when it is played.
  */
 
@@ -48,16 +49,16 @@ export function IntroFilm({ isEn }: { isEn: boolean }) {
   React.useEffect(() => { if (playing) void ref.current?.play().catch(() => {}); }, [playing, tall]);
 
   return (
-    <figure className="relative mx-auto w-full max-w-5xl" aria-label={isEn ? 'Our story in 39 seconds' : 'قصتنا في ٣٩ ثانية'}>
-      <div className="relative overflow-hidden aspect-[4/5] sm:aspect-video rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)] bg-[#0E0907]">
+    <figure className="relative mx-auto w-full max-w-5xl" aria-label={isEn ? 'Our story in 56 seconds' : 'قصتنا في ٥٦ ثانية'}>
+      <div className="relative overflow-hidden mx-auto aspect-[9/16] max-sm:w-[min(100%,calc(78svh*9/16))] sm:aspect-video rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)] bg-[#0E0907]">
         {playing ? (
           // Film: loads only now.
           <video
             ref={ref}
             key={`${lang}-${tall}`}
             className="absolute inset-0 h-full w-full object-cover"
-            src={`/media/intro-film/${lang}-${tall ? '45' : '169'}-v4.mp4`}
-            poster={`/media/intro-film/cover-${lang}-${tall ? '45' : '169'}.webp`}
+            src={`/media/intro-film/${lang}-${tall ? '916' : '169'}-v5.mp4`}
+            poster={`/media/intro-film/cover-${lang}-${tall ? '916' : '169'}.webp`}
             preload="none"
             playsInline
             controls
@@ -70,11 +71,11 @@ export function IntroFilm({ isEn }: { isEn: boolean }) {
             type="button"
             onClick={play}
             className="group absolute inset-0 grid place-items-center focus-visible:outline-none"
-            aria-label={isEn ? 'Play our story, 39 seconds, with sound' : 'شغّل قصتنا، ٣٩ ثانية بالصوت'}
+            aria-label={isEn ? 'Play our story, 56 seconds, with sound' : 'شغّل قصتنا، ٥٦ ثانية بالصوت'}
           >
             <picture className="absolute inset-0">
               <source media="(min-width: 640px)" srcSet={`/media/intro-film/cover-${lang}-169.webp`} />
-              <img src={`/media/intro-film/cover-${lang}-45.webp`} alt="" className="h-full w-full object-cover" />
+              <img src={`/media/intro-film/cover-${lang}-916.webp`} alt="" className="h-full w-full object-cover" />
             </picture>
             <span className="relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 backdrop-blur-sm transition-transform duration-300 group-hover:scale-105 group-active:scale-95 group-focus-visible:ring-4 group-focus-visible:ring-[#E5A93C]/70">
               <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.4s]" />
