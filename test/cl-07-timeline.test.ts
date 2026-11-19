@@ -21,6 +21,7 @@ const every: RoomEvent[] = [
   { t: 'slide', state: { track: 'zad-kids', number: 1, page: 2, step: 0 } },
   { t: 'ink', ink: { track: 'zad-kids', number: 1, page: 2, strokes: [], laser: [] } },
   { t: 'board', sceneVersion: 3, elements: [{ id: 'a', type: 'rectangle' }] },
+  { t: 'board', sceneVersion: 3, elements: [], surface: 'file-1.pdf#2' },
   { t: 'pdf', fileId: 'file-1', page: 4 },
   { t: 'pointer', x: 0.5, y: 0.25 },
   { t: 'reaction', kind: 'hand' },
@@ -46,6 +47,7 @@ describe('CL-07 isRoomEvent', () => {
       { t: 'quality', side: 'parent', layer: 'h', link: 'good' }, { t: 'quality', side: 'student', layer: 'x', link: 'good' },
       { t: 'layout', mode: 'grid' }, { t: 'observer', kind: 'admin', present: true },
       { t: 'board', sceneVersion: -1, elements: [] }, { t: 'board', sceneVersion: 1, elements: 'x' },
+      { t: 'board', sceneVersion: 1, elements: [], surface: '' }, { t: 'board', sceneVersion: 1, elements: [], surface: 2 },
       { t: 'board', sceneVersion: 1, elements: [{ text: 'x'.repeat(250_000) }] },
       { t: 'session', side: 'teacher', sessionId: 'x'.repeat(500) },
     ];
@@ -220,6 +222,19 @@ describe('CL-07 events and state routes', () => {
     // the learner can never switch the permission off or on for itself
     await post(L, [{ t: 'board', sceneVersion: 9, elements: [], learnerDraw: false }]);
     assert.strictEqual(snapshot().board.learnerDraw, true);
+  });
+
+  it('each file page keeps its own notes, apart from the whiteboard and the other pages', async () => {
+    await post(T, [{ t: 'board', sceneVersion: 20, elements: [{ id: 'p2' }], learnerDraw: true, surface: 'f.pdf#2' }]);
+    await post(T, [{ t: 'board', sceneVersion: 1, elements: [{ id: 'p1' }], learnerDraw: true, surface: 'f.pdf#1' }]);
+    assert.deepStrictEqual(snapshot().boards, {
+      'f.pdf#2': { sceneVersion: 20, elements: [{ id: 'p2' }], learnerDraw: true },
+      'f.pdf#1': { sceneVersion: 1, elements: [{ id: 'p1' }], learnerDraw: true },
+    });
+    assert.strictEqual(snapshot().board.sceneVersion, 9);
+    // an older scene of the same page is refused
+    await post(T, [{ t: 'board', sceneVersion: 3, elements: [], learnerDraw: true, surface: 'f.pdf#2' }]);
+    assert.strictEqual(snapshot().boards['f.pdf#2'].sceneVersion, 20);
   });
 
   it('rejects invalid events, too many events and an oversize body', async () => {

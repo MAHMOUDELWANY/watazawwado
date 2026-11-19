@@ -4,7 +4,7 @@ import { BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, Re
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
-import type { RoomEvent } from '../lib/roomEvents';
+import { boardSurface, type RoomEvent } from '../lib/roomEvents';
 import { lessonEndMs } from '../lib/lessonWindow';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
@@ -14,7 +14,7 @@ import { createEngine } from './engine/cloudflareEngine';
 import { blameSide, classifyLink, createLayerPicker } from './engine/quality';
 import { sideOf, type Layer, type LinkClass, type LinkStats, type MediaEngine, type Side } from './engine/types';
 import { createTimelineBatcher, restoreState, type RoomSnapshot } from './timeline';
-import { Board, type BoardSync } from './board/Board';
+import { Board, keepScene, type BoardSync } from './board/Board';
 import { PdfPages } from './board/PdfPages';
 import { uploadClassroomFile } from './board/upload';
 import type { Portal, RoomEntry } from './ClassroomGate';
@@ -139,7 +139,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null }>({ layout: 'conversation', pane: 'lesson', pdf: null });
   shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null };
   const heardLayout = useRef(false);
-  const latestBoard = useRef<BoardScene | undefined>(undefined);
+  // The latest scene of each surface ('' is the whiteboard, else boardSurface(fileId, page)) and the room's drawing switch.
+  const scenes = useRef<Record<string, Omit<BoardScene, 'learnerDraw'>>>({});
+  const learnerDraw = useRef(false);
   const recitationRef = useRef(false);
   const layoutBeforeShare = useRef<LayoutMode>('content');
   const reactionId = useRef(0);
@@ -155,6 +157,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   /** Live on the channel, and saved when the server keeps that type. */
   const save = useCallback((e: RoomEvent) => batcher.current?.push(e), []);
   const send = useCallback((e: RoomEvent) => { publishEvent(e); save(e); }, [publishEvent, save]);
+  const keepBoard = useCallback((e: Extract<RoomEvent, { t: 'board' }>) => {
+    const key = e.surface ?? '';
+    scenes.current[key] = keepScene(scenes.current[key], e);
+    if (e.learnerDraw !== undefined) learnerDraw.current = e.learnerDraw;
+  }, []);
 
   // ---- clock, hard close -------------------------------------------------------------------------------------
   useEffect(() => {
@@ -282,7 +289,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           if (s.layout) setLayout(s.layout === 'screen' && isTeacher ? 'content' : s.layout);
           setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
         }
-        if (s.board) latestBoard.current = s.board;
+        if (s.board) scenes.current[''] = s.board;
+        Object.assign(scenes.current, s.boards);
+        learnerDraw.current = s.learnerDraw ?? s.board?.learnerDraw ?? false;
         if (s.pdf) setPdf({ ...s.pdf, url: null });
       }
       setRestored(snap?.snapshot ?? {});
@@ -404,7 +413,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         remoteLayer.current = e.layer;
         return;
       case 'board':
-        latestBoard.current = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: e.learnerDraw ?? latestBoard.current?.learnerDraw ?? false };
+        keepBoard(e);
         return;
       case 'reaction': {
         if (!isTeacher) return;
@@ -631,11 +640,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   }, [reconnecting, checkState]);
 
   const board = useMemo<BoardSync>(() => ({
-    publishEvent: (e) => { if (e.t === 'board') latestBoard.current = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: e.learnerDraw ?? false }; publishEvent(e); },
+    publishEvent: (e) => { if (e.t === 'board') keepBoard(e); publishEvent(e); },
     onEvent,
     save,
-    get initial() { return latestBoard.current; },
-  }), [publishEvent, onEvent, save]);
+    initial: (surface = '') => {
+      const scene = scenes.current[surface];
+      return { sceneVersion: scene?.sceneVersion ?? -1, elements: scene?.elements ?? [], learnerDraw: learnerDraw.current };
+    },
+  }), [publishEvent, onEvent, save, keepBoard]);
   const sendPointer = usePointerSender(publishEvent);
 
   // ---- over -----------------------------------------------------------------------------------------------------
@@ -783,12 +795,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             /\.pdf$/i.test(pdf.fileId) ? (
               <PdfPages fileUrl={pdf.url} page={pdf.page}
                 onPage={isTeacher ? (p) => { setPdf({ ...pdf, page: p }); send({ t: 'pdf', fileId: pdf.fileId, page: p }); } : undefined}>
-                {restored && <Board role={role} sync={board} transparent />}
+                {restored && <Board key={boardSurface(pdf.fileId, pdf.page)} surface={boardSurface(pdf.fileId, pdf.page)} role={role} sync={board} transparent />}
               </PdfPages>
             ) : (
               <div className="relative h-full">
                 <img src={pdf.url} alt="" className="h-full w-full object-contain" />
-                <div className="absolute inset-0">{restored && <Board role={role} sync={board} transparent />}</div>
+                <div className="absolute inset-0">{restored && <Board key={boardSurface(pdf.fileId, 1)} surface={boardSurface(pdf.fileId, 1)} role={role} sync={board} transparent />}</div>
               </div>
             )
           ) : isTeacher ? (

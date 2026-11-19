@@ -81,12 +81,15 @@ async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer 
  * ink, pointer, focus_warning_off, observer) is live only. Board: the teacher always; the learner only while the
  * teacher's latest board in the snapshot has learnerDraw = true (a learner can never change that flag).
  */
+/** File pages that keep their own saved notes (each up to MAX_BOARD_BYTES). */
+const MAX_BOARD_PAGES = 30;
+
 function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
   switch (e.t) {
     case 'slide': case 'pdf': case 'layout': case 'end': return role === 'teacher';
     case 'reaction': case 'focus': return role === 'learner';
     case 'quality': return e.side === attendanceRole(role);
-    case 'board': return role === 'teacher' || (role === 'learner' && snapshot.board?.learnerDraw === true);
+    case 'board': return role === 'teacher' || (role === 'learner' && (snapshot.learnerDraw ?? snapshot.board?.learnerDraw) === true);
     default: return false;
   }
 }
@@ -402,13 +405,21 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         for (const e of boards) {
           if (!mayPersist(e, t.role, fresh)) continue;
           changed = true;
-          // Latest board only, in the snapshot (no timeline row); an older scene never replaces a newer one.
-          if (e.sceneVersion < (fresh.board?.sceneVersion ?? -1)) {
-            // The teacher's permission always lands, even when a learner pushed the version ahead.
-            if (t.role === 'teacher' && fresh.board) fresh.board = { ...fresh.board, learnerDraw: e.learnerDraw === true };
-            continue;
+          // The drawing permission is one for the room, whichever page the teacher switched it on.
+          if (t.role === 'teacher') {
+            fresh.learnerDraw = e.learnerDraw === true;
+            if (fresh.board) fresh.board = { ...fresh.board, learnerDraw: fresh.learnerDraw };
           }
-          fresh.board = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
+          // Latest scene per surface (whiteboard, or one file page), in the snapshot (no timeline row); an older scene
+          // never replaces a newer one.
+          const pages: Record<string, unknown> = fresh.boards ?? {};
+          const current = e.surface ? (pages[e.surface] as { sceneVersion?: number } | undefined) : fresh.board;
+          if (e.sceneVersion < (current?.sceneVersion ?? -1)) continue;
+          // shortcut: notes on more than MAX_BOARD_PAGES pages are not saved (live only), raise it if teachers hit it.
+          if (e.surface && !current && Object.keys(pages).length >= MAX_BOARD_PAGES) continue;
+          const scene = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
+          if (e.surface) fresh.boards = { ...pages, [e.surface]: scene };
+          else fresh.board = scene;
         }
         if (changed) await writeSnapshot(client, t.bookingId, { ...fresh, ...patch });
       }

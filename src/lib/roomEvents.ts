@@ -25,12 +25,13 @@ export function isRoomState(v: any): v is RoomState {
 /**
  * Classroom timeline (Release 1, Task 7): every typed event that travels on the room channel (event name 'ev').
  * `board.learnerDraw` is set by the teacher; a learner's board is kept only while the teacher allows drawing.
+ * `board.surface`: which page the scene belongs to (`boardSurface`); none is the whiteboard.
  */
 export type RoomEvent =
   | { t: 'session'; side: Side; sessionId: string }
   | { t: 'slide'; state: RoomState }
   | { t: 'ink'; ink: RoomInk }
-  | { t: 'board'; sceneVersion: number; elements: unknown[]; learnerDraw?: boolean }
+  | { t: 'board'; sceneVersion: number; elements: unknown[]; learnerDraw?: boolean; surface?: string }
   | { t: 'pdf'; fileId: string; page: number }
   | { t: 'pointer'; x: number; y: number }
   | { t: 'reaction'; kind: 'hand' | 'confused' | 'slower' | 'repeat' | 'thinking' }
@@ -45,6 +46,8 @@ export type RoomEvent =
 
 export const MAX_EVENT_BYTES = 16_384; // lesson_timeline_events.payload limit
 export const MAX_BOARD_BYTES = 200_000;
+/** The notes layer of one file page: each PDF page (or picture) keeps its own scene. */
+export const boardSurface = (fileId: string, page: number) => `${fileId}#${page}`;
 const SIDES = ['teacher', 'student'];
 const oneOf = (list: readonly unknown[]) => (v: unknown) => list.includes(v);
 const bool = (v: unknown) => typeof v === 'boolean';
@@ -59,7 +62,7 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   session: { side: oneOf(SIDES), sessionId: idStr(100) },
   slide: { state: isRoomState },
   ink: { ink: isRoomInk },
-  board: { sceneVersion: intIn(Number.MAX_SAFE_INTEGER), elements: (v) => Array.isArray(v) && v.length <= 5000, learnerDraw: (v) => v === undefined || bool(v) },
+  board: { sceneVersion: intIn(Number.MAX_SAFE_INTEGER), elements: (v) => Array.isArray(v) && v.length <= 5000, learnerDraw: (v) => v === undefined || bool(v), surface: (v) => v === undefined || idStr(220)(v) },
   pdf: { fileId: idStr(200), page: intIn(10000) },
   pointer: { x: coord, y: coord },
   reaction: { kind: oneOf(['hand', 'confused', 'slower', 'repeat', 'thinking']) },

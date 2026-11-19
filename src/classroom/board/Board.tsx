@@ -14,8 +14,8 @@ export type BoardSync = {
   onEvent: (fn: (e: RoomEvent) => void) => () => void;
   /** Timeline batcher push (Task 7); the server keeps only the latest board. */
   save?: (e: RoomEvent) => void;
-  /** The board from /state on rejoin. */
-  initial?: { sceneVersion: number; elements: unknown[]; learnerDraw: boolean };
+  /** The latest scene of a surface (from /state on rejoin, then kept live), with the room's drawing permission. */
+  initial?: (surface?: string) => { sceneVersion: number; elements: unknown[]; learnerDraw: boolean } | undefined;
 };
 
 // Excalidraw (and its CSS) load only when a board is shown, so it stays out of every other chunk.
@@ -37,6 +37,12 @@ export function mergeElements(local: readonly El[], remote: readonly El[]): El[]
   return [...byId.values()];
 }
 
+/** The page keeps every surface's latest scene from the deltas (its own and the other side's), deletions pruned. */
+export function keepScene(prev: { sceneVersion: number; elements: unknown[] } | undefined, e: { sceneVersion: number; elements: unknown[] }) {
+  const elements = mergeElements((prev?.elements ?? []) as El[], e.elements as El[]).filter((x) => !x.isDeleted);
+  return { sceneVersion: Math.max(prev?.sceneVersion ?? -1, e.sceneVersion), elements };
+}
+
 /**
  * What one send carries. `delta` (live channel): elements whose version changed since `sent`, a deletion only once.
  * `scene` (saved board): every live element, deleted ones pruned. `sceneVersion` only grows, because pruning lowers
@@ -55,14 +61,19 @@ export function boardPayload(all: readonly El[], sent: ReadonlyMap<string, numbe
  * "learner can draw" on; observers watch. Changes go out on the room channel, debounced, and as the saved board.
  * `transparent` lets it sit over a PDF page as the annotation layer.
  */
-export function Board({ role, sync, transparent = false }: { role: RoomRole; sync: BoardSync; transparent?: boolean }) {
+export function Board({ role, sync, transparent = false, surface }: {
+  role: RoomRole; sync: BoardSync; transparent?: boolean;
+  /** Which page these notes belong to (`boardSurface`); none is the whiteboard. Mount one Board per surface (key). */
+  surface?: string;
+}) {
   const { t, isAr } = useT();
   const teacher = role === 'teacher';
-  const [learnerDraw, setLearnerDraw] = useState(sync.initial?.learnerDraw ?? false);
+  const [initial] = useState(() => sync.initial?.(surface));
+  const [learnerDraw, setLearnerDraw] = useState(initial?.learnerDraw ?? false);
   const api = useRef<ExcalidrawImperativeAPI | null>(null);
-  const initialEls = (sync.initial?.elements ?? []) as El[];
+  const initialEls = (initial?.elements ?? []) as El[];
   const lastVersion = useRef(versionOf(initialEls));
-  const sceneVersion = useRef(sync.initial?.sceneVersion ?? -1);
+  const sceneVersion = useRef(initial?.sceneVersion ?? -1);
   /** Version of each element as last sent or received: only newer ones go out. */
   const sent = useRef(new Map(initialEls.map((e) => [e.id, e.version])));
   const timer = useRef<number | null>(null);
@@ -70,27 +81,30 @@ export function Board({ role, sync, transparent = false }: { role: RoomRole; syn
   const [notice, setNotice] = useState<string | null>(null);
   const canDraw = teacher || (role === 'learner' && learnerDraw);
 
+  const on = surface ? { surface } : {};
   const send = useCallback((elements: readonly El[], draw: boolean) => {
     const p = boardPayload(elements, sent.current, sceneVersion.current);
     // Never stop silently: over the cap nothing is sent and the board says so until it is cleared below the cap.
     setFull(p.full);
     if (p.full) {
       // The drawing switch still reaches the learner live (the saved board keeps its last good scene).
-      if (teacher) sync.publishEvent({ t: 'board', sceneVersion: sceneVersion.current, elements: [], learnerDraw: draw });
+      if (teacher) sync.publishEvent({ t: 'board', sceneVersion: sceneVersion.current, elements: [], learnerDraw: draw, ...on });
       return;
     }
     sceneVersion.current = p.sceneVersion;
     for (const e of p.delta) sent.current.set(e.id, e.version);
-    const flag = teacher ? { learnerDraw: draw } : {};
+    const flag = { ...(teacher ? { learnerDraw: draw } : {}), ...on };
     sync.publishEvent({ t: 'board', sceneVersion: p.sceneVersion, elements: p.delta, ...flag });
     // The saved board (rejoin snapshot) is always the whole live scene.
     sync.save?.({ t: 'board', sceneVersion: p.sceneVersion, elements: p.scene, ...flag });
-  }, [sync, teacher]);
+  }, [sync, teacher, surface]);
 
   // Remote changes: merge, never echo back.
   useEffect(() => sync.onEvent((e) => {
     if (e.t !== 'board') return;
     if (e.learnerDraw !== undefined && !teacher) setLearnerDraw(e.learnerDraw);
+    // Another page's notes never land on this one.
+    if (e.surface !== surface) return;
     sceneVersion.current = Math.max(sceneVersion.current, e.sceneVersion);
     const a = api.current;
     if (!a) return;
@@ -98,7 +112,7 @@ export function Board({ role, sync, transparent = false }: { role: RoomRole; syn
     for (const el of merged) if ((sent.current.get(el.id) ?? -1) < el.version) sent.current.set(el.id, el.version);
     lastVersion.current = versionOf(merged);
     a.updateScene({ elements: merged as any });
-  }), [sync, teacher]);
+  }), [sync, teacher, surface]);
 
   // R1 has no image sync (excalidraw `files` would blow the cap): the image tool is off, which also makes Excalidraw
   // refuse pasted or dropped image files; pasted board elements that carry images are refused here. Pictures go through "Add file".
@@ -150,7 +164,7 @@ export function Board({ role, sync, transparent = false }: { role: RoomRole; syn
           <Excalidraw
             excalidrawAPI={(a) => { api.current = a; }}
             initialData={{
-              elements: (sync.initial?.elements ?? []) as any,
+              elements: initialEls as any,
               appState: transparent ? { viewBackgroundColor: 'transparent' } : undefined,
             }}
             onChange={(els) => onChange(els as readonly El[])}

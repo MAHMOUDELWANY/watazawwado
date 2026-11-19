@@ -13,6 +13,10 @@ const KEEPALIVE_MAX = 60_000; // browsers cap keepalive bodies at 64 kB
 export type RoomSnapshot = {
   slide?: { track: string; number: number; page: number; step: number };
   board?: { sceneVersion: number; elements: unknown[]; learnerDraw: boolean };
+  /** Notes on file pages, by `boardSurface(fileId, page)`. */
+  boards?: Record<string, { sceneVersion: number; elements: unknown[]; learnerDraw: boolean }>;
+  /** The teacher's "learner can draw" (older rooms keep it only on `board`). */
+  learnerDraw?: boolean;
   pdf?: { fileId: string; page: number };
   layout?: 'conversation' | 'content' | 'screen';
 };
@@ -54,8 +58,8 @@ export function createTimelineBatcher(
 
   const push = (event: RoomEvent) => {
     if (!PERSISTED.has(event.t)) return;
-    // Board snapshots are debounced to the flush interval: only the latest one waits in the queue.
-    if (event.t === 'board') queue = queue.filter((x) => x.event.t !== 'board');
+    // Board snapshots are debounced to the flush interval: only the latest one per page waits in the queue.
+    if (event.t === 'board') queue = queue.filter((x) => x.event.t !== 'board' || x.event.surface !== event.surface);
     queue.push({ at: Date.now(), event });
     if (queue.length >= MAX_BATCH) void flush();
   };

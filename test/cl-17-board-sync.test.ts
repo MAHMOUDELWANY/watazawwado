@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
-import { boardPayload } from '../src/classroom/board/Board.js';
+import { boardPayload, keepScene } from '../src/classroom/board/Board.js';
 import { MAX_BOARD_BYTES } from '../src/lib/roomEvents.js';
 
 const el = (id: string, version: number, extra: Record<string, unknown> = {}) => ({ id, version, ...extra });
@@ -39,6 +39,28 @@ describe('CL-17 board sync (H5)', () => {
     assert.match(b, /tools: \{ image: false \}/);
     assert.match(b, /onPaste=\{onPaste\}/);
     assert.ok(!/shortcut: a board past the size cap is not sent/.test(b));
+  });
+});
+
+describe('CL-17 notes per page (live finding 1)', () => {
+  it('the page keeps each scene from deltas: newer copies win, deletions are pruned', () => {
+    let s = keepScene(undefined, { sceneVersion: 2, elements: [el('a', 1), el('b', 1)] });
+    s = keepScene(s, { sceneVersion: 4, elements: [el('b', 2, { isDeleted: true }), el('c', 1)] });
+    assert.deepStrictEqual(s.elements.map((e: any) => e.id), ['a', 'c']);
+    assert.strictEqual(s.sceneVersion, 4);
+    assert.strictEqual(keepScene(s, { sceneVersion: 1, elements: [] }).sceneVersion, 4);
+  });
+
+  it('a board belongs to one surface: other pages are ignored, its own sends say which page', () => {
+    const b = src('src/classroom/board/Board.tsx');
+    assert.match(b, /if \(e\.surface !== surface\) return;/);
+    assert.match(b, /surface \? \{ surface \} : \{\}/);
+    const page = src('src/classroom/ClassroomPage.tsx');
+    // one Board per page (remounted with that page's scene), keyed by file and page
+    assert.equal((page.match(/key=\{boardSurface\(pdf\.fileId, /g) || []).length, 2);
+    assert.match(page, /Object\.assign\(scenes\.current, s\.boards\)/);
+    // the saved board waits per page, so drawing on page 1 does not drop page 2's save
+    assert.match(src('src/classroom/timeline.ts'), /x\.event\.surface !== event\.surface/);
   });
 });
 
