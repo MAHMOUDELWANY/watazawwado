@@ -102,6 +102,13 @@ describe('CL-12 recordIncident', () => {
     assert.deepStrictEqual(await recordIncident(db, { bookingId: BOOKING, kind: 'connect_timeout', side: 'student', detail: {} }, min(1)), { fallback: null });
     assert.match(notices(db)[0].title_en, /urgent/i);
   });
+
+  it("the column's placeholder link (bookings.zoom_meeting_link default) is no Zoom meeting", async () => {
+    const db = fakeDb({ bookings: [lesson({ sync_metadata: null, zoom_meeting_link: 'https://zoom.us/j/mahmoud-teaching-room' })], ...admins() });
+    assert.deepStrictEqual(await recordIncident(db, { bookingId: BOOKING, kind: 'connect_timeout', side: 'student', detail: {} }, min(1)), { fallback: null });
+    assert.deepStrictEqual(await recordIncident(db, { bookingId: BOOKING, kind: 'connect_timeout', side: 'teacher', detail: {} }, min(1)), { fallback: null });
+    assert.match(notices(db)[0].title_en, /urgent/i);
+  });
 });
 
 function fakeCloudflare() {

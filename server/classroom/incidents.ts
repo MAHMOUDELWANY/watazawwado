@@ -7,6 +7,8 @@ import { notifySuperAdmins } from '../notifications/inbox.js';
  * (Task 10 reads it to excuse lateness), the super admins hear about the first one per side per lesson, and the side
  * gets its Zoom link while the Zoom window for that side is open (src/lib/lessonWindow.ts, unchanged).
  */
+
+const ZOOM_PLACEHOLDER = 'https://zoom.us/j/mahmoud-teaching-room';
 export type IncidentKind = 'connect_timeout' | 'ice_failed' | 'engine_error' | 'provider_error';
 export const CLIENT_INCIDENT_KINDS: readonly IncidentKind[] = ['connect_timeout', 'ice_failed', 'engine_error'];
 export type IncidentSide = 'teacher' | 'student';
@@ -31,7 +33,9 @@ export async function recordIncident(
 
   // The host link is not a column: the Zoom sync keeps it in sync_metadata (as api/index.ts reads it).
   const hostUrl: string | null = booking.sync_metadata?.zoomStartUrl || null;
-  const noZoom = !booking.zoom_meeting_link && !hostUrl;
+  // bookings.zoom_meeting_link defaults to a placeholder that is no real meeting (kept until the Zoom sync writes one).
+  const joinUrl: string | null = booking.zoom_meeting_link === ZOOM_PLACEHOLDER ? null : booking.zoom_meeting_link || null;
+  const noZoom = !joinUrl && !hostUrl;
   if (!earlier) {
     const who = side === 'teacher' ? { en: 'the teacher', ar: 'المعلم' } : { en: 'the learner', ar: 'الطالب' };
     const when = String(booking.scheduled_start).slice(0, 16).replace('T', ' ');
@@ -50,8 +54,8 @@ export async function recordIncident(
   }
 
   // ?zoom=1: with the classroom on, /api/join/:id leads to the room; the fallback must reach Zoom (Task 14).
-  const learner = studentJoinPath(bookingId, booking.zoom_meeting_link);
-  const url = side === 'teacher' ? (hostUrl || booking.zoom_meeting_link || null) : learner?.includes('/api/join/') ? `${learner}?zoom=1` : learner;
+  const learner = studentJoinPath(bookingId, joinUrl);
+  const url = side === 'teacher' ? (hostUrl || joinUrl) : learner?.includes('/api/join/') ? `${learner}?zoom=1` : learner;
   const open = lessonJoinState(booking, side, now) === 'open';
   return { fallback: url && open ? { url } : null };
 }
