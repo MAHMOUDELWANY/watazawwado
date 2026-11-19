@@ -17,7 +17,7 @@ const MAX = 2000;
  * included). It cannot be closed; it goes away once every reason is sent, and comes back after sign-in until then.
  * Tone (design brief 4.6): "tell us, so we can help", not "you were caught". Free text only (owner decision).
  */
-export default function LateReasonGate() {
+export default function LateReasonGate({ onPendingChange }: { onPendingChange?: (pending: boolean) => void } = {}) {
   const { t, isAr } = useT();
   const reduce = useReducedMotion();
   const headingId = useId();
@@ -39,6 +39,8 @@ export default function LateReasonGate() {
     }
   }, []);
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => { onPendingChange?.(pending.length > 0); }, [pending.length, onPendingChange]);
 
   const current = pending[0];
   // The dashboard behind must not scroll while the gate is up.

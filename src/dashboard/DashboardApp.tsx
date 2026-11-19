@@ -102,6 +102,8 @@ export function DashboardApp() {
   const { isTeacherAuthenticated, user, signOut, teacherRole, loading, userRole } = useTeacherAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showGlobalTour, setShowGlobalTour] = useState(false);
+  // A late-reason gate on screen holds Zad's tour back: two dialogs at once hid the gate's Send (live run 2026-11-19).
+  const [lateGateUp, setLateGateUp] = useState(false);
   const [search, setSearch] = useState('');
   const [commandOpen, setCommandOpen] = useState(false);
   const location = useLocation();
@@ -140,13 +142,13 @@ export function DashboardApp() {
   const tourKey = isTeacherAuthenticated && meLoaded && !agreementRequired && user?.id && teacherRole
     ? tourSeenKey(isSuperAdmin ? 'admin' : 'teacher', user.id) : null;
   useEffect(() => {
-    if (showWelcome) return;
+    if (showWelcome || lateGateUp) return;
     let storage: Storage | null = null;
     try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
     if (!isTourHome(location.pathname) || !shouldAutoOpenTour(tourKey, storage)) return;
     const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
     return () => window.clearTimeout(timer);
-  }, [tourKey, showWelcome, location.pathname]);
+  }, [tourKey, showWelcome, lateGateUp, location.pathname]);
   const closeTour = () => {
     setShowGlobalTour(false);
     try { markTourSeen(tourKey, window.localStorage); } catch { /* blocked storage */ }
@@ -627,7 +629,7 @@ export function DashboardApp() {
           <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
             <FeedbackHost />
-            {!isSuperAdmin && <LateReasonGate />}
+            {!isSuperAdmin && <LateReasonGate onPendingChange={setLateGateUp} />}
             <TimezoneCheck isAr={ar} />
             <PushPrompt isAr={ar} role="teacher" hold={showGlobalTour} />
             {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
@@ -683,7 +685,7 @@ export function DashboardApp() {
         <MobileTabBar tabs={mobileTabs} label={L('Quick mobile navigation', 'التنقل السريع')} hidden={isMobileMenuOpen} isAr={ar} />
       </main>
       {/* Global Onboarding Guide */}
-      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={closeTour} isAr={ar} />
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour && !lateGateUp} onClose={closeTour} isAr={ar} />
     </div>
   );
 }

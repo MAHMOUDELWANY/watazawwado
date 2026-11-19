@@ -1,5 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
 import { isAutoplayBlock } from '../src/classroom/roomWiring.js';
 import { classifyLink, createLayerPicker, pickLayer } from '../src/classroom/engine/quality.js';
 import type { LinkStats } from '../src/classroom/engine/types.js';
@@ -33,5 +34,13 @@ describe('CL-19 live-run findings', () => {
     assert.equal(pickLayer(read(300, { inLossPct: 3 }), 'a'), 'c');
     assert.equal(pickLayer(read(100, { rttMs: 350 }), 'b'), 'audio_only');
     assert.equal(classifyLink(read(100, { inLossPct: 3 })), 'poor');
+  });
+
+  it("Zad's tour never opens over the late-reason gate", () => {
+    const app = fs.readFileSync('src/dashboard/DashboardApp.tsx', 'utf8');
+    assert.match(app, /<LateReasonGate onPendingChange=\{setLateGateUp\} \/>/);
+    assert.match(app, /if \(showWelcome \|\| lateGateUp\) return;/);
+    assert.match(app, /isOpen=\{showGlobalTour && !lateGateUp\}/);
+    assert.match(fs.readFileSync('src/dashboard/components/LateReasonGate.tsx', 'utf8'), /onPendingChange\?\.\(pending\.length > 0\)/);
   });
 });
