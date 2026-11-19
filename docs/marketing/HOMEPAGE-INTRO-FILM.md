@@ -116,3 +116,17 @@ ourselves and did not hang together; we never said we have our own curriculum or
   notebook at dawn), plus `honor.png` and `class.png` for the homepage.
 - **Phone:** a 9:16 render (720×1280) and a 9:16 cover; the page uses it below 640 px, so it fills the phone upright.
   Files: `public/media/intro-film/{ar,en}-{169,916}-v5.mp4`, `cover-{ar,en}-{169,916}.webp`. `render/run.sh` renders all four.
+
+## Version 6 (2026-11-19): made like our Shorts
+
+Owner on v5: our social videos are better; make the site film the same way, with the skill we built, and few
+pictures. So the film is now a composition in the Shorts engine (`watazawwado-video-generator` skill, Remotion
+project `marketing/promo-video` on the content branch, `src/RFilm.tsx`, compositions `RFilmAr` / `RFilmEn`,
+1080×1920): a hard cut per beat on the crimson / ink / teal / cream / sand / copper fields, slammed serif lines with
+one ribbon word, the 3D Zad playing a move in most beats, an open-loop sticker ("What would it be? The answer comes at
+the end"), Arabic cards for «كلام الله» and «لسان أجدادنا», timed pills, the real curriculum covers fanning out, a path
+of five steps, "lessons" struck through, both verses on quote cards, kinetic captions, the ribbon progress bar and a
+soft pop per cut. Only two pictures: the open suitcase at the start and the end. Same v5 voice (loudness −14 LUFS).
+
+The site shows one upright video on every screen (`public/media/intro-film/{ar,en}-reel-v6.mp4`, a 720×1280 copy)
+behind the 9:16 cover; a phone never has to turn.

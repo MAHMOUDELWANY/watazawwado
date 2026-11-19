@@ -258,7 +258,7 @@ export function PublicHomepage() {
             </div>
           </div>
 
-          <Reveal className="mt-14 lg:mt-20 max-w-5xl mx-auto" y={60}>
+          <Reveal className="mt-14 lg:mt-20 mx-auto w-full max-w-[min(100%,calc(80svh*9/16),26rem)]" y={60}>
             <div id="intro-film" className="scroll-mt-28" />
             <Bezel radius="2.6rem" core="overflow-hidden">
               <IntroFilm isEn={isEn} />

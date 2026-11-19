@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
-import { Award, BookOpen, Keyboard, Medal as Medal3, PenLine, Users } from 'lucide-react';
+import { Award, FileUp, Flame, Keyboard, Medal as Medal3, Mic, MonitorUp, PenLine, Users } from 'lucide-react';
 import { EXPO, num, type L } from './Journey';
 
 /**
@@ -156,32 +156,145 @@ export function LessonStory({ isEn }: { isEn: boolean }) {
 }
 
 type Point = { I: typeof Award; t: L; b: L };
-const PANELS: { img: string; kicker: L; title: L; lead: L; points: Point[] }[] = [
+const sample = { en: 'Sample names', ar: 'أسماء توضيحية' };
+
+/** A browser-like window, so a mockup reads as a screen of the site. */
+function Screen({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="relative rounded-[1.6rem] bg-white dark:bg-[#1C1411] ring-1 ring-[#1C1411]/10 dark:ring-[#FAF7F2]/10 shadow-[0_40px_80px_-40px_rgba(92,52,30,0.6)] overflow-hidden" aria-hidden="true">
+      <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-[#1C1411]/[0.07] dark:border-[#FAF7F2]/10 bg-[#FAF7F2] dark:bg-[#24160F]">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#C51F24]/70" /><span className="w-2.5 h-2.5 rounded-full bg-[#E5A93C]/80" /><span className="w-2.5 h-2.5 rounded-full bg-[#087D91]/70" />
+        <span className="ms-3 rounded-full bg-white dark:bg-[#1C1411] px-3 py-0.5 text-[11px] font-semibold text-muted-foreground ring-1 ring-[#1C1411]/[0.06]">watazawwado.academy · {title}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+const HONOR = [
+  { medal: 'surah', name: { en: 'Yusuf', ar: 'يوسف' }, what: { en: 'Memorised Surat Al-Mulk', ar: 'حفظ سورة الملك' }, sub: { en: 'Quran', ar: 'القرآن' } },
+  { medal: 'tajweed', name: { en: 'Maryam', ar: 'مريم' }, what: { en: 'Mastered the rules of noon sakinah', ar: 'أتقنت أحكام النون الساكنة' }, sub: { en: 'Tajweed', ar: 'التجويد' } },
+  { medal: 'language-level', name: { en: 'Adam', ar: 'آدم' }, what: { en: 'Finished Fusha level 1', ar: 'أنهى المستوى الأول في الفصحى' }, sub: { en: 'Arabic', ar: 'العربية' } },
+];
+const BOARD = [
+  { name: { en: 'Yusuf', ar: 'يوسف' }, lessons: 8, weeks: 5 },
+  { name: { en: 'Huda', ar: 'هدى' }, lessons: 6, weeks: 3 },
+  { name: { en: 'Adam', ar: 'آدم' }, lessons: 7, weeks: 4 },
+];
+
+function CommunityScreen({ isEn }: { isEn: boolean }) {
+  const t = (l: L) => (isEn ? l.en : l.ar);
+  const n = (x: number) => num(x, isEn);
+  return (
+    <Screen title={isEn ? 'Our community' : 'مجتمعنا'}>
+      <div className="p-4 sm:p-5 grid gap-4">
+        <div className="flex items-center justify-between">
+          <p className="font-editorial font-bold text-lg text-foreground">{isEn ? 'Hall of Honor · November' : 'لوحة الشرف · نوفمبر'}</p>
+          <span className="rounded-full bg-[#F6D58E]/40 px-2.5 py-0.5 text-[11px] font-bold text-[#7E1216]">{t(sample)}</span>
+        </div>
+        <ul className="grid gap-2.5">
+          {HONOR.map((h, k) => (
+            <motion.li key={h.name.en} className="flex items-center gap-3 rounded-2xl bg-[#FAF7F2] dark:bg-[#FAF7F2]/[0.05] ring-1 ring-[#E5A93C]/25 p-3"
+              initial={{ opacity: 0, y: 16, scale: 0.96 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.55, ease: EXPO, delay: 0.2 + k * 0.15 }}>
+              <motion.img src={`/badges/shelf/${h.medal}.webp`} alt="" width={180} height={180} loading="lazy" className="w-12 h-12 shrink-0 drop-shadow-[0_8px_10px_rgba(28,20,17,0.3)]"
+                initial={{ rotate: -30, scale: 0.4 }} whileInView={{ rotate: 0, scale: 1 }} viewport={{ once: true }} transition={{ type: 'spring', stiffness: 220, damping: 12, delay: 0.35 + k * 0.15 }} />
+              <div className="min-w-0">
+                <p className="font-bold text-foreground leading-tight">{t(h.name)}</p>
+                <p className="text-sm text-foreground/80 leading-snug">{t(h.what)}</p>
+                <p className="text-[11px] text-muted-foreground">{t(h.sub)}</p>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
+        <div className="rounded-2xl ring-1 ring-[#1C1411]/[0.07] dark:ring-[#FAF7F2]/10 p-3.5">
+          <p className="font-bold text-sm text-foreground">{isEn ? 'Class board · your teacher’s learners' : 'لوحة الحلقة · طلاب معلّمك'}</p>
+          <ul className="mt-2.5 grid gap-2">
+            {BOARD.map((b, k) => (
+              <li key={b.name.en} className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-3 text-sm">
+                <span className="font-bold text-foreground truncate">{t(b.name)}</span>
+                <span className="h-2.5 rounded-full bg-[#1C1411]/[0.06] dark:bg-[#FAF7F2]/10 overflow-hidden">
+                  <motion.span className="block h-full rounded-full bg-[linear-gradient(90deg,#C51F24,#E5A93C,#087D91)]" initial={{ width: 0 }} whileInView={{ width: `${(b.lessons / 8) * 100}%` }} viewport={{ once: true }} transition={{ duration: 1.1, ease: EXPO, delay: 0.6 + k * 0.12 }} />
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-muted-foreground tabular-nums"><Flame className="w-3.5 h-3.5 text-[#C51F24]" />{n(b.weeks)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[11px] text-muted-foreground">{isEn ? 'Lessons this month and weeks in a row. No rank, no score.' : 'حصص الشهر والأسابيع المتتالية. من غير ترتيب ولا درجات.'}</p>
+        </div>
+      </div>
+    </Screen>
+  );
+}
+
+function ClassroomScreen({ isEn }: { isEn: boolean }) {
+  const reduce = useReducedMotion();
+  const draw = reduce ? {} : { initial: { pathLength: 0 }, whileInView: { pathLength: 1 }, viewport: { once: true } };
+  return (
+    <Screen title={isEn ? 'Classroom' : 'الفصل'}>
+      <div className="grid grid-cols-[1fr_6.5rem] sm:grid-cols-[1fr_8rem] gap-2.5 p-3 bg-[#2A1A14]">
+        {/* The shared board: the lesson page on one side, the teacher's pen and the learner's on the other. */}
+        <div className="relative rounded-xl bg-[#FFFDF8] overflow-hidden min-h-[15rem] sm:min-h-[17rem] bg-[radial-gradient(circle,rgba(28,20,17,0.08)_1px,transparent_1px)] [background-size:14px_14px]">
+          <div className="absolute top-2.5 start-2.5 w-[38%] rounded-lg overflow-hidden ring-1 ring-[#1C1411]/10 shadow-md rotate-[-2deg]">
+            <img src="/curriculum/banners/fusha-kids.webp" alt="" width={1000} height={1000} loading="lazy" className="block w-full aspect-[4/3] object-cover" />
+            <p className="bg-white px-2 py-1 text-[10px] font-bold text-foreground/80">{isEn ? 'Lesson 4 · page 2' : 'الدرس ٤ · صفحة ٢'}</p>
+          </div>
+          <svg viewBox="0 0 300 200" className="absolute inset-0 w-full h-full">
+            {/* the teacher writes the letter (crimson) */}
+            <motion.path d="M250 70 C 250 110, 230 122, 200 122 L 140 122 C 120 122, 118 104, 124 94" fill="none" stroke="#C51F24" strokeWidth="7" strokeLinecap="round" {...draw} transition={{ duration: 1.3, ease: 'easeInOut', delay: 0.4 }} />
+            <motion.circle cx="190" cy="142" r="6" fill="#C51F24" initial={reduce ? false : { scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ delay: 1.7 }} />
+            {/* the learner traces it back (teal) */}
+            <motion.path d="M250 150 C 250 182, 232 190, 206 190 L 150 190 C 132 190, 130 176, 135 168" fill="none" stroke="#087D91" strokeWidth="6" strokeLinecap="round" strokeDasharray="1 0" {...draw} transition={{ duration: 1.4, ease: 'easeInOut', delay: 2.1 }} />
+            <motion.path d="M118 60 l 20 -8" stroke="#E5A93C" strokeWidth="5" strokeLinecap="round" {...draw} transition={{ duration: 0.4, delay: 3.6 }} />
+          </svg>
+          <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 rounded-full bg-[#087D91]/10 px-2 py-0.5 text-[10px] font-bold text-[#087D91]"><PenLine className="w-3 h-3" />{isEn ? 'Yusuf is writing' : 'يوسف بيكتب'}</span>
+        </div>
+        {/* Two people, shown as arches with initials (the room shows cameras; no faces on our site). */}
+        <div className="grid gap-2.5 content-start">
+          {[{ i: isEn ? 'T' : 'م', l: isEn ? 'Teacher' : 'المعلّم', c: '#C51F24' }, { i: isEn ? 'Y' : 'ي', l: isEn ? 'Yusuf' : 'يوسف', c: '#087D91' }].map((p) => (
+            <div key={p.l} className="relative aspect-[4/5] rounded-xl bg-[#3B2219] grid place-items-center overflow-hidden">
+              <span className="grid place-items-center w-12 h-14 rounded-t-full rounded-b-lg text-lg font-bold text-white" style={{ background: p.c }}>{p.i}</span>
+              <span className="absolute bottom-1.5 inset-x-1.5 flex items-center justify-between text-[10px] font-bold text-[#FAF7F2]/90"><span>{p.l}</span><Mic className="w-3 h-3 text-[#F6D58E]" /></span>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* The bar: pens, the Arabic keyboard, pages, screen share. */}
+      <div className="flex flex-wrap items-center gap-1.5 px-3 py-2.5 bg-[#24160F]">
+        {['#C51F24', '#087D91', '#E5A93C'].map((c) => <span key={c} className="w-5 h-5 rounded-full ring-2 ring-white/70" style={{ background: c }} />)}
+        <span className="mx-1 h-5 w-px bg-white/15" />
+        {[Keyboard, FileUp, MonitorUp].map((I, k) => <span key={k} className="grid place-items-center w-8 h-8 rounded-lg bg-white/10 text-[#FAF7F2]/90"><I className="w-4 h-4" /></span>)}
+        <span className="ms-auto flex gap-1" dir="rtl">{['ا', 'ب', 'ت', 'ث', 'ج'].map((l) => <span key={l} className="grid place-items-center w-6 h-6 rounded-md bg-[#FAF7F2] text-xs font-bold text-[#1C1411]">{l}</span>)}</span>
+      </div>
+    </Screen>
+  );
+}
+
+const PANELS: { key: 'community' | 'classroom'; kicker: L; title: L; lead: L; points: Point[] }[] = [
   {
-    img: '/media/home/honor.webp',
+    key: 'community',
     kicker: { en: 'Our community', ar: 'مجتمعنا' },
     title: { en: 'Effort that others see, and cheer.', ar: 'مجهود الكل بيشوفه، ويفرح بيه.' },
     lead: { en: 'A closed community, only for our families and students. Nothing about your child is shown unless you say yes.', ar: 'مجتمع مقفول على أسرنا وطلابنا بس. ومفيش حاجة عن ابنك بتظهر غير بموافقتك.' },
     points: [
-      { I: Award, t: { en: 'The Hall of Honor', ar: 'لوحة الشرف' }, b: { en: 'Each month we celebrate what was finished: a surah memorised, a level passed. Only the name you choose and the achievement.', ar: 'كل شهر بنحتفل باللي اتخلّص: سورة اتحفظت، مستوى اتعدّى. بالاسم اللي تختاره والإنجاز بس.' } },
-      { I: Users, t: { en: 'The class board', ar: 'لوحة الحلقة' }, b: { en: 'Learners with the same teacher see each other’s effort: lessons this month, weeks in a row. A gentle push, never a rank or a score.', ar: 'طلاب نفس المعلّم بيشوفوا مجهود بعض: حصص الشهر والأسابيع المتتالية. دفعة لطيفة، من غير ترتيب ولا درجات.' } },
+      { I: Award, t: { en: 'The Hall of Honor', ar: 'لوحة الشرف' }, b: { en: 'Each month we celebrate what was finished: a surah memorised, a rule mastered, a level passed. Only the name you choose and the achievement.', ar: 'كل شهر بنحتفل باللي اتخلّص: سورة اتحفظت، حكم اتقن، مستوى اتعدّى. بالاسم اللي تختاره والإنجاز بس.' } },
+      { I: Users, t: { en: 'The class board', ar: 'لوحة الحلقة' }, b: { en: 'Learners with the same teacher see each other’s effort: lessons this month, weeks in a row. A gentle push, never a rank.', ar: 'طلاب نفس المعلّم بيشوفوا مجهود بعض: حصص الشهر والأسابيع المتتالية. دفعة لطيفة، من غير ترتيب.' } },
       { I: Medal3, t: { en: 'Medals and a companion', ar: 'أوسمة ورفيق' }, b: { en: 'Every step earns a medal on their shelf, and their companion grows with them.', ar: 'كل خطوة ليها وسام على رفّهم، ورفيقهم بيكبر معاهم.' } },
     ],
   },
   {
-    img: '/media/home/class.webp',
+    key: 'classroom',
     kicker: { en: 'Our own classroom', ar: 'فصلنا الخاص' },
-    title: { en: 'A room built for the Quran and Arabic.', ar: 'فصل معمول للقرآن والعربي.' },
-    lead: { en: 'Lessons happen right here on our site, in a classroom we built for how these subjects are taught. Nothing to install.', ar: 'الحصة بتحصل هنا على موقعنا، في فصل بنيناه على طريقة تعليم المواد دي. من غير ما تنزّل أي برنامج.' } ,
+    title: { en: 'One room, built for how we teach.', ar: 'فصل واحد، مبني على طريقة تعليمنا.' },
+    lead: { en: 'Every subject, from the Quran and Tajweed to Arabic, English and the Zad Path, happens right here on our site. Nothing to install.', ar: 'كل المواد، من القرآن والتجويد للعربي والإنجليزي ومنهج زاد، بتحصل هنا على موقعنا. من غير ما تنزّل أي برنامج.' },
     points: [
-      { I: PenLine, t: { en: 'A board you both write on', ar: 'سبّورة بتكتبوا عليها سوا' }, b: { en: 'The teacher draws a letter, the learner traces it back, on the same board.', ar: 'المعلّم يرسم الحرف، والطالب يكتبه وراه، على نفس السبّورة.' } },
+      { I: PenLine, t: { en: 'A board you both write on', ar: 'سبّورة بتكتبوا عليها سوا' }, b: { en: 'The teacher writes in one colour, the learner answers in another, on the same board.', ar: 'المعلّم يكتب بلون، والطالب يرد بلون تاني، على نفس السبّورة.' } },
+      { I: FileUp, t: { en: 'The lesson page in front of both of you', ar: 'صفحة الدرس قدامكم انتو الاتنين' }, b: { en: 'The teacher puts the page, a picture or the screen on the board, so you look at the same thing.', ar: 'المعلّم يحط الصفحة أو صورة أو شاشته على السبّورة، فتبصّوا على نفس الحاجة.' } },
       { I: Keyboard, t: { en: 'An Arabic keyboard', ar: 'كيبورد عربي' }, b: { en: 'Arabic letters on screen, even on a computer that has none.', ar: 'حروف عربي على الشاشة، حتى لو جهازك مفيهوش.' } },
-      { I: BookOpen, t: { en: 'The page in front of both of you', ar: 'الصفحة قدامكم انتو الاتنين' }, b: { en: 'The teacher opens the lesson page or picture on the board, so you look at the same thing.', ar: 'المعلّم يفتح صفحة الدرس أو الصورة على السبّورة، فتبصّوا على نفس الحاجة.' } },
     ],
   },
 ];
 
-/** Around the lessons: the community and our own classroom, each with its picture and what it means for you. */
+/** Around the lessons: the community and our own classroom, each with a screen that shows how it works. */
 function Together({ isEn }: { isEn: boolean }) {
   const reduce = useReducedMotion();
   const t = (l: L) => (isEn ? l.en : l.ar);
@@ -189,40 +302,21 @@ function Together({ isEn }: { isEn: boolean }) {
     <div className="max-w-6xl mx-auto mt-10 lg:mt-4 space-y-8">
       {PANELS.map((p, k) => (
         <motion.article
-          key={p.img}
-          className="relative overflow-hidden rounded-[2.25rem] ring-1 ring-[#E5A93C]/30 bg-[linear-gradient(160deg,#FFFFFF,#F7EEDD)] dark:bg-none dark:bg-card shadow-[0_40px_80px_-50px_rgba(92,52,30,0.55)] grid lg:grid-cols-2"
+          key={p.key}
+          className="relative overflow-hidden rounded-[2.25rem] ring-1 ring-[#E5A93C]/30 bg-[radial-gradient(40rem_22rem_at_90%_0%,rgba(229,169,60,0.18),transparent_60%),linear-gradient(160deg,#FFFFFF,#F7EEDD)] dark:bg-none dark:bg-card p-6 sm:p-8 lg:p-10 grid gap-8 lg:grid-cols-2 items-center"
           initial={reduce ? false : { opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-12%' }}
+          viewport={{ once: true, margin: '-8%' }}
           transition={{ duration: 0.8, ease: EXPO }}
         >
-          {/* The picture: a slow push-in as it arrives. */}
-          <div className={`relative min-h-[240px] sm:min-h-[320px] overflow-hidden ${k % 2 ? 'lg:order-2' : ''}`}>
-            <motion.img
-              src={p.img}
-              alt=""
-              width={1200}
-              height={670}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
-              initial={reduce ? false : { scale: 1.15 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.8, ease: EXPO }}
-            />
-            <span aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgba(14,9,7,0.75))]" />
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-              <p className="font-editorial text-sm sm:text-base text-[#F6D58E]">{t(p.kicker)}</p>
-              <h3 className="mt-1 font-editorial font-bold text-2xl sm:text-4xl leading-tight text-[#FAF7F2]">{t(p.title)}</h3>
-            </div>
-          </div>
-          <div className="p-6 sm:p-8 lg:p-10">
-            <p className="text-base sm:text-lg text-foreground leading-relaxed">{t(p.lead)}</p>
+          <div>
+            <p className="font-editorial text-base text-[#B4552F] dark:text-[#E5A93C]">{t(p.kicker)}</p>
+            <h3 className="mt-1 font-editorial font-bold text-2xl sm:text-4xl leading-tight text-foreground">{t(p.title)}</h3>
+            <p className="mt-3 text-base sm:text-lg text-muted-foreground leading-relaxed">{t(p.lead)}</p>
             <ul className="mt-6 space-y-5">
               {p.points.map(({ I, t: title, b }, j) => (
                 <motion.li key={title.en} className="flex gap-4" initial={reduce ? false : { opacity: 0, x: isEn ? -16 : 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: EXPO, delay: 0.2 + j * 0.12 }}>
-                  <span className="grid place-items-center shrink-0 w-11 h-11 rounded-2xl bg-[linear-gradient(145deg,#FFF1C9,#E5A93C_60%,#B4552F)] text-[#5A0C0F] shadow-[0_10px_20px_-10px_rgba(180,85,47,0.8)]"><I className="w-5 h-5" aria-hidden="true" /></span>
+                  <span className="grid place-items-center shrink-0 w-11 h-11 rounded-2xl bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#FAF7F2] shadow-[0_10px_20px_-10px_rgba(197,31,36,0.8)]"><I className="w-5 h-5" aria-hidden="true" /></span>
                   <div>
                     <p className="font-bold text-foreground">{t(title)}</p>
                     <p className="mt-0.5 text-sm sm:text-[15px] text-muted-foreground leading-relaxed">{t(b)}</p>
@@ -230,6 +324,9 @@ function Together({ isEn }: { isEn: boolean }) {
                 </motion.li>
               ))}
             </ul>
+          </div>
+          <div className={k % 2 ? 'lg:order-first' : ''}>
+            {p.key === 'community' ? <CommunityScreen isEn={isEn} /> : <ClassroomScreen isEn={isEn} />}
           </div>
         </motion.article>
       ))}

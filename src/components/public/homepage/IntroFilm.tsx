@@ -2,11 +2,9 @@ import React from 'react';
 import { Play } from 'lucide-react';
 
 /**
- * The homepage film (docs/marketing/HOMEPAGE-INTRO-FILM.md, v5, 2026-11-19): a real video, not an ad. Painted
- * pictures with motion graphics, one steady voice, our own curriculum, what we count (what stays), two verses and a
- * soft close: "So pack your Zad… before too much passes you by." Rendered frame by frame from
- * marketing/intro-film/render (film5.html + render.mjs) to MP4: 16:9 for wide screens, 9:16 for phones (it fills
- * the phone upright, no turning).
+ * The homepage film (docs/marketing/HOMEPAGE-INTRO-FILM.md, v6, 2026-11-19): made the way our social Shorts are
+ * (the Remotion reel engine, composition RFilm on the content branch): hard cuts, colour fields, slammed lines, 3D
+ * Zad, kinetic captions, few pictures. One upright 9:16 video on every screen, so a phone never has to turn.
  * Only the cover image loads with the page; the video loads when it is played.
  */
 
@@ -37,28 +35,22 @@ export const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 export function IntroFilm({ isEn }: { isEn: boolean }) {
   const ref = React.useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = React.useState(false);
-  const [tall, setTall] = React.useState(false);
   const lang = isEn ? 'en' : 'ar';
   // A language switch goes back to the cover in the new language.
   React.useEffect(() => { setPlaying(false); }, [isEn]);
-
-  const play = () => {
-    setTall(window.matchMedia('(max-width: 639px)').matches);
-    setPlaying(true);
-  };
-  React.useEffect(() => { if (playing) void ref.current?.play().catch(() => {}); }, [playing, tall]);
+  React.useEffect(() => { if (playing) void ref.current?.play().catch(() => {}); }, [playing]);
 
   return (
-    <figure className="relative mx-auto w-full max-w-5xl" aria-label={isEn ? 'Our story in 56 seconds' : 'قصتنا في ٥٦ ثانية'}>
-      <div className="relative overflow-hidden mx-auto aspect-[9/16] max-sm:w-[min(100%,calc(78svh*9/16))] sm:aspect-video rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)] bg-[#0E0907]">
+    <figure className="relative mx-auto w-full" aria-label={isEn ? 'Our story in a minute' : 'قصتنا في دقيقة'}>
+      <div className="relative overflow-hidden aspect-[9/16] rounded-[1.75rem] sm:rounded-[2.25rem] ring-1 ring-[#F6D58E]/25 shadow-[0_40px_90px_-40px_rgba(28,20,17,0.75)] bg-[#0E0907]">
         {playing ? (
           // Film: loads only now.
           <video
             ref={ref}
-            key={`${lang}-${tall}`}
+            key={lang}
             className="absolute inset-0 h-full w-full object-cover"
-            src={`/media/intro-film/${lang}-${tall ? '916' : '169'}-v5.mp4`}
-            poster={`/media/intro-film/cover-${lang}-${tall ? '916' : '169'}.webp`}
+            src={`/media/intro-film/${lang}-reel-v6.mp4`}
+            poster={`/media/intro-film/cover-${lang}-916.webp`}
             preload="none"
             playsInline
             controls
@@ -69,14 +61,11 @@ export function IntroFilm({ isEn }: { isEn: boolean }) {
           <button
             id="intro-film-play"
             type="button"
-            onClick={play}
+            onClick={() => setPlaying(true)}
             className="group absolute inset-0 grid place-items-center focus-visible:outline-none"
-            aria-label={isEn ? 'Play our story, 56 seconds, with sound' : 'شغّل قصتنا، ٥٦ ثانية بالصوت'}
+            aria-label={isEn ? 'Play our story, one minute, with sound' : 'شغّل قصتنا، دقيقة بالصوت'}
           >
-            <picture className="absolute inset-0">
-              <source media="(min-width: 640px)" srcSet={`/media/intro-film/cover-${lang}-169.webp`} />
-              <img src={`/media/intro-film/cover-${lang}-916.webp`} alt="" className="h-full w-full object-cover" />
-            </picture>
+            <img src={`/media/intro-film/cover-${lang}-916.webp`} alt="" className="absolute inset-0 h-full w-full object-cover" />
             <span className="relative grid place-items-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#FAF7F2]/15 ring-1 ring-[#FAF7F2]/40 backdrop-blur-sm transition-transform duration-300 group-hover:scale-105 group-active:scale-95 group-focus-visible:ring-4 group-focus-visible:ring-[#E5A93C]/70">
               <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-[#F6D58E]/60 animate-ping [animation-duration:2.4s]" />
               <span className="grid place-items-center w-14 h-14 sm:w-[4.2rem] sm:h-[4.2rem] rounded-full bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#FAF7F2] shadow-[0_12px_30px_-6px_rgba(197,31,36,0.9),inset_0_1px_1px_rgba(255,255,255,0.35)]">
