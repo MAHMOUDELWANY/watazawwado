@@ -56,7 +56,9 @@ const coord = (v: unknown) => Number.isFinite(v) && Math.abs(v as number) < 1000
 const idStr = (max: number) => (v: unknown) => typeof v === 'string' && v.length > 0 && v.length <= max;
 const num = (v: unknown) => Number.isFinite(v) && Math.abs(v as number) < 1e7;
 const STAT_KEYS = ['outLossPct', 'inLossPct', 'availableInKbps', 'availableOutKbps', 'rttMs'];
-const isStats = (v: any) => Boolean(v) && typeof v === 'object' && Object.keys(v).length === STAT_KEYS.length && STAT_KEYS.every((k) => num(v[k]));
+const OPTIONAL_STAT_KEYS = ['outFps', 'inFps', 'jitterMs'];
+const isStats = (v: any) => Boolean(v) && typeof v === 'object' && STAT_KEYS.every((k) => num(v[k]))
+  && Object.keys(v).every((k) => STAT_KEYS.includes(k) || (OPTIONAL_STAT_KEYS.includes(k) && num(v[k])));
 const intIn = (max: number) => (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) < max;
 // One checker per key; an event with a missing, wrong or extra key is refused.
 const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = {

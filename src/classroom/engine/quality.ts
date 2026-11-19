@@ -88,23 +88,42 @@ export function createLayerPicker(start: Layer = 'b', now: () => number = Date.n
   };
 }
 
+/**
+ * A starved line can be lossless: the encoder then sends a frame or two a second (live run, scenario 12). Measured frame
+ * rates catch it: below POOR_FPS is poor, below WEAK_FPS weak. A camera that is off reports -1, never "starved".
+ */
+export const POOR_FPS = 5;
+export const WEAK_FPS = 10;
+const fps = (v: number | undefined) => (v == null ? -1 : v);
+const starvedOut = (s: LinkStats) => known(fps(s.outFps)) && fps(s.outFps) < WEAK_FPS;
+const starvedIn = (s: LinkStats) => known(fps(s.inFps)) && fps(s.inFps) < WEAK_FPS;
+const sendsWell = (s: LinkStats) => fps(s.outFps) >= WEAK_FPS;
+
+/** Our own line. Few frames received is not counted here: that is the sender's line (or ours, per blameSide). */
 export function classifyLink(s: LinkStats): LinkClass {
   const loss = Math.max(s.inLossPct, s.outLossPct);
   const kbps = inKbps(s);
-  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || (known(kbps) && kbps < LAYER_NEED_KBPS.c)) return 'poor';
-  if (loss > 3 || s.rttMs > 300 || (known(kbps) && kbps < LAYER_NEED_KBPS.b)) return 'weak';
+  const jitter = fps(s.jitterMs);
+  const out = fps(s.outFps);
+  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || jitter > 150 || (known(out) && out < POOR_FPS) || (known(kbps) && kbps < LAYER_NEED_KBPS.c)) return 'poor';
+  if (loss > 3 || s.rttMs > 300 || jitter > 50 || starvedOut(s) || (known(kbps) && kbps < LAYER_NEED_KBPS.b)) return 'weak';
   return 'good';
 }
 
-const weakOut = (s: LinkStats) => s.outLossPct > STEP_DOWN_LOSS_PCT || (known(s.availableOutKbps) && s.availableOutKbps < LAYER_NEED_KBPS.b);
-// Incoming loss is caused by the sender's uplink, so "incoming fine" means bandwidth and delay, not loss.
+const weakOut = (s: LinkStats) => s.outLossPct > STEP_DOWN_LOSS_PCT || starvedOut(s) || (known(s.availableOutKbps) && s.availableOutKbps < LAYER_NEED_KBPS.b);
+// Incoming loss and few frames are caused by the sender's uplink, so "incoming fine" means bandwidth and delay only.
 const fineIn = (s: LinkStats) => s.rttMs <= 600 && (!known(s.availableInKbps) || s.availableInKbps >= LAYER_NEED_KBPS.b);
 
-/** Who to tell "your connection is weak": the side whose outgoing link is weak while the other's incoming is fine. */
+/**
+ * Who to tell "your connection is weak": the side whose outgoing link is weak while the other's incoming is fine, or
+ * the side that decodes few frames while the other really sends plenty (its download is the starved one).
+ */
 export function blameSide(local: LinkStats, remoteReport: LinkStats | null): 'me' | 'them' | 'unknown' {
   if (!remoteReport) return 'unknown';
   if (weakOut(local) && fineIn(remoteReport)) return 'me';
   if (weakOut(remoteReport) && fineIn(local)) return 'them';
+  if (starvedIn(local) && sendsWell(remoteReport)) return 'me';
+  if (starvedIn(remoteReport) && sendsWell(local)) return 'them';
   return 'unknown';
 }
 

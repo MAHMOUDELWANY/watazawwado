@@ -9,8 +9,15 @@ export type Side = 'teacher' | 'student';
  * a = 720p, b = 360p, c = 180p; a camera that really gives 1080p sends a = 1080p, b = 720p, c = 360p (see quality.ts).
  */
 export type Layer = 'a' | 'b' | 'c' | 'audio_only';
-/** Kbps fields are -1 when the browser does not report them. */
-export type LinkStats = { outLossPct: number; inLossPct: number; availableInKbps: number; availableOutKbps: number; rttMs: number };
+/**
+ * Kbps fields are -1 when the browser does not report them. outFps: frames a second our camera really sends (-1 when
+ * the camera is off or not sending yet); inFps: video frames a second we decode; jitterMs: incoming video jitter.
+ * The last three are optional (older clients do not send them) and -1 when unknown.
+ */
+export type LinkStats = {
+  outLossPct: number; inLossPct: number; availableInKbps: number; availableOutKbps: number; rttMs: number;
+  outFps?: number; inFps?: number; jitterMs?: number;
+};
 export type LinkClass = 'good' | 'weak' | 'poor';
 
 export type EngineState = 'idle' | 'connecting' | 'connected' | 'reconnecting' | 'failed' | 'superseded' | 'ended' | 'left';

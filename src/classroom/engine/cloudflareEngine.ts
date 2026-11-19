@@ -80,6 +80,7 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
   let lastUpdateAt = 0;
   let updateTimer: ReturnType<typeof setTimeout> | null = null;
   let prevIn = { lost: 0, received: 0 };
+  let prevFrames = { decoded: -1, at: 0 };
 
   const emit = (event: Ev, v: unknown) => listeners[event].forEach((cb) => { try { cb(v); } catch { /* a listener must not break the engine */ } });
   const setState = (s: EngineState) => {
@@ -419,11 +420,14 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
     },
 
     async getStats(): Promise<LinkStats> {
-      const s: LinkStats = { outLossPct: 0, inLossPct: 0, availableInKbps: -1, availableOutKbps: -1, rttMs: 0 };
+      const s = { outLossPct: 0, inLossPct: 0, availableInKbps: -1, availableOutKbps: -1, rttMs: 0, outFps: -1, inFps: -1, jitterMs: -1 } satisfies LinkStats;
       if (!pc) return s;
       const report = await pc.getStats();
       let lost = 0;
       let received = 0;
+      let decoded = -1;
+      // A camera that is off sends black frames slowly: no frame rate then, so it is never read as a starved line.
+      const cameraOn = videoSender?.track?.enabled === true && videoSender.track.readyState === 'live';
       report.forEach((r: any) => {
         if (r.type === 'candidate-pair' && r.nominated && r.state === 'succeeded') {
           if (typeof r.currentRoundTripTime === 'number') s.rttMs = Math.round(r.currentRoundTripTime * 1000);
@@ -432,6 +436,13 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
         } else if (r.type === 'inbound-rtp') {
           lost += r.packetsLost || 0;
           received += r.packetsReceived || 0;
+          if (r.kind === 'video' && typeof r.framesDecoded === 'number') {
+            decoded = Math.max(decoded, r.framesDecoded);
+            if (typeof r.jitter === 'number') s.jitterMs = Math.max(s.jitterMs, Math.round(r.jitter * 1000));
+          }
+        } else if (r.type === 'outbound-rtp' && r.kind === 'video' && cameraOn && (r.framesSent || 0) > 30 && typeof r.framesPerSecond === 'number') {
+          // Simulcast: the best layer's rate; past the first second, so a fresh join does not read as starved.
+          s.outFps = Math.max(s.outFps, r.framesPerSecond);
         } else if (r.type === 'remote-inbound-rtp' && typeof r.fractionLost === 'number') {
           s.outLossPct = Math.max(s.outLossPct, Math.round(r.fractionLost * 1000) / 10);
         }
@@ -440,6 +451,12 @@ export function createEngine(opts: { apiBase?: string; fetchImpl?: typeof fetch 
       const dLost = Math.max(0, lost - prevIn.lost);
       const dTotal = dLost + Math.max(0, received - prevIn.received);
       prevIn = { lost, received };
+      // Video frames decoded a second since the previous call.
+      const at = Date.now();
+      if (decoded >= 0 && prevFrames.decoded >= 0 && decoded >= prevFrames.decoded && at > prevFrames.at) {
+        s.inFps = Math.round(((decoded - prevFrames.decoded) * 1000) / (at - prevFrames.at));
+      }
+      prevFrames = { decoded, at };
       s.inLossPct = dTotal ? Math.round((dLost / dTotal) * 1000) / 10 : 0;
       return s;
     },
