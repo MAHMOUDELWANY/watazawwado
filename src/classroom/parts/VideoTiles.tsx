@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import type { LinkClass } from '../engine/types';
 import { NetworkBadge } from './NetworkBadge';
 import { Khatam } from './Khatam';
+import { isAutoplayBlock } from '../roomWiring';
 
 let sharedCtx: AudioContext | null = null;
 /** One AudioContext for every level meter in the room (browsers cap how many can run). */
@@ -73,7 +74,7 @@ export function RemoteAudio({ stream, speakerId, label, initial = '', muted = fa
     (async () => {
       if (speakerId && typeof (el as any).setSinkId === 'function') await (el as any).setSinkId(speakerId).catch(() => {});
       // iPhone Safari (Review Focus 1): sound needs a user tap before it may start.
-      el.play().catch(() => setBlocked(true));
+      el.play().then(() => setBlocked(false), (e) => { if (isAutoplayBlock(e)) setBlocked(true); });
     })();
   }, [stream, speakerId]);
 
@@ -81,7 +82,7 @@ export function RemoteAudio({ stream, speakerId, label, initial = '', muted = fa
 
   const tap = () => {
     audioCtx();
-    ref.current?.play().then(() => setBlocked(false), () => setBlocked(true));
+    ref.current?.play().then(() => setBlocked(false), (e) => setBlocked(isAutoplayBlock(e)));
   };
 
   return (

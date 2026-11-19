@@ -43,3 +43,9 @@ export function addQualityStep(q: QualityTotals, layer: Layer | null, stepSecond
   const h = layerHeight(layer);
   if (h != null) q.minHeight = q.minHeight == null ? h : Math.min(q.minHeight, h);
 }
+
+/**
+ * play() also rejects with AbortError when a new stream replaces the old one mid-play; only the browser's autoplay
+ * rule (NotAllowedError) needs the "tap to hear" card.
+ */
+export const isAutoplayBlock = (e: unknown) => (e as { name?: string } | null | undefined)?.name === 'NotAllowedError';
