@@ -56,12 +56,17 @@ export async function purge(project: string, apply: boolean, log: (s: string) =>
   for (const e of emails) log(`  - ${e}`);
 
   // Files in storage that belong to these rows.
-  const files: Record<string, string[]> = { recitations: [], 'honor-photos': [], 'teacher-documents': [], 'teacher-photos': [] };
+  const files: Record<string, string[]> = { recitations: [], 'honor-photos': [], 'teacher-documents': [], 'teacher-photos': [], 'classroom-files': [] };
   if (S.length) {
     files.recitations = uniq((await selectCol(db, 'recitation_recordings', 'storage_path', q => q.in('student_id', S))).map(r => r.storage_path));
     files['honor-photos'] = uniq((await selectCol(db, 'honor_entries', 'photo_path', q => q.in('student_id', S))).map(r => r.photo_path));
   }
   files['teacher-documents'] = uniq(teachers.map(t => t.id_card_path));
+  // Classroom files live under <bookingId>/ (room state, seats, timeline, quality and the rest cascade from bookings).
+  for (const id of B) {
+    const { data } = await db.storage.from('classroom-files').list(id);
+    files['classroom-files'].push(...(data || []).map((f) => `${id}/${f.name}`));
+  }
   files['teacher-photos'] = uniq(teachers.map(t => String(t.photo_url || '').split('/teacher-photos/')[1]?.split('?')[0]));
 
   const steps: Step[] = [

@@ -9,6 +9,8 @@ const baseURL = (process.env.QA_BASE_URL || `http://localhost:${port}`).replace(
 const phone = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, userAgent: devices['iPhone 13'].userAgent };
 const desktop = { viewport: { width: 1440, height: 900 } };
 const API_SPECS = /\.api\.spec\.ts$/;
+// The live classroom spec (real Cloudflare media, fake camera) runs only on request: QA_CLASSROOM=1.
+const CLASSROOM_SPEC = /classroom-live\.spec\.ts$/;
 
 export default defineConfig({
   testDir: './e2e',
@@ -30,9 +32,13 @@ export default defineConfig({
   // before the browser projects, which run every other spec on phone/desktop x Arabic/English.
   projects: [
     { name: 'api', testMatch: API_SPECS },
-    { name: 'desktop-ar', testIgnore: API_SPECS, dependencies: ['api'], use: { ...desktop, locale: 'ar' } },
-    { name: 'desktop-en', testIgnore: API_SPECS, dependencies: ['api'], use: { ...desktop, locale: 'en' } },
-    { name: 'phone-ar', testIgnore: API_SPECS, dependencies: ['api'], use: { ...phone, locale: 'ar' } },
-    { name: 'phone-en', testIgnore: API_SPECS, dependencies: ['api'], use: { ...phone, locale: 'en' } },
+    { name: 'desktop-ar', testIgnore: [API_SPECS, CLASSROOM_SPEC], dependencies: ['api'], use: { ...desktop, locale: 'ar' } },
+    { name: 'desktop-en', testIgnore: [API_SPECS, CLASSROOM_SPEC], dependencies: ['api'], use: { ...desktop, locale: 'en' } },
+    { name: 'phone-ar', testIgnore: [API_SPECS, CLASSROOM_SPEC], dependencies: ['api'], use: { ...phone, locale: 'ar' } },
+    { name: 'phone-en', testIgnore: [API_SPECS, CLASSROOM_SPEC], dependencies: ['api'], use: { ...phone, locale: 'en' } },
+    ...(process.env.QA_CLASSROOM === '1' ? [{
+      name: 'classroom', testMatch: CLASSROOM_SPEC,
+      use: { ...desktop, launchOptions: { args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream', '--auto-select-desktop-capture-source=Entire screen'] } },
+    }] : []),
   ],
 });

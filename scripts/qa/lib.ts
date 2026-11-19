@@ -22,6 +22,12 @@ function envDirs(): string[] {
   const marker = `${path.sep}.claude${path.sep}worktrees${path.sep}`;
   const i = here.indexOf(marker);
   if (i >= 0) dirs.push(here.slice(0, i));
+  // A worktree elsewhere (e.g. a sibling folder): its .git file names the main checkout's .git/worktrees/<name>.
+  try {
+    const gitdir = fs.readFileSync(path.join(here, '.git'), 'utf8').match(/^gitdir:\s*(.+)$/m)?.[1]?.trim();
+    const main = gitdir?.split(/[\\/]\.git[\\/]worktrees[\\/]/)[0];
+    if (main && main !== gitdir) dirs.push(path.resolve(here, main));
+  } catch { /* the main checkout itself has a .git folder */ }
   return dirs;
 }
 
