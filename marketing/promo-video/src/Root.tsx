@@ -26,6 +26,7 @@ import { R9Anas, R9_TOTAL } from './R9Anas';
 import { R12Words, R12_TOTAL } from './R12Words';
 import { R2Ain, R2_TOTAL } from './R2Ain';
 import { R7Qaf, R7_TOTAL } from './R7Qaf';
+import { RFilmAr, RFilmEn, filmTotal } from './RFilm';
 import { ZadClip, zadClipSeconds, type ZadClipProps } from './ZadClip';
 
 export const Root: React.FC = () => (
@@ -35,6 +36,8 @@ export const Root: React.FC = () => (
     <Composition id="R9Anas" component={R9Anas} durationInFrames={R9_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="R12Words" component={R12Words} durationInFrames={R12_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="R2Ain" component={R2Ain} durationInFrames={R2_TOTAL} fps={30} width={1080} height={1920} />
+    <Composition id="RFilmAr" component={RFilmAr} durationInFrames={filmTotal('ar')} fps={30} width={1080} height={1920} />
+    <Composition id="RFilmEn" component={RFilmEn} durationInFrames={filmTotal('en')} fps={30} width={1080} height={1920} />
     <Composition id="R7Qaf" component={R7Qaf} durationInFrames={R7_TOTAL} fps={30} width={1080} height={1920} />
     <Composition id="ZadClip" component={ZadClip} fps={30} width={900} height={900} durationInFrames={90}
       defaultProps={{ emote: 'wave' } as ZadClipProps}
