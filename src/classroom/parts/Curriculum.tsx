@@ -29,9 +29,10 @@ export function TeacherCurriculum({ initial, publish, publishInk, save }: {
 
   useEffect(() => { if (numbers.length && !numbers.includes(number)) setNumber(numbers[0]); }, [numbers, number]);
 
-  const onPosition = useCallback((p: number, step: number) => {
+  const onPosition = useCallback((p: number, step: number, opening: boolean) => {
     setPage(p);
-    const s = { track, number, page: p, step };
+    // The opening goes out too, so the learner meets the characters with the teacher.
+    const s = { track, number, page: p, step, ...(opening ? { opening } : {}) };
     publish(s);
     save(s);
   }, [publish, save, track, number]);
@@ -78,7 +79,7 @@ export function LearnerCurriculum({ state, ink }: { state: RoomState | null; ink
   }
   return (
     <div className="h-full min-h-0 overflow-auto" data-room-page={`${state.page}:${state.step}`}>
-      <LessonPlayer key={`${state.track}-${state.number}`} lesson={lesson} lang={isAr ? 'ar' : 'en'} follow={{ page: state.page, step: state.step }} remoteInk={remoteInk} />
+      <LessonPlayer key={`${state.track}-${state.number}`} lesson={lesson} lang={isAr ? 'ar' : 'en'} follow={{ page: state.page, step: state.step, opening: state.opening }} remoteInk={remoteInk} />
     </div>
   );
 }
