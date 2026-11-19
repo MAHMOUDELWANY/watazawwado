@@ -53,18 +53,21 @@ export async function createClassroomBooking(project: string, opts: { offsetMin?
 async function qaBookingOnly(project: string, id: string) {
   const db = adminClient();
   const { data } = await db.from('bookings').select('id, contact_email').eq('id', id).maybeSingle();
-  if (!data || !String(data.contact_email).includes(`+qa-${project}-`)) throw new Error(`Not a QA ${project} booking: ${id}`);
+  if (!data) return null; // already gone
+  if (!String(data.contact_email).includes(`+qa-${project}-`)) throw new Error(`Not a QA ${project} booking: ${id}`);
   return db;
 }
 
 export async function cancelClassroomBooking(project: string, id: string) {
   const db = await qaBookingOnly(project, id);
+  if (!db) throw new Error(`No booking ${id}`);
   const { error } = await db.from('bookings').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('id', id);
   if (error) throw new Error(error.message);
 }
 
 export async function deleteClassroomBooking(project: string, id: string) {
   const db = await qaBookingOnly(project, id);
+  if (!db) return;
   const { data: files } = await db.storage.from('classroom-files').list(id);
   if (files?.length) await db.storage.from('classroom-files').remove(files.map((f) => `${id}/${f.name}`));
   const { error } = await db.from('bookings').delete().eq('id', id);

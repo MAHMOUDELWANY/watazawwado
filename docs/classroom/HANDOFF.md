@@ -96,5 +96,5 @@ checklist.
 | Design research and brief (`docs/classroom/DESIGN-BRIEF.md`) | done |
 | Redesign the room and observer views | in progress (room UI; admin pages) |
 | Fix review findings | in progress (engine + board first; page and server fixes after the redesign and presence fix) |
-| Real two-browser scenarios on a local server with QA accounts and fake media | todo |
-| Report + owner's live checklist (`docs/classroom/TEST-REPORT.md`) | todo |
+| Real two-browser scenarios on a local server with QA accounts and fake media | done 2026-11-19: 14/14 pass (`e2e/classroom-live.spec.ts`, `QA_CLASSROOM=1`); 6 bugs fixed, see TEST-REPORT.md |
+| Report + owner's live checklist (`docs/classroom/TEST-REPORT.md`) | done (live checklist in its "could not be tested" section) |
