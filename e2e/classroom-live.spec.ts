@@ -168,9 +168,15 @@ test('2. curriculum sync, layout switch, PDF upload, board drawing, pointer', as
   // Layout: content -> the learner leaves the conversation view and follows the slides.
   await radio(T, 'Lesson content').click();
   await expect(L.locator('[data-room-page]')).toBeVisible({ timeout: 30_000 });
-  // The series opening plays on the teacher's side only (the learner's player closes it when following): skip it.
+  // The series opening plays on both screens; the teacher's skip closes it on the learner's too.
   const skip = T.getByRole('button', { name: /^Skip/ });
-  if (await skip.waitFor({ timeout: 8000 }).then(() => true, () => false)) await skip.click();
+  if (await skip.waitFor({ timeout: 8000 }).then(() => true, () => false)) {
+    await expect(L.getByRole('button', { name: /^Skip/ }), 'the learner sees the opening too').toBeVisible({ timeout: 15_000 });
+    await skip.click();
+    await expect(L.getByRole('button', { name: /^Skip/ })).toHaveCount(0, { timeout: 15_000 });
+  }
+  // The learner only watches: no slide controls on the learner's player.
+  await expect(L.getByTitle('Next (→ or Space)')).toHaveCount(0);
   const before = await L.locator('[data-room-page]').getAttribute('data-room-page');
   const next = T.getByTitle('Next (→ or Space)');
   await next.click();

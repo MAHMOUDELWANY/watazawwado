@@ -59,19 +59,25 @@ Full run of all 14 in one go: see the end of this file.
 | 6 | Medium | A lesson cancelled during the room showed "The room has closed · the lesson time is over". The engine's next media call hears 409 `ended` and stops as `ended`, which the page mapped to "closed" before the 30 s state poll could say "cancelled". | On engine `ended`, the page asks `/state` for the reason first and falls back to "closed". Test: `cl-19`. | d5f97e92 |
 | 7 | Low (QA tooling) | QA scripts could not find `.env.vercel` from a sibling worktree, and `create-accounts.ts` used the old agreement version `2026-11-12.1` (now `2026-11-18.1`), so teacher accounts could not be made. | `lib.ts` finds the main checkout from the worktree's `.git` file; version updated. | 1a349ae9 |
 
-## Found, not fixed (owner decision or bigger change)
+## Fixed after the run (2026-11-19, unit/source tests in `test/cl-07`, `cl-17`, `cl-20`)
 
-- **The board drawing is one scene for the whiteboard and every PDF page.** A rectangle drawn on the Board pane shows on
-  top of PDF page 2 (`e2e-02-learner-pdf.png`). Notes should belong to their surface and page. Needs a scene per
-  surface/page (board snapshot shape and events); propose for Release 2 or before the pilot if teachers use both.
-- **The series opening ("meet the characters") plays only on the teacher's screen.** The learner's player closes it when
-  it follows, so the learner sees page 1 while the teacher presents the characters. Either sync it (a new room event) or
-  hide the opening in the room for the teacher. Product choice.
-- **The learner's slide player shows the teacher's tool rail** (pen, highlighter, eraser, opening, replay, full screen) on
-  the phone (`e2e-14-phone-ar-content.png`). The learner's ink stays local, which can confuse. Hide or label in follow mode.
-- **A starved sender with no packet loss shows no warning on either side.** With the learner capped at 40 kbps the teacher
-  received 1–2 frames a second at 720p and saw no notice (`scenario 12` log: notices `[]`). Real weak lines usually bring
-  loss or delay, which the room does detect; a low frame rate is not watched. Consider a "frozen/very low fps" notice.
+- **Notes belong to their page** (b1a99a48). Board events carry a `surface` (`fileId#page`); the snapshot keeps one scene
+  per page in `boards` (whiteboard stays `board`, up to 30 file pages saved), the "learner can draw" switch once for the
+  room. Each PDF page or picture mounts its own Board with that page's latest scene, live and after rejoin.
+- **The series opening plays on both screens** (dbf3bd60). The slide state carries `opening`; the learner's player follows
+  it instead of closing it, and closes when the teacher skips or finishes it.
+- **The learner's room player shows no slide controls** (24c3682e). In follow mode: no tool rail, no back/next, no swipes,
+  no shortcuts, on every screen size.
+- **A starved line with no loss is flagged** (fe48da16). The engine measures the camera's sent frame rate (only while the
+  camera is on), decoded frames a second and incoming jitter. Under 10 fps sent is weak (under 5 poor) and blames the
+  sender ("your connection is weak" to the learner, "theirs" to the teacher); few frames decoded while the other side sends
+  plenty blames the receiver's download; jitter over 50/150 ms is weak/poor. The early incoming estimate still counts only
+  under stress (1bd7a872). Not re-run live: scenario 12 still needs a real check (owner's checklist item 3).
+- Scenario 2 in the spec now expects the learner to see the opening and no slide controls. Not re-run: the p5 QA accounts
+  were purged after the run (`create-accounts.ts p5` first).
+
+## Still open
+
 - **`zoom_meeting_link` placeholder default in the database.** Real lessons in the last 30 days all have real links, but any
   booking whose Zoom creation fails keeps the placeholder, and the student join link would lead to it. Worth a migration to
   drop the default (outside the classroom).
@@ -111,5 +117,5 @@ QA lessons are deleted by the spec's `afterAll`; accounts and the rest by `npx t
 - Scenario 8: attendance summary `{"teacher":true,"student":true,"held":false,"togetherMinutes":2,"requiredMinutes":20,"joins":{"teacher":1,"student":2}}`
   (held is false because the test lesson ended after 2 of 30 minutes, which is right).
 - Scenario 11: incident `engine_error` on the teacher's side.
-- Scenario 12: teacher's received video 314 kbps before, 40 kbps under the cap, back up after; no notice shown (see "Found, not fixed").
+- Scenario 12: teacher's received video 314 kbps before, 40 kbps under the cap, back up after; no notice shown then; fixed in fe48da16 (see "Fixed after the run").
 - Scenario 13: "This lesson was cancelled" about 0.9 s after the cancel.
