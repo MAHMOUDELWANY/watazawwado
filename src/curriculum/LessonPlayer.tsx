@@ -51,6 +51,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [page, setPage] = useState(0);
   // The series opening plays before the first lesson of a version; the clapper button replays it.
   const [opening, setOpening] = useState(Boolean(lesson.opening));
+  // A learner in the lesson room only watches: the teacher turns the pages, so no rail, arrows, swipes or shortcuts.
+  const following = !teacher && follow != null;
   const [step, setStep] = useState(0);
   const [tool, setTool] = useState<InkTool>('none');
   const [inkColor, setInkColor] = useState(INK_COLORS[0]);
@@ -202,6 +204,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (following) return;
       if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable]')) return;
       const k = e.key.toLowerCase();
       if (k === 'arrowright' || k === ' ' || k === 'pagedown') { e.preventDefault(); forward(); }
@@ -223,7 +226,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow, toggleMute]);
+  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow, toggleMute, following]);
 
   // Replay the current slide's motion whenever it is really seen (owner, 2026-10-24: the first page looked still on
   // opening): when the player first comes into view, when the tab comes back, and on entering or leaving full screen.
@@ -421,7 +424,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             // Swipe left / right on a phone or tablet to go forward / back (owner, 2026-10-22). Taps, vertical scrolls,
             // drawing and the game's draggable card are left alone.
             onPointerDown={(e) => {
-              if (opening || e.pointerType === 'mouse' || tool !== 'none' || (e.target as Element).closest('[data-no-swipe], input, textarea')) return;
+              if (following || opening || e.pointerType === 'mouse' || tool !== 'none' || (e.target as Element).closest('[data-no-swipe], input, textarea')) return;
               swipe.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
             }}
             onPointerUp={(e) => {
@@ -522,7 +525,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             </div>
             {/* Back / Next live on the slide's lower corners, outside the tool bar, so they are always one tap away
                 (owner, 2026-10-22). Next shows this page's build steps. Arrow keys and swipes do the same. */}
-            <div dir="ltr" className={`pointer-events-none absolute inset-x-2 bottom-[15%] z-30 flex items-end justify-between sm:inset-x-3 ${opening ? 'hidden' : ''}`}>
+            <div dir="ltr" className={`pointer-events-none absolute inset-x-2 bottom-[15%] z-30 flex items-end justify-between sm:inset-x-3 ${opening || following ? 'hidden' : ''}`}>
               <button type="button" onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}
                 className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#FFFDF7]/85 text-[#1E1410] shadow-[0_10px_24px_-10px_rgba(30,20,16,0.6)] ring-1 ring-black/5 backdrop-blur transition-[transform,opacity] duration-150 hover:bg-[#FFFDF7] active:scale-95 disabled:opacity-0 sm:h-12 sm:w-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
                 <ChevronLeft className="h-6 w-6" aria-hidden="true" />
@@ -559,7 +562,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           </Drawer>
         ) : notes && notesPanel}
       </div>
-      {fullscreen ? (
+      {following ? null : fullscreen ? (
         <Drawer side={toolsSide} open={toolsOpen} onToggle={() => setToolsOpen((o) => !o)} icon={<PenLine className="h-4 w-4" />} label={toolsOpen ? L('Hide tools (T)', 'اخفي الأدوات (T)') : L('Show tools (T)', 'اظهر الأدوات (T)')} padded>
           {toolbar}
         </Drawer>
