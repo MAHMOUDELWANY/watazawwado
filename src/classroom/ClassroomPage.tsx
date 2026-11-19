@@ -294,7 +294,10 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         if (!live) return;
         setJoined(true);
         watchSides.forEach((s) => void subscribeSide(s));
-      } catch {
+      } catch (e: any) {
+        // Task 12: a join or publish that fails on our side (network blocked, media service down) never reaches the
+        // connect clock, so report it here: the incident alerts the admins and brings this side's Zoom link.
+        if (live) detector.onError({ code: typeof e?.code === 'string' ? e.code : 'join_failed', message: String(e?.message || e) });
         if (live && engine.state !== 'superseded' && engine.state !== 'ended') setOver('failed');
       }
     })();

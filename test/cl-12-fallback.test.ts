@@ -16,7 +16,7 @@ const HOST = 'https://us02web.zoom.us/s/123?zak=host';
 const JOIN = 'https://us02web.zoom.us/j/123?pwd=x';
 const lesson = (over: Record<string, unknown> = {}) => ({
   id: BOOKING, student_id: 'child-1', teacher_id: 'teacher-1', status: 'confirmed', scheduled_start: '2026-11-20T10:00:00Z',
-  scheduled_end: null, duration_minutes: 30, contact_name: 'Yusuf', zoom_host_url: HOST, zoom_meeting_link: JOIN, ...over,
+  scheduled_end: null, duration_minutes: 30, contact_name: 'Yusuf', sync_metadata: { zoomStartUrl: HOST }, zoom_meeting_link: JOIN, ...over,
 });
 
 function fakeDb(tables: Record<string, any[]>) {
@@ -93,12 +93,12 @@ describe('CL-12 recordIncident', () => {
   });
 
   it('the teacher falls back to the meeting link when there is no host link', async () => {
-    const db = fakeDb({ bookings: [lesson({ zoom_host_url: null })], ...admins() });
+    const db = fakeDb({ bookings: [lesson({ sync_metadata: null })], ...admins() });
     assert.deepStrictEqual(await recordIncident(db, { bookingId: BOOKING, kind: 'engine_error', side: 'teacher', detail: {} }, min(1)), { fallback: { url: JOIN } });
   });
 
   it('no Zoom meeting: no link, and the admins are told it is urgent', async () => {
-    const db = fakeDb({ bookings: [lesson({ zoom_host_url: null, zoom_meeting_link: null })], ...admins() });
+    const db = fakeDb({ bookings: [lesson({ sync_metadata: null, zoom_meeting_link: null })], ...admins() });
     assert.deepStrictEqual(await recordIncident(db, { bookingId: BOOKING, kind: 'connect_timeout', side: 'student', detail: {} }, min(1)), { fallback: null });
     assert.match(notices(db)[0].title_en, /urgent/i);
   });

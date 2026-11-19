@@ -18,7 +18,7 @@ export async function recordIncident(
 ): Promise<{ fallback: { url: string } | null }> {
   const { bookingId, kind, side, detail } = input;
   const { data: booking, error } = await client.from('bookings')
-    .select('id, scheduled_start, scheduled_end, duration_minutes, contact_name, zoom_host_url, zoom_meeting_link').eq('id', bookingId).maybeSingle();
+    .select('id, scheduled_start, scheduled_end, duration_minutes, contact_name, sync_metadata, zoom_meeting_link').eq('id', bookingId).maybeSingle();
   if (error) throw new Error(`bookings: ${error.message}`);
   if (!booking) return { fallback: null };
 
@@ -29,7 +29,9 @@ export async function recordIncident(
   const { error: insErr } = await client.from('classroom_incidents').insert({ booking_id: bookingId, kind, side, detail, created_at: new Date(now).toISOString() });
   if (insErr) throw new Error(`classroom_incidents: ${insErr.message}`);
 
-  const noZoom = !booking.zoom_meeting_link && !booking.zoom_host_url;
+  // The host link is not a column: the Zoom sync keeps it in sync_metadata (as api/index.ts reads it).
+  const hostUrl: string | null = booking.sync_metadata?.zoomStartUrl || null;
+  const noZoom = !booking.zoom_meeting_link && !hostUrl;
   if (!earlier) {
     const who = side === 'teacher' ? { en: 'the teacher', ar: 'المعلم' } : { en: 'the learner', ar: 'الطالب' };
     const when = String(booking.scheduled_start).slice(0, 16).replace('T', ' ');
@@ -49,7 +51,7 @@ export async function recordIncident(
 
   // ?zoom=1: with the classroom on, /api/join/:id leads to the room; the fallback must reach Zoom (Task 14).
   const learner = studentJoinPath(bookingId, booking.zoom_meeting_link);
-  const url = side === 'teacher' ? (booking.zoom_host_url || booking.zoom_meeting_link || null) : learner?.includes('/api/join/') ? `${learner}?zoom=1` : learner;
+  const url = side === 'teacher' ? (hostUrl || booking.zoom_meeting_link || null) : learner?.includes('/api/join/') ? `${learner}?zoom=1` : learner;
   const open = lessonJoinState(booking, side, now) === 'open';
   return { fallback: url && open ? { url } : null };
 }

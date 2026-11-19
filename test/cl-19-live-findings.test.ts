@@ -43,4 +43,9 @@ describe('CL-19 live-run findings', () => {
     assert.match(app, /isOpen=\{showGlobalTour && !lateGateUp\}/);
     assert.match(fs.readFileSync('src/dashboard/components/LateReasonGate.tsx', 'utf8'), /onPendingChange\?\.\(pending\.length > 0\)/);
   });
+
+  it('a room that cannot open on our side (blocked network, media service down) reports an incident for the Zoom fallback', () => {
+    const page = fs.readFileSync('src/classroom/ClassroomPage.tsx', 'utf8');
+    assert.match(page, /detector\.onError\(\{ code: typeof e\?\.code === 'string' \? e\.code : 'join_failed'/);
+  });
 });
