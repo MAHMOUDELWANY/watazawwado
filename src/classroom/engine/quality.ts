@@ -32,6 +32,13 @@ export function layerHeight(layer: Layer, topHeight = 720): number | null {
 }
 
 const known = (kbps: number) => kbps >= 0;
+/**
+ * Chrome's availableIncomingBitrate follows what already flows (it ramps for seconds after a join and plateaus just
+ * above the layer being received), so on its own it is no limit. It counts only while the link shows stress.
+ */
+export const STRESS_LOSS_PCT = 2;
+export const STRESS_RTT_MS = 300;
+const inKbps = (s: LinkStats) => (s.inLossPct > STRESS_LOSS_PCT || s.rttMs > STRESS_RTT_MS ? s.availableInKbps : -1);
 const fits = (layer: Layer, kbps: number) => layer === 'audio_only' || !known(kbps) || kbps >= LAYER_NEED_KBPS[layer];
 
 /** What createLayerPicker knows beyond one reading: how long loss has been exactly 0, and whether we just fell from 'a'. */
@@ -39,12 +46,13 @@ export type ClimbGuard = { zeroLossMs: number; fellFromTopRecently: boolean };
 
 /**
  * Receiver-side layer choice. Steps down one layer on loss over 8%, and to the best layer that fits when the
- * incoming bitrate is below the current layer's need. Steps up one layer only after `stableForMs` >= 10 s of a
+ * incoming bitrate is below the current layer's need while the link shows stress (inKbps). Steps up one layer only after `stableForMs` >= 10 s of a
  * clean link (the caller times stability; see createLayerPicker). When the browser does not report the incoming
  * bitrate (-1, usual in Chrome), it never climbs above the middle layer unless loss has been 0 for 10 s and it did
  * not fall from the top layer in the last minute (`guard`; without one it stays at 'b').
  */
-export function pickLayer(s: LinkStats, current: Layer, stableForMs = 0, guard?: ClimbGuard): Layer {
+export function pickLayer(raw: LinkStats, current: Layer, stableForMs = 0, guard?: ClimbGuard): Layer {
+  const s = { ...raw, availableInKbps: inKbps(raw) };
   const i = LADDER.indexOf(current);
   if (s.inLossPct > STEP_DOWN_LOSS_PCT) {
     const down = Math.min(i + 1, LADDER.length - 1);
@@ -65,7 +73,7 @@ export function createLayerPicker(start: Layer = 'b', now: () => number = Date.n
   let fellFromTopAt = -Infinity;
   return (s: LinkStats): Layer => {
     const t = now();
-    const clean = s.inLossPct <= STEP_DOWN_LOSS_PCT && fits(layer, s.availableInKbps);
+    const clean = s.inLossPct <= STEP_DOWN_LOSS_PCT && fits(layer, inKbps(s));
     cleanSince = clean ? cleanSince ?? t : null;
     zeroSince = s.inLossPct === 0 ? zeroSince ?? t : null;
     const next = pickLayer(s, layer, cleanSince == null ? 0 : t - cleanSince, {
@@ -82,8 +90,9 @@ export function createLayerPicker(start: Layer = 'b', now: () => number = Date.n
 
 export function classifyLink(s: LinkStats): LinkClass {
   const loss = Math.max(s.inLossPct, s.outLossPct);
-  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.c)) return 'poor';
-  if (loss > 3 || s.rttMs > 300 || (known(s.availableInKbps) && s.availableInKbps < LAYER_NEED_KBPS.b)) return 'weak';
+  const kbps = inKbps(s);
+  if (loss > STEP_DOWN_LOSS_PCT || s.rttMs > 600 || (known(kbps) && kbps < LAYER_NEED_KBPS.c)) return 'poor';
+  if (loss > 3 || s.rttMs > 300 || (known(kbps) && kbps < LAYER_NEED_KBPS.b)) return 'weak';
   return 'good';
 }
 

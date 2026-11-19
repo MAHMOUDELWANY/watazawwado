@@ -38,19 +38,21 @@ describe('CL-05 adaptive layers and link quality', () => {
     assert.strictEqual(pickLayer(clean(3000), 'c'), 'c');
     assert.strictEqual(pickLayer(clean(3000), 'c', 9_999), 'c');
     assert.strictEqual(pickLayer(clean(3000), 'c', 10_000), 'b');
-    assert.strictEqual(pickLayer(clean(3000), 'b', 10_000), 'a');
+    assert.strictEqual(pickLayer(clean(3000), 'b', 10_000, { zeroLossMs: 10_000, fellFromTopRecently: false }), 'a');
     assert.strictEqual(pickLayer(clean(3000), 'a', 60_000), 'a');
   });
 
+  // CL-19: the estimate counts only under stress (loss over 2% or delay over 300 ms).
+  const stressed = (kbps: number) => clean(kbps, { rttMs: 350 });
   it('bitrate below a layer need drops to the layer that fits', () => {
-    assert.strictEqual(pickLayer(clean(1000), 'a'), 'b');
-    assert.strictEqual(pickLayer(clean(1000), 'b', 60_000), 'b');
-    assert.strictEqual(pickLayer(clean(200), 'a'), 'c');
+    assert.strictEqual(pickLayer(stressed(1000), 'a'), 'b');
+    assert.strictEqual(pickLayer(stressed(1000), 'b', 60_000), 'b');
+    assert.strictEqual(pickLayer(stressed(200), 'a'), 'c');
   });
 
   it('0.1 Mbps is audio only', () => {
-    assert.strictEqual(pickLayer(clean(100), 'a'), 'audio_only');
-    assert.strictEqual(pickLayer(clean(100), 'audio_only', 60_000), 'audio_only');
+    assert.strictEqual(pickLayer(stressed(100), 'a'), 'audio_only');
+    assert.strictEqual(pickLayer(stressed(100), 'audio_only', 60_000), 'audio_only');
   });
 
   it('unknown incoming bitrate (-1) adapts on loss, and climbs above b only with the zero-loss guard', () => {
@@ -79,9 +81,9 @@ describe('CL-05 adaptive layers and link quality', () => {
   it('classifyLink', () => {
     assert.strictEqual(classifyLink(clean(3000)), 'good');
     assert.strictEqual(classifyLink(clean(3000, { inLossPct: 5 })), 'weak');
-    assert.strictEqual(classifyLink(clean(300)), 'weak');
+    assert.strictEqual(classifyLink(clean(300, { inLossPct: 2.5 })), 'weak');
     assert.strictEqual(classifyLink(clean(3000, { outLossPct: 15 })), 'poor');
-    assert.strictEqual(classifyLink(clean(100)), 'poor');
+    assert.strictEqual(classifyLink(clean(100, { inLossPct: 2.5 })), 'poor');
     assert.strictEqual(classifyLink(clean(3000, { rttMs: 700 })), 'poor');
   });
 
