@@ -231,10 +231,10 @@ function ClassroomScreen({ isEn }: { isEn: boolean }) {
   const draw = reduce ? {} : { initial: { pathLength: 0 }, whileInView: { pathLength: 1 }, viewport: { once: true } };
   return (
     <Screen title={isEn ? 'Classroom' : 'الفصل'}>
-      <div className="grid grid-cols-[1fr_6.5rem] sm:grid-cols-[1fr_8rem] gap-2.5 p-3 bg-[#2A1A14]">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_8rem] gap-2.5 p-3 bg-[#2A1A14]">
         {/* The shared board: the lesson page on one side, the teacher's pen and the learner's on the other. */}
         <div className="relative rounded-xl bg-[#FFFDF8] overflow-hidden min-h-[15rem] sm:min-h-[17rem] bg-[radial-gradient(circle,rgba(28,20,17,0.08)_1px,transparent_1px)] [background-size:14px_14px]">
-          <div className="absolute top-2.5 start-2.5 w-[38%] rounded-lg overflow-hidden ring-1 ring-[#1C1411]/10 shadow-md rotate-[-2deg]">
+          <div className="absolute top-2.5 start-2.5 w-[34%] max-w-[9rem] rounded-lg overflow-hidden ring-1 ring-[#1C1411]/10 shadow-md rotate-[-2deg]">
             <img src="/curriculum/banners/fusha-kids.webp" alt="" width={1000} height={1000} loading="lazy" className="block w-full aspect-[4/3] object-cover" />
             <p className="bg-white px-2 py-1 text-[10px] font-bold text-foreground/80">{isEn ? 'Lesson 4 · page 2' : 'الدرس ٤ · صفحة ٢'}</p>
           </div>
@@ -249,9 +249,9 @@ function ClassroomScreen({ isEn }: { isEn: boolean }) {
           <span className="absolute bottom-2 end-2 inline-flex items-center gap-1 rounded-full bg-[#087D91]/10 px-2 py-0.5 text-[10px] font-bold text-[#087D91]"><PenLine className="w-3 h-3" />{isEn ? 'Yusuf is writing' : 'يوسف بيكتب'}</span>
         </div>
         {/* Two people, shown as arches with initials (the room shows cameras; no faces on our site). */}
-        <div className="grid gap-2.5 content-start">
+        <div className="grid grid-cols-2 sm:grid-cols-1 gap-2.5 content-start">
           {[{ i: isEn ? 'T' : 'م', l: isEn ? 'Teacher' : 'المعلّم', c: '#C51F24' }, { i: isEn ? 'Y' : 'ي', l: isEn ? 'Yusuf' : 'يوسف', c: '#087D91' }].map((p) => (
-            <div key={p.l} className="relative aspect-[4/5] rounded-xl bg-[#3B2219] grid place-items-center overflow-hidden">
+            <div key={p.l} className="relative aspect-[16/9] sm:aspect-[4/5] rounded-xl bg-[#3B2219] grid place-items-center overflow-hidden">
               <span className="grid place-items-center w-12 h-14 rounded-t-full rounded-b-lg text-lg font-bold text-white" style={{ background: p.c }}>{p.i}</span>
               <span className="absolute bottom-1.5 inset-x-1.5 flex items-center justify-between text-[10px] font-bold text-[#FAF7F2]/90"><span>{p.l}</span><Mic className="w-3 h-3 text-[#F6D58E]" /></span>
             </div>
