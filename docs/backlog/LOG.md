@@ -1356,3 +1356,16 @@ professional, call it Zad instead of Zadi, colours that express our identity."
 - Struggles answered by Zad; four equal subjects without prices; teacher who/what/when picker; bigger phone with
   crossfading screens; start small is light; FAQ accordion; the verse is the closing's centrepiece.
 - Film script v3 drafted in `docs/marketing/HOMEPAGE-INTRO-FILM.md`; voice waits for the ElevenLabs connector.
+
+## 2026-11-19: homepage owner review (film v4, hero, lesson section, closing)
+
+- Film v4: a calm 40 s video rendered frame by frame from Meshy pictures on one steady voice, a soft close ("pack your
+  Zad… before too much passes you by"), no CTA. The cover is a real image; a tap plays the MP4 (16:9 desktop, 4:5 phone).
+  Details: docs/marketing/HOMEPAGE-INTRO-FILM.md (v4).
+- Hero: both the English and the Arabic lines curve around Zad inside the phone screen (word by word, so Arabic
+  letters stay joined); medals orbit on three tilted, turning planes like an atom and fade when they pass his face;
+  his greeting follows the page language and sits clear of the medals and text.
+- "The lesson, and after": a companion step (the egg that hatches into a hoopoe, camel or fennec, a real portal
+  screen), then two cards: the community (Hall of Honor, class board, no ranks) and our own classroom.
+- Closing: the verse is solid gold again; Zad is drawn inside the closing slot when it is on screen, so he no longer
+  lags or leaves the screen. The teacher picker band is light instead of espresso (less brown on the page).

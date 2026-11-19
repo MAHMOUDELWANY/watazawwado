@@ -425,7 +425,7 @@ function Wing({ side }: { side: 1 | -1 }) {
   );
 }
 
-export function ZadModel({ emote, startedAt, onDone, still }: { emote: ZadEmote; startedAt: number; onDone: () => void; still: boolean }) {
+export function ZadModel({ emote, startedAt, onDone, still, noBubble = false }: { emote: ZadEmote; startedAt: number; onDone: () => void; still: boolean; noBubble?: boolean }) {
   const root = useRef<Group>(null);
   const body = useRef<Group>(null);
   const armL = useRef<Group>(null);
@@ -806,7 +806,7 @@ export function ZadModel({ emote, startedAt, onDone, still }: { emote: ZadEmote;
       o.visible = s > 0.002;
       o.scale.setScalar(Math.max(s, 0.0001));
     };
-    setPop(bubble.current, bubbleS);
+    setPop(bubble.current, noBubble ? 0 : bubbleS);
     if (bubbleMat.current) bubbleMat.current.map = bubbleWelcome ? tex.welcome : tex.bubble;
     // book: halves fold open from the spine, a page turns from his left to his right
     setPop(book.current, bookS);

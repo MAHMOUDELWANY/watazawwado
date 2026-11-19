@@ -186,15 +186,11 @@ export function PublicHomepage() {
   useVerseFont();
   const total = STATIONS.length;
   const trial = () => onOpenTrialModal();
-  // The ad export: ?film=record shows only the film, full screen (scripts record it with the voice-over).
-  const [record, setRecord] = React.useState(false);
-  React.useEffect(() => { setRecord(new URLSearchParams(window.location.search).get('film') === 'record'); }, []);
 
   return (
     <main id="main-content" className="pt-16 sm:pt-20">
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
-      {record && <IntroFilm isEn={isEn} onTrial={trial} record />}
       <JourneyNav stations={STATIONS} isEn={isEn} />
       <ZadGuide
         stations={STATIONS}
@@ -263,7 +259,7 @@ export function PublicHomepage() {
           <Reveal className="mt-14 lg:mt-20 max-w-5xl mx-auto" y={60}>
             <div id="intro-film" className="scroll-mt-28" />
             <Bezel radius="2.6rem" core="overflow-hidden">
-              <IntroFilm isEn={isEn} onTrial={trial} />
+              <IntroFilm isEn={isEn} />
             </Bezel>
           </Reveal>
           <NextDoor to="st-familiar" label={STATIONS[0].label} isEn={isEn} />
@@ -339,7 +335,7 @@ export function PublicHomepage() {
           ribbon={isEn ? 'you choose.' : 'تختاره أنت.'}
         />
         <Reveal className="mt-12 max-w-5xl mx-auto">
-          <Bezel dark radius="2.5rem" core="relative overflow-hidden band-espresso p-6 sm:p-10">
+          <Bezel radius="2.5rem" core="relative overflow-hidden p-6 sm:p-10 bg-[radial-gradient(40rem_22rem_at_85%_0%,rgba(229,169,60,0.22),transparent_60%),radial-gradient(30rem_20rem_at_0%_100%,rgba(197,31,36,0.08),transparent_60%),linear-gradient(160deg,#FBF6EC,#F3E7D2)] dark:bg-none dark:bg-[#1C1411]">
             <TeacherMatch isEn={isEn} onTrial={trial} />
           </Bezel>
         </Reveal>
@@ -450,14 +446,14 @@ export function PublicHomepage() {
           <DriftLight />
           <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: GRAIN }} />
           {/* Zad lands here at the end of his tour (ZadGuide dockId): one Zad on the page, not a second, static one. */}
-          <div id="zad-dock" aria-hidden="true" className="relative mx-auto w-[130px] h-[130px] sm:w-[150px] sm:h-[150px]" />
-          {/* The verse we are named after, as the centrepiece: gold foil calligraphy under a small ornament. */}
+          <div id="zad-dock" className="relative mx-auto w-[130px] h-[130px] sm:w-[150px] sm:h-[150px]" />
+          {/* The verse we are named after, as the centrepiece: solid gold calligraphy under a small ornament (owner: the foil read worse). */}
           <div aria-hidden="true" className="relative mt-4 flex items-center justify-center gap-4">
             <span className="h-px w-16 sm:w-24 bg-gradient-to-l from-[#E5A93C] to-transparent" />
             <span className="text-[#E5A93C] text-xl">۞</span>
             <span className="h-px w-16 sm:w-24 bg-gradient-to-r from-[#E5A93C] to-transparent" />
           </div>
-          <p lang="ar" dir="rtl" className="relative mt-3 text-[2.2rem] leading-[1.9] sm:text-6xl sm:leading-[1.6]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)", backgroundImage: 'linear-gradient(100deg,#B4552F,#F6D58E 30%,#FFF1C9 45%,#E5A93C 60%,#F6D58E 75%,#B4552F)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+          <p lang="ar" dir="rtl" className="relative mt-3 text-[2.2rem] leading-[1.9] sm:text-6xl sm:leading-[1.6] text-[#F6D58E] [text-shadow:0_0_28px_rgba(229,169,60,0.35)]" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>
             {VERSE}
           </p>
           <p className="relative mt-2 text-sm text-[#FAF7F2]/60">

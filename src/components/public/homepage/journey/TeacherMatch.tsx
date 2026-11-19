@@ -49,7 +49,7 @@ function Chips<T extends { id: string; l: L }>({ items, value, onPick, isEn, ren
             role="radio"
             aria-checked={on}
             onClick={() => onPick(it.id)}
-            className={`inline-flex items-center gap-2 min-h-11 rounded-full px-4 text-sm font-bold transition-[background-color,box-shadow,color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${on ? 'bg-[#F6D58E] text-[#1C1411] shadow-[0_8px_20px_-8px_rgba(246,213,142,0.7)]' : 'bg-[#FAF7F2]/[0.07] text-[#FAF7F2] ring-1 ring-[#F6D58E]/20 hover:ring-[#F6D58E]/50'}`}
+            className={`inline-flex items-center gap-2 min-h-11 rounded-full px-4 text-sm font-bold transition-[background-color,box-shadow,color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${on ? 'bg-[#C51F24] text-[#FAF7F2] shadow-[0_8px_20px_-8px_rgba(197,31,36,0.6)]' : 'bg-white/80 text-[#1C1411] ring-1 ring-[#1C1411]/10 hover:ring-[#C51F24]/40 dark:bg-[#FAF7F2]/[0.07] dark:text-[#FAF7F2] dark:ring-[#F6D58E]/20'}`}
           >
             {render?.(it)}{isEn ? it.l.en : it.l.ar}
           </button>
@@ -73,7 +73,7 @@ export function TeacherMatch({ isEn, onTrial }: { isEn: boolean; onTrial: () => 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] items-center">
       <div className="space-y-5">
-        <p className="text-xs font-bold tracking-wide text-[#F6D58E]/80">{isEn ? 'Try it: who, what, when' : 'جرّب: مين، إيه، إمتى'}</p>
+        <p className="text-xs font-bold tracking-wide text-[#A8191E] dark:text-[#F6D58E]/80">{isEn ? 'Try it: who, what, when' : 'جرّب: مين، إيه، إمتى'}</p>
         <Chips items={WHO} value={who} onPick={setWho} isEn={isEn} />
         <Chips items={WHAT} value={what} onPick={setWhat} isEn={isEn} />
         <Chips items={WHEN} value={when} onPick={setWhen} isEn={isEn} render={(it) => <it.icon className="w-4 h-4" aria-hidden="true" />} />
@@ -81,10 +81,10 @@ export function TeacherMatch({ isEn, onTrial }: { isEn: boolean; onTrial: () => 
 
       {/* The card that assembles from the choices. */}
       <div className="relative mx-auto w-full max-w-[19rem]">
-        <span aria-hidden="true" className="absolute -inset-6 rounded-full bg-[radial-gradient(closest-side,rgba(246,213,142,0.25),transparent)]" />
-        <div className="relative rounded-t-[9rem] rounded-b-[2rem] bg-[linear-gradient(170deg,#FAF7F2,#EFE4D2)] p-6 pt-10 text-center shadow-[0_40px_70px_-30px_rgba(0,0,0,0.75)] ring-1 ring-[#F6D58E]/40">
+        <span aria-hidden="true" className="absolute -inset-6 rounded-full bg-[radial-gradient(closest-side,rgba(229,169,60,0.3),transparent)]" />
+        <div className="relative rounded-t-[9rem] rounded-b-[2rem] bg-[linear-gradient(170deg,#FFFFFF,#FAF3E6)] p-6 pt-10 text-center shadow-[0_40px_70px_-30px_rgba(92,52,30,0.45)] ring-1 ring-[#E5A93C]/40">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={who} className="mx-auto grid place-items-center w-24 h-24 rounded-full bg-[#1C1411] text-[#F6D58E]" {...swap}>
+            <motion.div key={who} className="mx-auto grid place-items-center w-24 h-24 rounded-full bg-[linear-gradient(145deg,#E3343A,#951419)] text-[#F6D58E]" {...swap}>
               <Figure covered={w.covered} />
             </motion.div>
           </AnimatePresence>

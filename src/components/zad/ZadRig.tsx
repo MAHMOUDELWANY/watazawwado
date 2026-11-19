@@ -265,7 +265,7 @@ class Fallback extends Component<{ fallback: ReactNode; children: ReactNode }, {
  * Zad on the site: the 3D Zad (owner, 2026-11-15), loaded on demand, with the SVG Zad as the fallback. The first render
  * is an empty slot of the same size on the server and the client, so prerendered pages hydrate cleanly.
  */
-export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?: number; glow?: boolean }) {
+export function ZadRig({ pose, size = 140, glow = true, noBubble = false }: { pose: ZadPose; size?: number; glow?: boolean; noBubble?: boolean }) {
   const reduce = useReducedMotion();
   const [mode, setMode] = useState<'pending' | '3d' | 'svg'>('pending');
   useEffect(() => { setMode(canUseWebGL() ? '3d' : 'svg'); }, []);
@@ -276,7 +276,7 @@ export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?
   return (
     <Fallback fallback={flat}>
       <Suspense fallback={flat}>
-        <ZadLive pose={pose} size={size} still={Boolean(reduce)} />
+        <ZadLive pose={pose} size={size} still={Boolean(reduce)} noBubble={noBubble} />
       </Suspense>
     </Fallback>
   );

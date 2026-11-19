@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 'motion/react';
 import { ZadRig, type ZadPose } from '../../../zad/ZadRig';
 import { useCurrentStation, type Station } from './Journey';
@@ -27,7 +28,7 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
   const [talking, setTalking] = React.useState(false);
   const [vp, setVp] = React.useState({ w: 1280, h: 800 });
   const [introOn, setIntroOn] = React.useState(false);
-  const [dock, setDock] = React.useState<DOMRect | null>(null);
+  const [dock, setDock] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
     const on = () => setVp({ w: window.innerWidth, h: window.innerHeight });
@@ -47,25 +48,14 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
     return () => io.disconnect();
   }, [intro]);
 
-  // The landing slot: followed every frame while it is on screen, so he sits in it as the page scrolls.
+  // The landing slot: once it is on screen he is drawn inside it (a portal), so he scrolls with the page and never
+  // lags or leaves the screen (owner, 2026-11-19: chasing the slot with a fixed Zad lagged).
   React.useEffect(() => {
-    if (!dockId) return;
-    let raf = 0;
-    const measure = () => {
-      raf = 0;
-      const el = document.getElementById(dockId);
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const inView = r.top < window.innerHeight * 0.8 && r.bottom > window.innerHeight * 0.1;
-      setDock(inView ? r : null);
-    };
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(measure); };
-    measure();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    // The page keeps settling after a scroll (accordions, images): re-measure a few times a second too.
-    const tick = window.setInterval(onScroll, 300);
-    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); window.clearInterval(tick); if (raf) cancelAnimationFrame(raf); };
+    const el = dockId ? document.getElementById(dockId) : null;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setDock(e.isIntersecting ? el : null), { rootMargin: '-10% 0px -20% 0px' });
+    io.observe(el);
+    return () => io.disconnect();
   }, [dockId]);
 
   const stationStop = index >= 0 ? stops[Math.min(index, stops.length - 1)] : null;
@@ -89,18 +79,11 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
   let left = (stop.side === 'start') === isEn;
   if (wide && !roomy && left === railLeft) left = !left;
   if (!wide) left = !isEn;
-  let size = wide ? 110 : 70;
-  let x: number, y: number;
-  if (mode === 'dock' && dock) {
-    size = Math.min(dock.width, dock.height);
-    x = dock.left + (dock.width - size) / 2;
-    y = dock.top + (dock.height - size) / 2;
-  } else {
-    const gap = wide ? (left === railLeft ? 170 : Math.max(24, vp.w * 0.025)) : 10;
-    x = left ? gap : vp.w - gap - size;
-    y = wide ? (vp.h * stop.y) / 100 : vp.h - size - 16;
-  }
-  const flip = left || mode === 'dock' ? 1 : -1;
+  const size = wide ? 110 : 70;
+  const gap = wide ? (left === railLeft ? 170 : Math.max(24, vp.w * 0.025)) : 10;
+  const x = left ? gap : vp.w - gap - size;
+  const y = wide ? (vp.h * stop.y) / 100 : vp.h - size - 16;
+  const flip = left ? 1 : -1;
   const tap = mode === 'intro' ? intro!.onTap : openLearningGuide;
   // A little hop and lean at each new place. Not a remount: that would rebuild the 3D Zad every time.
   const hop = useAnimationControls();
@@ -108,7 +91,24 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
     if (reduce || mode === 'off') return;
     void hop.start({ y: [-26, 0], rotate: [-10 * flip, 0], transition: { type: 'spring', stiffness: 260, damping: 14 } });
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
-  const spring = mode === 'dock' ? { type: 'spring' as const, stiffness: 320, damping: 34 } : { type: 'spring' as const, stiffness: 70, damping: 16, mass: 1.1 };
+  const spring = { type: 'spring' as const, stiffness: 70, damping: 16, mass: 1.1 };
+
+  if (mode === 'dock' && dock) {
+    // He drops into the slot from above and cheers.
+    return createPortal(
+      <motion.div
+        className="absolute inset-0 grid place-items-center"
+        initial={reduce ? false : { opacity: 0, y: -90, scale: 0.6 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+      >
+        <button type="button" onClick={openLearningGuide} className="rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60" aria-label={isEn ? 'Ask Zad, our learning guide' : 'اسأل زاد، مرشد التعلم'}>
+          <ZadRig pose="cheer" size={Math.min(dock.offsetWidth, dock.offsetHeight)} glow />
+        </button>
+      </motion.div>,
+      dock,
+    );
+  }
 
   return (
     <AnimatePresence>
@@ -125,7 +125,7 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
             <motion.button
               type="button"
               onClick={tap}
-              onMouseEnter={() => mode !== 'dock' && setTalking(true)}
+              onMouseEnter={() => setTalking(true)}
               className="pointer-events-auto relative block rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60"
               aria-label={mode === 'intro' ? (isEn ? 'Play our story with sound' : 'شغّل قصتنا بالصوت') : (isEn ? 'Ask Zad, our learning guide' : 'اسأل زاد، مرشد التعلم')}
               animate={hop}
@@ -133,7 +133,7 @@ export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: S
               whileTap={{ scale: 0.94 }}
             >
               <span className="relative block" style={{ transform: `scaleX(${flip})` }}>
-                <ZadRig pose={mode === 'dock' ? 'cheer' : stop.pose} size={size} glow={mode === 'dock'} />
+                <ZadRig pose={stop.pose} size={size} glow={false} />
               </span>
             </motion.button>
 

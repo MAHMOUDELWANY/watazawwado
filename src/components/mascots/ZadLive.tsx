@@ -20,7 +20,7 @@ const REST: Partial<Record<ZadEmote, number>> = { think: 1.2, read: 1, sleep: 0.
 /** How much bigger than the slot the canvas is. */
 const BLEED = 1.7;
 
-function Player({ pose, still }: { pose: ZadPose; still: boolean }) {
+function Player({ pose, still, noBubble }: { pose: ZadPose; still: boolean; noBubble?: boolean }) {
   const clock = useThree((s) => s.clock);
   const target = MOVE[pose];
   const [emote, setEmote] = useState<ZadEmote>('idle');
@@ -39,12 +39,13 @@ function Player({ pose, still }: { pose: ZadPose; still: boolean }) {
       emote={still ? 'idle' : emote}
       startedAt={startedAt}
       still={still}
+      noBubble={noBubble}
       onDone={() => { restUntil.current = clock.getElapsedTime() + (REST[target] ?? 1.4); setEmote('idle'); }}
     />
   );
 }
 
-export default function ZadLive({ pose, size, still }: { pose: ZadPose; size: number; still: boolean }) {
+export default function ZadLive({ pose, size, still, noBubble }: { pose: ZadPose; size: number; still: boolean; noBubble?: boolean }) {
   const box = size * BLEED;
   // Draw only while on screen: an off-screen Zad kept rendering every frame and made scrolling heavy.
   const ref = React.useRef<HTMLSpanElement>(null);
@@ -68,7 +69,7 @@ export default function ZadLive({ pose, size, still }: { pose: ZadPose; size: nu
           style={{ pointerEvents: 'none' }}
         >
           <StudioLights shadows={false} />
-          <Player pose={pose} still={still} />
+          <Player pose={pose} still={still} noBubble={noBubble} />
         </Canvas>
       </span>
     </span>
