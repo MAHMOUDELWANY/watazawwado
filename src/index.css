@@ -2436,11 +2436,11 @@ html:not(.dark) .room-paper {
   -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 10%, transparent 75%);
   mask-image: radial-gradient(ellipse 70% 55% at 50% 20%, #000 10%, transparent 75%);
 }
-.room-rise { animation: room-rise var(--dur-scene) var(--ease-out-soft) 120ms both; }
-.room-rise-sm { --rise: 8px; animation: room-rise var(--dur-move) var(--ease-out-soft) 260ms both; }
+.room-rise { animation: cr-rise var(--dur-scene) var(--ease-out-soft) 120ms both; }
+.room-rise-sm { --rise: 8px; animation: cr-rise var(--dur-move) var(--ease-out-soft) 260ms both; }
 .room-fade { animation: room-lights var(--dur-ui) var(--ease-out-soft) both; }
 @keyframes room-lights { from { opacity: 0; } }
-@keyframes room-rise { from { opacity: 0; transform: translateY(var(--rise, 12px)); } }
+@keyframes cr-rise { from { opacity: 0; transform: translateY(var(--rise, 12px)); } }
 /* A person you face sits under an arch. --arch-h sets how tall the dome is. */
 .arch-face { border-radius: 50% 50% var(--r-3) var(--r-3) / var(--arch-h, 9rem) var(--arch-h, 9rem) var(--r-3) var(--r-3); }
 /* Speaking: a soft gold light along the inside of the frame. In fast, out slow, so it never flickers between words. */
