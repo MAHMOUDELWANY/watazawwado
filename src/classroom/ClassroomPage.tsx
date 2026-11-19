@@ -267,7 +267,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       setReconnecting(s === 'reconnecting');
       if (s === 'reconnecting') totals.current.reconnects += 1;
       if (s === 'superseded') setOver('superseded');
-      else if (s === 'ended') setOver('closed');
+      else if (s === 'ended') void checkState().finally(() => setOver((o) => o ?? 'closed'));
       else if (s === 'failed') setOver('failed');
     });
     if (!observer) batcher.current = createTimelineBatcher(bookingId, () => ticket);

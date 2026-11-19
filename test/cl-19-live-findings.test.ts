@@ -48,4 +48,9 @@ describe('CL-19 live-run findings', () => {
     const page = fs.readFileSync('src/classroom/ClassroomPage.tsx', 'utf8');
     assert.match(page, /detector\.onError\(\{ code: typeof e\?\.code === 'string' \? e\.code : 'join_failed'/);
   });
+
+  it('a media call that hears "ended" asks the server why, so a cancelled lesson says cancelled (not "time is over")', () => {
+    const page = fs.readFileSync('src/classroom/ClassroomPage.tsx', 'utf8');
+    assert.match(page, /else if \(s === 'ended'\) void checkState\(\)\.finally\(\(\) => setOver\(\(o\) => o \?\? 'closed'\)\);/);
+  });
 });
