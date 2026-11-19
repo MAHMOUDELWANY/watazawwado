@@ -141,7 +141,8 @@ describe('MK-04: homepage copy', () => {
     const home = read('src/components/public/homepage/PublicHomepage.tsx');
     assert.doesNotMatch(home, /Online 1-on-1 classes/);
     assert.match(home, /Provision that lasts/);
-    assert.match(home, /Pick your teacher from real profiles\. After every class, we tell you how it went, before you have to ask\./);
+    // The sub-line under the brand line was removed (owner, 2026-11-18: filler).
+    assert.doesNotMatch(home, /Pick your teacher from real profiles/);
     assert.match(home, /Drifted\? Start where you are\. No lectures\./);
   });
 });

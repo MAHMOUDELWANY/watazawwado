@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- The film's cover image (the page lays its own play button over it). thumb.mjs screenshots it per language and shape. -->
+<style>
+@font-face { font-family: 'TSD'; src: url('../../../public/fonts/thmanyah/thmanyahserifdisplay-Black.woff2') format('woff2'); font-weight: 900; }
+@font-face { font-family: 'TSD'; src: url('../../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+html, body { margin: 0; overflow: hidden; background: #0E0907; }
+#s { position: relative; width: 100vw; height: 100vh; overflow: hidden; --u: calc(100vw / 1280); }
+.tall #s { --u: calc(100vw / 760); }
+img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,9,7,.82) 0%, rgba(14,9,7,.35) 32%, transparent 50%, transparent 70%, rgba(14,9,7,.6) 100%); }
+.hook { position: absolute; inset-inline: 0; top: 7%; text-align: center; font-family: 'TSD', serif; }
+.a { font-weight: 900; font-size: calc(var(--u) * 92); line-height: 1.05; background: linear-gradient(100deg,#B4552F 0%,#F6D58E 30%,#FFF1C9 45%,#E5A93C 60%,#F6D58E 75%,#B4552F 100%); -webkit-background-clip: text; color: transparent; filter: drop-shadow(0 4px 18px rgba(0,0,0,.7)); }
+.b { display: inline-block; margin-top: calc(var(--u) * 14); padding: calc(var(--u) * 6) calc(var(--u) * 26); border-radius: calc(var(--u) * 16); background: #C51F24; color: #FAF7F2; font-weight: 700; font-size: calc(var(--u) * 58); transform: rotate(-1.5deg); box-shadow: 0 calc(var(--u)*16) calc(var(--u)*34) calc(var(--u)*-10) rgba(197,31,36,.9); }
+.zad { position: absolute; bottom: 5%; width: calc(var(--u) * 210); filter: drop-shadow(0 18px 24px rgba(0,0,0,.6)); }
+.ar .zad { left: 5%; } .en .zad { right: 5%; }
+.tall .zad { width: calc(var(--u) * 190); bottom: 4%; }
+.tall .hook { top: 6%; }
+.tall img.bg { object-position: 50% 70%; }
+.tall .zad { bottom: 6%; }
+</style></head>
+<body><div id="s"><img class="bg" id="bg"><div class="shade"></div>
+<div class="hook"><div class="a" id="a"></div><div class="b" id="b"></div></div>
+<img class="zad" src="zad/wow.svg"></div>
+<script>
+const q = new URLSearchParams(location.search), en = q.get('lang') === 'en', tall = q.get('fmt') !== '169';
+document.body.className = (en ? 'en' : 'ar') + (tall ? ' tall' : '');
+document.documentElement.dir = en ? 'ltr' : 'rtl';
+document.getElementById('bg').src = '../art/' + (tall ? 'thumb916' : 'thumb169') + '.png';
+document.getElementById('a').textContent = en ? 'Just ONE thing…' : 'شيءٌ واحدٌ فقط…';
+document.getElementById('b').textContent = en ? 'what would you carry?' : 'ماذا تحمل معك؟';
+window.ready = async () => { await document.fonts.ready; await Promise.all([...document.images].map((i) => i.complete ? 0 : new Promise((r) => { i.onload = r; i.onerror = r; }))); };
+</script></body></html>

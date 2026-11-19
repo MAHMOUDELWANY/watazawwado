@@ -17,7 +17,7 @@ qcy21eeEO3C1xHhSLn3U. Written to the v4 guide: one emotion tag before each line,
 stressed word in English, Arabic fully diacritized so every ending is pronounced.
 
 Three takes each in `marketing/intro-film/vo/{ar,en}-v2-t{1,2,3}.mp3` (~42 s). Take 1 is live
-(`public/media/intro-film/{ar,en}.mp3`): clean pauses between lines and every word aligned. Scene starts and word
+(`public/media/intro-film/{ar,en}-v2.mp3`; a new take gets a new file name, since mp3s are cached for a day): clean pauses between lines and every word aligned. Scene starts and word
 cues (`STARTS`, `BEATS`, `CUES`) come from ElevenLabs Scribe forced alignment of take 1; re-measure if a take changes.
 
 ## Script and pictures
@@ -46,3 +46,87 @@ Real portal screens in `public/media/portal/{ar,en}-{note,level,milestones,badge
 from `/student/progress?preview=active` (the portal's own sample learner, a dev-only preview) with the dev student
 session. The homepage says so under the phone: "real screens, sample data". Medals are the portal's badge renders in
 `public/badges/shelf`.
+
+## Script v3 (live since 2026-11-18, 35 s)
+
+Owner on v2: the script and the voice sound cheap. v3 trades the list of features for one feeling: what we are afraid
+to lose far from home cannot go in a suitcase. One idea per line, no subject list, the verse said in full near the end.
+Recorded on eleven_v4, 3 takes each (`marketing/intro-film/vo/*-v3-t{1,2,3}.mp3`); take 1 is live as `public/media/intro-film/{ar,en}-v3.mp3`, timed by Scribe alignment. As recorded, line 1 is a question: «لَوْ كَانَ لَكَ أَنْ تَحْمِلَ شَيْئًا وَاحِدًا فَقَطْ... إِلَى الغُرْبَةِ... مَاذَا تَحْمِلُ؟» / "If you could carry just ONE thing... far from home... what would it be?". Thumbnail: "Just ONE thing… what would you carry?" over the bag glowing with the answer rising out of it. Ad exports and thumbnails: `marketing/intro-film/export`.
+
+| # | Emotion | Arabic | English |
+|---|---------|--------|---------|
+| 1 | hushed, intimate | كُلُّ مُسَافِرٍ... يَحْزِمُ حَقِيبَتَهُ بِعِنَايَةٍ. | Every traveller packs with care. |
+| 2 | slower, reflective | لَكِنَّ أَثْقَلَ مَا نَخَافُ أَنْ نَنْسَاهُ... لَا يُوضَعُ فِي حَقِيبَةٍ. | But what we fear forgetting most... doesn't fit in a suitcase. |
+| 3 | tender, a little emotional | كَلِمَاتُ اللهِ... وَلِسَانُ أَجْدَادِنَا... وَدِينٌ نُرِيدُهُ أَنْ يَبْقَى فِي أَبْنَائِنَا. | The words of Allah... the language of our grandparents... a faith we want our children to keep. |
+| 4 | warm, rising | هُنَا... مُعَلِّمٌ يَعْرِفُكَ بِاسْمِكَ، يَسْمَعُكَ حَرْفًا حَرْفًا، وَلَا يَبْدَأُ مَعَكَ مِنَ الصِّفْرِ. | Here, a teacher who knows you by name. Who hears every letter... and never starts from zero. |
+| 5 | bright, light | وَبَعْدَ كُلِّ حِصَّةٍ... يَصِلُكَ مَا تَعَلَّمْتَ. وَكُلُّ خُطْوَةٍ... تَصِيرُ وِسَامًا. | After every lesson, you see what you learned... and every step becomes a badge. |
+| 6 | proud, steady, slow | ﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾ | "Take provision... and the best provision is mindfulness of Allah." |
+| 7 | inviting, smiling | الحِصَّةُ الأُولَى عَلَيْنَا. ابْدَأْ زَادَكَ. | Your first lesson is on us. Start your Zad. |
+
+## Version 4 (live since 2026-11-19, 40 s): a real video, not an ad
+
+Owner on v3: it felt like an ad, the voice changed mood mid-way, and the social videos were better than the site film.
+He also asked that the thumbnail be a real image that starts the video when tapped. Version 4 changes that:
+
+- **One steady voice.** The same tag on every line: `[calm, warm, sincere, steady storytelling voice]`. Take 1 of
+  each language is in the film (both takes in `marketing/intro-film/vo/*-v4-t*.mp3`).
+  Timings come from Scribe word alignment.
+- **A soft close, no CTA.** The last line is «فَجَهِّزْ زَادَكَ... قَبْلَ أَنْ يَفُوتَكَ الكَثِيرُ» / "So pack your Zad...
+  before too much passes you by.", then an end card with Zad and our name. No "book" or "subscribe".
+- **Painted pictures.** Meshy (nano-banana-pro) scenes in `marketing/intro-film/art`: airport window, suitcase leaking
+  light, mushaf on a rehal, an old hand and a child's hand, a night desk in a snowy city (`s4g.png`, with the green
+  taken out of the plants), a golden khatam over dunes, a bag on a golden path. Slow Ken Burns moves and dissolves,
+  Zad in a corner of every scene, three portal medals on "every step becomes a badge", the verse in solid gold Amiri.
+- **Rendered, not recorded.** `marketing/intro-film/render/film.html` draws any frame (`window.frame(t)`);
+  `render.mjs <ar|en> <169|45> <out.mp4>` screenshots it at 25 fps and muxes the voice, so nothing drifts. `run.sh`
+  renders all four. Output in `public/media/intro-film/{ar,en}-{169,45}-v4.mp4` (16:9 for wide screens, 4:5 for phones).
+- **Cover image.** `render/thumb.html` + `thumb.mjs` make `public/media/intro-film/cover-{ar,en}-{169,45}.webp`: the
+  open crimson suitcase with a beam of light, "Just ONE thing… what would you carry?", and Zad. The page lays its own
+  play button on it; a tap swaps in the video (`preload="none"`, nothing loads before).
+
+| # | Arabic | English | Picture |
+|---|--------|---------|---------|
+| 1 | لَوْ كَانَ لَكَ أَنْ تَحْمِلَ شَيْئًا وَاحِدًا فَقَطْ... إِلَى الغُرْبَةِ... مَاذَا تَحْمِلُ؟ | If you could carry just one thing... far from home... what would it be? | s0 |
+| 2 | أَثْمَنُ مَا نَخَافُ أَنْ نَفْقِدَهُ... لَا تَتَّسِعُ لَهُ حَقِيبَةٌ. | The things we fear losing most... don't fit in a suitcase. | s1 |
+| 3 | كَلَامُ اللهِ... وَلِسَانُ أَجْدَادِنَا... وَدِينٌ نُرِيدُهُ أَنْ يَبْقَى فِي أَبْنَائِنَا. | The words of Allah... the language of our grandparents... a faith we want our children to keep. | s2, s3 |
+| 4 | هُنَا... مُعَلِّمٌ يَعْرِفُكَ بِاسْمِكَ، يَسْمَعُكَ حَرْفًا حَرْفًا... وَلَا يَبْدَأُ مَعَكَ مِنَ الصِّفْرِ. | Here, a teacher who knows you by name. Who hears every letter... and never starts from zero. | s4g |
+| 5 | وَبَعْدَ كُلِّ حِصَّةٍ... تَرَى مَا تَعَلَّمْتَ، وَكُلُّ خُطْوَةٍ... تَصِيرُ وِسَامًا. | After every lesson, you see what you learned... and every step becomes a badge. | s5 + medals |
+| 6 | وَتَزَوَّدُوا... فَإِنَّ خَيْرَ الزَّادِ التَّقْوَى. | "Take provision... and the best provision is mindfulness of Allah." | s6, the verse |
+| 7 | فَجَهِّزْ زَادَكَ... قَبْلَ أَنْ يَفُوتَكَ الكَثِيرُ. | So pack your Zad... before too much passes you by. | thumb169, end card |
+
+The owner watches it on the live site. Do not send him video files.
+
+## Version 5 (live since 2026-11-19, 56 s): what we made, what we count, two verses
+
+Owner on v4: the pictures are good, but there were no motion graphics; from second 18 the words turned into selling
+ourselves and did not hang together; we never said we have our own curriculum or our vision; the verse «وأما ما ينفع
+الناس فيمكث في الأرض» was gone; and on a phone he had to go full screen and turn the phone.
+
+- **Script.** Lines 1–3 stay. Then: the curriculum we made for our children (lessons they see, play with and love, in
+  the Quran, the Seerah and Arabic, with a teacher who walks beside them), what we count (not lessons, but what stays:
+  a verse kept, a tongue made right, a good habit at home), Ar-Ra‘d 13:17 in full ﴿فَأَمَّا الزَّبَدُ فَيَذْهَبُ جُفَاءً
+  وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ﴾, then Al-Baqarah 2:197, then the soft close. Same steady tag on every
+  line. Take 1 of each: `marketing/intro-film/vo/{ar,en}-v5-t1.mp3`, timed by Scribe.
+- **Motion graphics** (`render/film5.html`): words arrive one phrase at a time with key words in the site ribbon; a
+  khatam opens every scene; a warm light leak crosses each cut; gold dust; the real curriculum covers
+  (`public/curriculum/banners`) fly in and fan out, each lifting as its subject is named; a path of five steps draws
+  itself under "step by step"; "lessons" is struck through and what stays rises as three gold pills; both verses
+  appear word by word in the ribbon gradient; Zad changes pose and pops at each scene.
+- **New Meshy pictures:** `art/foam.png` (gold poured, the foam drifting off), `art/home.png` (a rehal and a child's
+  notebook at dawn), plus `honor.png` and `class.png` for the homepage.
+- **Phone:** a 9:16 render (720×1280) and a 9:16 cover; the page uses it below 640 px, so it fills the phone upright.
+  Files: `public/media/intro-film/{ar,en}-{169,916}-v5.mp4`, `cover-{ar,en}-{169,916}.webp`. `render/run.sh` renders all four.
+
+## Version 6 (2026-11-19): made like our Shorts
+
+Owner on v5: our social videos are better; make the site film the same way, with the skill we built, and few
+pictures. So the film is now a composition in the Shorts engine (`watazawwado-video-generator` skill, Remotion
+project `marketing/promo-video` on the content branch, `src/RFilm.tsx`, compositions `RFilmAr` / `RFilmEn`,
+1080×1920): a hard cut per beat on the crimson / ink / teal / cream / sand / copper fields, slammed serif lines with
+one ribbon word, the 3D Zad playing a move in most beats, an open-loop sticker ("What would it be? The answer comes at
+the end"), Arabic cards for «كلام الله» and «لسان أجدادنا», timed pills, the real curriculum covers fanning out, a path
+of five steps, "lessons" struck through, both verses on quote cards, kinetic captions, the ribbon progress bar and a
+soft pop per cut. Only two pictures: the open suitcase at the start and the end. Same v5 voice (loudness −14 LUFS).
+
+The site shows one upright video on every screen (`public/media/intro-film/{ar,en}-reel-v6.mp4`, a 720×1280 copy)
+behind the 9:16 cover; a phone never has to turn.

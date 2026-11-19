@@ -4,12 +4,12 @@ import fs from 'node:fs';
 
 describe('PU-04 performance', () => {
   it('the hero visual never starts invisible', () => {
-    // The intro film's poster (bag + play button) is plain markup, painted on first load; scenes animate only after play.
+    // The intro film's cover is one plain image with a play button, painted on first load; the video loads only on play.
     const film = fs.readFileSync('src/components/public/homepage/IntroFilm.tsx', 'utf8');
-    const poster = film.slice(film.indexOf('// Poster:'), film.indexOf('{/* Zad rides along'));
-    assert.ok(poster.length > 100);
-    assert.ok(!/initial=/.test(poster));
-    assert.ok(film.includes('preload="none"'), 'the voice-over loads only on play');
+    const cover = film.slice(film.indexOf('// Cover:'));
+    assert.ok(cover.length > 100);
+    assert.ok(!/initial=/.test(cover));
+    assert.ok(film.includes('preload="none"'), 'the film loads only on play');
   });
 
   it('hashed bundles are cached for a year, fonts and media for shorter', () => {

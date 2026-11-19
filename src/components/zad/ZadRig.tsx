@@ -265,18 +265,18 @@ class Fallback extends Component<{ fallback: ReactNode; children: ReactNode }, {
  * Zad on the site: the 3D Zad (owner, 2026-11-15), loaded on demand, with the SVG Zad as the fallback. The first render
  * is an empty slot of the same size on the server and the client, so prerendered pages hydrate cleanly.
  */
-export function ZadRig({ pose, size = 140, glow = true }: { pose: ZadPose; size?: number; glow?: boolean }) {
+export function ZadRig({ pose, size = 140, glow = true, noBubble = false }: { pose: ZadPose; size?: number; glow?: boolean; noBubble?: boolean }) {
   const reduce = useReducedMotion();
   const [mode, setMode] = useState<'pending' | '3d' | 'svg'>('pending');
   useEffect(() => { setMode(canUseWebGL() ? '3d' : 'svg'); }, []);
   const flat = <ZadRigSvg pose={pose} size={size} glow={glow} />;
   const slot = <span aria-hidden="true" className="inline-block shrink-0 align-middle" style={{ width: size, height: size }} />;
   if (mode === 'svg') return flat;
-  if (mode === 'pending') return slot;
+  if (mode === 'pending') return flat; // show Zad at once (owner: he used to vanish until the 3D loaded)
   return (
     <Fallback fallback={flat}>
-      <Suspense fallback={slot}>
-        <ZadLive pose={pose} size={size} still={Boolean(reduce)} />
+      <Suspense fallback={flat}>
+        <ZadLive pose={pose} size={size} still={Boolean(reduce)} noBubble={noBubble} />
       </Suspense>
     </Fallback>
   );

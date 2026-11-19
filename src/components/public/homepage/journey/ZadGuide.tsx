@@ -1,27 +1,34 @@
 import React from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ZadRigSvg, type ZadPose } from '../../../zad/ZadRig';
+import { createPortal } from 'react-dom';
+import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 'motion/react';
+import { ZadRig, type ZadPose } from '../../../zad/ZadRig';
 import { useCurrentStation, type Station } from './Journey';
 
 /**
- * Zad walks the visitor through the homepage (owner, 2026-11-18): he leaves the hero, then flies to a new spot on the
- * screen at every station, turns to it in a matching pose and says one short line. Tapping him opens the learning
- * guide chat, so he replaces the floating chat button on this page (LearningGuide listens for `zad:open-guide`).
+ * Zad walks the visitor through the homepage (owner, 2026-11-18). He appears beside the film ("sound on, then play"),
+ * flies to a new spot at every station with a pose and one short line, steps aside where a section has its own Zad,
+ * and at the end lands in the closing section's slot (`dockId`) instead of a second, static Zad. The 3D Zad, with
+ * the SVG one until it loads. Tapping him opens the learning guide chat (he replaces the floating chat button on this
+ * page; LearningGuide listens for `zad:open-guide`), or plays the film in the intro.
  */
 
 type L = { en: string; ar: string };
-export type GuideStop = { pose: ZadPose; say: L; side: 'start' | 'end'; y: number };
+export type GuideStop = { pose: ZadPose; say: L; side: 'start' | 'end'; y: number; hide?: boolean };
 
 export function openLearningGuide() {
   window.dispatchEvent(new CustomEvent('zad:open-guide'));
 }
 
-export function ZadGuide({ stations, stops, isEn }: { stations: Station[]; stops: GuideStop[]; isEn: boolean }) {
+type Intro = { targetId: string; stop: GuideStop; onTap: () => void };
+
+export function ZadGuide({ stations, stops, isEn, intro, dockId }: { stations: Station[]; stops: GuideStop[]; isEn: boolean; intro?: Intro; dockId?: string }) {
   const ids = React.useMemo(() => stations.map((s) => s.id), [stations]);
   const { index } = useCurrentStation(ids);
   const reduce = useReducedMotion();
   const [talking, setTalking] = React.useState(false);
   const [vp, setVp] = React.useState({ w: 1280, h: 800 });
+  const [introOn, setIntroOn] = React.useState(false);
+  const [dock, setDock] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
     const on = () => setVp({ w: window.innerWidth, h: window.innerHeight });
@@ -30,66 +37,112 @@ export function ZadGuide({ stations, stops, isEn }: { stations: Station[]; stops
     return () => window.removeEventListener('resize', on);
   }, []);
 
-  // A new station: he says his line for a few seconds, then goes quiet (the line stays on hover).
+  // The intro: while the film is on screen.
   React.useEffect(() => {
-    if (index < 0) return;
-    setTalking(true);
-    const id = window.setTimeout(() => setTalking(false), 5200);
-    return () => window.clearTimeout(id);
-  }, [index]);
+    const mark = intro && document.getElementById(intro.targetId);
+    // The target may be a zero-height marker: watch the block it sits in.
+    const el = mark && mark.offsetHeight < 2 ? mark.parentElement : mark;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setIntroOn(e.intersectionRatio > 0.6), { threshold: [0, 0.35, 0.6, 0.8] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [intro]);
 
-  const shown = index >= 0;
-  const stop = stops[Math.max(0, Math.min(index, stops.length - 1))];
+  // The landing slot: once it is on screen he is drawn inside it (a portal), so he scrolls with the page and never
+  // lags or leaves the screen (owner, 2026-11-19: chasing the slot with a fixed Zad lagged).
+  React.useEffect(() => {
+    const el = dockId ? document.getElementById(dockId) : null;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setDock(e.isIntersecting ? el : null), { rootMargin: '-10% 0px -20% 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [dockId]);
+
+  const stationStop = index >= 0 ? stops[Math.min(index, stops.length - 1)] : null;
+  const mode: 'dock' | 'station' | 'intro' | 'off' = dock ? 'dock' : stationStop && !stationStop.hide ? 'station' : index < 0 && introOn && intro ? 'intro' : 'off';
+  const stop = mode === 'intro' ? intro!.stop : stationStop ?? stops[0];
+  const key = mode === 'station' ? `s${index}` : mode;
+
+  // Each new place: he says his line for a few seconds, then goes quiet (the line comes back on hover).
+  React.useEffect(() => {
+    if (mode === 'off' || mode === 'dock') { setTalking(false); return; }
+    setTalking(true);
+    const id = window.setTimeout(() => setTalking(false), mode === 'intro' ? 7000 : 5200);
+    return () => window.clearTimeout(id);
+  }, [key, mode]);
+
   // Wide screens: the side gutters at the station's height; the journey rail's side only where its gutter is wide
-  // enough. Smaller screens: the bottom corner on the end side, small.
+  // enough. Smaller screens: the bottom corner on the end side (back-to-top sits on the start side), small.
   const wide = vp.w >= 1280;
   const roomy = vp.w >= 1500;
-  const railLeft = isEn; // the rail sits on the start side
+  const railLeft = isEn;
   let left = (stop.side === 'start') === isEn;
   if (wide && !roomy && left === railLeft) left = !left;
-  if (!wide) left = !isEn; // the end side: back-to-top sits on the start side
-  const size = wide ? 104 : 64;
+  if (!wide) left = !isEn;
+  const size = wide ? 110 : 70;
   const gap = wide ? (left === railLeft ? 170 : Math.max(24, vp.w * 0.025)) : 10;
   const x = left ? gap : vp.w - gap - size;
   const y = wide ? (vp.h * stop.y) / 100 : vp.h - size - 16;
   const flip = left ? 1 : -1;
+  const tap = mode === 'intro' ? intro!.onTap : openLearningGuide;
+  // A little hop and lean at each new place. Not a remount: that would rebuild the 3D Zad every time.
+  const hop = useAnimationControls();
+  React.useEffect(() => {
+    if (reduce || mode === 'off') return;
+    void hop.start({ y: [-26, 0], rotate: [-10 * flip, 0], transition: { type: 'spring', stiffness: 260, damping: 14 } });
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  const spring = { type: 'spring' as const, stiffness: 70, damping: 16, mass: 1.1 };
+
+  if (mode === 'dock' && dock) {
+    // He drops into the slot from above and cheers.
+    return createPortal(
+      <motion.div
+        className="absolute inset-0 grid place-items-center"
+        initial={reduce ? false : { opacity: 0, y: -90, scale: 0.6 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+      >
+        <button type="button" onClick={openLearningGuide} className="rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60" aria-label={isEn ? 'Ask Zad, our learning guide' : 'اسأل زاد، مرشد التعلم'}>
+          <ZadRig pose="cheer" size={Math.min(dock.offsetWidth, dock.offsetHeight)} glow />
+        </button>
+      </motion.div>,
+      dock,
+    );
+  }
 
   return (
     <AnimatePresence>
-      {shown && (
+      {mode !== 'off' && (
         <motion.div
           key="zad-guide"
           className="fixed top-0 left-0 z-40 pointer-events-none"
           initial={{ opacity: 0, scale: 0.4, x, y: y + 60 }}
           animate={{ opacity: 1, scale: 1, x, y }}
           exit={{ opacity: 0, scale: 0.4 }}
-          transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 70, damping: 16, mass: 1.1 }}
+          transition={reduce ? { duration: 0 } : spring}
         >
           <div className="relative">
-            {/* The flight: a little hop and lean while he moves to the next spot. */}
             <motion.button
-              key={index}
               type="button"
-              onClick={openLearningGuide}
+              onClick={tap}
               onMouseEnter={() => setTalking(true)}
               className="pointer-events-auto relative block rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#E5A93C]/60"
-              aria-label={isEn ? 'Ask Zad, our learning guide' : 'اسأل زاد، مرشد التعلم'}
-              initial={reduce ? false : { y: -26, rotate: -10 * flip }}
-              animate={{ y: 0, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 14 }}
+              aria-label={mode === 'intro' ? (isEn ? 'Play our story with sound' : 'شغّل قصتنا بالصوت') : (isEn ? 'Ask Zad, our learning guide' : 'اسأل زاد، مرشد التعلم')}
+              animate={hop}
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
             >
-              <span aria-hidden="true" className="absolute inset-[18%] rounded-full bg-[#E5A93C]/30 blur-xl" />
-              <span className="relative block" style={{ transform: `scaleX(${flip})` }}><ZadRigSvg pose={stop.pose} size={size} /></span>
+              <span className="relative block" style={{ transform: `scaleX(${flip})` }}>
+                <ZadRig pose={stop.pose} size={size} glow={false} />
+              </span>
             </motion.button>
 
             <AnimatePresence>
               {talking && (
                 <motion.div
-                  key={`say-${index}`}
+                  key={`say-${key}`}
                   role="status"
-                  className={`absolute bottom-[96%] ${left ? 'left-0' : 'right-0'} w-max max-w-[min(12rem,70vw)]`}
+                  className={`absolute bottom-[96%] ${left ? 'left-0' : 'right-0'} w-max max-w-[min(13rem,70vw)]`}
                   initial={{ opacity: 0, y: 8, scale: 0.85 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -4, scale: 0.92 }}

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react';
 import { EXPO, type L } from './Journey';
 import { Bezel } from './Premium';
+import { ZadRigSvg } from '../../../zad/ZadRig';
 
 /**
  * Station 01: four situations learners and parents in the West describe. Recognition, not fear: each card
@@ -11,10 +12,10 @@ import { Bezel } from './Premium';
 
 // Learner-neutral (owner, 2026-11-18: not only families). Each moment carries the medal of what fixes it.
 const ITEMS: { medal: string; moment: L; turn: L; tone: string }[] = [
-  { medal: 'tajweed', tone: '#C51F24', moment: { en: 'The reading is there, the letters are not right yet', ar: 'القراءة موجودة، بس الحروف لسه مش مظبوطة' }, turn: { en: 'Here: one teacher hears every letter', ar: 'هنا: معلّم واحد يسمع كل حرف' } },
-  { medal: 'juz', tone: '#E5A93C', moment: { en: 'Memorised, then it slips away', ar: 'تحفظ، وبعدين الحفظ يتفلّت' }, turn: { en: 'Here: revision is part of the plan', ar: 'هنا: المراجعة جزء من الخطة' } },
-  { medal: 'zad-level', tone: '#087D91', moment: { en: 'The deen feels like a heavy school subject', ar: 'الدين بقى مادة تقيلة' }, turn: { en: 'Here: stories, questions, a teacher you like', ar: 'هنا: قصص وأسئلة، ومعلّم تحبّه' } },
-  { medal: 'teacher', tone: '#B4552F', moment: { en: 'A new teacher every few weeks', ar: 'كل كام أسبوع معلّم جديد' }, turn: { en: 'Here: the same teacher, who knows where you stopped', ar: 'هنا: نفس المعلّم، وعارف وقفت فين' } },
+  { medal: 'tajweed', tone: '#C51F24', moment: { en: 'The reading is there, the letters are not right yet', ar: 'القراءة موجودة، بس الحروف لسه مش مظبوطة' }, turn: { en: 'One teacher hears every letter and corrects it on the spot.', ar: 'معلّم واحد يسمعك حرف بحرف، ويصحّح لك في نفس اللحظة.' } },
+  { medal: 'juz', tone: '#E5A93C', moment: { en: 'Memorised, then it slips away', ar: 'تحفظ، وبعدين الحفظ يتفلّت' }, turn: { en: 'Revision is in every lesson, and your teacher tracks what you keep.', ar: 'المراجعة جزء من كل حصة، والمعلّم يتابع اللي حفظته.' } },
+  { medal: 'zad-level', tone: '#087D91', moment: { en: 'The deen feels like a heavy school subject', ar: 'الدين بقى مادة تقيلة' }, turn: { en: 'Stories, questions and real talk, with a teacher you look forward to.', ar: 'قصص وأسئلة ونقاش، مع معلّم تحبّه وتستنّاه.' } },
+  { medal: 'teacher', tone: '#B4552F', moment: { en: 'A new teacher every few weeks', ar: 'كل كام أسبوع معلّم جديد' }, turn: { en: 'The same teacher every lesson, picking up where you stopped.', ar: 'نفس المعلّم كل حصة، عارف وقفت فين وبيكمّل منها.' } },
 ];
 const TURN = [-2.2, 1.6, 1.2, -1.8];
 const DRIFT = [70, 20, 110, 40]; // px each card drifts over the section's scroll: different speeds read as depth
@@ -26,8 +27,8 @@ function Card({ it, k, isEn, progress, reduce }: { it: (typeof ITEMS)[number]; k
     <motion.li
       className={`relative list-none ${k % 2 ? 'md:mt-16' : ''}`}
       style={reduce ? undefined : { y }}
-      initial={reduce ? false : { opacity: 0, scale: 0.94, filter: 'blur(8px)' }}
-      whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      initial={reduce ? false : { opacity: 0, scale: 0.94 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.9, ease: EXPO, delay: (k % 2) * 0.1 }}
     >
@@ -36,9 +37,11 @@ function Card({ it, k, isEn, progress, reduce }: { it: (typeof ITEMS)[number]; k
           <img src={`/badges/shelf/${it.medal}.webp`} alt="" aria-hidden="true" width={180} height={180} loading="lazy" decoding="async" className="absolute -top-5 -end-5 w-28 h-28 sm:w-32 sm:h-32 object-contain opacity-90 rotate-12 drop-shadow-[0_16px_18px_rgba(28,20,17,0.35)] transition-transform duration-700 group-hover:rotate-0 group-hover:scale-110" />
           <span aria-hidden="true" className="block h-1 w-10 rounded-full" style={{ background: it.tone }} />
           <p className="relative mt-5 font-editorial font-bold text-2xl sm:text-[1.7rem] leading-snug text-foreground">“{t(it.moment)}”</p>
-          <p className="relative mt-5 flex items-start gap-2.5 text-sm sm:text-base font-semibold text-[#087D91] dark:text-[#12A4BC]">
-            <span aria-hidden="true" className="mt-2.5 h-px w-7 shrink-0 bg-current" />{t(it.turn)}
-          </p>
+          {/* The answer, said by Zad (owner, 2026-11-18: a complaint needs a reply). */}
+          <div className="relative mt-5 flex items-start gap-3 rounded-2xl bg-[#087D91]/[0.08] dark:bg-[#12A4BC]/10 p-3.5">
+            <span className="shrink-0 -mt-1"><ZadRigSvg pose="point" size={38} glow={false} /></span>
+            <p className="text-[15px] sm:text-base font-bold leading-snug text-[#065F6E] dark:text-[#7FD3E0]">{t(it.turn)}</p>
+          </div>
         </Bezel>
       </div>
     </motion.li>
