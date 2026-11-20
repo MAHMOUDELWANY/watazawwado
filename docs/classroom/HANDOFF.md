@@ -152,3 +152,10 @@ files were applied in parts, because the MCP declines `DROP COLUMN` and a combin
 - 20261120100001 without `DROP COLUMN lesson_prep.files` (the column stays in production, empty and unused).
 - 20261120200000 split in three: timeline CHECK (covered by 20261121000001), `learner_mistakes` with `GRANT ALL TO
   service_role` instead of the policy, and the classroom-files audio mime types.
+
+### 2026-11-20: shipped to main (1b04a984), with a 15-minute outage on the way
+The first push (c62837f0) crashed every production API route (FUNCTION_INVOCATION_FAILED): `src/lib/roomEvents.ts`
+imported `./roomTools` without `.js`. Vercel runs real Node ESM; tsx resolves extensionless imports, so tests passed.
+Reverted at once (4ea9a31c), fixed, re-applied. `test/server-esm-imports.test.ts` now walks the server import graph and
+fails on any extensionless relative value import. CLASSROOM_MODE is pilot for the teacher in CLASSROOM_PILOT_TEACHERS.
+Not yet seen on screen: prep page, waiting room checks, PIN and kid mode, board, tools, Quran tab, after-lesson report.
