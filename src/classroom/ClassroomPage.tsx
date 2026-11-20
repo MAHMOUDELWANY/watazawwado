@@ -20,6 +20,7 @@ import { PdfPages } from './board/PdfPages';
 import { uploadClassroomFile } from './board/upload';
 import type { Portal, RoomEntry } from './ClassroomGate';
 import { RemoteAudio, VideoTile, useSpeaking } from './parts/VideoTiles';
+import { TalkRatio, useTalkTime } from './parts/TalkTime';
 import { CornerPip } from './parts/CornerPip';
 import { Khatam } from './parts/Khatam';
 import { NoticeSlot, type RoomNotice } from './parts/NoticeSlot';
@@ -49,7 +50,7 @@ const ANNOUNCE_EVERY_MS = 15_000;
 const GUARDIAN_STALE_MS = 40_000;
 const other = (s: Side): Side => (s === 'teacher' ? 'student' : 'teacher');
 const isTyping = (el: EventTarget | null) => el instanceof HTMLElement
-  && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || !!el.closest('.excalidraw'));
+  && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
 /**
  * Classroom Release 1, Task 9: the lesson room. Waiting room first, then video, curriculum, board and files over one
@@ -325,6 +326,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; r.n = 0; }
       window.removeEventListener('pagehide', onHide);
       if (role === 'guardian_observer') publishEvent({ t: 'observer', kind: 'guardian', present: false });
+      saveTalk();
       void batcher.current?.stop(); // flushes what is left
       batcher.current = null;
       void engine.leave();
@@ -338,6 +340,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   useEffect(() => {
     if (!over) return;
     for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; }
+    saveTalk();
     void batcher.current?.stop();
     batcher.current = null;
     void engineRef.current?.leave();
@@ -582,6 +585,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       return;
     }
     overRef.current = 'ended'; // the heartbeat and the announce stop while we leave
+    saveTalk();
     send({ t: 'end' });
     await batcher.current?.stop();
     batcher.current = null;
@@ -621,6 +625,24 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const studentSpeaking = useSpeaking(remotes.student?.getAudioTracks()[0]);
   const speakingOf = (s: Side) => (s === 'teacher' ? teacherSpeaking : studentSpeaking);
 
+  // 2.8 talk time: the teacher's page counts both sides (own mic, silent while muted; the learner's audio) and saves
+  // one 'talk' event per join, before the batcher's last flush (end, leave, hard close, closing the tab).
+  const talk = useTalkTime(isTeacher && joined && !over, selfSpeaking, studentSpeaking);
+  const talkSaved = useRef(false);
+  const saveTalk = useCallback(() => {
+    if (!isTeacher || talkSaved.current || !batcher.current) return;
+    const totals = talk.read();
+    if (!totals.teacherMs && !totals.learnerMs) return;
+    talkSaved.current = true;
+    save({ t: 'talk', ...totals });
+  }, [isTeacher, talk.read, save]);
+  useEffect(() => {
+    if (!isTeacher) return;
+    const onHide = () => { saveTalk(); void batcher.current?.flush(true); };
+    window.addEventListener('pagehide', onHide);
+    return () => window.removeEventListener('pagehide', onHide);
+  }, [isTeacher, saveTalk]);
+
   // Learner: reports leaving the lesson screen and says "welcome back" (FocusNotice).
   const welcomeBack = useLearnerFocus(role === 'learner', send, warningOff);
 
@@ -647,7 +669,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     save,
     initial: (surface = '') => {
       const scene = scenes.current[surface];
-      return { sceneVersion: scene?.sceneVersion ?? -1, elements: scene?.elements ?? [], learnerDraw: learnerDraw.current };
+      return { sceneVersion: scene?.sceneVersion ?? -1, elements: scene?.elements ?? [], learnerDraw: learnerDraw.current, page: scene?.page };
     },
   }), [publishEvent, onEvent, save, keepBoard]);
   const sendPointer = usePointerSender(publishEvent);
@@ -800,10 +822,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
                 {restored && <Board key={boardSurface(pdf.fileId, pdf.page)} surface={boardSurface(pdf.fileId, pdf.page)} role={role} sync={board} transparent />}
               </PdfPages>
             ) : (
-              <div className="relative h-full">
-                <img src={pdf.url} alt="" className="h-full w-full object-contain" />
-                <div className="absolute inset-0">{restored && <Board key={boardSurface(pdf.fileId, 1)} surface={boardSurface(pdf.fileId, 1)} role={role} sync={board} transparent />}</div>
-              </div>
+              restored && <Board key={boardSurface(pdf.fileId, 1)} surface={boardSurface(pdf.fileId, 1)} role={role} sync={board} image={pdf.url} />
             )
           ) : isTeacher ? (
             <label
@@ -866,6 +885,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               {subject && !observer && <span className="hidden shrink-0 text-sm text-muted-foreground sm:inline">{subject}</span>}
               {myLink && <span className="shrink-0"><NetworkBadge link={myLink} onDark /></span>}
               {(isTeacher || observer) && <Timer startMs={startMs} endMs={endMs} now={serverNow} mode={isTeacher ? 'teacher' : 'observer'} />}
+              {isTeacher && <TalkRatio {...talk.totals} />}
             </div>
             {isTeacher && guardianHere && <GuardianChip />}
             {isTeacher && sharing && (

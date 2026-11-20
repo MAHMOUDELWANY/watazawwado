@@ -68,10 +68,9 @@ export function PdfPages({ fileUrl, page, onPage, children }: {
   const Next = isAr ? ChevronLeft : ChevronRight;
   return (
     <div className="flex h-full w-full flex-col">
-      {/* The board on top would take the wheel for its own canvas: the page scrolls instead, and the board is as tall
-          as the page, so marks stay on the words they were drawn on. */}
-      <div ref={box} className="relative min-h-0 flex-1 overflow-auto bg-surface-subtle"
-        onWheelCapture={(e) => { if (box.current && !e.ctrlKey) { box.current.scrollTop += e.deltaY; e.stopPropagation(); } }}>
+      {/* The board on top is as tall as the page and never takes the wheel, so the page scrolls and marks (kept in page
+          units) stay on the words they were drawn on. */}
+      <div ref={box} className="relative min-h-0 flex-1 overflow-auto bg-surface-subtle">
         {!doc && <div className="grid h-full place-items-center"><BrandSpinner /></div>}
         <div className="relative">
           <canvas ref={canvas} className="block w-full h-auto" aria-label={t(`Page ${shown} of ${count}`, `صفحة ${shown} من ${count}`)} />

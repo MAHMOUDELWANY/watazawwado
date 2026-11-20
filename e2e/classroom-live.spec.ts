@@ -148,9 +148,9 @@ async function ensurePair(browser: Browser) {
 const radio = (p: Page, name: string) => p.getByRole('radio', { name, exact: true });
 const tab = (p: Page, name: string) => p.getByRole('tab', { name, exact: true });
 
-/** The pixels of the board's drawing canvas (excalidraw draws the scene there). */
+/** The pixels of the board's scene canvas (finished marks are drawn there). */
 const boardPixels = (p: Page) => p.evaluate(() => {
-  const c = document.querySelector('canvas.excalidraw__canvas.static') as HTMLCanvasElement | null;
+  const c = document.querySelector('canvas[data-board="scene"]') as HTMLCanvasElement | null;
   if (!c) return '';
   const d = c.toDataURL();
   let h = 0;
@@ -189,13 +189,13 @@ test('2. curriculum sync, layout switch, PDF upload, board drawing, pointer', as
   await expect(L.locator('.room-paper').getByText('QA Ustadh P5', { exact: true })).toBeVisible({ timeout: 10_000 });
   // Board: the teacher draws a rectangle; the learner's board canvas changes.
   await tab(T, 'Board').click();
-  await expect(L.locator('.excalidraw')).toBeVisible({ timeout: 30_000 });
-  await expect(T.locator('canvas.excalidraw__canvas.interactive')).toBeVisible({ timeout: 30_000 });
+  await expect(L.locator('.room-board')).toBeVisible({ timeout: 30_000 });
+  await expect(T.locator('canvas[data-board="live"]')).toBeVisible({ timeout: 30_000 });
   await L.waitForTimeout(1500);
   const blank = await boardPixels(L);
-  const canvas = (await T.locator('canvas.excalidraw__canvas.interactive').boundingBox())!;
+  const canvas = (await T.locator('canvas[data-board="live"]').boundingBox())!;
   const cx = canvas.x + canvas.width / 2, cy = canvas.y + canvas.height / 2;
-  await T.locator('.excalidraw').getByTitle(/^Rectangle/).click();
+  await T.getByRole('toolbar', { name: 'Board tools' }).getByRole('button', { name: 'Rectangle', exact: true }).click();
   await T.mouse.move(cx - 120, cy - 80);
   await T.mouse.down();
   await T.mouse.move(cx + 120, cy + 80, { steps: 8 });
