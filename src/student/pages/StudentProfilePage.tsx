@@ -39,6 +39,7 @@ import { isFamilyAccount } from '../../lib/tours';
 import { AddChildForm } from '../components/AddChildForm';
 import { ChildPhones } from '../components/ChildPhones';
 import { ParentPinSetting } from '../components/ParentPinDialog';
+import { KidModeSwitch } from '../kidMode';
 import { PrivacyRequests } from '../components/PrivacyRequests';
 import { ErrorState } from '../../components/ErrorState';
 
@@ -839,6 +840,7 @@ export default function StudentProfilePage({
               <ChildPhones isAr={isAr} children={linkedChildren.filter((c: any) => c?.id && c?.name)} />
               {/* BUILD-LIST 1.6: asked before watching a child's lesson. */}
               {linkedChildren.length > 0 && <ParentPinSetting isAr={isAr} />}
+              <KidModeSwitch isAr={isAr} children={linkedChildren.filter((c: any) => c?.id && c?.name)} />
 
               {/* Parent / Guardian (if child learner) */}
               {profile?.guardian && (

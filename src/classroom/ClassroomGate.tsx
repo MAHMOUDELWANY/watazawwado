@@ -8,6 +8,7 @@ import type { RoomRole } from './engine/types';
 import { FallbackNotice } from './parts/FallbackNotice';
 import { Khatam } from './parts/Khatam';
 import { ParentPinDialog, parentProof } from '../student/components/ParentPinDialog';
+import { readKidMode } from '../student/kidMode';
 
 // The room (engine, board, player) is its own chunk; this gate stays tiny inside each app.
 const ClassroomPage = lazy(() => import('./ClassroomPage'));
@@ -46,7 +47,8 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
   const { id = '' } = useParams();
   const [search] = useSearchParams();
   // Parent mode (guardian) and the dashboard (super admin) may watch; a child's own app never asks to observe.
-  const observe = portal !== 'kid' && search.get('observe') === '1';
+  // Kid mode on the parent's device (BUILD-LIST 1.6) is a child: never an observer.
+  const observe = portal !== 'kid' && !(portal === 'student' && readKidMode()) && search.get('observe') === '1';
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { needsPin: true } | { error: string; zoomUrl?: string } | null>(null);
 

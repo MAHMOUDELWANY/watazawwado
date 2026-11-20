@@ -193,7 +193,8 @@ describe('CL-13 gate and super admin', () => {
     const gate = read('src/classroom/ClassroomGate.tsx');
     assert.match(gate, /e\?\.status === 409 && \(e\?\.data \?\? e\)\?\.classroom === false/);
     assert.doesNotMatch(gate, /status === 503/);
-    assert.match(gate, /portal !== 'kid' && search\.get\('observe'\) === '1'/);
+    // Kid mode on the parent's device (BUILD-LIST 1.6) is a child too.
+    assert.match(gate, /portal !== 'kid' && !\(portal === 'student' && readKidMode\(\)\) && search\.get\('observe'\) === '1'/);
   });
   it('BookingsPage offers Watch on live room lessons for the super admin', () => {
     const page = read('src/dashboard/pages/BookingsPage.tsx');

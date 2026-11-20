@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Eye } from 'lucide-react';
 import { roomJoinState } from '../../lib/roomWindow';
 import { ParentPinDialog } from './ParentPinDialog';
+import { readKidMode } from '../kidMode';
 
 type WatchableLesson = {
   id: string;
@@ -32,7 +33,8 @@ export function canWatchLesson(b: WatchableLesson, now: number = Date.now()): bo
 export function WatchLessonButton({ booking, isAr, now }: { booking: WatchableLesson; isAr: boolean; now?: number }) {
   const navigate = useNavigate();
   const [asking, setAsking] = useState(false);
-  if (!canWatchLesson(booking, now)) return null;
+  // Kid mode on this device: a child never sees Watch.
+  if (!canWatchLesson(booking, now) || readKidMode()) return null;
   const url = `/student/room/${encodeURIComponent(booking.id)}?observe=1`;
   return (
     <>
