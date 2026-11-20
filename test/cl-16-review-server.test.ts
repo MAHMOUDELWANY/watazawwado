@@ -4,6 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import express from 'express';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { signParentProof } from '../server/routes/parentPin.js';
 import { verifyTicket } from '../server/classroom/access.js';
 import { summarizeAttendance } from '../server/routes/attendance.js';
 
@@ -106,7 +107,8 @@ describe('CL-16 server review fixes', () => {
   after(async () => { await new Promise<void>((r) => srv.close(() => r())); });
 
   const enter = async (portal: 'dashboard' | 'student', observe = false) => {
-    const res = await fetch(`${base}/api/${portal}/classroom/${BOOKING}/enter${observe ? '?observe=1' : ''}`);
+    const proof = portal === 'student' && observe ? { 'x-parent-proof': signParentProof('parent-1', SECRET, clock) } : undefined;
+    const res = await fetch(`${base}/api/${portal}/classroom/${BOOKING}/enter${observe ? '?observe=1' : ''}`, { headers: proof });
     return { status: res.status, body: await res.json() as any };
   };
   const post = (tk: string, path: string, body: unknown = {}) =>

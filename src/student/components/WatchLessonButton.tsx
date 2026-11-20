@@ -1,7 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Eye } from 'lucide-react';
 import { roomJoinState } from '../../lib/roomWindow';
+import { ParentPinDialog } from './ParentPinDialog';
 
 type WatchableLesson = {
   id: string;
@@ -27,18 +28,25 @@ export function canWatchLesson(b: WatchableLesson, now: number = Date.now()): bo
   return roomJoinState({ scheduled_start, scheduled_end: b.scheduledEnd ?? b.scheduled_end, duration_minutes: b.durationMinutes ?? b.duration_minutes, status: b.status }, now) === 'open';
 }
 
-/** Parent mode only (`/student`). Never rendered by the kid app. */
+/** Parent mode only (`/student`). Never rendered by the kid app. Asks the parent PIN first (BUILD-LIST 1.6). */
 export function WatchLessonButton({ booking, isAr, now }: { booking: WatchableLesson; isAr: boolean; now?: number }) {
+  const navigate = useNavigate();
+  const [asking, setAsking] = useState(false);
   if (!canWatchLesson(booking, now)) return null;
+  const url = `/student/room/${encodeURIComponent(booking.id)}?observe=1`;
   return (
-    <Link
-      to={`/student/room/${encodeURIComponent(booking.id)}?observe=1`}
-      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-teal/30 bg-teal/10 text-sm font-semibold text-teal hover:bg-teal/15 transition-colors duration-[var(--dur-ui)] active:scale-[0.98] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-    >
-      {/* The room is open now: a still dot says "live" without a blinking light. */}
-      <span className="h-2 w-2 shrink-0 rounded-full bg-teal" aria-hidden="true" />
-      <Eye className="w-4 h-4" aria-hidden="true" />
-      {isAr ? 'تابع الحصة' : 'Watch the lesson now'}
-    </Link>
+    <>
+      <button
+        type="button"
+        onClick={() => setAsking(true)}
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-teal/30 bg-teal/10 text-sm font-semibold text-teal hover:bg-teal/15 transition-colors duration-[var(--dur-ui)] active:scale-[0.98] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+      >
+        {/* The room is open now: a still dot says "live" without a blinking light. */}
+        <span className="h-2 w-2 shrink-0 rounded-full bg-teal" aria-hidden="true" />
+        <Eye className="w-4 h-4" aria-hidden="true" />
+        {isAr ? 'تابع الحصة' : 'Watch the lesson now'}
+      </button>
+      <ParentPinDialog isOpen={asking} isAr={isAr} onClose={() => setAsking(false)} onDone={() => { setAsking(false); navigate(url); }} />
+    </>
   );
 }

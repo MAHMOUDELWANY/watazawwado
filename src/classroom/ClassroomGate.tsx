@@ -7,6 +7,7 @@ import { BrandLoader } from '../components/ui/BrandLoader';
 import type { RoomRole } from './engine/types';
 import { FallbackNotice } from './parts/FallbackNotice';
 import { Khatam } from './parts/Khatam';
+import { ParentPinDialog, parentProof } from '../student/components/ParentPinDialog';
 
 // The room (engine, board, player) is its own chunk; this gate stays tiny inside each app.
 const ClassroomPage = lazy(() => import('./ClassroomPage'));
@@ -39,23 +40,26 @@ const HOME: Record<Portal, string> = { teacher: '/dashboard', student: '/student
  * switch is off for this lesson's teacher (409 classroom:false), the NX-12 slides page and Zoom show as before.
  */
 export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: React.ReactNode }) {
-  const { t } = useT();
+  const { t, isAr } = useT();
   const { id = '' } = useParams();
   const [search] = useSearchParams();
   // Parent mode (guardian) and the dashboard (super admin) may watch; a child's own app never asks to observe.
   const observe = portal !== 'kid' && search.get('observe') === '1';
   const [attempt, setAttempt] = useState(0);
-  const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { error: string; zoomUrl?: string } | null>(null);
+  const [result, setResult] = useState<{ entry: RoomEntry } | { fallback: true } | { needsPin: true } | { error: string; zoomUrl?: string } | null>(null);
 
   useEffect(() => {
     let live = true;
     setResult(null);
     const path = `/api/${portal === 'teacher' ? 'dashboard' : 'student'}/classroom/${encodeURIComponent(id)}/enter${observe ? '?observe=1' : ''}`;
-    (portal === 'teacher' ? dashboardFetch<RoomEntry>(path) : authedJson<RoomEntry>(path))
+    // BUILD-LIST 1.6: a guardian sends the proof of the parent PIN; without one the server answers needsPin.
+    const proof = portal === 'student' && observe ? parentProof() : null;
+    (portal === 'teacher' ? dashboardFetch<RoomEntry>(path) : authedJson<RoomEntry>(path, proof ? { headers: { 'x-parent-proof': proof } } : {}))
       .then((entry) => live && setResult({ entry }))
       .catch((e: any) => {
         if (!live) return;
         if (e?.status === 409 && (e?.data ?? e)?.classroom === false) setResult({ fallback: true });
+        else if (e?.status === 403 && e?.data?.needsPin) setResult({ needsPin: true });
         else {
           // Task 12: the media service failed on our side; the server sent this side's Zoom link when it is open.
           const zoomUrl = (e?.data?.fallback ?? e?.fallback)?.url;
@@ -67,6 +71,14 @@ export function ClassroomGate({ portal, fallback }: { portal: Portal; fallback: 
 
   if (!result) return <div className="grid min-h-[60vh] place-items-center"><BrandLoader size="md" /></div>;
   if ('fallback' in result) return <>{fallback}</>;
+  if ('needsPin' in result) {
+    return (
+      <div className="grid min-h-[60vh] place-items-center">
+        <Link to={HOME[portal]} className="inline-flex min-h-11 items-center text-sm text-teal underline underline-offset-4 focus-ring">{t('Back to my lessons', 'رجوع لحصصي')}</Link>
+        <ParentPinDialog isOpen isAr={isAr} onClose={() => window.location.assign(HOME[portal])} onDone={() => setAttempt((n) => n + 1)} />
+      </div>
+    );
+  }
   if ('error' in result) {
     return (
       <div className="glass-2 arch-top mx-auto mt-10 grid max-w-md justify-items-center gap-3 px-6 pb-8 pt-14 text-center">

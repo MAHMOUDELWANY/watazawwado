@@ -69,6 +69,7 @@ import { registerPushRoutes } from '../server/routes/push.js';
 import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { registerParentPinRoutes } from '../server/routes/parentPin.js';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
@@ -10878,6 +10879,7 @@ registerMonthlyDraftRoute(app, jalilaDraftDeps);
 registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent });
 // Classroom Release 1: room tickets, roles and the Cloudflare media proxy.
 registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit, roomRateLimit, requireSuperAdmin });
+registerParentPinRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit });
 // Classroom Task 10: teacher late reasons and their super admin review.
 registerLateReasonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()) });
 

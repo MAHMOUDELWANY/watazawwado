@@ -12,6 +12,7 @@ import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integ
 import { classroomEnabledFor } from '../classroom/mode.js';
 import { roomSideIn } from './attendance.js';
 import { lessonEndMs } from '../../src/lib/lessonWindow.js';
+import { verifyParentProof } from './parentPin.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -223,6 +224,10 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       // Task 13: switched off for this teacher, every role stays on the NX-12 page and Zoom, as before. Asked only
       // after access, so a stranger learns nothing about the teacher's rollout.
       if (!classroomEnabled(booking.teacher_id)) return res.status(409).json({ classroom: false });
+      // BUILD-LIST 1.6: watching needs the parent PIN, so a child on the parent's signed-in device cannot watch by URL.
+      if (access.role === 'guardian_observer' && !verifyParentProof(req.headers['x-parent-proof'], requester.userId, secret(), now())) {
+        return res.status(403).json({ error: 'Enter the parent PIN to watch.', needsPin: true });
+      }
       const cf = deps.cloudflare();
       const key = secret();
       if (!cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
