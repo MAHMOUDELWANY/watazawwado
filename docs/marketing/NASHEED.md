@@ -1,8 +1,13 @@
 # Our nasheed (draft for owner review)
 
 Status: **[Proposed 2026-11-20]**. Owner's idea: one nasheed that belongs to us, in Arabic and English, used under
-carousel videos, at the end of YouTube lessons and courses, and later at events. Rules: `RULES.md` §1.6 (human voices,
-at most a soft daf, our own lyrics, no ayah or hadith sung to a melody, commercial-use plan, stops before recitation).
+carousel videos, at the end of YouTube lessons and courses, and later at events. Rules: `RULES.md` §1.6 (male lead,
+children may join the chorus, rhythm first, light instruments very low, our own lyrics, no ayah or hadith sung, commercial-use plan,
+stops before recitation).
+
+**Concept (owner, 2026-11-20):** an anthem for the world we are building, like a national anthem in meaning, for all ages.
+Belonging, pride and resolve, not a sad or purely religious song. The rhythm and the voice should make people want to
+learn it by heart.
 
 ## What we make
 
@@ -24,11 +29,11 @@ language, the Seerah lived with mercy, the teacher who stays, coming back.
 
 ### Arabic (v4, 2026-11-20: stronger chorus, home and language; owner kept the teacher and the closing)
 
-**[اللازمة]**
-جَهِّزِ الزَّادَ لِدَرْبٍ
-لَيْسَ يُطْوَى بِالأَمَانِي
-زَادُهُ آيٌ وَصَبْرٌ
-وَدُمُوعٌ فِي المَثَانِي
+**[اللازمة]** (anthem chorus, approved by the owner 2026-11-20)
+نَحْنُ أَهْلٌ، نَحْنُ دَارٌ
+حَيْثُمَا كُنَّا الْتَقَيْنَا
+زَادُنَا نُورٌ وَعِلْمٌ
+وَعَلَى الدَّرْبِ مَضَيْنَا
 
 **[١: البيت]**
 صَوْتُ طِفْلِي حِينَ يَتْلُو
@@ -61,11 +66,11 @@ language, the Seerah lived with mercy, the teacher who stays, coming back.
 
 ### English (v5, 2026-11-20: rewritten as its own song; four beats a line, rhyming couplets)
 
-**[Chorus]**
-Pack your zaad, the road is long,
-take what is light but makes you strong:
-a verse you hold, a heart that stays,
-and quiet tears on longer days.
+**[Chorus]** (anthem chorus, approved by the owner 2026-11-20)
+Wherever we are, we're one home,
+and no one here walks alone;
+we pack our zaad: light, faith and mind,
+and leave no one behind.
 
 **[1: home]**
 A little voice before the light,

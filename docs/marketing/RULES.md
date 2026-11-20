@@ -17,10 +17,12 @@ date.
    Teaching follows the moderate Azhari foundation, Ahl al-Sunnah wal-Jama'ah (root RULES.md §6).
 5. **No images of prophets, companions or angels**, not even silhouettes with faces. Stories use places, objects,
    hands, landscapes, calligraphy, or our own curriculum art.
-6. **Sound**: no musical instruments. Voice, natural sound, our CC0 sound effects, a soft drone, or **our own nasheed**
-   (owner, 2026-11-20): human voices with at most a soft daf, lyrics written by us and approved by the owner, never an
+6. **Sound**: no music under videos except **our own nasheed** (owner, 2026-11-20). Otherwise: voice, natural sound,
+   our CC0 sound effects or a soft drone. The nasheed is the academy's anthem for all ages: a male lead voice (never a
+   woman singing; children may join the chorus), a driving rhythm, and light instruments kept very low under the voice
+   (owner, 2026-11-20, replacing "voices and daf only"). Lyrics written by us and approved by the owner, never an
    ayah or hadith sung to a melody, made on a plan that allows commercial use, Arabic and English versions, plus a
-   5 s sting and a 30 s bed (`NASHEED.md`). No other artist's nasheed (copyright). Never put any sound over recitation;
+   5 s sting and a 30 s bed (`NASHEED.md`). No other artist's nasheed or music (copyright). Never put any sound over recitation;
    the nasheed stops before recitation starts. It replaces the soft piano notes of 2026-11-17 (no longer used).
    Carousels with sound are published as a 9:16 video version (platforms cannot attach our own audio to a photo
    carousel); the silent photo carousel stays as its own post.
@@ -92,7 +94,7 @@ moment, enough to show the quality. Curriculum content itself is still owned by 
 
 - [ ] Quran/hadith verified and sourced (§1)
 - [ ] Recitation re-listened by a teacher (§1.3)
-- [ ] No instruments (our own nasheed only), no forbidden images (§1.5–1.6)
+- [ ] No music except our own nasheed, no forbidden images (§1.5–1.6)
 - [ ] No gradient through three or more hues; logo ribbon only in the logo (§1.8)
 - [ ] Academy voice, humanized, short (§2)
 - [ ] No invented claims; prices exact (§3)
