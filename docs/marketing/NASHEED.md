@@ -35,6 +35,12 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
    religious. Do not narrow it to one group or list family members (rejected: "to every daughter, every son"); the
    family appears once only (the home stanza).
 8. The academy speaks as "we"; never centre one person.
+9. **Feedback is about the spirit, not the letter.** When the owner rejects a line, rethink the whole stanza fresh;
+   do not patch the one phrase and keep the same idea (rejected: dropping "daughter, son" but keeping "pass it on").
+   Keep what he praised (e.g. "Before the sun, a small voice rose").
+10. **No repetition inside a line or across the song** (rejected: "our zaad is light, our zaad is truth"); vary key
+    words (light, road, way) between stanzas.
+11. **Self-review before showing:** read every line aloud for rhythm; if a line is only "fine", rewrite it.
 
 ## Lyrics (anthem, 2026-11-20)
 
@@ -72,13 +78,13 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
 
 Order: chorus, home, language, resolve, teacher, chorus, resolve ×2.
 
-### English (v7 draft for owner review; resolve approved)
+### English (v8 draft for owner review; resolve approved)
 
 **[Chorus]**
-One home, one heart, wherever we stand,
-one family in every land;
-our zaad is light, our zaad is truth,
-we carry it through age and youth.
+We rise as one from every shore,
+one home, one heart, forevermore;
+we pack our zaad, we take the road,
+and carry light, and share the load.
 
 **[Resolve]** (approved)
 Our will is stone, it will not break,
@@ -87,20 +93,20 @@ and if a mountain blocks the way,
 with faith we climb it, come what may.
 
 **[1: home]**
-Before the dawn, a voice is heard,
-the house grows bright with every word;
-each one a seed in Jannah sown
-that grows to shade we call our own.
+Before the sun, a small voice rose,
+and through the house the Quran flows;
+each verse a seed that takes its root
+and gives in Jannah endless fruit.
 
 **[2: language]**
 The Quran's tongue runs in our veins,
-through every age its light remains;
-we raise it proud, we hold it near,
-and pass it on from year to year.
+a pulse, a flame that still remains;
+we lift it high with pride and grace
+and let it shine in every place.
 
 **[3: the teacher]**
-A friend who walks the road with you,
-a hand to hold, a heart that's true;
+A friend to walk the path with you,
+who sees the best in all you do;
 and when you fall, he's at your side,
 he lifts you up, he is your guide.
 
