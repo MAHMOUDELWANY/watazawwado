@@ -5,14 +5,15 @@
 import type { RoomEvent } from '../lib/roomEvents';
 
 /** Types the server stores (the rest are live only). The server re-checks the sender's role. */
-export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'end']);
+export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end']);
 export const FLUSH_EVERY_MS = 30_000;
 const MAX_BATCH = 50; // the server refuses more in one call
 const KEEPALIVE_MAX = 60_000; // browsers cap keepalive bodies at 64 kB
 
 export type RoomSnapshot = {
   slide?: { track: string; number: number; page: number; step: number };
-  board?: { sceneVersion: number; elements: unknown[]; learnerDraw: boolean };
+  /** The whiteboard; `page` is the page the teacher showed last. */
+  board?: { sceneVersion: number; elements: unknown[]; learnerDraw: boolean; page?: number };
   /** Notes on file pages, by `boardSurface(fileId, page)`. */
   boards?: Record<string, { sceneVersion: number; elements: unknown[]; learnerDraw: boolean }>;
   /** The teacher's "learner can draw" (older rooms keep it only on `board`). */

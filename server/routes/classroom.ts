@@ -89,7 +89,8 @@ const MAX_BOARD_PAGES = 30;
 
 function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
   switch (e.t) {
-    case 'slide': case 'pdf': case 'layout': case 'end': return role === 'teacher';
+    // talk: the teacher's page measures both sides (2.8).
+    case 'slide': case 'pdf': case 'layout': case 'talk': case 'end': return role === 'teacher';
     case 'reaction': case 'focus': return role === 'learner';
     case 'quality': return e.side === attendanceRole(role);
     case 'board': return role === 'teacher' || (role === 'learner' && (snapshot.learnerDraw ?? snapshot.board?.learnerDraw) === true);
@@ -429,7 +430,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
           if (e.sceneVersion < (current?.sceneVersion ?? -1)) continue;
           // shortcut: notes on more than MAX_BOARD_PAGES pages are not saved (live only), raise it if teachers hit it.
           if (e.surface && !current && Object.keys(pages).length >= MAX_BOARD_PAGES) continue;
-          const scene = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
+          // The whiteboard keeps the teacher's page; a learner's save keeps the one already there.
+          const page = e.surface ? undefined : t.role === 'teacher' ? e.page : (current as { page?: number } | undefined)?.page;
+          const scene = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true, ...(page ? { page } : {}) };
           if (e.surface) fresh.boards = { ...pages, [e.surface]: scene };
           else fresh.board = scene;
         }

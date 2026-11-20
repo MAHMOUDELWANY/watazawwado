@@ -6,6 +6,7 @@ import type { LinkClass } from '../engine/types';
 import { NetworkBadge } from './NetworkBadge';
 import { Khatam } from './Khatam';
 import { isAutoplayBlock } from '../roomWiring';
+import { rmsOf, vadStep } from '../talkTime';
 
 let sharedCtx: AudioContext | null = null;
 /** One AudioContext for every level meter in the room (browsers cap how many can run). */
@@ -31,19 +32,13 @@ export function useSpeaking(track: MediaStreamTrack | null | undefined, threshol
     const source = ctx.createMediaStreamSource(new MediaStream([track]));
     source.connect(analyser);
     const buf = new Uint8Array(analyser.fftSize);
-    let on = false;
-    let quietSince = 0;
+    let s = { on: false, quietSince: 0 };
     const id = window.setInterval(() => {
       analyser.getByteTimeDomainData(buf);
-      let sum = 0;
-      for (const v of buf) sum += ((v - 128) / 128) ** 2;
-      const loud = Math.sqrt(sum / buf.length) > threshold;
-      const now = performance.now();
-      // Hold the ring 400 ms after the voice drops, so it does not flicker between words.
-      if (loud) quietSince = 0;
-      else if (!quietSince) quietSince = now;
-      const next = loud || (on && now - quietSince < 400);
-      if (next !== on) { on = next; setSpeaking(next); }
+      // Hold the ring HANGOVER_MS after the voice drops, so it does not flicker between words (talk time counts it too).
+      const next = vadStep(s, rmsOf(buf), performance.now(), threshold);
+      if (next.on !== s.on) setSpeaking(next.on);
+      s = next;
     }, 100);
     return () => { window.clearInterval(id); source.disconnect(); };
   }, [track, threshold]);

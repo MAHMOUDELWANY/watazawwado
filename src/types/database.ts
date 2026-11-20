@@ -1124,7 +1124,7 @@ export interface LessonRoomSeatRow {
   updated_at: string;
 }
 
-export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'end';
+export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'talk' | 'end';
 
 export interface LessonTimelineEventRow {
   id: string;

@@ -29,12 +29,14 @@ export function isRoomState(v: any): v is RoomState {
  * Classroom timeline (Release 1, Task 7): every typed event that travels on the room channel (event name 'ev').
  * `board.learnerDraw` is set by the teacher; a learner's board is kept only while the teacher allows drawing.
  * `board.surface`: which page the scene belongs to (`boardSurface`); none is the whiteboard.
+ * `board.page`: the whiteboard page the teacher shows (2.7); the learner follows it.
+ * `talk`: each side's speaking time in ms (2.8), saved by the teacher once per join, for the after-lesson report.
  */
 export type RoomEvent =
   | { t: 'session'; side: Side; sessionId: string }
   | { t: 'slide'; state: RoomState }
   | { t: 'ink'; ink: RoomInk }
-  | { t: 'board'; sceneVersion: number; elements: unknown[]; learnerDraw?: boolean; surface?: string }
+  | { t: 'board'; sceneVersion: number; elements: unknown[]; learnerDraw?: boolean; surface?: string; page?: number }
   | { t: 'pdf'; fileId: string; page: number }
   | { t: 'pointer'; x: number; y: number }
   | { t: 'reaction'; kind: 'hand' | 'confused' | 'slower' | 'repeat' | 'thinking' }
@@ -45,6 +47,7 @@ export type RoomEvent =
   | { t: 'layout'; mode: 'conversation' | 'content' | 'screen'; pane?: 'lesson' | 'board' | 'pdf' }
   /** Teacher's recitation mode, applied on both sides (live only). */
   | { t: 'recitation'; on: boolean }
+  | { t: 'talk'; teacherMs: number; learnerMs: number }
   | { t: 'end' };
 
 export const MAX_EVENT_BYTES = 16_384; // lesson_timeline_events.payload limit
@@ -61,13 +64,14 @@ const STAT_KEYS = ['outLossPct', 'inLossPct', 'availableInKbps', 'availableOutKb
 const OPTIONAL_STAT_KEYS = ['outFps', 'inFps', 'jitterMs'];
 const isStats = (v: any) => Boolean(v) && typeof v === 'object' && STAT_KEYS.every((k) => num(v[k]))
   && Object.keys(v).every((k) => STAT_KEYS.includes(k) || (OPTIONAL_STAT_KEYS.includes(k) && num(v[k])));
+const DAY_MS = 86_400_000;
 const intIn = (max: number) => (v: unknown) => Number.isInteger(v) && (v as number) >= 0 && (v as number) < max;
 // One checker per key; an event with a missing, wrong or extra key is refused.
 const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = {
   session: { side: oneOf(SIDES), sessionId: idStr(100) },
   slide: { state: isRoomState },
   ink: { ink: isRoomInk },
-  board: { sceneVersion: intIn(Number.MAX_SAFE_INTEGER), elements: (v) => Array.isArray(v) && v.length <= 5000, learnerDraw: (v) => v === undefined || bool(v), surface: (v) => v === undefined || idStr(220)(v) },
+  board: { sceneVersion: intIn(Number.MAX_SAFE_INTEGER), elements: (v) => Array.isArray(v) && v.length <= 5000, learnerDraw: (v) => v === undefined || bool(v), surface: (v) => v === undefined || idStr(220)(v), page: (v) => v === undefined || (intIn(100)(v) && v >= 1) },
   pdf: { fileId: idStr(200), page: intIn(10000) },
   pointer: { x: coord, y: coord },
   reaction: { kind: oneOf(['hand', 'confused', 'slower', 'repeat', 'thinking']) },
@@ -77,6 +81,7 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   observer: { kind: oneOf(['guardian']), present: bool },
   layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf'])(v) },
   recitation: { on: bool },
+  talk: { teacherMs: intIn(DAY_MS), learnerMs: intIn(DAY_MS) },
   end: {},
 };
 

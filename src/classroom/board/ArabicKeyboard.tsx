@@ -14,8 +14,8 @@ const TASHKEEL: Array<[string, string, string]> = [
 ];
 
 /**
- * Put text at the caret of the focused input or textarea (Excalidraw's text editor is a textarea) and fire `input`
- * so React and Excalidraw see the change. Returns false when nothing editable has focus.
+ * Put text at the caret of the focused input or textarea (the board's text box is a textarea) and fire `input`
+ * so React sees the change. Returns false when nothing editable has focus.
  */
 export function insertAtCursor(text: string): boolean {
   const el = document.activeElement;
