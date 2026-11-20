@@ -67,3 +67,10 @@ Change next week: <one thing>
   `docs/design/INSPIRATION.md`). V6, V8, V10, V11 videos to be remade in the new style once the nasheed exists.
 - Owner's two test shots (18-19 Nov): landscape, window light behind or beside the face, low camera in the first.
   Fix: vertical 9:16, light in front, camera at eye level. Owner's voice is back; filming planned 26-27 Nov for B1/T1/P1.
+
+### 2026-11-20 (evening): our nasheed adopted
+- Lyrics approved in Arabic and English (anthem: chorus, home, language, resolve, teacher); lyric rules in NASHEED.md.
+- ElevenLabs tests (about 10,000 credits) never satisfied the owner (AI-sounding voice, drums over the singer, lyrics
+  out of order until `lyrics_type: custom`). The owner made the final takes in Suno from our studio brief.
+- Adopted: full AR and EN takes, 5 s stings, 30 s beds in `marketing/brand-assets/nasheed/suno/`.
+

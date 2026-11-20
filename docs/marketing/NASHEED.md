@@ -1,6 +1,7 @@
 # Our nasheed (draft for owner review)
 
-Status: **[Proposed 2026-11-20]**. Owner's idea: one nasheed that belongs to us, in Arabic and English, used under
+Status: **[Adopted 2026-11-20]**: the owner adopted two Suno takes he made from the "Suno studio brief v2"
+(files below). Owner's idea: one nasheed that belongs to us, in Arabic and English, used under
 carousel videos, at the end of YouTube lessons and courses, and later at events. Rules: `RULES.md` §1.6 (male lead,
 children may join the chorus, rhythm first, light instruments very low, our own lyrics, no ayah or hadith sung, commercial-use plan,
 stops before recitation).
@@ -8,6 +9,14 @@ stops before recitation).
 **Concept (owner, 2026-11-20):** an anthem for the world we are building, like a national anthem in meaning, for all ages.
 Belonging, pride and resolve, not a sad or purely religious song. The rhythm and the voice should make people want to
 learn it by heart.
+
+## Adopted files (2026-11-20)
+
+`marketing/brand-assets/nasheed/suno/`: `nasheed-full-ar.mp3` (2:02, «نحن أهل، نحن دار») and `nasheed-full-en.mp3`
+(2:25, "Our Will Is Stone"), plus `nasheed-sting-{ar,en}.mp3` (5 s, chorus first line) and `nasheed-bed-{ar,en}.mp3`
+(30 s from the chorus, 3 s fade). Originals with timed lyrics: `suno-{ar,en}.m4a/.srt`. Known flaw: in the English
+take the first resolve's choir echo repeats "Our will is stone" (about 1:00-1:20). Made on the owner's Suno account;
+commercial use needs a paid Suno plan at the time of creation.
 
 ## What we make
 
