@@ -149,19 +149,21 @@ over him. Production words that describe this (use them in prompts):
 Sources: masteringthemix.com (vocals in a dense mix), soundonsound.com (mixing pop vocals), suno.com nasheed library
 (daf supports the voice rather than competing).
 
-## Suno studio brief (owner chose Suno, 2026-11-20; he generates it himself)
+## Suno studio brief v2 (owner, 2026-11-20): energy from the voices, not the band
 
-Owner: more energy, an epic anthem feel; it does not have to sound like a traditional nasheed. Male voices only.
-Settings: latest model, Custom mode, Style Influence high (~70%), Weirdness low (~25%); make 4+ takes, keep the best,
-fix weak parts with Replace Section. The full style text, exclude list and tagged lyrics (Arabic and English) are in
-the chat of 2026-11-20 and repeated here:
+Owner rejected v1 (epic cinematic): many drums and instrumental breaks between sections made it a song, a mix of pop
+song and nasheed. He wants a nasheed that is not sleepy: the energy comes from a strong lead, a male choir answering,
+layered harmonies and unison shouts. Rhythm = daf (plus a soft low drum on the downbeat), a hummed male drone instead
+of instruments, singing from start to end with no instrumental breaks.
 
-Style: `Epic cinematic anthem, 128 bpm, 4/4, D minor rising to a key lift in the final chorus. Powerful clear
-baritone male lead, warm and proud, upfront and dry, every word clear. Massive male gang choir answering, stadium
-shouts. Driving frame drums and taiko hits, punchy kick, tight snare on 2 and 4, string ostinato, low brass swells,
-deep sub bass. Verses tight and building, choruses huge and wide, resolve sections hit hardest. Modern polished mix,
-vocals on top of everything.`
-Exclude: `female vocals, autotune, rap, electric guitar solo, EDM drop, synth lead, lo-fi, reverb-drenched vocals`
+Style: `Powerful modern nasheed, voice-driven, 120 bpm. Strong clear baritone male lead, confident and proud,
+answered by a tight male choir in call and response. Energy comes from the voices: layered male harmonies, choir
+swells, unison shouts on key lines. Rhythm is a steady driving daf frame drum only, with a soft low drum on the
+downbeat; a low male choir hums a drone underneath instead of instruments. No instrumental breaks, singing continues
+from start to end. Verses lead-focused, chorus and resolve full choir, final resolve strongest. Close, dry vocal mix,
+every word clear.`
+Exclude: `pop song, rock, orchestral, strings, brass, piano, guitar, synth, drum kit, snare, claps, EDM, bass drop,
+female vocals, autotune, instrumental intro, instrumental solo, heavy reverb`
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
