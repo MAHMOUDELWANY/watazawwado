@@ -3,14 +3,12 @@
  * device). Model and licence: docs/classroom/QURAN-DETECTOR.md. Both the runtime (transformers.js) and the model are
  * loaded only when a learner asks for a check, and the browser caches them for next time.
  */
-export const DETECTOR_MODEL: string = (import.meta as any).env?.VITE_QURAN_DETECTOR_MODEL || 'eventhorizon0/tarteel-ai-onnx-whisper-base-ar-quran';
+export const DETECTOR_MODEL: string = (import.meta as any).env?.VITE_QURAN_DETECTOR_MODEL || 'mahmoudelwany7/whisper-base-ar-quran';
 /**
- * Our own copy of the same files (public bucket quran-models, scripts/quran/upload-model.ts). Used when its
- * manifest.json loads; until the copy exists the browser falls back to DETECTOR_MODEL on Hugging Face.
+ * The default above is our own unchanged copy on Hugging Face (owner, 2026-11-20). A copy with the parts layout of
+ * scripts/quran/upload-model.ts (e.g. the Supabase bucket quran-models) is used only when this build-time URL is set.
  */
-const SUPABASE_URL: string = (import.meta as any).env?.VITE_SUPABASE_URL || '';
-export const OWN_MODEL_BASE: string = (import.meta as any).env?.VITE_QURAN_MODEL_BASE_URL
-  || (SUPABASE_URL ? `${SUPABASE_URL.replace(/\/$/, '')}/storage/v1/object/public/quran-models/whisper-base-ar-quran` : '');
+export const OWN_MODEL_BASE: string = (import.meta as any).env?.VITE_QURAN_MODEL_BASE_URL || '';
 /** manifest.json of our copy: every file with its size, and how many parts a file over the upload limit was cut into. */
 export type ModelManifest = { files: Record<string, { size: number; parts?: number }> };
 const RUNTIME = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2';

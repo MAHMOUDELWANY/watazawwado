@@ -20,7 +20,7 @@ before (NX-03, deleted after 30 days).
 | Model | `tarteel-ai/whisper-base-ar-quran` (Whisper base fine-tuned on Quran recitation by Tarteel AI) |
 | Licence | **Apache-2.0** (model card on Hugging Face). Commercial use, modification and redistribution allowed, with the licence and notices kept. |
 | Base model | OpenAI Whisper, **MIT** licence. |
-| Browser build | `eventhorizon0/tarteel-ai-onnx-whisper-base-ar-quran` (revision `86aa2ae9`), an ONNX conversion of the model above, also tagged Apache-2.0. We keep **our own unchanged copy** (below). |
+| Browser build | `eventhorizon0/tarteel-ai-onnx-whisper-base-ar-quran` (revision `86aa2ae9`), an ONNX conversion of the model above, also tagged Apache-2.0. We keep **our own unchanged copy** on Hugging Face: `mahmoudelwany7/whisper-base-ar-quran` (uploaded 2026-11-20, no download limit); the site loads it by default. |
 | Runtime | `@huggingface/transformers` 4.3.2 (Apache-2.0), loaded from jsDelivr only when a learner taps "Check my words". |
 | Override | `VITE_QURAN_MODEL_BASE_URL` (build-time) points at another copy with the same layout; `VITE_QURAN_DETECTOR_MODEL` changes the Hugging Face fallback. |
 
