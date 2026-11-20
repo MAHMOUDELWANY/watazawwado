@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Aperture, BookMarked, BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, Shapes, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
 import { useT } from '../lib/language';
@@ -25,7 +25,8 @@ import { TalkRatio, useTalkTime } from './parts/TalkTime';
 import { CornerPip } from './parts/CornerPip';
 import { Khatam } from './parts/Khatam';
 import { NoticeSlot, type RoomNotice } from './parts/NoticeSlot';
-import { Toolbar, type LayoutMode } from './parts/Toolbar';
+import { LayoutSwitch, Toolbar, type LayoutMode } from './parts/Toolbar';
+import { MoreMenu, type DeviceKind } from './parts/MoreMenu';
 import { Timer } from './parts/Timer';
 import { REACTION_SHOW_MS, ReactionStream, type ReactionKind } from './parts/Reactions';
 import { RemotePointer, usePointerSender } from './parts/Pointer';
@@ -159,6 +160,10 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [comfort, setComfort] = useState<Comfort>(() => { try { return readComfort(window.localStorage.getItem(COMFORT_KEY)); } catch { return readComfort(null); } });
   const [blur, setBlur] = useState<'off' | 'native' | 'segment' | 'busy'>('off');
   const [blurNote, setBlurNote] = useState<{ text: string; at: number } | null>(null);
+  // The More menu: a short confirmation in the notice slot, the speaker picked mid-lesson, and a re-render after a device swap.
+  const [menuNote, setMenuNote] = useState<{ text: string; at: number } | null>(null);
+  const [speakerId, setSpeakerId] = useState<string | undefined>(undefined);
+  const [, bumpDevices] = useReducer((x: number) => x + 1, 0);
 
   const engineRef = useRef<MediaEngine | null>(null);
   const batcher = useRef<ReturnType<typeof createTimelineBatcher> | null>(null);
@@ -825,6 +830,39 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     }
   };
 
+  /** More > Devices: swap the mic or camera mid-lesson without renegotiating, keeping mute and camera-off. */
+  const pickDevice = async (kind: DeviceKind, id: string) => {
+    if (kind === 'speaker') { setSpeakerId(id); return; }
+    const engine = engineRef.current;
+    if (!engine || !local) return;
+    try {
+      if (kind === 'video' && blur !== 'off') await blurOff();
+      const got = await navigator.mediaDevices.getUserMedia(kind === 'audio'
+        ? { audio: { echoCancellation: true, autoGainControl: true, noiseSuppression: !recitationRef.current, deviceId: { exact: id } } }
+        : { video: { width: { ideal: 1280 }, height: { ideal: 720 }, deviceId: { exact: id } } });
+      const track = kind === 'audio' ? got.getAudioTracks()[0] : got.getVideoTracks()[0];
+      const old = kind === 'audio' ? local.getAudioTracks() : local.getVideoTracks();
+      track.enabled = old[0]?.enabled ?? true;
+      await engine.replaceLocalTrack(kind, track); // stops the old track
+      old.forEach((tr) => local.removeTrack(tr));
+      local.addTrack(track);
+      bumpDevices();
+    } catch {
+      setMenuNote({ text: t("That device didn't start. Try another one.", 'الجهاز ده ما اشتغلش. جرّب غيره.'), at: Date.now() });
+    }
+  };
+  /** Teacher, More > Let's fix it: a problem on our side, so the lesson moves to Zoom and the admins are told. */
+  const switchToZoom = () => {
+    // shortcut: recorded as engine_error with detail.manual (no new incident kind or migration); add a 'teacher_switch' kind if admins need to tell them apart.
+    void fetch(`/api/classroom/${encodeURIComponent(bookingId)}/incident`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
+      body: JSON.stringify({ kind: 'engine_error', detail: { manual: true } }),
+    }).then((r) => r.json()).then((b) => {
+      if (typeof b?.fallback?.url === 'string') setFallbackUrl(b.fallback.url);
+      else setMenuNote({ text: t('The Zoom link is not ready yet. The admin has been told.', 'رابط زووم لسه مش جاهز. الإدارة اتبلّغت.'), at: Date.now() });
+    }, () => setMenuNote({ text: t('Could not reach the server. Try again.', 'السيرفر مش بيرد. جرّب تاني.'), at: Date.now() }));
+  };
+
   // 2.10: the stage the teacher's slide belongs to (curriculum station), as a hint on the bar.
   const suggestedStage = useMemo(() => (slideAt ? stageForStation(findLesson(slideAt.track, slideAt.number)?.pages[slideAt.page]?.station) : null), [slideAt]);
   const onSlideSaved = useCallback((st: { track: string; number: number; page: number; step: number }) => {
@@ -945,17 +983,6 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const mediaOn = !!tools.media && tools.media.kind !== 'none' && !!tools.media.src;
   const showWarmup = isTeacher && joined && !warmupClosed && warmup.length > 0 && serverNow < startMs + WARMUP_SHOW_MS;
   const canBlur = !observer && !!local?.getVideoTracks().length && joined;
-  const blurRow = canBlur && (
-    <button type="button" role="switch" aria-checked={blur !== 'off'} disabled={blur === 'busy'} onClick={() => void toggleBlur()}
-      className="room-press flex min-h-12 items-center gap-3 rounded-[var(--r-2)] px-3 text-start hover:bg-white/[0.08] focus-ring disabled:opacity-60">
-      <Aperture className="h-5 w-5 shrink-0 text-[#F0B54A]" aria-hidden="true" />
-      <span className="grid flex-1">
-        <span className="font-medium">{t('Blur my background', 'غبّش الخلفية')}</span>
-        <span className="text-[0.78rem] text-muted-foreground">{t('Done on this device. Turns itself off if the device is too slow.', 'بيتعمل على جهازك. بيقفل لوحده لو الجهاز بطيء.')}</span>
-      </span>
-      <span className={cn('text-[0.78rem] font-semibold', blur !== 'off' ? 'text-teal' : 'text-muted-foreground')}>{blur === 'busy' ? t('Starting…', 'بيبدأ…') : blur !== 'off' ? t('On', 'شغّال') : t('Off', 'مقفول')}</span>
-    </button>
-  );
   const reactionOverlay = isTeacher && reactions.length > 0 ? <ReactionStream items={reactions} name={learnerName} /> : undefined;
   const remoteTile = (s: Side, o: { compact?: boolean; arch?: boolean; fit?: 'cover' | 'contain'; overlay?: boolean; className?: string } = {}) => (
     <VideoTile key={s} stream={remotes[s]} name={nameOf(s)} speaking={speakingOf(s)} link={observer ? null : links[s]} compact={o.compact}
@@ -987,6 +1014,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         ? (mic ? t('Your microphone reconnected.', 'المايك رجع اشتغل.') : t('Your camera reconnected.', 'الكاميرا رجعت اشتغلت.'))
         : (mic ? t('Microphone lost. Check it.', 'المايك وقف. اتأكد منه.') : t('Camera lost. Check it.', 'الكاميرا وقفت. اتأكد منها.')) });
   }
+  if (menuNote && now - menuNote.at < 3500) notices.push({ key: `menu-${menuNote.at}`, priority: 4, text: menuNote.text });
   if (blurNote && now - blurNote.at < 6000) notices.push({ key: `blur-${blurNote.at}`, priority: 5, icon: <Aperture className="h-4 w-4" />, text: blurNote.text });
   if (talkingMuted) {
     notices.push({ key: 'talking-muted', priority: 4, icon: <MicOff className="h-4 w-4" />,
@@ -1222,18 +1250,31 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               <BarButton tone={toolsOpen ? 'on' : 'idle'} aria-pressed={toolsOpen} onClick={() => setToolsOpen((v) => !v)} label={t('Teaching tools', 'أدوات التدريس')} word={t('Tools', 'أدوات')}>
                 <Shapes className="h-5 w-5" aria-hidden="true" />
               </BarButton>
-            ) : role === 'learner' ? <ComfortButton comfort={comfort} onChange={setComfort} kid={kid} /> : undefined}
-            moreItems={blurRow || undefined}
+            ) : role === 'learner' && kid ? <ComfortButton comfort={comfort} onChange={setComfort} kid /> : undefined}
+            renderMore={observer || kid ? undefined : (close, barSlot) => (
+              <MoreMenu kind={isTeacher ? 'teacher' : 'learner'} onClose={close} barSlot={barSlot}
+                link={myLink} peerLink={isTeacher ? links.student : links.teacher} peerName={isTeacher ? learnerName : teacherName || undefined}
+                onNeed={role === 'learner' ? (kind) => send({ t: 'reaction', kind }) : undefined}
+                comfort={learnerComfort ? comfort : undefined} onComfort={learnerComfort ? setComfort : undefined}
+                selfHidden={selfHidden} onToggleSelf={() => setSelfHidden((v) => !v)}
+                recitation={recitation} onRecitation={isTeacher ? toggleRecitation : undefined}
+                layoutSlot={isTeacher ? <LayoutSwitch mode={layout} onChange={(m) => { changeLayout(m); close(); }} screenAvailable={sharing} wide /> : undefined}
+                blur={canBlur ? { on: blur === 'native' || blur === 'segment', busy: blur === 'busy', toggle: () => void toggleBlur() } : null}
+                current={{ audio: local?.getAudioTracks()[0]?.getSettings().deviceId, video: local?.getVideoTracks()[0]?.getSettings().deviceId, speaker: speakerId ?? ready?.speakerId }}
+                onPickDevice={(k, id) => void pickDevice(k, id)} hasCamera={hasCamera}
+                muted={muted} onUnmute={() => { if (muted) toggleMute(); }} cameraOff={cameraOff} onCameraOff={() => { if (!cameraOff) toggleCamera(); }}
+                onRejoin={() => window.location.reload()} onZoom={isTeacher ? switchToZoom : undefined} zoomUrl={isTeacher ? fallbackUrl : null}
+                onToast={(text) => setMenuNote({ text, at: Date.now() })} />
+            )}
             onReact={role === 'learner' ? (kind) => send({ t: 'reaction', kind }) : undefined}
-            selfHidden={selfHidden} onToggleSelf={!observer && !kid ? () => setSelfHidden((v) => !v) : undefined}
             soundOff={soundOff} onSound={observer ? () => setSoundOff((v) => !v) : undefined}
             onLeave={() => (isTeacher ? setConfirmEnd(true) : leave())}
             leaveLabel={isTeacher ? t('End lesson', 'إنهاء الحصة') : role === 'admin_observer' ? t('Leave quietly', 'اخرج بهدوء') : t('Leave', 'خروج')} />
         </footer>
 
-        {remotes.teacher && !isTeacher && <RemoteAudio stream={remotes.teacher} speakerId={ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} />}
-        {remotes.student && role !== 'learner' && <RemoteAudio stream={remotes.student} speakerId={ready?.speakerId} label={tapLabel} initial={learnerName} muted={soundOff} />}
-        {remoteScreen?.getAudioTracks().length ? <RemoteAudio stream={remoteScreen} speakerId={ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} /> : null}
+        {remotes.teacher && !isTeacher && <RemoteAudio stream={remotes.teacher} speakerId={speakerId ?? ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} />}
+        {remotes.student && role !== 'learner' && <RemoteAudio stream={remotes.student} speakerId={speakerId ?? ready?.speakerId} label={tapLabel} initial={learnerName} muted={soundOff} />}
+        {remoteScreen?.getAudioTracks().length ? <RemoteAudio stream={remoteScreen} speakerId={speakerId ?? ready?.speakerId} label={tapLabel} initial={teacherName} muted={soundOff} /> : null}
       </div>
 
       <Modal isOpen={confirmEnd} onClose={() => setConfirmEnd(false)} title={t('End the lesson for everyone?', 'تنهي الحصة للكل؟')} layerClassName="z-[80]"

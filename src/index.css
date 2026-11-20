@@ -2463,7 +2463,26 @@ html:not(.dark) .room-paper {
 @keyframes room-sheet-in { from { opacity: 0; transform: translateY(6px) scale(0.97); } }
 .room-press { transition: transform var(--dur-tap) ease-out, background-color var(--dur-ui) ease, color var(--dur-ui) ease, opacity var(--dur-ui) ease; }
 .room-press:active { transform: scale(0.96); }
+/* Room glass (owner-approved 2026-11-21): clearer iOS-style glass with a specular top edge, for the bar and the More menu. */
+.room-glass { position: relative; background: linear-gradient(180deg, rgba(72, 62, 54, 0.5) 0%, rgba(30, 26, 23, 0.66) 100%); border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.05), inset 0 0 28px rgba(255, 255, 255, 0.035), 0 28px 60px -20px rgba(0, 0, 0, 0.9);
+  -webkit-backdrop-filter: blur(34px) saturate(190%); backdrop-filter: blur(34px) saturate(190%); }
+.room-glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(120% 60% at 20% 0%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 55%); }
+.room-group { border-radius: 1.25rem; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); overflow: hidden; }
+.room-group > * + *::before { content: ''; position: absolute; top: 0; inset-inline: 3.4rem 0; height: 1px; background: rgba(255, 255, 255, 0.08); }
+.room-tint { flex: none; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 0.55rem; color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.room-push { animation: room-push 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+[dir='rtl'] .room-push { animation-name: room-push-rtl; }
+@keyframes room-push { from { opacity: 0; transform: translateX(24px); } }
+@keyframes room-push-rtl { from { opacity: 0; transform: translateX(-24px); } }
+/* The More menu: a floating sheet that rises on phones, a popover that grows from the bar from 640px up. */
+@media (max-width: 639.98px) { .room-more { animation: room-bottom-sheet 420ms cubic-bezier(0.22, 1, 0.36, 1) both; } }
+@media (min-width: 640px) { .room-more { transform-origin: 100% 100%; animation: room-sheet-in 220ms cubic-bezier(0.23, 1, 0.32, 1) both; } [dir='rtl'] .room-more { transform-origin: 0 100%; } }
+@keyframes room-bottom-sheet { from { transform: translateY(105%); } }
+.room-level { flex: 1; height: 100%; border-radius: 2px; transform-origin: center; animation: room-level 1100ms ease-in-out infinite; }
+@keyframes room-level { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
 @media (prefers-reduced-motion: reduce) {
+  .room-push, .room-more, .room-level { animation: none; }
   .room-stage-bg, .room-rise, .room-rise-sm, .room-fade, .room-notice, .room-sheet { animation: room-lights 150ms ease both; }
   .room-press:active { transform: none; }
 }
