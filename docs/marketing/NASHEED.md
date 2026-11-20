@@ -136,6 +136,19 @@ artist names, and copying a melody is not allowed.
 - If structure still drifts: a composition plan (ordered chunks with lyrics, `duration_ms`, positive/negative styles;
   creating the plan is free), https://elevenlabs.io/docs/eleven-api/guides/how-to/music/composition-plans
 
+## Sound brief (owner, 2026-11-20): the rhythm serves the voice
+
+The owner wants a steady, moving groove that carries and prepares the singer, never loud claps or pounding drums
+over him. Production words that describe this (use them in prompts):
+- **vocal-led / vocal-forward**: the lead voice is the loudest thing; the arrangement leaves a spot for it.
+- **groove as a bed**: a steady, rolling daf (frame drum) pattern with a soft, round kick, played lightly underneath.
+- **sparse arrangement, midrange kept clear for the voice**: percussion shares the voice's frequencies and masks it.
+- **claps only as accents** (quiet, on choir lines), never on every beat.
+- Avoid words that push drums up: "huge/war drums", "stomps", "high energy", "stadium". Energy comes from tempo,
+  the singer and the choir answering, not from louder percussion.
+Sources: masteringthemix.com (vocals in a dense mix), soundonsound.com (mixing pop vocals), suno.com nasheed library
+(daf supports the voice rather than competing).
+
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
 1. **One test first:** the Arabic chorus only, about 20 s, one take, model `music_v2_5` (ElevenLabs' recommended
