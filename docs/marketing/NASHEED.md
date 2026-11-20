@@ -97,7 +97,14 @@ the door is open still today.
 (then the chorus)
 
 Melody reference (owner, 2026-11-20): he likes the rhythm and tune of "Whisper", the PUBG MOBILE Primewood Genesis
-theme song (https://youtu.be/APtV8Je_cl4), for youth and children. Its sound is not yet described here. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
+theme song (https://youtu.be/APtV8Je_cl4), for youth and children. Measured 2026-11-20 from the audio (3:15):
+about 110 bpm, possibly with a lilting triplet feel; a sung melody with gliding notes in the middle register; heavy
+bass and drums under it; shape: soft opening that builds (0:00-0:48), a short drop, a fuller section, an almost silent
+break around 1:26, the biggest section 1:35-2:40, a second break around 2:50, then a fade.
+**What we take** (mood, pace and shape only, never the melody): ~110 bpm with a gentle lilt; a soft, close, almost
+whispered solo voice at the start; layers of voices added section by section; one quiet break before the last chorus
+where only the voice remains; a soft ending. **What we replace:** bass and drums are instruments, so the weight comes
+from a low male choir on long vowels and a daf with hand claps. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
 artist names, and copying a melody is not allowed.
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
