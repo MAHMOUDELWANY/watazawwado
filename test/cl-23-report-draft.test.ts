@@ -39,6 +39,11 @@ describe('CL-23 buildReportDraft', () => {
     assert.strictEqual(d.talk, null);
   });
 
+  it('adds up talk rows from each teacher join (a rejoin writes a second row)', () => {
+    const d = buildReportDraft({ rows: [slide(0, 0), { type: 'talk', occurred_at: at(10), payload: { teacherMs: 60000, learnerMs: 30000 } }, { type: 'talk', occurred_at: at(20), payload: { teacherMs: 1000, learnerMs: 2000 } }], stopMs: Date.parse(at(5)), fileIds: [], sharedIds: [] });
+    assert.deepStrictEqual(d.talk, { teacherMs: 61000, learnerMs: 32000 });
+  });
+
   it('reads the talk summary when it exists (numbers only), and suggests nothing without taught pages', () => {
     const d = buildReportDraft({ rows: [slide(0, 0), { type: 'talk', occurred_at: at(10), payload: { teacherSeconds: 600, learnerSeconds: 420, note: 'x' } }], stopMs: Date.parse(at(5)), fileIds: [], sharedIds: [] });
     assert.deepStrictEqual(d.talk, { teacherSeconds: 600, learnerSeconds: 420 });

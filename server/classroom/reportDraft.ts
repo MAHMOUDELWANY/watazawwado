@@ -67,9 +67,12 @@ export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: 
   const reactions: Record<string, number> = {};
   for (const r of rows) if (r.type === 'reaction' && typeof r.payload?.kind === 'string') reactions[r.payload.kind] = (reactions[r.payload.kind] || 0) + 1;
 
-  // Talk time comes from another part of the room (2.8): the latest `talk` summary, numbers only.
-  const lastTalk = [...rows].reverse().find((r) => r.type === 'talk' && r.payload && typeof r.payload === 'object');
-  const talk = lastTalk ? Object.fromEntries(Object.entries(lastTalk.payload).filter(([, v]) => typeof v === 'number' && Number.isFinite(v) && v >= 0)) as Record<string, number> : null;
+  // Talk time (2.8): one `talk` row per teacher join, so a rejoin adds up; numbers only.
+  const talk: Record<string, number> = {};
+  for (const r of rows) {
+    if (r.type !== 'talk' || !r.payload || typeof r.payload !== 'object') continue;
+    for (const [k, v] of Object.entries(r.payload)) if (typeof v === 'number' && Number.isFinite(v) && v >= 0) talk[k] = (talk[k] || 0) + v;
+  }
 
   const end = [...rows].reverse().find((r) => r.type === 'end' && r.payload?.early === true);
   const files = input.fileIds.filter((f) => ROOM_FILE_ID.test(f)).map((fileId) => ({ fileId, kind: fileId.endsWith('.pdf') ? 'pdf' as const : 'image' as const, shared: input.sharedIds.includes(fileId) }));
