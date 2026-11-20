@@ -13,6 +13,8 @@ channels. One request = one finished, checked deliverable (a week's scripts coun
 1. `docs/marketing/PLAN.md`: where we are, pillars, month, open questions.
 2. `docs/marketing/RULES.md`: binding content rules and the pre-publish checklist.
 3. `docs/marketing/PRODUCTION.md`: formats, script anatomy, safe zones.
+   For any video or carousel: §3b (how our videos look and move) and the "Social video references" in
+   `docs/design/INSPIRATION.md` (open the contact sheets; take the technique, never the content or colours).
 4. The last two weeks of `docs/marketing/LOG.md`.
 5. Root `RULES.md` §2b, §3, §4, §6, §6b when prices, subjects or voice are involved.
 6. The Notion **Watazawwado Content Hub** (https://app.notion.com/p/3fea5208a5168151bcf5d6f042da2bde): the dated
@@ -61,6 +63,8 @@ cut it.
 ## 5. Check, then hand over
 
 1. Run the `RULES.md` §8 checklist item by item; fix, don't flag.
+   For a video: export a 12-frame contact sheet of the final file and look at it (`PRODUCTION.md` §3b.9): one text
+   layer, no repeated words, no empty half, no gradient through three hues (`RULES.md` §1.8).
 2. Run `humanizer` on every caption and script line.
 3. Write each deliverable (script table, shot notes, captions per platform, pinned comment) into the body of its item
    page in the Notion Content Calendar, where the owner reviews and films from it (owner, 2026-10-19). Directions to

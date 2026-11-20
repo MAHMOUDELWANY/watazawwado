@@ -57,6 +57,30 @@ Studio, Meta Business Suite (free scheduling for Instagram + Facebook), TikTok's
 - "This one word is in the Quran ‹N› times." (count verified with the Quran MCP `fetch_word_concordance`)
 - "How to say ‹phrase› to your Teta in Egyptian Arabic."
 
+## 3b. How our videos look and move (owner, 2026-11-20)
+
+From the owner's references (`docs/design/INSPIRATION.md`, "Social video references"). Binding for every Short, Reel,
+TikTok, carousel video and motion piece. Our cast, our palette (`RULES.md` §1.8), our sound (§1.6); their technique.
+
+1. **One text layer at a time.** Either the spoken line as a burned caption, or one big key word/number synced to
+   the voice. Never both, never a label on a card plus a caption box that repeats it. Small source lines (surah:ayah,
+   hadith reference) and the brand mark are the only extras.
+2. **One idea per scene, readable in half a second:** one big word or number, a short line above or below, the source
+   small under it.
+3. **Words arrive with the voice.** Headlines build word by word on the spoken beat; one word may take the accent
+   colour.
+4. **Motion every 2–3 s, and it means something:** text that scales or blurs in and settles, a card that tilts in, a
+   word that lights up, a thought bubble that opens. No zoom-punch trends, no shake.
+5. **Light and background carry the emotion.** A dark stage with one warm light for tension and return; the
+   background shifts between two neighbouring brand tones as the mood turns (never through three hues).
+6. **An emotional turn in every piece:** problem or tension first, the light (ayah, hadith, the answer) after.
+   The ayah or hadith gets its own calm card near the end, Arabic and English, with the source.
+7. **Cast:** Zad and faceless people (thobes, abayas, children only as small figures). Never prophets, companions or
+   angels (`RULES.md` §1.5). Thought bubbles for memories, speech bubbles for dialogue.
+8. **Fill the frame.** The subject sits in the middle band; no empty bottom half under a card.
+9. **Check before handing over:** export a 12-frame contact sheet of the finished video, look at it, and fix any
+   repeated text, empty half, three-hue gradient or text in the safe-zone margins before it goes to the owner.
+
 ## 4. Formats and safe zones
 
 | Asset | Size | Notes |
@@ -65,7 +89,7 @@ Studio, Meta Business Suite (free scheduling for Instagram + Facebook), TikTok's
 | YouTube video | 1920×1080 (or 4K) | Chapters in the description |
 | YouTube thumbnail | 1280×720 | Face (or the Mushaf/letter) + 2–4 big words; readable at phone size |
 | Instagram carousel | 1080×1350 | 6–10 slides; slide 1 = hook, last = save/share + CTA |
-| Carousel as video (with soft notes, `RULES.md` §1.6) | 1080×1920, 30 fps | Slides 3.8 s each, 0.5 s cross-fade, blurred background, `brand-assets/soft-notes.mp3` fading out over the last 3 s. Encode once from the PNG slides: H.264 High, crf 14, yuv420p, bt709, AAC 192k at 48 kHz, `+faststart`. Posted as a Reel/Short/TikTok next to the silent carousel, never instead of it. |
+| Carousel as video (with our nasheed bed, `RULES.md` §1.6) | 1080×1920, 30 fps | Slides 3.8 s each, 0.5 s cross-fade, blurred background, our nasheed bed (`NASHEED.md`) fading out over the last 3 s. Encode once from the PNG slides: H.264 High, crf 14, yuv420p, bt709, AAC 192k at 48 kHz, `+faststart`. Posted as a Reel/Short/TikTok next to the silent carousel, never instead of it. |
 | Telegram / WhatsApp card | 1080×1080 | One idea, logo small |
 
 Brand: crimson, teal, copper, gold on warm paper, Islamic geometry, Thmanyah font for Latin/Arabic UI text

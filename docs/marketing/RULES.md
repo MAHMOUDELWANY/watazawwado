@@ -17,13 +17,20 @@ date.
    Teaching follows the moderate Azhari foundation, Ahl al-Sunnah wal-Jama'ah (root RULES.md §6).
 5. **No images of prophets, companions or angels**, not even silhouettes with faces. Stories use places, objects,
    hands, landscapes, calligraphy, or our own curriculum art.
-6. **Sound**: no musical instruments. Voice, natural sound, our CC0 sound effects or a soft drone only. Never put any
-   sound over recitation. **Exception (owner, 2026-11-17): carousels only** may carry a few soft, widely spaced piano
-   notes as background (`marketing/brand-assets/soft-notes.mp3`, a generated 24 s loop, no melody). Videos, Shorts and
-   anything with recitation stay instrument-free. Carousels with this sound are published as a 9:16 video version
-   (platforms cannot attach our own audio to a photo carousel); the silent photo carousel stays as its own post.
-7. **Respect**: no jokes about religion, no trending audio with music (we never attach in-app trending sounds; the soft notes above are our only exception), no trends that mock other Muslims or groups.
+6. **Sound**: no musical instruments. Voice, natural sound, our CC0 sound effects, a soft drone, or **our own nasheed**
+   (owner, 2026-11-20): human voices with at most a soft daf, lyrics written by us and approved by the owner, never an
+   ayah or hadith sung to a melody, made on a plan that allows commercial use, Arabic and English versions, plus a
+   5 s sting and a 30 s bed (`NASHEED.md`). No other artist's nasheed (copyright). Never put any sound over recitation;
+   the nasheed stops before recitation starts. It replaces the soft piano notes of 2026-11-17 (no longer used).
+   Carousels with sound are published as a 9:16 video version (platforms cannot attach our own audio to a photo
+   carousel); the silent photo carousel stays as its own post.
+7. **Respect**: no jokes about religion, no trending audio with music (we never attach in-app trending sounds; our own nasheed is the only background sound), no trends that mock other Muslims or groups.
    Disagreements between scholars are not content.
+8. **Colour gradients** (owner, 2026-11-20, after a viewer said our colours looked like the rainbow/pride flag): no
+   gradient, border, stripe set or sequence of shapes that passes through three or more different hues, and never
+   red-orange-yellow-green-blue-purple in order, in any graphic, video, thumbnail or carousel. Allowed: one colour, or
+   two neighbours (crimson→copper, teal→deep teal, gold→copper, espresso→crimson). The multi-colour logo ribbon
+   appears only inside the logo itself, never as a frame, border, progress bar or motion trail.
 
 ## 2. Voice
 
@@ -85,10 +92,12 @@ moment, enough to show the quality. Curriculum content itself is still owned by 
 
 - [ ] Quran/hadith verified and sourced (§1)
 - [ ] Recitation re-listened by a teacher (§1.3)
-- [ ] No music (soft notes allowed on carousels only), no forbidden images (§1.5–1.6)
+- [ ] No instruments (our own nasheed only), no forbidden images (§1.5–1.6)
+- [ ] No gradient through three or more hues; logo ribbon only in the logo (§1.8)
 - [ ] Academy voice, humanized, short (§2)
 - [ ] No invented claims; prices exact (§3)
 - [ ] No child's face/name; demo data only (§4)
+- [ ] One text layer at a time, never the same words twice on screen; contact sheet checked (`PRODUCTION.md` §3b)
 - [ ] Captions burned in, readable on a phone, inside the safe zone (`PRODUCTION.md` §4)
 - [ ] One CTA; UTM link (§6)
 - [ ] Logged in `LOG.md`

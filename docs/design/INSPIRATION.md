@@ -59,12 +59,34 @@ contact sheets yet (folder `lesson-room/` when the owner sends screen recordings
 | **Self-view fatigue** | [Springer 2024](https://link.springer.com/article/10.1007/s12599-024-00874-7), [Stanford via New Atlas](https://newatlas.com/telecommunications/zoom-fatigue-video-exhaustion-tips-help-stanford) | Watching yourself all call adds strain. | Small self tile, "Hide my picture". |
 | **Thumb reach** | [Hoober, UXmatters](https://www.uxmatters.com/mt/archives/2013/02/how-do-users-really-hold-mobile-devices.php), [Smashing](https://smashingmagazine.com/2020/02/design-mobile-apps-one-hand-usage/) | How people hold phones; the bottom-middle is easiest to reach. | Phone bar and Join at the bottom; notices above the bar. |
 
+## Social video references (owner, 2026-11-20)
+
+Nine short videos the owner likes for storytelling, visual presentation and script; they get views. **Inspire only:
+we take the technique, never the content, colours or characters.** Our videos use our cast (Zad, faceless people,
+never prophets, companions or angels, `docs/marketing/RULES.md` §1.5), our palette under the gradient rule (RULES §1.8)
+and our sound (§1.6). Hadith and numbers in them are not checked by us; anything we reuse is verified first (§1).
+The binding video rules that came out of this are `docs/marketing/PRODUCTION.md` §3b.
+
+| Name we use | File | What it shows | What we take |
+|---|---|---|---|
+| **Straight Path** | `social-video/straightpath-walked-away.jpg` (@straightpathstories) | Black stage, a white stick figure walking away from a gold beam of light; one short serif line per beat ("years passed."); small red labels of what he dropped ("skipped fajr"); ends on the hadith qudsi in gold Arabic + English + source. | **Light as the emotion**: one figure, one beam, almost nothing else. One line at a time, lower-case, calm. The source line small under the text. Best fit for "Come back, no lecture". |
+| **Numbers in the dark** | `social-video/aiishadahir-jahannam-numbers.jpg` (@aiishadahir) | Dark stage, one huge number per scene ("977 years", "70 years") with a short line above and below and the source under it; a single animated object (fire, 70 flames, a falling stone, an arch door). | **One big number or word per scene**, readable in half a second, with the source small under it. One object that acts out the line. |
+| **Paper-craft doors** | `social-video/papercraft-jahannam-doors.jpg` (Arabic reel, 8 min) | Lit paper-craft dioramas, folded figures, glowing ayah card in a "REC" camera frame, Arabic subtitles. | Only the **lit, tactile, handmade look** for long videos. The "REC" frame and the theme are theirs. |
+| **Notebook mystery** | `social-video/ancient-egypt-notebook.jpg` | Lined notebook paper, condensed bold headline that builds **word by word** with the voice, one word in an accent colour, "FIG. 3" labels, cut-out photos of objects, a big "2" for "second mystery", a timeline line with a date dot. | **Word-by-word headline synced to the voice** as the only text layer. The "file / figure" frame for teaching videos (letters, Tajweed). Cut-out objects instead of full-frame stock. |
+| **Faris montage** (3 files) | `social-video/faris-compare-1.jpg`, `faris-compare-2.jpg`, `faris-compare-jannah.jpg` (@3nvus) | Side-by-side "my edit vs Faris's edit": the same script cut flat vs with After Effects motion: text that flies in and settles, a glowing ayah card, play/pause UI, background colour that follows the mood (plum, deep blue, cloud sky). | **Motion that serves the line**: text enters with a purpose (scale, blur-in, a word lighting up), cards that tilt and settle, mood shifts through the background colour. Built in our stack (Remotion/HTML), not After Effects. |
+| **Flat faceless cast** (2 files) | `social-video/3nvus-word-of-truth.jpg`, `3nvus-parents.jpg` (@3nvus) | Flat illustrated faceless men and women in thobes and abayas on clean blue or red gradients; thought bubbles with memories; speech bubbles; one Arabic line at a time; the ayah glowing on a dark end card. | **A faceless people cast** next to Zad, **thought bubbles for memories**, one line at a time, a dark glowing card for the ayah or hadith at the end. Backgrounds stay two-tone (RULES §1.8). |
+
+**What every one of them does (and our V1–V15 did not):** one idea and one text layer per moment, motion every 2–3 s,
+an emotional turn (tension → light), the source on screen, nothing in the bottom half that repeats the top. Ours were
+static paper cards with a label on the card *and* a caption box under it saying the same thing.
+
 ## Folders
 
 | Folder | Topic |
 |---|---|
 | `site-ui/` | Site and app chrome: buttons, bars, intro, install, promo/scroll story. |
 | `competitors/` | Other academies' sites, for inspiration only. |
+| `social-video/` | Short videos (Reels, Shorts, TikTok) the owner likes, for technique only (2026-11-20). |
 | `zaadi-mascot/` | Zaadi, our mascot: how a simple mascot is built, poses, moods, motion. |
 | `badges-and-rewards/` | Badge, level-up and reward reveals for homework and progress. |
 | `lesson-room/` | The classroom: pre-join, call rooms, observer views (links only so far, see "Lesson room"). |
