@@ -19,87 +19,90 @@ learn it by heart.
 
 Arabic and English versions of each. Same melody in both, so the sound is recognisable in either language.
 
-## Lyrics v3 (2026-11-20, after the owner sang v2)
+## Lyric rules (owner's taste, 2026-11-20; apply to every line, both languages)
 
-v2 sounded uneven when sung: long al-Mutaqarib lines with substituted feet, and endings that clash (sukun endings
-next to «ـادي»). v3 uses **majzu' al-ramal** (فاعلاتن فاعلاتن), the short, even rhythm of «طلع البدر علينا», which is
-easy to sing. Every line is exactly two feet. Each stanza is four lines; lines 2 and 4 rhyme (the chorus also rhymes
-line 1). The meaning stays indirect: the Quran, knowledge as zaad for the journey to the Hereafter, the family, the
-language, the Seerah lived with mercy, the teacher who stays, coming back.
+1. **Strong words, not just a nice meaning.** Every word must be fresh and weighty. No filler, no general or overused
+   words, no stiff archaic phrases (rejected: «ليس تبلى», «إرث آباء كرام», «جسرًا بين ألوان الكلام»).
+2. **Every line must make sense on its own.** Rejected: «يعرف اسمي قبل حرفي» (no clear meaning).
+3. **Rhyme must sound identical to the ear**, including the vowel before the rhyme letter: «ـَيْنا» (التقَيْنا،
+   مضَيْنا، انحنَيْنا) never rhymes with «ـِينا» (رقِينا). Check every rhyme aloud.
+4. **The metre must sing evenly.** Arabic: check every line against the feet (here مجزوء الرمل: فاعلاتن فاعلاتن). A
+   line that breaks the metre is rewritten, even if the owner suggested it, and the reason is explained.
+5. **Few words per line.** Wordy lines break the tune (rejected: "who holds your hand the whole way through"). English
+   lines about 6–8 syllables, four beats.
+6. **English is its own song**, never a translation of the Arabic: its own images, clean rhymes, punchy wording.
+7. **An anthem for everyone.** Resolve, pride and energy that make you want to move a mountain; not sad, not purely
+   religious. Do not narrow it to one group or list family members (rejected: "to every daughter, every son"); the
+   family appears once only (the home stanza).
+8. The academy speaks as "we"; never centre one person.
 
-### Arabic (v4, 2026-11-20: stronger chorus, home and language; owner kept the teacher and the closing)
+## Lyrics (anthem, 2026-11-20)
 
-**[اللازمة]** (anthem chorus, approved by the owner 2026-11-20)
+### Arabic (approved by the owner 2026-11-20; مجزوء الرمل)
+
+**[اللازمة]**
 نَحْنُ أَهْلٌ، نَحْنُ دَارٌ
 حَيْثُمَا كُنَّا الْتَقَيْنَا
 زَادُنَا نُورٌ وَعِلْمٌ
 وَعَلَى الدَّرْبِ مَضَيْنَا
 
+**[الهتاف: العزيمة]**
+عَزْمُنَا صَخْرٌ عَتِيدٌ
+مَا انْحَنَيْنَا، مَا انْثَنَيْنَا
+وَإِذَا مَا لَاحَ طَوْدٌ
+فَصَبَرْنَا وَارْتَقَيْنَا
+
 **[١: البيت]**
 صَوْتُ طِفْلِي حِينَ يَتْلُو
 صَيَّرَ البَيْتَ مُصَلَّى
 كُلُّ حَرْفٍ مِنْهُ غَرْسٌ
-فِي جِنَانٍ لَيْسَ تَبْلَى
+صَارَ فِي الجَنَّاتِ ظِلَّا
 
 **[٢: اللسان]**
-نَحْفَظُ الضَّادَ عَزِيزًا
-إِرْثَ آبَاءٍ كِرَامِ
-ثُمَّ نَبْنِي مِنْهُ جِسْرًا
-بَيْنَ أَلْوَانِ الكَلَامِ
+لُغَةُ القُرْآنِ فِينَا
+لَمْ تَزَلْ نَبْضًا وَنُورَا
+نَرْفَعُ الضَّادَ اعْتِزَازًا
+شَامِخًا يَعْلُو الدُّهُورَا
 
-**[٣: الرفق]**
-نَقْتَفِي خَطْوَ نَبِيٍّ
-كَانَ لِلنَّاسِ رَحِيمَا
-عَلَّمَ الدِّينَ بِرِفْقٍ
-فَاهْتَدَى القَلْبُ سَلِيمَا
-
-**[٤: المعلّم]**
+**[٣: المعلّم]**
 صَاحِبٌ فِي الدَّرْبِ يَمْشِي
 يُمْسِكُ الكَفَّ رَفِيقَا
-يَعْرِفُ اسْمِي قَبْلَ حَرْفِي
-ثُمَّ يَبْقَى لِي صَدِيقَا
+كُلَّمَا زَلَّتْ خُطَانَا
+عَادَ يَهْدِينَا الطَّرِيقَا
 
-**[الختام]**
-يَا بَعِيدًا عَادَ يَرْجُو
-لَمْ يَزَلْ فِي البَابِ هَادِي
-(ثم اللازمة)
+Order: chorus, home, language, resolve, teacher, chorus, resolve ×2.
 
-### English (v5, 2026-11-20: rewritten as its own song; four beats a line, rhyming couplets)
+### English (v7 draft for owner review; resolve approved)
 
-**[Chorus]** (anthem chorus, approved by the owner 2026-11-20)
-Wherever we are, we're one home,
-and no one here walks alone;
-we pack our zaad: light, faith and mind,
-and leave no one behind.
+**[Chorus]**
+One home, one heart, wherever we stand,
+one family in every land;
+our zaad is light, our zaad is truth,
+we carry it through age and youth.
+
+**[Resolve]** (approved)
+Our will is stone, it will not break,
+we will not bend, we will not shake;
+and if a mountain blocks the way,
+with faith we climb it, come what may.
 
 **[1: home]**
-A little voice before the light,
-the house still wrapped in the end of night;
-each word he reads is a seed he sows
-in a garden only Allah knows.
+Before the dawn, a voice is heard,
+the house grows bright with every word;
+each one a seed in Jannah sown
+that grows to shade we call our own.
 
 **[2: language]**
-Across the sea, a grandma calls,
-and Arabic fills the quiet halls;
-we learn the tongue the Quran chose,
-and pass it on as the family grows.
+The Quran's tongue runs in our veins,
+through every age its light remains;
+we raise it proud, we hold it near,
+and pass it on from year to year.
 
-**[3: gentleness]**
-No angry voice, no heavy hand,
-just patience till they understand;
-the way of mercy, soft and slow,
-is how a love for the deen will grow.
-
-**[4: the teacher]**
+**[3: the teacher]**
 A friend who walks the road with you,
-who knows your name, your struggles too;
-and when you slip, he doesn't leave,
-he stays, and helps your heart believe.
-
-**[Closing]**
-And if you've drifted far away,
-the door is open still today.
-(then the chorus)
+a hand to hold, a heart that's true;
+and when you fall, he's at your side,
+he lifts you up, he is your guide.
 
 Melody reference (owner, 2026-11-20): he likes the rhythm and tune of "Whisper", the PUBG MOBILE Primewood Genesis
 theme song (https://youtu.be/APtV8Je_cl4), for youth and children. Measured 2026-11-20 from the audio (3:15):

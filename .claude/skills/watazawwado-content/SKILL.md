@@ -78,3 +78,5 @@ cut it.
 
 Content does not need the owner's review to be **written**; it needs the owner (or the teacher on camera) to film and
 publish it. Posting on the accounts is the owner's action unless the owner gives Claude access and asks.
+
+Song or nasheed lyrics (any language): follow "Lyric rules (owner's taste)" in `docs/marketing/NASHEED.md` before showing the owner a single line.
