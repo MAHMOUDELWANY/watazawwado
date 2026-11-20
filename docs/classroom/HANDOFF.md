@@ -131,3 +131,17 @@ camera and the child phone, then shipped.
 - Still running: `cls/before` (gaps: PIN email reset, kid mode on parent device, file names), `cls/tools`
   (wt-cls-tools: 2.10-2.12), `cls/quran` (wt-cls-quran: 4.1-4.5).
 - `@excalidraw/excalidraw` is unused now; remove from package.json at ship time (needs npm in the main checkout).
+
+### 2.10-2.12 teaching tools (`cls/tools`, worktree `wt-cls-tools`, 2026-11-20)
+- Built from 18bfd196: tool events in `src/lib/roomTools.ts` (correction, check, check_answer, stage, media, practice,
+  practice_answer live only, shadow), saved by the teacher (the learner only saves check_answer), kept in the room
+  snapshot under `tools` for rejoin and re-sent on hello. UI in `src/classroom/tools/*`; wiring in `ClassroomPage.tsx`.
+- Mistake bank: table `learner_mistakes` (every room correction, one per booking + correction id), read by the daily
+  review (`GET /api/student/review` -> `mistakes`, "Learned" button), the homework prompt (this lesson's corrections) and
+  the room warm-up (`GET /api/classroom/:id/warmup`, teacher only). Corrections and checks show in the report draft.
+- Migration `20261120200000_classroom_teaching_tools.sql` (NOT applied): timeline CHECK + learner_mistakes + audio mime
+  types on the classroom-files bucket. It must run after 20261120100001 from `cls/before`.
+- Merge notes: `feat/classroom-r1b` exports FILE_ID/FILE_EXT and lists room files by FILE_ID; audio uses its own
+  AUDIO_FILE_ID so it stays out of document lists and reports. Expect ClassroomPage/Toolbar conflicts (small, additive).
+- Not seen in a browser yet: check YouTube sync, audio ducking, shadowing on Safari (MediaRecorder gives audio/mp4),
+  automatic PiP on tab switch (Chrome 134+), and blur on a weak laptop (it should turn itself off).

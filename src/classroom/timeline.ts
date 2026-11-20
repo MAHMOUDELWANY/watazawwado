@@ -3,9 +3,12 @@
  * this file saves the ones the server keeps, in batches every 30 s and on pagehide, and restores the room on rejoin.
  */
 import type { RoomEvent } from '../lib/roomEvents';
+import type { ToolsState } from '../lib/roomTools';
 
 /** Types the server stores (the rest are live only). The server re-checks the sender's role. */
-export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end']);
+export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end',
+  // Teaching tools (2.10, 2.11): practice_answer stays live only.
+  'correction', 'check', 'check_answer', 'stage', 'media', 'practice', 'shadow']);
 export const FLUSH_EVERY_MS = 30_000;
 const MAX_BATCH = 50; // the server refuses more in one call
 const KEEPALIVE_MAX = 60_000; // browsers cap keepalive bodies at 64 kB
@@ -20,6 +23,8 @@ export type RoomSnapshot = {
   learnerDraw?: boolean;
   pdf?: { fileId: string; page: number };
   layout?: 'conversation' | 'content' | 'screen';
+  /** Stage, open check, shared media, practice and the shadowing line (2.10, 2.11). */
+  tools?: ToolsState;
 };
 
 type Item = { at: number; event: RoomEvent };

@@ -1061,6 +1061,11 @@ export interface Database {
         Insert: Partial<ParentPinRow> & Pick<ParentPinRow, 'user_id' | 'pin_hash'>;
         Update: Partial<ParentPinRow>;
       };
+      learner_mistakes: {
+        Row: LearnerMistakeRow;
+        Insert: Partial<LearnerMistakeRow> & Pick<LearnerMistakeRow, 'student_id' | 'client_id' | 'said' | 'correct'>;
+        Update: Partial<LearnerMistakeRow>;
+      };
       lesson_quality: {
         Row: LessonQualityRow;
         Insert: Partial<LessonQualityRow> & Pick<LessonQualityRow, 'booking_id' | 'side'>;
@@ -1139,7 +1144,23 @@ export interface LessonRoomSeatRow {
   updated_at: string;
 }
 
-export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'talk' | 'end';
+export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'talk' | 'end'
+  | 'correction' | 'check' | 'check_answer' | 'stage' | 'media' | 'practice' | 'shadow';
+
+/** Classroom 2.10: one learner's mistake bank (corrections logged in the room). Service role only. */
+export interface LearnerMistakeRow {
+  id: string;
+  student_id: string;
+  booking_id: string | null;
+  teacher_id: string | null;
+  client_id: string;
+  said: string;
+  correct: string;
+  note: string | null;
+  subject: string | null;
+  resolved_at: string | null;
+  created_at: string;
+}
 
 export interface LessonTimelineEventRow {
   id: string;

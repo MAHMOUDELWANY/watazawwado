@@ -19,6 +19,10 @@ export type ReportDraft = {
   files: Array<{ fileId: string; kind: 'pdf' | 'image'; shared: boolean }>;
   reactions: Record<string, number>;
   talk: Record<string, number> | null;
+  /** Corrections the teacher logged in the room (2.10), oldest first, one per correction id. */
+  corrections: Array<{ said: string; correct: string; note: string | null }>;
+  /** Understanding checks (2.10): the learner's answer per lesson part, in the order they were asked. */
+  checks: Array<{ part: string; level: 'green' | 'amber' | 'red' }>;
   earlyEnd: { minutesEarly: number; reason: string } | null;
 };
 
@@ -74,6 +78,22 @@ export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: 
     for (const [k, v] of Object.entries(r.payload)) if (typeof v === 'number' && Number.isFinite(v) && v >= 0) talk[k] = (talk[k] || 0) + v;
   }
 
+  // Corrections and checks (2.10): a batch sent twice must not count twice, so each id counts once.
+  const corrections: ReportDraft['corrections'] = [];
+  const checks: ReportDraft['checks'] = [];
+  const seen = new Set<string>();
+  for (const r of rows) {
+    const p = r.payload;
+    if (r.type === 'correction' && typeof p?.said === 'string' && typeof p?.correct === 'string' && !seen.has(`c:${p.id}`)) {
+      seen.add(`c:${p.id}`);
+      corrections.push({ said: p.said, correct: p.correct, note: typeof p.note === 'string' && p.note ? p.note : null });
+    }
+    if (r.type === 'check_answer' && ['green', 'amber', 'red'].includes(p?.level) && !seen.has(`k:${p.id}`)) {
+      seen.add(`k:${p.id}`);
+      checks.push({ part: String(p.part || ''), level: p.level });
+    }
+  }
+
   const end = [...rows].reverse().find((r) => r.type === 'end' && r.payload?.early === true);
   const files = input.fileIds.filter((f) => ROOM_FILE_ID.test(f)).map((fileId) => ({ fileId, kind: fileId.endsWith('.pdf') ? 'pdf' as const : 'image' as const, shared: input.sharedIds.includes(fileId) }));
 
@@ -83,6 +103,8 @@ export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: 
     files,
     reactions,
     talk: talk && Object.keys(talk).length ? talk : null,
+    corrections,
+    checks,
     earlyEnd: end ? { minutesEarly: Number(end.payload.minutesEarly) || 0, reason: String(end.payload.reason || '') } : null,
   };
 }

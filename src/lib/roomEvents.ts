@@ -1,5 +1,6 @@
 /** Pure shapes and checks for the lesson room channel, shared by the browser and the server (no React, no Supabase). */
 import type { Layer, LinkStats, Side } from '../classroom/engine/types';
+import { TOOL_EVENT_KEYS, type ToolEvent } from './roomTools';
 
 /** What travels in the lesson room (NX-12): which lesson is open, where the teacher is, and the teacher's ink. Nothing else. */
 export interface RoomState { track: string; number: number; page: number; step: number; /** The series opening is playing. */ opening?: boolean;
@@ -48,6 +49,8 @@ export type RoomEvent =
   /** Teacher's recitation mode, applied on both sides (live only). */
   | { t: 'recitation'; on: boolean }
   | { t: 'talk'; teacherMs: number; learnerMs: number }
+  /** Teaching and practice tools (2.10, 2.11): see roomTools.ts. */
+  | ToolEvent
   | { t: 'end' };
 
 export const MAX_EVENT_BYTES = 16_384; // lesson_timeline_events.payload limit
@@ -82,6 +85,7 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf'])(v) },
   recitation: { on: bool },
   talk: { teacherMs: intIn(DAY_MS), learnerMs: intIn(DAY_MS) },
+  ...TOOL_EVENT_KEYS,
   end: {},
 };
 

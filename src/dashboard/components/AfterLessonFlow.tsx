@@ -127,7 +127,13 @@ export type ReportDraft = {
   files: DraftFile[];
   reactions: Record<string, number>;
   talk: Record<string, number> | null;
+  /** Classroom 2.10: corrections logged in the room and the learner's understanding checks (older drafts lack them). */
+  corrections?: Array<{ said: string; correct: string; note: string | null }>;
+  checks?: Array<{ part: string; level: 'green' | 'amber' | 'red' }>;
   earlyEnd: { minutesEarly: number; reason: string } | null;
+};
+const CHECK_LABELS: Record<string, { en: string; ar: string }> = {
+  green: { en: 'understood', ar: 'فاهم' }, amber: { en: 'partly', ar: 'نص نص' }, red: { en: 'not yet', ar: 'لسه' },
 };
 
 const REACTION_LABELS: Record<string, { en: string; ar: string }> = {
@@ -144,8 +150,10 @@ function ReportDraftPanel({ draft, picked, onPick }: { draft: ReportDraft; picke
   const lesson = covered ? draft.lessons.find((l) => l.track === covered.track && l.number === covered.number) : null;
   const subject = covered ? SUBJECTS.find((s) => s.id === covered.track) : null;
   const reactions = Object.entries(draft.reactions);
-  const talkTeacher = draft.talk?.teacherSeconds;
-  const talkLearner = draft.talk?.learnerSeconds ?? draft.talk?.studentSeconds;
+  // The room saves talk time in ms (teacherMs, learnerMs); older drafts used seconds.
+  const secs = (s?: number, ms?: number) => (typeof s === 'number' ? s : typeof ms === 'number' ? ms / 1000 : undefined);
+  const talkTeacher = secs(draft.talk?.teacherSeconds, draft.talk?.teacherMs);
+  const talkLearner = secs(draft.talk?.learnerSeconds ?? draft.talk?.studentSeconds, draft.talk?.learnerMs);
   return (
     <section className="rounded-2xl border border-[var(--gold)]/40 bg-[var(--gold)]/10 p-4 space-y-3 text-sm" aria-label={t('What the room saw', 'اللي الغرفة سجّلته')}>
       <p className="font-semibold text-foreground">{t('From the lesson room (check it, then write your report)', 'من غرفة الحصة (راجعه وبعدين اكتب تقريرك)')}</p>
@@ -175,6 +183,19 @@ function ReportDraftPanel({ draft, picked, onPick }: { draft: ReportDraft; picke
       )}
       {reactions.length > 0 && (
         <p className="text-foreground">{t('Reactions: ', 'التفاعلات: ')}{reactions.map(([k, n]) => `${REACTION_LABELS[k] ? L(REACTION_LABELS[k]) : k} ×${n}`).join(' · ')}</p>
+      )}
+      {!!draft.corrections?.length && (
+        <div className="space-y-1">
+          <p className="font-semibold text-foreground">{t('Corrections in the lesson (saved to the learner’s mistake bank)', 'التصحيحات في الحصة (اتحفظت في بنك أخطاء الطالب)')}</p>
+          <ul className="space-y-0.5 text-foreground">
+            {draft.corrections.map((c, i) => (
+              <li key={i}><bdi className="line-through decoration-muted-foreground/60">{c.said}</bdi> → <bdi className="font-semibold">{c.correct}</bdi>{c.note ? <span className="text-muted-foreground"> · {c.note}</span> : null}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {!!draft.checks?.length && (
+        <p className="text-foreground">{t('Understanding checks: ', 'أسئلة الفهم: ')}{draft.checks.map((c) => `${c.part || t('lesson', 'الدرس')}: ${L(CHECK_LABELS[c.level])}`).join(' · ')}</p>
       )}
       {draft.earlyEnd && (
         <p className="text-muted-foreground">{t(`Ended ${draft.earlyEnd.minutesEarly} min early: `, `خلصت بدري ${draft.earlyEnd.minutesEarly} دقيقة: `)}{draft.earlyEnd.reason}</p>

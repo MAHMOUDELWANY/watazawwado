@@ -13,6 +13,10 @@ import { classroomEnabledFor } from '../classroom/mode.js';
 import { roomSideIn } from './attendance.js';
 import { lessonEndMs } from '../../src/lib/lessonWindow.js';
 import { verifyParentProof } from './parentPin.js';
+import { reduceTools, TOOL_STATE_TYPES } from '../../src/lib/roomTools.js';
+import { recentMistakes, recordCorrections } from '../classroom/mistakeBank.js';
+import { warmupPrompts } from '../../src/classroom/tools/warmup.js';
+import { findLesson } from '../../src/curriculum/catalog.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -54,12 +58,26 @@ export const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f
 
 /** A file's original name, safe to show: no control characters, at most 120 characters. */
 export const cleanFileName = (v: unknown) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 120) : '') || 'File';
+/** 2.10: audio the teacher plays in the room and shadowing lines. Kept apart from the documents (not in reports). */
+const AUDIO_EXT: Record<string, string> = { 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/ogg': 'ogg', 'audio/webm': 'webm', 'audio/wav': 'wav' };
+const AUDIO_FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(mp3|m4a|ogg|webm|wav)$/;
+const ROOM_EXT: Record<string, string> = { ...FILE_EXT, ...AUDIO_EXT };
+const isRoomFileId = (id: string) => FILE_ID.test(id) || AUDIO_FILE_ID.test(id);
+const WRONG_TYPE = 'Use a PDF, PNG or JPEG file, or an MP3, M4A, OGG, WEBM or WAV sound.';
 
+type RoomFileType = 'application/pdf' | 'image/png' | 'image/jpeg' | 'audio/mpeg' | 'audio/mp4' | 'audio/ogg' | 'audio/webm' | 'audio/wav';
 /** The real type from the first bytes; the Content-Type header alone is never trusted. */
-export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
+export function detectFileType(b: Buffer): RoomFileType | null {
   if (b.length >= 5 && b.subarray(0, 5).toString('latin1') === '%PDF-') return 'application/pdf';
   if (b.length >= 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
   if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+  // MP3: an ID3 tag, or an MPEG audio frame sync (11 set bits, layer bits not 00).
+  if (b.length >= 3 && b.subarray(0, 3).toString('latin1') === 'ID3') return 'audio/mpeg';
+  if (b.length >= 2 && b[0] === 0xff && (b[1] & 0xe0) === 0xe0 && (b[1] & 0x06) !== 0) return 'audio/mpeg';
+  if (b.length >= 8 && b.subarray(4, 8).toString('latin1') === 'ftyp') return 'audio/mp4';
+  if (b.length >= 4 && b.subarray(0, 4).toString('latin1') === 'OggS') return 'audio/ogg';
+  if (b.length >= 4 && b.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))) return 'audio/webm';
+  if (b.length >= 12 && b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WAVE') return 'audio/wav';
   return null;
 }
 
@@ -120,6 +138,9 @@ function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
     // talk: the teacher's page measures both sides (2.8).
     case 'slide': case 'pdf': case 'layout': case 'talk': case 'end': return role === 'teacher';
     case 'reaction': case 'focus': return role === 'learner';
+    // 2.10, 2.11: the teacher drives the tools; the learner only answers the understanding check.
+    case 'correction': case 'check': case 'stage': case 'media': case 'practice': case 'shadow': return role === 'teacher';
+    case 'check_answer': return role === 'learner';
     case 'quality': return e.side === attendanceRole(role);
     case 'board': return role === 'teacher' || (role === 'learner' && (snapshot.learnerDraw ?? snapshot.board?.learnerDraw) === true);
     default: return false;
@@ -435,6 +456,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const rows: any[] = [];
       const boards: Array<Extract<RoomEvent, { t: 'board' }>> = [];
       const patch: { slide?: unknown; pdf?: unknown; layout?: unknown } = {};
+      const toolEvents: RoomEvent[] = [];
+      const corrections: Array<Extract<RoomEvent, { t: 'correction' }>> = [];
       for (const { at, event: e } of items as Array<{ at: unknown; event: RoomEvent }>) {
         // Board permission is checked later, against the fresh board; nothing else reads the snapshot.
         if (e.t === 'board') { if (t.role === 'teacher' || t.role === 'learner') boards.push(e); continue; }
@@ -447,16 +470,24 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         if (e.t === 'slide') patch.slide = e.state;
         if (e.t === 'pdf') patch.pdf = { fileId: e.fileId, page: e.page };
         if (e.t === 'layout') patch.layout = e.mode;
+        if (TOOL_STATE_TYPES.has(e.t)) toolEvents.push(e);
+        if (e.t === 'correction') corrections.push(e);
       }
       if (rows.length) {
         const { error } = await client.from('lesson_timeline_events').insert(rows);
         if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
       }
-      if (boards.length || Object.keys(patch).length) {
+      // 2.10: every correction also goes into the learner's mistake bank (a repeat of the same one is ignored).
+      if (corrections.length) {
+        await recordCorrections(client, { bookingId: t.bookingId, studentId: live.booking.student_id ?? null, teacherId: live.booking.teacher_id ?? null }, corrections);
+      }
+      if (boards.length || toolEvents.length || Object.keys(patch).length) {
         // The only writer of the snapshot (seats have their own rows): re-read right before the write and change
         // only board/slide/pdf/layout.
         const { snapshot: fresh } = await loadRoom(client, t.bookingId);
-        let changed = Object.keys(patch).length > 0;
+        let changed = Object.keys(patch).length > 0 || toolEvents.length > 0;
+        // The tools (stage, check, media, practice, shadow) on the fresh snapshot, in the order they happened.
+        if (toolEvents.length) fresh.tools = toolEvents.reduce((acc, e) => reduceTools(acc, e, now()), fresh.tools && typeof fresh.tools === 'object' ? fresh.tools : {});
         for (const e of boards) {
           if (!mayPersist(e, t.role, fresh)) continue;
           changed = true;
@@ -506,7 +537,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     try {
       const contentType = String(req.body?.contentType || '').toLowerCase();
       const size = Number(req.body?.size);
-      if (!FILE_EXT[contentType]) return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' });
+      if (!ROOM_EXT[contentType]) return res.status(415).json({ error: WRONG_TYPE });
       if (!Number.isInteger(size) || size < 1) return res.status(400).json({ error: 'size must be the file size in bytes.' });
       if (size > MAX_FILE_BYTES) return res.status(413).json({ error: 'The file is larger than 20 MB.' });
       const client = deps.getClient();
@@ -515,7 +546,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const live = await liveSeat(client, t, res);
       if (!live) return;
       if (roomHardCloseMs(live.booking) <= now()) return res.status(423).json({ error: 'The room is closed.', ended: true });
-      const fileId = `${crypto.randomUUID()}.${FILE_EXT[contentType]}`;
+      const fileId = `${crypto.randomUUID()}.${ROOM_EXT[contentType]}`;
       const path = `${t.bookingId}/${fileId}`;
       const { data, error } = await client.storage.from(CLASSROOM_FILES_BUCKET).createSignedUploadUrl(path);
       if (error || !data?.token) throw new Error(`signed upload: ${error?.message || 'none'}`);
@@ -529,7 +560,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   app.post('/api/classroom/:id/files/:fileId/confirm', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
     try {
       const fileId = String(req.params.fileId || '');
-      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
+      if (!isRoomFileId(fileId)) return res.status(404).json({ error: 'File not found.' });
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
@@ -543,8 +574,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const drop = async () => { const { error } = await bucket.remove([path]); if (error) console.error('[classroom] files/remove', error.message); };
       if (!(Number(info.data.size) <= MAX_FILE_BYTES)) { await drop(); return res.status(413).json({ error: 'The file is larger than 20 MB.' }); }
       const head = await firstBytes(bucket, path, 16);
-      const declared = Object.keys(FILE_EXT).find((k) => fileId.endsWith(`.${FILE_EXT[k]}`));
-      if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' }); }
+      const declared = Object.keys(ROOM_EXT).find((k) => fileId.endsWith(`.${ROOM_EXT[k]}`));
+      if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: WRONG_TYPE }); }
       const url = await fileLink(client, booking, fileId);
       if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
       return res.json({ fileId, url });
@@ -606,7 +637,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   app.get('/api/classroom/:id/files/:fileId', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
     try {
       const fileId = String(req.params.fileId || '');
-      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
+      if (!isRoomFileId(fileId)) return res.status(404).json({ error: 'File not found.' });
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const booking = await loadBooking(client, req.roomTicket.bookingId);
@@ -618,6 +649,42 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ url });
     } catch (err) {
       return fail(res, err, 'files/get');
+    }
+  });
+
+  // 2.10 warm-up: a few openers from the learner's last report, open corrections and level. Teacher only.
+  app.get('/api/classroom/:id/warmup', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      if (t.role !== 'teacher') return res.status(403).json({ error: 'Only the teacher sees the warm-up.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      const studentId = live.booking.student_id;
+      if (!studentId) return res.json({ prompts: warmupPrompts({ level: null, report: null, mistakes: [] }) });
+      const [{ data: learner }, { data: report }, mistakes] = await Promise.all([
+        client.from('students').select('current_level').eq('id', studentId).maybeSingle(),
+        client.from('curriculum_lesson_reports').select('subject, lesson_number, to_page, strengths, to_reinforce, note')
+          .eq('student_id', studentId).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+        recentMistakes(client, [studentId], 5),
+      ]);
+      const lesson = report ? findLesson(report.subject, report.lesson_number) : null;
+      return res.json({
+        prompts: warmupPrompts({
+          level: typeof learner?.current_level === 'string' ? learner.current_level : null,
+          report: report ? {
+            lessonTitle: lesson?.title ?? null,
+            toPage: Number.isInteger(report.to_page) ? report.to_page : null,
+            strengths: Array.isArray(report.strengths) ? report.strengths.filter((x: unknown) => typeof x === 'string') : [],
+            toReinforce: Array.isArray(report.to_reinforce) ? report.to_reinforce.filter((x: unknown) => typeof x === 'string') : [],
+            note: typeof report.note === 'string' && report.note.trim() ? report.note.trim() : null,
+          } : null,
+          mistakes,
+        }),
+      });
+    } catch (err) {
+      return fail(res, err, 'warmup');
     }
   });
 

@@ -80,7 +80,7 @@ export function registerAfterLessonRoutes(app: express.Express, deps: {
     try {
       const b = await ownLesson(client, req, res); if (!b) return;
       const [{ data: rows, error }, { data: room }, { data: shared }, fileIds] = await Promise.all([
-        client.from('lesson_timeline_events').select('type, actor_role, payload, occurred_at').eq('booking_id', b.id).in('type', ['slide', 'reaction', 'end', 'talk']).order('occurred_at', { ascending: true }).limit(5000),
+        client.from('lesson_timeline_events').select('type, actor_role, payload, occurred_at').eq('booking_id', b.id).in('type', ['slide', 'reaction', 'end', 'talk', 'correction', 'check_answer']).order('occurred_at', { ascending: true }).limit(5000),
         client.from('lesson_room_state').select('ended_at').eq('booking_id', b.id).maybeSingle(),
         client.from('lesson_shared_files').select('file_id').eq('booking_id', b.id),
         storedFiles(client, b.id),
