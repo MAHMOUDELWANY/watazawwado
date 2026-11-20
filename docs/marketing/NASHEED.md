@@ -149,6 +149,15 @@ over him. Production words that describe this (use them in prompts):
 Sources: masteringthemix.com (vocals in a dense mix), soundonsound.com (mixing pop vocals), suno.com nasheed library
 (daf supports the voice rather than competing).
 
+## Prompt pack for other music apps (Suno, Udio, etc.; owner tries them himself, 2026-11-20)
+
+Style (paste in the style / description box):
+`Vocal-led modern Arabic nasheed anthem, 116 bpm, warm powerful male lead vocal upfront, male choir on chorus, rolling daf groove with soft kick underneath, warm low strings, no claps, verses calm, chorus lifts, resolve most driving and proud, one key, one flowing song`
+(English version: replace "Arabic" with "English".)
+Exclude box, if the app has one: `female vocals, claps, electric guitar, synth lead, autotune, heavy drums`
+Lyrics: paste the section-tagged lyrics above, with tashkeel for Arabic, in this order: [Chorus], [Verse 1], [Verse 2],
+[Resolve], [Verse 3], [Chorus], [Final Resolve]. Commercial use needs a paid plan in most apps.
+
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
 1. **One test first:** the Arabic chorus only, about 20 s, one take, model `music_v2_5` (ElevenLabs' recommended
