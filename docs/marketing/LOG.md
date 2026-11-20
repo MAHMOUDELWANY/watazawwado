@@ -51,3 +51,19 @@ Change next week: <one thing>
   after V2 publishes (17 Nov 18:00/20:00). Next: V3, V6, V8, V10 the same way.
 - Media check: videos are 1080x1920, 30 fps, H.264 High, 2-3 Mbps (static slides need no more); Metricool does not
   re-encode. Published V1 carousel on Instagram/Facebook cannot be edited and was kept.
+- Owner: series order matters (each piece leads into the next), so the V1 video goes out today before V2. V1 video
+  moved to 17 Nov 14:15 Warsaw on Facebook (Metricool) and added on Instagram (Reel) and TikTok (Buffer) at the same
+  time; V2 follows at 15:00 (FB), 18:00 (IG/YT), 20:00 (TikTok). To fit Buffer's 10-post limit, V8 (23 Nov) and V10
+  (25 Nov) Instagram carousels went to Draft. V1 sent on Instagram and TikTok at 14:16-14:17 without errors; V8 and
+  V10 then went back to scheduled (23 Nov and 25 Nov, 18:00 Warsaw). Buffer now holds 10/10 scheduled posts.
+
+## 2026-11-20
+- Status review for the owner: everything scheduled so far went out on time; numbers tiny (best: V2 YouTube 441 views,
+  V1 TikTok carousel 459, FB reels ~200); no comments, saves or shares yet; average watch 4-7 s. Buffer at 10/10.
+- Owner decisions: carousel sound is **our own nasheed** (Arabic + English), replacing the piano notes (RULES §1.6,
+  draft lyrics and brief in `NASHEED.md`, awaiting owner review). No gradient through three or more hues after a
+  viewer compared our colours to the pride flag (RULES §1.8). Our videos repeated text (label on the card + caption
+  box); new binding look-and-motion rules from 9 owner references (`PRODUCTION.md` §3b, references in
+  `docs/design/INSPIRATION.md`). V6, V8, V10, V11 videos to be remade in the new style once the nasheed exists.
+- Owner's two test shots (18-19 Nov): landscape, window light behind or beside the face, low camera in the first.
+  Fix: vertical 9:16, light in front, camera at eye level. Owner's voice is back; filming planned 26-27 Nov for B1/T1/P1.
