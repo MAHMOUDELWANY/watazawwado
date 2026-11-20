@@ -149,14 +149,19 @@ over him. Production words that describe this (use them in prompts):
 Sources: masteringthemix.com (vocals in a dense mix), soundonsound.com (mixing pop vocals), suno.com nasheed library
 (daf supports the voice rather than competing).
 
-## Prompt pack for other music apps (Suno, Udio, etc.; owner tries them himself, 2026-11-20)
+## Suno studio brief (owner chose Suno, 2026-11-20; he generates it himself)
 
-Style (paste in the style / description box):
-`Vocal-led modern Arabic nasheed anthem, 116 bpm, warm powerful male lead vocal upfront, male choir on chorus, rolling daf groove with soft kick underneath, warm low strings, no claps, verses calm, chorus lifts, resolve most driving and proud, one key, one flowing song`
-(English version: replace "Arabic" with "English".)
-Exclude box, if the app has one: `female vocals, claps, electric guitar, synth lead, autotune, heavy drums`
-Lyrics: paste the section-tagged lyrics above, with tashkeel for Arabic, in this order: [Chorus], [Verse 1], [Verse 2],
-[Resolve], [Verse 3], [Chorus], [Final Resolve]. Commercial use needs a paid plan in most apps.
+Owner: more energy, an epic anthem feel; it does not have to sound like a traditional nasheed. Male voices only.
+Settings: latest model, Custom mode, Style Influence high (~70%), Weirdness low (~25%); make 4+ takes, keep the best,
+fix weak parts with Replace Section. The full style text, exclude list and tagged lyrics (Arabic and English) are in
+the chat of 2026-11-20 and repeated here:
+
+Style: `Epic cinematic anthem, 128 bpm, 4/4, D minor rising to a key lift in the final chorus. Powerful clear
+baritone male lead, warm and proud, upfront and dry, every word clear. Massive male gang choir answering, stadium
+shouts. Driving frame drums and taiko hits, punchy kick, tight snare on 2 and 4, string ostinato, low brass swells,
+deep sub bass. Verses tight and building, choruses huge and wide, resolve sections hit hardest. Modern polished mix,
+vocals on top of everything.`
+Exclude: `female vocals, autotune, rap, electric guitar solo, EDM drop, synth lead, lo-fi, reverb-drenched vocals`
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
