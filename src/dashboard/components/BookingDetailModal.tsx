@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FocusTrap from '../../components/FocusTrap';
+import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
   X,
@@ -637,6 +638,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Owner review 2026-11-09: exact attendance times are for the super admin only. */}
               {isSuperAdmin && <LessonAttendance bookingId={booking.id} />}
+              {/* Classroom 3.5: everything the room recorded about this lesson. */}
+              {isSuperAdmin && (
+                <Link to={`/dashboard/admin/lessons/${booking.id}`} onClick={onClose} className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
+                  {t('Open the lesson view (timeline, attendance, quality, rating)', 'افتح صفحة الحصة (الخط الزمني، الحضور، الجودة، التقييم)')}
+                </Link>
+              )}
 
               {/* Payments: super admin only (RULES.md §1) */}
               {isSuperAdmin && (

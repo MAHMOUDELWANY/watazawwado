@@ -2,7 +2,8 @@
 import type { Layer, LinkStats, Side } from '../classroom/engine/types';
 
 /** What travels in the lesson room (NX-12): which lesson is open, where the teacher is, and the teacher's ink. Nothing else. */
-export interface RoomState { track: string; number: number; page: number; step: number; /** The series opening is playing. */ opening?: boolean }
+export interface RoomState { track: string; number: number; page: number; step: number; /** The series opening is playing. */ opening?: boolean;
+  /** Saved only (never published): the teacher drew on this page, so the report draft counts it as taught (3.3). */ inked?: boolean }
 type Pt = [number, number];
 export interface RoomInk { track: string; number: number; page: number; strokes: { tool: 'pen' | 'marker'; color: string; points: Pt[] }[]; laser: Pt[] }
 
@@ -20,7 +21,8 @@ export function isRoomInk(v: any): v is RoomInk {
 export function isRoomState(v: any): v is RoomState {
   return Boolean(v) && typeof v.track === 'string' && v.track.length < 60
     && [v.number, v.page, v.step].every((n) => Number.isInteger(n) && n >= 0 && n < 1000)
-    && (v.opening === undefined || typeof v.opening === 'boolean');
+    && (v.opening === undefined || typeof v.opening === 'boolean')
+    && (v.inked === undefined || v.inked === true);
 }
 
 /**

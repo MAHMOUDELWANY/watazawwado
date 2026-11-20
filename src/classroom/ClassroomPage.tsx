@@ -35,6 +35,7 @@ import { FallbackNotice } from './parts/FallbackNotice';
 import { ObserverNotes } from './parts/ObserverNotes';
 import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
 import { addQualityStep, clockOffsetMs, readRoomAnswer, subscribeRetryMs, type EndReason, type QualityTotals } from './roomWiring';
+import { LessonFeedbackCard } from '../student/components/LessonFeedbackCard';
 
 type Pane = 'lesson' | 'board' | 'pdf';
 type Over = EndReason | 'superseded' | 'failed';
@@ -675,6 +676,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             <h1 className={cn('font-editorial text-[1.75rem] leading-tight text-foreground text-balance', isAr ? 'font-bold' : 'font-medium tracking-tight')}>{copy[over].title}</h1>
             <p className="max-w-xs text-[0.95rem] leading-relaxed text-muted-foreground">{copy[over].body}</p>
             {zoomFirst && <FallbackNotice url={fallbackUrl!} teacher={isTeacher} variant="screen" />}
+            {/* 3.4: an adult learner rates the lesson here; a child's lesson is rated by the parent from the lessons page. */}
+            {(over === 'ended' || over === 'closed') && role === 'learner' && !kid && <div className="w-full text-start"><LessonFeedbackCard isAr={isAr} timezone={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} /></div>}
             <div className="flex flex-wrap justify-center gap-2">
               {again && (
                 <Button variant={zoomFirst ? 'outline' : 'primary'} onClick={onRejoin}>

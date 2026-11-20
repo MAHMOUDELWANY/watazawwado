@@ -111,6 +111,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   now?: () => number;
   /** Task 13: the rollout switch for this lesson's teacher (CLASSROOM_MODE by default). */
   classroomEnabled?: (teacherId: string) => boolean;
+  /** BUILD-LIST 3.2: runs once the teacher ended the room (the automatic attendance verdict). Never fails the end. */
+  onLessonEnded?: (client: any, bookingId: string) => Promise<unknown>;
 }) {
   const now = deps.now ?? Date.now;
   const classroomEnabled = deps.classroomEnabled ?? ((teacherId: string) => classroomEnabledFor(teacherId));
@@ -151,6 +153,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       { onConflict: 'dedupe_key', ignoreDuplicates: true },
     );
     if (evErr) console.error('[classroom end] room_ended', evErr.message);
+    if (deps.onLessonEnded) await deps.onLessonEnded(client, id).catch((err) => console.error('[classroom end] verdict', err));
   };
 
   /**

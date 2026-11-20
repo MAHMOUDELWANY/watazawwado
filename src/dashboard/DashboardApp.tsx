@@ -71,6 +71,7 @@ import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
 import LateReasonGate from './components/LateReasonGate';
 import LateReasonsPage from './pages/LateReasonsPage';
+import AdminLessonPage from './pages/AdminLessonPage';
 import HonorPage from './pages/HonorPage';
 import ProgramsPage from './pages/ProgramsPage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -657,6 +658,7 @@ export function DashboardApp() {
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/month" replace />} />
                 <Route path="/late-reasons" element={isSuperAdmin ? <LateReasonsPage /> : <Navigate to="/dashboard/month" replace />} />
+                <Route path="/admin/lessons/:id" element={isSuperAdmin ? <AdminLessonPage /> : <Navigate to="/dashboard/today" replace />} />
                 <Route path="/month" element={<MyMonthPage />} />
                 <Route path="/honor" element={isSuperAdmin ? <HonorPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/programs" element={isSuperAdmin ? <ProgramsPage /> : <Navigate to="/dashboard" replace />} />

@@ -1066,6 +1066,16 @@ export interface Database {
         Insert: Partial<AdminObservationRow> & Pick<AdminObservationRow, 'booking_id' | 'admin_user_id'>;
         Update: Partial<AdminObservationRow>;
       };
+      lesson_attendance_verdicts: {
+        Row: LessonAttendanceVerdictRow;
+        Insert: Partial<LessonAttendanceVerdictRow> & Pick<LessonAttendanceVerdictRow, 'booking_id' | 'verdict' | 'reason' | 'trigger'>;
+        Update: Partial<LessonAttendanceVerdictRow>;
+      };
+      lesson_shared_files: {
+        Row: LessonSharedFileRow;
+        Insert: Partial<LessonSharedFileRow> & Pick<LessonSharedFileRow, 'booking_id' | 'file_id'>;
+        Update: Partial<LessonSharedFileRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -1169,6 +1179,25 @@ export interface AdminObservationRow {
   started_at: string;
   ended_at: string | null;
   notes: string | null;
+}
+
+/** Classroom 3.2: the automatic attendance verdict of one room lesson. */
+export interface LessonAttendanceVerdictRow {
+  booking_id: string;
+  verdict: 'completed' | 'learner_no_show' | 'teacher_no_show' | 'review';
+  reason: string;
+  trigger: 'end' | 'sweep';
+  applied: boolean;
+  detail: Record<string, unknown>;
+  decided_at: string;
+}
+
+/** Classroom 3.3: a room file the teacher attached to the lesson report. */
+export interface LessonSharedFileRow {
+  booking_id: string;
+  file_id: string;
+  added_by: string | null;
+  created_at: string;
 }
 
 export interface ChildDeviceRow {

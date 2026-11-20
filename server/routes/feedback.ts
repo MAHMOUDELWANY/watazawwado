@@ -96,6 +96,8 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
   app.get('/api/student/lesson-feedback/pending', deps.verifyStudentAuth, async (req: any, res: any) => {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+    // Classroom 3.4: the family account rates, never a child's own phone.
+    if (req.childDevice) return res.json({ pending: null });
     try {
       const learners = await deps.getLearners(client, req);
       const requested = typeof req.query?.learnerId === 'string' ? req.query.learnerId.trim() : '';
@@ -141,6 +143,7 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
     const userId = req.studentUser?.auth_id;
     if (!userId || !UUID_RE.test(userId)) return res.status(401).json({ error: 'Please sign in again.' });
+    if (req.childDevice) return res.status(403).json({ error: 'A parent rates the lesson from the family account.' });
     const bookingId = String(req.params.id || '');
     if (!UUID_RE.test(bookingId)) return res.status(404).json({ error: 'Lesson not found.' });
     const parsed = parseFeedback(req.body);
