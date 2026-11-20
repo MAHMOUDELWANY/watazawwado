@@ -96,8 +96,8 @@ And if you've drifted far away,
 the door is open still today.
 (then the chorus)
 
-Melody reference (owner, 2026-11-20): he likes the rhythm and tune of a track he calls "PUBG whisper" for youth and
-children. Name not confirmed yet. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
+Melody reference (owner, 2026-11-20): he likes the rhythm and tune of "Whisper", the PUBG MOBILE Primewood Genesis
+theme song (https://youtu.be/APtV8Je_cl4), for youth and children. Its sound is not yet described here. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
 artist names, and copying a melody is not allowed.
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
