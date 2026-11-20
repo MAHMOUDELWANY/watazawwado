@@ -22,31 +22,31 @@ easy to sing. Every line is exactly two feet. Each stanza is four lines; lines 2
 line 1). The meaning stays indirect: the Quran, knowledge as zaad for the journey to the Hereafter, the family, the
 language, the Seerah lived with mercy, the teacher who stays, coming back.
 
-### Arabic
+### Arabic (v4, 2026-11-20: stronger chorus, home and language; owner kept the teacher and the closing)
 
 **[اللازمة]**
-نُورُ قُرْآنِي وَزَادِي
-وَبِهِ يُهْدَى فُؤَادِي
-أَحْمِلُ العِلْمَ رَفِيقًا
-فِي طَرِيقِي لِلْمَعَادِ
+جَهِّزِ الزَّادَ لِدَرْبٍ
+لَيْسَ يُطْوَى بِالأَمَانِي
+زَادُهُ آيٌ وَصَبْرٌ
+وَدُمُوعٌ فِي المَثَانِي
 
 **[١: البيت]**
-فِي صَبَاحِ البَيْتِ طِفْلٌ
-يَقْرَأُ الآيَاتِ نُورَا
-أُمُّهُ تُصْغِي وَتَدْعُو
-رَبِّ فَاجْعَلْهُ شَكُورَا
+صَوْتُ طِفْلِي حِينَ يَتْلُو
+صَيَّرَ البَيْتَ مُصَلَّى
+كُلُّ حَرْفٍ مِنْهُ غَرْسٌ
+فِي جِنَانٍ لَيْسَ تَبْلَى
 
 **[٢: اللسان]**
-لُغَةُ القُرْآنِ تَحْيَا
-فِي قُلُوبٍ وَلِسَانِ
-نَعْبُرُ الدُّنْيَا بِحَرْفٍ
-مِنْ بَيَانٍ لِبَيَانِ
+نَحْفَظُ الضَّادَ عَزِيزًا
+إِرْثَ آبَاءٍ كِرَامِ
+ثُمَّ نَبْنِي مِنْهُ جِسْرًا
+بَيْنَ أَلْوَانِ الكَلَامِ
 
-**[٣: الدين رحمة]**
-سِيرَةُ المُخْتَارِ تَهْدِي
-كُلَّ قَلْبٍ لِلرَّشَادِ
-وَنَعِيشُ الدِّينَ حُبًّا
-رَحْمَةً بَيْنَ العِبَادِ
+**[٣: الرفق]**
+نَقْتَفِي خَطْوَ نَبِيٍّ
+كَانَ لِلنَّاسِ رَحِيمَا
+عَلَّمَ الدِّينَ بِرِفْقٍ
+فَاهْتَدَى القَلْبُ سَلِيمَا
 
 **[٤: المعلّم]**
 صَاحِبٌ فِي الدَّرْبِ يَمْشِي
@@ -59,45 +59,46 @@ language, the Seerah lived with mercy, the teacher who stays, coming back.
 لَمْ يَزَلْ فِي البَابِ هَادِي
 (ثم اللازمة)
 
-Order: chorus, 1, chorus, 2, 3, chorus, 4, closing, chorus.
-
-### English (its own lyric, same meaning, not a translation)
-
-Four-beat lines in rhyming pairs (AABB), so it sits on one simple melody.
+### English (v5, 2026-11-20: rewritten as its own song; four beats a line, rhyming couplets)
 
 **[Chorus]**
-The Book is my light when the road is long,
-its words are my zaad, they keep me strong;
-I gather the knowledge, I guard the light,
-and walk toward home through the longest night.
+Pack your zaad, the road is long,
+take what is light but makes you strong:
+a verse you hold, a heart that stays,
+and quiet tears on longer days.
 
 **[1: home]**
-A small voice rises before the sun,
-one ayah, then two, and the day's begun;
-his mother is listening, she quietly prays:
-"Keep him close to Your Book all his days."
+A little voice before the light,
+the house still wrapped in the end of night;
+each word he reads is a seed he sows
+in a garden only Allah knows.
 
 **[2: language]**
-A language that carried the final Word,
-the oldest of songs our grandparents heard;
-we learn it and pass it from old to young,
-a bridge between hearts in a living tongue.
+Across the sea, a grandma calls,
+and Arabic fills the quiet halls;
+we learn the tongue the Quran chose,
+and pass it on as the family grows.
 
-**[3: mercy]**
-We follow the Prophet ﷺ, the one who came
-with mercy for all, not with fear or with blame;
-we live what we learn, not in words but in deeds,
-a gentle faith planted like quiet seeds.
+**[3: gentleness]**
+No angry voice, no heavy hand,
+just patience till they understand;
+the way of mercy, soft and slow,
+is how a love for the deen will grow.
 
 **[4: the teacher]**
-A friend on the road who walks at your side,
-who knows you by name, not just as a guide;
-when you slip he waits, when you fall he stays,
-a teacher who's there through the hardest days.
+A friend who walks the road with you,
+who knows your name, your struggles too;
+and when you slip, he doesn't leave,
+he stays, and helps your heart believe.
 
 **[Closing]**
-And you who have wandered so far from the door:
-come back, there is light, it is open once more.
+And if you've drifted far away,
+the door is open still today.
+(then the chorus)
+
+Melody reference (owner, 2026-11-20): he likes the rhythm and tune of a track he calls "PUBG whisper" for youth and
+children. Name not confirmed yet. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
+artist names, and copying a melody is not allowed.
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
