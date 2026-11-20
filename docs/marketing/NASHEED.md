@@ -77,13 +77,13 @@ in a garden only Allah knows.
 Across the sea, a grandma calls,
 and Arabic fills the quiet halls;
 we learn the tongue the Quran chose,
-a bridge of words where love still flows.
+and pass it on as the family grows.
 
 **[3: gentleness]**
-He came with mercy, not with fear,
-the Prophet ﷺ held the children near;
-so we teach slow, we teach with care,
-and every heart finds welcome there.
+No angry voice, no heavy hand,
+just patience till they understand;
+the way of mercy, soft and slow,
+is how a love for the deen will grow.
 
 **[4: the teacher]**
 A friend who walks the road with you,
@@ -95,6 +95,10 @@ he stays, and helps your heart believe.
 And if you've drifted far away,
 the door is open still today.
 (then the chorus)
+
+Melody reference (owner, 2026-11-20): he likes the rhythm and tune of a track he calls "PUBG whisper" for youth and
+children. Name not confirmed yet. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
+artist names, and copying a melody is not allowed.
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
