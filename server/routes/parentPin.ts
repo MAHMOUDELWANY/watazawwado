@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import express from 'express';
 import { roomSecret } from './lessonRoom.js';
 import { isUuid } from './progress.js';
+import { sendEmail as realSendEmail, type SendEmailOptions } from '../notifications/emailService.js';
 
 /**
  * BUILD-LIST 1.6: a parent's 4-digit PIN. A child using the parent's signed-in device cannot open parent-only things
@@ -14,6 +15,25 @@ type Middleware = (req: any, res: any, next: any) => any;
 export const PIN_MAX_FAILS = 5;
 export const PIN_LOCK_MS = 15 * 60_000;
 export const PIN_PROOF_MS = 10 * 60_000;
+/** Forgotten PIN: a 6-digit code emailed to the account, 15 minutes, single use, 5 tries, one email a minute. */
+export const RESET_CODE_MS = 15 * 60_000;
+export const RESET_RESEND_MS = 60_000;
+export const RESET_MAX_TRIES = 5;
+const CODE = /^\d{6}$/;
+const sha = (v: string) => crypto.createHash('sha256').update(v).digest('hex');
+const sameHash = (a: string, b: string) => a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+
+/** The reset email, in both languages (the code is the same). */
+export function resetEmail(code: string): { subject: string; html: string; text: string } {
+  const text = `Your parent PIN reset code is ${code}. It works once, for 15 minutes. If you did not ask for it, you can ignore this email; your PIN stays the same.\n\n`
+    + `كود تغيير الرقم السري لولي الأمر: ${code}. بيشتغل مرة واحدة لمدة 15 دقيقة. لو انت ما طلبتهوش، تجاهل الرسالة دي والرقم السري هيفضل زي ما هو.`;
+  const html = `<p>Your parent PIN reset code is:</p><p style="font-size:28px;font-weight:bold;letter-spacing:6px">${code}</p>`
+    + '<p>It works once, for 15 minutes. If you did not ask for it, you can ignore this email; your PIN stays the same.</p>'
+    + `<div dir="rtl" lang="ar"><p>كود تغيير الرقم السري لولي الأمر: <b>${code}</b></p><p>بيشتغل مرة واحدة لمدة 15 دقيقة. لو انت ما طلبتهوش، تجاهل الرسالة دي والرقم السري هيفضل زي ما هو.</p></div>`;
+  return { subject: 'Your parent PIN reset code · كود تغيير الرقم السري', html, text };
+}
+/** "ah***@gmail.com": enough for the parent to know where to look, not the whole address. */
+export const maskEmail = (e: string) => e.replace(/^(.{0,2})[^@]*(@.*)$/, '$1***$2');
 const PIN = /^\d{4}$/;
 
 export function hashPin(pin: string): string {
@@ -58,8 +78,10 @@ export function registerParentPinRoutes(app: express.Express, deps: {
   rateLimit: Middleware;
   secret?: () => string;
   now?: () => number;
+  sendEmail?: (o: SendEmailOptions) => Promise<{ success: boolean }>;
 }) {
   const now = deps.now ?? Date.now;
+  const sendEmail = deps.sendEmail ?? realSendEmail;
   const secret = deps.secret ?? roomSecret;
   const iso = () => new Date(now()).toISOString();
   const ownerOf = (req: any) => (!req.childDevice && isUuid(req.studentUser?.auth_id) ? req.studentUser.auth_id as string : null);
@@ -123,6 +145,55 @@ export function registerParentPinRoutes(app: express.Express, deps: {
       { onConflict: 'user_id' },
     );
     if (error) throw new Error(`parent_pins: ${error.message}`);
+    return res.json({ ok: true, proof: signParentProof(owner, secret(), now()) });
+  }));
+
+  // Forgotten PIN, step 1: a one-time code to the account's own email (never an address from the request).
+  app.post('/api/student/parent-pin/reset/request', deps.rateLimit, deps.verifyStudentAuth, guard(async (req, res, client, owner) => {
+    const email = String(req.studentUser?.email || '').trim().toLowerCase();
+    if (!email) return res.status(409).json({ error: 'This account has no email for a reset code.' });
+    const { data: row, error } = await client.from('parent_pins').select('reset_sent_at').eq('user_id', owner).maybeSingle();
+    if (error) throw new Error(`parent_pins: ${error.message}`);
+    if (!row) return res.status(404).json({ error: 'Set a parent PIN first.', needsSetup: true });
+    const wait = row.reset_sent_at ? Date.parse(row.reset_sent_at) + RESET_RESEND_MS - now() : 0;
+    if (wait > 0) return res.status(429).json({ error: 'We just sent a code. Please wait a minute.', retryAfterSeconds: Math.ceil(wait / 1000) });
+    const code = String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
+    const { error: upErr } = await client.from('parent_pins').update({
+      reset_code_hash: sha(`${owner}:${code}`), reset_expires_at: new Date(now() + RESET_CODE_MS).toISOString(), reset_sent_at: iso(), reset_attempts: 0, updated_at: iso(),
+    }).eq('user_id', owner);
+    if (upErr) throw new Error(`parent_pins: ${upErr.message}`);
+    const sent = await sendEmail({ to: email, from: 'support', ...resetEmail(code) });
+    if (!sent.success) {
+      // Nothing reached the parent: drop the code so they can ask again at once.
+      await client.from('parent_pins').update({ reset_code_hash: null, reset_expires_at: null, reset_sent_at: null }).eq('user_id', owner);
+      return res.status(502).json({ error: 'We could not send the email. Please try again.' });
+    }
+    return res.json({ sent: true, to: maskEmail(email), expiresInMinutes: RESET_CODE_MS / 60_000 });
+  }));
+
+  // Step 2: the code (single use, 5 tries) and the new PIN. A right code also clears the lockout.
+  app.post('/api/student/parent-pin/reset/confirm', deps.rateLimit, deps.verifyStudentAuth, guard(async (req, res, client, owner) => {
+    const { code, pin } = req.body || {};
+    if (typeof pin !== 'string' || !PIN.test(pin)) return res.status(400).json({ error: 'The PIN must be 4 digits.' });
+    const { data: row, error } = await client.from('parent_pins').select('reset_code_hash, reset_expires_at, reset_attempts').eq('user_id', owner).maybeSingle();
+    if (error) throw new Error(`parent_pins: ${error.message}`);
+    if (!row?.reset_code_hash || !row.reset_expires_at || Date.parse(row.reset_expires_at) <= now()) {
+      return res.status(410).json({ error: 'This code has ended. Ask for a new one.', expired: true });
+    }
+    if (typeof code !== 'string' || !CODE.test(code) || !sameHash(sha(`${owner}:${code}`), row.reset_code_hash)) {
+      const tries = (row.reset_attempts || 0) + 1;
+      const spent = tries >= RESET_MAX_TRIES;
+      const { error: upErr } = await client.from('parent_pins').update(spent
+        ? { reset_code_hash: null, reset_expires_at: null, reset_attempts: 0, updated_at: iso() }
+        : { reset_attempts: tries, updated_at: iso() }).eq('user_id', owner);
+      if (upErr) throw new Error(`parent_pins: ${upErr.message}`);
+      if (spent) return res.status(410).json({ error: 'Too many wrong codes. Ask for a new one.', expired: true });
+      return res.status(401).json({ error: 'That code is not right.', attemptsLeft: RESET_MAX_TRIES - tries });
+    }
+    const { error: upErr } = await client.from('parent_pins').update({
+      pin_hash: hashPin(pin), failed_count: 0, locked_until: null, reset_code_hash: null, reset_expires_at: null, reset_attempts: 0, updated_at: iso(),
+    }).eq('user_id', owner);
+    if (upErr) throw new Error(`parent_pins: ${upErr.message}`);
     return res.json({ ok: true, proof: signParentProof(owner, secret(), now()) });
   }));
 

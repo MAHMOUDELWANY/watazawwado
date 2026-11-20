@@ -207,3 +207,75 @@ describe('CL-22 wiring', () => {
     assert.match(read('src/student/pages/StudentProfilePage.tsx'), /<ParentPinSetting /);
   });
 });
+
+describe('CL-22 forgotten PIN: emailed one-time code', () => {
+  let server: http.Server;
+  let base: string;
+  let clock = Date.parse('2026-11-20T12:00:00Z');
+  const sent: Array<{ to: string; text: string }> = [];
+  let mailOk = true;
+  const db = fakeDb({ parent_pins: [{ user_id: PARENT, pin_hash: hashPin('1111'), failed_count: 0, locked_until: new Date(clock + 600_000).toISOString() }] });
+
+  before(async () => {
+    const app = express();
+    app.use(express.json());
+    registerParentPinRoutes(app, {
+      getClient: () => db,
+      verifyStudentAuth: (req: any, _res: any, next: any) => { req.studentUser = { auth_id: PARENT, email: 'ahmed@example.com' }; next(); },
+      rateLimit: (_q: any, _s: any, next: any) => next(),
+      secret: () => SECRET,
+      now: () => clock,
+      sendEmail: async (o) => { sent.push({ to: o.to, text: o.text }); return { success: mailOk }; },
+    });
+    await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
+  });
+  after(async () => { await new Promise<void>((r) => server.close(() => r())); });
+
+  const post = (path: string, body: unknown = {}) => fetch(`${base}/api/student/parent-pin/reset/${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const lastCode = () => /(\d{6})/.exec(sent[sent.length - 1].text)![1];
+  const row = () => db.tables.parent_pins[0];
+
+  it('emails a 6-digit code to the account email only, stores only its hash, once a minute', async () => {
+    const r = await post('request', { email: 'attacker@evil.test' });
+    assert.strictEqual(r.status, 200);
+    assert.strictEqual((await r.json()).to, 'ah***@example.com');
+    assert.strictEqual(sent[0].to, 'ahmed@example.com');
+    assert.ok(!JSON.stringify(row()).includes(lastCode()), 'the code is never stored plainly');
+    assert.strictEqual((await post('request')).status, 429);
+  });
+
+  it('a wrong code counts down; the 5th wrong try ends the code', async () => {
+    for (let i = 1; i <= 4; i++) {
+      const r = await post('confirm', { code: '000000', pin: '2222' });
+      assert.strictEqual(r.status, 401);
+      assert.strictEqual((await r.json()).attemptsLeft, 5 - i);
+    }
+    assert.strictEqual((await post('confirm', { code: '000000', pin: '2222' })).status, 410);
+    assert.strictEqual(row().reset_code_hash, null);
+  });
+
+  it('a right code sets the new PIN, clears the lockout, gives a proof, and works only once', async () => {
+    clock += 61_000;
+    assert.strictEqual((await post('request')).status, 200);
+    const code = lastCode();
+    assert.strictEqual((await post('confirm', { code, pin: '12' })).status, 400);
+    const ok = await post('confirm', { code, pin: '2222' });
+    assert.strictEqual(ok.status, 200);
+    assert.ok(verifyParentProof((await ok.json()).proof, PARENT, SECRET, clock));
+    assert.ok(pinMatches('2222', row().pin_hash));
+    assert.strictEqual(row().locked_until, null);
+    assert.strictEqual((await post('confirm', { code, pin: '3333' })).status, 410, 'single use');
+  });
+
+  it('a code ends after 15 minutes; a failed email can be asked again at once', async () => {
+    clock += 61_000;
+    await post('request');
+    const code = lastCode();
+    clock += 15 * 60_000 + 1;
+    assert.strictEqual((await post('confirm', { code, pin: '4444' })).status, 410);
+    mailOk = false;
+    assert.strictEqual((await post('request')).status, 502);
+    mailOk = true;
+    assert.strictEqual((await post('request')).status, 200);
+  });
+});

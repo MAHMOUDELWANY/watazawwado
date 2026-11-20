@@ -29,11 +29,80 @@ function PinInput({ label, value, onChange, autoFocus }: { label: string; value:
 }
 
 /**
+ * Forgotten PIN: we email a one-time 6-digit code to the account's email; the code and a new PIN set it again.
+ * No admin step. `onDone` gets the proof, like a right PIN.
+ */
+export function ResetPinForm({ isAr, onDone, onCancel }: { isAr: boolean; onDone: (proof: string) => void; onCancel: () => void }) {
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [code, setCode] = useState('');
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const t = (en: string, ar: string) => (isAr ? ar : en);
+
+  const request = async () => {
+    setBusy(true); setError('');
+    try {
+      const r = await authedJson<{ to: string }>('/api/student/parent-pin/reset/request', { method: 'POST', body: '{}' });
+      setSentTo(r.to); setCode('');
+    } catch (err: any) {
+      const wait = err?.data?.retryAfterSeconds;
+      setError(wait ? t(`We just sent a code. Try again in ${wait} seconds.`, `لسه باعتين كود. جرّب تاني بعد ${wait} ثانية.`) : t('We could not send the email. Please try again.', 'مقدرناش نبعت الإيميل. جرّب تاني.'));
+    } finally { setBusy(false); }
+  };
+  const confirm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^\d{6}$/.test(code)) return setError(t('The code is 6 digits.', 'الكود 6 أرقام.'));
+    if (pin.length !== 4) return setError(t('The PIN is 4 digits.', 'الرقم السري 4 أرقام.'));
+    setBusy(true); setError('');
+    try {
+      const { proof } = await authedJson<{ proof: string }>('/api/student/parent-pin/reset/confirm', { method: 'POST', body: JSON.stringify({ code, pin }) });
+      keepProof(proof);
+      notify(t('Your new PIN is saved.', 'اتحفظ الرقم السري الجديد.'));
+      onDone(proof);
+    } catch (err: any) {
+      const d = err?.data || {};
+      if (d.expired) { setSentTo(null); setError(t('That code has ended. Ask for a new one.', 'الكود ده خلص. اطلب كود جديد.')); }
+      else setError(typeof d.attemptsLeft === 'number' ? t(`That code is not right. ${d.attemptsLeft} tries left.`, `الكود غلط. فاضل ${d.attemptsLeft} محاولات.`) : t('Could not save the PIN.', 'مقدرناش نحفظ الرقم.'));
+    } finally { setBusy(false); }
+  };
+
+  if (!sentTo) {
+    return (
+      <div className="grid gap-3">
+        <p className="text-sm leading-relaxed text-muted-foreground">{t("We'll email a 6-digit code to your account's email. It works once, for 15 minutes.", 'هنبعت كود من 6 أرقام على إيميل حسابك. بيشتغل مرة واحدة لمدة 15 دقيقة.')}</p>
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        <div className="flex gap-2">
+          <Button type="button" isLoading={busy} onClick={request}>{t('Email me a code', 'ابعتلي كود')}</Button>
+          <Button type="button" variant="ghost" onClick={onCancel}>{t('Back', 'رجوع')}</Button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <form onSubmit={confirm} className="grid gap-3">
+      <p className="text-sm leading-relaxed text-muted-foreground">{t(`We sent a code to ${sentTo}.`, `بعتنا كود على ${sentTo}.`)}</p>
+      <label className="grid gap-1.5 text-sm font-medium text-foreground">
+        {t('Code from the email', 'الكود اللي في الإيميل')}
+        <Input inputMode="numeric" autoComplete="one-time-code" maxLength={6} dir="ltr" autoFocus className="text-center text-xl tracking-[0.4em] tabular-nums"
+          value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} />
+      </label>
+      <PinInput label={t('New PIN', 'الرقم الجديد')} value={pin} onChange={setPin} />
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" isLoading={busy}>{t('Save the new PIN', 'احفظ الرقم الجديد')}</Button>
+        <Button type="button" variant="ghost" disabled={busy} onClick={request}>{t('Send a new code', 'ابعت كود جديد')}</Button>
+      </div>
+    </form>
+  );
+}
+
+/**
  * Asks the parent's 4-digit PIN before a parent-only thing (watching a lesson). With no PIN yet, the parent creates
  * one here first. `onDone` gets the proof the server checks.
  */
 export function ParentPinDialog({ isOpen, onClose, onDone, isAr }: { isOpen: boolean; onClose: () => void; onDone: (proof: string) => void; isAr: boolean }) {
-  const [mode, setMode] = useState<'loading' | 'set' | 'verify'>('loading');
+  const [mode, setMode] = useState<'loading' | 'set' | 'verify' | 'reset'>('loading');
   const [pin, setPin] = useState('');
   const [again, setAgain] = useState('');
   const [error, setError] = useState('');
@@ -71,6 +140,7 @@ export function ParentPinDialog({ isOpen, onClose, onDone, isAr }: { isOpen: boo
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="sm"
       title={<span className="flex items-center gap-2"><KeyRound className="h-5 w-5 text-accent" aria-hidden="true" />{mode === 'set' ? t('Make a parent PIN', 'اعمل رقم سري لولي الأمر') : t('Parent PIN', 'الرقم السري لولي الأمر')}</span>}>
+      {mode === 'reset' ? <ResetPinForm isAr={isAr} onDone={onDone} onCancel={() => { setMode('verify'); setError(''); }} /> : (
       <form onSubmit={submit} className="grid gap-4">
         <p className="text-sm leading-relaxed text-muted-foreground">
           {mode === 'set'
@@ -80,9 +150,14 @@ export function ParentPinDialog({ isOpen, onClose, onDone, isAr }: { isOpen: boo
         {mode !== 'loading' && <PinInput label={mode === 'set' ? t('New PIN', 'الرقم الجديد') : t('PIN', 'الرقم السري')} value={pin} onChange={setPin} autoFocus />}
         {mode === 'set' && <PinInput label={t('Type it again', 'اكتبه تاني')} value={again} onChange={setAgain} />}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        {mode === 'verify' && <p className="text-xs text-muted-foreground">{t('Forgot it? Message us and we will clear it for you.', 'نسيته؟ ابعتلنا رسالة وهنمسحه لك.')}</p>}
         <Button type="submit" isLoading={busy} disabled={mode === 'loading'}>{mode === 'set' ? t('Save and continue', 'احفظ وكمّل') : t('Continue', 'كمّل')}</Button>
+        {mode === 'verify' && (
+          <button type="button" onClick={() => { setMode('reset'); setError(''); }} className="min-h-11 justify-self-center text-sm text-teal underline underline-offset-4 focus-ring">
+            {t('Forgot the PIN?', 'نسيت الرقم السري؟')}
+          </button>
+        )}
       </form>
+      )}
     </Modal>
   );
 }
@@ -95,6 +170,7 @@ export function ParentPinSetting({ isAr }: { isAr: boolean }) {
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   useEffect(() => { authedJson<{ hasPin: boolean }>('/api/student/parent-pin').then((s) => setHasPin(s.hasPin)).catch(() => {}); }, []);
@@ -123,13 +199,18 @@ export function ParentPinSetting({ isAr }: { isAr: boolean }) {
       </h3>
       <p className="text-xs text-muted-foreground">
         {hasPin
-          ? t('Your PIN is set. We ask for it before you watch a lesson. Forgot it? Message us and we will clear it.', 'الرقم السري متسجل. هنسألك عليه قبل ما تتابع حصة. نسيته؟ ابعتلنا رسالة وهنمسحه.')
+          ? t('Your PIN is set. We ask for it before you watch a lesson and to leave kid mode.', 'الرقم السري متسجل. هنسألك عليه قبل ما تتابع حصة وعلشان تخرج من وضع الطفل.')
           : t('Set 4 digits only you know, so a child using your device cannot watch lessons or open parent things.', 'اختار 4 أرقام انت بس اللي تعرفها، علشان الطفل اللي بيستخدم جهازك ما يقدرش يتابع الحصص.')}
       </p>
-      {!open ? (
-        <Button type="button" size="sm" variant="outline" onClick={() => { setOpen(true); setError(''); }}>
-          {hasPin ? t('Change the PIN', 'غيّر الرقم السري') : t('Set a PIN', 'اعمل رقم سري')}
-        </Button>
+      {resetting ? (
+        <ResetPinForm isAr={isAr} onDone={() => setResetting(false)} onCancel={() => setResetting(false)} />
+      ) : !open ? (
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" size="sm" variant="outline" onClick={() => { setOpen(true); setError(''); }}>
+            {hasPin ? t('Change the PIN', 'غيّر الرقم السري') : t('Set a PIN', 'اعمل رقم سري')}
+          </Button>
+          {hasPin && <Button type="button" size="sm" variant="ghost" onClick={() => setResetting(true)}>{t('Forgot the PIN?', 'نسيت الرقم السري؟')}</Button>}
+        </div>
       ) : (
         <form onSubmit={save} className="grid gap-3 max-w-xs">
           {hasPin && <PinInput label={t('Current PIN', 'الرقم الحالي')} value={current} onChange={setCurrent} autoFocus />}
