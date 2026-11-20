@@ -120,7 +120,7 @@ function CurriculumStep({ pending, onLater }: { pending: Pending; onLater: () =>
 }
 
 
-type DraftFile = { fileId: string; kind: 'pdf' | 'image'; shared: boolean };
+type DraftFile = { fileId: string; kind: 'pdf' | 'image'; shared: boolean; name?: string | null };
 export type ReportDraft = {
   curriculum: Suggest | null;
   lessons: Array<{ track: string; number: number; title: string | null; seconds: number; pages: Array<{ page: number; seconds: number; inked: boolean; taught: boolean }> }>;
@@ -165,7 +165,7 @@ function ReportDraftPanel({ draft, picked, onPick }: { draft: ReportDraft; picke
             <label key={f.fileId} className="flex items-center gap-2 min-h-[36px]">
               <input type="checkbox" className="h-4 w-4 accent-[var(--teal)]" checked={picked.includes(f.fileId)}
                 onChange={(e) => onPick(e.target.checked ? [...picked, f.fileId] : picked.filter((x) => x !== f.fileId))} />
-              <span>{f.kind === 'pdf' ? t(`PDF ${i + 1}`, `ملف PDF ${i + 1}`) : t(`Picture ${i + 1}`, `صورة ${i + 1}`)}</span>
+              <span>{f.name || (f.kind === 'pdf' ? t(`PDF ${i + 1}`, `ملف PDF ${i + 1}`) : t(`Picture ${i + 1}`, `صورة ${i + 1}`))}</span>
             </label>
           ))}
         </fieldset>

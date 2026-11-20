@@ -41,6 +41,14 @@ async function storedFiles(client: any, bookingId: string): Promise<string[]> {
   return (data || []).map((f: any) => String(f.name)).filter((n: string) => ROOM_FILE_ID.test(n));
 }
 
+/** Original names of lesson files (lesson_files), by file id; a missing table or row just leaves names out. */
+async function fileNames(client: any, bookingIds: string[]): Promise<Record<string, string>> {
+  if (!bookingIds.length) return {};
+  const { data, error } = await client.from('lesson_files').select('booking_id, file_id, name').in('booking_id', bookingIds);
+  if (error) { console.error('[lesson_files]', error.message); return {}; }
+  return Object.fromEntries((data || []).map((r: any) => [`${r.booking_id}/${r.file_id}`, String(r.name || '')]));
+}
+
 export function registerAfterLessonRoutes(app: express.Express, deps: {
   getClient: () => any;
   verifyTeacherAuth: Middleware;
@@ -81,7 +89,9 @@ export function registerAfterLessonRoutes(app: express.Express, deps: {
       if (!(rows || []).length && !fileIds.length) return res.json({ draft: null });
       const end = lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes);
       const stopMs = Math.min(room?.ended_at ? Date.parse(room.ended_at) : end, now());
-      return res.json({ draft: buildReportDraft({ rows: rows || [], stopMs, fileIds, sharedIds: (shared || []).map((s: any) => s.file_id) }) });
+      const draft = buildReportDraft({ rows: rows || [], stopMs, fileIds, sharedIds: (shared || []).map((s: any) => s.file_id) });
+      const names = await fileNames(client, [b.id]);
+      return res.json({ draft: { ...draft, files: draft.files.map((f) => ({ ...f, name: names[`${b.id}/${f.fileId}`] || null })) } });
     } catch (err) {
       console.error('[GET report-draft]', err);
       return res.status(500).json({ error: 'Could not build the report draft.' });
@@ -129,12 +139,13 @@ export function registerAfterLessonRoutes(app: express.Express, deps: {
       if (!bookingIds.length) return res.json({ files: {} });
       const { data: shared, error: sErr } = await client.from('lesson_shared_files').select('booking_id, file_id, created_at').in('booking_id', bookingIds).limit(1000);
       if (sErr) throw new Error(`lesson_shared_files: ${sErr.message}`);
-      const out: Record<string, Array<{ fileId: string; kind: 'pdf' | 'image'; url: string }>> = {};
+      const names = await fileNames(client, bookingIds);
+      const out: Record<string, Array<{ fileId: string; kind: 'pdf' | 'image'; url: string; name: string | null }>> = {};
       const bucket = client.storage.from(BUCKET);
       for (const s of shared || []) {
         const { data, error: urlErr } = await bucket.createSignedUrl(`${s.booking_id}/${s.file_id}`, LINK_SECONDS);
         if (urlErr || !data?.signedUrl) continue;
-        (out[s.booking_id] ||= []).push({ fileId: s.file_id, kind: String(s.file_id).endsWith('.pdf') ? 'pdf' : 'image', url: data.signedUrl });
+        (out[s.booking_id] ||= []).push({ fileId: s.file_id, kind: String(s.file_id).endsWith('.pdf') ? 'pdf' : 'image', url: data.signedUrl, name: names[`${s.booking_id}/${s.file_id}`] || null });
       }
       return res.json({ files: out });
     } catch (err) {
