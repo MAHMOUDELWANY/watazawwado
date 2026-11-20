@@ -1046,6 +1046,21 @@ export interface Database {
         Insert: Partial<LessonTimelineEventRow> & Pick<LessonTimelineEventRow, 'booking_id' | 'type' | 'actor_role'>;
         Update: Partial<LessonTimelineEventRow>;
       };
+      lesson_prep: {
+        Row: LessonPrepRow;
+        Insert: Partial<LessonPrepRow> & Pick<LessonPrepRow, 'booking_id' | 'teacher_user_id'>;
+        Update: Partial<LessonPrepRow>;
+      };
+      lesson_files: {
+        Row: LessonFileRow;
+        Insert: Partial<LessonFileRow> & Pick<LessonFileRow, 'booking_id' | 'file_id' | 'name' | 'source'>;
+        Update: Partial<LessonFileRow>;
+      };
+      parent_pins: {
+        Row: ParentPinRow;
+        Insert: Partial<ParentPinRow> & Pick<ParentPinRow, 'user_id' | 'pin_hash'>;
+        Update: Partial<ParentPinRow>;
+      };
       lesson_quality: {
         Row: LessonQualityRow;
         Insert: Partial<LessonQualityRow> & Pick<LessonQualityRow, 'booking_id' | 'side'>;
@@ -1146,6 +1161,39 @@ export interface LessonQualityRow {
   audio_only_seconds: number;
   reconnects: number;
   focus_away_seconds: number;
+  /** Waiting-room device and network results (BUILD-LIST 1.5). */
+  precheck_detail: Record<string, unknown> | null;
+  updated_at: string;
+}
+
+/** What the teacher prepared before the lesson (BUILD-LIST 1.4). */
+export interface LessonPrepRow {
+  booking_id: string;
+  teacher_user_id: string;
+  notes: string;
+  slide: { track: string; number: number; page: number } | null;
+  updated_at: string;
+}
+
+/** The original name of a lesson file in the classroom-files bucket (prepared or added in the room). */
+export interface LessonFileRow {
+  booking_id: string;
+  file_id: string;
+  name: string;
+  source: 'prep' | 'room';
+  created_at: string;
+}
+
+/** A parent's 4-digit PIN as a salted scrypt hash, with lockout (BUILD-LIST 1.6). */
+export interface ParentPinRow {
+  user_id: string;
+  pin_hash: string;
+  failed_count: number;
+  locked_until: string | null;
+  reset_code_hash: string | null;
+  reset_expires_at: string | null;
+  reset_sent_at: string | null;
+  reset_attempts: number;
   updated_at: string;
 }
 

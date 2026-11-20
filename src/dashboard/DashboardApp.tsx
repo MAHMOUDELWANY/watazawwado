@@ -77,6 +77,8 @@ import ProgramsPage from './pages/ProgramsPage';
 import ReviewsPage from './pages/ReviewsPage';
 import LessonRoomPage from './pages/LessonRoomPage';
 import { ClassroomGate } from '../classroom/ClassroomGate';
+// BUILD-LIST 1.4: its own chunk, like the room (it carries the slide player).
+const LessonPrepPage = React.lazy(() => import('../classroom/LessonPrepPage'));
 import ClassBoardPage from './pages/ClassBoardPage';
 import UniversityPage from './pages/UniversityPage';
 import SponsorshipPage from './pages/SponsorshipPage';
@@ -664,6 +666,7 @@ export function DashboardApp() {
                 <Route path="/programs" element={isSuperAdmin ? <ProgramsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/reviews" element={isSuperAdmin ? <ReviewsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/room/:id" element={<ClassroomGate portal="teacher" fallback={<LessonRoomPage />} />} />
+                <Route path="/prepare/:id" element={<React.Suspense fallback={null}><LessonPrepPage /></React.Suspense>} />
                 <Route path="/class-board" element={<ClassBoardPage />} />
                 <Route path="/university" element={<UniversityPage />} />
                 <Route path="/sponsorship" element={isSuperAdmin ? <SponsorshipPage /> : <Navigate to="/dashboard" replace />} />

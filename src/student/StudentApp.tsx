@@ -57,12 +57,13 @@ import StudentProgressReportPage from './pages/StudentProgressReportPage';
 import StudentCertificatePage from './pages/StudentCertificatePage';
 import StudentLessonRoomPage from './pages/StudentLessonRoomPage';
 import { ClassroomGate } from '../classroom/ClassroomGate';
+import { KidModeLessons, KidModeShell, useKidMode } from './kidMode';
 import StudentCalendarPage from './pages/StudentCalendarPage';
 import StudentHomeworkPage from './pages/StudentHomeworkPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
-import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT } from './activeLearner';
+import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT, familyLearners } from './activeLearner';
 import { familyTourSteps, isFamilyAccount, learnerTourSteps, isTourHome, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
@@ -84,6 +85,8 @@ export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // BUILD-LIST 1.6: "Hand to my child" turns this device's portal into the child's learning pages only.
+  const kidMode = useKidMode();
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
@@ -458,6 +461,32 @@ export default function StudentApp() {
   const INK = 'bg-[#1F1A17]/92 dark:bg-[#1B1816]/90';
   const iconButton = 'tap-44 relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const pill = 'rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs';
+
+  // Kid mode: only the kid app's page set; every other path (booking, wallet, messages, account, home...) goes to the
+  // child's lessons. Leaving needs the parent PIN (KidModeShell).
+  if (kidMode && familyLearners(profile).some((l) => l.id === kidMode.learnerId)) {
+    return (
+      <KidModeShell isAr={isAr} kid={kidMode} onToggleLang={toggleLang}>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/lessons" element={<KidModeLessons isAr={isAr} kid={kidMode} />} />
+            <Route path="/room/:id" element={<ClassroomGate portal="student" fallback={<StudentLessonRoomPage lang={lang} />} />} />
+            <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
+            <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
+            <Route path="/homework" element={<StudentHomeworkPage lang={lang} />} />
+            <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
+            <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
+            <Route path="/certificate/:id" element={<StudentCertificatePage lang={lang} />} />
+            <Route path="/community" element={<StudentCommunityPage lang={lang} kid />} />
+            <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
+            <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
+            <Route path="*" element={<Navigate to="/student/lessons" replace />} />
+          </Routes>
+        </ErrorBoundary>
+        <FeedbackHost />
+      </KidModeShell>
+    );
+  }
 
   return (
     <ActiveLearnerProvider profile={profile}>

@@ -325,6 +325,12 @@ test('9. guardian observer: the teacher sees the chip, the child view does not, 
   const guardian = await open(browser, { role: 'parent' });
   await join(teacher, 'teacher', b.id);
   await join(kid, 'parent', b.id);
+  // BUILD-LIST 1.6: watching needs the parent PIN. Set it (or verify it from an earlier run) and hand the proof to the page.
+  const parentToken = await tokenFor('parent');
+  const set = await call(parentToken, 'PUT', '/api/student/parent-pin', { pin: '2468' });
+  const proof: string = set.json?.proof ?? (await call(parentToken, 'POST', '/api/student/parent-pin/verify', { pin: '2468' })).json?.proof;
+  expect(proof, 'parent PIN proof').toBeTruthy();
+  await guardian.page.addInitScript((p) => sessionStorage.setItem('wz-parent-proof', p), proof);
   await join(guardian, 'parent', b.id, { observe: true });
   await expect(teacher.page.getByText('Guardian watching')).toBeVisible({ timeout: 45_000 });
   await expectFlowing(guardian.page, 'guardian');
@@ -333,7 +339,10 @@ test('9. guardian observer: the teacher sees the chip, the child view does not, 
   const senders = await guardian.page.evaluate(() => ((window as any).__pcs as RTCPeerConnection[]).flatMap((pc) => pc.getSenders()).filter((s) => s.track).length);
   expect(senders, 'observer sends no media').toBe(0);
   // The server refuses a publish from an observer ticket.
-  const entry = await call(await tokenFor('parent'), 'GET', `/api/student/classroom/${b.id}/enter?observe=1`);
+  const noPin = await call(parentToken, 'GET', `/api/student/classroom/${b.id}/enter?observe=1`);
+  expect(noPin.status, 'watching without the PIN is refused').toBe(403);
+  const entered = await fetch(`${BASE}/api/student/classroom/${b.id}/enter?observe=1`, { headers: { Authorization: `Bearer ${parentToken}`, 'x-parent-proof': proof } });
+  const entry = { json: await entered.json() as any };
   expect(entry.json?.role).toBe('guardian_observer');
   const res = await fetch(`${BASE}/api/classroom/${b.id}/rtc/session`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-room-ticket': entry.json.ticket } });
   const { sessionId } = await res.json();

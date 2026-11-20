@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
-import { StartLessonButton } from './StartLessonButton';
+import { PrepareLessonLink, StartLessonButton } from './StartLessonButton';
 import { LessonAttendance, AttendanceHint } from './LessonAttendance';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { bookingStatusBadge } from '../lib/labels';
@@ -623,6 +623,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {(booking.classroom || booking.zoom_host_url || booking.zoom_meeting_link) && (
                       <StartLessonButton lesson={booking as any} t={t} label={t('Start as host', 'ابدأ كمضيف')} compact />
                     )}
+                    <PrepareLessonLink lesson={booking as any} t={t} compact />
                     {booking.zoom_meeting_link && (
                       <button
                         onClick={() => copyToClipboard(booking.zoom_meeting_link || '', 'zoom')}

@@ -33,7 +33,7 @@ describe('CL-09 room screen', () => {
     assert.match(kid, /<ClassroomGate portal="kid"/);
     assert.doesNotMatch(kid, /observe|GuardianChip/i);
     // The kid app never passes ?observe=1 on to the server (parent mode and the admin dashboard may).
-    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal !== 'kid' && search\.get\('observe'\) === '1'/);
+    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal !== 'kid' && !\(portal === 'student' && readKidMode\(\)\) && search\.get\('observe'\) === '1'/);
     // The chip is drawn for the teacher only.
     assert.match(read('src/classroom/ClassroomPage.tsx'), /isTeacher && guardianHere && <GuardianChip/);
   });

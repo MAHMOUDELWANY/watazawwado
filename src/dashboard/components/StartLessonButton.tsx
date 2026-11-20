@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, ExternalLink, TimerOff, Video } from 'lucide-react';
+import { BookOpenCheck, Clock, ExternalLink, TimerOff, Video } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { openZoomAsHost } from '../lib/dashboardApi';
 import { lessonJoinState, JOIN_OPENS_MIN } from '../../lib/lessonWindow';
@@ -17,6 +17,24 @@ type Lesson = {
   /** Classroom Task 14: our own room is the lesson link (rollout switch, from the server). */
   classroom?: boolean;
 };
+
+/**
+ * BUILD-LIST 1.4: "Prepare lesson" opens the prep page any time before the lesson ends (our room only): slides at the
+ * learner's place, files and private notes, all waiting in the room.
+ */
+export function PrepareLessonLink({ lesson, t, compact = false }: { lesson: Lesson; t: (en: string, ar: string) => string; compact?: boolean }) {
+  const now = useNowTick(60_000).getTime();
+  if (!lesson.classroom || lesson.status === 'cancelled' || roomJoinState(lesson, now) === 'ended') return null;
+  return (
+    <Link
+      to={`/dashboard/prepare/${encodeURIComponent(lesson.id)}`}
+      className={`inline-flex items-center justify-center gap-2 ${compact ? 'px-3.5 py-2' : 'px-5 py-2.5'} glass-surface text-foreground rounded-xl text-sm font-medium border border-border hover:bg-surface-subtle min-h-[40px]`}
+    >
+      <BookOpenCheck className="w-4 h-4 text-accent" aria-hidden="true" />
+      <span>{t('Prepare lesson', 'حضّر الحصة')}</span>
+    </Link>
+  );
+}
 
 /**
  * The teacher's Start button (owner review 2026-11-09): it works only during the lesson, from 10 minutes before
