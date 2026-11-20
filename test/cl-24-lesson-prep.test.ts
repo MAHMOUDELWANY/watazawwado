@@ -217,7 +217,7 @@ describe('CL-24 wiring', () => {
     assert.match(page, /<PrepNotes text=\{entry\.prepNotes\}/);
     assert.match(page, /\/files`, \{ headers: \{ 'x-room-ticket': ticket \} \}/);
     assert.match(page, /\/name`, \{/);
-    assert.match(read('supabase/migrations/20261120100000_classroom_before_lesson.sql'), /CREATE TABLE IF NOT EXISTS public\.lesson_files/);
+    assert.match(read('supabase/migrations/20261120100001_classroom_file_names_pin_reset.sql'), /CREATE TABLE IF NOT EXISTS public\.lesson_files/);
     const sql = read('supabase/migrations/20261120100000_classroom_before_lesson.sql');
     assert.match(sql, /CREATE TABLE IF NOT EXISTS public\.lesson_prep/);
     assert.match(sql, /REVOKE ALL ON TABLE public\.lesson_prep FROM anon, authenticated/);
