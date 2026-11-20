@@ -20,9 +20,11 @@ export type ReportDraft = {
   reactions: Record<string, number>;
   talk: Record<string, number> | null;
   earlyEnd: { minutesEarly: number; reason: string } | null;
+  /** 4.2: the words the teacher marked in the lesson's mushaf, for the report (they reach the learner with it). */
+  quran: { total: number; byType: Record<string, number>; verses: string[] } | null;
 };
 
-export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: string[]; sharedIds: string[] }): ReportDraft {
+export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: string[]; sharedIds: string[]; quranMarks?: Array<{ verse_key: string; type: string }> }): ReportDraft {
   const rows = [...input.rows].sort((a, b) => Date.parse(a.occurred_at) - Date.parse(b.occurred_at));
   const slides = rows.filter((r) => r.type === 'slide' && r.payload?.state && typeof r.payload.state.track === 'string');
   const pages = new Map<string, { track: string; number: number; page: number; ms: number; inked: boolean }>();
@@ -84,5 +86,14 @@ export function buildReportDraft(input: { rows: Row[]; stopMs: number; fileIds: 
     reactions,
     talk: talk && Object.keys(talk).length ? talk : null,
     earlyEnd: end ? { minutesEarly: Number(end.payload.minutesEarly) || 0, reason: String(end.payload.reason || '') } : null,
+    quran: quranSummary(input.quranMarks || []),
   };
+}
+
+const ayahOrder = (k: string) => k.split(':').reduce((n, p) => n * 1000 + Number(p), 0);
+function quranSummary(marks: Array<{ verse_key: string; type: string }>): ReportDraft['quran'] {
+  if (!marks.length) return null;
+  const byType: Record<string, number> = {};
+  for (const m of marks) byType[m.type] = (byType[m.type] || 0) + 1;
+  return { total: marks.length, byType, verses: [...new Set(marks.map((m) => m.verse_key))].sort((a, b) => ayahOrder(a) - ayahOrder(b)) };
 }

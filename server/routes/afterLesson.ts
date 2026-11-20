@@ -71,17 +71,19 @@ export function registerAfterLessonRoutes(app: express.Express, deps: {
     const client = db(res); if (!client) return;
     try {
       const b = await ownLesson(client, req, res); if (!b) return;
-      const [{ data: rows, error }, { data: room }, { data: shared }, fileIds] = await Promise.all([
+      const [{ data: rows, error }, { data: room }, { data: shared }, fileIds, { data: quranMarks }] = await Promise.all([
         client.from('lesson_timeline_events').select('type, actor_role, payload, occurred_at').eq('booking_id', b.id).in('type', ['slide', 'reaction', 'end', 'talk']).order('occurred_at', { ascending: true }).limit(5000),
         client.from('lesson_room_state').select('ended_at').eq('booking_id', b.id).maybeSingle(),
         client.from('lesson_shared_files').select('file_id').eq('booking_id', b.id),
         storedFiles(client, b.id),
+        // 4.2: the lesson's Quran marks (an unapplied table reads as none).
+        client.from('quran_marks').select('verse_key, type').eq('booking_id', b.id).limit(1000),
       ]);
       if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
-      if (!(rows || []).length && !fileIds.length) return res.json({ draft: null });
+      if (!(rows || []).length && !fileIds.length && !(quranMarks || []).length) return res.json({ draft: null });
       const end = lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes);
       const stopMs = Math.min(room?.ended_at ? Date.parse(room.ended_at) : end, now());
-      return res.json({ draft: buildReportDraft({ rows: rows || [], stopMs, fileIds, sharedIds: (shared || []).map((s: any) => s.file_id) }) });
+      return res.json({ draft: buildReportDraft({ rows: rows || [], stopMs, fileIds, sharedIds: (shared || []).map((s: any) => s.file_id), quranMarks: quranMarks || [] }) });
     } catch (err) {
       console.error('[GET report-draft]', err);
       return res.status(500).json({ error: 'Could not build the report draft.' });
