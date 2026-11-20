@@ -40,6 +40,8 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
    Keep what he praised (e.g. "Before the sun, a small voice rose").
 10. **No repetition inside a line or across the song** (rejected: "our zaad is light, our zaad is truth"); vary key
     words (light, road, way) between stanzas.
+12. **Simple, everyday English.** Words any listener knows, including non-native speakers (rejected: "morning dew");
+    no rare or poetic vocabulary.
 11. **Self-review before showing:** read every line aloud for rhythm; if a line is only "fine", rewrite it.
 
 ## Lyrics (anthem, 2026-11-20)
@@ -78,7 +80,7 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
 
 Order: chorus, home, language, resolve, teacher, chorus, resolve ×2.
 
-### English (v9 draft for owner review; resolve approved)
+### English (v10 draft for owner review; resolve approved)
 
 **[Chorus]**
 We rise as one from every shore,
@@ -93,10 +95,10 @@ and if a mountain blocks the way,
 with faith we climb it, come what may.
 
 **[1: home]**
-Before the sun, a small voice rose,
-and through the house the Quran flows;
-each letter, small as morning dew,
-in Jannah grows forever new.
+At dawn, a child begins to read,
+and every word becomes a seed;
+we plant it here, and it will grow
+in Jannah, more than we can know.
 
 **[2: language]**
 The Quran's tongue runs in our veins,
