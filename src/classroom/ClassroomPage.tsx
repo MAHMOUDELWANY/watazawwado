@@ -705,7 +705,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           : t('Your teacher is here', 'معلمك موجود');
     return (
       <Shell paper>
-        <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid}
+        <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid} iceServers={entry.iceServers}
           info={{ title, when: <WhenLine startMs={startMs} now={serverNow} />, here }} />
       </Shell>
     );
