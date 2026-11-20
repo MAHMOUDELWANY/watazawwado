@@ -22,31 +22,31 @@ easy to sing. Every line is exactly two feet. Each stanza is four lines; lines 2
 line 1). The meaning stays indirect: the Quran, knowledge as zaad for the journey to the Hereafter, the family, the
 language, the Seerah lived with mercy, the teacher who stays, coming back.
 
-### Arabic
+### Arabic (v4, 2026-11-20: stronger chorus, home and language; owner kept the teacher and the closing)
 
 **[اللازمة]**
-نُورُ قُرْآنِي وَزَادِي
-وَبِهِ يُهْدَى فُؤَادِي
-أَحْمِلُ العِلْمَ رَفِيقًا
-فِي طَرِيقِي لِلْمَعَادِ
+جَهِّزِ الزَّادَ لِدَرْبٍ
+لَيْسَ يُطْوَى بِالأَمَانِي
+زَادُهُ آيٌ وَصَبْرٌ
+وَدُمُوعٌ فِي المَثَانِي
 
 **[١: البيت]**
-فِي صَبَاحِ البَيْتِ طِفْلٌ
-يَقْرَأُ الآيَاتِ نُورَا
-أُمُّهُ تُصْغِي وَتَدْعُو
-رَبِّ فَاجْعَلْهُ شَكُورَا
+صَوْتُ طِفْلِي حِينَ يَتْلُو
+صَيَّرَ البَيْتَ مُصَلَّى
+كُلُّ حَرْفٍ مِنْهُ غَرْسٌ
+فِي جِنَانٍ لَيْسَ تَبْلَى
 
 **[٢: اللسان]**
-لُغَةُ القُرْآنِ تَحْيَا
-فِي قُلُوبٍ وَلِسَانِ
-نَعْبُرُ الدُّنْيَا بِحَرْفٍ
-مِنْ بَيَانٍ لِبَيَانِ
+نَحْفَظُ الضَّادَ عَزِيزًا
+إِرْثَ آبَاءٍ كِرَامِ
+ثُمَّ نَبْنِي مِنْهُ جِسْرًا
+بَيْنَ أَلْوَانِ الكَلَامِ
 
-**[٣: الدين رحمة]**
-سِيرَةُ المُخْتَارِ تَهْدِي
-كُلَّ قَلْبٍ لِلرَّشَادِ
-وَنَعِيشُ الدِّينَ حُبًّا
-رَحْمَةً بَيْنَ العِبَادِ
+**[٣: الرفق]**
+نَقْتَفِي خَطْوَ نَبِيٍّ
+كَانَ لِلنَّاسِ رَحِيمَا
+عَلَّمَ الدِّينَ بِرِفْقٍ
+فَاهْتَدَى القَلْبُ سَلِيمَا
 
 **[٤: المعلّم]**
 صَاحِبٌ فِي الدَّرْبِ يَمْشِي
@@ -59,35 +59,31 @@ language, the Seerah lived with mercy, the teacher who stays, coming back.
 لَمْ يَزَلْ فِي البَابِ هَادِي
 (ثم اللازمة)
 
-Order: chorus, 1, chorus, 2, 3, chorus, 4, closing, chorus.
-
-### English (its own lyric, same meaning, not a translation)
-
-Four-beat lines in rhyming pairs (AABB), so it sits on one simple melody.
+### English (v4, its own lyric)
 
 **[Chorus]**
-The Book is my light when the road is long,
-its words are my zaad, they keep me strong;
-I gather the knowledge, I guard the light,
-and walk toward home through the longest night.
+Pack your zaad for the road ahead,
+wishes alone won't get you there;
+take a verse, take patience, take
+the quiet tears of a whispered prayer.
 
 **[1: home]**
-A small voice rises before the sun,
-one ayah, then two, and the day's begun;
-his mother is listening, she quietly prays:
-"Keep him close to Your Book all his days."
+When my child recites, the walls grow still,
+our little home becomes a prayer hall;
+each letter he reads is a seed he sows
+in a garden that never fades at all.
 
 **[2: language]**
-A language that carried the final Word,
-the oldest of songs our grandparents heard;
-we learn it and pass it from old to young,
-a bridge between hearts in a living tongue.
+We keep the old tongue, the tongue of Daad,
+a gift from the ones who came before;
+and from it we build a bridge of words
+to every language, every shore.
 
-**[3: mercy]**
-We follow the Prophet ﷺ, the one who came
-with mercy for all, not with fear or with blame;
-we live what we learn, not in words but in deeds,
-a gentle faith planted like quiet seeds.
+**[3: gentleness]**
+We walk in the steps of a Prophet ﷺ who
+was gentle with all who came his way;
+he taught with kindness, never fear,
+and hearts found home in what he'd say.
 
 **[4: the teacher]**
 A friend on the road who walks at your side,
