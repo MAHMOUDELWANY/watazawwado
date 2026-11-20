@@ -47,7 +47,10 @@ Status: ✅ done and live · 🔨 building · ⏳ queued
 | 3.1 | Teacher late more than 2 min: blocking reason popup; admin excuses or deducts | ✅ (fixed 2026-11-20; re-test live) |
 | 3.2 | **Automatic attendance verdict:** from room joins and leaves under the attendance policy (RULES.md "what is paid", 15-minute no-show), the lesson is marked completed, learner no-show or teacher no-show by itself; Zoom-fallback lessons by Zoom attendance | ⏳ |
 | 3.3 | **Report draft that fills itself:** slides covered (lesson, page X to Y, from time on each page and pen use), files shared, corrections, talk time; the teacher edits and sends; files appear for the learner in the report | ⏳ |
-| 3.4 | **Rating:** after the lesson the learner (the parent for a child) rates it 1–5 with an optional note; private to the academy; the teacher sees their own average only | ⏳ |
+| 3.4 | **Rating:** after the lesson the learner (the parent for a child) rates it 1–5 with an optional note; private to the academy; the teacher sees their own average only. Once only, no editing (owner 2026-11-20) | built on `cls/ratings` |
+| 3.4b | **Teacher questionnaire** (owner 2026-11-20): 1–5 on explains clearly, patient and kind, on time, enjoys the lessons + note; blocking in the family portal after the 4th completed lesson with that teacher, then every 8; "later today" once; never on a child phone or kid mode; teacher sees per-question averages (finished months with 5+), super admin sees all (Reports page) | built on `cls/ratings` |
+| 3.4c | **Academy survey** (owner 2026-11-20): after a curriculum part or a whole track (from the teacher reports covering the part's last lesson), 0–10 recommend + likes + improve; not blocking, once per milestone; super admin averages, NPS and comments (Reports page) | built on `cls/ratings` |
+| 3.2b | **Nobody came** (owner 2026-11-20): recorded as teacher absent, provisionally; the teacher confirms or appeals (10+ characters) from a dashboard card within 48 h, else final; appeals on the admin page "Missed-lesson appeals"; the booking changes only when final, through the existing functions | built on `cls/ratings` |
 | 3.5 | **Admin lesson view:** per lesson, the timeline, attendance verdict, lateness and early-end reasons, quality, observations, rating | ⏳ |
 | 3.6 | Monthly connection report per teacher and mid-month alert | ✅ |
 
@@ -58,7 +61,7 @@ Status: ✅ done and live · 🔨 building · ⏳ queued
 | 4.1 | Mushaf with tajweed colours (Quran Foundation API, keys on the server) | built on `cls/quran` (student + kid tab, server-decided access) |
 | 4.2 | In the lesson: synced mushaf, teacher marks mistaken words; marks reach the learner with the report and feed the mistake bank | built on `cls/quran` (`quran_marks`, released on the report send, in the report draft) |
 | 4.3 | Homework opens at the assigned pages; listen and repeat with a reciter and word highlighting | built on `cls/quran` |
-| 4.4 | Word-mistake detector in the browser (open model, licence checked); devices that cannot run it send the recording to the teacher (NX-03) | built on `cls/quran` (docs/classroom/QURAN-DETECTOR.md) |
+| 4.4 | Word-mistake detector in the browser (open model, licence checked); devices that cannot run it send the recording to the teacher (NX-03) | built on `cls/quran` (docs/classroom/QURAN-DETECTOR.md); own copy of the model in bucket `quran-models` on `cls/ratings` (upload script not run yet) |
 | 4.5 | Automatic tajweed hints: only after 100 teacher-marked recordings reach 90% agreement (an accuracy test, not a launch item) | harness built on `cls/quran` (hints off) |
 
 Migrations for section 4: `20261121000000_quran_tab.sql` and `20261121000001_timeline_quran_event.sql` (not applied). Owner switch: `QURAN_TAJWEED_HINTS` (default off).

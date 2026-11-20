@@ -159,3 +159,17 @@ imported `./roomTools` without `.js`. Vercel runs real Node ESM; tsx resolves ex
 Reverted at once (4ea9a31c), fixed, re-applied. `test/server-esm-imports.test.ts` now walks the server import graph and
 fails on any extensionless relative value import. CLASSROOM_MODE is pilot for the teacher in CLASSROOM_PILOT_TEACHERS.
 Not yet seen on screen: prep page, waiting room checks, PIN and kid mode, board, tools, Quran tab, after-lesson report.
+
+### 2026-11-20: `cls/ratings` (worktree `wt-cls-ratings`): nobody-came appeals, three ratings, own Quran model copy
+- Migrations (NOT applied): `20261122000000_classroom_absence_and_ratings.sql` (lesson_absence_cases, teacher_ratings,
+  platform_ratings; no DROP COLUMN/POLICY) and `20261122000001_quran_models_bucket.sql` (public bucket).
+- Nobody came: `server/classroom/absence.ts`, routes `server/routes/absence.ts`, card `AbsenceGate`, admin page
+  `/dashboard/absence-appeals`. Provisional means the booking stays confirmed until the case is final (confirm, 48 h
+  sweep in the reminders cron, or the admin's decision); then `record_lesson_not_held` / `teacher_record_lesson_outcome`
+  run once. Chosen because no function reverses a not-held lesson (its credit could be spent in the 48 h). The outcome
+  buttons and "not held" answer 409 while a case is open.
+- Ratings: `lesson_feedback` is once only now; teacher questionnaire `server/routes/teacherRatings.ts` +
+  `TeacherRatingGate`; academy survey `server/routes/platformRatings.ts` + `PlatformSurveyCard`; admin panels on the
+  Reports page.
+- Quran model: run `npx tsx --env-file=.env scripts/quran/upload-model.ts` after the bucket migration. Watch egress
+  (QURAN-DETECTOR.md).
