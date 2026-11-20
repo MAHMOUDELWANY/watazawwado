@@ -504,6 +504,68 @@ scatter attention; later staff can run these accounts.
 
 ---
 
+## HR: Human resources (owner request 2026-11-20)
+
+HR owns the teacher from application to leaving: hiring, onboarding, the file, leave, periodic review, ending.
+Lesson quality belongs to Supervision; money belongs to Finance (HR never sees it, ST-01). The basics are the TU lane
+and ST-01; this lane adds what they lack.
+
+**No duplication (owner 2026-11-20):** the code was not checked when this lane was written. Each task starts by
+searching for what already exists (teacher invites, the agreement and its versions, `server/routes/lessonTeacherMove.ts`,
+subject licences NX-15, the checklist TE-04, the retention numbers of MK-02) and extends it instead of building a second one.
+
+Order: TU-01 → TU-02 → TU-08 → TU-03 (entry path), then ST-01 with HR-01, then HR-03 with HR-02 (and TU-05), then
+HR-04, HR-05, HR-06, HR-07, HR-08.
+
+### HR-01 Teacher file
+- Priority P2 · Zone 🔴 (personal data, RLS) · Size M · Status todo · Depends on ST-01
+- Do: one page per teacher for HR and super admin: agreement versions accepted and when, ijazah and certificates
+  (optional uploads), child-safeguarding declaration (mandatory, owner 2026-11-20), licensed subjects, key dates, HR
+  notes. No identity document is collected (owner 2026-11-20). Private bucket, never public.
+
+### HR-02 Scorecards for the interview and the mock lesson
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on ST-01 · Built with TU-05
+- Do: one fixed set of criteria per stage (1–5 each plus a note), the same for every candidate; the result and who
+  scored it are stored on the candidate or subject request.
+
+### HR-03 Public "Teach with us" form and the applicant pipeline
+- Priority P2 · Zone 🔴 (public form, personal data) · Size L · Status todo · Depends on ST-01
+- Owner 2026-11-20: built with the rest, not postponed.
+- Do: a public form in both languages (name, contact, country, subjects, experience in the applicant's own words,
+  optional certificate upload, consent to keep the data). Stages in the admin: applied → screening → interview →
+  mock lesson → offer → invited; a rejected applicant gets a kind email. "Invited" uses the existing invite of TU-01
+  with the subjects filled in. Rate limit and a honeypot field; applications are deleted after a set period if not hired.
+
+### HR-04 Probation period
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on TU-02 and the classroom ratings
+- Proposed, waiting for the owner: the first 10 lessons or 30 days, whichever ends later.
+- Do: a new teacher is marked "on probation": their lessons are listed first for Supervision, and the teacher sees
+  nothing different. At the end HR records one decision with a note: confirm, extend once, or end.
+
+### HR-05 Leave and substitute
+- Priority P2 · Zone 🔴 (bookings) · Size L · Status todo
+- Owner 2026-11-20: planned leave is requested at least 15 days ahead; an emergency is allowed and recorded with a reason.
+- Do: the teacher requests dates; HR approves or refuses; for each booked lesson in the range HR picks a substitute
+  (reusing the existing teacher move) or the family is asked to reschedule, with an email. Availability is closed for
+  the approved dates.
+
+### HR-06 Quarterly review and the warning ladder
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on the classroom ratings and MK-02
+- Do: per teacher and quarter, numbers pulled automatically (ratings, punctuality, lessons given, learners kept) and
+  a written review by HR that the teacher can read. Ladder, each step recorded with a date and reason: note → written
+  warning → pause (no new bookings) → end.
+
+### HR-07 Ending a teacher's work
+- Priority P3 · Zone 🔴 (auth, bookings) · Size M · Status todo · Depends on HR-05
+- Do: a checklist that cannot be closed half-done: learners moved or informed, future lessons handled, public profile
+  hidden, access closed, last pay marked for Finance, reason for leaving recorded.
+
+### HR-08 Capacity report
+- Priority P3 · Zone 🟢 · Size S · Status todo
+- Do: hours offered against hours booked per subject, teacher gender and time zone band, so we know when to hire.
+
+---
+
 ## AD: Super admin (beyond the CRM)
 
 ### AD-01 Admin overview that answers "what needs me today"
