@@ -173,6 +173,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
    * H3: the teacher ended the lesson. ended_at is stored and room_ended is written once; from then enter, media,
    * events, files and heartbeats are refused. Two ends at once only move ended_at by a few milliseconds.
    */
+  /** Whole minutes left before the booked end (negative after it). */
+  const earlyMinutes = (b: any) => Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
   const endRoom = async (client: any, id: string) => {
     const at = iso();
     const { error } = await client.from('lesson_room_state').upsert({ booking_id: id, ended_at: at }, { onConflict: 'booking_id' });
@@ -437,6 +439,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         // Board permission is checked later, against the fresh board; nothing else reads the snapshot.
         if (e.t === 'board') { if (t.role === 'teacher' || t.role === 'learner') boards.push(e); continue; }
         if (!mayPersist(e, t.role, {})) continue;
+        // An early end needs a reason, so only POST /end may record it; here it is dropped.
+        if (e.t === 'end' && earlyMinutes(live.booking) >= EARLY_END_GRACE_MIN) continue;
         const { t: type, ...payload } = e;
         const ms = typeof at === 'number' && at <= now() && at >= now() - EVENT_SKEW_MS ? at : now();
         rows.push({ booking_id: t.bookingId, type, actor_role: attendanceRole(t.role), payload, occurred_at: new Date(ms).toISOString() });
@@ -478,11 +482,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       }
       // H3/L4: only the teacher's end is persisted (mayPersist), and it ends the room on the server too. An early end
       // never goes this way: it needs a reason, so only POST /end (which checks it) may end the room before time.
-      if (rows.some((r) => r.type === 'end')) {
-        const b: any = live.booking;
-        const minutesEarly = Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
-        if (minutesEarly < EARLY_END_GRACE_MIN) await endRoom(client, t.bookingId);
-      }
+      if (rows.some((r) => r.type === 'end')) await endRoom(client, t.bookingId);
       return res.json({ stored: rows.length });
     } catch (err) {
       return fail(res, err, 'events');
@@ -819,8 +819,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!live) return;
       // Owner 2026-11-20: ending more than EARLY_END_GRACE_MIN before the booked end needs a written reason, kept on
       // the timeline for the admin.
-      const b: any = live.booking;
-      const minutesEarly = Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
+      const minutesEarly = earlyMinutes(live.booking);
       const reason = typeof req.body?.reason === 'string' ? req.body.reason.trim().slice(0, 1000) : '';
       if (minutesEarly >= EARLY_END_GRACE_MIN) {
         if (reason.length < 10) return res.status(400).json({ error: 'Write why the lesson ends early (at least 10 characters).', needsReason: true, minutesEarly });

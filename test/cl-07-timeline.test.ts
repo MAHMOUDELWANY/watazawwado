@@ -120,7 +120,7 @@ describe('CL-07 events and state routes', () => {
   after(async () => { await new Promise<void>((r) => server.close(() => r())); });
 
   const ticket = (role: string, userId: string, joinId: string) =>
-    signTicket({ bookingId: BOOKING_ID, role: role as any, userId, exp: NOW + 60_000, joinId, studentId: 'child-1' }, SECRET);
+    signTicket({ bookingId: BOOKING_ID, role: role as any, userId, exp: NOW + 60 * 60_000, joinId, studentId: 'child-1' }, SECRET);
   const T = ticket('teacher', 'teacher-1', 'jt');
   const L = ticket('learner', 'parent-1', 'jl');
   const G = ticket('guardian_observer', 'parent-2', 'jg');
@@ -291,7 +291,8 @@ describe('CL-07 events and state routes', () => {
     await post(T, [{ t: 'end' }]);
     assert.strictEqual(db.tables.lesson_room_state[0].ended_at, undefined);
     clock = Date.parse('2026-11-20T10:29:00Z');
-    await post(T, [{ t: 'end' }]);
+    const late = await post(T, [{ t: 'end' }]);
+    assert.strictEqual(late.status, 200, await late.clone().text());
     assert.strictEqual(timeline().filter((r) => r.type === 'end').length, 1);
     assert.strictEqual(db.tables.lesson_room_state[0].ended_at, new Date(clock).toISOString());
     assert.ok(snapshot().board, 'ending keeps the snapshot');
