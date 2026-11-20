@@ -1,6 +1,6 @@
 /** Pure shapes and checks for the lesson room channel, shared by the browser and the server (no React, no Supabase). */
 import type { Layer, LinkStats, Side } from '../classroom/engine/types';
-import { TOOL_EVENT_KEYS, type ToolEvent } from './roomTools';
+import { TOOL_EVENT_KEYS, type ToolEvent } from './roomTools.js';
 
 /** What travels in the lesson room (NX-12): which lesson is open, where the teacher is, and the teacher's ink. Nothing else. */
 export interface RoomState { track: string; number: number; page: number; step: number; /** The series opening is playing. */ opening?: boolean;
