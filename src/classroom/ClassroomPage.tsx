@@ -109,6 +109,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [pointer, setPointer] = useState<{ x: number; y: number; at: number } | null>(null);
   const [pdf, setPdf] = useState<{ fileId: string; page: number; url: string | null } | null>(null);
   const [quranPage, setQuranPage] = useState(() => (isTeacher ? lastRoomQuranPage(bookingId) : 1));
+  const heardQuran = useRef(false);
   const [restored, setRestored] = useState<RoomSnapshot | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [endReason, setEndReason] = useState('');
@@ -295,12 +296,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         // old tab; a learner keeps 'screen' while the teacher still shares.
         if (!heardLayout.current) {
           if (s.layout) setLayout(s.layout === 'screen' && isTeacher ? 'content' : s.layout);
-          setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
+          setPane(s.pane ?? (s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson'));
         }
         if (s.board) scenes.current[''] = s.board;
         Object.assign(scenes.current, s.boards);
         learnerDraw.current = s.learnerDraw ?? s.board?.learnerDraw ?? false;
         if (s.pdf) setPdf({ ...s.pdf, url: null });
+        // 4.2: both sides open the mushaf at the teacher's saved page; a newer live 'quran' event still wins (heardQuran).
+        if (s.quran && !heardQuran.current) setQuranPage(s.quran.page);
       }
       setRestored(snap?.snapshot ?? {});
       try {
@@ -460,7 +463,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         if (!isTeacher) void engineRef.current?.setRecitationMode(e.on).catch(() => {});
         return;
       case 'quran':
-        if (!isTeacher) setQuranPage(e.page);
+        if (!isTeacher) { heardQuran.current = true; setQuranPage(e.page); }
         return;
       case 'end':
         // H3/L4: anyone with the room key can send this; the server says whether the lesson really ended.
@@ -822,7 +825,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           : <LearnerCurriculum state={room.state} ink={room.ink} />
       ) : pane === 'quran' ? (
         <QuranPane bookingId={bookingId} page={quranPage} teacher={isTeacher} staff={portal === 'teacher'}
-          onPage={isTeacher ? (p) => { setQuranPage(p); publishEvent({ t: 'quran', page: p }); } : undefined} />
+          onPage={isTeacher ? (p) => { setQuranPage(p); send({ t: 'quran', page: p }); } : undefined} />
       ) : pane === 'board' ? (
         <div className="h-full overflow-hidden">
           {restored && <Board role={role} sync={board} />}
@@ -864,7 +867,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     <div className="room-ink flex shrink-0 flex-wrap items-center gap-2">
       <div role="tablist" aria-label={t('What to show', 'تعرض إيه')} className="glass-1 flex items-center gap-0.5 rounded-[var(--r-pill)] p-1">
         {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')], ...(quranLesson ? [['quran', BookMarked, t('Mushaf', 'المصحف')]] as const : [])] as const).map(([p, Icon, label]) => (
-          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => { changeLayout('content', p); if (p === 'quran') publishEvent({ t: 'quran', page: quranPage }); }}
+          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => { changeLayout('content', p); if (p === 'quran') send({ t: 'quran', page: quranPage }); }}
             className={cn('room-press flex min-h-10 items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium focus-ring',
               pane === p ? 'bg-[#3A332D] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : 'text-muted-foreground hover:text-foreground')}>
             <Icon className={cn('h-4 w-4', pane === p && 'text-[#F0B54A]')} aria-hidden="true" />{label}

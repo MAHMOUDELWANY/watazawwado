@@ -91,6 +91,8 @@ function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
   switch (e.t) {
     // talk: the teacher's page measures both sides (2.8).
     case 'slide': case 'pdf': case 'layout': case 'talk': case 'end': return role === 'teacher';
+    // 4.2: the mushaf page the teacher shows.
+    case 'quran': return role === 'teacher';
     case 'reaction': case 'focus': return role === 'learner';
     case 'quality': return e.side === attendanceRole(role);
     case 'board': return role === 'teacher' || (role === 'learner' && (snapshot.learnerDraw ?? snapshot.board?.learnerDraw) === true);
@@ -394,7 +396,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
       const rows: any[] = [];
       const boards: Array<Extract<RoomEvent, { t: 'board' }>> = [];
-      const patch: { slide?: unknown; pdf?: unknown; layout?: unknown } = {};
+      const patch: { slide?: unknown; pdf?: unknown; layout?: unknown; pane?: unknown; quran?: unknown } = {};
       for (const { at, event: e } of items as Array<{ at: unknown; event: RoomEvent }>) {
         // Board permission is checked later, against the fresh board; nothing else reads the snapshot.
         if (e.t === 'board') { if (t.role === 'teacher' || t.role === 'learner') boards.push(e); continue; }
@@ -404,7 +406,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         rows.push({ booking_id: t.bookingId, type, actor_role: attendanceRole(t.role), payload, occurred_at: new Date(ms).toISOString() });
         if (e.t === 'slide') patch.slide = e.state;
         if (e.t === 'pdf') patch.pdf = { fileId: e.fileId, page: e.page };
-        if (e.t === 'layout') patch.layout = e.mode;
+        if (e.t === 'layout') { patch.layout = e.mode; if (e.pane) patch.pane = e.pane; }
+        // 4.2: the mushaf page the teacher shows, for a rejoin or a late learner.
+        if (e.t === 'quran') patch.quran = { page: e.page };
       }
       if (rows.length) {
         const { error } = await client.from('lesson_timeline_events').insert(rows);

@@ -5,7 +5,7 @@
 import type { RoomEvent } from '../lib/roomEvents';
 
 /** Types the server stores (the rest are live only). The server re-checks the sender's role. */
-export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end']);
+export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end', 'quran']);
 export const FLUSH_EVERY_MS = 30_000;
 const MAX_BATCH = 50; // the server refuses more in one call
 const KEEPALIVE_MAX = 60_000; // browsers cap keepalive bodies at 64 kB
@@ -20,6 +20,10 @@ export type RoomSnapshot = {
   learnerDraw?: boolean;
   pdf?: { fileId: string; page: number };
   layout?: 'conversation' | 'content' | 'screen';
+  /** The content tab the teacher showed last (from layout events). */
+  pane?: 'lesson' | 'board' | 'pdf' | 'quran';
+  /** 4.2: the mushaf page the teacher showed last. */
+  quran?: { page: number };
 };
 
 type Item = { at: number; event: RoomEvent };

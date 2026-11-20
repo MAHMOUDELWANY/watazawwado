@@ -45,7 +45,7 @@ export type RoomEvent =
   | { t: 'quality'; side: Side; layer: Layer; link: 'good' | 'weak' | 'poor'; stats?: LinkStats }
   | { t: 'observer'; kind: 'guardian'; present: boolean }
   | { t: 'layout'; mode: 'conversation' | 'content' | 'screen'; pane?: 'lesson' | 'board' | 'pdf' | 'quran' }
-  /** 4.2: the mushaf page the teacher shows (1-604); the learner follows it. Live only, not persisted. */
+  /** 4.2: the mushaf page the teacher shows (1-604); the learner follows it. Saved in the room snapshot for rejoin. */
   | { t: 'quran'; page: number }
   /** Teacher's recitation mode, applied on both sides (live only). */
   | { t: 'recitation'; on: boolean }

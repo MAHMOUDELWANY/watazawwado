@@ -61,7 +61,7 @@ Status: ✅ done and live · 🔨 building · ⏳ queued
 | 4.4 | Word-mistake detector in the browser (open model, licence checked); devices that cannot run it send the recording to the teacher (NX-03) | built on `cls/quran` (docs/classroom/QURAN-DETECTOR.md) |
 | 4.5 | Automatic tajweed hints: only after 100 teacher-marked recordings reach 90% agreement (an accuracy test, not a launch item) | harness built on `cls/quran` (hints off) |
 
-Migration for section 4: `20261121000000_quran_tab.sql` (not applied). Owner switch: `QURAN_TAJWEED_HINTS` (default off).
+Migrations for section 4: `20261121000000_quran_tab.sql` and `20261121000001_timeline_quran_event.sql` (not applied). Owner switch: `QURAN_TAJWEED_HINTS` (default off).
 
 ## 5. Design (waits for the Mobbin MCP)
 
