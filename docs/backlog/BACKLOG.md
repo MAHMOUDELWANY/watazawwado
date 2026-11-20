@@ -927,6 +927,53 @@ old NX-12) is planned separately: `docs/superpowers/specs/2026-11-17-classroom-d
   hours, new and leaving learners, teacher quality (lateness, connection, report compliance), compared with the
   month before.
 
+### Additions and order (owner 2026-11-20)
+
+Order: FN-01 → FN-07 → FN-02 → FN-03 → FN-08 → FN-04, then FN-09 and FN-10, then FN-05, FN-06, FN-11, FN-12.
+
+Owner decisions 2026-11-20:
+- Reports are in USD. A transfer or cost in another currency is stored with its own amount and the rate of its day.
+- Refunds go back to the original card or PayPal account from the Refund button; a manual transfer stays only for
+  cases where that is not possible (RULES.md §5).
+- There is no accountant yet: FN-10 exports a general CSV, adjusted when one is hired. Tax and legal invoice rules
+  are not decided here.
+
+No duplication: each task first searches the existing code (Payroll page, Refund button, Stripe and PayPal webhooks,
+`payments` and package tables, discount and referral credit code, `docs/business/LEDGER.md`) and extends it.
+
+### FN-07 PayPal money sync
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo · Depends on FN-01
+- Do: import PayPal transactions (gross, fee, net, currency) into the same table and daily job as FN-01, so profit
+  covers both providers. Needs PayPal reporting access on the owner's account (owner adds any key in Vercel).
+
+### FN-08 Money received but not yet earned
+- Priority P1 · Zone 🔴 (money) · Size S · Status todo
+- Do: a report from existing tables, no new ones: unused package lessons at their package price, lesson credits,
+  referral and welcome credit balances, pay-later bookings awaiting payment. FN-04 shows cash and earned revenue
+  separately using it.
+
+### FN-09 Refund and dispute register
+- Priority P1 · Zone 🔴 (money) · Size M · Status todo
+- Do: the Refund button refunds through Stripe or PayPal to the original method (manual transfer as the fallback,
+  recorded with method and reference). A list of open refund and withdrawal requests with days left of the 14.
+  A Stripe dispute (chargeback) alerts the super admin at once and shows its deadline, amount and fee.
+- Done when: tests prove a refund reverses the lesson or credits once only, and never refunds more than was paid.
+
+### FN-10 Receipts and accountant export
+- Priority P2 · Zone 🔴 (money) · Size M · Status todo
+- Do: a numbered receipt (PDF) for every payment, in the family portal and the payment email. A monthly CSV export:
+  payments, fees, refunds, teacher pay, expenses.
+
+### FN-11 Cost per new learner and learner value
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on FN-02 and SM-05
+- Do: per channel and month: marketing spend, sign-ups, trials, paying learners, cost per paying learner, and what a
+  learner has paid to date. Also the monthly cost of discounts, family 5% and referral credit.
+
+### FN-12 Three-month forecast
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on FN-04 and FN-08
+- Do: expected cash for the next 3 months from active packages and booked lessons, recurring costs and teacher pay
+  due on the 1st to 5th; warns a month ahead when cash would fall under the reserve target.
+
 ---
 
 ## PARKED: ideas kept for later (owner 2026-11-17; agents: do not build)
