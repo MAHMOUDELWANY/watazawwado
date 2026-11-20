@@ -741,6 +741,68 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 
 ---
 
+## SM: Social media management inside the admin (owner request 2026-11-20)
+
+Why: the owner runs social media himself and does not want to open Metricool, Buffer or Notion to know how things
+are going. Everything is seen and managed from the admin, in our design. Metricool and Buffer stay as hidden engines
+for publishing; Notion is retired after SM-06 (kept read-only for a month, then closed). Replies to comments and
+messages stay manual in the apps (no automatic replies, no budget).
+
+Checked 2026-11-20: Buffer's API works on the free plan with a personal key, analytics included (about 100 requests
+per 15 min, 250 per day, 3,000 per 30 days; channels: Instagram, TikTok, YouTube). Metricool's API is paid only
+(Advanced plan), its free plan keeps 30 days; it holds Facebook, Threads and Google Business. Both keep about a
+month of history, so our daily sync is what builds the history. First-touch source tracking already exists
+(`src/lib/leadSource.ts`, `students.lead_source`, shown in the CRM); a `testimonials` table exists since the phase 3
+schema (check before SM-07). Not verified: that Meta grants page insights to our own app without app review.
+
+Order: SM-01 to SM-09 as numbered. Backend first, design last. The owner pastes API keys into Vercel himself.
+
+### SM-01 Tables for social numbers
+- Priority P2 · Zone 🟢 · Size S · Status todo
+- Do: `social_daily_stats` (channel, date, followers, views, reach, interactions, posts) and `social_posts` (channel,
+  external id, title, published_at, metrics, hook, season, parent post, link code). Super admin only (RLS).
+
+### SM-02 Daily Buffer sync
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on SM-01 · Needs: the owner's Buffer API key in Vercel
+- Do: the existing cron pulls posts and metrics for Instagram, TikTok and YouTube once a day and upserts them. Stay
+  far below the free limits. Test with a recorded response.
+
+### SM-03 Daily Facebook sync from Meta
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on SM-01 · Needs: a one-time approval from the owner's Facebook account
+- Do: read page and post insights from the Meta Graph API with a page token. Fallback if Meta refuses without app
+  review: a daily Claude task that reads Metricool through its connector and writes the same tables.
+
+### SM-04 Admin page "Social media"
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on SM-02
+- Do: one card per channel, 30 and 90 day trend, best and worst posts. Existing components and tokens; design last.
+
+### SM-05 Post codes, short links and the per-post funnel
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on SM-01
+- Do: each post gets a code; `/go/<code>` counts the click and redirects with UTM tags (`utm_content` = the code),
+  reusing the existing first-touch capture. Report per post: clicks, sign-ups, free trials, paid.
+
+### SM-06 Content board (replaces Notion)
+- Priority P2 · Zone 🟢 · Size L · Status todo · Depends on SM-01
+- Do: idea → script → review → scheduled → published, with the owner's approve / change button, and the fields hook,
+  season (Ramadan, Hajj, back to school; prepared 6 weeks ahead) and "derived from" (long video → shorts → carousel →
+  article → email). Import the Notion content. Scheduling itself stays with Claude through the connectors at first.
+
+### SM-07 Testimonials with consent
+- Priority P2 · Zone 🔴 (public content, consent) · Size M · Status todo · Depends on the ratings branch (`cls/ratings`); covers NX-05
+- Do: after a 5-star rating, ask for a written review and explicit consent to publish. Shown with the first name
+  and the country as a flag image (owner 2026-11-20; not an emoji, Windows does not draw flag emoji). Bank in the admin.
+
+### SM-08 "Lead from a message" quick form
+- Priority P3 · Zone 🟢 · Size S · Status todo
+- Do: in the CRM, a short form that turns a DM or comment into a lead with its channel as the source.
+
+### SM-09 Weekly report
+- Priority P3 · Zone 🟢 · Size M · Status todo · Depends on SM-04, SM-05
+- Do: on the same page, and a short email every Monday: channel numbers next to ours (trials, paid, cost per trial),
+  top and bottom 3 posts.
+
+---
+
 ## CL: Classroom (owner request 2026-11-17)
 
 The whole lane is planned in `docs/superpowers/specs/2026-11-17-classroom-design.md`, built by the classroom
