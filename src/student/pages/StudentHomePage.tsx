@@ -36,6 +36,7 @@ import { LessonDayCard, RoomJoinLink, isLessonDay, joinState, lessonJoin, useNow
 import { ROOM_OPENS_MIN } from '../../lib/roomWindow';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
+import { PlatformSurveyCard } from '../components/PlatformSurveyCard';
 import { HomeworkCard } from '../components/HomeworkCard';
 import { ReviewCard } from '../components/ReviewCard';
 import { WriteReviewCard } from '../components/WriteReviewCard';
@@ -380,6 +381,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
       {/* RN-04: after a lesson, offer the same weekday and time next week (a suggestion, never a recurring booking). */}
       <LessonFeedbackCard isAr={isAr} timezone={profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} />
+      <PlatformSurveyCard isAr={isAr} />
       <NextWeekSuggestion isAr={isAr} timezone={profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} />
       <InstallAppEntry variant="card" isAr={isAr} />
 

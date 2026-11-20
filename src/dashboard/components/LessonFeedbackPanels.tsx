@@ -146,3 +146,48 @@ export function AdminTeacherRatings() {
     </section>
   );
 }
+
+interface AdminPlatform {
+  count: number; dismissed: number; average: number | null; nps: number | null;
+  items: Array<{ learnerName: string | null; title: string; titleAr: string; kind: 'part' | 'track'; recommend: number; liked: string | null; improve: string | null; createdAt: string }>;
+}
+
+/** Super admin: the survey after curriculum parts and tracks (0-10 recommend, likes, improvements). */
+export function AdminPlatformRatings() {
+  const { t, isAr } = useT();
+  const [data, setData] = useState<AdminPlatform | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => { dashboardFetch<AdminPlatform>('/api/dashboard/admin/platform-ratings').then(setData).catch(() => setFailed(true)); }, []);
+  return (
+    <section className="p-6 rounded-2xl glass-card space-y-4" aria-labelledby="platform-ratings-admin-title" data-testid="admin-platform-ratings">
+      <div>
+        <h2 id="platform-ratings-admin-title" className="text-lg font-display font-bold text-foreground">{t('Academy survey', 'استبيان الأكاديمية')}</h2>
+        <p className="text-sm text-muted-foreground">{t('Asked when a learner finishes a curriculum part or a whole track.', 'بيتسأل لما الطالب يخلّص جزء من المنهج أو المنهج كله.')}</p>
+      </div>
+      {failed ? <p className="text-sm text-destructive" role="alert">{t('Could not load the answers.', 'معرفناش نحمّل الإجابات.')}</p>
+        : !data ? <p className="text-sm text-muted-foreground">{t('Loading…', 'بنحمّل…')}</p>
+        : data.count === 0 ? <p className="text-sm text-muted-foreground">{t('No answers yet.', 'لسه مفيش إجابات.')}</p>
+        : (
+          <>
+            <p className="text-sm text-foreground">
+              {t(`${data.count} answers · average ${data.average} / 10 · NPS ${data.nps} · ${data.dismissed} closed without answering`, `${data.count} إجابة · المتوسط ${data.average} من 10 · NPS ${data.nps} · ${data.dismissed} قفلوه من غير إجابة`)}
+            </p>
+            <ul className="divide-y divide-border">
+              {data.items.map((i, n) => (
+                <li key={n} className="py-3 text-sm space-y-1">
+                  <div className="flex flex-wrap gap-x-3">
+                    <strong className="tabular-nums text-foreground">{i.recommend}/10</strong>
+                    <span className="text-foreground">{i.learnerName || '—'}</span>
+                    <span className="text-muted-foreground">{i.kind === 'track' ? t('Track', 'المنهج كله') : t('Part', 'جزء')}: {isAr ? i.titleAr : i.title}</span>
+                    <span className="text-xs text-muted-foreground ms-auto">{DateTime.fromISO(i.createdAt).setLocale(isAr ? 'ar' : 'en').toFormat('d LLL yyyy')}</span>
+                  </div>
+                  {i.liked && <p dir="auto"><span className="text-muted-foreground">{t('Likes: ', 'عاجبه: ')}</span>{i.liked}</p>}
+                  {i.improve && <p dir="auto"><span className="text-muted-foreground">{t('Improve: ', 'يتحسن: ')}</span>{i.improve}</p>}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+    </section>
+  );
+}
