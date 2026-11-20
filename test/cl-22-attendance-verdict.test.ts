@@ -27,8 +27,8 @@ describe('CL-22 decideVerdict (RULES.md what is paid, 15-minute rule)', () => {
   it('learner came, teacher never joined: teacher no-show', () => {
     assert.strictEqual(decide([ev('room_joined', 'student', 0)]).verdict, 'teacher_no_show');
   });
-  it('nobody came, a short lesson, an early end before 15 min, a late teacher: review', () => {
-    assert.strictEqual(decide([]).reason, 'nobody_came');
+  it('nobody came: teacher no-show (provisional, see cl-50); a short lesson, an early end, a late teacher: review', () => {
+    assert.deepStrictEqual([decide([]).verdict, decide([]).reason], ['teacher_no_show', 'nobody_came']);
     assert.strictEqual(decide([ev('room_joined', 'teacher', 0), ev('room_joined', 'student', 1), ev('room_left', 'student', 6)]).reason, 'short_together');
     assert.strictEqual(decide([ev('room_joined', 'teacher', 0)], 10).reason, 'ended_before_15');
     assert.strictEqual(decide([ev('room_joined', 'teacher', 20)]).reason, 'teacher_late_past_15');

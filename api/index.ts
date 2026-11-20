@@ -78,6 +78,8 @@ import { quranFoundation } from '../server/quran/foundation.js';
 import { hintsFlag } from '../server/quran/rules.js';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
+import { registerAbsenceRoutes } from '../server/routes/absence.js';
+import { absenceCaseOpen, sweepAbsenceCases } from '../server/classroom/absence.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
 import { currentGiftSeason, makeGiftCode, giftLocked, cleanGiftText } from '../server/gifts.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
@@ -5007,6 +5009,10 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     // 3. Transactional Outcome Path
     if (status === 'completed' || status === 'no_show') {
+      // A lesson nobody came to waits for the teacher's confirm or appeal (server/classroom/absence.ts).
+      if (await absenceCaseOpen(supabase, id)) {
+        return res.status(409).json({ code: 'ABSENCE_CASE_OPEN', error: 'This lesson was recorded as missed. Confirm or appeal it from the card on your dashboard.' });
+      }
       const creditDecision = req.body.no_show_credit_decision === 'used' || req.body.consume_package_credit === true
         ? 'used'
         : 'returned';
@@ -8197,6 +8203,8 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     let roomVerdicts = 0;
     if (cronClient && process.env.VERCEL_ENV === 'production') {
       try { roomVerdicts = (await sweepRoomVerdicts(cronClient, { afterOutcome: afterLessonOutcome })).decided; } catch (err) { console.warn('[Cron] room verdicts failed:', err); }
+      // Missed-lesson cases nobody answered in 48 hours become final as "teacher absent".
+      try { await sweepAbsenceCases(cronClient, { afterOutcome: afterLessonOutcome }); } catch (err) { console.warn('[Cron] absence cases failed:', err); }
     }
     await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest, recitationsPurged, roomVerdicts });
     res.json({
@@ -10908,6 +10916,8 @@ registerLessonPrepRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacher
 registerQuranRoutes(app, { getClient: getSupabaseAdminClient, quran: quranFoundation, verifyTeacherAuth, verifyStudentAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent, hintsFlag });
 // Classroom Task 10: teacher late reasons and their super admin review.
 registerLateReasonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()) });
+// Owner 2026-11-20: "nobody came" is a provisional teacher absence the teacher confirms or appeals; admin decides appeals.
+registerAbsenceRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()), afterOutcome: afterLessonOutcome });
 
 // NX-03: recitation recordings and the teacher's reply.
 registerRecitationRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, rateLimit, getLearners: getAuthorizedLearnersForStudent });

@@ -3,13 +3,16 @@ import { roomHardCloseMs } from '../../src/lib/roomWindow.js';
 import { lessonEndMs } from '../../src/lib/lessonWindow.js';
 import { classroomEnabledFor } from './mode.js';
 import { notifySuperAdmins, notifyUser, type InboxNotice } from '../notifications/inbox.js';
+import { applyNotHeld, openAbsenceCase } from './absence.js';
 
 /**
  * Classroom BUILD-LIST 3.2: the automatic attendance verdict of a room lesson, under RULES.md "What is paid" (§2c).
  * - completed: held (analyzeAttendance: together >= 20 min for 30-min lessons, 30 otherwise).
  * - learner_no_show: the teacher came and stayed past start + 15 min; the learner never came in those 15 minutes.
- * - teacher_no_show: the learner came; the teacher never joined in the lesson window.
- * - review: anything else (nobody came, a short lesson, a Zoom fallback that was not held, a teacher who ended before
+ * - teacher_no_show: the learner came; the teacher never joined in the lesson window. Also "nobody came" (owner,
+ *   2026-11-20), but provisionally: a lesson_absence_cases row the teacher confirms or appeals within 48 h
+ *   (server/classroom/absence.ts); the booking changes only when that case is final.
+ * - review: anything else (a short lesson, a Zoom fallback that was not held, a teacher who ended before
  *   the 15 minutes): nothing changes on the booking and the super admin is told.
  * The booking moves through the same database functions the teacher's buttons use (teacher_record_lesson_outcome,
  * record_lesson_not_held), so pay, credits and packages follow the existing rules. Lessons that never used our room
@@ -45,7 +48,7 @@ export function decideVerdict(input: { events: Ev[]; lesson: Lesson; decidedAtMs
   const cut = new Date(lesson.scheduled_start).getTime() + NO_SHOW_MINUTES * 60_000;
   const teacher = firstJoinMs(events, 'teacher', lesson);
   const learner = firstJoinMs(events, 'student', lesson);
-  if (teacher === null) return out(learner === null ? 'review' : 'teacher_no_show', learner === null ? 'nobody_came' : 'teacher_never_joined');
+  if (teacher === null) return out('teacher_no_show', learner === null ? 'nobody_came' : 'teacher_never_joined');
   if (learner === null || learner > cut) {
     if (teacher > cut) return out('review', 'teacher_late_past_15');
     if (decidedAtMs < cut) return out('review', 'ended_before_15');
@@ -119,20 +122,10 @@ export async function runRoomVerdict(client: any, bookingId: string, trigger: 'e
       });
       if (rpcErr) throw new Error(rpcErr.message);
       if (deps.afterOutcome) await deps.afterOutcome(client, booking, status, creditDecision);
+    } else if (verdict === 'teacher_no_show' && reason === 'nobody_came') {
+      await openAbsenceCase(client, booking, { now, notifyFamily });
     } else if (verdict === 'teacher_no_show') {
-      const { data, error: rpcErr } = await client.rpc('record_lesson_not_held', { p_booking_id: bookingId, p_reason: 'teacher_absent' });
-      if (rpcErr) throw new Error(rpcErr.message);
-      if (data?.creditId) {
-        const { data: credit } = await client.from('package_entitlements').select('purchaser_account_id').eq('id', data.creditId).maybeSingle();
-        if (credit?.purchaser_account_id) {
-          await notifyFamily(client, { userId: credit.purchaser_account_id }, {
-            kind: 'lesson_not_held',
-            title: { en: 'Your lesson is back in your wallet', ar: 'حصتك رجعت لمحفظتك' },
-            body: { en: 'Your teacher could not come to the lesson, so you have a lesson credit to book again. We are sorry.', ar: 'المعلم ماقدرش يحضر الحصة، فرجعتلك كرصيد تحجز بيه تاني. نعتذر لك.' },
-            link: '/student/wallet',
-          });
-        }
-      }
+      await applyNotHeld(client, booking, 'teacher_absent', { notifyFamily });
       await notifyAdmins(client, {
         kind: 'lesson_not_held',
         title: { en: 'Teacher no-show recorded automatically', ar: 'اتسجّل غياب المعلم تلقائي' },
@@ -152,11 +145,12 @@ export async function runRoomVerdict(client: any, bookingId: string, trigger: 'e
     await client.from('lesson_attendance_verdicts').delete().eq('booking_id', bookingId);
     throw err;
   }
-  if (verdict !== 'review') {
+  const applied = verdict !== 'review' && reason !== 'nobody_came';
+  if (applied) {
     const { error: upErr } = await client.from('lesson_attendance_verdicts').update({ applied: true }).eq('booking_id', bookingId);
     if (upErr) console.error('[verdict] applied flag', upErr.message);
   }
-  return { decided: true, verdict, reason, applied: verdict !== 'review' };
+  return { decided: true, verdict, reason, applied };
 }
 
 /** Cron: every room lesson of the last SWEEP_DAYS past its hard close that nobody recorded yet. */

@@ -5,6 +5,7 @@ import { renderTeacherNotification } from '../notifications/emailTemplates.js';
 import { resolveEmailLanguage } from '../notifications/dispatcher.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
 import { loadAttendanceAnalysis } from './attendance.js';
+import { absenceCaseOpen } from '../classroom/absence.js';
 
 /**
  * Teacher pay routes (launch plan D, owner decisions 2026-10-28).
@@ -211,6 +212,9 @@ export function registerPayrollRoutes(app: express.Express, deps: {
       if (seen?.held) {
         return res.status(409).json({ code: 'LESSON_HELD', error: `Zoom shows this lesson was held (${seen.togetherMinutes} minutes together). If something went wrong, message the admin.` });
       }
+    }
+    if (await absenceCaseOpen(client, booking.id)) {
+      return res.status(409).json({ code: 'ABSENCE_CASE_OPEN', error: 'This lesson was recorded as missed and waits for the teacher or the appeal decision.' });
     }
     const { data, error } = await client.rpc('record_lesson_not_held', { p_booking_id: booking.id, p_reason: reason });
     if (error) return res.status(400).json({ error: error.message || 'Could not record it.' });
