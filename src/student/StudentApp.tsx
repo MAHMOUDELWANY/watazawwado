@@ -31,6 +31,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   MonitorSmartphone,
   HeartHandshake,
   ClipboardCheck,
+  BookMarked,
 } from 'lucide-react';
 import { isLinkedKidDevice } from '../lib/kidDevice';
 import { useTeacherAuth } from '../lib/auth';
@@ -57,12 +58,15 @@ import StudentProgressReportPage from './pages/StudentProgressReportPage';
 import StudentCertificatePage from './pages/StudentCertificatePage';
 import StudentLessonRoomPage from './pages/StudentLessonRoomPage';
 import { ClassroomGate } from '../classroom/ClassroomGate';
+import { KidModeLessons, KidModeShell, useKidMode } from './kidMode';
 import StudentCalendarPage from './pages/StudentCalendarPage';
 import StudentHomeworkPage from './pages/StudentHomeworkPage';
+import QuranTab from '../quran/QuranTab';
+import { useQuranAccess } from '../quran/useQuranAccess';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
-import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT } from './activeLearner';
+import { ActiveLearnerProvider, AllLearnersScope, PROFILE_CHANGED_EVENT, familyLearners } from './activeLearner';
 import { familyTourSteps, isFamilyAccount, learnerTourSteps, isTourHome, markTourSeen, shouldAutoOpenTour, tourSeenKey } from '../lib/tours';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
@@ -84,6 +88,8 @@ export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // BUILD-LIST 1.6: "Hand to my child" turns this device's portal into the child's learning pages only.
+  const kidMode = useKidMode();
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
@@ -96,6 +102,7 @@ export default function StudentApp() {
   const [authInitialView, setAuthInitialView] = useState<'login' | 'signup'>(isSignupParam ? 'signup' : 'login');
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
   const [unreadChats, setUnreadChats] = useState<number>(0);
+  const quranTab = useQuranAccess(Boolean(session && profile && profile.onboardingCompleted !== false));
 
   useEffect(() => {
     if (location.search.includes('auth=signup') || location.pathname.includes('/signup')) {
@@ -445,8 +452,10 @@ export default function StudentApp() {
   const topTabs = [home, lessons, book, curriculum, homework, messages];
   const sponsor: NavItem = { name: isAr ? 'اكفل طالب' : 'Sponsor a learner', path: '/student/sponsor', icon: HeartHandshake, tour: 'student-sponsor' };
   // Desktop "More" menu (P4-020): the pages that are not tabs, each with its name, in one labelled list.
-  const desktopMoreItems = [wallet, calendar, progress, community, guide, invite, sponsor];
-  const moreItems = [homework, curriculum, wallet, calendar, progress, community, guide, invite, sponsor];
+  // Classroom 4.1: the Quran tab, only for accounts with a learner in a Quran track, Islamic studies or Fusha.
+  const quran: NavItem = { name: isAr ? 'القرآن' : 'Quran', path: '/student/quran', icon: BookMarked, tour: 'student-quran' };
+  const desktopMoreItems = [...(quranTab ? [quran] : []), wallet, calendar, progress, community, guide, invite, sponsor];
+  const moreItems = [homework, curriculum, ...(quranTab ? [quran] : []), wallet, calendar, progress, community, guide, invite, sponsor];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
@@ -458,6 +467,32 @@ export default function StudentApp() {
   const INK = 'bg-[#1F1A17]/92 dark:bg-[#1B1816]/90';
   const iconButton = 'tap-44 relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
   const pill = 'rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs';
+
+  // Kid mode: only the kid app's page set; every other path (booking, wallet, messages, account, home...) goes to the
+  // child's lessons. Leaving needs the parent PIN (KidModeShell).
+  if (kidMode && familyLearners(profile).some((l) => l.id === kidMode.learnerId)) {
+    return (
+      <KidModeShell isAr={isAr} kid={kidMode} onToggleLang={toggleLang}>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/lessons" element={<KidModeLessons isAr={isAr} kid={kidMode} />} />
+            <Route path="/room/:id" element={<ClassroomGate portal="student" fallback={<StudentLessonRoomPage lang={lang} />} />} />
+            <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
+            <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
+            <Route path="/homework" element={<StudentHomeworkPage lang={lang} />} />
+            <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
+            <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
+            <Route path="/certificate/:id" element={<StudentCertificatePage lang={lang} />} />
+            <Route path="/community" element={<StudentCommunityPage lang={lang} kid />} />
+            <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
+            <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
+            <Route path="*" element={<Navigate to="/student/lessons" replace />} />
+          </Routes>
+        </ErrorBoundary>
+        <FeedbackHost />
+      </KidModeShell>
+    );
+  }
 
   return (
     <ActiveLearnerProvider profile={profile}>
@@ -676,6 +711,7 @@ export default function StudentApp() {
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
               <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
               <Route path="/homework" element={<StudentHomeworkPage lang={lang} />} />
+              <Route path="/quran" element={<QuranTab />} />
               <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
               <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />

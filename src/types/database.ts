@@ -1046,6 +1046,26 @@ export interface Database {
         Insert: Partial<LessonTimelineEventRow> & Pick<LessonTimelineEventRow, 'booking_id' | 'type' | 'actor_role'>;
         Update: Partial<LessonTimelineEventRow>;
       };
+      lesson_prep: {
+        Row: LessonPrepRow;
+        Insert: Partial<LessonPrepRow> & Pick<LessonPrepRow, 'booking_id' | 'teacher_user_id'>;
+        Update: Partial<LessonPrepRow>;
+      };
+      lesson_files: {
+        Row: LessonFileRow;
+        Insert: Partial<LessonFileRow> & Pick<LessonFileRow, 'booking_id' | 'file_id' | 'name' | 'source'>;
+        Update: Partial<LessonFileRow>;
+      };
+      parent_pins: {
+        Row: ParentPinRow;
+        Insert: Partial<ParentPinRow> & Pick<ParentPinRow, 'user_id' | 'pin_hash'>;
+        Update: Partial<ParentPinRow>;
+      };
+      learner_mistakes: {
+        Row: LearnerMistakeRow;
+        Insert: Partial<LearnerMistakeRow> & Pick<LearnerMistakeRow, 'student_id' | 'client_id' | 'said' | 'correct'>;
+        Update: Partial<LearnerMistakeRow>;
+      };
       lesson_quality: {
         Row: LessonQualityRow;
         Insert: Partial<LessonQualityRow> & Pick<LessonQualityRow, 'booking_id' | 'side'>;
@@ -1065,6 +1085,26 @@ export interface Database {
         Row: AdminObservationRow;
         Insert: Partial<AdminObservationRow> & Pick<AdminObservationRow, 'booking_id' | 'admin_user_id'>;
         Update: Partial<AdminObservationRow>;
+      };
+      lesson_attendance_verdicts: {
+        Row: LessonAttendanceVerdictRow;
+        Insert: Partial<LessonAttendanceVerdictRow> & Pick<LessonAttendanceVerdictRow, 'booking_id' | 'verdict' | 'reason' | 'trigger'>;
+        Update: Partial<LessonAttendanceVerdictRow>;
+      };
+      lesson_shared_files: {
+        Row: LessonSharedFileRow;
+        Insert: Partial<LessonSharedFileRow> & Pick<LessonSharedFileRow, 'booking_id' | 'file_id'>;
+        Update: Partial<LessonSharedFileRow>;
+      };
+      quran_marks: {
+        Row: QuranMarkRow;
+        Insert: Partial<QuranMarkRow> & Pick<QuranMarkRow, 'student_id' | 'booking_id' | 'verse_key' | 'word_position' | 'type'>;
+        Update: Partial<QuranMarkRow>;
+      };
+      quran_detector_runs: {
+        Row: QuranDetectorRunRow;
+        Insert: Partial<QuranDetectorRunRow> & Pick<QuranDetectorRunRow, 'student_id' | 'surah' | 'ayah_from' | 'ayah_to' | 'model'>;
+        Update: Partial<QuranDetectorRunRow>;
       };
     };
     Functions: {
@@ -1114,7 +1154,23 @@ export interface LessonRoomSeatRow {
   updated_at: string;
 }
 
-export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'end';
+export type LessonTimelineEventType = 'slide' | 'board' | 'pdf' | 'reaction' | 'focus' | 'quality' | 'layout' | 'talk' | 'end'
+  | 'correction' | 'check' | 'check_answer' | 'stage' | 'media' | 'practice' | 'shadow';
+
+/** Classroom 2.10: one learner's mistake bank (corrections logged in the room). Service role only. */
+export interface LearnerMistakeRow {
+  id: string;
+  student_id: string;
+  booking_id: string | null;
+  teacher_id: string | null;
+  client_id: string;
+  said: string;
+  correct: string;
+  note: string | null;
+  subject: string | null;
+  resolved_at: string | null;
+  created_at: string;
+}
 
 export interface LessonTimelineEventRow {
   id: string;
@@ -1136,6 +1192,39 @@ export interface LessonQualityRow {
   audio_only_seconds: number;
   reconnects: number;
   focus_away_seconds: number;
+  /** Waiting-room device and network results (BUILD-LIST 1.5). */
+  precheck_detail: Record<string, unknown> | null;
+  updated_at: string;
+}
+
+/** What the teacher prepared before the lesson (BUILD-LIST 1.4). */
+export interface LessonPrepRow {
+  booking_id: string;
+  teacher_user_id: string;
+  notes: string;
+  slide: { track: string; number: number; page: number } | null;
+  updated_at: string;
+}
+
+/** The original name of a lesson file in the classroom-files bucket (prepared or added in the room). */
+export interface LessonFileRow {
+  booking_id: string;
+  file_id: string;
+  name: string;
+  source: 'prep' | 'room';
+  created_at: string;
+}
+
+/** A parent's 4-digit PIN as a salted scrypt hash, with lockout (BUILD-LIST 1.6). */
+export interface ParentPinRow {
+  user_id: string;
+  pin_hash: string;
+  failed_count: number;
+  locked_until: string | null;
+  reset_code_hash: string | null;
+  reset_expires_at: string | null;
+  reset_sent_at: string | null;
+  reset_attempts: number;
   updated_at: string;
 }
 
@@ -1169,6 +1258,55 @@ export interface AdminObservationRow {
   started_at: string;
   ended_at: string | null;
   notes: string | null;
+}
+
+/** Classroom 3.2: the automatic attendance verdict of one room lesson. */
+export interface LessonAttendanceVerdictRow {
+  booking_id: string;
+  verdict: 'completed' | 'learner_no_show' | 'teacher_no_show' | 'review';
+  reason: string;
+  trigger: 'end' | 'sweep';
+  applied: boolean;
+  detail: Record<string, unknown>;
+  decided_at: string;
+}
+
+/** Classroom 3.3: a room file the teacher attached to the lesson report. */
+export interface LessonSharedFileRow {
+  booking_id: string;
+  file_id: string;
+  added_by: string | null;
+  created_at: string;
+}
+
+/** Classroom 4.2: one word a teacher marked in a lesson's mushaf (service-role only). */
+export interface QuranMarkRow {
+  id: string;
+  student_id: string;
+  booking_id: string;
+  teacher_id: string | null;
+  verse_key: string;
+  word_position: number;
+  type: 'wrong_word' | 'missed' | 'added' | 'tajweed';
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Classroom 4.4/4.5: the detector's flags on a sent recording and the teacher's marks on it (service-role only). */
+export interface QuranDetectorRunRow {
+  id: string;
+  student_id: string;
+  recording_id: string | null;
+  surah: number;
+  ayah_from: number;
+  ayah_to: number;
+  model: string;
+  flags: Array<{ key: string; kind: 'missing' | 'changed' | 'extra' }>;
+  teacher_marks: Array<{ key: string; type: string }> | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
 }
 
 export interface ChildDeviceRow {

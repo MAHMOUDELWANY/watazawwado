@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
+import { Aperture, BookMarked, BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, Shapes, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
@@ -8,6 +8,7 @@ import { boardSurface, type RoomEvent } from '../lib/roomEvents';
 import { lessonEndMs } from '../lib/lessonWindow';
 import { Textarea } from '../components/ui/Textarea';
 import { Button } from '../components/ui/Button';
+import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
 import { ZadRigSvg } from '../components/zad/ZadRig';
@@ -20,6 +21,7 @@ import { PdfPages } from './board/PdfPages';
 import { uploadClassroomFile } from './board/upload';
 import type { Portal, RoomEntry } from './ClassroomGate';
 import { RemoteAudio, VideoTile, useSpeaking } from './parts/VideoTiles';
+import { TalkRatio, useTalkTime } from './parts/TalkTime';
 import { CornerPip } from './parts/CornerPip';
 import { Khatam } from './parts/Khatam';
 import { NoticeSlot, type RoomNotice } from './parts/NoticeSlot';
@@ -33,10 +35,25 @@ import { ScreenShareButton, canShareScreen } from './parts/ScreenShare';
 import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
 import { FallbackNotice } from './parts/FallbackNotice';
 import { ObserverNotes } from './parts/ObserverNotes';
+import { PrepNotes } from './parts/PrepNotes';
 import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
 import { addQualityStep, clockOffsetMs, readRoomAnswer, subscribeRetryMs, type EndReason, type QualityTotals } from './roomWiring';
+import { LessonFeedbackCard } from '../student/components/LessonFeedbackCard';
+import { reduceTools, stageForStation, type CheckLevel, type MediaState, type ToolsState } from '../lib/roomTools';
+import { findLesson } from '../curriculum/catalog';
+import { BarButton } from './parts/Toolbar';
+import { TeacherTools } from './tools/TeacherTools';
+import { PracticeCard } from './tools/PracticeCard';
+import { SharedMedia } from './tools/SharedMedia';
+import { LearnerShadow } from './tools/Shadowing';
+import { CheckCard, ComfortButton, CorrectionToast, StageBar, WarmupCard } from './tools/RoomCards';
+import { COMFORT_KEY, comfortStyle, readComfort, type Comfort } from './tools/comfort';
+import { autoPip, blurModeFor, openPip, pipMode, setNativeBlur, startSegmentBlur, type BlurPipeline } from './tools/effects';
+import { QuranPane, lastRoomQuranPage } from './parts/QuranPane';
 
-type Pane = 'lesson' | 'board' | 'pdf';
+type Pane = 'lesson' | 'board' | 'pdf' | 'quran';
+/** 4.2: lessons that get the synced mushaf (Quran tracks, Islamic studies, Fusha; a lesson without a subject too). */
+const QURAN_LESSON = /quran|tajweed|hifz|memori|revision|zad|seerah|fusha|standard-arabic/i;
 type Over = EndReason | 'superseded' | 'failed';
 type BoardScene = NonNullable<RoomSnapshot['board']>;
 
@@ -45,11 +62,13 @@ const QUALITY_EVERY_MS = 60_000;
 /** M6: how often the page asks the server whether the room is still open (and for its clock). */
 const STATE_EVERY_MS = 30_000;
 const ANNOUNCE_EVERY_MS = 15_000;
+/** The teacher's warm-up ideas show by themselves for the first minutes of the lesson. */
+const WARMUP_SHOW_MS = 10 * 60_000;
 /** The guardian's tab says "still here" with each announce; a closed tab drops the chip after this. */
 const GUARDIAN_STALE_MS = 40_000;
 const other = (s: Side): Side => (s === 'teacher' ? 'student' : 'teacher');
 const isTyping = (el: EventTarget | null) => el instanceof HTMLElement
-  && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || !!el.closest('.excalidraw'));
+  && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
 /**
  * Classroom Release 1, Task 9: the lesson room. Waiting room first, then video, curriculum, board and files over one
@@ -103,11 +122,15 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [reactions, setReactions] = useState<Array<{ id: number; kind: ReactionKind }>>([]);
   const [pointer, setPointer] = useState<{ x: number; y: number; at: number } | null>(null);
   const [pdf, setPdf] = useState<{ fileId: string; page: number; url: string | null } | null>(null);
+  const [quranPage, setQuranPage] = useState(() => (isTeacher ? lastRoomQuranPage(bookingId) : 1));
+  const heardQuran = useRef(false);
   const [restored, setRestored] = useState<RoomSnapshot | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [endReason, setEndReason] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  // BUILD-LIST 1.4: this lesson's files (prepared before it, or added here), for the teacher to open.
+  const [files, setFiles] = useState<Array<{ fileId: string; name: string | null }>>([]);
   // Task 12: this side's Zoom link, only after the room failed on our side.
   const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
   // View only: hide my own picture on my screen, observers' sound, when the other side last said it is in the room.
@@ -124,6 +147,20 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [notesOpen, setNotesOpen] = useState(false);
   const [ending, setEnding] = useState(false);
   const [endError, setEndError] = useState('');
+  // 2.10-2.12: teaching and practice tools, learner comfort, picture-in-picture and background blur.
+  const [tools, setTools] = useState<ToolsState>({});
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [corrections, setCorrections] = useState<Array<{ id: string; said: string; correct: string; note?: string }>>([]);
+  const [checks, setChecks] = useState<Array<{ id: string; part: string; level: CheckLevel }>>([]);
+  const [learnerAnswer, setLearnerAnswer] = useState<string[] | null>(null);
+  const [answeredCheck, setAnsweredCheck] = useState<string | null>(null);
+  const [shadowClosed, setShadowClosed] = useState<string | null>(null);
+  const [warmup, setWarmup] = useState<Array<{ en: string; ar: string }>>([]);
+  const [warmupClosed, setWarmupClosed] = useState(false);
+  const [slideAt, setSlideAt] = useState<{ track: string; number: number; page: number } | null>(null);
+  const [comfort, setComfort] = useState<Comfort>(() => { try { return readComfort(window.localStorage.getItem(COMFORT_KEY)); } catch { return readComfort(null); } });
+  const [blur, setBlur] = useState<'off' | 'native' | 'segment' | 'busy'>('off');
+  const [blurNote, setBlurNote] = useState<{ text: string; at: number } | null>(null);
 
   const engineRef = useRef<MediaEngine | null>(null);
   const batcher = useRef<ReturnType<typeof createTimelineBatcher> | null>(null);
@@ -138,8 +175,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const overRef = useRef<Over | null>(null);
   overRef.current = over;
   // What the teacher shows now, read by the answers to hello and new sessions (M7).
-  const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null }>({ layout: 'conversation', pane: 'lesson', pdf: null });
-  shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null };
+  const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null; quran: number }>({ layout: 'conversation', pane: 'lesson', pdf: null, quran: 1 });
+  shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null, quran: quranPage };
   const heardLayout = useRef(false);
   // The latest scene of each surface ('' is the whiteboard, else boardSurface(fileId, page)) and the room's drawing switch.
   const scenes = useRef<Record<string, Omit<BoardScene, 'learnerDraw'>>>({});
@@ -150,6 +187,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   // Task 11: this side's running totals, sent every 60 s and on leave.
   const totals = useRef<QualityTotals>({ degradedSeconds: 0, audioOnlySeconds: 0, reconnects: 0, minHeight: null });
   const flushQuality = useRef<() => Promise<unknown>>(async () => {});
+  const toolsRef = useRef<ToolsState>({});
+  toolsRef.current = tools;
+  /** The teacher's shared player says where it is now (to answer a rejoin). */
+  const mediaNow = useRef<(() => MediaState | null) | null>(null);
+  const blurPipe = useRef<BlurPipeline | null>(null);
+  const pipClose = useRef<(() => void) | null>(null);
 
   const startMs = Date.parse(entry.startsAt);
   const endMs = lessonEndMs(entry.startsAt, null, entry.durationMinutes);
@@ -159,6 +202,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   /** Live on the channel, and saved when the server keeps that type. */
   const save = useCallback((e: RoomEvent) => batcher.current?.push(e), []);
   const send = useCallback((e: RoomEvent) => { publishEvent(e); save(e); }, [publishEvent, save]);
+  /** Teacher's tools (and the learner's check answer): live, saved, and applied here at once. */
+  const toolSend = useCallback((e: RoomEvent) => {
+    send(e);
+    // A new activity (not "show answers") starts the learner's answers afresh.
+    const cur = toolsRef.current.practice;
+    if (e.t === 'practice' && (e.practice.kind !== cur?.kind || e.practice.seed !== cur?.seed || e.practice.text !== cur?.text)) setLearnerAnswer(null);
+    setTools((s) => reduceTools(s, e, Date.now()));
+  }, [send]);
   const keepBoard = useCallback((e: Extract<RoomEvent, { t: 'board' }>) => {
     const key = e.surface ?? '';
     scenes.current[key] = keepScene(scenes.current[key], e);
@@ -265,6 +316,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         old.forEach((tr) => local.removeTrack(tr));
         local.addTrack(d.track);
       }
+      // The engine sent a recovered camera instead of the blurred picture: the blur pipeline is no longer used.
+      if (d.kind === 'video' && d.ok && blurPipe.current) { blurPipe.current.stop(); blurPipe.current = null; setBlur('off'); }
       setDevice({ kind: d.kind, ok: d.ok, at: Date.now() });
     });
     const offMute = engine.on('remote-mute', (m) => { if (live && m.kind === 'video') setRemoteWaiting((w) => ({ ...w, [m.side]: m.muted })); });
@@ -289,12 +342,24 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         // old tab; a learner keeps 'screen' while the teacher still shares.
         if (!heardLayout.current) {
           if (s.layout) setLayout(s.layout === 'screen' && isTeacher ? 'content' : s.layout);
-          setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
+          setPane(s.pane ?? (s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson'));
         }
         if (s.board) scenes.current[''] = s.board;
         Object.assign(scenes.current, s.boards);
         learnerDraw.current = s.learnerDraw ?? s.board?.learnerDraw ?? false;
         if (s.pdf) setPdf({ ...s.pdf, url: null });
+        if (s.slide) setSlideAt({ track: s.slide.track, number: s.slide.number, page: s.slide.page });
+        if (s.tools && typeof s.tools === 'object') {
+          // The server stamped shared media with its own clock; move that to this device's clock.
+          const serverAt = (snap as { serverNow?: number }).serverNow;
+          const shift = Number.isFinite(serverAt) ? Date.now() - (serverAt as number) : 0;
+          const saved = s.tools;
+          const media = saved.media && saved.media.savedAt != null ? { ...saved.media, savedAt: saved.media.savedAt + shift } : saved.media;
+          // Anything heard live while the snapshot loaded is newer and wins.
+          setTools((cur) => ({ ...saved, ...(media ? { media } : {}), ...cur }));
+        }
+        // 4.2: both sides open the mushaf at the teacher's saved page; a newer live 'quran' event still wins (heardQuran).
+        if (s.quran && !heardQuran.current) setQuranPage(s.quran.page);
       }
       setRestored(snap?.snapshot ?? {});
       try {
@@ -325,6 +390,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; r.n = 0; }
       window.removeEventListener('pagehide', onHide);
       if (role === 'guardian_observer') publishEvent({ t: 'observer', kind: 'guardian', present: false });
+      saveTalk();
       void batcher.current?.stop(); // flushes what is left
       batcher.current = null;
       void engine.leave();
@@ -338,6 +404,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   useEffect(() => {
     if (!over) return;
     for (const r of Object.values(retries.current)) { if (r.timer != null) window.clearTimeout(r.timer); r.timer = null; }
+    saveTalk();
     void batcher.current?.stop();
     batcher.current = null;
     void engineRef.current?.leave();
@@ -374,6 +441,15 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     const s = shown.current;
     publishEvent({ t: 'layout', mode: s.layout, ...(s.layout === 'content' ? { pane: s.pane } : {}) });
     if (s.pdf) publishEvent({ t: 'pdf', fileId: s.pdf.fileId, page: s.pdf.page });
+    // 2.10, 2.11: the tools on screen now (a handful of messages, only on a join).
+    const tl = toolsRef.current;
+    if (tl.stage) publishEvent({ t: 'stage', stage: tl.stage });
+    if (tl.practice && tl.practice.kind !== 'none') publishEvent({ t: 'practice', practice: tl.practice });
+    if (tl.check?.open) publishEvent({ t: 'check', id: tl.check.id, part: tl.check.part, open: true });
+    if (tl.shadow) publishEvent({ t: 'shadow', fileId: tl.shadow });
+    const m = tl.media && tl.media.kind !== 'none' ? mediaNow.current?.() ?? tl.media : null;
+    if (m) publishEvent({ t: 'media', kind: m.kind, src: m.src, playing: m.playing, pos: Math.min(86_399, Math.max(0, Math.round(m.pos * 10) / 10)) });
+    if (s.pane === 'quran') publishEvent({ t: 'quran', page: s.quran });
   }, [isTeacher, publishEvent]);
   const { onHello } = room;
   useEffect(() => onHello(shareShown), [onHello, shareShown]);
@@ -450,9 +526,28 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       case 'recitation':
         if (!isTeacher) void engineRef.current?.setRecitationMode(e.on).catch(() => {});
         return;
+      case 'quran':
+        if (!isTeacher) { heardQuran.current = true; setQuranPage(e.page); }
+        return;
       case 'end':
         // H3/L4: anyone with the room key can send this; the server says whether the lesson really ended.
         if (!isTeacher) void checkState();
+        return;
+      // 2.10, 2.11 tools: the teacher drives, the learner follows; only the check answer and practice answers come back.
+      case 'correction':
+        if (role === 'learner') setCorrections((c) => [...c.filter((x) => x.id !== e.id), { id: e.id, said: e.said, correct: e.correct, note: e.note }].slice(-2));
+        return;
+      case 'check_answer':
+        if (role === 'learner') return;
+        setTools((s) => reduceTools(s, e, Date.now()));
+        if (isTeacher) setChecks((c) => (c.some((x) => x.id === e.id) ? c : [...c, { id: e.id, part: e.part, level: e.level }]));
+        return;
+      case 'check': case 'stage': case 'media': case 'practice': case 'shadow':
+        if (isTeacher) return;
+        setTools((s) => reduceTools(s, e, Date.now()));
+        return;
+      case 'practice_answer':
+        if (isTeacher) setLearnerAnswer(e.answer);
         return;
       default:
     }
@@ -582,6 +677,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       return;
     }
     overRef.current = 'ended'; // the heartbeat and the announce stop while we leave
+    saveTalk();
     send({ t: 'end' });
     await batcher.current?.stop();
     batcher.current = null;
@@ -594,15 +690,36 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     navigate(home);
   };
 
+  const loadFiles = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/classroom/${encodeURIComponent(bookingId)}/files`, { headers: { 'x-room-ticket': ticket } });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(body.files)) setFiles(body.files);
+    } catch { /* the list is a convenience; the next upload refreshes it */ }
+  }, [bookingId, ticket]);
+  useEffect(() => { if (isTeacher && phase === 'room') void loadFiles(); }, [isTeacher, phase, loadFiles]);
+
+  const openFile = (fileId: string) => {
+    if (!fileId || pdf?.fileId === fileId) return;
+    setPdf({ fileId, page: 1, url: null });
+    send({ t: 'pdf', fileId, page: 1 });
+    changeLayout('content', 'pdf');
+  };
+
   const onUpload = async (file: File | undefined) => {
     if (!file) return;
     setUploading(true);
     setUploadError('');
     try {
       const { fileId, url } = await uploadClassroomFile(bookingId, ticket, file);
+      // Keep the original name for the file list and the report; a failed save only leaves it as "File N".
+      await fetch(`/api/classroom/${encodeURIComponent(bookingId)}/files/${encodeURIComponent(fileId)}/name`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify({ name: file.name }),
+      }).catch(() => {});
       setPdf({ fileId, page: 1, url });
       send({ t: 'pdf', fileId, page: 1 });
       changeLayout('content', 'pdf');
+      void loadFiles();
     } catch (e: any) {
       setUploadError(e?.message || t('The file could not be added.', 'الملف ما اتضافش.'));
     } finally {
@@ -620,6 +737,102 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const teacherSpeaking = useSpeaking(remotes.teacher?.getAudioTracks()[0]);
   const studentSpeaking = useSpeaking(remotes.student?.getAudioTracks()[0]);
   const speakingOf = (s: Side) => (s === 'teacher' ? teacherSpeaking : studentSpeaking);
+
+  // 2.8 talk time: the teacher's page counts both sides (own mic, silent while muted; the learner's audio) and saves
+  // one 'talk' event per join, before the batcher's last flush (end, leave, hard close, closing the tab).
+  const talk = useTalkTime(isTeacher && joined && !over, selfSpeaking, studentSpeaking);
+  const talkSaved = useRef(false);
+  const saveTalk = useCallback(() => {
+    if (!isTeacher || talkSaved.current || !batcher.current) return;
+    const totals = talk.read();
+    if (!totals.teacherMs && !totals.learnerMs) return;
+    talkSaved.current = true;
+    save({ t: 'talk', ...totals });
+  }, [isTeacher, talk.read, save]);
+  useEffect(() => {
+    if (!isTeacher) return;
+    const onHide = () => { saveTalk(); void batcher.current?.flush(true); };
+    window.addEventListener('pagehide', onHide);
+    return () => window.removeEventListener('pagehide', onHide);
+  }, [isTeacher, saveTalk]);
+
+  // ---- 2.10 warm-up (teacher), comfort (learner), 2.12 picture-in-picture (teacher) and blur ----------------------
+  useEffect(() => {
+    if (!isTeacher || !joined) return;
+    let live = true;
+    fetch(`/api/classroom/${encodeURIComponent(bookingId)}/warmup`, { headers: { 'x-room-ticket': ticket } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((b) => { if (live && Array.isArray(b?.prompts)) setWarmup(b.prompts.filter((p: any) => typeof p?.en === 'string' && typeof p?.ar === 'string')); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [isTeacher, joined, bookingId, ticket]);
+
+  useEffect(() => { try { window.localStorage.setItem(COMFORT_KEY, JSON.stringify(comfort)); } catch { /* private window: this visit only */ } }, [comfort]);
+
+  const learnerVideo = useRef<MediaStream | null>(null);
+  learnerVideo.current = remotes.student;
+  const keepPip = (close: () => void) => { pipClose.current?.(); pipClose.current = close; };
+  // Chrome and Edge float the learner's video by themselves when the teacher switches tab during the call.
+  useEffect(() => {
+    if (!isTeacher || !joined) return;
+    return autoPip(() => ({ stream: learnerVideo.current, name: learnerName }), keepPip);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTeacher, joined, learnerName]);
+  useEffect(() => () => { pipClose.current?.(); blurPipe.current?.stop(); }, []);
+  const floatVideo = async () => {
+    if (!remotes.student) return;
+    try { const close = await openPip(remotes.student, learnerName); if (close) keepPip(close); } catch { /* the browser said no */ }
+  };
+
+  /** Puts a new camera track into my own picture (the engine already sends it). */
+  const swapLocalVideo = (track: MediaStreamTrack) => {
+    if (!local) return;
+    local.getVideoTracks().forEach((tr) => local.removeTrack(tr));
+    local.addTrack(track);
+  };
+  const blurOff = async (note?: string) => {
+    const cam = local?.getVideoTracks()[0];
+    const engine = engineRef.current;
+    if (blur === 'native' && cam) { await setNativeBlur(cam, false); setBlur('off'); return; }
+    const pipe = blurPipe.current;
+    if (!pipe || !engine) { setBlur('off'); return; }
+    const raw = pipe.source.clone();
+    raw.enabled = cam?.enabled ?? true;
+    await engine.replaceLocalTrack('video', raw).catch(() => undefined);
+    swapLocalVideo(raw);
+    pipe.stop();
+    blurPipe.current = null;
+    setBlur('off');
+    if (note) setBlurNote({ text: note, at: Date.now() });
+  };
+  const toggleBlur = async () => {
+    const cam = local?.getVideoTracks()[0];
+    const engine = engineRef.current;
+    if (!cam || !engine || blur === 'busy') return;
+    if (blur !== 'off') { await blurOff(); return; }
+    const mode = blurModeFor(cam);
+    if (mode === 'native') { if (await setNativeBlur(cam, true)) setBlur('native'); return; }
+    if (mode === 'none') { setBlurNote({ text: t('Background blur needs a stronger device.', 'تغبيش الخلفية محتاج جهاز أقوى.'), at: Date.now() }); return; }
+    setBlur('busy');
+    try {
+      const pipe = await startSegmentBlur(cam, () => { void blurOff(t('Blur stopped: this device was too slow for it.', 'التغبيش وقف: الجهاز كان بطيء عليه.')); });
+      pipe.track.enabled = cam.enabled;
+      await engine.replaceLocalTrack('video', pipe.track); // stops the plain camera; the pipeline keeps its own copy
+      blurPipe.current = pipe;
+      swapLocalVideo(pipe.track);
+      setBlur('segment');
+    } catch {
+      setBlur('off');
+      setBlurNote({ text: t('Background blur did not start on this device.', 'تغبيش الخلفية ما اشتغلش على الجهاز ده.'), at: Date.now() });
+    }
+  };
+
+  // 2.10: the stage the teacher's slide belongs to (curriculum station), as a hint on the bar.
+  const suggestedStage = useMemo(() => (slideAt ? stageForStation(findLesson(slideAt.track, slideAt.number)?.pages[slideAt.page]?.station) : null), [slideAt]);
+  const onSlideSaved = useCallback((st: { track: string; number: number; page: number; step: number }) => {
+    save({ t: 'slide', state: st });
+    setSlideAt((cur) => (cur && cur.track === st.track && cur.number === st.number && cur.page === st.page ? cur : { track: st.track, number: st.number, page: st.page }));
+  }, [save]);
 
   // Learner: reports leaving the lesson screen and says "welcome back" (FocusNotice).
   const welcomeBack = useLearnerFocus(role === 'learner', send, warningOff);
@@ -647,10 +860,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     save,
     initial: (surface = '') => {
       const scene = scenes.current[surface];
-      return { sceneVersion: scene?.sceneVersion ?? -1, elements: scene?.elements ?? [], learnerDraw: learnerDraw.current };
+      return { sceneVersion: scene?.sceneVersion ?? -1, elements: scene?.elements ?? [], learnerDraw: learnerDraw.current, page: scene?.page };
     },
   }), [publishEvent, onEvent, save, keepBoard]);
   const sendPointer = usePointerSender(publishEvent);
+  const dropCorrection = useCallback((id: string) => setCorrections((c) => c.filter((x) => x.id !== id)), []);
 
   // ---- over -----------------------------------------------------------------------------------------------------
   if (over) {
@@ -675,6 +889,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             <h1 className={cn('font-editorial text-[1.75rem] leading-tight text-foreground text-balance', isAr ? 'font-bold' : 'font-medium tracking-tight')}>{copy[over].title}</h1>
             <p className="max-w-xs text-[0.95rem] leading-relaxed text-muted-foreground">{copy[over].body}</p>
             {zoomFirst && <FallbackNotice url={fallbackUrl!} teacher={isTeacher} variant="screen" />}
+            {/* 3.4: an adult learner rates the lesson here; a child's lesson is rated by the parent from the lessons page. */}
+            {(over === 'ended' || over === 'closed') && role === 'learner' && !kid && <div className="w-full text-start"><LessonFeedbackCard isAr={isAr} timezone={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} /></div>}
             <div className="flex flex-wrap justify-center gap-2">
               {again && (
                 <Button variant={zoomFirst ? 'outline' : 'primary'} onClick={onRejoin}>
@@ -705,7 +921,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           : t('Your teacher is here', 'معلمك موجود');
     return (
       <Shell paper>
-        <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid}
+        <WaitingRoom role={role} ticket={ticket} bookingId={bookingId} onReady={onReady} kid={kid} iceServers={entry.iceServers}
           info={{ title, when: <WhenLine startMs={startMs} now={serverNow} />, here }} />
       </Shell>
     );
@@ -723,6 +939,26 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const awayMs = isTeacher ? teacherAwayMs(awayAt, now, warningOff) : null;
   const showSelf = !observer && !selfHidden;
 
+  // 2.10 learner comfort, only on the learner's own screen.
+  const learnerComfort = role === 'learner';
+  const paperStyle = learnerComfort ? (() => { const st = comfortStyle(comfort); return pane === 'lesson' || layout !== 'content' ? st : { filter: st.filter }; })() : undefined;
+  const showCheck = role === 'learner' && !!tools.check?.open && answeredCheck !== tools.check.id;
+  const showShadow = role === 'learner' && !!tools.shadow && shadowClosed !== tools.shadow;
+  const practiceOn = !!tools.practice && tools.practice.kind !== 'none';
+  const mediaOn = !!tools.media && tools.media.kind !== 'none' && !!tools.media.src;
+  const showWarmup = isTeacher && joined && !warmupClosed && warmup.length > 0 && serverNow < startMs + WARMUP_SHOW_MS;
+  const canBlur = !observer && !!local?.getVideoTracks().length && joined;
+  const blurRow = canBlur && (
+    <button type="button" role="switch" aria-checked={blur !== 'off'} disabled={blur === 'busy'} onClick={() => void toggleBlur()}
+      className="room-press flex min-h-12 items-center gap-3 rounded-[var(--r-2)] px-3 text-start hover:bg-white/[0.08] focus-ring disabled:opacity-60">
+      <Aperture className="h-5 w-5 shrink-0 text-[#F0B54A]" aria-hidden="true" />
+      <span className="grid flex-1">
+        <span className="font-medium">{t('Blur my background', 'غبّش الخلفية')}</span>
+        <span className="text-[0.78rem] text-muted-foreground">{t('Done on this device. Turns itself off if the device is too slow.', 'بيتعمل على جهازك. بيقفل لوحده لو الجهاز بطيء.')}</span>
+      </span>
+      <span className={cn('text-[0.78rem] font-semibold', blur !== 'off' ? 'text-teal' : 'text-muted-foreground')}>{blur === 'busy' ? t('Starting…', 'بيبدأ…') : blur !== 'off' ? t('On', 'شغّال') : t('Off', 'مقفول')}</span>
+    </button>
+  );
   const reactionOverlay = isTeacher && reactions.length > 0 ? <ReactionStream items={reactions} name={learnerName} /> : undefined;
   const remoteTile = (s: Side, o: { compact?: boolean; arch?: boolean; fit?: 'cover' | 'contain'; overlay?: boolean; className?: string } = {}) => (
     <VideoTile key={s} stream={remotes[s]} name={nameOf(s)} speaking={speakingOf(s)} link={observer ? null : links[s]} compact={o.compact}
@@ -754,6 +990,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         ? (mic ? t('Your microphone reconnected.', 'المايك رجع اشتغل.') : t('Your camera reconnected.', 'الكاميرا رجعت اشتغلت.'))
         : (mic ? t('Microphone lost. Check it.', 'المايك وقف. اتأكد منه.') : t('Camera lost. Check it.', 'الكاميرا وقفت. اتأكد منها.')) });
   }
+  if (blurNote && now - blurNote.at < 6000) notices.push({ key: `blur-${blurNote.at}`, priority: 5, icon: <Aperture className="h-4 w-4" />, text: blurNote.text });
   if (talkingMuted) {
     notices.push({ key: 'talking-muted', priority: 4, icon: <MicOff className="h-4 w-4" />,
       text: kid ? t("You're muted. Tap the mic to talk.", 'المايك مقفول. دوس على المايك علشان تتكلم.') : t("You're talking while muted.", 'إنت بتتكلم والمايك مقفول.'),
@@ -785,8 +1022,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         </div>
       ) : pane === 'lesson' ? (
         isTeacher
-          ? restored && <TeacherCurriculum initial={restored.slide} start={{ serviceId: entry.serviceId ?? null, learnerType: entry.learnerType ?? null, lastReport: entry.lastReport ?? null }} publish={room.publish} publishInk={room.publishInk} save={(s) => save({ t: 'slide', state: s })} />
+          ? restored && <TeacherCurriculum initial={restored.slide} start={{ serviceId: entry.serviceId ?? null, learnerType: entry.learnerType ?? null, lastReport: entry.lastReport ?? null }} publish={room.publish} publishInk={room.publishInk} save={onSlideSaved} />
           : <LearnerCurriculum state={room.state} ink={room.ink} />
+      ) : pane === 'quran' ? (
+        <QuranPane bookingId={bookingId} page={quranPage} teacher={isTeacher} staff={portal === 'teacher'}
+          onPage={isTeacher ? (p) => { setQuranPage(p); send({ t: 'quran', page: p }); } : undefined} />
       ) : pane === 'board' ? (
         <div className="h-full overflow-hidden">
           {restored && <Board role={role} sync={board} />}
@@ -800,10 +1040,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
                 {restored && <Board key={boardSurface(pdf.fileId, pdf.page)} surface={boardSurface(pdf.fileId, pdf.page)} role={role} sync={board} transparent />}
               </PdfPages>
             ) : (
-              <div className="relative h-full">
-                <img src={pdf.url} alt="" className="h-full w-full object-contain" />
-                <div className="absolute inset-0">{restored && <Board key={boardSurface(pdf.fileId, 1)} surface={boardSurface(pdf.fileId, 1)} role={role} sync={board} transparent />}</div>
-              </div>
+              restored && <Board key={boardSurface(pdf.fileId, 1)} surface={boardSurface(pdf.fileId, 1)} role={role} sync={board} image={pdf.url} />
             )
           ) : isTeacher ? (
             <label
@@ -826,17 +1063,26 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     </div>
   );
 
+  const quranLesson = !entry.serviceId || QURAN_LESSON.test(entry.serviceId);
   const paneTabs = isTeacher && layout === 'content' && (
     <div className="room-ink flex shrink-0 flex-wrap items-center gap-2">
       <div role="tablist" aria-label={t('What to show', 'تعرض إيه')} className="glass-1 flex items-center gap-0.5 rounded-[var(--r-pill)] p-1">
-        {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')]] as const).map(([p, Icon, label]) => (
-          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => changeLayout('content', p)}
+        {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')], ...(quranLesson ? [['quran', BookMarked, t('Mushaf', 'المصحف')]] as const : [])] as const).map(([p, Icon, label]) => (
+          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => { changeLayout('content', p); if (p === 'quran') send({ t: 'quran', page: quranPage }); }}
             className={cn('room-press flex min-h-10 items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium focus-ring',
               pane === p ? 'bg-[#3A332D] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : 'text-muted-foreground hover:text-foreground')}>
             <Icon className={cn('h-4 w-4', pane === p && 'text-[#F0B54A]')} aria-hidden="true" />{label}
           </button>
         ))}
       </div>
+      {pane === 'pdf' && files.length > 0 && (
+        <Select aria-label={t('Open a file', 'افتح ملف')} className="w-auto max-w-[16rem]" value={pdf?.fileId ?? ''} onChange={(e) => openFile(e.target.value)}>
+          <option value="" disabled>{t('Open a file', 'افتح ملف')}</option>
+          {files.map((f, i) => (
+            <option key={f.fileId} value={f.fileId}>{f.name || t(`File ${i + 1}`, `ملف ${i + 1}`)}{/\.pdf$/.test(f.fileId) ? ' · PDF' : ''}</option>
+          ))}
+        </Select>
+      )}
       {pane === 'pdf' && pdf?.url && (
         <label className={cn('room-press ms-auto flex min-h-10 cursor-pointer items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium text-[#5CC9DB] hover:bg-white/[0.08] focus-within:outline focus-within:outline-2 focus-within:outline-[var(--focus)]', uploading && 'pointer-events-none opacity-60')}>
           <FileUp className="h-4 w-4" aria-hidden="true" />
@@ -866,7 +1112,11 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               {subject && !observer && <span className="hidden shrink-0 text-sm text-muted-foreground sm:inline">{subject}</span>}
               {myLink && <span className="shrink-0"><NetworkBadge link={myLink} onDark /></span>}
               {(isTeacher || observer) && <Timer startMs={startMs} endMs={endMs} now={serverNow} mode={isTeacher ? 'teacher' : 'observer'} />}
+              {isTeacher && <TalkRatio {...talk.totals} />}
             </div>
+            {(isTeacher ? joined : !!tools.stage) && (
+              <StageBar stage={tools.stage} suggested={isTeacher ? suggestedStage : null} onPick={isTeacher ? (stage) => toolSend({ t: 'stage', stage }) : undefined} />
+            )}
             {isTeacher && guardianHere && <GuardianChip />}
             {isTeacher && sharing && (
               <span className="glass-1 flex min-h-11 items-center gap-2 rounded-[var(--r-pill)] py-1 pe-1 ps-3 text-[0.82rem] font-medium text-foreground ring-1 ring-teal/50">
@@ -909,7 +1159,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               )}
               <section className="relative flex min-h-0 min-w-0 flex-1 flex-col gap-2">
                 {paneTabs}
-                <div className="room-paper relative min-h-0 flex-1 overflow-hidden rounded-[var(--r-3)] bg-surface dark:bg-[#24201D] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.85)] ring-1 ring-black/5">
+                <div style={paperStyle} className={cn('room-paper relative min-h-0 flex-1 overflow-hidden rounded-[var(--r-3)] bg-surface dark:bg-[#24201D] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.85)] ring-1 ring-black/5', learnerComfort && comfort.tone === 'dark' && 'dark')}>
                   {content}
                 </div>
                 {!observer && (
@@ -929,7 +1179,39 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           {isTeacher && layout !== 'conversation' && reactions.length > 0 && (
             <div className="absolute bottom-4 start-6 z-20 lg:hidden"><ReactionStream items={reactions} name={learnerName} /></div>
           )}
+          {isTeacher && entry.prepNotes && <PrepNotes text={entry.prepNotes} />}
           {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} startMs={startMs} onOpenChange={setNotesOpen} />}
+
+          {/* 2.10, 2.11: the tools' cards, over the stage near the bar; the teacher's tools sheet on the side. */}
+          {showWarmup && (
+            <div className="pointer-events-none absolute start-3 top-3 z-30 sm:start-5">
+              <WarmupCard prompts={warmup} onClose={() => setWarmupClosed(true)} />
+            </div>
+          )}
+          {(showCheck || corrections.length > 0 || showShadow || practiceOn || mediaOn) && (
+            <div className="pointer-events-none absolute inset-x-3 bottom-3 z-30 flex max-h-[calc(100%-1.5rem)] flex-col items-center justify-end gap-2 overflow-y-auto sm:inset-x-5">
+              {mediaOn && (
+                <SharedMedia media={tools.media!} teacher={isTeacher} duck={isTeacher ? selfSpeaking : teacherSpeaking} bookingId={bookingId} ticket={ticket}
+                  send={toolSend} publish={publishEvent} nowRef={mediaNow} onClose={() => toolSend({ t: 'media', kind: 'none', src: '', playing: false, pos: 0 })} />
+              )}
+              {practiceOn && (
+                <PracticeCard practice={tools.practice!} teacher={isTeacher} send={toolSend} publish={observer ? () => {} : publishEvent}
+                  learnerAnswer={isTeacher ? learnerAnswer : undefined} style={learnerComfort ? comfortStyle(comfort) : undefined} kid={kid} />
+              )}
+              {showShadow && <LearnerShadow fileId={tools.shadow!} bookingId={bookingId} ticket={ticket} mic={micTrack} onClose={() => setShadowClosed(tools.shadow!)} kid={kid} />}
+              {role === 'learner' && <CorrectionToast items={corrections} onDone={dropCorrection} kid={kid} />}
+              {showCheck && (
+                <CheckCard part={tools.check!.part} kid={kid}
+                  onAnswer={(level) => { const c = tools.check!; setAnsweredCheck(c.id); toolSend({ t: 'check_answer', id: c.id, part: c.part, level }); }} />
+              )}
+            </div>
+          )}
+          {isTeacher && toolsOpen && (
+            <div className="pointer-events-none absolute inset-y-3 end-3 z-40 flex sm:end-5">
+              <TeacherTools tools={tools} send={toolSend} slide={slideAt} bookingId={bookingId} ticket={ticket} mic={micTrack}
+                warmup={warmup} checks={checks} onFloat={() => void floatVideo()} canFloat={pipMode() !== 'none' && !!remotes.student} onClose={() => setToolsOpen(false)} />
+            </div>
+          )}
         </main>
 
         <footer className="room-rise-sm relative z-20 shrink-0 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1 sm:px-5 sm:pb-4">
@@ -940,6 +1222,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
             recitation={recitation} onRecitation={isTeacher ? toggleRecitation : undefined}
             layout={layout} onLayout={isTeacher ? (m) => changeLayout(m) : undefined} sharing={sharing}
             shareSlot={isTeacher && shareSupported ? <ScreenShareButton sharing={sharing} onStart={startShare} onStop={stopShare} /> : undefined}
+            toolsSlot={isTeacher ? (
+              <BarButton tone={toolsOpen ? 'on' : 'idle'} aria-pressed={toolsOpen} onClick={() => setToolsOpen((v) => !v)} label={t('Teaching tools', 'أدوات التدريس')} word={t('Tools', 'أدوات')}>
+                <Shapes className="h-5 w-5" aria-hidden="true" />
+              </BarButton>
+            ) : role === 'learner' ? <ComfortButton comfort={comfort} onChange={setComfort} kid={kid} /> : undefined}
+            moreItems={blurRow || undefined}
             onReact={role === 'learner' ? (kind) => send({ t: 'reaction', kind }) : undefined}
             selfHidden={selfHidden} onToggleSelf={!observer && !kid ? () => setSelfHidden((v) => !v) : undefined}
             soundOff={soundOff} onSound={observer ? () => setSoundOff((v) => !v) : undefined}

@@ -35,9 +35,9 @@ Status: ✅ done and live · 🔨 building · ⏳ queued
 | 2.7 | **Our own whiteboard** (replaces Excalidraw): built on the slide pen; pen, highlighter, eraser, shapes, arrows, Arabic text with tashkeel keyboard, laser, undo, pages, annotate PDF pages and images, synced live and saved for rejoin | ⏳ |
 | 2.8 | **Talk time:** teacher and learner speaking time from both mic levels, shown to the teacher, saved for the report | ⏳ |
 | 2.9 | Network indicator per side, "talking while muted", speaking ring, reactions, pointer | ✅ |
-| 2.10 | **Teaching tools:** correction card (said X → correct Y) into one mistake bank; understanding check (green, amber, red per lesson part); lesson stages bar from the lesson plan; play an audio file; shared YouTube player; shadowing (teacher records a line, learner repeats and compares); warm-up prompts from the last lesson; learner comfort (larger text, warm or dark) | ⏳ |
-| 2.11 | **Practice tools:** hide or show tashkeel, fill the blanks, unscramble words, quick games (question wheel, word matching, no gambling-like mechanics), role-play cards | ⏳ |
-| 2.12 | **Picture-in-picture video** when the teacher switches tab (Chrome, Edge) and **background blur** | ⏳ |
+| 2.10 | **Teaching tools:** correction card (said X → correct Y) into one mistake bank; understanding check (green, amber, red per lesson part); lesson stages bar from the lesson plan; play an audio file; shared YouTube player; shadowing (teacher records a line, learner repeats and compares); warm-up prompts from the last lesson; learner comfort (larger text, warm or dark) | built on `cls/tools` (2026-11-20; migration 20261120200000 not applied; not yet seen in a browser) |
+| 2.11 | **Practice tools:** hide or show tashkeel, fill the blanks, unscramble words, quick games (question wheel, word matching, no gambling-like mechanics), role-play cards | built on `cls/tools` (2026-11-20; migration 20261120200000 not applied; not yet seen in a browser) |
+| 2.12 | **Picture-in-picture video** when the teacher switches tab (Chrome, Edge) and **background blur** | built on `cls/tools` (2026-11-20; migration 20261120200000 not applied; not yet seen in a browser) |
 | 2.13 | Ending early asks why (2+ min early, 10+ characters) | ✅ (2026-11-20) |
 
 ## 3. After the lesson
@@ -55,11 +55,13 @@ Status: ✅ done and live · 🔨 building · ⏳ queued
 
 | # | Item | Status |
 |---|---|---|
-| 4.1 | Mushaf with tajweed colours (Quran Foundation API, keys on the server) | ⏳ |
-| 4.2 | In the lesson: synced mushaf, teacher marks mistaken words; marks reach the learner with the report and feed the mistake bank | ⏳ |
-| 4.3 | Homework opens at the assigned pages; listen and repeat with a reciter and word highlighting | ⏳ |
-| 4.4 | Word-mistake detector in the browser (open model, licence checked); devices that cannot run it send the recording to the teacher (NX-03) | ⏳ |
-| 4.5 | Automatic tajweed hints: only after 100 teacher-marked recordings reach 90% agreement (an accuracy test, not a launch item) | ⏳ |
+| 4.1 | Mushaf with tajweed colours (Quran Foundation API, keys on the server) | built on `cls/quran` (student + kid tab, server-decided access) |
+| 4.2 | In the lesson: synced mushaf, teacher marks mistaken words; marks reach the learner with the report and feed the mistake bank | built on `cls/quran` (`quran_marks`, released on the report send, in the report draft) |
+| 4.3 | Homework opens at the assigned pages; listen and repeat with a reciter and word highlighting | built on `cls/quran` |
+| 4.4 | Word-mistake detector in the browser (open model, licence checked); devices that cannot run it send the recording to the teacher (NX-03) | built on `cls/quran` (docs/classroom/QURAN-DETECTOR.md) |
+| 4.5 | Automatic tajweed hints: only after 100 teacher-marked recordings reach 90% agreement (an accuracy test, not a launch item) | harness built on `cls/quran` (hints off) |
+
+Migrations for section 4: `20261121000000_quran_tab.sql` and `20261121000001_timeline_quran_event.sql` (not applied). Owner switch: `QURAN_TAJWEED_HINTS` (default off).
 
 ## 5. Design (waits for the Mobbin MCP)
 

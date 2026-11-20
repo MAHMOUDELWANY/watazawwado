@@ -4,6 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import express from 'express';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { signParentProof } from '../server/routes/parentPin.js';
 import { verifyTicket } from '../server/classroom/access.js';
 import { summarizeAttendance } from '../server/routes/attendance.js';
 
@@ -106,7 +107,8 @@ describe('CL-16 server review fixes', () => {
   after(async () => { await new Promise<void>((r) => srv.close(() => r())); });
 
   const enter = async (portal: 'dashboard' | 'student', observe = false) => {
-    const res = await fetch(`${base}/api/${portal}/classroom/${BOOKING}/enter${observe ? '?observe=1' : ''}`);
+    const proof = portal === 'student' && observe ? { 'x-parent-proof': signParentProof('parent-1', SECRET, clock) } : undefined;
+    const res = await fetch(`${base}/api/${portal}/classroom/${BOOKING}/enter${observe ? '?observe=1' : ''}`, { headers: proof });
     return { status: res.status, body: await res.json() as any };
   };
   const post = (tk: string, path: string, body: unknown = {}) =>
@@ -190,6 +192,9 @@ describe('CL-16 server review fixes', () => {
   it('H3/L4: only the teacher ends; then room_ended once, and enter, state, events, media, files and heartbeats answer 423 ended', async () => {
     assert.strictEqual((await post(learner.ticket, 'end')).status, 403);
     clock = min(20);
+    // An early end cannot skip the reason through the events route.
+    assert.strictEqual((await post(teacher.ticket, 'events', { events: [{ at: clock, event: { t: 'end' } }] })).status, 200);
+    assert.strictEqual(db.tables.lesson_room_state?.[0]?.ended_at ?? null, null);
     // Owner 2026-11-20: 10 minutes early needs a written reason, kept on the timeline.
     const noReason = await post(teacher.ticket, 'end', { reason: 'short' });
     assert.strictEqual(noReason.status, 400);

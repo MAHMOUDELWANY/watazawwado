@@ -24,10 +24,15 @@ export async function prepareHomeworkSet(client: any, generateJson: GenerateJson
   if (!lesson) return false;
   const pages = row.to_page - row.from_page + 1;
   const count = questionCount(row.kind as Kind, pages);
+  // Classroom 2.10: the corrections the teacher logged in this lesson's room (the mistake bank). Optional context only.
+  const { data: mistakes } = row.booking_id
+    ? await client.from('learner_mistakes').select('said, correct').eq('booking_id', row.booking_id).limit(10)
+    : { data: null };
+  const corrections = (mistakes || []).filter((m: any) => typeof m?.said === 'string' && typeof m?.correct === 'string');
   let variants: Variant[] = [];
   for (let attempt = 0; attempt < 2 && variants.length === 0; attempt++) {
     try {
-      const raw = await generateJson(buildHomeworkPrompt({ lesson, from: row.from_page, to: row.to_page, kind: row.kind, count, variants: VARIANTS_PER_SET }), HOMEWORK_SCHEMA);
+      const raw = await generateJson(buildHomeworkPrompt({ lesson, from: row.from_page, to: row.to_page, kind: row.kind, count, variants: VARIANTS_PER_SET, corrections }), HOMEWORK_SCHEMA);
       variants = validateVariants(raw, row.from_page, row.to_page, Math.max(3, count - 2));
     } catch (err) {
       console.warn('[homework] generation failed:', (err as Error).message);

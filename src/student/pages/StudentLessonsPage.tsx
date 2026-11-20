@@ -44,6 +44,8 @@ import {
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useActiveLearner, LearnerChips } from '../activeLearner';
 import { PendingPaymentCard } from '../components/PendingPaymentCard';
+import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
+import { LessonFilesLinks, useLessonFiles } from '../components/LessonFilesLinks';
 import { allLessonRulesText } from '../../lib/lessonRules';
 
 export interface StudentLessonsPageProps {
@@ -131,6 +133,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   // COMPLETED: ONLY bookings whose backend status is genuinely 'completed'
   // PA-01: the header's child switcher narrows the list to one learner.
   const { activeId, learners } = useActiveLearner();
+  // Classroom 3.3: files the teacher sent with each lesson report (signed links from the server).
+  const lessonFiles = useLessonFiles(activeId);
   const learnerBookings = useMemo(
     () => (activeId ? bookings.filter((b: any) => b.studentId === activeId) : bookings),
     [bookings, activeId]
@@ -184,6 +188,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       </div>
 
       <PendingPaymentCard lang={lang} />
+      {/* Classroom 3.4: the rating of the last finished lesson (the family account only; never a child phone). */}
+      <LessonFeedbackCard isAr={isAr} timezone={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} />
 
       {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
       <div className="p-3.5 sm:p-4 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-sm leading-relaxed text-muted-foreground">
@@ -563,6 +569,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <span>{isAr ? 'تغيير الميعاد أو إلغاء' : 'Reschedule or cancel'}</span>
                         </button>
                       )}
+
+                      {isCompleted && <LessonFilesLinks files={lessonFiles[b.id]} isAr={isAr} />}
 
                       {/* Rebook / Repeat Topic for completed or cancelled lessons */}
                       {(isCompleted || isCancelled || isNoShow) && (

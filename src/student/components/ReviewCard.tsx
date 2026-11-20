@@ -6,6 +6,9 @@ import { useActiveLearner } from '../activeLearner';
 
 type Card = { id: string; student_id: string; surah: number; ayah_from: number; ayah_to: number; box: number; due_on: string; learnerName: string | null };
 type Grade = 'smooth' | 'slips' | 'mushaf';
+/** Classroom 2.10: a correction from a lesson (the learner's mistake bank). */
+type Mistake = { id: string; said: string; correct: string; note: string | null; learnerName: string | null };
+type Data = { due: Card[]; total: number; nextDue: string | null; mistakes?: Mistake[] };
 
 const GRADES: { grade: Grade; en: string; ar: string }[] = [
   { grade: 'smooth', en: 'Smooth', ar: 'تمام' },
@@ -19,7 +22,7 @@ const GRADES: { grade: Grade; en: string; ar: string }[] = [
  */
 export function ReviewCard({ isAr }: { isAr: boolean }) {
   const { activeId } = useActiveLearner();
-  const [data, setData] = useState<{ due: Card[]; total: number; nextDue: string | null } | null>(null);
+  const [data, setData] = useState<Data | null>(null);
   const [done, setDone] = useState<string[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -28,13 +31,14 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
     let cancelled = false;
     setData(null); setDone([]);
     const q = activeId ? `?learnerId=${encodeURIComponent(activeId)}` : '';
-    authedJson<{ due: Card[]; total: number; nextDue: string | null }>(`/api/student/review${q}`)
+    authedJson<Data>(`/api/student/review${q}`)
       .then((d) => { if (!cancelled) setData(d); })
       .catch(() => {});
     return () => { cancelled = true; };
   }, [activeId]);
 
-  if (!data || data.total === 0) return null;
+  const mistakes = (data?.mistakes || []).filter((m) => !done.includes(m.id));
+  if (!data || (data.total === 0 && !data.mistakes?.length)) return null;
 
   const n = (v: number) => (isAr ? v.toLocaleString('ar-EG') : String(v));
   const title = (c: Card) => {
@@ -55,6 +59,18 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
     try {
       await authedJson(`/api/student/review/${c.id}`, { method: 'POST', body: JSON.stringify({ grade: g }) });
       setDone((d) => [...d, c.id]);
+    } catch (e: any) {
+      setError(isAr ? 'تعذّر الحفظ، حاول مرة أخرى.' : e?.message || 'Could not save.');
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const learned = async (m: Mistake) => {
+    setBusy(m.id); setError('');
+    try {
+      await authedJson(`/api/student/review/mistakes/${m.id}/learned`, { method: 'POST', body: '{}' });
+      setDone((d) => [...d, m.id]);
     } catch (e: any) {
       setError(isAr ? 'تعذّر الحفظ، حاول مرة أخرى.' : e?.message || 'Could not save.');
     } finally {
@@ -99,7 +115,7 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
             ))}
           </ul>
         </>
-      ) : (
+      ) : data.total > 0 && (
         <p className="text-sm text-muted-foreground flex items-center gap-2" role="status">
           <Check className="w-4 h-4 text-teal shrink-0" aria-hidden="true" />
           {done.length > 0
@@ -107,6 +123,29 @@ export function ReviewCard({ isAr }: { isAr: boolean }) {
             : (isAr ? 'لا مراجعة اليوم.' : 'Nothing to review today.')}
           {nextLabel && !done.length && <span>{isAr ? ` المراجعة القادمة: ${nextLabel}.` : ` Next review: ${nextLabel}.`}</span>}
         </p>
+      )}
+      {mistakes.length > 0 && (
+        <div className="space-y-2 border-t border-border pt-3">
+          <p className="text-xs font-semibold text-foreground">{isAr ? 'تصحيحات من حصصك' : 'Corrections from your lessons'}</p>
+          <p className="text-xs text-muted-foreground">{isAr ? 'قول الصح بصوت عالي مرتين، ولما تثبت دوس «اتعلمتها».' : 'Say the right one aloud twice. When it sticks, tap “Learned”.'}</p>
+          <ul className="space-y-2">
+            {mistakes.slice(0, 5).map((m) => (
+              <li key={m.id} className="flex items-start justify-between gap-2 rounded-xl border border-border p-3">
+                <p className="text-sm text-foreground">
+                  <bdi className="text-muted-foreground line-through decoration-muted-foreground/60">{m.said}</bdi>
+                  <span aria-hidden="true"> → </span>
+                  <bdi className="font-semibold">{m.correct}</bdi>
+                  {m.note && <span className="block text-xs text-muted-foreground">{m.note}</span>}
+                  {m.learnerName && <span className="block text-xs text-muted-foreground">{m.learnerName}</span>}
+                </p>
+                <button type="button" disabled={busy === m.id} onClick={() => learned(m)}
+                  className="min-h-11 shrink-0 rounded-xl border border-border px-3 text-xs font-semibold text-foreground hover:bg-surface-subtle disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal">
+                  {isAr ? 'اتعلمتها' : 'Learned'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
       {error && <p role="alert" className="text-xs text-destructive">{error}</p>}
     </section>

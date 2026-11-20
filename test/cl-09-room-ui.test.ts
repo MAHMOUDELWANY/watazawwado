@@ -24,8 +24,15 @@ describe('CL-09 room screen', () => {
     assert.match(src, /getDisplayMedia\(\{ video: true, audio: true \}\)/);
   });
 
-  it('nothing in the classroom records', () => {
-    for (const f of walk('src/classroom')) assert.doesNotMatch(read(f), /MediaRecorder/, f);
+  it('nothing in the classroom records the lesson (RULES: no lesson recording)', () => {
+    // 2.10 shadowing (spec §5) is the one exception: a short line of up to 15 s, started by hand, from the mic only.
+    const SHADOW = 'src/classroom/tools/Shadowing.tsx'.replace(/\//g, path.sep);
+    for (const f of walk('src/classroom')) if (!f.endsWith(SHADOW)) assert.doesNotMatch(read(f), /MediaRecorder/, f);
+    const shadow = read('src/classroom/tools/Shadowing.tsx');
+    assert.match(shadow, /SHADOW_MAX_MS = 15_000/);
+    assert.match(shadow, /new MediaStream\(\[copy\]\)/, 'records one microphone track, never the call or the camera');
+    // The learner's repeat stays on the device: the learner's card never uploads.
+    assert.doesNotMatch(shadow.slice(shadow.indexOf('export function LearnerShadow')), /upload/i);
   });
 
   it('the kid app never offers the observer entry or the guardian mark', () => {
@@ -33,7 +40,7 @@ describe('CL-09 room screen', () => {
     assert.match(kid, /<ClassroomGate portal="kid"/);
     assert.doesNotMatch(kid, /observe|GuardianChip/i);
     // The kid app never passes ?observe=1 on to the server (parent mode and the admin dashboard may).
-    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal !== 'kid' && search\.get\('observe'\) === '1'/);
+    assert.match(read('src/classroom/ClassroomGate.tsx'), /portal !== 'kid' && !\(portal === 'student' && readKidMode\(\)\) && search\.get\('observe'\) === '1'/);
     // The chip is drawn for the teacher only.
     assert.match(read('src/classroom/ClassroomPage.tsx'), /isTeacher && guardianHere && <GuardianChip/);
   });
