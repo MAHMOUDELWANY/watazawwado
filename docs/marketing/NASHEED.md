@@ -14,58 +14,90 @@ at most a soft daf, our own lyrics, no ayah or hadith sung to a melody, commerci
 
 Arabic and English versions of each. Same melody in both, so the sound is recognisable in either language.
 
-## Lyrics v2 (2026-11-20, after the owner's review of v1)
+## Lyrics v3 (2026-11-20, after the owner sang v2)
 
-v1 was rejected: weak rhyme, sounded like an ad, and the model changed the vowels. v2 is a real nasheed: one metre
-(al-Mutaqarib, فعولن فعولن فعولن فعول), each couplet rhymes, the chorus rhymes on «ـادي» (زادي، رشادي، فؤادي، هادي).
-Themes: the Quran, knowledge as our zaad, Arabic and other languages, the family, the teacher who stays, coming back.
-Full tashkeel on every word, because the music model pronounces what it is given.
+v2 sounded uneven when sung: long al-Mutaqarib lines with substituted feet, and endings that clash (sukun endings
+next to «ـادي»). v3 uses **majzu' al-ramal** (فاعلاتن فاعلاتن), the short, even rhythm of «طلع البدر علينا», which is
+easy to sing. Every line is exactly two feet. Each stanza is four lines; lines 2 and 4 rhyme (the chorus also rhymes
+line 1). The meaning stays indirect: the Quran, knowledge as zaad for the journey to the Hereafter, the family, the
+language, the Seerah lived with mercy, the teacher who stays, coming back.
 
 ### Arabic
 
 **[اللازمة]**
-سَلَكْتُ الطَّرِيقَ بِزَادِ اليَقِينْ ... وَفِي العِلْمِ نُورِي وَفِيهِ رَشَادِي
-وَأَحْمِلُ فِي القَلْبِ حُبَّ الكِتَابْ ... وَحَرْفَ لِسَانِي وَنَبْضَ فُؤَادِي
+نُورُ قُرْآنِي وَزَادِي
+وَبِهِ يُهْدَى فُؤَادِي
+أَحْمِلُ العِلْمَ رَفِيقًا
+فِي طَرِيقِي لِلْمَعَادِ
 
-**[المقطع ١: البيت والقرآن]**
-صَغِيرٌ يُرَتِّلُ عِنْدَ الصَّبَاحْ ... فَيَمْلَأُ بَيْتًا ضِيَاءً وَنُورَا
-وَأُمٌّ تُتَابِعُ آيَاتِهِ ... وَتَدْعُو لَهُ اللهَ قَلْبًا شَكُورَا
+**[١: البيت]**
+فِي صَبَاحِ البَيْتِ طِفْلٌ
+يَقْرَأُ الآيَاتِ نُورَا
+أُمُّهُ تُصْغِي وَتَدْعُو
+رَبِّ فَاجْعَلْهُ شَكُورَا
 
-**[المقطع ٢: اللسان واللغات]**
-وَنَبْنِي لِسَانًا بِأَصْلٍ فَصِيحْ ... وَنَعْبُرُ لِلنَّاسِ جِسْرَ البَيَانْ
-فَنَحْفَظُ لِلضَّادِ عِزًّا قَدِيمًا ... وَنَفْتَحُ لِلْعَالَمِينَ اللِّسَانْ
+**[٢: اللسان]**
+لُغَةُ القُرْآنِ تَحْيَا
+فِي قُلُوبٍ وَلِسَانِ
+نَعْبُرُ الدُّنْيَا بِحَرْفٍ
+مِنْ بَيَانٍ لِبَيَانِ
 
-**[المقطع ٣: المعلّم الذي يبقى]**
-مُعَلِّمُنَا صَاحِبٌ لَا يَغِيبْ ... يَعُودُ إِذَا تُهْتُ دَرْبًا رَفِيقَا
-يَرَى خَطْوَتِي قَبْلَ أَنْ أَسْأَلَهْ ... وَيَبْقَى عَلَى العَهْدِ دَوْمًا صَدِيقَا
+**[٣: الدين رحمة]**
+سِيرَةُ المُخْتَارِ تَهْدِي
+كُلَّ قَلْبٍ لِلرَّشَادِ
+وَنَعِيشُ الدِّينَ حُبًّا
+رَحْمَةً بَيْنَ العِبَادِ
 
-**[الختام: العودة]**
-فَيَا مَنْ بَعُدْتَ تَعَالَ قَرِيبًا ... فَفِي البَابِ نُورٌ وَفِي الدَّرْبِ هَادِي
+**[٤: المعلّم]**
+صَاحِبٌ فِي الدَّرْبِ يَمْشِي
+يُمْسِكُ الكَفَّ رَفِيقَا
+يَعْرِفُ اسْمِي قَبْلَ حَرْفِي
+ثُمَّ يَبْقَى لِي صَدِيقَا
+
+**[الختام]**
+يَا بَعِيدًا عَادَ يَرْجُو
+لَمْ يَزَلْ فِي البَابِ هَادِي
 (ثم اللازمة)
 
-### English (written to sing, same melody)
+Order: chorus, 1, chorus, 2, 3, chorus, 4, closing, chorus.
+
+### English (its own lyric, same meaning, not a translation)
+
+Four-beat lines in rhyming pairs (AABB), so it sits on one simple melody.
 
 **[Chorus]**
-I walked this road with a lamp in my hand,
-my zaad is the light that helps me stand;
-the Book in my heart, its letters my guide,
-a teacher who stays and walks at my side.
+The Book is my light when the road is long,
+its words are my zaad, they keep me strong;
+I gather the knowledge, I guard the light,
+and walk toward home through the longest night.
 
-**[Verse 1: home]**
-A child at the dawn reads soft and slow,
-and the house fills up with a gentle glow;
-his mother is listening, whispering a prayer:
-"Ya Rabb, keep his heart forever there."
+**[1: home]**
+A small voice rises before the sun,
+one ayah, then two, and the day's begun;
+his mother is listening, she quietly prays:
+"Keep him close to Your Book all his days."
 
-**[Verse 2: languages]**
-We learn the old tongue our grandparents knew,
-the words of the Book, and the world's words too;
-a bridge between homes, from the young to the old,
-a language of love that never grows cold.
+**[2: language]**
+A language that carried the final Word,
+the oldest of songs our grandparents heard;
+we learn it and pass it from old to young,
+a bridge between hearts in a living tongue.
 
-**[Verse 3: coming back]**
-If ever you've drifted, the door is still wide,
-come back as you are, there is light inside.
+**[3: mercy]**
+We follow the Prophet ﷺ, the one who came
+with mercy for all, not with fear or with blame;
+we live what we learn, not in words but in deeds,
+a gentle faith planted like quiet seeds.
+
+**[4: the teacher]**
+A friend on the road who walks at your side,
+who knows you by name, not just as a guide;
+when you slip he waits, when you fall he stays,
+a teacher who's there through the hardest days.
+
+**[Closing]**
+And you who have wandered so far from the door:
+come back, there is light, it is open once more.
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
@@ -83,7 +115,7 @@ come back as you are, there is light inside.
 
 ## Open questions for the owner
 
-1. Do the v2 lyrics say what you want? Change any line freely; I keep the metre and rhyme.
+1. Do the v3 lyrics sing well? Try the Arabic on the rhythm of «طلع البدر علينا». Change any line; I keep the metre.
 2. Should the name «وتزوّدوا» be sung? It is a Quranic word (2:197). My advice: no; we sing «زاد» and keep the name
    spoken or written only.
 3. v1 test (2026-11-20, 2 takes, 1,800 credits): wrong vowels, weak lyrics. Approve the one 20 s test above before any
