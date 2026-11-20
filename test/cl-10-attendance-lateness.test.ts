@@ -132,9 +132,15 @@ describe('CL-10 recordTeacherLateness (first room_joined)', () => {
     assert.strictEqual((db.tables.teacher_late_reasons || []).length, 0);
   });
 
+  it('owner lesson 2026-11-19: a first join stored with a joinId suffix at +10 still gets a row', async () => {
+    const db = fakeDb({ lesson_attendance_events: [{ ...join(10), dedupe_key: `room:${BOOKING_ID}:teacher:joined:abc` }] });
+    await recordTeacherLateness(db, booking);
+    assert.strictEqual(db.tables.teacher_late_reasons.length, 1);
+    assert.strictEqual(db.tables.teacher_late_reasons[0].late_minutes, 10);
+  });
+
   it('a rejoin at +20 min after an on-time join: no row (the first join is what counts)', async () => {
-    // The rejoin at +20 finds the first (deduped) room_joined from +0.
-    const db = fakeDb({ lesson_attendance_events: [join(0)] });
+    const db = fakeDb({ lesson_attendance_events: [{ ...join(20), dedupe_key: `room:${BOOKING_ID}:teacher:joined:j2` }, join(0)] });
     await recordTeacherLateness(db, booking);
     assert.strictEqual((db.tables.teacher_late_reasons || []).length, 0);
   });

@@ -27,6 +27,9 @@ export type RoomEntry = {
   subjectLabel?: { en: string; ar: string } | null;
   /** students.learner_type: 'child' turns on child mode in the room. */
   learnerType?: 'child' | 'adult' | null;
+  /** The booking's service and, for the teacher, where this learner stopped in the curriculum (slides open there). */
+  serviceId?: string | null;
+  lastReport?: { track: string; number: number; page: number } | null;
 };
 
 const HOME: Record<Portal, string> = { teacher: '/dashboard', student: '/student/lessons', kid: '/kid/lessons' };

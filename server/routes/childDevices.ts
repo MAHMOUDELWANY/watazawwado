@@ -37,6 +37,8 @@ const CHILD_ROUTES: Array<[string, RegExp]> = [
   ['POST', /^\/api\/student\/recitations$/],
   ['POST', /^\/api\/student\/recitations\/upload-url$/],
   ['GET', /^\/api\/student\/lesson-room\/[^/]+$/],
+  // The lesson room: only enter needs the kid token; the room itself runs on the room ticket.
+  ['GET', /^\/api\/student\/classroom\/[^/]+\/enter$/],
   // The learning pages of the portal (owner 2026-11-02: the device is the child's whole learning space).
   ['GET', /^\/api\/student\/curriculum$/],
   ['GET', /^\/api\/student\/progress$/],

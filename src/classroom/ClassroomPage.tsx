@@ -6,6 +6,7 @@ import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
 import { boardSurface, type RoomEvent } from '../lib/roomEvents';
 import { lessonEndMs } from '../lib/lessonWindow';
+import { Textarea } from '../components/ui/Textarea';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
@@ -104,6 +105,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [pdf, setPdf] = useState<{ fileId: string; page: number; url: string | null } | null>(null);
   const [restored, setRestored] = useState<RoomSnapshot | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
+  const [endReason, setEndReason] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   // Task 12: this side's Zoom link, only after the room failed on our side.
@@ -572,7 +574,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     setEnding(true);
     setEndError('');
     await flushQuality.current();
-    const r = await roomCall('end', { method: 'POST' }).catch(() => ({ kind: 'unknown' as const }));
+    const r = await roomCall('end', { method: 'POST', body: JSON.stringify({ reason: endReason.trim() }) }).catch(() => ({ kind: 'unknown' as const }));
     if (r.kind === 'superseded') return;
     if (r.kind !== 'open' && !(r.kind === 'over' && r.reason === 'ended')) {
       setEnding(false);
@@ -783,7 +785,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         </div>
       ) : pane === 'lesson' ? (
         isTeacher
-          ? restored && <TeacherCurriculum initial={restored.slide} publish={room.publish} publishInk={room.publishInk} save={(s) => save({ t: 'slide', state: s })} />
+          ? restored && <TeacherCurriculum initial={restored.slide} start={{ serviceId: entry.serviceId ?? null, learnerType: entry.learnerType ?? null, lastReport: entry.lastReport ?? null }} publish={room.publish} publishInk={room.publishInk} save={(s) => save({ t: 'slide', state: s })} />
           : <LearnerCurriculum state={room.state} ink={room.ink} />
       ) : pane === 'board' ? (
         <div className="h-full overflow-hidden">
@@ -847,6 +849,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   );
 
   const minutesLeft = Math.round((endMs - serverNow) / 60_000);
+  // Same rule as the server (EARLY_END_GRACE_MIN = 2): ending earlier asks why.
+  const earlyEnd = Math.floor((endMs - serverNow) / 60_000) >= 2;
   const capsuleName = isTeacher ? learnerName : role === 'guardian_observer' ? t(`Watching · ${learnerName}'s lesson`, `متابعة · حصة ${learnerName}`)
     : role === 'admin_observer' ? t('Watching quietly · nobody in the lesson can see you', 'متابعة بهدوء · محدش في الحصة شايفك')
       : entry.teacherName || t('Your lesson', 'حصتك');
@@ -952,11 +956,18 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         footer={(
           <div className="flex justify-end gap-2">
             <Button variant="ghost" onClick={() => setConfirmEnd(false)}>{t('Keep teaching', 'كمّل الحصة')}</Button>
-            <Button onClick={endLesson} disabled={ending}>{ending ? t('Ending…', 'بننهي…') : t('End lesson', 'إنهاء الحصة')}</Button>
+            <Button onClick={endLesson} disabled={ending || (earlyEnd && endReason.trim().length < 10)}>{ending ? t('Ending…', 'بننهي…') : t('End lesson', 'إنهاء الحصة')}</Button>
           </div>
         )}>
         <div className="grid gap-2 text-sm text-muted-foreground">
-          {minutesLeft > 5 && <p className="font-medium text-foreground">{t(`There are ${minutesLeft} minutes left.`, `فاضل ${minutesLeft} دقيقة.`)}</p>}
+          {earlyEnd && (
+            <>
+              <p className="font-medium text-foreground">{t(`There are ${minutesLeft} minutes left. Why does the lesson end early?`, `فاضل ${minutesLeft} دقيقة. الحصة بتخلص بدري ليه؟`)}</p>
+              <Textarea aria-label={t('Reason for ending early', 'سبب إنهاء الحصة بدري')} value={endReason} onChange={(e) => setEndReason(e.target.value)} rows={3}
+                placeholder={t('For example: the learner had to leave.', 'مثلًا: الطالب اضطر يمشي.')} />
+              <p className="text-xs">{t('At least 10 characters. The academy sees it.', 'على الأقل 10 حروف. الأكاديمية بتشوفه.')}</p>
+            </>
+          )}
           <p>{t('The room closes for the learner too. Next, you write the lesson report.', 'الغرفة هتتقفل عند الطالب كمان. بعدها هتكتب تقرير الحصة.')}</p>
           {endError && <p role="alert" className="text-destructive">{endError}</p>}
         </div>

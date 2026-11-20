@@ -11,6 +11,7 @@ import { CLIENT_INCIDENT_KINDS, recordIncident, type IncidentKind } from '../cla
 import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integrations/cloudflareRealtime.js';
 import { classroomEnabledFor } from '../classroom/mode.js';
 import { roomSideIn } from './attendance.js';
+import { lessonEndMs } from '../../src/lib/lessonWindow.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -25,6 +26,8 @@ type Seat = { join_id: string; user_id: string; session_id: string | null };
 /** Why a pass can no longer be used, for the client's message (review M6). */
 type EndReason = 'cancelled' | 'moved' | 'reassigned' | 'closed' | 'ended';
 
+/** Ending this many minutes or more before the booked end asks the teacher why. */
+export const EARLY_END_GRACE_MIN = 2;
 const BOOKING_COLS = 'id, student_id, teacher_id, status, scheduled_start, scheduled_end, duration_minutes, contact_name, service_id';
 const MAX_TRACKS = 64;
 const isObserver = (r: RoomRole) => r === 'guardian_observer' || r === 'admin_observer';
@@ -246,10 +249,14 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       }
 
       // Names for the room's header; a failed lookup only leaves them out.
-      const [teacherRow, serviceRow, learnerRow] = await Promise.all([
+      const [teacherRow, serviceRow, learnerRow, lastReportRow] = await Promise.all([
         client.from('profiles').select('display_name').eq('id', booking.teacher_id).maybeSingle(),
         booking.service_id ? client.from('services').select('title, arabic_title').eq('id', booking.service_id).maybeSingle() : { data: null },
         portal === 'teacher' && booking.student_id ? client.from('students').select('learner_type').eq('id', booking.student_id).maybeSingle() : { data: null },
+        // Where this learner stopped in the curriculum, so the teacher's slides open there (teacher only).
+        role === 'teacher' && booking.student_id
+          ? client.from('curriculum_lesson_reports').select('subject, lesson_number, to_page').eq('student_id', booking.student_id).order('created_at', { ascending: false }).limit(1).maybeSingle()
+          : { data: null },
       ]);
       const type = portal === 'teacher' ? learnerRow?.data?.learner_type : family.find((l) => l.id === booking.student_id)?.learnerType;
       const service = serviceRow?.data;
@@ -268,6 +275,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         teacherName: teacherRow?.data?.display_name || null,
         subjectLabel: service?.title ? { en: service.title, ar: service.arabic_title || service.title } : null,
         learnerType: type === 'child' || type === 'adult' ? type : null,
+        serviceId: booking.service_id || null,
+        lastReport: lastReportRow?.data ? { track: lastReportRow.data.subject, number: lastReportRow.data.lesson_number, page: lastReportRow.data.to_page ?? 0 } : null,
       });
     } catch (err) {
       return fail(res, err, 'enter', await providerIncident(client, err, String(req.params.id || ''), incidentRole));
@@ -699,6 +708,16 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const live = await liveSeat(client, t, res);
       if (!live) return;
+      // Owner 2026-11-20: ending more than EARLY_END_GRACE_MIN before the booked end needs a written reason, kept on
+      // the timeline for the admin.
+      const b: any = live.booking;
+      const minutesEarly = Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
+      const reason = typeof req.body?.reason === 'string' ? req.body.reason.trim().slice(0, 1000) : '';
+      if (minutesEarly >= EARLY_END_GRACE_MIN) {
+        if (reason.length < 10) return res.status(400).json({ error: 'Write why the lesson ends early (at least 10 characters).', needsReason: true, minutesEarly });
+        const { error } = await client.from('lesson_timeline_events').insert({ booking_id: t.bookingId, type: 'end', actor_role: 'teacher', payload: { early: true, minutesEarly, reason }, occurred_at: iso() });
+        if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
+      }
       await endRoom(client, t.bookingId);
       return res.json({ ended: true });
     } catch (err) {
@@ -723,7 +742,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         .eq('booking_id', id).eq('source', 'room').order('occurred_at', { ascending: true }).limit(200);
       if (readErr) throw new Error(`lesson_attendance_events: ${readErr.message}`);
       if (!roomSideIn(roomRows || [], r, now())) {
-        const before = (roomRows || []).some((e: any) => e.role === r);
+        const before = (roomRows || []).some((e: any) => e.role === r && e.event === 'room_joined');
         const { error } = await client.from('lesson_attendance_events').upsert(
           { booking_id: id, source: 'room', event: 'room_joined', role: r, occurred_at: iso(), dedupe_key: before ? `room:${id}:${r}:joined:${t.joinId}` : `room:${id}:${r}:joined` },
           { onConflict: 'dedupe_key', ignoreDuplicates: true },

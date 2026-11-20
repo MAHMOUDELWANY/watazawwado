@@ -190,8 +190,15 @@ describe('CL-16 server review fixes', () => {
   it('H3/L4: only the teacher ends; then room_ended once, and enter, state, events, media, files and heartbeats answer 423 ended', async () => {
     assert.strictEqual((await post(learner.ticket, 'end')).status, 403);
     clock = min(20);
-    const res = await post(teacher.ticket, 'end');
+    // Owner 2026-11-20: 10 minutes early needs a written reason, kept on the timeline.
+    const noReason = await post(teacher.ticket, 'end', { reason: 'short' });
+    assert.strictEqual(noReason.status, 400);
+    assert.strictEqual(((await noReason.json()) as any).needsReason, true);
+    assert.strictEqual(db.tables.lesson_room_state?.[0]?.ended_at ?? null, null);
+    const res = await post(teacher.ticket, 'end', { reason: 'The learner had to leave for school.' });
     assert.strictEqual(res.status, 200);
+    const early = (db.tables.lesson_timeline_events || []).find((r: any) => r.type === 'end' && r.payload?.early);
+    assert.deepStrictEqual(early?.payload, { early: true, minutesEarly: 10, reason: 'The learner had to leave for school.' });
     assert.strictEqual(db.tables.lesson_room_state[0].ended_at, new Date(min(20)).toISOString());
     assert.strictEqual(events('room_ended').length, 1);
     const ended = async (r: Response) => {

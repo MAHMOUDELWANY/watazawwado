@@ -16,8 +16,10 @@ export function evaluateLateness(input: { booking: LessonTimes; firstTeacherRoom
  * gives the same answer, and the row is insert-once: a rejoin never creates or reopens one.
  */
 export async function recordTeacherLateness(client: any, booking: LessonTimes & { id: string; teacher_id: string }): Promise<void> {
+  // The earliest teacher room_joined, whatever its dedupe key (a first join could carry a joinId suffix).
   const { data: first, error } = await client.from('lesson_attendance_events').select('occurred_at')
-    .eq('dedupe_key', `room:${booking.id}:teacher:joined`).maybeSingle();
+    .eq('booking_id', booking.id).eq('source', 'room').eq('event', 'room_joined').eq('role', 'teacher')
+    .order('occurred_at', { ascending: true }).limit(1).maybeSingle();
   if (error) throw new Error(`first join: ${error.message}`);
   const joinedAt: string | null = first?.occurred_at ?? null;
   if (!joinedAt || teacherLateMinutes(booking, joinedAt) === 0) return;
