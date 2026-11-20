@@ -14,57 +14,78 @@ at most a soft daf, our own lyrics, no ayah or hadith sung to a melody, commerci
 
 Arabic and English versions of each. Same melody in both, so the sound is recognisable in either language.
 
-## Lyrics, Arabic (draft)
+## Lyrics v2 (2026-11-20, after the owner's review of v1)
 
-**اللازمة**
-جهّزْ زادَكْ، وامشِ معانا
-حرفًا حرفًا يكبرُ فينا
-معلّمُنا باقٍ يرعانا
-والقرآنُ نورُ ليالينا
+v1 was rejected: weak rhyme, sounded like an ad, and the model changed the vowels. v2 is a real nasheed: one metre
+(al-Mutaqarib, فعولن فعولن فعولن فعول), each couplet rhymes, the chorus rhymes on «ـادي» (زادي، رشادي، فؤادي، هادي).
+Themes: the Quran, knowledge as our zaad, Arabic and other languages, the family, the teacher who stays, coming back.
+Full tashkeel on every word, because the music model pronounces what it is given.
 
-**المقطع الأول (البيت والأسرة)**
-صوتٌ صغيرٌ عند الفجرِ يقرأْ
-والأمُّ تسمعُ، والقلبُ يهدأْ
-خطوةُ يومٍ، ثمّ خطوةْ
-والزادُ يكبرُ… ما أجملَ المبدأْ
+### Arabic
 
-**المقطع الثاني (العودة)**
-مهما بعُدتَ، الدربُ قريبْ
-ابدأْ بحرفٍ، والبابُ يُجيبْ
-لا محاضرةَ، لا لومَ هنا
-رفيقُ دربٍ… وزادٌ يطيبْ
+**[اللازمة]**
+سَلَكْتُ الطَّرِيقَ بِزَادِ اليَقِينْ ... وَفِي العِلْمِ نُورِي وَفِيهِ رَشَادِي
+وَأَحْمِلُ فِي القَلْبِ حُبَّ الكِتَابْ ... وَحَرْفَ لِسَانِي وَنَبْضَ فُؤَادِي
 
-## Lyrics, English (draft, written for singing, not translated)
+**[المقطع ١: البيت والقرآن]**
+صَغِيرٌ يُرَتِّلُ عِنْدَ الصَّبَاحْ ... فَيَمْلَأُ بَيْتًا ضِيَاءً وَنُورَا
+وَأُمٌّ تُتَابِعُ آيَاتِهِ ... وَتَدْعُو لَهُ اللهَ قَلْبًا شَكُورَا
 
-**Chorus**
-Pack your zaad and walk with us,
-letter by letter, step by step,
-a teacher who stays, a hand to hold,
-a light in the heart that won't grow cold.
+**[المقطع ٢: اللسان واللغات]**
+وَنَبْنِي لِسَانًا بِأَصْلٍ فَصِيحْ ... وَنَعْبُرُ لِلنَّاسِ جِسْرَ البَيَانْ
+فَنَحْفَظُ لِلضَّادِ عِزًّا قَدِيمًا ... وَنَفْتَحُ لِلْعَالَمِينَ اللِّسَانْ
 
-**Verse 1 (home)**
-A small voice reading at the dawn,
-a mother listening, worry gone.
-One step today, one step more,
-and the zaad keeps growing, like never before.
+**[المقطع ٣: المعلّم الذي يبقى]**
+مُعَلِّمُنَا صَاحِبٌ لَا يَغِيبْ ... يَعُودُ إِذَا تُهْتُ دَرْبًا رَفِيقَا
+يَرَى خَطْوَتِي قَبْلَ أَنْ أَسْأَلَهْ ... وَيَبْقَى عَلَى العَهْدِ دَوْمًا صَدِيقَا
 
-**Verse 2 (coming back)**
-However far you think you've gone,
-one letter, and you're coming home.
-No lecture here, no pointing blame,
-a friend on the road who knows your name.
+**[الختام: العودة]**
+فَيَا مَنْ بَعُدْتَ تَعَالَ قَرِيبًا ... فَفِي البَابِ نُورٌ وَفِي الدَّرْبِ هَادِي
+(ثم اللازمة)
 
-## Sound brief (for ElevenLabs Music or a real munshid)
+### English (written to sing, same melody)
 
-Modern a cappella nasheed. Warm male lead voice, soft layered backing voices, a gentle daf on the beat, no other
-instruments, no synths, no humming beds. Calm, hopeful, dignified, mid-slow (about 80 bpm). Clear diction: every
-word understood. Arabic in clear Fusha. Generate the Arabic and English versions from the same melody reference.
+**[Chorus]**
+I walked this road with a lamp in my hand,
+my zaad is the light that helps me stand;
+the Book in my heart, its letters my guide,
+a teacher who stays and walks at my side.
+
+**[Verse 1: home]**
+A child at the dawn reads soft and slow,
+and the house fills up with a gentle glow;
+his mother is listening, whispering a prayer:
+"Ya Rabb, keep his heart forever there."
+
+**[Verse 2: languages]**
+We learn the old tongue our grandparents knew,
+the words of the Book, and the world's words too;
+a bridge between homes, from the young to the old,
+a language of love that never grows cold.
+
+**[Verse 3: coming back]**
+If ever you've drifted, the door is still wide,
+come back as you are, there is light inside.
+
+## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
+
+1. **One test first:** the Arabic chorus only, about 20 s, one take, model `music_v2_5` (ElevenLabs' recommended
+   model). Styles in English, lyrics with full tashkeel (ElevenLabs: "styles must be in English, lyrics can be any
+   language"). Their docs say nothing about Arabic pronunciation, so this test decides whether the model can do it.
+2. **Style words:** "a cappella", "soft intimate male vocals", "gentle daf", "slow", "quiet", "sparse"; "no instruments,
+   no piano, no synths, no strings".
+3. **Quiet background version: no extra credits.** We lower the volume ourselves when we mix it under a video
+   (about -18 dB under the voice), and cut the 5 s sting and the 30 s bed from the full take.
+4. If the test still changes the vowels: stop spending credits. Options then: the owner (or a munshid) records the
+   Arabic vocals, and we keep the AI only for the English version.
+5. ElevenLabs Music terms (09 Oct 2026): our Creator plan allows online and offline commercial use and streaming, no
+   attribution needed, 62 minutes of music a month; we stay responsible for checking each output.
 
 ## Open questions for the owner
 
-1. Do the lyrics say what you want? Change any line freely; I keep the rhythm.
+1. Do the v2 lyrics say what you want? Change any line freely; I keep the metre and rhyme.
 2. Should the name «وتزوّدوا» be sung? It is a Quranic word (2:197). My advice: no; we sing «زاد» and keep the name
    spoken or written only.
-3. ElevenLabs: confirm your plan allows commercial use of generated music, then either you generate it in the
-   ElevenLabs Music tool from the brief above, or add the full ElevenLabs connector so I can.
+3. v1 test (2026-11-20, 2 takes, 1,800 credits): wrong vowels, weak lyrics. Approve the one 20 s test above before any
+   more generation.
 4. Later, when we grow: record it with a real munshid so the voice is human and ours.
