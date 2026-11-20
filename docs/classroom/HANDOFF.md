@@ -106,3 +106,12 @@ checklist.
 2. Book a test lesson with that teacher and run the live checklist in `docs/classroom/TEST-REPORT.md`.
 3. The QA p5 accounts were purged after the E2E run; recreate them (`scripts/qa/create-accounts.ts`) before re-running
    `QA_CLASSROOM=1` E2E.
+
+## 2026-11-20: one build, no release split (owner)
+
+The owner rejected phases: everything in `docs/classroom/BUILD-LIST.md` is built now; design waits for the Mobbin MCP.
+Parallel worktrees (branches from ed56d78e, node_modules junction + .env hard link like this one):
+`wt-cls-before` (1.4 prep mode, 1.5 waiting room, 1.6 parent PIN), `wt-cls-after` (3.2 verdict, 3.3 report draft,
+3.4 rating, 3.5 admin lesson view), `wt-cls-board` (2.7 own whiteboard, 2.8 talk time). Next: 2.10–2.12 teaching
+tools, then the Quran tab (4.x). Each branch is merged here, migrations applied, verified on a Vercel preview with a real
+camera and the child phone, then shipped.
