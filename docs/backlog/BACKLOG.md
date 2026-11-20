@@ -538,7 +538,7 @@ HR-04, HR-05, HR-06, HR-07, HR-08.
 
 ### HR-04 Probation period
 - Priority P2 · Zone 🟢 · Size M · Status todo · Depends on TU-02 and the classroom ratings
-- Proposed, waiting for the owner: the first 10 lessons or 30 days, whichever ends later.
+- Owner 2026-11-20: the probation is the teacher's first 10 lessons (no day count).
 - Do: a new teacher is marked "on probation": their lessons are listed first for Supervision, and the teacher sees
   nothing different. At the end HR records one decision with a note: confirm, extend once, or end.
 
