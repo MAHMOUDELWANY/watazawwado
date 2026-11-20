@@ -115,3 +115,12 @@ Parallel worktrees (branches from ed56d78e, node_modules junction + .env hard li
 3.4 rating, 3.5 admin lesson view), `wt-cls-board` (2.7 own whiteboard, 2.8 talk time). Next: 2.10–2.12 teaching
 tools, then the Quran tab (4.x). Each branch is merged here, migrations applied, verified on a Vercel preview with a real
 camera and the child phone, then shipped.
+
+### Status 2026-11-20 (usage limit hit)
+- `cls/before` done (63c05dfc..27cc2597; migration 20261120100000_classroom_before_lesson.sql, not applied). Sent back to
+  add: email PIN reset, "hand to my child" kid mode on the parent device, real names for in-room uploads.
+- `cls/after` done (210d3829..a6c17b45; migration 20261120000010_classroom_after_lesson.sql, not applied). Owner
+  questions: "nobody came" -> admin decides?; rating editable within the month or once only?
+- `cls/board` (own whiteboard + talk time) still running at the limit.
+- Next: merge the three branches into feat/classroom-r1b, resolve ClassroomPage conflicts, tsc + cl tests + build, apply
+  both migrations, verify on a Vercel preview with real camera and child phone, ship; then 2.10-2.12 and the Quran tab.
