@@ -145,3 +145,10 @@ camera and the child phone, then shipped.
   AUDIO_FILE_ID so it stays out of document lists and reports. Expect ClassroomPage/Toolbar conflicts (small, additive).
 - Not seen in a browser yet: check YouTube sync, audio ducking, shadowing on Safari (MediaRecorder gives audio/mp4),
   automatic PiP on tab switch (Chrome 134+), and blur on a weak laptop (it should turn itself off).
+
+### 2026-11-20: all branches merged, migrations applied
+All five branches are in feat/classroom-r1b. Production has every new table. Applied through the Supabase MCP, two
+files were applied in parts, because the MCP declines `DROP COLUMN` and a combined `DROP POLICY` + bucket update:
+- 20261120100001 without `DROP COLUMN lesson_prep.files` (the column stays in production, empty and unused).
+- 20261120200000 split in three: timeline CHECK (covered by 20261121000001), `learner_mistakes` with `GRANT ALL TO
+  service_role` instead of the policy, and the classroom-files audio mime types.
