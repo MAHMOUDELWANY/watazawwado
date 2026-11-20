@@ -59,41 +59,42 @@ language, the Seerah lived with mercy, the teacher who stays, coming back.
 لَمْ يَزَلْ فِي البَابِ هَادِي
 (ثم اللازمة)
 
-### English (v4, its own lyric)
+### English (v5, 2026-11-20: rewritten as its own song; four beats a line, rhyming couplets)
 
 **[Chorus]**
-Pack your zaad for the road ahead,
-wishes alone won't get you there;
-take a verse, take patience, take
-the quiet tears of a whispered prayer.
+Pack your zaad, the road is long,
+take what is light but makes you strong:
+a verse you hold, a heart that stays,
+and quiet tears on longer days.
 
 **[1: home]**
-When my child recites, the walls grow still,
-our little home becomes a prayer hall;
-each letter he reads is a seed he sows
-in a garden that never fades at all.
+A little voice before the light,
+the house still wrapped in the end of night;
+each word he reads is a seed he sows
+in a garden only Allah knows.
 
 **[2: language]**
-We keep the old tongue, the tongue of Daad,
-a gift from the ones who came before;
-and from it we build a bridge of words
-to every language, every shore.
+Across the sea, a grandma calls,
+and Arabic fills the quiet halls;
+we learn the tongue the Quran chose,
+a bridge of words where love still flows.
 
 **[3: gentleness]**
-We walk in the steps of a Prophet ﷺ who
-was gentle with all who came his way;
-he taught with kindness, never fear,
-and hearts found home in what he'd say.
+He came with mercy, not with fear,
+the Prophet ﷺ held the children near;
+so we teach slow, we teach with care,
+and every heart finds welcome there.
 
 **[4: the teacher]**
-A friend on the road who walks at your side,
-who knows you by name, not just as a guide;
-when you slip he waits, when you fall he stays,
-a teacher who's there through the hardest days.
+A friend who walks the road with you,
+who knows your name, your struggles too;
+and when you slip, he doesn't leave,
+he stays, and helps your heart believe.
 
 **[Closing]**
-And you who have wandered so far from the door:
-come back, there is light, it is open once more.
+And if you've drifted far away,
+the door is open still today.
+(then the chorus)
 
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
