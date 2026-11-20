@@ -48,13 +48,18 @@ export function teacherAverage(ratings: number[]): { count: number; average: num
  * lesson can never reveal that family's rating (security review 2026-10-21).
  */
 export function teacherVisibleRatings(rows: Array<{ rating: number; created_at: string }>, now: DateTime): number[] {
+  return finishedFullMonths(rows, now).map((r) => Number(r.rating));
+}
+
+/** The rows of finished calendar months (UTC) that each hold TEACHER_MIN_RATINGS or more rows (see above). */
+export function finishedFullMonths<T extends { created_at: string }>(rows: T[], now: DateTime): T[] {
   const monthStart = now.toUTC().startOf('month');
-  const byMonth = new Map<string, number[]>();
+  const byMonth = new Map<string, T[]>();
   for (const r of rows) {
     const at = DateTime.fromISO(r.created_at, { zone: 'utc' });
     if (!at.isValid || at >= monthStart) continue;
     const key = at.toFormat('yyyy-LL');
-    byMonth.set(key, [...(byMonth.get(key) || []), Number(r.rating)]);
+    byMonth.set(key, [...(byMonth.get(key) || []), r]);
   }
   return [...byMonth.values()].filter((m) => m.length >= TEACHER_MIN_RATINGS).flat();
 }

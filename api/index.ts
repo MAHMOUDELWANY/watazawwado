@@ -58,6 +58,7 @@ import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
+import { registerTeacherRatingRoutes } from '../server/routes/teacherRatings.js';
 import { registerWaitlistRoutes, onboardingAllowed } from '../server/routes/waitlist.js';
 import { registerHomeworkRoutes } from '../server/routes/homework.js';
 import { registerReviewRoutes } from '../server/routes/review.js';
@@ -10859,6 +10860,8 @@ registerFeedbackRoutes(app, {
   getLearners: getAuthorizedLearnersForStudent,
   teacherName: resolveTeacherMetadata
 });
+// Owner 2026-11-20: the teacher questionnaire (after the 4th lesson, then every 8) and the curriculum milestone survey.
+registerTeacherRatingRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent, teacherName: resolveTeacherMetadata });
 
 registerTeacherFileRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit });
 registerPrivacyRoutes(app, {

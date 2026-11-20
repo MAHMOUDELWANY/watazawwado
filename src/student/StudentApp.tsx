@@ -81,6 +81,7 @@ import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 import { setActiveWorkingTimezone } from '../lib/countryTimezones';
 import { authedJson } from '../lib/authedJson';
 import { PushPrompt } from './components/PushToggle';
+import { TeacherRatingGate } from './components/TeacherRatingGate';
 import { DateTime } from 'luxon';
 import StudentWalletPage from './pages/StudentWalletPage';
 
@@ -761,6 +762,8 @@ export default function StudentApp() {
 
       {/* Global Onboarding Guide */}
       <FeedbackHost />
+      {/* Owner 2026-11-20: the teacher questionnaire (family portal only; kid mode returned earlier). */}
+      {profile?.id && <TeacherRatingGate isAr={isAr} hold={showGlobalTour} />}
       <OnboardingGuide
         steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : learnerTourSteps(isAr)}
         isOpen={showGlobalTour}

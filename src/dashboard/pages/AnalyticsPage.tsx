@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { AccountFunnel } from '../components/AccountFunnel';
-import { AdminLessonFeedback } from '../components/LessonFeedbackPanels';
+import { AdminLessonFeedback, AdminTeacherRatings } from '../components/LessonFeedbackPanels';
 import { MonthlyProgressPreview, QuietLearnersPreview } from '../components/MonthlyProgressPreview';
 import { AdminPrivacyRequests } from '../components/AdminPrivacyRequests';
 import { TeacherLoad } from '../components/TeacherLoad';
@@ -335,6 +335,7 @@ export default function AnalyticsPage() {
           {isSuperAdmin && <AccountFunnel />}
           {isSuperAdmin && <TeacherLoad />}
           {isSuperAdmin && <AdminLessonFeedback />}
+          {isSuperAdmin && <AdminTeacherRatings />}
           {isSuperAdmin && <AdminPrivacyRequests />}
           {isSuperAdmin && <MonthlyProgressPreview />}
           {isSuperAdmin && <QuietLearnersPreview />}

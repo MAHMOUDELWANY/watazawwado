@@ -29,7 +29,7 @@ import { serviceLabel, zoneCity } from '../lib/labels';
 import { useT } from '../../lib/language';
 import { DASH_CARD } from '../components/DashboardCards';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
-import { TeacherRatingNote } from '../components/LessonFeedbackPanels';
+import { TeacherQuestionnaireNote, TeacherRatingNote } from '../components/LessonFeedbackPanels';
 import { JalilaBrief } from '../components/JalilaBrief';
 
 type T = (en: string, ar: string) => string;
@@ -421,6 +421,7 @@ export default function TodayPage() {
               )}
 
               <TeacherRatingNote />
+              <TeacherQuestionnaireNote />
             </div>
 
             <aside className="space-y-4" aria-label={t('At a glance', 'نظرة سريعة')}>
