@@ -69,6 +69,7 @@ import { registerPushRoutes } from '../server/routes/push.js';
 import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/recitations.js';
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
+import { runRoomVerdict, sweepRoomVerdicts } from '../server/classroom/verdict.js';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
@@ -4747,6 +4748,30 @@ export function validateTeacherLifecycleTransition(
   return { valid: true };
 }
 
+/** What follows a recorded outcome, from the teacher's buttons or the room's automatic verdict (classroom 3.2). */
+function afterLessonOutcome(supabase: any, booking: any, status: 'completed' | 'no_show', creditDecision: 'used' | 'returned') {
+  // CRM-04: every attended free trial gets one admin follow-up for the next day.
+  if (status === 'completed' && booking.booking_type === 'trial' && booking.student_id) {
+    waitUntil(createCrmTask(supabase, {
+      accountStudentId: booking.student_id,
+      title: `Follow up after the free trial (${booking.reference_code}) · متابعة بعد الحصة التجريبية`,
+      dueAt: new Date(Date.now() + 24 * 3_600_000),
+      source: 'trial_followup',
+      dedupeKey: `trial:${booking.id}`
+    }));
+  }
+
+  // Referral (RULES.md §4): a referred family's first completed paid lesson earns the inviter's credit.
+  if (status === 'completed' && booking.booking_type !== 'trial') {
+    waitUntil(qualifyReferralForBooking(supabase, booking));
+  }
+
+  // RN-02: only when a credit was actually used (a no-show with the credit returned changes nothing).
+  if (booking.package_entitlement_id && (status === 'completed' || creditDecision === 'used')) {
+    waitUntil(notifyLowBalance(supabase, booking.package_entitlement_id));
+  }
+}
+
 // 16c. DASHBOARD: Update booking (status, notes, cancellation, reschedule)
 app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
   try {
@@ -4994,26 +5019,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         return res.status(statusCode).json({ error: rpcErr.message || `Failed to record lesson outcome: ${status}` });
       }
 
-      // CRM-04: every attended free trial gets one admin follow-up for the next day.
-      if (status === 'completed' && existingBooking.booking_type === 'trial' && existingBooking.student_id) {
-        waitUntil(createCrmTask(supabase, {
-          accountStudentId: existingBooking.student_id,
-          title: `Follow up after the free trial (${existingBooking.reference_code}) · متابعة بعد الحصة التجريبية`,
-          dueAt: new Date(Date.now() + 24 * 3_600_000),
-          source: 'trial_followup',
-          dedupeKey: `trial:${existingBooking.id}`
-        }));
-      }
-
-      // Referral (RULES.md §4): a referred family's first completed paid lesson earns the inviter's credit.
-      if (status === 'completed' && existingBooking.booking_type !== 'trial') {
-        waitUntil(qualifyReferralForBooking(supabase, existingBooking));
-      }
-
-      // RN-02: only when a credit was actually used (a no-show with the credit returned changes nothing).
-      if (existingBooking.package_entitlement_id && (status === 'completed' || creditDecision === 'used')) {
-        waitUntil(notifyLowBalance(supabase, existingBooking.package_entitlement_id));
-      }
+      afterLessonOutcome(supabase, existingBooking, status, creditDecision);
 
       return res.json(rpcData);
     }
@@ -8177,7 +8183,13 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && process.env.VERCEL_ENV === 'production') {
       try { recitationsPurged = await purgeOldRecitations(cronClient); } catch (err) { console.warn('[Cron] recitation purge failed:', err); }
     }
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest, recitationsPurged });
+    // Classroom 3.2: the attendance verdict of room lessons nobody ended (past the hard close). Production only: the
+    // test suite calls this route against the shared database and must not record real lessons.
+    let roomVerdicts = 0;
+    if (cronClient && process.env.VERCEL_ENV === 'production') {
+      try { roomVerdicts = (await sweepRoomVerdicts(cronClient, { afterOutcome: afterLessonOutcome })).decided; } catch (err) { console.warn('[Cron] room verdicts failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners, summaryReminders, weeklyDigest, recitationsPurged, roomVerdicts });
     res.json({
       homework,
       success: true,
@@ -10877,7 +10889,8 @@ registerMonthlyDraftRoute(app, jalilaDraftDeps);
 // NX-12: the lesson room (teacher shows slides, the learner follows live).
 registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent });
 // Classroom Release 1: room tickets, roles and the Cloudflare media proxy.
-registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit, roomRateLimit, requireSuperAdmin });
+registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit, roomRateLimit, requireSuperAdmin,
+  onLessonEnded: (client, bookingId) => runRoomVerdict(client, bookingId, 'end', { afterOutcome: afterLessonOutcome }) });
 // Classroom Task 10: teacher late reasons and their super admin review.
 registerLateReasonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()) });
 
