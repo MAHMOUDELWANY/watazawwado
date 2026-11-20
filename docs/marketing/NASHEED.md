@@ -80,7 +80,7 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
 
 Order: chorus, home, language, resolve, teacher, chorus, resolve ×2.
 
-### English (v10 draft for owner review; resolve approved)
+### English (approved by the owner 2026-11-20)
 
 **[Chorus]**
 We rise as one from every shore,
@@ -98,7 +98,7 @@ with faith we climb it, come what may.
 At dawn, a child begins to read,
 and every word becomes a seed;
 we plant it here, and it will grow
-in Jannah, more than we can know.
+in Jannah, more than we know.
 
 **[2: language]**
 The Quran's tongue runs in our veins,
