@@ -3,15 +3,8 @@ import { Pause, Play, Repeat } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Select } from '../components/ui/Select';
 import { useT } from '../lib/language';
-import { wordKey, type QuranApi, type QuranAudio, type Reciter } from './api';
-
-/** The word being recited at `ms`, from the API's [position, start, end] timings; null between words. */
-export function wordAt(audio: QuranAudio, ms: number): { verseKey: string; key: string | null } | null {
-  const v = audio.verses.find((x) => ms >= x.from && ms < x.to);
-  if (!v) return null;
-  const w = v.words.find(([, a, b]) => ms >= a && ms < b);
-  return { verseKey: v.key, key: w ? wordKey(v.key, w[0]) : null };
-}
+import { wordAt } from '../lib/quran/timing';
+import type { QuranApi, QuranAudio, Reciter } from './api';
 
 /**
  * 4.3: listen and repeat. A known reciter plays the assigned ayat with each word highlighted from the audio timings;

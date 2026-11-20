@@ -128,6 +128,7 @@ export type ReportDraft = {
   reactions: Record<string, number>;
   talk: Record<string, number> | null;
   earlyEnd: { minutesEarly: number; reason: string } | null;
+  quran?: { total: number; byType: Record<string, number>; verses: string[] } | null;
 };
 
 const REACTION_LABELS: Record<string, { en: string; ar: string }> = {
@@ -175,6 +176,12 @@ function ReportDraftPanel({ draft, picked, onPick }: { draft: ReportDraft; picke
       )}
       {reactions.length > 0 && (
         <p className="text-foreground">{t('Reactions: ', 'التفاعلات: ')}{reactions.map(([k, n]) => `${REACTION_LABELS[k] ? L(REACTION_LABELS[k]) : k} ×${n}`).join(' · ')}</p>
+      )}
+      {draft.quran && (
+        <p className="text-foreground">
+          {t(`Mushaf marks: ${draft.quran.total} words (ayat ${draft.quran.verses.slice(0, 6).join(', ')}${draft.quran.verses.length > 6 ? '…' : ''})`, `علامات المصحف: ${draft.quran.total} كلمة (آيات ${draft.quran.verses.slice(0, 6).join('، ')}${draft.quran.verses.length > 6 ? '…' : ''})`)}
+          <span className="block text-xs text-muted-foreground">{t('The learner sees them once you save this report.', 'الطالب هيشوفها أول ما تحفظ التقرير ده.')}</span>
+        </p>
       )}
       {draft.earlyEnd && (
         <p className="text-muted-foreground">{t(`Ended ${draft.earlyEnd.minutesEarly} min early: `, `خلصت بدري ${draft.earlyEnd.minutesEarly} دقيقة: `)}{draft.earlyEnd.reason}</p>
