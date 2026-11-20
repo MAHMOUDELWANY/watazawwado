@@ -78,11 +78,11 @@ Arabic and English versions of each. Same melody in both, so the sound is recogn
 
 Order: chorus, home, language, resolve, teacher, chorus, resolve ×2.
 
-### English (v8 draft for owner review; resolve approved)
+### English (v9 draft for owner review; resolve approved)
 
 **[Chorus]**
 We rise as one from every shore,
-one home, one heart, forevermore;
+together, stronger than before;
 we pack our zaad, we take the road,
 and carry light, and share the load.
 
@@ -95,8 +95,8 @@ with faith we climb it, come what may.
 **[1: home]**
 Before the sun, a small voice rose,
 and through the house the Quran flows;
-each verse a seed that takes its root
-and gives in Jannah endless fruit.
+each letter, small as morning dew,
+in Jannah grows forever new.
 
 **[2: language]**
 The Quran's tongue runs in our veins,
