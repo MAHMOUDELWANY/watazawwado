@@ -81,7 +81,10 @@ export function HomeworkCard({ isAr, kid = false }: { isAr: boolean; kid?: boole
                   {showNames && <span className="text-[11px] font-semibold text-muted-foreground">{nameOf(hw.student_id)}</span>}
                   <span className={`text-sm text-foreground ${done ? 'line-through decoration-muted-foreground/50' : ''}`}>{line.title}</span>
                   {line.note && <span className="text-xs text-muted-foreground">{line.note}</span>}
-                  {line.href && (line.external
+                  {/* Classroom 4.3: a recite task opens our mushaf at the assigned ayat (listen, repeat, record, check). */}
+                  {hw.kind === 'recite' && hw.surah ? (
+                    <Link to={`${kid ? '/kid' : '/student'}/quran?surah=${hw.surah}&from=${hw.ayah_from}&to=${hw.ayah_to}&hw=${hw.id}&learner=${hw.student_id}`} className="text-xs font-semibold text-teal underline underline-offset-4 w-fit">{isAr ? 'افتح في المصحف' : 'Open in the mushaf'}</Link>
+                  ) : line.href && (line.external
                     ? <a href={line.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-teal underline underline-offset-4 inline-flex items-center gap-1 w-fit">{isAr ? 'افتح الآيات' : 'Open the ayat'}<ExternalLink className="w-3 h-3" aria-hidden="true" /></a>
                     : !kid && <Link to={line.href} className="text-xs font-semibold text-teal underline underline-offset-4 w-fit">{isAr ? 'افتح منهجي' : 'Open my curriculum'}</Link>)}
                   {/* NX-03: a recite task can be recorded and sent to the teacher. */}

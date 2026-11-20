@@ -171,7 +171,7 @@ export function registerQuranRoutes(app: express.Express, deps: {
   app.put('/api/dashboard/bookings/:id/quran-marks', deps.rateLimit, deps.verifyTeacherAuth, async (req: any, res: any) => {
     const client = db(res); if (!client) return;
     const parsed = parseMark(req.body);
-    if (!parsed.ok) return res.status(400).json({ error: parsed.error });
+    if (parsed.ok === false) return res.status(400).json({ error: parsed.error });
     try {
       const b = await ownLesson(client, req, res); if (!b) return;
       const at = new Date(now()).toISOString();

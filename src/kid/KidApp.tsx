@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Routes, Route, Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Calendar, Compass, Globe, GraduationCap, HeartHandshake, Library, LogOut, Presentation, Users, Video } from 'lucide-react';
+import { ArrowLeft, BookMarked, BookOpen, Calendar, Compass, Globe, GraduationCap, HeartHandshake, Library, LogOut, Presentation, Users, Video } from 'lucide-react';
 import { authedJson } from '../lib/authedJson';
 import { kidToken, setKidToken } from '../lib/kidDevice';
 import { useAppLanguage } from '../lib/language';
@@ -24,6 +24,8 @@ import StudentCertificatePage from '../student/pages/StudentCertificatePage';
 import StudentCommunityPage from '../student/pages/StudentCommunityPage';
 import StudentPlacementPage from '../student/pages/StudentPlacementPage';
 import StudentPlacementReportPage from '../student/pages/StudentPlacementReportPage';
+import QuranTab from '../quran/QuranTab';
+import { useQuranAccess } from '../quran/useQuranAccess';
 
 
 /**
@@ -48,6 +50,7 @@ export default function KidApp() {
   const [removed, setRemoved] = useState(false);
   const [me, setMe] = useState<KidMe | null>(null);
   const [failed, setFailed] = useState(false);
+  const quranTab = useQuranAccess(Boolean(me));
   const location = useLocation();
 
   const unlinked = useCallback(() => { setKidToken(null); setMe(null); setRemoved(true); setLinked(false); }, []);
@@ -92,6 +95,8 @@ export default function KidApp() {
     { key: 'home', path: '/kid', label: isAr ? 'الرئيسية' : 'Home', icon: BookOpen },
     { key: 'lessons', path: '/kid/lessons', label: isAr ? 'حصصي' : 'Lessons', icon: Calendar },
     { key: 'curriculum', path: '/kid/curriculum', label: isAr ? 'منهجي' : 'Curriculum', icon: Library },
+    // Classroom 4.1: only for a child in a Quran track, Islamic studies or Fusha.
+    ...(quranTab ? [{ key: 'quran', path: '/kid/quran', label: isAr ? 'القرآن' : 'Quran', icon: BookMarked }] : []),
     { key: 'progress', path: '/kid/progress', label: isAr ? 'مسيرتي' : 'Progress', icon: Compass },
     { key: 'community', path: '/kid/community', label: isAr ? 'مجتمعنا' : 'Community', icon: Users },
   ];
@@ -143,6 +148,7 @@ export default function KidApp() {
             <Route path="/lessons" element={<KidLessons isAr={isAr} lessons={me.lessons} />} />
             <Route path="/room/:id" element={<ClassroomGate portal="kid" fallback={<StudentLessonRoomPage lang={lang} backTo="/kid/lessons" />} />} />
             <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
+            <Route path="/quran" element={<QuranTab />} />
             <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
             <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
             <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />

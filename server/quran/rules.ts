@@ -5,10 +5,7 @@ import { SURAHS } from '../../src/lib/surahs.js';
  * detector's agreement with the teachers is measured. The routes load rows and call these.
  */
 
-/** Spec §9: Quran tracks (reading, tajweed, memorisation and revision), Islamic studies and Fusha. Nobody else. */
-export const QURAN_TAB_SUBJECTS = ['quran-reading', 'tajweed', 'quran-memorization', 'zad-essentials', 'seerah', 'modern-standard-arabic'] as const;
-export const quranTabAllowed = (subjects: Array<string | null | undefined>) =>
-  subjects.some((s) => typeof s === 'string' && (QURAN_TAB_SUBJECTS as readonly string[]).includes(s));
+export { QURAN_TAB_SUBJECTS, quranTabAllowed } from '../../src/lib/quran/subjects.js';
 
 export const MARK_TYPES = ['wrong_word', 'missed', 'added', 'tajweed'] as const;
 export type MarkType = typeof MARK_TYPES[number];
