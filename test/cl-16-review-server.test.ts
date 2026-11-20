@@ -192,6 +192,9 @@ describe('CL-16 server review fixes', () => {
   it('H3/L4: only the teacher ends; then room_ended once, and enter, state, events, media, files and heartbeats answer 423 ended', async () => {
     assert.strictEqual((await post(learner.ticket, 'end')).status, 403);
     clock = min(20);
+    // An early end cannot skip the reason through the events route.
+    assert.strictEqual((await post(teacher.ticket, 'events', { events: [{ at: clock, event: { t: 'end' } }] })).status, 200);
+    assert.strictEqual(db.tables.lesson_room_state?.[0]?.ended_at ?? null, null);
     // Owner 2026-11-20: 10 minutes early needs a written reason, kept on the timeline.
     const noReason = await post(teacher.ticket, 'end', { reason: 'short' });
     assert.strictEqual(noReason.status, 400);

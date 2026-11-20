@@ -476,8 +476,13 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         }
         if (changed) await writeSnapshot(client, t.bookingId, { ...fresh, ...patch });
       }
-      // H3/L4: only the teacher's end is persisted (mayPersist), and it ends the room on the server too.
-      if (rows.some((r) => r.type === 'end')) await endRoom(client, t.bookingId);
+      // H3/L4: only the teacher's end is persisted (mayPersist), and it ends the room on the server too. An early end
+      // never goes this way: it needs a reason, so only POST /end (which checks it) may end the room before time.
+      if (rows.some((r) => r.type === 'end')) {
+        const b: any = live.booking;
+        const minutesEarly = Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
+        if (minutesEarly < EARLY_END_GRACE_MIN) await endRoom(client, t.bookingId);
+      }
       return res.json({ stored: rows.length });
     } catch (err) {
       return fail(res, err, 'events');

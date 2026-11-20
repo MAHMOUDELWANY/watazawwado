@@ -9,6 +9,7 @@ import { createTimelineBatcher, restoreState } from '../src/classroom/timeline.j
 import { roomHardCloseMs } from '../src/lib/roomWindow.js';
 
 const NOW = Date.parse('2026-11-20T10:05:00Z');
+let clock = NOW;
 const BOOKING_ID = '4049fa58-7428-44e4-926b-5e3eb315c5cb';
 const SECRET = 'room-secret';
 const booking = {
@@ -112,7 +113,7 @@ describe('CL-07 events and state routes', () => {
       roomRateLimit: (q: any, _s: any, next: any) => { if (q.roomTicket) limited++; next(); },
       requireSuperAdmin: (_q: any, _s: any, next: any) => next(),
       secret: () => SECRET,
-      now: () => NOW,
+      now: () => clock,
     });
     await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
   });
@@ -286,9 +287,13 @@ describe('CL-07 events and state routes', () => {
   it("the teacher's end is stored, ends the room once (room_ended), and from then events and state answer 423 ended", async () => {
     assert.strictEqual((await post(L, [{ t: 'end' }])).status, 200);
     assert.strictEqual(db.tables.lesson_room_state[0].ended_at, undefined, 'a learner cannot end the room');
+    // 25 minutes early: the events route never ends the room (an early end needs POST /end with a reason).
+    await post(T, [{ t: 'end' }]);
+    assert.strictEqual(db.tables.lesson_room_state[0].ended_at, undefined);
+    clock = Date.parse('2026-11-20T10:29:00Z');
     await post(T, [{ t: 'end' }]);
     assert.strictEqual(timeline().filter((r) => r.type === 'end').length, 1);
-    assert.strictEqual(db.tables.lesson_room_state[0].ended_at, new Date(NOW).toISOString());
+    assert.strictEqual(db.tables.lesson_room_state[0].ended_at, new Date(clock).toISOString());
     assert.ok(snapshot().board, 'ending keeps the snapshot');
     assert.strictEqual((db.tables.lesson_attendance_events || []).filter((e) => e.event === 'room_ended').length, 1);
     for (const res of [await post(T, [{ t: 'end' }]), await post(L, [{ t: 'reaction', kind: 'hand' }]), await state(L)]) {
