@@ -1,5 +1,6 @@
 import express from 'express';
 import { APPEAL_MAX, APPEAL_MIN, APPEAL_OUTCOMES, finalizeAbsence, notifyAppeal, type AbsenceDeps, type AbsenceOutcome } from '../classroom/absence.js';
+import { notifyUser } from '../notifications/inbox.js';
 import type { StaffAccount } from './payroll.js';
 
 /**
@@ -12,6 +13,14 @@ import type { StaffAccount } from './payroll.js';
 type Middleware = (req: any, res: any, next: any) => any;
 const NOTE_MAX = 400;
 const LESSON_COLS = 'id, reference_code, scheduled_start, duration_minutes, contact_name';
+/** What the teacher is told after the admin decides an appeal (both languages). */
+const DECISION_TEXT: Record<AbsenceOutcome, { en: string; ar: string }> = {
+  teacher_absent: { en: 'It stays recorded as teacher absent: the lesson is unpaid and the learner got the lesson back.', ar: 'فضلت متسجلة غياب معلم: الحصة مش مدفوعة والطالب رجعله الدرس.' },
+  learner_no_show: { en: 'It is now recorded as a learner no-show: the lesson is paid.', ar: 'اتسجلت غياب طالب: الحصة مدفوعة.' },
+  completed: { en: 'It is now recorded as held: the lesson is paid.', ar: 'اتسجلت إن الحصة اتعملت: الحصة مدفوعة.' },
+  no_fault: { en: "It is now recorded as nobody's fault: the lesson is unpaid, the learner got it back, and it does not count against you.", ar: 'اتسجلت إنها مش غلطة حد: الحصة مش مدفوعة، والطالب رجعله الدرس، ومش محسوبة عليك.' },
+};
+
 const lessonOf = (b: any) => (b ? { referenceCode: b.reference_code ?? null, scheduledStart: b.scheduled_start, durationMinutes: b.duration_minutes ?? null, learnerName: b.contact_name ?? null } : null);
 
 export function registerAbsenceRoutes(app: express.Express, deps: AbsenceDeps & {
@@ -122,9 +131,29 @@ export function registerAbsenceRoutes(app: express.Express, deps: AbsenceDeps & 
     if (action === 'accept' && !APPEAL_OUTCOMES.includes(outcome)) return res.status(400).json({ error: 'Pick what really happened.' });
     if (note.length > NOTE_MAX) return res.status(400).json({ error: `Keep the note under ${NOTE_MAX} characters.` });
     try {
-      const ok = await finalizeAbsence(client, String(req.params.bookingId), 'appealed', action === 'accept' ? outcome : 'teacher_absent',
+      const bookingId = String(req.params.bookingId);
+      const { data: row } = await client.from('lesson_absence_cases').select('teacher_user_id').eq('booking_id', bookingId).maybeSingle();
+      const final: AbsenceOutcome = action === 'accept' ? outcome : 'teacher_absent';
+      const ok = await finalizeAbsence(client, bookingId, 'appealed', final,
         action === 'accept' ? 'appeal_accepted' : 'appeal_rejected', { decidedBy: req.teacherUser.id, adminNote: note || null }, deps);
       if (!ok) return res.status(409).json({ error: 'This appeal is not waiting for a decision.' });
+      // The teacher hears the decision: dashboard notification and an email (the inbox path emails when asked).
+      if (row?.teacher_user_id) {
+        const [byId, staff] = await Promise.all([lessons(client, [bookingId]), deps.listStaff()]);
+        const b = byId.get(bookingId);
+        const teacher = staff.find((s) => s.id === row.teacher_user_id);
+        const lesson = `${b?.contact_name || ''} (${b?.reference_code || ''})`.trim();
+        const head = action === 'accept'
+          ? { en: `Your appeal for ${lesson} was accepted.`, ar: `اعتراضك على حصة ${lesson} اتقبل.` }
+          : { en: `Your appeal for ${lesson} was not accepted.`, ar: `اعتراضك على حصة ${lesson} ما اتقبلش.` };
+        const tail = note ? { en: ` Note: ${note}`, ar: ` ملاحظة: ${note}` } : { en: '', ar: '' };
+        await (deps.notifyFamily ?? notifyUser)(client, { userId: row.teacher_user_id, email: teacher?.email || null, name: teacher?.name || null, staff: true }, {
+          kind: 'absence_appeal_decided',
+          title: action === 'accept' ? { en: 'Your appeal was accepted', ar: 'اعتراضك اتقبل' } : { en: 'Your appeal was not accepted', ar: 'اعتراضك ما اتقبلش' },
+          body: { en: `${head.en} ${DECISION_TEXT[final].en}${tail.en}`, ar: `${head.ar} ${DECISION_TEXT[final].ar}${tail.ar}` },
+          link: '/dashboard/month',
+        }, { email: true });
+      }
       res.json({ success: true });
     } catch (err: any) {
       console.error('[POST admin/absence-cases]', err);

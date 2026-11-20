@@ -87,6 +87,7 @@ describe('CL-50 missed-lesson routes', () => {
   let clock = ms(60);
   const notices: any[] = [];
   const after_: any[] = [];
+  const told: any[] = [];
   const db = fakeDb({
     bookings: [booking(), booking({ id: 'b-2', teacher_id: 't2', reference_code: 'WZ-2' }), booking({ id: 'b-3', reference_code: 'WZ-3' })],
     lesson_absence_cases: [openCase(), openCase({ booking_id: 'b-2', teacher_user_id: 't2' }), openCase({ booking_id: 'b-3' })],
@@ -105,7 +106,7 @@ describe('CL-50 missed-lesson routes', () => {
     registerAbsenceRoutes(app, {
       getClient: () => db, verifyTeacherAuth: auth, requireSuperAdmin: superOnly, rateLimit: (_q: any, _s: any, n: any) => n(),
       listStaff: async () => [{ id: 't1', name: 'T One', email: 't1@x', role: 'teacher' }] as any,
-      notifyAdmins: async (_c: any, n: any) => { notices.push(n); }, notifyFamily: async () => {}, now: () => clock,
+      notifyAdmins: async (_c: any, n: any) => { notices.push(n); }, notifyFamily: (async (_c: any, who: any, n: any, o: any) => { told.push({ who, n, o }); }) as any, now: () => clock,
       afterOutcome: (_c: any, _b: any, s: string, d: string) => { after_.push([s, d]); },
     });
     await new Promise<void>((r) => { server = app.listen(0, '127.0.0.1', () => { base = `http://127.0.0.1:${(server.address() as any).port}`; r(); }); });
@@ -165,7 +166,14 @@ describe('CL-50 missed-lesson routes', () => {
     assert.deepStrictEqual(after_, [['no_show', 'used']]);
     const row = db.tables.lesson_absence_cases.find((x: any) => x.booking_id === ID);
     assert.deepStrictEqual([row.status, row.resolution, row.outcome, row.decided_by], ['final', 'appeal_accepted', 'learner_no_show', 'admin-1']);
+    const last = told[told.length - 1];
+    assert.deepStrictEqual([last.who.userId, last.who.email, last.who.staff, last.o.email, last.n.kind], ['t1', 't1@x', true, true, 'absence_appeal_decided']);
+    assert.strictEqual(last.n.title.en, 'Your appeal was accepted');
+    assert.match(last.n.body.en, /learner no-show: the lesson is paid\. Note: Room log shows the teacher/);
+    assert.match(last.n.body.ar, /اعتراضك على حصة Yusuf \(WZ-1\) اتقبل\. اتسجلت غياب طالب/);
+    const count = told.length;
     assert.strictEqual((await call('POST', `/api/admin/absence-cases/${ID}`, 'admin-1', { action: 'reject' })).status, 409, 'decided once');
+    assert.strictEqual(told.length, count, 'no notice for a refused decision');
   });
 
   it('reject keeps teacher absent; no fault is "not held: technical"', async () => {
@@ -175,5 +183,9 @@ describe('CL-50 missed-lesson routes', () => {
     assert.strictEqual((await call('POST', `/api/admin/absence-cases/b-4`, 'admin-1', { action: 'reject' })).status, 200);
     assert.strictEqual((await call('POST', `/api/admin/absence-cases/b-5`, 'admin-1', { action: 'accept', outcome: 'no_fault' })).status, 200);
     assert.deepStrictEqual(db.calls.slice(before).map((x) => [x.fn, x.args.p_booking_id, x.args.p_reason]), [['record_lesson_not_held', 'b-4', 'teacher_absent'], ['record_lesson_not_held', 'b-5', 'technical']]);
+    const [rejected, noFault] = told.slice(-2).map((t) => t.n);
+    assert.deepStrictEqual([rejected.title.en, rejected.title.ar], ['Your appeal was not accepted', 'اعتراضك ما اتقبلش']);
+    assert.match(rejected.body.en, /stays recorded as teacher absent/);
+    assert.match(noFault.body.en, /nobody's fault/);
   });
 });
