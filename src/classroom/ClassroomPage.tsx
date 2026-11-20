@@ -45,7 +45,6 @@ import { BarButton } from './parts/Toolbar';
 import { TeacherTools } from './tools/TeacherTools';
 import { PracticeCard } from './tools/PracticeCard';
 import { SharedMedia } from './tools/SharedMedia';
-import { LearnerShadow } from './tools/Shadowing';
 import { CheckCard, ComfortButton, CorrectionToast, StageBar, WarmupCard } from './tools/RoomCards';
 import { COMFORT_KEY, comfortStyle, readComfort, type Comfort } from './tools/comfort';
 import { autoPip, blurModeFor, openPip, pipMode, setNativeBlur, startSegmentBlur, type BlurPipeline } from './tools/effects';
@@ -154,7 +153,6 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [checks, setChecks] = useState<Array<{ id: string; part: string; level: CheckLevel }>>([]);
   const [learnerAnswer, setLearnerAnswer] = useState<string[] | null>(null);
   const [answeredCheck, setAnsweredCheck] = useState<string | null>(null);
-  const [shadowClosed, setShadowClosed] = useState<string | null>(null);
   const [warmup, setWarmup] = useState<Array<{ en: string; ar: string }>>([]);
   const [warmupClosed, setWarmupClosed] = useState(false);
   const [slideAt, setSlideAt] = useState<{ track: string; number: number; page: number } | null>(null);
@@ -943,7 +941,6 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const learnerComfort = role === 'learner';
   const paperStyle = learnerComfort ? (() => { const st = comfortStyle(comfort); return pane === 'lesson' || layout !== 'content' ? st : { filter: st.filter }; })() : undefined;
   const showCheck = role === 'learner' && !!tools.check?.open && answeredCheck !== tools.check.id;
-  const showShadow = role === 'learner' && !!tools.shadow && shadowClosed !== tools.shadow;
   const practiceOn = !!tools.practice && tools.practice.kind !== 'none';
   const mediaOn = !!tools.media && tools.media.kind !== 'none' && !!tools.media.src;
   const showWarmup = isTeacher && joined && !warmupClosed && warmup.length > 0 && serverNow < startMs + WARMUP_SHOW_MS;
@@ -1188,7 +1185,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
               <WarmupCard prompts={warmup} onClose={() => setWarmupClosed(true)} />
             </div>
           )}
-          {(showCheck || corrections.length > 0 || showShadow || practiceOn || mediaOn) && (
+          {(showCheck || corrections.length > 0 || practiceOn || mediaOn) && (
             <div className="pointer-events-none absolute inset-x-3 bottom-3 z-30 flex max-h-[calc(100%-1.5rem)] flex-col items-center justify-end gap-2 overflow-y-auto sm:inset-x-5">
               {mediaOn && (
                 <SharedMedia media={tools.media!} teacher={isTeacher} duck={isTeacher ? selfSpeaking : teacherSpeaking} bookingId={bookingId} ticket={ticket}
@@ -1198,7 +1195,6 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
                 <PracticeCard practice={tools.practice!} teacher={isTeacher} send={toolSend} publish={observer ? () => {} : publishEvent}
                   learnerAnswer={isTeacher ? learnerAnswer : undefined} style={learnerComfort ? comfortStyle(comfort) : undefined} kid={kid} />
               )}
-              {showShadow && <LearnerShadow fileId={tools.shadow!} bookingId={bookingId} ticket={ticket} mic={micTrack} onClose={() => setShadowClosed(tools.shadow!)} kid={kid} />}
               {role === 'learner' && <CorrectionToast items={corrections} onDone={dropCorrection} kid={kid} />}
               {showCheck && (
                 <CheckCard part={tools.check!.part} kid={kid}

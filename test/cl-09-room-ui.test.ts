@@ -25,14 +25,8 @@ describe('CL-09 room screen', () => {
   });
 
   it('nothing in the classroom records the lesson (RULES: no lesson recording)', () => {
-    // 2.10 shadowing (spec §5) is the one exception: a short line of up to 15 s, started by hand, from the mic only.
-    const SHADOW = 'src/classroom/tools/Shadowing.tsx'.replace(/\//g, path.sep);
-    for (const f of walk('src/classroom')) if (!f.endsWith(SHADOW)) assert.doesNotMatch(read(f), /MediaRecorder/, f);
-    const shadow = read('src/classroom/tools/Shadowing.tsx');
-    assert.match(shadow, /SHADOW_MAX_MS = 15_000/);
-    assert.match(shadow, /new MediaStream\(\[copy\]\)/, 'records one microphone track, never the call or the camera');
-    // The learner's repeat stays on the device: the learner's card never uploads.
-    assert.doesNotMatch(shadow.slice(shadow.indexOf('export function LearnerShadow')), /upload/i);
+    // Shadowing was removed (owner, 2026-11-20), so there is no exception left.
+    for (const f of walk('src/classroom')) assert.doesNotMatch(read(f), /MediaRecorder/, f);
   });
 
   it('the kid app never offers the observer entry or the guardian mark', () => {

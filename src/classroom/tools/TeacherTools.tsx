@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { BookOpen, CheckCircle2, Circle, Headphones, Lightbulb, Mic, Music2, PictureInPicture2, Play, Send, Shapes, Square, X } from 'lucide-react';
+import { BookOpen, CheckCircle2, Circle, Lightbulb, Music2, PictureInPicture2, Play, Send, Shapes, X } from 'lucide-react';
 import { useT } from '../../lib/language';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/Button';
@@ -13,10 +13,9 @@ import { AUDIO_TYPES, parseYouTubeId } from './media';
 import { lines, parsePairs } from './practice';
 import { newSeed } from './PracticeCard';
 import { CHECK_TEXT, STAGE_LABELS } from './RoomCards';
-import { useRecorder } from './Shadowing';
 import { uploadRoomAudio } from './useRoomFile';
 
-type Tab = 'correct' | 'check' | 'practice' | 'media' | 'shadow' | 'warmup';
+type Tab = 'correct' | 'check' | 'practice' | 'media' | 'warmup';
 const rid = () => Math.random().toString(36).slice(2, 10);
 
 /** What a curriculum slide gives the practice tools: its text, word pairs and questions. */
@@ -39,7 +38,7 @@ const KINDS: Array<{ kind: Exclude<PracticeKind, 'none'>; en: string; ar: string
 
 /**
  * The teacher's tools (BUILD-LIST 2.10, 2.11) in one side sheet: corrections, understanding checks, practice, shared
- * audio and video, shadowing and the warm-up. Everything here is sent with `send` (live and saved).
+ * audio and video and the warm-up. Everything here is sent with `send` (live and saved).
  */
 export function TeacherTools({ tools, send, slide, bookingId, ticket, mic, warmup, checks, onFloat, canFloat, onClose }: {
   tools: ToolsState;
@@ -124,27 +123,11 @@ export function TeacherTools({ tools, send, slide, bookingId, ticket, mic, warmu
     setLink('');
   };
 
-  // ---- shadow ----
-  const rec = useRecorder(mic);
-  const preview = useRef<HTMLAudioElement | null>(null);
-  const sendShadow = async () => {
-    if (!rec.clip) return;
-    setBusy(true); setError('');
-    try {
-      const { fileId } = await uploadRoomAudio(bookingId, ticket, rec.clip.blob, 'shadow');
-      send({ t: 'shadow', fileId });
-      rec.clear();
-    } catch (e: any) {
-      setError(e?.message || t('The recording could not be sent.', 'التسجيل ما اتبعتش.'));
-    } finally { setBusy(false); }
-  };
-
   const TABS: Array<[Tab, React.ComponentType<{ className?: string }>, string]> = [
     ['correct', CheckCircle2, t('Correct', 'تصحيح')],
     ['check', Circle, t('Check', 'فهم')],
     ['practice', Shapes, t('Practice', 'تدريب')],
     ['media', Music2, t('Media', 'صوت وفيديو')],
-    ['shadow', Headphones, t('Shadow', 'كرّر ورايا')],
     ['warmup', Lightbulb, t('Warm-up', 'بداية')],
   ];
 
@@ -237,28 +220,6 @@ export function TeacherTools({ tools, send, slide, bookingId, ticket, mic, warmu
             </form>
             <p className="text-[0.8rem] text-muted-foreground">{t('Both of you hear it; it goes quieter while you speak. You play, pause and seek; the learner follows.', 'انتو الاتنين بتسمعوه؛ وبيوطى لما تتكلم. إنت بتشغّل وتوقّف وتقدّم؛ والطالب بيتبعك.')}</p>
             {tools.media && tools.media.kind !== 'none' && <Button size="sm" variant="outline" onClick={() => send({ t: 'media', kind: 'none', src: '', playing: false, pos: 0 })}>{t('Stop sharing', 'وقّف المشاركة')}</Button>}
-          </div>
-        )}
-
-        {tab === 'shadow' && (
-          <div className="grid gap-2">
-            <p className="text-[0.8rem] text-muted-foreground">{t('Record a short line (up to 15 seconds). The learner hears it, records a repeat and compares.', 'سجّل جملة قصيرة (لحد 15 ثانية). الطالب بيسمعها، ويسجّل تكراره، ويقارن.')}</p>
-            <audio ref={preview} className="hidden" />
-            <div className="flex flex-wrap gap-2">
-              {rec.recording ? (
-                <Button size="sm" onClick={rec.stop}><Square className="me-1.5 h-4 w-4" aria-hidden="true" />{t('Stop', 'وقّف')}</Button>
-              ) : (
-                <Button size="sm" variant="glass" disabled={!mic} onClick={() => rec.start()}><Mic className="me-1.5 h-4 w-4" aria-hidden="true" />{rec.clip ? t('Record again', 'سجّل تاني') : t('Record a line', 'سجّل جملة')}</Button>
-              )}
-              {rec.clip && !rec.recording && (
-                <>
-                  <Button size="sm" variant="ghost" onClick={() => { if (preview.current) { preview.current.src = rec.clip!.url; void preview.current.play(); } }}><Play className="me-1.5 h-4 w-4" aria-hidden="true" />{t('Listen', 'اسمع')}</Button>
-                  <Button size="sm" disabled={busy} onClick={() => void sendShadow()}><Send className="me-1.5 h-4 w-4" aria-hidden="true" />{t('Send to the learner', 'ابعته للطالب')}</Button>
-                </>
-              )}
-              {tools.shadow && <Button size="sm" variant="outline" onClick={() => send({ t: 'shadow', fileId: '' })}>{t('Close it for the learner', 'اقفله عند الطالب')}</Button>}
-            </div>
-            {rec.recording && <p role="status" className="text-[0.8rem]"><Circle className="me-1 inline h-3 w-3 fill-crimson text-crimson" aria-hidden="true" />{t('Recording…', 'بنسجّل…')}</p>}
           </div>
         )}
 
