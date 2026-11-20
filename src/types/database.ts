@@ -1106,6 +1106,21 @@ export interface Database {
         Insert: Partial<QuranDetectorRunRow> & Pick<QuranDetectorRunRow, 'student_id' | 'surah' | 'ayah_from' | 'ayah_to' | 'model'>;
         Update: Partial<QuranDetectorRunRow>;
       };
+      lesson_absence_cases: {
+        Row: LessonAbsenceCaseRow;
+        Insert: Partial<LessonAbsenceCaseRow> & Pick<LessonAbsenceCaseRow, 'booking_id' | 'teacher_user_id' | 'deadline_at'>;
+        Update: Partial<LessonAbsenceCaseRow>;
+      };
+      teacher_ratings: {
+        Row: TeacherRatingRow;
+        Insert: Partial<TeacherRatingRow> & Pick<TeacherRatingRow, 'student_id' | 'teacher_id' | 'submitted_by' | 'lesson_count'>;
+        Update: Partial<TeacherRatingRow>;
+      };
+      platform_ratings: {
+        Row: PlatformRatingRow;
+        Insert: Partial<PlatformRatingRow> & Pick<PlatformRatingRow, 'student_id' | 'submitted_by' | 'milestone'>;
+        Update: Partial<PlatformRatingRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -1269,6 +1284,53 @@ export interface LessonAttendanceVerdictRow {
   applied: boolean;
   detail: Record<string, unknown>;
   decided_at: string;
+}
+
+/** A room lesson nobody came to: provisional "teacher absent" until confirmed, appealed or 48 h pass. */
+export interface LessonAbsenceCaseRow {
+  booking_id: string;
+  teacher_user_id: string;
+  status: 'open' | 'appealed' | 'final';
+  resolution: 'confirmed' | 'expired' | 'appeal_accepted' | 'appeal_rejected' | null;
+  outcome: 'teacher_absent' | 'learner_no_show' | 'completed' | 'no_fault' | null;
+  appeal_reason: string | null;
+  admin_note: string | null;
+  deadline_at: string;
+  appealed_at: string | null;
+  decided_by: string | null;
+  decided_at: string | null;
+  applied_at: string | null;
+  created_at: string;
+}
+
+/** The family's questionnaire about a teacher; a row with no scores is a "later today" snooze. */
+export interface TeacherRatingRow {
+  id: string;
+  student_id: string;
+  teacher_id: string;
+  submitted_by: string;
+  lesson_count: number;
+  explains: number | null;
+  patient: number | null;
+  on_time: number | null;
+  enjoys: number | null;
+  note: string | null;
+  snoozed_until: string | null;
+  submitted_at: string | null;
+  created_at: string;
+}
+
+/** The survey after a curriculum part or track ('part:<track>:<n>' | 'track:<track>'). */
+export interface PlatformRatingRow {
+  id: string;
+  student_id: string;
+  submitted_by: string;
+  milestone: string;
+  recommend: number | null;
+  liked: string | null;
+  improve: string | null;
+  dismissed: boolean;
+  created_at: string;
 }
 
 /** Classroom 3.3: a room file the teacher attached to the lesson report. */
