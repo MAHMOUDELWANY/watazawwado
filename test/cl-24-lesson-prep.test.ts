@@ -32,8 +32,16 @@ function fakeDb(tables: Record<string, any[]>) {
     tables, storage,
     from(t: string) {
       const filters: Array<(r: any) => boolean> = [];
+      let del = false;
       const b: any = {
         select: () => b, order: () => b, limit: () => b,
+        delete: () => { del = true; return b; },
+        // A list read (or a delete) is awaited on the builder itself.
+        then: (ok: any, bad: any) => {
+          const hit = rows(t).filter((r) => filters.every((f) => f(r)));
+          if (del) tables[t] = rows(t).filter((r) => !hit.includes(r));
+          return Promise.resolve({ data: del ? null : hit, error: null }).then(ok, bad);
+        },
         eq: (c: string, v: any) => { filters.push((r) => r[c] === v); return b; },
         is: (c: string, v: any) => { filters.push((r) => (r[c] ?? null) === v); return b; },
         maybeSingle: async () => ({ data: rows(t).find((r) => filters.every((f) => f(r))) ?? null, error: null }),
@@ -41,7 +49,7 @@ function fakeDb(tables: Record<string, any[]>) {
         upsert: async (row: any, opts: { onConflict: string }) => {
           const keys = opts.onConflict.split(',').map((k) => k.trim());
           const i = rows(t).findIndex((r) => keys.every((k) => r[k] === row[k]));
-          if (i < 0) rows(t).push({ ...row }); else Object.assign(rows(t)[i], row);
+          if (i < 0) rows(t).push({ ...row }); else if (!(opts as any).ignoreDuplicates) Object.assign(rows(t)[i], row);
           return { error: null };
         },
       };
@@ -105,6 +113,7 @@ describe('CL-24 prep routes', () => {
   const prep = (who: string, method = 'GET', path = '', body?: unknown) =>
     fetch(`${base}/api/dashboard/classroom/${BOOKING_ID}/prep${path}`, { method, headers: { 'content-type': 'application/json', ...(who ? { 'x-teacher': who } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) });
   const row = () => db.tables.lesson_prep?.[0];
+  const named = () => (db.tables.lesson_files || []).map((r) => ({ fileId: r.file_id, name: r.name, source: r.source }));
 
   it('only the lesson\'s teacher or a super admin, days before the lesson', async () => {
     assert.strictEqual((await prep('')).status, 401);
@@ -144,7 +153,7 @@ describe('CL-24 prep routes', () => {
     db.storage.objects.set(up.path, PDF);
     const ok = await prep('teacher-1', 'POST', `/files/${fileId}/confirm`, { name: 'Page 12.pdf' });
     assert.strictEqual(ok.status, 200);
-    assert.deepStrictEqual(row().files, [{ fileId, name: 'Page 12.pdf' }]);
+    assert.deepStrictEqual(named(), [{ fileId, name: 'Page 12.pdf', source: 'prep' }]);
     const got: any = await (await prep('teacher-1')).json();
     assert.strictEqual(got.prep.files[0].name, 'Page 12.pdf');
     assert.match(got.prep.files[0].url, /^https:\/\/get\//);
@@ -155,7 +164,7 @@ describe('CL-24 prep routes', () => {
     db.storage.objects.set(up.path, Buffer.from('<html>evil</html>'));
     assert.strictEqual((await prep('teacher-1', 'POST', `/files/${up.fileId}/confirm`, { name: 'x.pdf' })).status, 415);
     assert.ok(db.storage.removed.includes(up.path));
-    assert.strictEqual(row().files.length, 1);
+    assert.strictEqual(named().length, 1);
   });
 
   it('in the room: the teacher\'s slides open on the prepared slide, the notes and files are there; the learner sees neither', async () => {
@@ -169,12 +178,26 @@ describe('CL-24 prep routes', () => {
     assert.strictEqual(l.role, 'learner');
     assert.strictEqual(l.prepNotes, undefined);
     assert.strictEqual((await fetch(`${base}/api/classroom/${BOOKING_ID}/files`, { headers: { 'x-room-ticket': l.ticket } })).status, 403);
+
+    // A file added in the room keeps its original name (control characters dropped); a prepared one keeps its own.
+    const roomFile = '0a6c3c55-1111-4222-8333-444455556666.png';
+    const nameIt = (tk: string, id: string, name: unknown) => fetch(`${base}/api/classroom/${BOOKING_ID}/files/${id}/name`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-room-ticket': tk }, body: JSON.stringify({ name }) });
+    assert.strictEqual((await nameIt(t.ticket, roomFile, 'board.png')).status, 404, 'not in storage');
+    db.storage.objects.set(`${BOOKING_ID}/${roomFile}`, Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+    assert.strictEqual((await nameIt(l.ticket, roomFile, 'x.png')).status, 403, 'teacher only');
+    assert.strictEqual((await nameIt(t.ticket, roomFile, 'Sura\u0007 Al-Fil.png')).status, 200);
+    assert.strictEqual((await nameIt(t.ticket, fileId, 'renamed.pdf')).status, 200);
+    const after: any = await (await fetch(`${base}/api/classroom/${BOOKING_ID}/files`, { headers: { 'x-room-ticket': t.ticket } })).json();
+    assert.deepStrictEqual(after.files.find((f: any) => f.fileId === roomFile), { fileId: roomFile, name: 'Sura Al-Fil.png', prepared: false });
+    assert.strictEqual(after.files.find((f: any) => f.fileId === fileId).name, 'Page 12.pdf');
+    db.tables.lesson_files = db.tables.lesson_files.filter((r) => r.file_id !== roomFile);
+    db.storage.objects.delete(`${BOOKING_ID}/${roomFile}`);
   });
 
   it('removes a prepared file; closed once the lesson is over', async () => {
     clock = START - 60 * 60_000;
     assert.strictEqual((await prep('teacher-1', 'DELETE', `/files/${fileId}`)).status, 200);
-    assert.deepStrictEqual(row().files, []);
+    assert.deepStrictEqual(named(), []);
     assert.ok(!db.storage.objects.has(`${BOOKING_ID}/${fileId}`));
     clock = START + 2 * 3600_000;
     assert.strictEqual((await prep('teacher-1')).status, 423);
@@ -193,6 +216,8 @@ describe('CL-24 wiring', () => {
     const page = read('src/classroom/ClassroomPage.tsx');
     assert.match(page, /<PrepNotes text=\{entry\.prepNotes\}/);
     assert.match(page, /\/files`, \{ headers: \{ 'x-room-ticket': ticket \} \}/);
+    assert.match(page, /\/name`, \{/);
+    assert.match(read('supabase/migrations/20261120100000_classroom_before_lesson.sql'), /CREATE TABLE IF NOT EXISTS public\.lesson_files/);
     const sql = read('supabase/migrations/20261120100000_classroom_before_lesson.sql');
     assert.match(sql, /CREATE TABLE IF NOT EXISTS public\.lesson_prep/);
     assert.match(sql, /REVOKE ALL ON TABLE public\.lesson_prep FROM anon, authenticated/);

@@ -620,6 +620,10 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     setUploadError('');
     try {
       const { fileId, url } = await uploadClassroomFile(bookingId, ticket, file);
+      // Keep the original name for the file list and the report; a failed save only leaves it as "File N".
+      await fetch(`/api/classroom/${encodeURIComponent(bookingId)}/files/${encodeURIComponent(fileId)}/name`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify({ name: file.name }),
+      }).catch(() => {});
       setPdf({ fileId, page: 1, url });
       send({ t: 'pdf', fileId, page: 1 });
       changeLayout('content', 'pdf');

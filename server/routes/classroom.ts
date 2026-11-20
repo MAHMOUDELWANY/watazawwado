@@ -52,6 +52,9 @@ export const MAX_FILE_BYTES = 20 * 1024 * 1024;
 export const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
 export const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
 
+/** A file's original name, safe to show: no control characters, at most 120 characters. */
+export const cleanFileName = (v: unknown) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 120) : '') || 'File';
+
 /** The real type from the first bytes; the Content-Type header alone is never trusted. */
 export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
   if (b.length >= 5 && b.subarray(0, 5).toString('latin1') === '%PDF-') return 'application/pdf';
@@ -549,17 +552,42 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const live = await liveSeat(client, t, res);
       if (!live) return;
-      const [{ data: stored, error }, { data: prep }] = await Promise.all([
+      const [{ data: stored, error }, { data: named }] = await Promise.all([
         client.storage.from(CLASSROOM_FILES_BUCKET).list(t.bookingId, { limit: 100, sortBy: { column: 'created_at', order: 'asc' } }),
-        client.from('lesson_prep').select('files').eq('booking_id', t.bookingId).maybeSingle(),
+        client.from('lesson_files').select('file_id, name, source').eq('booking_id', t.bookingId),
       ]);
       if (error) throw new Error(`files/list: ${error.message}`);
-      const names = new Map<string, string>((Array.isArray(prep?.files) ? prep.files : []).map((f: any) => [f.fileId, f.name]));
+      const names = new Map<string, { name: string; source: string }>((named || []).map((f: any) => [String(f.file_id), f]));
       const files = (stored || []).map((o: any) => String(o.name)).filter((n: string) => FILE_ID.test(n))
-        .map((fileId: string) => ({ fileId, name: names.get(fileId) || null, prepared: names.has(fileId) }));
+        .map((fileId: string) => ({ fileId, name: names.get(fileId)?.name || null, prepared: names.get(fileId)?.source === 'prep' }));
       return res.json({ files });
     } catch (err) {
       return fail(res, err, 'files/list');
+    }
+  });
+
+  // The original name of a file the teacher just added in the room (after confirm), for the list and the report.
+  app.post('/api/classroom/:id/files/:fileId/name', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
+    try {
+      const fileId = String(req.params.fileId || '');
+      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const t: TicketPayload = req.roomTicket;
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      const info = await client.storage.from(CLASSROOM_FILES_BUCKET).info(`${t.bookingId}/${fileId}`);
+      if (info.error || !info.data) return res.status(404).json({ error: 'File not found.' });
+      const name = cleanFileName(req.body?.name);
+      // A prepared file keeps its prep record; only a room upload is named here.
+      const { error } = await client.from('lesson_files').upsert(
+        { booking_id: t.bookingId, file_id: fileId, name, source: 'room', created_at: iso() },
+        { onConflict: 'booking_id,file_id', ignoreDuplicates: true },
+      );
+      if (error) throw new Error(`lesson_files: ${error.message}`);
+      return res.json({ fileId, name });
+    } catch (err) {
+      return fail(res, err, 'files/name');
     }
   });
 

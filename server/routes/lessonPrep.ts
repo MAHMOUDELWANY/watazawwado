@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import express from 'express';
 import { isUuid } from './progress.js';
 import { roomHardCloseMs, roomJoinState } from '../../src/lib/roomWindow.js';
-import { CLASSROOM_FILES_BUCKET, FILE_EXT, FILE_ID, MAX_FILE_BYTES, detectFileType, firstBytes } from './classroom.js';
+import { CLASSROOM_FILES_BUCKET, FILE_EXT, FILE_ID, MAX_FILE_BYTES, cleanFileName, detectFileType, firstBytes } from './classroom.js';
 
 /**
  * BUILD-LIST 1.4: teacher prep mode. Any time before a lesson ends, its teacher (or a super admin) opens the lesson:
@@ -26,8 +26,6 @@ export function cleanSlide(v: unknown): { track: string; number: number; page: n
   if (!Number.isInteger(s.page) || s.page < 0 || s.page > 10_000) return undefined;
   return { track: s.track, number: s.number, page: s.page };
 }
-
-const cleanName = (v: unknown) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f]/g, '').trim().slice(0, 120) : '') || 'File';
 
 export function registerLessonPrepRoutes(app: express.Express, deps: {
   getClient: () => any;
@@ -56,9 +54,15 @@ export function registerLessonPrepRoutes(app: express.Express, deps: {
     return { client, booking };
   };
   const loadPrep = async (client: any, id: string) => {
-    const { data, error } = await client.from('lesson_prep').select('notes, slide, files').eq('booking_id', id).maybeSingle();
+    const [{ data, error }, { data: rows, error: filesErr }] = await Promise.all([
+      client.from('lesson_prep').select('notes, slide').eq('booking_id', id).maybeSingle(),
+      client.from('lesson_files').select('file_id, name, created_at').eq('booking_id', id).eq('source', 'prep'),
+    ]);
     if (error) throw new Error(`lesson_prep: ${error.message}`);
-    return { notes: (data?.notes as string) || '', slide: data?.slide ?? null, files: Array.isArray(data?.files) ? data.files as Array<{ fileId: string; name: string }> : [] };
+    if (filesErr) throw new Error(`lesson_files: ${filesErr.message}`);
+    const files = [...(rows || [])].sort((a: any, b: any) => String(a.created_at).localeCompare(String(b.created_at)))
+      .map((r: any) => ({ fileId: String(r.file_id), name: String(r.name) }));
+    return { notes: (data?.notes as string) || '', slide: data?.slide ?? null, files };
   };
   const savePrep = async (client: any, booking: any, req: any, patch: Record<string, unknown>) => {
     const { error } = await client.from('lesson_prep').upsert(
@@ -174,10 +178,13 @@ export function registerLessonPrepRoutes(app: express.Express, deps: {
       const head = await firstBytes(bucket, path, 16);
       const declared = Object.keys(FILE_EXT).find((k) => fileId.endsWith(`.${FILE_EXT[k]}`));
       if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' }); }
-      const prep = await loadPrep(client, booking.id);
-      const files = [...prep.files.filter((f) => f.fileId !== fileId), { fileId, name: cleanName(req.body?.name) }].slice(-MAX_PREP_FILES);
-      await savePrep(client, booking, req, { files });
-      return res.json({ fileId, name: files[files.length - 1].name });
+      const name = cleanFileName(req.body?.name);
+      const { error } = await client.from('lesson_files').upsert(
+        { booking_id: booking.id, file_id: fileId, name, source: 'prep', created_at: iso() },
+        { onConflict: 'booking_id,file_id' },
+      );
+      if (error) throw new Error(`lesson_files: ${error.message}`);
+      return res.json({ fileId, name });
     } catch (err) {
       return fail(res, err, 'files/confirm');
     }
@@ -194,7 +201,8 @@ export function registerLessonPrepRoutes(app: express.Express, deps: {
       if (!prep.files.some((f) => f.fileId === fileId)) return res.status(404).json({ error: 'File not found.' });
       const { error } = await got.client.storage.from(CLASSROOM_FILES_BUCKET).remove([`${got.booking.id}/${fileId}`]);
       if (error) throw new Error(`files/remove: ${error.message}`);
-      await savePrep(got.client, got.booking, req, { files: prep.files.filter((f) => f.fileId !== fileId) });
+      const { error: rowErr } = await got.client.from('lesson_files').delete().eq('booking_id', got.booking.id).eq('file_id', fileId);
+      if (rowErr) throw new Error(`lesson_files: ${rowErr.message}`);
       return res.json({ ok: true });
     } catch (err) {
       return fail(res, err, 'files/delete');
