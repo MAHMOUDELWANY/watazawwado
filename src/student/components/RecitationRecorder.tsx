@@ -16,13 +16,7 @@ export function pickMime(isSupported: (t: string) => boolean): string | null {
  * NX-03: record a recitation (up to 3 minutes), listen back, send it to the teacher. The audio goes straight to
  * private storage through a one-time link from our server; nobody else can play it.
  */
-export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent, onRecorded }: {
-  learnerId: string; homeworkId?: string; isAr: boolean;
-  /** Gets the saved recording (classroom 4.4 links the detector's result to it). */
-  onSent?: (recording: { id: string } | null) => void;
-  /** Each finished take, before it is sent (the Quran tab's detector checks it on the device). */
-  onRecorded?: (blob: Blob | null) => void;
-}) {
+export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent }: { learnerId: string; homeworkId?: string; isAr: boolean; onSent?: () => void }) {
   const [state, setState] = useState<'idle' | 'recording' | 'review' | 'sending' | 'sent'>('idle');
   const [seconds, setSeconds] = useState(0);
   const [error, setError] = useState('');
@@ -58,7 +52,6 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent, onReco
         if (timer.current) window.clearInterval(timer.current);
         const b = new Blob(chunks, { type: (r.mimeType || mime || 'audio/webm').split(';')[0] });
         setBlob(b); setUrl(URL.createObjectURL(b)); setState('review');
-        onRecorded?.(b);
       };
       rec.current = r;
       r.start();
@@ -78,9 +71,9 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent, onReco
       });
       const { error: upErr } = await supabase.storage.from('recitations').uploadToSignedUrl(path, token, blob, { contentType: blob.type });
       if (upErr) throw upErr;
-      const saved = await authedJson<{ recording?: { id: string } }>('/api/student/recitations', { method: 'POST', body: JSON.stringify({ learnerStudentId: learnerId, path, homeworkId, durationSec: seconds }) });
+      await authedJson('/api/student/recitations', { method: 'POST', body: JSON.stringify({ learnerStudentId: learnerId, path, homeworkId, durationSec: seconds }) });
       setState('sent');
-      onSent?.(saved?.recording || null);
+      onSent?.();
     } catch {
       setState('review');
       setError(isAr ? 'تعذّر إرسال التسجيل، حاول مرة أخرى.' : 'Could not send the recording. Please try again.');
@@ -105,7 +98,7 @@ export function RecitationRecorder({ learnerId, homeworkId, isAr, onSent, onReco
           <audio controls src={url} className="w-full h-10" />
           <div className="flex flex-wrap gap-2">
             <Button type="button" size="sm" onClick={send} isLoading={state === 'sending'}><Send className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'ابعته للمعلم' : 'Send to your teacher'}</Button>
-            <Button type="button" size="sm" variant="ghost" onClick={() => { setState('idle'); setBlob(null); onRecorded?.(null); }} disabled={state === 'sending'}><RotateCcw className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'سجّل مرة أخرى' : 'Record again'}</Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => { setState('idle'); setBlob(null); }} disabled={state === 'sending'}><RotateCcw className="w-4 h-4 me-1" aria-hidden="true" />{isAr ? 'سجّل مرة أخرى' : 'Record again'}</Button>
           </div>
         </div>
       )}

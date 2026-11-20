@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ChevronDown, Copy, Gauge, Headphones, Info, Lock, Mic, MicOff, RefreshCw, Video, VideoOff, Volume2 } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Copy, Headphones, Info, Lock, Mic, MicOff, RefreshCw, Video, VideoOff, Volume2 } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { detectPlatform } from '../lib/pwaInstall';
@@ -8,9 +8,9 @@ import { Select } from '../components/ui/Select';
 import { Switch } from '../components/ui/Switch';
 import { ZadRigSvg } from '../components/zad/ZadRig';
 import { Khatam } from './parts/Khatam';
-import { detectBrowser, deviceState, permissionSteps, runNetworkTest, type DeviceState, type NetResult } from './deviceCheck';
 
 type RoomRole = 'teacher' | 'learner' | 'guardian_observer' | 'admin_observer';
+type Problem = 'denied' | 'no_camera' | 'no_devices' | 'other' | null;
 export type WaitingRoomReady = { recitationMode: boolean; speakerId?: string; micOff?: boolean; cameraOff?: boolean };
 export type WaitingInfo = {
   /** "Quran with Ustadha Afnan" */
@@ -38,12 +38,10 @@ const BARS = [0.35, 0.6, 0.85, 1, 0.85, 0.6, 0.35];
  * a disclosure and open by themselves when something is wrong. Nothing here blocks entry: a weak camera gets advice,
  * a missing one still lets the person join by voice.
  */
-export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = false, iceServers = [] }: {
+export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = false }: {
   role: RoomRole;
   ticket: string;
   bookingId: string;
-  /** From enter: used by the network test to check the TURN relay answers. */
-  iceServers?: RTCIceServer[];
   onReady: (stream: MediaStream, opts: WaitingRoomReady) => void;
   info: WaitingInfo;
   kid?: boolean;
@@ -51,12 +49,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   const { t, isAr } = useT();
   const teacher = role === 'teacher';
   const [stream, setStream] = useState<MediaStream | null>(null);
-  // BUILD-LIST 1.5: camera and mic are asked one by one, so a blocked or missing camera still lets the mic work.
-  const [cam, setCam] = useState<DeviceState | null>(null);
-  const [mic, setMic] = useState<DeviceState | null>(null);
-  const [net, setNet] = useState<NetResult | null>(null);
-  const [netRun, setNetRun] = useState(0);
-  const [speakerTested, setSpeakerTested] = useState(false);
+  const [problem, setProblem] = useState<Problem>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [cameraId, setCameraId] = useState('');
   const [micId, setMicId] = useState('');
@@ -75,7 +68,6 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   const barsRef = useRef<HTMLSpanElement>(null);
   const handedOff = useRef(false);
   const inApp = typeof navigator !== 'undefined' && detectPlatform(navigator.userAgent) === 'in-app';
-  const who = detectBrowser(typeof navigator !== 'undefined' ? navigator.userAgent : '');
 
   const height = stream?.getVideoTracks()[0]?.getSettings().height ?? null;
   const passed720 = height != null && height >= 720;
@@ -85,25 +77,26 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   }, []);
 
   // (Re)open the camera and mic whenever a picker changes or "Try again" is pressed. Recitation mode is applied by the room.
-  // Each device is asked on its own: a refusal or a missing camera never takes the mic with it, and the other way round.
   useEffect(() => {
     if (isObserver(role)) { setLoading(false); return; }
     let cancelled = false;
     let opened: MediaStream | null = null;
     (async () => {
       setLoading(true);
-      if (!navigator.mediaDevices?.getUserMedia) { setCam('error'); setMic('error'); setLoading(false); return; }
-      const tracks: MediaStreamTrack[] = [];
-      const ask = async (c: MediaStreamConstraints): Promise<DeviceState> => {
-        try { tracks.push(...(await navigator.mediaDevices.getUserMedia(c)).getTracks()); return 'ok'; }
-        catch (err) { return deviceState(err); }
-      };
-      const micState = await ask({ audio: audioFor(false, micId) });
-      const camState = await ask({ video: videoFor(cameraId) });
-      opened = tracks.length ? new MediaStream(tracks) : null;
+      if (!navigator.mediaDevices?.getUserMedia) { setProblem('other'); setLoading(false); return; }
+      try {
+        opened = await navigator.mediaDevices.getUserMedia({ video: videoFor(cameraId), audio: audioFor(false, micId) });
+        setProblem(null);
+      } catch (err: any) {
+        const name = err?.name;
+        if (name === 'NotAllowedError' || name === 'SecurityError') { if (!cancelled) setProblem('denied'); }
+        else {
+          // No camera (or it is busy in another app): carry on with the mic alone.
+          try { opened = await navigator.mediaDevices.getUserMedia({ audio: audioFor(false, micId) }); if (!cancelled) setProblem('no_camera'); }
+          catch (e: any) { if (!cancelled) setProblem(e?.name === 'NotAllowedError' ? 'denied' : 'no_devices'); }
+        }
+      }
       if (cancelled) { opened?.getTracks().forEach((tr) => tr.stop()); return; }
-      setMic(micState);
-      setCam(camState);
       setStream(opened);
       setLoading(false);
       refreshDevices();
@@ -113,26 +106,6 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
       if (!handedOff.current) opened?.getTracks().forEach((tr) => tr.stop());
     };
   }, [role, cameraId, micId, attempt, refreshDevices]);
-
-  // Allowing the camera or mic in the browser's site settings retries by itself where the browser tells us.
-  useEffect(() => {
-    if (isObserver(role) || !navigator.permissions?.query) return;
-    const watched: PermissionStatus[] = [];
-    const retry = () => setAttempt((n) => n + 1);
-    for (const name of ['camera', 'microphone']) {
-      navigator.permissions.query({ name: name as PermissionName }).then((p) => { p.addEventListener('change', retry); watched.push(p); }).catch(() => { /* not supported (Firefox, older Safari) */ });
-    }
-    return () => watched.forEach((p) => p.removeEventListener('change', retry));
-  }, [role]);
-
-  // The network test runs once by itself, and again on "Test again". Never blocks Join.
-  useEffect(() => {
-    if (isObserver(role)) return;
-    let live = true;
-    setNet(null);
-    runNetworkTest(bookingId, ticket, iceServers).then((r) => { if (live) setNet(r); }).catch(() => { if (live) setNet({ latencyMs: null, downKbps: null, relay: 'skipped', network: 'unknown' }); });
-    return () => { live = false; };
-  }, [role, bookingId, ticket, netRun]);
 
   // Below 300 ms nothing shows; after that, the khatam breathes in the arch.
   useEffect(() => {
@@ -151,7 +124,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   useEffect(() => { stream?.getAudioTracks().forEach((tr) => { tr.enabled = !micOff; }); }, [stream, micOff]);
   useEffect(() => { stream?.getVideoTracks().forEach((tr) => { tr.enabled = !camOff; }); }, [stream, camOff]);
   // Problems open the device list by themselves.
-  useEffect(() => { if (cam === 'missing' || cam === 'error') setDevicesOpen(true); }, [cam]);
+  useEffect(() => { if (problem === 'no_camera') setDevicesOpen(true); }, [problem]);
   // Zad waves once, then stands still.
   useEffect(() => { const id = window.setTimeout(() => setZadPose('idle'), 2600); return () => window.clearTimeout(id); }, []);
 
@@ -200,7 +173,6 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
     osc.start();
     osc.stop(ctx.currentTime + 0.6);
     osc.onended = () => { ctx.close().catch(() => {}); };
-    setSpeakerTested(true);
   };
 
   const join = () => {
@@ -211,13 +183,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
         method: 'POST',
         keepalive: true,
         headers: { 'Content-Type': 'application/json', 'x-room-ticket': ticket },
-        body: JSON.stringify({
-          precheck720: passed720, startHeight: height,
-          detail: {
-            ...(cam ? { camera: cam } : {}), ...(mic ? { mic } : {}), speakerTested, browser: who.browser, mobile: who.mobile,
-            ...(net ? { latencyMs: net.latencyMs, downKbps: net.downKbps, relay: net.relay, network: net.network } : {}),
-          },
-        }),
+        body: JSON.stringify({ precheck720: passed720, startHeight: height }),
       }).catch(() => {});
     }
     handedOff.current = true;
@@ -261,7 +227,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   const label = (d: MediaDeviceInfo, i: number, fallback: string) => d.label || `${fallback} ${i + 1}`;
   const hasVideo = !!stream?.getVideoTracks().length;
   const hasMic = !!stream?.getAudioTracks().length;
-  const blocked = cam === 'denied' || mic === 'denied';
+  const safari = typeof navigator !== 'undefined' && /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
 
   const preview = (
     <div className="relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem]">
@@ -271,11 +237,27 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
           <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(26rem_18rem_at_50%_0%,rgba(229,169,60,0.2),transparent_70%)] p-6 text-center">
             {loading ? (slow && (
               <div className="grid justify-items-center gap-3"><Khatam size={56} breathe /><p className="text-sm text-[#D8C6AE]">{t('Opening your camera…', 'بنفتح الكاميرا…')}</p></div>
-            )) : cam === 'denied' && !camOff ? (
+            )) : problem === 'denied' ? (
               <div className="grid justify-items-center gap-3">
                 <span className="arch-tile grid h-16 w-14 place-items-center bg-[#3B2219] text-[#F6D58E]"><Lock className="h-6 w-6" aria-hidden="true" /></span>
-                <p className="max-w-[16rem] text-[0.95rem] font-semibold">{t('Your browser is blocking the camera', 'المتصفح مانع الكاميرا')}</p>
-                <p className="max-w-[16rem] text-sm leading-relaxed text-[#D8C6AE]">{t('The steps to allow it are next to this. You can still join with your voice.', 'خطوات السماح بيها جنبك. وتقدر تدخل بصوتك برضه.')}</p>
+                <p className="text-[0.95rem] font-semibold">{t('Your browser is blocking the camera and mic', 'المتصفح مانع الكاميرا والمايك')}</p>
+                <ol className="grid max-w-[17rem] list-decimal gap-1 ps-5 text-start text-sm leading-relaxed text-[#D8C6AE]">
+                  {safari ? (
+                    <>
+                      <li>{t('Tap "aA" (or the settings icon) in the address bar.', 'دوس على "aA" (أو علامة الإعدادات) في شريط العنوان.')}</li>
+                      <li>{t('Open Website Settings and allow Camera and Microphone.', 'افتح إعدادات الموقع واسمح بالكاميرا والمايك.')}</li>
+                    </>
+                  ) : (
+                    <>
+                      <li>{t('Click the lock or settings icon next to the address.', 'دوس على علامة القفل أو الإعدادات جنب العنوان.')}</li>
+                      <li>{t('Allow Camera and Microphone.', 'اسمح بالكاميرا والمايك.')}</li>
+                    </>
+                  )}
+                </ol>
+                <button type="button" onClick={() => setAttempt((n) => n + 1)}
+                  className="room-press mt-1 inline-flex min-h-11 items-center gap-2 rounded-[var(--r-pill)] bg-[#FAF7F2] px-5 text-sm font-semibold text-[#12100E] focus-ring">
+                  <RefreshCw className="h-4 w-4" aria-hidden="true" />{t('Try again', 'جرّب تاني')}
+                </button>
               </div>
             ) : (
               <div className="grid justify-items-center gap-3">
@@ -284,7 +266,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
                 </span>
                 <p className="max-w-[16rem] text-sm leading-relaxed text-[#D8C6AE]">
                   {camOff ? t('Your camera is off. Turn it on whenever you like.', 'الكاميرا مقفولة. افتحها وقت ما تحب.')
-                    : hasMic ? t("We can't find a camera, or another app is using it. You can join with your voice.", 'ملقيناش كاميرا، أو في برنامج تاني شغّالها. تقدر تدخل بصوتك.')
+                    : problem === 'no_camera' ? t("We can't find a camera, or another app is using it. You can join with your voice.", 'ملقيناش كاميرا، أو في برنامج تاني شغّالها. تقدر تدخل بصوتك.')
                       : t("This device can't open a camera or mic. Try another browser, or join to listen.", 'الجهاز ده مش قادر يفتح كاميرا أو مايك. جرّب متصفح تاني، أو ادخل واسمع.')}
                 </p>
               </div>
@@ -352,17 +334,6 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
       <button type="button" onClick={testSpeaker} className="room-press inline-flex min-h-11 items-center gap-2 justify-self-start rounded-[var(--r-pill)] px-1 text-sm font-medium text-teal focus-ring">
         <Volume2 className="h-4 w-4" aria-hidden="true" />{t('Play a test sound', 'شغّل صوت تجربة')}
       </button>
-      <div className="grid gap-1 border-t border-border-subtle pt-3 text-sm text-muted-foreground">
-        <p className="flex items-center gap-2 font-medium text-foreground"><Gauge className="h-4 w-4" aria-hidden="true" />{t('Internet test', 'اختبار النت')}</p>
-        {net ? (
-          <p dir="ltr" className="tabular-nums">
-            {net.latencyMs != null ? `${net.latencyMs} ms` : '–'} · {net.downKbps != null ? `${(net.downKbps / 1000).toFixed(1)} Mbps` : '–'} · {t('relay', 'السيرفر الاحتياطي')} {net.relay === 'ok' ? '✓' : net.relay === 'failed' ? '✗' : '–'}
-          </p>
-        ) : <p>{t('Testing…', 'بنختبر…')}</p>}
-        <button type="button" disabled={!net} onClick={() => setNetRun((n) => n + 1)} className="room-press inline-flex min-h-11 items-center gap-2 justify-self-start rounded-[var(--r-pill)] px-1 text-sm font-medium text-teal focus-ring disabled:opacity-50">
-          <RefreshCw className="h-4 w-4" aria-hidden="true" />{t('Test again', 'اختبر تاني')}
-        </button>
-      </div>
       {kid && <p className="text-sm leading-relaxed text-muted-foreground">{t('For grown-ups: if the picture or sound is missing, check the browser lets this page use the camera and mic, then pick them here.', 'لولي الأمر: لو الصورة أو الصوت مش شغّالين، اتأكد إن المتصفح سامح للصفحة بالكاميرا والمايك، واختارهم من هنا.')}</p>}
     </div>
   );
@@ -392,36 +363,11 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
           </div>
         )}
 
-        {!loading && blocked && (
-          <div role="alert" className="grid gap-3 rounded-[var(--r-3)] bg-sand-light p-4 ring-1 ring-sand-border">
-            <p className="flex items-start gap-2 text-[0.95rem] font-semibold text-foreground">
-              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-              {cam === 'denied' && mic === 'denied' ? t('Your browser is blocking the camera and mic', 'المتصفح مانع الكاميرا والمايك')
-                : cam === 'denied' ? t('Your browser is blocking the camera', 'المتصفح مانع الكاميرا') : t('Your browser is blocking the mic', 'المتصفح مانع المايك')}
-            </p>
-            <ol className="grid list-decimal gap-1.5 ps-5 text-sm leading-relaxed text-sand-foreground">
-              {permissionSteps(who, t).map((step) => <li key={step}>{step}</li>)}
-            </ol>
-            <Button variant="outline" size="sm" className="justify-self-start" onClick={() => setAttempt((n) => n + 1)}>
-              <RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{t('Try again', 'جرّب تاني')}
-            </Button>
-          </div>
-        )}
-
-        {!loading && (
+        {!loading && problem !== 'denied' && (
           <div className="flex flex-wrap gap-2">
             {check(hasVideo, hasVideo ? t('Camera ready', 'الكاميرا جاهزة') : t('No camera', 'مفيش كاميرا'))}
             {check(hasMic && (heard || micOff), hasMic ? (heard ? t('Sound ready', 'الصوت جاهز') : t('Say something to test', 'اتكلم علشان نجرب')) : t('No mic', 'مفيش مايك'))}
-            {net && check(net.network === 'good', net.network === 'good' ? t('Internet good', 'النت كويس') : net.network === 'fair' ? t('Internet OK', 'النت مقبول') : net.network === 'poor' ? t('Internet weak', 'النت ضعيف') : t('Internet not checked', 'ما قدرناش نختبر النت'))}
           </div>
-        )}
-        {net && net.network !== 'good' && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {net.network === 'poor'
-              ? t('Your internet is weak right now. Sit closer to the router, or close videos and downloads on this network. The lesson keeps your voice first.', 'النت ضعيف دلوقتي. اقعد قريب من الراوتر، أو اقفل الفيديوهات والتحميلات على نفس الشبكة. الحصة بتحافظ على الصوت الأول.')
-              : net.network === 'fair' ? t('Your internet is fine for the lesson; the picture may be a little softer.', 'النت كويس للحصة؛ الصورة ممكن تبقى أقل وضوحًا شوية.')
-                : t('We could not test your internet. You can still join.', 'ما قدرناش نختبر النت. تقدر تدخل عادي.')}
-          </p>
         )}
         {hasVideo && height != null && !passed720 && !kid && (
           <p className="text-sm leading-relaxed text-muted-foreground">

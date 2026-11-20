@@ -12,11 +12,6 @@ import { CloudflareRealtimeError, type createCloudflareRealtime } from '../integ
 import { classroomEnabledFor } from '../classroom/mode.js';
 import { roomSideIn } from './attendance.js';
 import { lessonEndMs } from '../../src/lib/lessonWindow.js';
-import { verifyParentProof } from './parentPin.js';
-import { reduceTools, TOOL_STATE_TYPES } from '../../src/lib/roomTools.js';
-import { recentMistakes, recordCorrections } from '../classroom/mistakeBank.js';
-import { warmupPrompts } from '../../src/classroom/tools/warmup.js';
-import { findLesson } from '../../src/curriculum/catalog.js';
 
 /**
  * Classroom Release 1 (Task 4): the door to our own lesson room and the Cloudflare media proxy behind it.
@@ -53,60 +48,19 @@ const MAX_OBSERVER_NOTES = 4000;
 // Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
 export const CLASSROOM_FILES_BUCKET = 'classroom-files';
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
-export const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
-export const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
+const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
+const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
 
-/** A file's original name, safe to show: no control characters, at most 120 characters. */
-export const cleanFileName = (v: unknown) => (typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 120) : '') || 'File';
-/** 2.10: audio the teacher plays in the room and shadowing lines. Kept apart from the documents (not in reports). */
-const AUDIO_EXT: Record<string, string> = { 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/ogg': 'ogg', 'audio/webm': 'webm', 'audio/wav': 'wav' };
-const AUDIO_FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(mp3|m4a|ogg|webm|wav)$/;
-const ROOM_EXT: Record<string, string> = { ...FILE_EXT, ...AUDIO_EXT };
-const isRoomFileId = (id: string) => FILE_ID.test(id) || AUDIO_FILE_ID.test(id);
-const WRONG_TYPE = 'Use a PDF, PNG or JPEG file, or an MP3, M4A, OGG, WEBM or WAV sound.';
-
-type RoomFileType = 'application/pdf' | 'image/png' | 'image/jpeg' | 'audio/mpeg' | 'audio/mp4' | 'audio/ogg' | 'audio/webm' | 'audio/wav';
 /** The real type from the first bytes; the Content-Type header alone is never trusted. */
-export function detectFileType(b: Buffer): RoomFileType | null {
+export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
   if (b.length >= 5 && b.subarray(0, 5).toString('latin1') === '%PDF-') return 'application/pdf';
   if (b.length >= 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
   if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
-  // MP3: an ID3 tag, or an MPEG audio frame sync (11 set bits, layer bits not 00).
-  if (b.length >= 3 && b.subarray(0, 3).toString('latin1') === 'ID3') return 'audio/mpeg';
-  if (b.length >= 2 && b[0] === 0xff && (b[1] & 0xe0) === 0xe0 && (b[1] & 0x06) !== 0) return 'audio/mpeg';
-  if (b.length >= 8 && b.subarray(4, 8).toString('latin1') === 'ftyp') return 'audio/mp4';
-  if (b.length >= 4 && b.subarray(0, 4).toString('latin1') === 'OggS') return 'audio/ogg';
-  if (b.length >= 4 && b.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))) return 'audio/webm';
-  if (b.length >= 12 && b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WAVE') return 'audio/wav';
   return null;
 }
 
-// BUILD-LIST 1.5: the waiting room's device and network results, kept with the 720p check. Unknown keys are dropped.
-const DEVICE_STATES = ['ok', 'denied', 'missing', 'error'];
-const DETAIL_ENUMS: Record<string, string[]> = {
-  camera: DEVICE_STATES, mic: DEVICE_STATES, relay: ['ok', 'failed', 'skipped'],
-  network: ['good', 'fair', 'poor', 'unknown'], browser: ['chrome', 'edge', 'safari', 'firefox', 'other'],
-};
-const DETAIL_NUMBERS: Record<string, number> = { latencyMs: 60_000, downKbps: 10_000_000 };
-const DETAIL_FLAGS = ['speakerTested', 'mobile'];
-/** The cleaned detail, or null when a field has a wrong value (400). */
-export function cleanPrecheckDetail(raw: unknown): Record<string, unknown> | null {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
-    if (k in DETAIL_ENUMS) { if (typeof v !== 'string' || !DETAIL_ENUMS[k].includes(v)) return null; out[k] = v; }
-    else if (k in DETAIL_NUMBERS) {
-      if (v !== null && !(Number.isInteger(v) && (v as number) >= 0 && (v as number) <= DETAIL_NUMBERS[k])) return null;
-      out[k] = v;
-    } else if (DETAIL_FLAGS.includes(k)) { if (typeof v !== 'boolean') return null; out[k] = v; }
-  }
-  return out;
-}
-/** The network test's download is capped here (kilobytes). */
-export const NETTEST_MAX_KB = 512;
-
 /** Reads only the first `n` bytes of a stored object as a stream, then stops, so a 20 MB file never sits in memory. */
-export async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer | null> {
+async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer | null> {
   const { data, error } = await bucket.download(path).asStream();
   if (error || !data) return null;
   const reader = (data as ReadableStream<Uint8Array>).getReader();
@@ -135,14 +89,8 @@ const MAX_BOARD_PAGES = 30;
 
 function mayPersist(e: RoomEvent, role: RoomRole, snapshot: any): boolean {
   switch (e.t) {
-    // talk: the teacher's page measures both sides (2.8).
-    case 'slide': case 'pdf': case 'layout': case 'talk': case 'end': return role === 'teacher';
-    // 4.2: the mushaf page the teacher shows.
-    case 'quran': return role === 'teacher';
+    case 'slide': case 'pdf': case 'layout': case 'end': return role === 'teacher';
     case 'reaction': case 'focus': return role === 'learner';
-    // 2.10, 2.11: the teacher drives the tools; the learner only answers the understanding check.
-    case 'correction': case 'check': case 'stage': case 'media': case 'practice': case 'shadow': return role === 'teacher';
-    case 'check_answer': return role === 'learner';
     case 'quality': return e.side === attendanceRole(role);
     case 'board': return role === 'teacher' || (role === 'learner' && (snapshot.learnerDraw ?? snapshot.board?.learnerDraw) === true);
     default: return false;
@@ -163,8 +111,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   now?: () => number;
   /** Task 13: the rollout switch for this lesson's teacher (CLASSROOM_MODE by default). */
   classroomEnabled?: (teacherId: string) => boolean;
-  /** BUILD-LIST 3.2: runs once the teacher ended the room (the automatic attendance verdict). Never fails the end. */
-  onLessonEnded?: (client: any, bookingId: string) => Promise<unknown>;
 }) {
   const now = deps.now ?? Date.now;
   const classroomEnabled = deps.classroomEnabled ?? ((teacherId: string) => classroomEnabledFor(teacherId));
@@ -196,8 +142,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
    * H3: the teacher ended the lesson. ended_at is stored and room_ended is written once; from then enter, media,
    * events, files and heartbeats are refused. Two ends at once only move ended_at by a few milliseconds.
    */
-  /** Whole minutes left before the booked end (negative after it). */
-  const earlyMinutes = (b: any) => Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
   const endRoom = async (client: any, id: string) => {
     const at = iso();
     const { error } = await client.from('lesson_room_state').upsert({ booking_id: id, ended_at: at }, { onConflict: 'booking_id' });
@@ -207,7 +151,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       { onConflict: 'dedupe_key', ignoreDuplicates: true },
     );
     if (evErr) console.error('[classroom end] room_ended', evErr.message);
-    if (deps.onLessonEnded) await deps.onLessonEnded(client, id).catch((err) => console.error('[classroom end] verdict', err));
   };
 
   /**
@@ -280,10 +223,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       // Task 13: switched off for this teacher, every role stays on the NX-12 page and Zoom, as before. Asked only
       // after access, so a stranger learns nothing about the teacher's rollout.
       if (!classroomEnabled(booking.teacher_id)) return res.status(409).json({ classroom: false });
-      // BUILD-LIST 1.6: watching needs the parent PIN, so a child on the parent's signed-in device cannot watch by URL.
-      if (access.role === 'guardian_observer' && !verifyParentProof(req.headers['x-parent-proof'], requester.userId, secret(), now())) {
-        return res.status(403).json({ error: 'Enter the parent PIN to watch.', needsPin: true });
-      }
       const cf = deps.cloudflare();
       const key = secret();
       if (!cf?.configured || !key) return res.status(503).json({ error: 'The lesson room is not available.' });
@@ -310,7 +249,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       }
 
       // Names for the room's header; a failed lookup only leaves them out.
-      const [teacherRow, serviceRow, learnerRow, lastReportRow, prepRow] = await Promise.all([
+      const [teacherRow, serviceRow, learnerRow, lastReportRow] = await Promise.all([
         client.from('profiles').select('display_name').eq('id', booking.teacher_id).maybeSingle(),
         booking.service_id ? client.from('services').select('title, arabic_title').eq('id', booking.service_id).maybeSingle() : { data: null },
         portal === 'teacher' && booking.student_id ? client.from('students').select('learner_type').eq('id', booking.student_id).maybeSingle() : { data: null },
@@ -318,10 +257,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         role === 'teacher' && booking.student_id
           ? client.from('curriculum_lesson_reports').select('subject, lesson_number, to_page').eq('student_id', booking.student_id).order('created_at', { ascending: false }).limit(1).maybeSingle()
           : { data: null },
-        // BUILD-LIST 1.4: what the teacher prepared (teacher only); a failed lookup only leaves it out.
-        role === 'teacher' ? client.from('lesson_prep').select('notes, slide').eq('booking_id', id).maybeSingle() : { data: null },
       ]);
-      const prepared = prepRow?.data?.slide && typeof prepRow.data.slide === 'object' ? prepRow.data.slide : null;
       const type = portal === 'teacher' ? learnerRow?.data?.learner_type : family.find((l) => l.id === booking.student_id)?.learnerType;
       const service = serviceRow?.data;
 
@@ -340,10 +276,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         subjectLabel: service?.title ? { en: service.title, ar: service.arabic_title || service.title } : null,
         learnerType: type === 'child' || type === 'adult' ? type : null,
         serviceId: booking.service_id || null,
-        // The prepared slide wins over the last report; a rejoin snapshot still wins over both (startingLesson).
-        lastReport: prepared ? { track: prepared.track, number: prepared.number, page: prepared.page ?? 0 }
-          : lastReportRow?.data ? { track: lastReportRow.data.subject, number: lastReportRow.data.lesson_number, page: lastReportRow.data.to_page ?? 0 } : null,
-        ...(role === 'teacher' ? { prepNotes: prepRow?.data?.notes || '' } : {}),
+        lastReport: lastReportRow?.data ? { track: lastReportRow.data.subject, number: lastReportRow.data.lesson_number, page: lastReportRow.data.to_page ?? 0 } : null,
       });
     } catch (err) {
       return fail(res, err, 'enter', await providerIncident(client, err, String(req.params.id || ''), incidentRole));
@@ -457,41 +390,27 @@ export function registerClassroomRoutes(app: express.Express, deps: {
 
       const rows: any[] = [];
       const boards: Array<Extract<RoomEvent, { t: 'board' }>> = [];
-      const patch: { slide?: unknown; pdf?: unknown; layout?: unknown; pane?: unknown; quran?: unknown } = {};
-      const toolEvents: RoomEvent[] = [];
-      const corrections: Array<Extract<RoomEvent, { t: 'correction' }>> = [];
+      const patch: { slide?: unknown; pdf?: unknown; layout?: unknown } = {};
       for (const { at, event: e } of items as Array<{ at: unknown; event: RoomEvent }>) {
         // Board permission is checked later, against the fresh board; nothing else reads the snapshot.
         if (e.t === 'board') { if (t.role === 'teacher' || t.role === 'learner') boards.push(e); continue; }
         if (!mayPersist(e, t.role, {})) continue;
-        // An early end needs a reason, so only POST /end may record it; here it is dropped.
-        if (e.t === 'end' && earlyMinutes(live.booking) >= EARLY_END_GRACE_MIN) continue;
         const { t: type, ...payload } = e;
         const ms = typeof at === 'number' && at <= now() && at >= now() - EVENT_SKEW_MS ? at : now();
         rows.push({ booking_id: t.bookingId, type, actor_role: attendanceRole(t.role), payload, occurred_at: new Date(ms).toISOString() });
         if (e.t === 'slide') patch.slide = e.state;
         if (e.t === 'pdf') patch.pdf = { fileId: e.fileId, page: e.page };
-        if (e.t === 'layout') { patch.layout = e.mode; if (e.pane) patch.pane = e.pane; }
-        if (TOOL_STATE_TYPES.has(e.t)) toolEvents.push(e);
-        if (e.t === 'correction') corrections.push(e);
-        // 4.2: the mushaf page the teacher shows, for a rejoin or a late learner.
-        if (e.t === 'quran') patch.quran = { page: e.page };
+        if (e.t === 'layout') patch.layout = e.mode;
       }
       if (rows.length) {
         const { error } = await client.from('lesson_timeline_events').insert(rows);
         if (error) throw new Error(`lesson_timeline_events: ${error.message}`);
       }
-      // 2.10: every correction also goes into the learner's mistake bank (a repeat of the same one is ignored).
-      if (corrections.length) {
-        await recordCorrections(client, { bookingId: t.bookingId, studentId: live.booking.student_id ?? null, teacherId: live.booking.teacher_id ?? null }, corrections);
-      }
-      if (boards.length || toolEvents.length || Object.keys(patch).length) {
+      if (boards.length || Object.keys(patch).length) {
         // The only writer of the snapshot (seats have their own rows): re-read right before the write and change
         // only board/slide/pdf/layout.
         const { snapshot: fresh } = await loadRoom(client, t.bookingId);
-        let changed = Object.keys(patch).length > 0 || toolEvents.length > 0;
-        // The tools (stage, check, media, practice, shadow) on the fresh snapshot, in the order they happened.
-        if (toolEvents.length) fresh.tools = toolEvents.reduce((acc, e) => reduceTools(acc, e, now()), fresh.tools && typeof fresh.tools === 'object' ? fresh.tools : {});
+        let changed = Object.keys(patch).length > 0;
         for (const e of boards) {
           if (!mayPersist(e, t.role, fresh)) continue;
           changed = true;
@@ -507,16 +426,13 @@ export function registerClassroomRoutes(app: express.Express, deps: {
           if (e.sceneVersion < (current?.sceneVersion ?? -1)) continue;
           // shortcut: notes on more than MAX_BOARD_PAGES pages are not saved (live only), raise it if teachers hit it.
           if (e.surface && !current && Object.keys(pages).length >= MAX_BOARD_PAGES) continue;
-          // The whiteboard keeps the teacher's page; a learner's save keeps the one already there.
-          const page = e.surface ? undefined : t.role === 'teacher' ? e.page : (current as { page?: number } | undefined)?.page;
-          const scene = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true, ...(page ? { page } : {}) };
+          const scene = { sceneVersion: e.sceneVersion, elements: e.elements, learnerDraw: t.role === 'teacher' ? e.learnerDraw === true : true };
           if (e.surface) fresh.boards = { ...pages, [e.surface]: scene };
           else fresh.board = scene;
         }
         if (changed) await writeSnapshot(client, t.bookingId, { ...fresh, ...patch });
       }
-      // H3/L4: only the teacher's end is persisted (mayPersist), and it ends the room on the server too. An early end
-      // never goes this way: it needs a reason, so only POST /end (which checks it) may end the room before time.
+      // H3/L4: only the teacher's end is persisted (mayPersist), and it ends the room on the server too.
       if (rows.some((r) => r.type === 'end')) await endRoom(client, t.bookingId);
       return res.json({ stored: rows.length });
     } catch (err) {
@@ -541,7 +457,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     try {
       const contentType = String(req.body?.contentType || '').toLowerCase();
       const size = Number(req.body?.size);
-      if (!ROOM_EXT[contentType]) return res.status(415).json({ error: WRONG_TYPE });
+      if (!FILE_EXT[contentType]) return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' });
       if (!Number.isInteger(size) || size < 1) return res.status(400).json({ error: 'size must be the file size in bytes.' });
       if (size > MAX_FILE_BYTES) return res.status(413).json({ error: 'The file is larger than 20 MB.' });
       const client = deps.getClient();
@@ -550,7 +466,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const live = await liveSeat(client, t, res);
       if (!live) return;
       if (roomHardCloseMs(live.booking) <= now()) return res.status(423).json({ error: 'The room is closed.', ended: true });
-      const fileId = `${crypto.randomUUID()}.${ROOM_EXT[contentType]}`;
+      const fileId = `${crypto.randomUUID()}.${FILE_EXT[contentType]}`;
       const path = `${t.bookingId}/${fileId}`;
       const { data, error } = await client.storage.from(CLASSROOM_FILES_BUCKET).createSignedUploadUrl(path);
       if (error || !data?.token) throw new Error(`signed upload: ${error?.message || 'none'}`);
@@ -564,7 +480,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   app.post('/api/classroom/:id/files/:fileId/confirm', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
     try {
       const fileId = String(req.params.fileId || '');
-      if (!isRoomFileId(fileId)) return res.status(404).json({ error: 'File not found.' });
+      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const t: TicketPayload = req.roomTicket;
@@ -578,8 +494,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       const drop = async () => { const { error } = await bucket.remove([path]); if (error) console.error('[classroom] files/remove', error.message); };
       if (!(Number(info.data.size) <= MAX_FILE_BYTES)) { await drop(); return res.status(413).json({ error: 'The file is larger than 20 MB.' }); }
       const head = await firstBytes(bucket, path, 16);
-      const declared = Object.keys(ROOM_EXT).find((k) => fileId.endsWith(`.${ROOM_EXT[k]}`));
-      if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: WRONG_TYPE }); }
+      const declared = Object.keys(FILE_EXT).find((k) => fileId.endsWith(`.${FILE_EXT[k]}`));
+      if (!head || detectFileType(head) !== declared) { await drop(); return res.status(415).json({ error: 'Use a PDF, PNG or JPEG file.' }); }
       const url = await fileLink(client, booking, fileId);
       if (!url) return res.status(423).json({ error: 'The room is closed.', ended: true });
       return res.json({ fileId, url });
@@ -588,60 +504,11 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     }
   });
 
-  // BUILD-LIST 1.4: the teacher's list of this lesson's files: prepared before the lesson (with their names) and added
-  // in the room, oldest first.
-  app.get('/api/classroom/:id/files', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
-    try {
-      const t: TicketPayload = req.roomTicket;
-      if (t.role !== 'teacher') return res.status(403).json({ error: 'Only the teacher sees the file list.' });
-      const client = deps.getClient();
-      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
-      const live = await liveSeat(client, t, res);
-      if (!live) return;
-      const [{ data: stored, error }, { data: named }] = await Promise.all([
-        client.storage.from(CLASSROOM_FILES_BUCKET).list(t.bookingId, { limit: 100, sortBy: { column: 'created_at', order: 'asc' } }),
-        client.from('lesson_files').select('file_id, name, source').eq('booking_id', t.bookingId),
-      ]);
-      if (error) throw new Error(`files/list: ${error.message}`);
-      const names = new Map<string, { name: string; source: string }>((named || []).map((f: any) => [String(f.file_id), f]));
-      const files = (stored || []).map((o: any) => String(o.name)).filter((n: string) => FILE_ID.test(n))
-        .map((fileId: string) => ({ fileId, name: names.get(fileId)?.name || null, prepared: names.get(fileId)?.source === 'prep' }));
-      return res.json({ files });
-    } catch (err) {
-      return fail(res, err, 'files/list');
-    }
-  });
-
-  // The original name of a file the teacher just added in the room (after confirm), for the list and the report.
-  app.post('/api/classroom/:id/files/:fileId/name', withTicket, deps.roomRateLimit, teacherOnly, async (req: any, res: any) => {
-    try {
-      const fileId = String(req.params.fileId || '');
-      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
-      const client = deps.getClient();
-      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
-      const t: TicketPayload = req.roomTicket;
-      const live = await liveSeat(client, t, res);
-      if (!live) return;
-      const info = await client.storage.from(CLASSROOM_FILES_BUCKET).info(`${t.bookingId}/${fileId}`);
-      if (info.error || !info.data) return res.status(404).json({ error: 'File not found.' });
-      const name = cleanFileName(req.body?.name);
-      // A prepared file keeps its prep record; only a room upload is named here.
-      const { error } = await client.from('lesson_files').upsert(
-        { booking_id: t.bookingId, file_id: fileId, name, source: 'room', created_at: iso() },
-        { onConflict: 'booking_id,file_id', ignoreDuplicates: true },
-      );
-      if (error) throw new Error(`lesson_files: ${error.message}`);
-      return res.json({ fileId, name });
-    } catch (err) {
-      return fail(res, err, 'files/name');
-    }
-  });
-
   // Any pass of this lesson (learner and observers too) gets a fresh link, e.g. after a pdf event or a rejoin.
   app.get('/api/classroom/:id/files/:fileId', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
     try {
       const fileId = String(req.params.fileId || '');
-      if (!isRoomFileId(fileId)) return res.status(404).json({ error: 'File not found.' });
+      if (!FILE_ID.test(fileId)) return res.status(404).json({ error: 'File not found.' });
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
       const booking = await loadBooking(client, req.roomTicket.bookingId);
@@ -653,42 +520,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ url });
     } catch (err) {
       return fail(res, err, 'files/get');
-    }
-  });
-
-  // 2.10 warm-up: a few openers from the learner's last report, open corrections and level. Teacher only.
-  app.get('/api/classroom/:id/warmup', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
-    try {
-      const t: TicketPayload = req.roomTicket;
-      if (t.role !== 'teacher') return res.status(403).json({ error: 'Only the teacher sees the warm-up.' });
-      const client = deps.getClient();
-      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
-      const live = await liveSeat(client, t, res);
-      if (!live) return;
-      const studentId = live.booking.student_id;
-      if (!studentId) return res.json({ prompts: warmupPrompts({ level: null, report: null, mistakes: [] }) });
-      const [{ data: learner }, { data: report }, mistakes] = await Promise.all([
-        client.from('students').select('current_level').eq('id', studentId).maybeSingle(),
-        client.from('curriculum_lesson_reports').select('subject, lesson_number, to_page, strengths, to_reinforce, note')
-          .eq('student_id', studentId).order('created_at', { ascending: false }).limit(1).maybeSingle(),
-        recentMistakes(client, [studentId], 5),
-      ]);
-      const lesson = report ? findLesson(report.subject, report.lesson_number) : null;
-      return res.json({
-        prompts: warmupPrompts({
-          level: typeof learner?.current_level === 'string' ? learner.current_level : null,
-          report: report ? {
-            lessonTitle: lesson?.title ?? null,
-            toPage: Number.isInteger(report.to_page) ? report.to_page : null,
-            strengths: Array.isArray(report.strengths) ? report.strengths.filter((x: unknown) => typeof x === 'string') : [],
-            toReinforce: Array.isArray(report.to_reinforce) ? report.to_reinforce.filter((x: unknown) => typeof x === 'string') : [],
-            note: typeof report.note === 'string' && report.note.trim() ? report.note.trim() : null,
-          } : null,
-          mistakes,
-        }),
-      });
-    } catch (err) {
-      return fail(res, err, 'warmup');
     }
   });
 
@@ -715,11 +546,9 @@ export function registerClassroomRoutes(app: express.Express, deps: {
   app.post('/api/classroom/:id/precheck', deps.rateLimit, withTicket, async (req: any, res: any) => {
     try {
       const t: TicketPayload = req.roomTicket;
-      const { precheck720, startHeight, detail: rawDetail } = req.body || {};
+      const { precheck720, startHeight } = req.body || {};
       const heightOk = startHeight === null || (Number.isInteger(startHeight) && startHeight >= 0 && startHeight <= 4320);
       if (typeof precheck720 !== 'boolean' || !heightOk) return res.status(400).json({ error: 'precheck720 and startHeight are required.' });
-      const detail = rawDetail === undefined ? undefined : cleanPrecheckDetail(rawDetail);
-      if (detail === null) return res.status(400).json({ error: 'detail has a wrong value.' });
       if (isObserver(t.role)) return res.status(204).end();
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
@@ -727,7 +556,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
       if (notYours(booking, t)) return res.status(403).json({ error: 'This is not your lesson.', ended: true });
       const { error } = await client.from('lesson_quality').upsert(
-        { booking_id: t.bookingId, side: attendanceRole(t.role), precheck_720: precheck720, start_height: startHeight, ...(detail ? { precheck_detail: detail } : {}), updated_at: new Date(now()).toISOString() },
+        { booking_id: t.bookingId, side: attendanceRole(t.role), precheck_720: precheck720, start_height: startHeight, updated_at: new Date(now()).toISOString() },
         { onConflict: 'booking_id,side' },
       );
       if (error) throw new Error(`lesson_quality: ${error.message}`);
@@ -735,15 +564,6 @@ export function registerClassroomRoutes(app: express.Express, deps: {
     } catch (err) {
       return fail(res, err, 'precheck');
     }
-  });
-
-  // BUILD-LIST 1.5: the waiting room's network test against our own API: kb=0 answers at once (latency), kb=N sends N
-  // random kilobytes (rough download speed). Only the signed pass is checked, so it stays fast; capped per join.
-  app.get('/api/classroom/:id/nettest', withTicket, deps.roomRateLimit, (req: any, res: any) => {
-    const kb = Math.min(NETTEST_MAX_KB, Math.max(0, Math.floor(Number(req.query.kb) || 0)));
-    res.set('Cache-Control', 'no-store');
-    res.type('application/octet-stream');
-    return res.send(kb ? crypto.randomBytes(kb * 1024) : Buffer.alloc(0));
   });
 
   // Task 12: the client detector says the room failed for this side. The answer carries the side's Zoom link while
@@ -890,7 +710,8 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       if (!live) return;
       // Owner 2026-11-20: ending more than EARLY_END_GRACE_MIN before the booked end needs a written reason, kept on
       // the timeline for the admin.
-      const minutesEarly = earlyMinutes(live.booking);
+      const b: any = live.booking;
+      const minutesEarly = Math.floor((lessonEndMs(b.scheduled_start, b.scheduled_end, b.duration_minutes) - now()) / 60_000);
       const reason = typeof req.body?.reason === 'string' ? req.body.reason.trim().slice(0, 1000) : '';
       if (minutesEarly >= EARLY_END_GRACE_MIN) {
         if (reason.length < 10) return res.status(400).json({ error: 'Write why the lesson ends early (at least 10 characters).', needsReason: true, minutesEarly });

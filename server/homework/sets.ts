@@ -53,15 +53,7 @@ const AGE_STYLE: Record<string, string> = {
   adults: 'Learner is an adult. Respectful and thoughtful; situations from work, family and daily worship. 4 options.',
 };
 
-/** Corrections from the lesson room (the mistake bank, classroom 2.10), as the model reads them. */
-export function correctionsText(list: Array<{ said: string; correct: string }> | undefined): string {
-  const items = (list || []).slice(0, 10).map((c) => `- said "${c.said.slice(0, 120)}", correct: "${c.correct.slice(0, 120)}"`);
-  if (!items.length) return '';
-  const head = "Corrections the teacher made in this lesson (the learner's own slips). When one fits a page below, one question in each version may check it; never add content that is not on the pages:";
-  return ['', '', head, ...items].join('\n');
-}
-
-export function buildHomeworkPrompt(p: { lesson: Lesson; from: number; to: number; kind: Kind; count: number; variants: number; corrections?: Array<{ said: string; correct: string }> }): string {
+export function buildHomeworkPrompt(p: { lesson: Lesson; from: number; to: number; kind: Kind; count: number; variants: number }): string {
   return `You write homework for Watazawwado Academy, an online academy for English-speaking Muslim families.
 Course: ${p.lesson.subjectTitle}. Lesson ${p.lesson.number}: "${p.lesson.title}". Pages ${p.from}–${p.to} were taught.
 ${AGE_STYLE[p.lesson.version] || AGE_STYLE.adults}
@@ -79,7 +71,7 @@ Rules:
 - "page" is the page number the question comes from. "skill" is understand, apply or recall.
 
 Pages:
-${pagesText(p.lesson, p.from, p.to)}${correctionsText(p.corrections)}`;
+${pagesText(p.lesson, p.from, p.to)}`;
 }
 
 const L_SCHEMA = { type: 'object', properties: { en: { type: 'string' }, ar: { type: 'string' } }, required: ['en', 'ar'] };

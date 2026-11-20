@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
-import { boardPayload, keepScene, SEND_EVERY_MS } from '../src/classroom/board/model.js';
+import { boardPayload, keepScene } from '../src/classroom/board/Board.js';
 import { MAX_BOARD_BYTES } from '../src/lib/roomEvents.js';
 
 const el = (id: string, version: number, extra: Record<string, unknown> = {}) => ({ id, version, ...extra });
@@ -33,12 +33,12 @@ describe('CL-17 board sync (H5)', () => {
     assert.strictEqual(boardPayload([el('a', 1)], new Map(), 0).full, false);
   });
 
-  it('the board shows the full notice and is our own (2.7: no Excalidraw left in the room)', () => {
+  it('the board shows the full notice, turns the image tool off and refuses pasted images', () => {
     const b = src('src/classroom/board/Board.tsx');
     assert.match(b, /The board is full/);
-    assert.ok(!/excalidraw/i.test(b));
-    assert.ok(!/excalidraw/i.test(src('src/classroom/ClassroomPage.tsx')));
-    assert.ok(!/excalidraw/i.test(src('src/classroom/board/PdfPages.tsx')));
+    assert.match(b, /tools: \{ image: false \}/);
+    assert.match(b, /onPaste=\{onPaste\}/);
+    assert.ok(!/shortcut: a board past the size cap is not sent/.test(b));
   });
 });
 
@@ -70,9 +70,6 @@ describe('CL-17 realtime message rates (H6)', () => {
     const pointer = ms('src/classroom/parts/Pointer.tsx', 'SEND_EVERY_MS');
     assert.ok(pointer >= 150 && pointer <= 200, String(pointer));
     assert.strictEqual(ms('src/lib/lessonRoom.ts', 'INK_EVERY_MS'), 150);
-    // Board strokes, shapes and the laser share one throttled send per side.
-    assert.ok(SEND_EVERY_MS >= 150);
-    assert.match(src('src/classroom/board/Board.tsx'), /createPump\(SEND_EVERY_MS/);
     // The throttle slot is taken only by a position inside the box.
     const p = src('src/classroom/parts/Pointer.tsx');
     assert.ok(p.indexOf('x > SCALE') < p.indexOf('last.current = now'));

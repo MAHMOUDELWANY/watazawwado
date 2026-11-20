@@ -4,7 +4,6 @@ import http from 'node:http';
 import express from 'express';
 import { decideRoomAccess, signTicket, verifyTicket } from '../server/classroom/access.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
-import { signParentProof } from '../server/routes/parentPin.js';
 import { CloudflareRealtimeError } from '../server/integrations/cloudflareRealtime.js';
 import { roomHardCloseMs } from '../src/lib/roomWindow.js';
 
@@ -253,8 +252,7 @@ describe('CL-04 classroom routes', () => {
   });
 
   it('a guardian observer may only pull: any local track is 403, a remote pull from this room is allowed', async () => {
-    // BUILD-LIST 1.6: watching needs the parent PIN proof.
-    const o: any = await (await enter({ 'x-student': 'parent-1', 'x-parent-proof': signParentProof('parent-1', SECRET, NOW) }, 'student', true)).json();
+    const o: any = await (await enter({ 'x-student': 'parent-1' }, 'student', true)).json();
     assert.strictEqual(o.role, 'guardian_observer');
     const s: any = await (await rtc(o.ticket, 'rtc/session', {})).json();
     const teacherSession = seat('teacher').session_id;

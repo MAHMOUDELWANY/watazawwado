@@ -41,11 +41,6 @@ const CHILD_ROUTES: Array<[string, RegExp]> = [
   ['GET', /^\/api\/student\/classroom\/[^/]+\/enter$/],
   // The learning pages of the portal (owner 2026-11-02: the device is the child's whole learning space).
   ['GET', /^\/api\/student\/curriculum$/],
-  // Files the teacher sent with a lesson report (classroom 3.3), narrowed to the child like every learner route.
-  ['GET', /^\/api\/student\/lesson-files$/],
-  // The Quran tab (classroom 4.1-4.4): the mushaf, recitation audio, released marks, the detector result of a sent recording.
-  ['GET', /^\/api\/student\/quran\/(access|chapters|marks|page\/\d+|verse\/\d+:\d+|audio\/\d+\/\d+)$/],
-  ['POST', /^\/api\/student\/quran\/detector-runs$/],
   ['GET', /^\/api\/student\/progress$/],
   ['GET', /^\/api\/student\/progress\/report$/],
   ['GET', /^\/api\/student\/progress\/timeline$/],

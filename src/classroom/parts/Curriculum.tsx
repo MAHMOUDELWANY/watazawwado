@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useT } from '../../lib/language';
 import { SUBJECTS, findLesson } from '../../curriculum/catalog';
 import { LessonPlayer } from '../../curriculum/LessonPlayer';
@@ -58,26 +58,14 @@ export function TeacherCurriculum({ initial, start, publish, publishInk, save }:
 
   useEffect(() => { if (numbers.length && !numbers.includes(number)) setNumber(numbers[0]); }, [numbers, number]);
 
-  const position = useRef<RoomState | null>(null);
   const onPosition = useCallback((p: number, step: number, opening: boolean) => {
     setPage(p);
     // The opening goes out too, so the learner meets the characters with the teacher.
     const s = { track, number, page: p, step, ...(opening ? { opening } : {}) };
-    position.current = s;
     publish(s);
     save(s);
   }, [publish, save, track, number]);
-  // 3.3: the first pen stroke on a page is saved once (timeline only), so the report draft counts the page as taught.
-  const inked = useRef(new Set<string>());
-  const onInk = useCallback((ink: { strokes: any[]; laser: [number, number][] }) => {
-    publishInk({ track, number, page, ...ink });
-    const key = `${track}:${number}:${page}`;
-    if (ink.strokes.length && !inked.current.has(key)) {
-      inked.current.add(key);
-      const at = position.current;
-      save({ track, number, page, step: at && at.track === track && at.number === number && at.page === page ? at.step : 0, inked: true });
-    }
-  }, [publishInk, save, track, number, page]);
+  const onInk = useCallback((ink: { strokes: any[]; laser: [number, number][] }) => publishInk({ track, number, page, ...ink }), [publishInk, track, number, page]);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-2">

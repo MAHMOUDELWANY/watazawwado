@@ -143,15 +143,8 @@ export function CurriculumLessonPage() {
   const { ar, L } = useL();
   const lesson = findLesson(track, Number(number));
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
-  // Classroom 3.3: the after-lesson window passes the pages the room saw taught (?from=&to=, 1-based).
-  const [preset] = useState(() => {
-    const from = Number(params.get('from'));
-    const to = Number(params.get('to'));
-    return Number.isInteger(from) && Number.isInteger(to) && from >= 1 && to >= from && to <= (lesson?.pages.length ?? 0) ? { first: from, last: to } : null;
-  });
-  const [visited, setVisited] = useState<{ first: number; last: number }>(() => preset || { first: 1, last: 1 });
-  // With a preset range the pages the teacher flips through now do not change it (they can still edit it by hand).
-  const onPageChange = useCallback((i: number) => { if (!preset) setVisited((v) => ({ first: Math.min(v.first, i + 1), last: Math.max(v.last, i + 1) })); }, [preset]);
+  const [visited, setVisited] = useState<{ first: number; last: number }>({ first: 1, last: 1 });
+  const onPageChange = useCallback((i: number) => setVisited((v) => ({ first: Math.min(v.first, i + 1), last: Math.max(v.last, i + 1) })), []);
 
   if (!lesson) return <Navigate to={base} replace />;
 

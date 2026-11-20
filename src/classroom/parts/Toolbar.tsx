@@ -73,7 +73,7 @@ export function LayoutSwitch({ mode, onChange, screenAvailable, wide = false }: 
  * four big labelled controls; observers get sound and a quiet Leave.
  */
 export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, recitation = false, onRecitation, layout, onLayout,
-  sharing = false, shareSlot, toolsSlot, moreItems, onReact, selfHidden = false, onToggleSelf, soundOff = false, onSound, onLeave, leaveLabel }: {
+  sharing = false, shareSlot, onReact, selfHidden = false, onToggleSelf, soundOff = false, onSound, onLeave, leaveLabel }: {
   kind: BarKind;
   muted: boolean;
   cameraOff: boolean;
@@ -87,10 +87,6 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
   sharing?: boolean;
   /** The screen-share button (desktop browsers only). */
   shareSlot?: React.ReactNode;
-  /** 2.10: the teacher's tools button, or the learner's text-size and colours button (shown on every screen size). */
-  toolsSlot?: React.ReactNode;
-  /** 2.12: extra rows in the "More" sheet (background blur). */
-  moreItems?: React.ReactNode;
   onReact?: (kind: ReactionKind) => void;
   selfHidden?: boolean;
   onToggleSelf?: () => void;
@@ -166,7 +162,6 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
                     </span>
                   </button>
                 )}
-                {moreItems}
                 {teacher && (
                   <p className="hidden px-3 py-2 text-[0.78rem] leading-relaxed text-muted-foreground sm:block">
                     {t('Keys: M mutes. 1, 2 and 3 switch the layout.', 'الأزرار: M يقفل المايك. 1 و2 و3 يغيّروا الشكل.')}
@@ -192,7 +187,6 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
           <>
             {mic}
             {cam}
-            {toolsSlot}
             {teacher && (
               <span className="hidden items-center gap-1 sm:flex">
                 {recite}

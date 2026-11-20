@@ -64,12 +64,6 @@ export function AllLearnersScope({ children }: { children: React.ReactNode }) {
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
-/** Kid mode on the parent's device (BUILD-LIST 1.6): every page sees only this one child, and the choice is fixed. */
-export function SingleLearnerScope({ learner, children }: { learner: PortalLearner; children: React.ReactNode }) {
-  const value = useMemo(() => ({ learners: [learner], activeId: learner.id, setActiveId: () => {} }), [learner.id, learner.name]);
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
-}
-
 /**
  * "Whole family / each child" chips, placed inside the pages that filter by learner (lessons, homework,
  * community), so the filter is always in sight. Renders nothing for an account without children.

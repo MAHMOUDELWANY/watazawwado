@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import FocusTrap from '../../components/FocusTrap';
-import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
   X,
@@ -27,7 +26,7 @@ import {
 } from 'lucide-react';
 import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
-import { PrepareLessonLink, StartLessonButton } from './StartLessonButton';
+import { StartLessonButton } from './StartLessonButton';
 import { LessonAttendance, AttendanceHint } from './LessonAttendance';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { bookingStatusBadge } from '../lib/labels';
@@ -623,7 +622,6 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {(booking.classroom || booking.zoom_host_url || booking.zoom_meeting_link) && (
                       <StartLessonButton lesson={booking as any} t={t} label={t('Start as host', 'ابدأ كمضيف')} compact />
                     )}
-                    <PrepareLessonLink lesson={booking as any} t={t} compact />
                     {booking.zoom_meeting_link && (
                       <button
                         onClick={() => copyToClipboard(booking.zoom_meeting_link || '', 'zoom')}
@@ -639,12 +637,6 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Owner review 2026-11-09: exact attendance times are for the super admin only. */}
               {isSuperAdmin && <LessonAttendance bookingId={booking.id} />}
-              {/* Classroom 3.5: everything the room recorded about this lesson. */}
-              {isSuperAdmin && (
-                <Link to={`/dashboard/admin/lessons/${booking.id}`} onClick={onClose} className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
-                  {t('Open the lesson view (timeline, attendance, quality, rating)', 'افتح صفحة الحصة (الخط الزمني، الحضور، الجودة، التقييم)')}
-                </Link>
-              )}
 
               {/* Payments: super admin only (RULES.md §1) */}
               {isSuperAdmin && (

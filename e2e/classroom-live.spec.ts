@@ -148,9 +148,9 @@ async function ensurePair(browser: Browser) {
 const radio = (p: Page, name: string) => p.getByRole('radio', { name, exact: true });
 const tab = (p: Page, name: string) => p.getByRole('tab', { name, exact: true });
 
-/** The pixels of the board's scene canvas (finished marks are drawn there). */
+/** The pixels of the board's drawing canvas (excalidraw draws the scene there). */
 const boardPixels = (p: Page) => p.evaluate(() => {
-  const c = document.querySelector('canvas[data-board="scene"]') as HTMLCanvasElement | null;
+  const c = document.querySelector('canvas.excalidraw__canvas.static') as HTMLCanvasElement | null;
   if (!c) return '';
   const d = c.toDataURL();
   let h = 0;
@@ -189,13 +189,13 @@ test('2. curriculum sync, layout switch, PDF upload, board drawing, pointer', as
   await expect(L.locator('.room-paper').getByText('QA Ustadh P5', { exact: true })).toBeVisible({ timeout: 10_000 });
   // Board: the teacher draws a rectangle; the learner's board canvas changes.
   await tab(T, 'Board').click();
-  await expect(L.locator('.room-board')).toBeVisible({ timeout: 30_000 });
-  await expect(T.locator('canvas[data-board="live"]')).toBeVisible({ timeout: 30_000 });
+  await expect(L.locator('.excalidraw')).toBeVisible({ timeout: 30_000 });
+  await expect(T.locator('canvas.excalidraw__canvas.interactive')).toBeVisible({ timeout: 30_000 });
   await L.waitForTimeout(1500);
   const blank = await boardPixels(L);
-  const canvas = (await T.locator('canvas[data-board="live"]').boundingBox())!;
+  const canvas = (await T.locator('canvas.excalidraw__canvas.interactive').boundingBox())!;
   const cx = canvas.x + canvas.width / 2, cy = canvas.y + canvas.height / 2;
-  await T.getByRole('toolbar', { name: 'Board tools' }).getByRole('button', { name: 'Rectangle', exact: true }).click();
+  await T.locator('.excalidraw').getByTitle(/^Rectangle/).click();
   await T.mouse.move(cx - 120, cy - 80);
   await T.mouse.down();
   await T.mouse.move(cx + 120, cy + 80, { steps: 8 });
@@ -325,12 +325,6 @@ test('9. guardian observer: the teacher sees the chip, the child view does not, 
   const guardian = await open(browser, { role: 'parent' });
   await join(teacher, 'teacher', b.id);
   await join(kid, 'parent', b.id);
-  // BUILD-LIST 1.6: watching needs the parent PIN. Set it (or verify it from an earlier run) and hand the proof to the page.
-  const parentToken = await tokenFor('parent');
-  const set = await call(parentToken, 'PUT', '/api/student/parent-pin', { pin: '2468' });
-  const proof: string = set.json?.proof ?? (await call(parentToken, 'POST', '/api/student/parent-pin/verify', { pin: '2468' })).json?.proof;
-  expect(proof, 'parent PIN proof').toBeTruthy();
-  await guardian.page.addInitScript((p) => sessionStorage.setItem('wz-parent-proof', p), proof);
   await join(guardian, 'parent', b.id, { observe: true });
   await expect(teacher.page.getByText('Guardian watching')).toBeVisible({ timeout: 45_000 });
   await expectFlowing(guardian.page, 'guardian');
@@ -339,10 +333,7 @@ test('9. guardian observer: the teacher sees the chip, the child view does not, 
   const senders = await guardian.page.evaluate(() => ((window as any).__pcs as RTCPeerConnection[]).flatMap((pc) => pc.getSenders()).filter((s) => s.track).length);
   expect(senders, 'observer sends no media').toBe(0);
   // The server refuses a publish from an observer ticket.
-  const noPin = await call(parentToken, 'GET', `/api/student/classroom/${b.id}/enter?observe=1`);
-  expect(noPin.status, 'watching without the PIN is refused').toBe(403);
-  const entered = await fetch(`${BASE}/api/student/classroom/${b.id}/enter?observe=1`, { headers: { Authorization: `Bearer ${parentToken}`, 'x-parent-proof': proof } });
-  const entry = { json: await entered.json() as any };
+  const entry = await call(await tokenFor('parent'), 'GET', `/api/student/classroom/${b.id}/enter?observe=1`);
   expect(entry.json?.role).toBe('guardian_observer');
   const res = await fetch(`${BASE}/api/classroom/${b.id}/rtc/session`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-room-ticket': entry.json.ticket } });
   const { sessionId } = await res.json();

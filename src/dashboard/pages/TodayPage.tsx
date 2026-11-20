@@ -21,7 +21,7 @@ import { BookingDetailModal } from '../components/BookingDetailModal';
 import { TeacherChecklist } from '../components/TeacherChecklist';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
-import { PrepareLessonLink, StartLessonButton } from '../components/StartLessonButton';
+import { StartLessonButton } from '../components/StartLessonButton';
 import { AfterLessonFlow, lessonNeedsReport, readPendingCurriculum } from '../components/AfterLessonFlow';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
@@ -578,7 +578,6 @@ function NextLessonSpotlight({
         {/* Action Controls */}
         <div className="flex items-center gap-3 shrink-0">
           {/* Owner review 2026-11-09: Start works only during the lesson. */}
-          <PrepareLessonLink lesson={lesson} t={t} />
           <StartLessonButton lesson={lesson} t={t} />
 
           <button
@@ -741,7 +740,6 @@ function TodayLessonRow({
         {!isPast && !isNeedsOutcome && !isCancelled && hasStartLink && (
           <StartLessonButton lesson={lesson} t={t} label={t('Start', 'ابدأ')} compact />
         )}
-        {!isPast && !isNeedsOutcome && !isCancelled && <PrepareLessonLink lesson={lesson} t={t} compact />}
 
         {(isCompleted || isNeedsOutcome || isInProgress) &&
           (lesson.student_id || lesson.studentId) &&

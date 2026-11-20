@@ -5,7 +5,6 @@ import http from 'node:http';
 import express from 'express';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
-import { signParentProof } from '../server/routes/parentPin.js';
 import { canWatchLesson } from '../src/student/components/WatchLessonButton.js';
 
 const read = (p: string) => fs.readFileSync(p, 'utf8');
@@ -102,9 +101,8 @@ describe('CL-13 enter follows the rollout switch, and the admin keeps private no
   });
   beforeEach(() => { delete process.env.CLASSROOM_MODE; delete process.env.CLASSROOM_PILOT_TEACHERS; });
 
-  // A guardian sends the parent PIN proof (BUILD-LIST 1.6).
   const enter = (portal: 'dashboard' | 'student', who: string, observe = false) =>
-    fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter${observe ? '?observe=1' : ''}`, { headers: { 'x-teacher': who, 'x-parent-proof': signParentProof('parent-1', 'room-secret', NOW) } });
+    fetch(`${base}/api/${portal}/classroom/${BOOKING_ID}/enter${observe ? '?observe=1' : ''}`, { headers: { 'x-teacher': who } });
   const observation = (ticket: string, body: unknown) =>
     fetch(`${base}/api/classroom/${BOOKING_ID}/observation`, { method: 'PATCH', headers: { 'content-type': 'application/json', 'x-room-ticket': ticket }, body: JSON.stringify(body) });
 
@@ -193,8 +191,7 @@ describe('CL-13 gate and super admin', () => {
     const gate = read('src/classroom/ClassroomGate.tsx');
     assert.match(gate, /e\?\.status === 409 && \(e\?\.data \?\? e\)\?\.classroom === false/);
     assert.doesNotMatch(gate, /status === 503/);
-    // Kid mode on the parent's device (BUILD-LIST 1.6) is a child too.
-    assert.match(gate, /portal !== 'kid' && !\(portal === 'student' && readKidMode\(\)\) && search\.get\('observe'\) === '1'/);
+    assert.match(gate, /portal !== 'kid' && search\.get\('observe'\) === '1'/);
   });
   it('BookingsPage offers Watch on live room lessons for the super admin', () => {
     const page = read('src/dashboard/pages/BookingsPage.tsx');

@@ -1,6 +1,5 @@
 import express from 'express';
 import { canFamilyReadLearner, isUuid } from './progress.js';
-import { recentMistakes, resolveMistake } from '../classroom/mistakeBank.js';
 
 /**
  * NX-01: today's review. Every ayat range the teacher marked "mastered" in homework becomes a card; the learner recites
@@ -63,7 +62,7 @@ export function registerReviewRoutes(app: express.Express, deps: {
       const requested = typeof req.query?.learnerId === 'string' ? req.query.learnerId.trim() : '';
       if (requested && !canFamilyReadLearner(learners, requested)) return res.status(403).json({ error: 'This learner is not on your account.' });
       const ids = requested ? [requested] : learners.map((l) => l.id).filter(Boolean);
-      if (!ids.length) return res.json({ due: [], total: 0, nextDue: null, mistakes: [] });
+      if (!ids.length) return res.json({ due: [], total: 0, nextDue: null });
       await syncCards(client, ids);
       const today = todayUtc();
       const [{ data: due }, { count: total }, { data: next }] = await Promise.all([
@@ -73,10 +72,7 @@ export function registerReviewRoutes(app: express.Express, deps: {
         client.from('review_cards').select('due_on').in('student_id', ids).gt('due_on', today).order('due_on', { ascending: true }).limit(1),
       ]);
       const names = new Map(learners.map((l) => [l.id, l.name]));
-      // Classroom 2.10: the open corrections from lessons (the mistake bank); a read error only leaves them out.
-      const mistakes = await recentMistakes(client, ids).catch((e) => { console.warn('[GET student review] mistakes', e?.message || e); return []; });
       return res.json({
-        mistakes: mistakes.map((m) => ({ id: m.id, said: m.said, correct: m.correct, note: m.note, createdAt: m.created_at, learnerName: ids.length > 1 ? names.get(m.student_id) || null : null })),
         due: (due || []).map((c: any) => ({ ...c, learnerName: ids.length > 1 ? names.get(c.student_id) || null : null })),
         total: total || 0,
         nextDue: next?.[0]?.due_on || null,
@@ -84,23 +80,6 @@ export function registerReviewRoutes(app: express.Express, deps: {
     } catch (err: any) {
       console.error('[GET student review]', err?.message || err);
       return res.status(500).json({ error: 'Could not load the review.' });
-    }
-  });
-
-  // Family: a correction from a lesson is learned; it leaves the review (it stays in the teacher's history).
-  app.post('/api/student/review/mistakes/:id/learned', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
-    const client = deps.getClient();
-    if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
-    const id = String(req.params.id || '');
-    if (!isUuid(id)) return res.status(400).json({ error: 'Valid id is required.' });
-    try {
-      const learners = await deps.getLearners(client, req);
-      const ok = await resolveMistake(client, id, learners.map((l) => l.id).filter(Boolean), new Date().toISOString());
-      if (!ok) return res.status(404).json({ error: 'Not found.' });
-      return res.json({ ok: true });
-    } catch (err: any) {
-      console.error('[POST review mistake learned]', err?.message || err);
-      return res.status(500).json({ error: 'Could not save.' });
     }
   });
 

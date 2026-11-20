@@ -33,8 +33,6 @@ export interface DashboardLesson {
   notes?: string;
   /** Who showed up so far (teacher pressed Start / student opened the link / Zoom joins); only once it started. */
   attendance?: { teacher: boolean; student: boolean; teacherIn?: boolean; studentIn?: boolean; held?: boolean; togetherMinutes?: number; unstable?: 'teacher' | 'student' | 'both' | null };
-  /** Classroom 3.3: the room completed this lesson by itself and its family summary is still to be written. */
-  report_due?: boolean;
 }
 
 export interface DashboardSummary {
