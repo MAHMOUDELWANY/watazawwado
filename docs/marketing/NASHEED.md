@@ -123,6 +123,19 @@ where only the voice remains; a soft ending. **What we replace:** bass and drums
 from a low male choir on long vowels and a daf with hand claps. We describe its mood and tempo in our own words only: ElevenLabs refuses song or
 artist names, and copying a melody is not allowed.
 
+## How to generate (learned 2026-11-20, about 9,000 credits of tests)
+
+- **Lyrics go in the `lyrics` parameter with `lyrics_type: custom`**, never only inside the prompt. With the default
+  `auto` the model treats them as a suggestion: it changes the order, repeats or skips lines, and adds its own intro.
+- **Set `duration_seconds`.** Without it the model makes a full 3-minute song (same 900-credit price as 20 s).
+- **Prompt: 1–3 short sentences about the sound** (genre, energy, voices, instruments, tempo). Long prompts full of
+  "no X, no Y" made it timid and quiet; one 20 s take was an intro pad with no voice at all.
+- **Ask for the voice in front:** "lead vocal loud and upfront, drums lower in the mix". Drums buried the singer at
+  "huge war drums" + "high energy". A free fix afterwards: ffmpeg EQ (cut below 160 Hz, lift 900 Hz–2.2 kHz), compress.
+- **Before sending:** spectrogram check that singing and beat start at 0:00, and listen-proxy the mix.
+- If structure still drifts: a composition plan (ordered chunks with lyrics, `duration_ms`, positive/negative styles;
+  creating the plan is free), https://elevenlabs.io/docs/eleven-api/guides/how-to/music/composition-plans
+
 ## Generation plan (to save ElevenLabs credits, which also voice the curriculum)
 
 1. **One test first:** the Arabic chorus only, about 20 s, one take, model `music_v2_5` (ElevenLabs' recommended
