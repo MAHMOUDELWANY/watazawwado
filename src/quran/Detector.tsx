@@ -97,6 +97,9 @@ export function Detector({ api, learnerId, homeworkId, surah, from, to, onFlags 
           <p className="text-xs text-muted-foreground">{t('This is a computer check and can be wrong. Send the recording so your teacher can listen.', 'دي مراجعة كمبيوتر وممكن تغلط. ابعت التسجيل عشان المعلم يسمعه.')}</p>
         </div>
       )}
+      {support?.ok && (
+        <p className="text-[11px] text-muted-foreground" lang="en" dir="ltr">Word check uses whisper-base-ar-quran by Tarteel AI (Apache-2.0), based on OpenAI Whisper (MIT).</p>
+      )}
     </section>
   );
 }

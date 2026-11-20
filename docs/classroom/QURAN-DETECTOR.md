@@ -20,24 +20,48 @@ before (NX-03, deleted after 30 days).
 | Model | `tarteel-ai/whisper-base-ar-quran` (Whisper base fine-tuned on Quran recitation by Tarteel AI) |
 | Licence | **Apache-2.0** (model card on Hugging Face). Commercial use, modification and redistribution allowed, with the licence and notices kept. |
 | Base model | OpenAI Whisper, **MIT** licence. |
-| Browser build we load | `eventhorizon0/tarteel-ai-onnx-whisper-base-ar-quran`, an ONNX conversion of the model above, also tagged Apache-2.0, with `onnx/*_quantized.onnx` files for transformers.js. |
+| Browser build | `eventhorizon0/tarteel-ai-onnx-whisper-base-ar-quran` (revision `86aa2ae9`), an ONNX conversion of the model above, also tagged Apache-2.0. We keep **our own unchanged copy** (below). |
 | Runtime | `@huggingface/transformers` 4.3.2 (Apache-2.0), loaded from jsDelivr only when a learner taps "Check my words". |
-| Override | `VITE_QURAN_DETECTOR_MODEL` (build-time) points at another Hugging Face repo with the same layout. |
+| Override | `VITE_QURAN_MODEL_BASE_URL` (build-time) points at another copy with the same layout; `VITE_QURAN_DETECTOR_MODEL` changes the Hugging Face fallback. |
 
-Attribution to keep in our legal/credits page: "Word check uses whisper-base-ar-quran by Tarteel AI (Apache-2.0),
-based on OpenAI Whisper (MIT)."
+Credit shown under the check in the Quran tab (the site has no credits page; the approved legal pages stay as they
+are): "Word check uses whisper-base-ar-quran by Tarteel AI (Apache-2.0), based on OpenAI Whisper (MIT)."
 
-Recommended before launch (owner decision): copy the ONNX files into a Hugging Face repo we own (or our own storage)
-and set `VITE_QURAN_DETECTOR_MODEL` to it, so a third party deleting or changing the conversion cannot break or alter
-the check. The licence allows this.
+## Where the files live (our copy)
+
+- Public Supabase Storage bucket **`quran-models`** (migration `20261122000001_quran_models_bucket.sql`), folder
+  `whisper-base-ar-quran/`: the configs and tokenizer, `onnx/encoder_model_quantized.onnx` +
+  `onnx/decoder_model_merged_quantized.onnx` (WASM, about 231 MB) and `onnx/encoder_model.onnx` +
+  `onnx/decoder_model_merged.onnx` (WebGPU, about 290 MB), plus `LICENSE.txt` (Apache-2.0), `NOTICE.txt` and
+  `manifest.json`. About 525 MB of the free plan's 1 GB.
+- The free plan refuses uploads over 50 MB, so files over 45 MB are stored as `<file>.part0`, `.part1`, ... and
+  `manifest.json` lists each file's size and part count. The browser (`src/quran/detectorModel.ts`, `partsFetch`)
+  joins the parts back into one file before transformers.js reads it; the browser caches the result.
+- The browser reads `manifest.json` first. If it is missing (copy not uploaded yet) or fails, it falls back to the
+  Hugging Face copy, as before. The base URL comes from `VITE_SUPABASE_URL`, so no new setting is needed.
+- **Egress, the real limit:** Supabase free includes 5 GB of egress a month and a first-time check downloads about
+  231 MB (WASM) or 290 MB (WebGPU), so roughly 20 first-time learners a month before the quota runs out (repeat
+  checks come from the browser cache). Owner decision before many learners use it: stay on Hugging Face's free CDN for
+  the download and keep our copy as the backup, or move the copy to a host without egress fees (for example our own
+  Hugging Face repo or Cloudflare R2, which the same `VITE_QURAN_MODEL_BASE_URL` can point at).
+
+## How to upload or refresh it
+
+1. Apply `20261122000001_quran_models_bucket.sql`.
+2. From the main checkout: `npx tsx --env-file=.env scripts/quran/upload-model.ts`. It reads `SUPABASE_URL` and
+   `SUPABASE_SERVICE_ROLE_KEY` at run time (never printed), downloads the pinned revision, checks every file against
+   the hash Hugging Face lists, uploads the parts, and uploads `manifest.json` last (so a half-done run never switches
+   learners to an incomplete copy).
+3. To refresh to a newer conversion: change `REVISION` in the script (after checking the licence is still
+   Apache-2.0) and run it again.
 
 ## Which devices run it
 
 `src/quran/detectorModel.ts` `decideSupport`:
 - WebAssembly and Web Audio are required.
 - If the browser reports `navigator.deviceMemory` under 4 GB, the model is not tried.
-- WebGPU is used when an adapter exists (fp32 weights); otherwise WASM with the 8-bit quantized weights (~80 MB,
-  downloaded once and cached by the browser).
+- WebGPU is used when an adapter exists (fp32 weights, ~290 MB); otherwise WASM with the 8-bit quantized weights
+  (~231 MB: the merged decoder of this conversion is not smaller when quantized), downloaded once and cached.
 - Any device that fails these checks, or where loading or running fails, sees: "This device cannot check recordings.
   Send your recording to your teacher" and can still record and send (NX-03).
 
