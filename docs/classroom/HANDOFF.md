@@ -124,3 +124,10 @@ camera and the child phone, then shipped.
 - `cls/board` (own whiteboard + talk time) still running at the limit.
 - Next: merge the three branches into feat/classroom-r1b, resolve ClassroomPage conflicts, tsc + cl tests + build, apply
   both migrations, verify on a Vercel preview with real camera and child phone, ship; then 2.10-2.12 and the Quran tab.
+
+### Status 2026-11-20, after the reset
+- Merged into feat/classroom-r1b: `cls/after` and `cls/board` (+ 18bfd196 talk-time sum). tsc clean, 301 cl tests pass.
+  Not pushed to main yet: ships together after the rest, with migrations 20261120000010, 20261120000020 applied.
+- Still running: `cls/before` (gaps: PIN email reset, kid mode on parent device, file names), `cls/tools`
+  (wt-cls-tools: 2.10-2.12), `cls/quran` (wt-cls-quran: 4.1-4.5).
+- `@excalidraw/excalidraw` is unused now; remove from package.json at ship time (needs npm in the main checkout).
