@@ -48,6 +48,9 @@ describe('CL-53 our copy of the Quran model', () => {
     assert.match(src, /if \(!res\.ok\) return DETECTOR_MODEL;/);
     const sql = fs.readFileSync('supabase/migrations/20261122000001_quran_models_bucket.sql', 'utf8');
     assert.match(sql, /\('quran-models', 'quran-models', true, 52428800/);
+    const anyType = fs.readFileSync('supabase/migrations/20261122000002_quran_models_any_type.sql', 'utf8');
+    assert.match(anyType, /UPDATE storage\.buckets SET allowed_mime_types = NULL WHERE id = 'quran-models';/, 'any file type: JSON, text and ONNX parts');
+    assert.doesNotMatch(anyType, /DROP\s+(COLUMN|POLICY)/i);
     const script = fs.readFileSync('scripts/quran/upload-model.ts', 'utf8');
     assert.doesNotMatch(script, /console\.\w+\([^)]*\bkey\b/);
     assert.ok(script.indexOf("put('manifest.json'") > script.indexOf('for (const file of FILES)'), 'manifest goes up last');

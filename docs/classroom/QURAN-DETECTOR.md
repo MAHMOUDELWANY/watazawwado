@@ -47,7 +47,7 @@ are): "Word check uses whisper-base-ar-quran by Tarteel AI (Apache-2.0), based o
 
 ## How to upload or refresh it
 
-1. Apply `20261122000001_quran_models_bucket.sql`.
+1. Apply `20261122000001_quran_models_bucket.sql`, then `20261122000002_quran_models_any_type.sql` (any file type).
 2. From the main checkout: `npx tsx --env-file=.env scripts/quran/upload-model.ts`. It reads `SUPABASE_URL` and
    `SUPABASE_SERVICE_ROLE_KEY` at run time (never printed), downloads the pinned revision, checks every file against
    the hash Hugging Face lists, uploads the parts, and uploads `manifest.json` last (so a half-done run never switches

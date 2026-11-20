@@ -162,7 +162,7 @@ Not yet seen on screen: prep page, waiting room checks, PIN and kid mode, board,
 
 ### 2026-11-20: `cls/ratings` (worktree `wt-cls-ratings`): nobody-came appeals, three ratings, own Quran model copy
 - Migrations (NOT applied): `20261122000000_classroom_absence_and_ratings.sql` (lesson_absence_cases, teacher_ratings,
-  platform_ratings; no DROP COLUMN/POLICY) and `20261122000001_quran_models_bucket.sql` (public bucket).
+  platform_ratings; no DROP COLUMN/POLICY) `20261122000001_quran_models_bucket.sql` (public bucket) and `20261122000002_quran_models_any_type.sql` (any file type).
 - Nobody came: `server/classroom/absence.ts`, routes `server/routes/absence.ts`, card `AbsenceGate`, admin page
   `/dashboard/absence-appeals`. Provisional means the booking stays confirmed until the case is final (confirm, 48 h
   sweep in the reminders cron, or the admin's decision); then `record_lesson_not_held` / `teacher_record_lesson_outcome`
