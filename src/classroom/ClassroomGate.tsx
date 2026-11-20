@@ -31,6 +31,8 @@ export type RoomEntry = {
   /** The booking's service and, for the teacher, where this learner stopped in the curriculum (slides open there). */
   serviceId?: string | null;
   lastReport?: { track: string; number: number; page: number } | null;
+  /** BUILD-LIST 1.4: the teacher's private prep notes (teacher only). */
+  prepNotes?: string;
 };
 
 const HOME: Record<Portal, string> = { teacher: '/dashboard', student: '/student/lessons', kid: '/kid/lessons' };

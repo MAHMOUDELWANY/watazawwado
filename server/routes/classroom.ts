@@ -49,8 +49,8 @@ const MAX_OBSERVER_NOTES = 4000;
 // Task 8: files the teacher shows in the room. Private bucket; links are signed and end by the hard close.
 export const CLASSROOM_FILES_BUCKET = 'classroom-files';
 export const MAX_FILE_BYTES = 20 * 1024 * 1024;
-const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
-const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
+export const FILE_EXT: Record<string, string> = { 'application/pdf': 'pdf', 'image/png': 'png', 'image/jpeg': 'jpg' };
+export const FILE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|png|jpg)$/;
 
 /** The real type from the first bytes; the Content-Type header alone is never trusted. */
 export function detectFileType(b: Buffer): 'application/pdf' | 'image/png' | 'image/jpeg' | null {
@@ -85,7 +85,7 @@ export function cleanPrecheckDetail(raw: unknown): Record<string, unknown> | nul
 export const NETTEST_MAX_KB = 512;
 
 /** Reads only the first `n` bytes of a stored object as a stream, then stops, so a 20 MB file never sits in memory. */
-async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer | null> {
+export async function firstBytes(bucket: any, path: string, n: number): Promise<Buffer | null> {
   const { data, error } = await bucket.download(path).asStream();
   if (error || !data) return null;
   const reader = (data as ReadableStream<Uint8Array>).getReader();
@@ -278,7 +278,7 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       }
 
       // Names for the room's header; a failed lookup only leaves them out.
-      const [teacherRow, serviceRow, learnerRow, lastReportRow] = await Promise.all([
+      const [teacherRow, serviceRow, learnerRow, lastReportRow, prepRow] = await Promise.all([
         client.from('profiles').select('display_name').eq('id', booking.teacher_id).maybeSingle(),
         booking.service_id ? client.from('services').select('title, arabic_title').eq('id', booking.service_id).maybeSingle() : { data: null },
         portal === 'teacher' && booking.student_id ? client.from('students').select('learner_type').eq('id', booking.student_id).maybeSingle() : { data: null },
@@ -286,7 +286,10 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         role === 'teacher' && booking.student_id
           ? client.from('curriculum_lesson_reports').select('subject, lesson_number, to_page').eq('student_id', booking.student_id).order('created_at', { ascending: false }).limit(1).maybeSingle()
           : { data: null },
+        // BUILD-LIST 1.4: what the teacher prepared (teacher only); a failed lookup only leaves it out.
+        role === 'teacher' ? client.from('lesson_prep').select('notes, slide').eq('booking_id', id).maybeSingle() : { data: null },
       ]);
+      const prepared = prepRow?.data?.slide && typeof prepRow.data.slide === 'object' ? prepRow.data.slide : null;
       const type = portal === 'teacher' ? learnerRow?.data?.learner_type : family.find((l) => l.id === booking.student_id)?.learnerType;
       const service = serviceRow?.data;
 
@@ -305,7 +308,10 @@ export function registerClassroomRoutes(app: express.Express, deps: {
         subjectLabel: service?.title ? { en: service.title, ar: service.arabic_title || service.title } : null,
         learnerType: type === 'child' || type === 'adult' ? type : null,
         serviceId: booking.service_id || null,
-        lastReport: lastReportRow?.data ? { track: lastReportRow.data.subject, number: lastReportRow.data.lesson_number, page: lastReportRow.data.to_page ?? 0 } : null,
+        // The prepared slide wins over the last report; a rejoin snapshot still wins over both (startingLesson).
+        lastReport: prepared ? { track: prepared.track, number: prepared.number, page: prepared.page ?? 0 }
+          : lastReportRow?.data ? { track: lastReportRow.data.subject, number: lastReportRow.data.lesson_number, page: lastReportRow.data.to_page ?? 0 } : null,
+        ...(role === 'teacher' ? { prepNotes: prepRow?.data?.notes || '' } : {}),
       });
     } catch (err) {
       return fail(res, err, 'enter', await providerIncident(client, err, String(req.params.id || ''), incidentRole));
@@ -530,6 +536,30 @@ export function registerClassroomRoutes(app: express.Express, deps: {
       return res.json({ fileId, url });
     } catch (err) {
       return fail(res, err, 'files/confirm');
+    }
+  });
+
+  // BUILD-LIST 1.4: the teacher's list of this lesson's files: prepared before the lesson (with their names) and added
+  // in the room, oldest first.
+  app.get('/api/classroom/:id/files', withTicket, deps.roomRateLimit, async (req: any, res: any) => {
+    try {
+      const t: TicketPayload = req.roomTicket;
+      if (t.role !== 'teacher') return res.status(403).json({ error: 'Only the teacher sees the file list.' });
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'The lesson room is not available.' });
+      const live = await liveSeat(client, t, res);
+      if (!live) return;
+      const [{ data: stored, error }, { data: prep }] = await Promise.all([
+        client.storage.from(CLASSROOM_FILES_BUCKET).list(t.bookingId, { limit: 100, sortBy: { column: 'created_at', order: 'asc' } }),
+        client.from('lesson_prep').select('files').eq('booking_id', t.bookingId).maybeSingle(),
+      ]);
+      if (error) throw new Error(`files/list: ${error.message}`);
+      const names = new Map<string, string>((Array.isArray(prep?.files) ? prep.files : []).map((f: any) => [f.fileId, f.name]));
+      const files = (stored || []).map((o: any) => String(o.name)).filter((n: string) => FILE_ID.test(n))
+        .map((fileId: string) => ({ fileId, name: names.get(fileId) || null, prepared: names.has(fileId) }));
+      return res.json({ files });
+    } catch (err) {
+      return fail(res, err, 'files/list');
     }
   });
 

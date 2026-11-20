@@ -8,6 +8,7 @@ import { boardSurface, type RoomEvent } from '../lib/roomEvents';
 import { lessonEndMs } from '../lib/lessonWindow';
 import { Textarea } from '../components/ui/Textarea';
 import { Button } from '../components/ui/Button';
+import { Select } from '../components/ui/Select';
 import { Modal } from '../components/ui/Modal';
 import { WaitingRoom, type WaitingRoomReady } from './WaitingRoom';
 import { ZadRigSvg } from '../components/zad/ZadRig';
@@ -33,6 +34,7 @@ import { ScreenShareButton, canShareScreen } from './parts/ScreenShare';
 import { LearnerCurriculum, TeacherCurriculum } from './parts/Curriculum';
 import { FallbackNotice } from './parts/FallbackNotice';
 import { ObserverNotes } from './parts/ObserverNotes';
+import { PrepNotes } from './parts/PrepNotes';
 import { createFallbackDetector, iceHistoryFor } from './engine/fallbackDetector';
 import { addQualityStep, clockOffsetMs, readRoomAnswer, subscribeRetryMs, type EndReason, type QualityTotals } from './roomWiring';
 
@@ -108,6 +110,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [endReason, setEndReason] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  // BUILD-LIST 1.4: this lesson's files (prepared before it, or added here), for the teacher to open.
+  const [files, setFiles] = useState<Array<{ fileId: string; name: string | null }>>([]);
   // Task 12: this side's Zoom link, only after the room failed on our side.
   const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
   // View only: hide my own picture on my screen, observers' sound, when the other side last said it is in the room.
@@ -594,6 +598,22 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     navigate(home);
   };
 
+  const loadFiles = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/classroom/${encodeURIComponent(bookingId)}/files`, { headers: { 'x-room-ticket': ticket } });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok && Array.isArray(body.files)) setFiles(body.files);
+    } catch { /* the list is a convenience; the next upload refreshes it */ }
+  }, [bookingId, ticket]);
+  useEffect(() => { if (isTeacher && phase === 'room') void loadFiles(); }, [isTeacher, phase, loadFiles]);
+
+  const openFile = (fileId: string) => {
+    if (!fileId || pdf?.fileId === fileId) return;
+    setPdf({ fileId, page: 1, url: null });
+    send({ t: 'pdf', fileId, page: 1 });
+    changeLayout('content', 'pdf');
+  };
+
   const onUpload = async (file: File | undefined) => {
     if (!file) return;
     setUploading(true);
@@ -603,6 +623,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
       setPdf({ fileId, page: 1, url });
       send({ t: 'pdf', fileId, page: 1 });
       changeLayout('content', 'pdf');
+      void loadFiles();
     } catch (e: any) {
       setUploadError(e?.message || t('The file could not be added.', 'الملف ما اتضافش.'));
     } finally {
@@ -837,6 +858,14 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           </button>
         ))}
       </div>
+      {pane === 'pdf' && files.length > 0 && (
+        <Select aria-label={t('Open a file', 'افتح ملف')} className="w-auto max-w-[16rem]" value={pdf?.fileId ?? ''} onChange={(e) => openFile(e.target.value)}>
+          <option value="" disabled>{t('Open a file', 'افتح ملف')}</option>
+          {files.map((f, i) => (
+            <option key={f.fileId} value={f.fileId}>{f.name || t(`File ${i + 1}`, `ملف ${i + 1}`)}{/\.pdf$/.test(f.fileId) ? ' · PDF' : ''}</option>
+          ))}
+        </Select>
+      )}
       {pane === 'pdf' && pdf?.url && (
         <label className={cn('room-press ms-auto flex min-h-10 cursor-pointer items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium text-[#5CC9DB] hover:bg-white/[0.08] focus-within:outline focus-within:outline-2 focus-within:outline-[var(--focus)]', uploading && 'pointer-events-none opacity-60')}>
           <FileUp className="h-4 w-4" aria-hidden="true" />
@@ -929,6 +958,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           {isTeacher && layout !== 'conversation' && reactions.length > 0 && (
             <div className="absolute bottom-4 start-6 z-20 lg:hidden"><ReactionStream items={reactions} name={learnerName} /></div>
           )}
+          {isTeacher && entry.prepNotes && <PrepNotes text={entry.prepNotes} />}
           {role === 'admin_observer' && <ObserverNotes bookingId={bookingId} ticket={ticket} startMs={startMs} onOpenChange={setNotesOpen} />}
         </main>
 
