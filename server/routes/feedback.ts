@@ -75,12 +75,6 @@ async function familySummaryFor(client: any, bookingId: string): Promise<string 
   return notes?.[0]?.family_summary || null;
 }
 
-/** A rating is frozen once its month has ended, so a closed month the teacher sees can never change. */
-export function ratingStillEditable(createdAt: string, now: DateTime): boolean {
-  const at = DateTime.fromISO(createdAt, { zone: 'utc' });
-  return at.isValid && at >= now.toUTC().startOf('month');
-}
-
 type Middleware = (req: any, res: any, next: any) => any;
 
 export function registerFeedbackRoutes(app: express.Express, deps: {
@@ -137,7 +131,7 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
     }
   });
 
-  // Save (or, for the same account, change) the rating of one finished lesson.
+  // Save the rating of one finished lesson, once: no editing after it is sent (owner, 2026-11-20).
   app.post('/api/student/bookings/:id/feedback', deps.rateLimit, deps.verifyStudentAuth, async (req: any, res: any) => {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
@@ -159,9 +153,8 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
       if (!learners.some((l) => l.id === booking.student_id)) return res.status(403).json({ error: 'This lesson does not belong to your account.' });
       if (!canRate(booking, DateTime.utc())) return res.status(409).json({ error: 'This lesson can no longer be rated.' });
 
-      const { data: existing } = await client.from('lesson_feedback').select('submitted_by, created_at').eq('booking_id', bookingId).maybeSingle();
-      if (existing && existing.submitted_by !== userId) return res.status(409).json({ error: 'This lesson was already rated.' });
-      if (existing && !ratingStillEditable(existing.created_at, DateTime.utc())) return res.status(409).json({ error: 'This rating can no longer be changed.' });
+      const { data: existing } = await client.from('lesson_feedback').select('booking_id').eq('booking_id', bookingId).maybeSingle();
+      if (existing) return res.status(409).json({ error: 'This lesson was already rated.' });
       const row = {
         booking_id: bookingId,
         student_id: booking.student_id,
@@ -172,14 +165,13 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
         tags: parsed.tags,
         updated_at: new Date().toISOString()
       };
-      const { error } = existing
-        ? await client.from('lesson_feedback').update(row).eq('booking_id', bookingId).eq('submitted_by', userId)
-        : await client.from('lesson_feedback').insert(row);
+      const { error } = await client.from('lesson_feedback').insert(row);
+      if (error?.code === '23505') return res.status(409).json({ error: 'This lesson was already rated.' });
       if (error) {
         console.error('[POST feedback]', error.message);
         return res.status(500).json({ error: 'Could not save your rating.' });
       }
-      return res.status(existing ? 200 : 201).json({ saved: true, familySummary: await familySummaryFor(client, bookingId) });
+      return res.status(201).json({ saved: true, familySummary: await familySummaryFor(client, bookingId) });
     } catch (err) {
       console.error('[POST /api/student/bookings/:id/feedback]', err);
       return res.status(500).json({ error: 'Could not save your rating.' });

@@ -67,16 +67,19 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
     }
   };
 
-  const rate = async (value: number) => {
+  // Once only (owner, 2026-11-20): the stars pick, and one send carries the rating with the optional note.
+  const rate = (value: number) => {
     setRating(value);
-    if (await send(value, null)) setStage('comment');
+    setStage('comment');
   };
-  const sendComment = async () => {
-    if ((!comment.trim() && !tags.length) || await send(rating, comment.trim() || null, tags)) setStage('done');
+  const sendComment = async (withNote = true) => {
+    if (await send(rating, withNote ? comment.trim() || null : null, withNote ? tags : [])) setStage('done');
   };
   const toggleTag = (id: string) =>
     setTags((cur) => (cur.includes(id) ? cur.filter((t) => t !== id) : cur.length < MAX_TAGS_PER_LESSON ? [...cur, id] : cur));
-  const dismiss = () => {
+  const dismiss = async () => {
+    // A star already tapped still counts when the card is closed before sending.
+    if (stage === 'comment' && !(await send(rating, null))) return;
     try { window.localStorage.setItem(DISMISS_KEY, pending.bookingId); } catch { /* storage blocked */ }
     setPending(null);
   };
@@ -91,7 +94,7 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <h2 id="lesson-feedback-title" className="text-sm font-semibold text-foreground">
-            {stage === 'rate'
+            {stage !== 'done'
               ? (isAr ? `إيه رأيك في درس ${subject}${who}؟` : `How was the ${subject} lesson${who}?`)
               : (isAr ? 'شكرًا، وصلنا تقييمك' : 'Thank you, we have your rating')}
           </h2>
@@ -150,13 +153,21 @@ export function LessonFeedbackCard({ isAr, timezone }: { isAr: boolean; timezone
           </label>
           <Textarea id="lesson-feedback-comment" value={comment} maxLength={1000} rows={3} onChange={(e) => setComment(e.target.value)} />
           <div className="flex gap-2">
-            <Button size="sm" onClick={sendComment} isLoading={busy}>{isAr ? 'أرسل' : 'Send'}</Button>
-            <Button size="sm" variant="ghost" onClick={() => (tags.length ? sendComment() : setStage('done'))}>{isAr ? 'لا، شكرًا' : 'No, thanks'}</Button>
+            <Button size="sm" onClick={() => sendComment()} isLoading={busy}>{isAr ? 'أرسل' : 'Send'}</Button>
+            <Button size="sm" variant="ghost" disabled={busy} onClick={() => sendComment(false)}>{isAr ? 'أرسل التقييم بس' : 'Just the rating'}</Button>
           </div>
         </div>
       )}
 
-      {stage !== 'rate' && (
+      {stage === 'comment' && (
+        <div className="flex items-center gap-1" dir="ltr">
+          <span className="sr-only">{`${rating} / 5`}</span>
+          {[1, 2, 3, 4, 5].map((v) => <Star key={v} aria-hidden="true" className={`w-5 h-5 ${v <= rating ? 'fill-gold text-gold' : 'text-muted-foreground'}`} />)}
+          <button type="button" onClick={() => setStage('rate')} className="ms-2 text-xs text-muted-foreground underline cursor-pointer">{isAr ? 'غيّر' : 'Change'}</button>
+        </div>
+      )}
+
+      {stage === 'done' && (
         <div className="text-sm rounded-xl bg-surface-subtle p-3">
           {summary ? (
             <>
