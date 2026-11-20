@@ -45,7 +45,9 @@ export type RoomEvent =
   | { t: 'focus_warning_off'; off: boolean }
   | { t: 'quality'; side: Side; layer: Layer; link: 'good' | 'weak' | 'poor'; stats?: LinkStats }
   | { t: 'observer'; kind: 'guardian'; present: boolean }
-  | { t: 'layout'; mode: 'conversation' | 'content' | 'screen'; pane?: 'lesson' | 'board' | 'pdf' }
+  | { t: 'layout'; mode: 'conversation' | 'content' | 'screen'; pane?: 'lesson' | 'board' | 'pdf' | 'quran' }
+  /** 4.2: the mushaf page the teacher shows (1-604); the learner follows it. Saved in the room snapshot for rejoin. */
+  | { t: 'quran'; page: number }
   /** Teacher's recitation mode, applied on both sides (live only). */
   | { t: 'recitation'; on: boolean }
   | { t: 'talk'; teacherMs: number; learnerMs: number }
@@ -82,7 +84,8 @@ const EVENT_KEYS: Record<RoomEvent['t'], Record<string, (v: any) => boolean>> = 
   focus_warning_off: { off: bool },
   quality: { side: oneOf(SIDES), layer: oneOf(['a', 'b', 'c', 'audio_only']), link: oneOf(['good', 'weak', 'poor']), stats: (v) => v === undefined || isStats(v) },
   observer: { kind: oneOf(['guardian']), present: bool },
-  layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf'])(v) },
+  layout: { mode: oneOf(['conversation', 'content', 'screen']), pane: (v) => v === undefined || oneOf(['lesson', 'board', 'pdf', 'quran'])(v) },
+  quran: { page: (v) => intIn(605)(v) && v >= 1 },
   recitation: { on: bool },
   talk: { teacherMs: intIn(DAY_MS), learnerMs: intIn(DAY_MS) },
   ...TOOL_EVENT_KEYS,

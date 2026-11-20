@@ -66,7 +66,10 @@ describe('CL-30 tool events: validators', () => {
 
   it('the migration allows every persisted type in the timeline CHECK', () => {
     const sql = fs.readFileSync('supabase/migrations/20261120200000_classroom_teaching_tools.sql', 'utf8');
-    const list = sql.match(/lesson_timeline_events_type_check CHECK \(type IN \(([^)]*)\)\)/)![1].split(',').map((x) => x.trim().replace(/'/g, ''));
+    // The newest migration that sets the timeline CHECK is the one that counts.
+    const latest = fs.readdirSync('supabase/migrations').sort().map((f) => fs.readFileSync(`supabase/migrations/${f}`, 'utf8'))
+      .filter((s) => /lesson_timeline_events_type_check CHECK/.test(s)).pop()!;
+    const list = latest.match(/lesson_timeline_events_type_check CHECK \(type IN \(([^)]*)\)\)/)![1].split(',').map((x) => x.trim().replace(/'/g, ''));
     for (const t of PERSISTED) assert.ok(list.includes(t), t);
     assert.match(sql, /CREATE TABLE IF NOT EXISTS public\.learner_mistakes/);
     assert.match(sql, /ALTER TABLE public\.learner_mistakes ENABLE ROW LEVEL SECURITY/);

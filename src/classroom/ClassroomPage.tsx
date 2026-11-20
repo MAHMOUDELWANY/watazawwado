@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Aperture, BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, Shapes, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
+import { Aperture, BookMarked, BookOpen, EyeOff, FileUp, Hourglass, Mic, MicOff, MonitorX, PenLine, RefreshCw, Shapes, ShieldCheck, Video, VideoOff, WifiOff } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { useLessonRoom } from '../lib/lessonRoom';
@@ -49,8 +49,11 @@ import { LearnerShadow } from './tools/Shadowing';
 import { CheckCard, ComfortButton, CorrectionToast, StageBar, WarmupCard } from './tools/RoomCards';
 import { COMFORT_KEY, comfortStyle, readComfort, type Comfort } from './tools/comfort';
 import { autoPip, blurModeFor, openPip, pipMode, setNativeBlur, startSegmentBlur, type BlurPipeline } from './tools/effects';
+import { QuranPane, lastRoomQuranPage } from './parts/QuranPane';
 
-type Pane = 'lesson' | 'board' | 'pdf';
+type Pane = 'lesson' | 'board' | 'pdf' | 'quran';
+/** 4.2: lessons that get the synced mushaf (Quran tracks, Islamic studies, Fusha; a lesson without a subject too). */
+const QURAN_LESSON = /quran|tajweed|hifz|memori|revision|zad|seerah|fusha|standard-arabic/i;
 type Over = EndReason | 'superseded' | 'failed';
 type BoardScene = NonNullable<RoomSnapshot['board']>;
 
@@ -119,6 +122,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const [reactions, setReactions] = useState<Array<{ id: number; kind: ReactionKind }>>([]);
   const [pointer, setPointer] = useState<{ x: number; y: number; at: number } | null>(null);
   const [pdf, setPdf] = useState<{ fileId: string; page: number; url: string | null } | null>(null);
+  const [quranPage, setQuranPage] = useState(() => (isTeacher ? lastRoomQuranPage(bookingId) : 1));
+  const heardQuran = useRef(false);
   const [restored, setRestored] = useState<RoomSnapshot | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [endReason, setEndReason] = useState('');
@@ -170,8 +175,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
   const overRef = useRef<Over | null>(null);
   overRef.current = over;
   // What the teacher shows now, read by the answers to hello and new sessions (M7).
-  const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null }>({ layout: 'conversation', pane: 'lesson', pdf: null });
-  shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null };
+  const shown = useRef<{ layout: LayoutMode; pane: Pane; pdf: { fileId: string; page: number } | null; quran: number }>({ layout: 'conversation', pane: 'lesson', pdf: null, quran: 1 });
+  shown.current = { layout, pane, pdf: pdf ? { fileId: pdf.fileId, page: pdf.page } : null, quran: quranPage };
   const heardLayout = useRef(false);
   // The latest scene of each surface ('' is the whiteboard, else boardSurface(fileId, page)) and the room's drawing switch.
   const scenes = useRef<Record<string, Omit<BoardScene, 'learnerDraw'>>>({});
@@ -337,7 +342,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         // old tab; a learner keeps 'screen' while the teacher still shares.
         if (!heardLayout.current) {
           if (s.layout) setLayout(s.layout === 'screen' && isTeacher ? 'content' : s.layout);
-          setPane(s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson');
+          setPane(s.pane ?? (s.pdf ? 'pdf' : s.slide ? 'lesson' : s.board ? 'board' : 'lesson'));
         }
         if (s.board) scenes.current[''] = s.board;
         Object.assign(scenes.current, s.boards);
@@ -353,6 +358,8 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
           // Anything heard live while the snapshot loaded is newer and wins.
           setTools((cur) => ({ ...saved, ...(media ? { media } : {}), ...cur }));
         }
+        // 4.2: both sides open the mushaf at the teacher's saved page; a newer live 'quran' event still wins (heardQuran).
+        if (s.quran && !heardQuran.current) setQuranPage(s.quran.page);
       }
       setRestored(snap?.snapshot ?? {});
       try {
@@ -442,6 +449,7 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     if (tl.shadow) publishEvent({ t: 'shadow', fileId: tl.shadow });
     const m = tl.media && tl.media.kind !== 'none' ? mediaNow.current?.() ?? tl.media : null;
     if (m) publishEvent({ t: 'media', kind: m.kind, src: m.src, playing: m.playing, pos: Math.min(86_399, Math.max(0, Math.round(m.pos * 10) / 10)) });
+    if (s.pane === 'quran') publishEvent({ t: 'quran', page: s.quran });
   }, [isTeacher, publishEvent]);
   const { onHello } = room;
   useEffect(() => onHello(shareShown), [onHello, shareShown]);
@@ -517,6 +525,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         return;
       case 'recitation':
         if (!isTeacher) void engineRef.current?.setRecitationMode(e.on).catch(() => {});
+        return;
+      case 'quran':
+        if (!isTeacher) { heardQuran.current = true; setQuranPage(e.page); }
         return;
       case 'end':
         // H3/L4: anyone with the room key can send this; the server says whether the lesson really ended.
@@ -1013,6 +1024,9 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
         isTeacher
           ? restored && <TeacherCurriculum initial={restored.slide} start={{ serviceId: entry.serviceId ?? null, learnerType: entry.learnerType ?? null, lastReport: entry.lastReport ?? null }} publish={room.publish} publishInk={room.publishInk} save={onSlideSaved} />
           : <LearnerCurriculum state={room.state} ink={room.ink} />
+      ) : pane === 'quran' ? (
+        <QuranPane bookingId={bookingId} page={quranPage} teacher={isTeacher} staff={portal === 'teacher'}
+          onPage={isTeacher ? (p) => { setQuranPage(p); send({ t: 'quran', page: p }); } : undefined} />
       ) : pane === 'board' ? (
         <div className="h-full overflow-hidden">
           {restored && <Board role={role} sync={board} />}
@@ -1049,11 +1063,12 @@ export default function ClassroomPage({ bookingId, portal, entry, home, onRejoin
     </div>
   );
 
+  const quranLesson = !entry.serviceId || QURAN_LESSON.test(entry.serviceId);
   const paneTabs = isTeacher && layout === 'content' && (
     <div className="room-ink flex shrink-0 flex-wrap items-center gap-2">
       <div role="tablist" aria-label={t('What to show', 'تعرض إيه')} className="glass-1 flex items-center gap-0.5 rounded-[var(--r-pill)] p-1">
-        {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')]] as const).map(([p, Icon, label]) => (
-          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => changeLayout('content', p)}
+        {([['lesson', BookOpen, t('Lesson', 'الدرس')], ['board', PenLine, t('Board', 'السبورة')], ['pdf', FileUp, t('File', 'ملف')], ...(quranLesson ? [['quran', BookMarked, t('Mushaf', 'المصحف')]] as const : [])] as const).map(([p, Icon, label]) => (
+          <button key={p} type="button" role="tab" aria-selected={pane === p} onClick={() => { changeLayout('content', p); if (p === 'quran') send({ t: 'quran', page: quranPage }); }}
             className={cn('room-press flex min-h-10 items-center gap-2 rounded-[var(--r-pill)] px-4 text-sm font-medium focus-ring',
               pane === p ? 'bg-[#3A332D] text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : 'text-muted-foreground hover:text-foreground')}>
             <Icon className={cn('h-4 w-4', pane === p && 'text-[#F0B54A]')} aria-hidden="true" />{label}

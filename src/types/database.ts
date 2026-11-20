@@ -1096,6 +1096,16 @@ export interface Database {
         Insert: Partial<LessonSharedFileRow> & Pick<LessonSharedFileRow, 'booking_id' | 'file_id'>;
         Update: Partial<LessonSharedFileRow>;
       };
+      quran_marks: {
+        Row: QuranMarkRow;
+        Insert: Partial<QuranMarkRow> & Pick<QuranMarkRow, 'student_id' | 'booking_id' | 'verse_key' | 'word_position' | 'type'>;
+        Update: Partial<QuranMarkRow>;
+      };
+      quran_detector_runs: {
+        Row: QuranDetectorRunRow;
+        Insert: Partial<QuranDetectorRunRow> & Pick<QuranDetectorRunRow, 'student_id' | 'surah' | 'ayah_from' | 'ayah_to' | 'model'>;
+        Update: Partial<QuranDetectorRunRow>;
+      };
     };
     Functions: {
       check_trial_eligibility: {
@@ -1266,6 +1276,36 @@ export interface LessonSharedFileRow {
   booking_id: string;
   file_id: string;
   added_by: string | null;
+  created_at: string;
+}
+
+/** Classroom 4.2: one word a teacher marked in a lesson's mushaf (service-role only). */
+export interface QuranMarkRow {
+  id: string;
+  student_id: string;
+  booking_id: string;
+  teacher_id: string | null;
+  verse_key: string;
+  word_position: number;
+  type: 'wrong_word' | 'missed' | 'added' | 'tajweed';
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Classroom 4.4/4.5: the detector's flags on a sent recording and the teacher's marks on it (service-role only). */
+export interface QuranDetectorRunRow {
+  id: string;
+  student_id: string;
+  recording_id: string | null;
+  surah: number;
+  ayah_from: number;
+  ayah_to: number;
+  model: string;
+  flags: Array<{ key: string; kind: 'missing' | 'changed' | 'extra' }>;
+  teacher_marks: Array<{ key: string; type: string }> | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
   created_at: string;
 }
 

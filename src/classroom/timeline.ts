@@ -6,7 +6,7 @@ import type { RoomEvent } from '../lib/roomEvents';
 import type { ToolsState } from '../lib/roomTools';
 
 /** Types the server stores (the rest are live only). The server re-checks the sender's role. */
-export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end',
+export const PERSISTED: ReadonlySet<RoomEvent['t']> = new Set(['slide', 'board', 'pdf', 'reaction', 'focus', 'quality', 'layout', 'talk', 'end', 'quran',
   // Teaching tools (2.10, 2.11): practice_answer stays live only.
   'correction', 'check', 'check_answer', 'stage', 'media', 'practice', 'shadow']);
 export const FLUSH_EVERY_MS = 30_000;
@@ -25,6 +25,10 @@ export type RoomSnapshot = {
   layout?: 'conversation' | 'content' | 'screen';
   /** Stage, open check, shared media, practice and the shadowing line (2.10, 2.11). */
   tools?: ToolsState;
+  /** The content tab the teacher showed last (from layout events). */
+  pane?: 'lesson' | 'board' | 'pdf' | 'quran';
+  /** 4.2: the mushaf page the teacher showed last. */
+  quran?: { page: number };
 };
 
 type Item = { at: number; event: RoomEvent };

@@ -131,6 +131,7 @@ export type ReportDraft = {
   corrections?: Array<{ said: string; correct: string; note: string | null }>;
   checks?: Array<{ part: string; level: 'green' | 'amber' | 'red' }>;
   earlyEnd: { minutesEarly: number; reason: string } | null;
+  quran?: { total: number; byType: Record<string, number>; verses: string[] } | null;
 };
 const CHECK_LABELS: Record<string, { en: string; ar: string }> = {
   green: { en: 'understood', ar: 'فاهم' }, amber: { en: 'partly', ar: 'نص نص' }, red: { en: 'not yet', ar: 'لسه' },
@@ -196,6 +197,12 @@ function ReportDraftPanel({ draft, picked, onPick }: { draft: ReportDraft; picke
       )}
       {!!draft.checks?.length && (
         <p className="text-foreground">{t('Understanding checks: ', 'أسئلة الفهم: ')}{draft.checks.map((c) => `${c.part || t('lesson', 'الدرس')}: ${L(CHECK_LABELS[c.level])}`).join(' · ')}</p>
+      )}
+      {draft.quran && (
+        <p className="text-foreground">
+          {t(`Mushaf marks: ${draft.quran.total} words (ayat ${draft.quran.verses.slice(0, 6).join(', ')}${draft.quran.verses.length > 6 ? '…' : ''})`, `علامات المصحف: ${draft.quran.total} كلمة (آيات ${draft.quran.verses.slice(0, 6).join('، ')}${draft.quran.verses.length > 6 ? '…' : ''})`)}
+          <span className="block text-xs text-muted-foreground">{t('The learner sees them once you save this report.', 'الطالب هيشوفها أول ما تحفظ التقرير ده.')}</span>
+        </p>
       )}
       {draft.earlyEnd && (
         <p className="text-muted-foreground">{t(`Ended ${draft.earlyEnd.minutesEarly} min early: `, `خلصت بدري ${draft.earlyEnd.minutesEarly} دقيقة: `)}{draft.earlyEnd.reason}</p>

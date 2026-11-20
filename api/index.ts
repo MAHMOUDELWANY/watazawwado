@@ -73,6 +73,9 @@ import { runRoomVerdict, sweepRoomVerdicts } from '../server/classroom/verdict.j
 import { registerAfterLessonRoutes, reportDueIds } from '../server/routes/afterLesson.js';
 import { registerParentPinRoutes } from '../server/routes/parentPin.js';
 import { registerLessonPrepRoutes } from '../server/routes/lessonPrep.js';
+import { registerQuranRoutes } from '../server/routes/quran.js';
+import { quranFoundation } from '../server/quran/foundation.js';
+import { hintsFlag } from '../server/quran/rules.js';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
@@ -10901,6 +10904,8 @@ registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: ()
 registerAfterLessonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, verifyStudentAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 registerParentPinRoutes(app, { getClient: getSupabaseAdminClient, verifyStudentAuth, rateLimit });
 registerLessonPrepRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, rateLimit });
+// Classroom 4.1-4.5: the Quran tab (mushaf, lesson marks, detector results, accuracy harness).
+registerQuranRoutes(app, { getClient: getSupabaseAdminClient, quran: quranFoundation, verifyTeacherAuth, verifyStudentAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent, hintsFlag });
 // Classroom Task 10: teacher late reasons and their super admin review.
 registerLateReasonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()) });
 

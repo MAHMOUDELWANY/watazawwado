@@ -5,6 +5,7 @@ import { useT } from '../../lib/language';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { Button } from '../../components/ui/Button';
 import { Textarea } from '../../components/ui/Textarea';
+import { QuranRecordingReview } from './QuranRecordingReview';
 
 type Rec = { id: string; duration_sec: number | null; teacher_reply: string | null; playUrl: string | null; created_at: string };
 
@@ -45,6 +46,8 @@ export function RecitationInbox({ studentId }: { studentId: string }) {
           <li key={r.id} className="grid gap-2">
             <p className="text-xs text-muted-foreground">{DateTime.fromISO(r.created_at).setLocale(isAr ? 'ar' : 'en').toFormat('d LLL, HH:mm')}{r.duration_sec ? ` · ${r.duration_sec}s` : ''}</p>
             {r.playUrl && <audio controls preload="none" src={r.playUrl} className="w-full h-10" />}
+            {/* Classroom 4.5: mark the words by ear (blind to the word check), for the accuracy test. */}
+            <QuranRecordingReview recordingId={r.id} playUrl={r.playUrl} />
             {r.teacher_reply ? (
               <p className="text-sm text-foreground whitespace-pre-line rounded-lg bg-surface-subtle p-2">{r.teacher_reply}</p>
             ) : (
