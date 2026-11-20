@@ -70,6 +70,7 @@ import { registerRecitationRoutes, purgeOldRecitations } from '../server/routes/
 import { registerLessonRoomRoutes } from '../server/routes/lessonRoom.js';
 import { registerClassroomRoutes } from '../server/routes/classroom.js';
 import { runRoomVerdict, sweepRoomVerdicts } from '../server/classroom/verdict.js';
+import { registerAfterLessonRoutes, reportDueIds } from '../server/routes/afterLesson.js';
 import { classroomEnabledFor } from '../server/classroom/mode.js';
 import { registerLateReasonRoutes } from '../server/routes/lateReasons.js';
 import { createCloudflareRealtime } from '../server/integrations/cloudflareRealtime.js';
@@ -2478,7 +2479,10 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
       return res.status(500).json({ error: 'Failed to load today\'s lessons.' });
     }
 
-    const lessons = await attachAttendance(supabase, (data || []).map(transformBookingToDashboardLesson));
+    const attended = await attachAttendance(supabase, (data || []).map(transformBookingToDashboardLesson));
+    // Classroom 3.3: a room lesson completed automatically still asks its teacher for the report.
+    const reportDue = await reportDueIds(supabase, attended).catch(() => new Set<string>());
+    const lessons = attended.map((l) => (reportDue.has(l.id) ? { ...l, report_due: true } : l));
 
     // Compute operational summary metrics
     const nowUtc = nowCairo.toUTC();
@@ -10891,6 +10895,8 @@ registerLessonRoomRoutes(app, { getClient: getSupabaseAdminClient, verifyStudent
 // Classroom Release 1: room tickets, roles and the Cloudflare media proxy.
 registerClassroomRoutes(app, { getClient: getSupabaseAdminClient, cloudflare: () => createCloudflareRealtime(), verifyStudentAuth, verifyTeacherAuth, getLearners: getAuthorizedLearnersForStudent, rateLimit, roomRateLimit, requireSuperAdmin,
   onLessonEnded: (client, bookingId) => runRoomVerdict(client, bookingId, 'end', { afterOutcome: afterLessonOutcome }) });
+// Classroom 3.3 and 3.5: the report draft, files sent with the report, and the admin lesson view.
+registerAfterLessonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, verifyStudentAuth, requireSuperAdmin, rateLimit, getLearners: getAuthorizedLearnersForStudent });
 // Classroom Task 10: teacher late reasons and their super admin review.
 registerLateReasonRoutes(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth, requireSuperAdmin, rateLimit, listStaff: async () => listStaffAccounts(getSupabaseAdminClient()) });
 

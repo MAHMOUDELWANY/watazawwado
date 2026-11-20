@@ -41,6 +41,8 @@ const CHILD_ROUTES: Array<[string, RegExp]> = [
   ['GET', /^\/api\/student\/classroom\/[^/]+\/enter$/],
   // The learning pages of the portal (owner 2026-11-02: the device is the child's whole learning space).
   ['GET', /^\/api\/student\/curriculum$/],
+  // Files the teacher sent with a lesson report (classroom 3.3), narrowed to the child like every learner route.
+  ['GET', /^\/api\/student\/lesson-files$/],
   ['GET', /^\/api\/student\/progress$/],
   ['GET', /^\/api\/student\/progress\/report$/],
   ['GET', /^\/api\/student\/progress\/timeline$/],
