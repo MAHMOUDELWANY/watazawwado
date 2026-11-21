@@ -7,12 +7,12 @@ const [id, out, stills] = process.argv.slice(2);
 const ROOT = path.resolve('../..');
 // tiny static server so fetch() of the timeline works
 const srv = http.createServer((q, r) => { const f = path.join(ROOT, decodeURIComponent(q.url.split('?')[0])); fs.readFile(f, (e, b) => { if (e) { r.writeHead(404); return r.end(); }
-  r.writeHead(200, { 'Content-Type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') ? 'text/javascript' : f.endsWith('.json') ? 'application/json' : f.endsWith('.svg') ? 'image/svg+xml' : f.endsWith('.woff2') ? 'font/woff2' : 'application/octet-stream' }); r.end(b); }); }).listen(0);
+  r.writeHead(200, { 'Content-Type': f.endsWith('.png') ? 'image/png' : f.endsWith('.webp') ? 'image/webp' : f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.js') ? 'text/javascript' : f.endsWith('.json') ? 'application/json' : f.endsWith('.svg') ? 'image/svg+xml' : f.endsWith('.woff2') ? 'font/woff2' : 'application/octet-stream' }); r.end(b); }); }).listen(0);
 const port = srv.address().port;
 const browser = await chromium.launch({ executablePath: process.env.CHROME });
 const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
 page.on('pageerror', (e) => console.error('page error:', e.message));
-await page.goto(`http://127.0.0.1:${port}/marketing/reels-v3/film.html?v=${id}`);
+await page.goto(`http://127.0.0.1:${port}/marketing/reels-v3/${process.env.FILM || 'film.html'}?v=${id}`);
 const length = await page.evaluate(() => window.ready());
 if (stills) {
   for (const t of stills.split(',').map(Number)) { await page.evaluate((t) => window.frame(t), t); await page.screenshot({ path: `${out}-${t}.jpg`, type: 'jpeg', quality: 80 }); }

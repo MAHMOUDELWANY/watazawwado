@@ -1,0 +1,198 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Reel engine v4 (2026-11-21, after the owner's 2/10 on v3): our own painted art (Meshy, curriculum style), the
+     curriculum cast as cut-outs, a moving camera per scene, kinetic 3D titles with a light sweep, magnifier and scan
+     line on the diagram, stamps, letterbox for the test. Espresso / deep crimson only (RULES §1.8). Driven by
+     <id>.timeline.json (voice word times) and scenes4.js. render.mjs: FILM=film4.html. -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=block" rel="stylesheet">
+<style>
+@font-face { font-family: 'TSD'; src: url('../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TSB'; src: url('../../public/fonts/thmanyah/thmanyahsans-Black.woff2') format('woff2'); font-weight: 900; }
+@font-face { font-family: 'TSM'; src: url('../../public/fonts/thmanyah/thmanyahsans-Medium.woff2') format('woff2'); font-weight: 500; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #140D0A; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #FAF7F2; perspective: 1400px; }
+.bg { position: absolute; inset: 0; }
+#bgA { background: radial-gradient(80% 55% at 50% 50%, #3A2419 0%, #1E130E 55%, #0F0907 100%); }
+#bgB { background: radial-gradient(80% 55% at 50% 50%, #6E161C 0%, #3E0C10 55%, #1C0507 100%); opacity: 0; }
+#world { position: absolute; inset: 0; transform-origin: 540px 1000px; }
+#ui { position: absolute; inset: 0; }
+.img { position: absolute; transform-origin: center; }
+.img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img.soft img { -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); }
+.img.polaroid { background: #FAF3E6; padding: 22px 22px 70px; box-shadow: 0 40px 80px rgba(0,0,0,.6); box-sizing: border-box; }
+.img.polaroid::before { content: ''; position: absolute; left: 50%; top: -22px; width: 170px; height: 46px; margin-left: -85px; background: rgba(246,213,142,.75); transform: rotate(-3deg); }
+.img .cap { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-family: 'TSM'; font-size: 36px; color: #5A3A2C; }
+.char { position: absolute; bottom: 330px; transform-origin: bottom center; filter: drop-shadow(0 30px 40px rgba(0,0,0,.6)); }
+.char img { height: 100%; display: block; }
+.big { position: absolute; left: 80px; width: 920px; text-align: center; font-family: 'TSB'; font-weight: 900; text-transform: uppercase; font-size: 112px; line-height: .98; letter-spacing: -.01em; }
+.big.m { font-size: 92px; } .big.s { font-size: 74px; }
+.big span { display: inline-block; white-space: pre; transform-origin: 50% 100%; }
+.big .ac { color: #F6D58E; }
+.big .sw { background: linear-gradient(100deg, currentColor 40%, #FFF6DD 50%, currentColor 60%) no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ar { position: absolute; left: 0; width: 1080px; text-align: center; font-family: 'Amiri'; font-weight: 700; font-size: 230px; line-height: 1.2; color: #F6D58E; text-shadow: 0 0 40px rgba(246,213,142,.55), 0 10px 40px rgba(0,0,0,.7); }
+.sub { position: absolute; left: 110px; width: 860px; text-align: center; font-family: 'TSM'; font-size: 44px; line-height: 1.3; color: rgba(250,247,242,.92); text-shadow: 0 3px 18px rgba(0,0,0,.8); }
+.chip { position: absolute; left: 540px; transform: translateX(-50%); white-space: nowrap; font-family: 'TSB'; font-size: 36px; letter-spacing: .14em; color: #1E130E; background: #F6D58E; padding: 14px 34px; border-radius: 60px; box-shadow: 0 0 40px rgba(246,213,142,.5); }
+.mag { position: absolute; width: 340px; height: 340px; margin: -170px 0 0 -170px; border-radius: 50%; border: 12px solid #F6D58E; box-shadow: 0 0 0 6px rgba(0,0,0,.35), 0 0 70px rgba(246,213,142,.6), inset 0 0 40px rgba(0,0,0,.35); background-repeat: no-repeat; overflow: hidden; }
+.mag::after { content: ''; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; border: 6px solid #F6D58E; box-shadow: 0 0 20px #F6D58E; }
+.mag .lab { position: absolute; left: 0; right: 0; bottom: 26px; text-align: center; font-family: 'Amiri'; font-weight: 700; font-size: 70px; color: #FFF; text-shadow: 0 0 20px #000, 0 0 10px #000; }
+.scan { position: absolute; height: 10px; background: linear-gradient(90deg, transparent, #F6D58E, transparent); box-shadow: 0 0 30px #F6D58E; }
+.bars::before, .bars::after { content: ''; position: absolute; left: 0; right: 0; height: var(--h, 0px); background: #050302; }
+.bars { position: absolute; inset: 0; pointer-events: none; } .bars::before { top: 0; } .bars::after { bottom: 0; }
+.stamp { position: absolute; left: 540px; font-family: 'TSB'; font-size: 92px; letter-spacing: .06em; color: #F6D58E; padding: 6px 40px 12px; border: 9px solid #F6D58E; border-radius: 20px; white-space: nowrap; }
+.ring { position: absolute; width: 150px; height: 150px; }
+#zad { position: absolute; width: 230px; height: 235px; }
+#zad img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: drop-shadow(0 20px 26px rgba(0,0,0,.55)); }
+#logo { position: absolute; left: 90px; top: 268px; width: 76px; height: 76px; border-radius: 50%; background: rgba(250,247,242,.92); display: grid; place-items: center; }
+#logo img { width: 56px; }
+#flash { position: absolute; inset: 0; background: #FFE9BF; opacity: 0; mix-blend-mode: screen; }
+canvas#dust { position: absolute; inset: 0; }
+#grain { position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); }
+#vig { position: absolute; inset: 0; background: radial-gradient(90% 70% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%); }
+</style></head>
+<body><div id="stage">
+  <div class="bg" id="bgA"></div><div class="bg" id="bgB"></div>
+  <div id="world"></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <div id="vig"></div>
+  <div id="ui"></div>
+  <div id="zad"></div>
+  <div id="logo"><img src="../../public/logo-256.png"></div>
+  <div id="flash"></div>
+  <div id="grain"></div>
+</div>
+<script src="scenes4.js"></script>
+<script>
+const ID = new URLSearchParams(location.search).get('v') || 'v7';
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const inout = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = (x) => { x = clamp(x); const c = 1.6; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const norm = (s) => s.toLowerCase().replace(/[ً-ْ]/g, '').replace(/[^\p{L}\p{N}']/gu, '');
+let TL, SC, LENGTH;
+const zad = $('zad');
+for (const p of ['wave','cheer','point','think','wow','proud','love','clap']) { const i = new Image(); i.src = '../intro-film/render/zad/' + p + '.svg'; i.dataset.p = p; zad.appendChild(i); }
+function when(sc, w, after = -1) { const n = norm(w); if (!n) return null; const h = TL.words.find((x) => x.w && x.p >= sc.p[0] && x.p <= sc.p[1] && x.s > after && norm(x.w) === n); return h ? h.s : null; }
+function at(sc, key, fb) { if (typeof key === 'number') return sc.t0 + key; const s = key ? when(sc, key) : null; return s ?? fb; }
+function tokens(sc, text, start) { let last = start - 0.1; return text.split(' ').map((raw) => { const ac = raw.startsWith('*'), w = raw.replace(/\*/g, ''); const s = when(sc, w, last - 0.05); last = s ?? last + 0.1; return { w, ac, s: last }; }); }
+
+window.ready = async () => {
+  TL = await (await fetch(ID + '.timeline.json')).json(); SC = SCENES[ID]; LENGTH = TL.length;
+  const ps = {}; TL.words.filter((x) => x.piece_start !== undefined).forEach((x) => (ps[x.p] = x.piece_start));
+  SC.forEach((sc, i) => { sc.t0 = i === 0 ? 0 : ps[sc.p[0]] - 0.1; });
+  SC.forEach((sc, i) => { sc.t1 = i < SC.length - 1 ? SC[i + 1].t0 : LENGTH; });
+  for (const sc of SC) for (const it of sc.items) if (it.t === 'big') it.toks = tokens(sc, it.text, at(sc, it.from, sc.t0 + 0.08));
+  const imgs = [...new Set(SC.flatMap((s) => s.items.flatMap((i) => [i.src, i.flipTo]).filter(Boolean)))];
+  await Promise.all(imgs.map((u) => new Promise((r) => { const im = new Image(); im.onload = im.onerror = r; im.src = u; })));
+  await document.fonts.ready; await Promise.all([...zad.querySelectorAll('img')].map((i) => i.decode().catch(() => {})));
+  return LENGTH;
+};
+
+let built = -1;
+function build(i) {
+  built = i; const sc = SC[i]; $('world').innerHTML = ''; $('ui').innerHTML = '';
+  for (const it of sc.items) {
+    const d = document.createElement('div'); it.el = d; const world = ['img', 'char', 'mag', 'scan', 'ring'].includes(it.t);
+    if (it.t === 'img') { d.className = 'img ' + (it.frame || ''); Object.assign(d.style, { left: it.x - it.w / 2 + 'px', top: it.y - (it.h || it.w) / 2 + 'px', width: it.w + 'px', height: (it.h || it.w) + 'px' }); d.innerHTML = `<img src="${it.src}">` + (it.cap ? `<div class="cap">${it.cap}</div>` : ''); }
+    if (it.t === 'char') { d.className = 'char'; d.style.height = (it.h || 900) + 'px'; d.style[it.side === 'r' ? 'right' : 'left'] = (it.edge ?? -40) + 'px'; if (it.bottom != null) d.style.bottom = it.bottom + 'px'; d.innerHTML = `<img src="${it.src}" style="${it.flip ? 'transform:scaleX(-1)' : ''}">`; }
+    if (it.t === 'big') { d.className = 'big ' + (it.size || ''); d.style.top = (it.top ?? 430) + 'px'; d.innerHTML = it.toks.map((k) => `<span class="${k.ac ? 'ac' : ''}">${k.w} </span>`).join(''); }
+    if (it.t === 'ar') { d.className = 'ar'; d.style.top = (it.top ?? 420) + 'px'; d.textContent = it.text; }
+    if (it.t === 'sub') { d.className = 'sub'; d.style.top = (it.top ?? 760) + 'px'; d.innerHTML = it.text; }
+    if (it.t === 'chip') { d.className = 'chip'; d.style.top = (it.top ?? 760) + 'px'; d.textContent = it.text; }
+    if (it.t === 'mag') { d.className = 'mag'; d.innerHTML = `<div class="lab"></div>`; }
+    if (it.t === 'scan') { d.className = 'scan'; }
+    if (it.t === 'bars') { d.className = 'bars'; }
+    if (it.t === 'stamp') { d.className = 'stamp'; d.style.top = (it.top ?? 520) + 'px'; d.textContent = it.text; }
+    if (it.t === 'ring') { d.className = 'ring'; d.style.left = it.x - 75 + 'px'; d.style.top = it.y - 75 + 'px'; d.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(250,247,242,.2)" stroke-width="7"/><circle id="arc" cx="50" cy="50" r="44" fill="none" stroke="#F6D58E" stroke-width="7" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg>`; }
+    (world ? $('world') : $('ui')).appendChild(d);
+  }
+}
+const pos = (img, u, v) => ({ x: img.x - img.w / 2 + img.w * u, y: img.y - (img.h || img.w) / 2 + (img.h || img.w) * v });
+
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const DUST = Array.from({ length: 60 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: 1.2 + rnd() * 3.2, v: 14 + rnd() * 40, ph: rnd() * 6.28 }));
+const ctx = $('dust').getContext('2d');
+
+window.frame = (t) => {
+  let i = SC.findIndex((s) => t < s.t1); if (i < 0) i = SC.length - 1;
+  const sc = SC[i], lt = t - sc.t0, dur = sc.t1 - sc.t0;
+  if (built !== i) build(i);
+  const prev = i > 0 ? SC[i - 1].bg || 0 : sc.bg || 0;
+  $('bgB').style.opacity = prev + ((sc.bg || 0) - prev) * ease(lt / 0.5);
+  // camera: from -> to over the scene ([scale, x, y, rotate]); a quick zoom-blur on entry
+  const c0 = sc.cam?.[0] || [1, 0, 0, 0], c1 = sc.cam?.[1] || [1.06, 0, 0, 0], k = inout(lt / dur);
+  const cam = c0.map((v, j) => v + (c1[j] - v) * k), entry = 1 - ease(lt / 0.35);
+  $('world').style.transform = `translate(${cam[1]}px, ${cam[2]}px) scale(${cam[0] * (1 + 0.12 * entry)}) rotate(${cam[3]}deg)`;
+  $('world').style.filter = `blur(${entry * 14}px)`;
+  $('flash').style.opacity = sc.flash ? 0.18 * Math.exp(-lt * 9) : 0;
+  // Zad (small companion unless the scene centres him)
+  zad.querySelectorAll('img').forEach((im) => (im.style.opacity = im.dataset.p === sc.pose ? 1 : 0));
+  zad.style.display = sc.pose ? '' : 'none';
+  const zc = sc.zad === 'center' ? { x: 540, y: 1150, w: 420 } : { x: 900, y: 1430, w: 200 };
+  Object.assign(zad.style, { left: zc.x - zc.w / 2 + 'px', top: zc.y - zc.w / 2 + 'px', width: zc.w + 'px', height: zc.w * 1.02 + 'px' });
+  zad.style.transform = `translateY(${Math.sin(t * 2.4) * 8}px) scale(${0.75 + 0.25 * back(lt / 0.45)})`;
+
+  for (const it of sc.items) {
+    const d = it.el; if (!d) continue;
+    if (it.t === 'img') {
+      const s = at(sc, it.at, sc.t0), e = back((t - s) / 0.55), o = clamp((t - s) / 0.15);
+      let flip = 1; if (it.flipTo) { const f = at(sc, it.flipAt, 1e9), p = clamp((t - f) / 0.4); flip = Math.abs(Math.cos(p * Math.PI)); if (p >= .5 && !d.dataset.f) { d.dataset.f = 1; d.querySelector('img').src = it.flipTo; const cp = d.querySelector('.cap'); if (cp) cp.textContent = it.flipCap || ''; } }
+      const out = it.fadeAt ? clamp((t - at(sc, it.fadeAt, 1e9)) / 0.3) : 0;
+      const kb = 1 + (it.kb ?? 0.08) * clamp((t - s) / dur);
+      const dropY = it.drop ? (1 - e) * -300 : 0;
+      d.style.opacity = o * (1 - out * 0.8); d.style.filter = out ? `grayscale(${out}) blur(${out * 3}px)` : '';
+      d.style.transform = `translateY(${dropY}px) rotate(${(it.rot || 0) * e}deg) scale(${(it.drop ? 1 : 0.85 + 0.15 * e) * kb * (it.glowAt && t > at(sc, it.glowAt, 1e9) ? 1.06 : 1)}) scaleX(${Math.max(.02, flip)})`;
+      if (it.glowAt) { const g = clamp((t - at(sc, it.glowAt, 1e9)) / 0.4); d.style.boxShadow = g ? `0 0 ${120 * g}px rgba(246,213,142,${.7 * g}), 0 40px 80px rgba(0,0,0,.6)` : ''; }
+    }
+    if (it.t === 'char') {
+      const s = at(sc, it.at, sc.t0), e = back((t - s) / 0.6), dir = it.side === 'r' ? 1 : -1;
+      d.style.opacity = clamp((t - s) / 0.15);
+      d.style.transform = `translateX(${(1 - e) * 500 * dir}px) rotate(${Math.sin(t * 1.6) * 1.2}deg) scale(${1 + 0.015 * Math.sin(t * 2.2)})`;
+    }
+    if (it.t === 'big') {
+      const spans = d.querySelectorAll('span'); let last = 0;
+      it.toks.forEach((k, j) => { const e = back((t - k.s + 0.04) / 0.42), o = clamp((t - k.s + 0.04) / 0.14); last = Math.max(last, k.s);
+        spans[j].style.opacity = o; spans[j].style.transform = `translateY(${(1 - e) * 60}px) rotateX(${(1 - ease((t - k.s) / 0.4)) * 75}deg) scale(${0.8 + 0.2 * e})`; spans[j].style.filter = `blur(${(1 - clamp((t - k.s + .04) / .3)) * 12}px)`; });
+      // light sweep across the accent words once the line is complete, then a soft glow
+      const sw = clamp((t - last - 0.25) / 0.7);
+      d.querySelectorAll('.ac').forEach((sp) => { sp.style.textShadow = `0 0 ${16 + 40 * sw}px rgba(246,213,142,${.25 + .5 * sw}), 0 6px 30px rgba(0,0,0,.6)`; sp.style.filter = `brightness(${1 + 0.35 * Math.sin(Math.PI * sw)})`; });
+      const u = it.until ? clamp((t - at(sc, it.until, 1e9)) / 0.22) : 0; d.style.opacity = 1 - u; d.style.transform = `translateY(${-u * 50}px)`;
+    }
+    if (it.t === 'ar') {
+      const s = at(sc, it.at, sc.t0), e = back((t - s) / 0.5), o = clamp((t - s) / 0.12);
+      d.style.opacity = o; d.style.transform = `scale(${1.6 - 0.6 * e})`; d.style.filter = `blur(${(1 - clamp((t - s) / .3)) * 16}px)`;
+      d.style.textShadow = `0 0 ${40 + 30 * Math.sin(t * 3)}px rgba(246,213,142,.6), 0 10px 40px rgba(0,0,0,.7)`;
+    }
+    if (['sub', 'chip'].includes(it.t)) {
+      const s = at(sc, it.at, sc.t0 + .5), e = back((t - s) / 0.45); d.style.opacity = clamp((t - s) / .15);
+      d.style.transform = (it.t === 'chip' ? 'translateX(-50%) ' : '') + `translateY(${(1 - e) * 30}px) scale(${0.9 + 0.1 * e})`;
+      if (it.until) d.style.opacity = clamp((t - s) / .15) * (1 - clamp((t - at(sc, it.until, 1e9)) / .2));
+    }
+    if (it.t === 'mag') {
+      const img = sc.items.find((x) => x.id === it.on), pts = it.points.map((p) => ({ s: at(sc, p.at, sc.t0 + .3), u: p.u, v: p.v, lab: p.lab }));
+      let cur = pts[0]; for (const p of pts) if (t >= p.s) cur = p;
+      const pi = pts.indexOf(cur), prv = pts[Math.max(0, pi - 1)], m = pi > 0 ? inout((t - cur.s) / .6) : 1;
+      const u = prv.u + (cur.u - prv.u) * m, v = prv.v + (cur.v - prv.v) * m, P = pos(img, u, v), Z = it.zoom || 2.6;
+      const e = back((t - pts[0].s) / .5); d.style.opacity = clamp((t - pts[0].s) / .15);
+      d.style.left = P.x + (it.dx || 0) + 'px'; d.style.top = P.y + (it.dy || 0) + 'px'; d.style.transform = `scale(${e})`;
+      const W = img.w * Z, H = (img.h || img.w) * Z; d.style.backgroundImage = `url(${img.src})`; d.style.backgroundSize = `${W}px ${H}px`;
+      d.style.backgroundPosition = `${170 - u * W}px ${170 - v * H}px`;
+      d.querySelector('.lab').textContent = cur.lab || '';
+    }
+    if (it.t === 'scan') {
+      const img = sc.items.find((x) => x.id === it.on), s = at(sc, it.at, sc.t0 + .3), p = clamp((t - s) / .9), a = pos(img, 0, 0);
+      d.style.left = a.x + 'px'; d.style.width = img.w + 'px'; d.style.top = a.y + (img.h || img.w) * (0.15 + 0.6 * p) + 'px'; d.style.opacity = p > 0 && p < 1 ? 1 : 0;
+    }
+    if (it.t === 'bars') { const e = ease((t - sc.t0) / .4); d.style.setProperty('--h', 230 * e + 'px'); }
+    if (it.t === 'stamp') { const s = at(sc, it.at, sc.t0 + .1), b = back((t - s) / .45); d.style.opacity = clamp((t - s) * 5); d.style.transform = `translateX(-50%) rotate(${(it.rot ?? -8) * b - 14 * (1 - b)}deg) scale(${2.2 - 1.2 * b})`; }
+    if (it.t === 'ring') { const s = at(sc, it.at, sc.t0), p = clamp((t - s) / (it.dur || 2)); d.querySelector('#arc').setAttribute('stroke-dashoffset', 276.5 * p); d.style.opacity = clamp((t - s) / .2); }
+  }
+  const x = i < SC.length - 1 ? clamp((t - (sc.t1 - 0.2)) / 0.2) : 0;
+  $('ui').style.opacity = 1 - x; $('ui').style.filter = `blur(${x * 10}px)`;
+  ctx.clearRect(0, 0, 1080, 1920); ctx.fillStyle = '#F6D58E';
+  for (const p of DUST) { const y = ((p.y - t * p.v) % 1920 + 1920) % 1920; ctx.globalAlpha = .15 + .35 * Math.sin(t * 2 + p.ph) ** 2; ctx.beginPath(); ctx.arc(p.x + Math.sin(t + p.ph) * 14, y, p.r, 0, 6.283); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  // wait for any image that changed this frame (new scene, flipped card) so no frame shows a blank
+  return Promise.all([...document.images].filter((im) => !im.complete || !im.naturalWidth).map((im) => im.decode().catch(() => {})));
+};
+</script></body></html>
