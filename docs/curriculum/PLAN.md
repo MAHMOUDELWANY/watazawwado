@@ -1002,3 +1002,15 @@ B3–B5 → continue lesson by lesson.
   every phase; the Arabic report also saved as Markdown (`scripts/curriculum/review-report-md.py`); tool evidence only,
   nothing from memory; a re-review mode after fixes. The 2026-11-17 Arabic report is in the repo as
   `reviews/zad-adults/2026-11-17-report-ar.md`. Zad Adults L1–L3 still wait for the owner's decisions.
+- 2026-11-21 · Curriculum review, Zad Essentials Teens L1–L3 (L1 full panel, L2–L3 lean, refuter, chair, course panel):
+  all three "Needs fixes" (L1 60.4, L2 77.4, L3 72.9), no blocker; 202 findings raised, 7 refuted, 33 folded. Worst:
+  a red line striking «لا إله» (L3), Ihsan scored as a separate bin of deeds (L1), 2:170 given a lesson it does not
+  teach (L1), "desire = shirk" card (L3). Course: a chain held by the Why List, no recall from memory. Records and
+  Arabic report in `reviews/zad-teens/`. Also fixed: review screenshots now wait for the slide to render (`shots.mjs`,
+  `review-run.mjs`), and `review-merge.py` reads the expert from the finding id.
+- 2026-11-21 · Curriculum review, Zad Kids L1–L3 (lean on all three, owner offline): all "Needs fixes"; L1 73.9, L2 76.0,
+  L3 67.1. One blocker: L3 p6 tag "no one else is worshipped" drops «بحق». Majors (29): "three questions" in the Jibril
+  hadith (L1) and in the ayah (L2), the white-clothes clue scored wrong (L1), English meaning vanishes after one step,
+  red line through «لا إله» (L3), no answer to "who made Allah?" (L2). Course: accumulation does not work yet (one-step
+  chain, nothing from L1 named by L3); CW-16 … CW-21 proposed (petrol `.band-deep`, Fit shrink, "door" in every sort
+  game). Records and Arabic report in `reviews/zad-kids/`.

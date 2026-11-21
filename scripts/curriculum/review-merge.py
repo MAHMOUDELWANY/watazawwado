@@ -24,7 +24,8 @@ for name in sorted(os.listdir(fdir)):
     for i in range(1, len(tail) - 1, 2): extras.setdefault(tail[i], []).append((expert, tail[i + 1].strip()))
     for m in re.finditer(r'^### (\S+) · (\S+) · (\S+)[^\n]*\n(.*?)(?=^### |^## |\Z)', tail[0], flags=re.M | re.S):
         fid, sev, conf, body = m.groups()
-        f = {'id': fid, 'expert': expert, 'severity': sev, 'confidence': conf, 'raised_as': sev}
+        who = fid.rsplit('-', 1)[0]  # lean files hold several experts: the id prefix names the brief
+        f = {'id': fid, 'expert': who if who in AREAS else expert, 'severity': sev, 'confidence': conf, 'raised_as': sev}
         for key in ('where', 'evidence', 'why', 'fix'):
             k = re.search(rf'^{key}:\s*(.*?)(?=^(?:where|evidence|why|fix):|\Z)', body, flags=re.M | re.S)
             f[key] = k.group(1).strip() if k else ''
