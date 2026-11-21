@@ -54,6 +54,13 @@ desktop dark, with `run.json` (console issues, frame gaps, horizontal overflow).
 non-full-screen landscape run looks cut off: judge phones in full screen. Black frames seen only in the step sheets are
 page-clock artefacts. Screenshots stay in the scratch folder, never in git.
 
+**Build the pack from a clean worktree** (`git worktree add --detach <scratch>/wt origin/main`, a junction to the main
+`node_modules`, `PORT=<free> node scripts/curriculum/serve.mjs`): other sessions edit files in the main checkout and
+every edit reloads the preview mid-run (seerah-kids, 2026-11-21: one capture hung 4 h, runs came out empty). Wrap
+`shots.mjs` in `timeout 600` and `review-run.mjs` in `timeout 2400`. **Never commit or pull in the serving worktree while
+runs record**: a docs commit reloaded the page and blanked a dark run (seerah-teens L2). Merge records in a separate
+folder until the last run ends.
+
 Write one dispatch brief per run in the scratch pack (paths, pack layout, these known limits, carried-forward items)
 and point every expert at it: the briefs then stay short and identical.
 
@@ -83,6 +90,8 @@ yourself and say so in "not checked".
 2. **Chair** (you): merge duplicates, keep the strongest evidence, resolve or report contradictions, rank by severity,
    score and issue the verdict (§5 of panel.md). Open every blocker's and major's evidence yourself before it ships, at
    the lesson commit written in the run file (a lesson edited since the pack was built invalidates its findings).
+   The refuter writes one line per id, `<id> | <verdict> | <reason>`; a downgrade must read `stands-weakened (minor)`
+   with the parentheses, or the merge silently keeps the old severity (seerah-kids, 2026-11-21).
    `python scripts/curriculum/review-merge.py <pack>/L<n> <folder> <n> <date>` applies the refuter's verdicts, folds
    duplicates, scores, and writes the English record plus `<pack>/L<n>/findings.json`. Check its "Raised" count against
    the number of `### ` headings in the findings files: a malformed heading is silently skipped.

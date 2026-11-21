@@ -1021,3 +1021,11 @@ B3–B5 → continue lesson by lesson.
   Prophet's ﷺ mouth (L3), Bahira's two book signs swapped for weaker reports (L4); L1's Surat al-Fil page has no ayah
   buttons. Accumulation does not work: 0 retrieval in 55 pages, 0 of 3 Ahd follow-ups. Records, Arabic report and
   decisions table in `reviews/seerah-kids/`.
+- **2026-11-21** — Review run seerah-teens L1–L4 (Teens & Adults, one version; L1 full panel, L2–L4 lean, course panel):
+  all four "Needs fixes" (53.8 / 73.0 / 66.5 / 68.7), 77 lesson majors and one blocker (L3: a lone man from behind
+  overlooking the Kaaba under Ad-Duha reads as the Prophet ﷺ, as in the rejected `grave-visit`). Worst content: L1
+  "tribe after tribe stood aside" against Ibn Ishaq, an invented "battle faction", tawakkul modelled on a pre-Islamic
+  chief; Halimah's motive (L2, shared with Kids); Ibn Asakir's rain report told as fact and read into فآوى (L3); the
+  moral forced onto Bahira's report (L4). A skull behind L1's Quran page; modern Kaaba and wrong-era Busra from the image
+  generator. Accumulation does not work: 0 retrieval in 79 pages, 0 of 3 Ahd follow-ups. Records, Arabic report and
+  decisions table in `reviews/seerah-teens/`.
