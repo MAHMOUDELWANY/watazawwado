@@ -979,6 +979,29 @@ No duplication: each task first searches the existing code (Payroll page, Refund
 - Do: expected cash for the next 3 months from active packages and booked lessons, recurring costs and teacher pay
   due on the 1st to 5th; warns a month ahead when cash would fall under the reserve target.
 
+### Resources (owner 2026-11-21)
+
+Owner decision: "Resources" is not a domain of its own, because every domain has its resources. It is one read-only
+page that reads from the other domains, plus rules in the FN-05 advisor. It stores nothing new. Super admin only.
+Build after FN-04, FN-05 and the CRM lane.
+
+### FN-13 Academy resources page
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on FN-02, FN-04, FN-08, the HR lane and the CRM lane
+- Do: one admin page with five blocks, each linking to its own domain page: money (cash, reserve in months, net and
+  its split, from FN-04 and FN-08); subscriptions and tools (cost, renewal date, unused for 60 days, from FN-02);
+  teachers (available hours against booked hours per teacher and per subject, from availability and bookings);
+  learners (active, package ending soon, stopped, from the CRM lane); content (lessons ready against lessons needed
+  per track, from the curriculum catalog).
+- First: search the existing admin pages and reports for these numbers and reuse their queries; add no table.
+- Done when: every number on the page equals the number on its own domain page.
+
+### FN-14 Capacity and usage rules for the advisor
+- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on FN-05 and FN-13
+- Do: add rules to FN-05, same form (written threshold, shows its number, editable by the super admin): a teacher
+  booked over 85% of available hours for 2 weeks (start hiring); a subject with learners and only one teacher (no
+  cover); reserve over the target (amount free for marketing); a subscription unused for 60 days (cancel, saving per
+  month); a track where learners will reach a lesson that is not ready within 4 weeks.
+
 ---
 
 ## PARKED: ideas kept for later (owner 2026-11-17; agents: do not build)
