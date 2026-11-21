@@ -17,7 +17,22 @@ motion-graphics clip. **Inspire, not copy**: our shape (the khatam), our palette
 | Surprise jump-out | Jumps out of a shell: crouch, launch with a big stretch, hang, wings flutter fast, hands to the face | Anticipation before the jump, hold at the top, fast secondary motion |
 | Duolingo clip | Logo and screens arrive with overshoot and glow trails; numbers count up; elements enter one after another | Overshoot easing, staggered entrances |
 
-## What the current Rive Zad lacks
+## v2 rig (2026-11-21, after the owner tried v1 on his phone)
+
+Owner: v1 "can't move", the clap hands never met. v2 rebuilt the rig in `rive/zad/tools`:
+- **Wings are his arms**, drawn in front of the body: shoulder > crimson upper arm > wrist > gold feather hand. Arms
+  are posed by where the hand goes (two-bone IK in `add_motion.py`), so clap, hand on heart, hands on cheeks really land.
+- **Separate parts**: Root (travel, jumps), Squash (squash and stretch at the feet), LegL/LegR (kick out of step),
+  Torso (lean, spin), Head (tilt, bob) and Features (slide on the face dome to fake a head turn).
+- **Motion rules in one `jump()` helper**: crouch, stretch on launch, rise easing out, fall easing in, squash on
+  landing, head and wings landing late, dust puff, ground ring, speed lines; the shadow shrinks with height.
+- **25 moves** (98 KB): the 16 poses plus hop (travels across the page), enter, exit, dance, spin, fly, yes, oops, giggle.
+- Test page `/prototype/zad-rive` has a stage: "hop" carries him across and turns him at the edges.
+
+Still open from the plan below: real bones on the feather hands (step 3), state-machine triggers and site placement
+(step 5), replacing the 3D Zad (step 6).
+
+## What the v1 Rive Zad lacked
 
 The 16 poses work, but each moves as one rigid board: whole-body rotation and lift, wings swinging on one pivot.
 
