@@ -1000,7 +1000,7 @@ Why: the daily management between a learner and their teacher. Hiring, leave and
 entry path is in TU; progress pages are in PR; lesson observation, coaching and complaints are in the Supervision
 domain. Teachers never see money. Web research (2026-11-21) is directional only.
 
-Order: TS-10 → TS-05 → TS-04 → TS-02 → TS-03 → TS-06 → TS-07 → TS-01 → TS-08 → TS-09.
+Order: TS-10 → TS-11 → TS-12 → TS-05 → TS-04 → TS-02 → TS-03 → TS-06 → TS-07 → TS-01 → TS-08 → TS-09.
 
 Owner decisions 2026-11-21:
 - The learner chooses the teacher; the system only orders and recommends. The admin does not assign.
@@ -1076,6 +1076,22 @@ request, the classroom ratings and talk time, `crm_tasks`) and extends it.
   that touches a block is kept and listed for the admin.
 - Done when: tests prove no slot overlapping a block is offered for cities in three zones, on a daylight-saving
   change day and at a high latitude.
+- Owner decisions 2026-11-21: on Friday the Dhuhr block is 60 minutes for male teachers. Nothing is blocked on the
+  learner's side; the learner picks their own time.
+
+### TS-11 Reliability promise
+- Priority P1 · Zone 🔴 (credits, bookings) · Size M · Status todo · Uses the classroom attendance verdict (3.2, 3.2b)
+- Do: when the verdict is "teacher absent": the lesson goes back to the family's balance by itself within the hour,
+  an apology goes to the family, and they get a one-tap rebook with first choice of the teacher's next free slots.
+  The promise is written on the public site and in the booking confirmation. The absence counts in TS-06 and HR-06.
+- First: check what the existing no-show functions already return to the family, and extend them.
+- Done when: tests prove the lesson is returned once only, and never while a teacher's appeal is still open.
+
+### TS-12 First-lesson brief
+- Priority P1 · Zone 🟢 · Size S · Status todo · Uses the classroom prep mode (1.4) and TE-02
+- Do: before the first lesson with a new learner the teacher sees one page: placement result, goal and its date,
+  age, the family's notes and preferences, the trial teacher's note if any. "Join the room" for that lesson is
+  active only after the page was opened.
 
 ---
 
