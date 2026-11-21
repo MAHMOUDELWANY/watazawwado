@@ -87,7 +87,7 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
   can read; the assigned teacher and super admin can insert/update; nobody can delete except super admin.
 - Done when: migration applied to production (additive only), types updated, RLS test proves a parent cannot read
   another family's milestones and a teacher cannot read private notes of a student who is not theirs.
-- Skills: `new-migration`, `security-and-hardening`.
+- Skills: `WATAZAWWADO-new-migration`, `security-and-hardening`.
 
 ### PR-02 Progress API (read model)
 - Priority P1 · Zone 🟢 · Size M · Status done (27df92a) · Depends on PR-01
@@ -833,7 +833,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
 ### NX-11 Blog and articles for search
 - Priority P2 · Zone 🟢 · Size M · Status done (3 articles; more are added in `src/data/articles.ts`)
 - Do: bilingual articles for Western Muslim families (teaching Quran abroad, Fusha for kids, ...), with hreflang and
-  schema; written through `watazawwado-content` and `humanizer`.
+  schema; written through `WATAZAWWADO-content` and `humanizer`.
 
 ### NX-12 Lesson room inside the site
 - Priority P3 · Zone 🟢 · Size L · Status done (slides, pen, highlighter and laser in sync)

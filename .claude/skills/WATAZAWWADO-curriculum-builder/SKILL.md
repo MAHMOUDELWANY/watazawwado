@@ -1,5 +1,5 @@
 ---
-name: curriculum-builder
+name: WATAZAWWADO-curriculum-builder
 description: Use for ANY curriculum (المنهج) work in this project, even from a short or vague prompt ("continue the curriculum", "next lesson", "كمّل المنهج", "طوّر الدرس", "fix lesson 3", "add a page", "the motion is bad"): unit maps, lesson briefs, page text, slides, motion graphics, scenes, images, games and reviews, teacher notes, any age version (Kids, Teens, Adults), Zad Essentials (أول الزاد), Seerah.
 argument-hint: "[optional: curriculum, lesson or step]"
 ---

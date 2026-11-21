@@ -1,7 +1,7 @@
 # Brand & Growth Strategy: discussion log
 
 Started 2026-11-12. A structured discussion between the owner and Claude that ends in an approved strategy and a
-`watazawwado-marketing` skill. Nothing here is binding until it moves to **Confirmed decisions**. Inputs: the owner's
+`WATAZAWWADO-marketing` skill. Nothing here is binding until it moves to **Confirmed decisions**. Inputs: the owner's
 master prompt (8 deliverables) and a transcript of Chris Hewitt's storytelling videos (text only, no video).
 
 ## Confirmed decisions

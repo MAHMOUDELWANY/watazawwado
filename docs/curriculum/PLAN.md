@@ -6,7 +6,7 @@
 > decision here with its date, and add a line to the Progress log at the end of each session.
 > The discussion with the owner happens in chat, in Arabic. Brainstorm reports are not saved as files; only decisions,
 > rules, proposals, the source registry and progress live in `docs/curriculum/`.
-> **Binding building rules: `RULES.md` (this folder, 2026-10-18). Procedure: the `curriculum-builder` skill.** Where this
+> **Binding building rules: `RULES.md` (this folder, 2026-10-18). Procedure: the `WATAZAWWADO-curriculum-builder` skill.** Where this
 > plan and RULES.md disagree, RULES.md wins. All curriculum documentation is written in English (owner, 2026-10-18).
 
 ## 0. Where we are (update every session)
@@ -400,7 +400,7 @@ B3–B5 → continue lesson by lesson.
   Scholar's Path as courses on classical books, details open) and the curriculum-building rules. Wrote `RULES.md`
   (general rules, four mandatory stations Spark → Zad → Athar → Ahd, tadabbur stop for every ayah, identity and pride
   in every band, 45-minute lessons with optional extra pages, mandatory scene builds, per-band rules for Kids / Teens /
-  Adults, agent workflow), the `curriculum-builder` skill, `test/curriculum-rules.test.ts`, and tagged Lesson 1's
+  Adults, agent workflow), the `WATAZAWWADO-curriculum-builder` skill, `test/curriculum-rules.test.ts`, and tagged Lesson 1's
   stations. All curriculum documentation is in English from now on (owner).
 - **2026-10-18** — Lesson 2 brief written (`zad-essentials-kids/L02-who-made-it-all.md`): 52:35–36, 30:30, 88:17–20
   checked with the quran.com connector (tafsir al-Sa'di, al-Muyassar, al-Wasit; morphology for the tadabbur words);
@@ -423,7 +423,7 @@ B3–B5 → continue lesson by lesson.
   pass. Not checked: the real teacher workspace (needs a teacher login), phone and dark mode.
 - **2026-10-18** — Owner: more striking motion (like the key), no repeated images, sound effects now, all project files in
   English. Rules written (RULES.md §1.10 images and sound, §1.12 English; project RULES.md §7; CLAUDE.md; style guide;
-  curriculum-builder skill) and a test that fails when a painting repeats. Built `slides/Motion.tsx` (bursts, sandstorm,
+  WATAZAWWADO-curriculum-builder skill) and a test that fails when a painting repeats. Built `slides/Motion.tsx` (bursts, sandstorm,
   shooting star, ripples, a toy-brick castle that builds itself and opens its gate, cut-out sprites, lens, depth layers)
   and `slides/sfx.ts` (synthesised sound effects, no files, no music; mute button, key M). Lesson 2 scenes moved to
   `slides/lessons/l02.tsx` with a registry (`slides/lessons/index.ts`): three ways (poof / shivering bricks / the castle
@@ -710,7 +710,7 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-26 — Owner's notes on the clips: single words must keep one tone, and every word needs its last-letter mark.
   Redone: قِطَارٌ, قِطَارُ الْحُرُوفِ, بَ and Lesson 2's بَابٌ from one take with pauses, cut on the silences
   (`l01-qitar`, `l01-qitar-al-huruf`, `l01-ba`, `l02-baab`); the same words on screen now carry their endings. Rule added
-  to `curriculum-builder/owner-feedback.md` (Sound).
+  to `WATAZAWWADO-curriculum-builder/owner-feedback.md` (Sound).
 - 2026-10-27 — Owner asked for the language welcome in all three versions. Literacy A Teens and Adults now have
   Lesson 1 "Welcome to Arabic" (15 pages each, same order as Kids; page text and Arabic teacher notes done). Teens:
   Decode the City (night stage, 26 blocks in six districts, Karim and Lina, the message سَلَامٌ يَا كَرِيمُ). Adults: The

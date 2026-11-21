@@ -1,6 +1,6 @@
 # Thursday Prototypes Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Every content task also runs the `curriculum-builder` skill (its §0 read-first list and §4 verify steps).
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Every content task also runs the `WATAZAWWADO-curriculum-builder` skill (its §0 read-first list and §4 verify steps).
 
 **Goal:** By Thursday 2026-10-29, one approved-quality prototype lesson each for Literacy B (Kids), Literacy A (Kids), Fusha Level 1 (Kids) and, if time holds, Seerah Episode 1 (Teens + Adults), playable in the existing lesson player with replayable voice clips.
 
@@ -16,7 +16,7 @@
 - Literacy A has **no religious content**; it uses new neutral characters. Literacy B uses the Zad Kids look and cast.
 - Voices: `mahmoud` (English, id `jSOs0gJh7GzUGtEgxVhs`), `Mahmoud Egyptian`, `Mahmoud Fusha`. **The Quran is never voiced by a clone.**
 - Every lesson `reviewed: false`. Every page has English `explain` and an Arabic `teacherAr` entry.
-- One motion graphic per page that explains by moving (`.claude/skills/curriculum-builder/motion-stage.md`, `owner-feedback.md`). The Prophet ﷺ, companions and angels are never drawn.
+- One motion graphic per page that explains by moving (`.claude/skills/WATAZAWWADO-curriculum-builder/motion-stage.md`, `owner-feedback.md`). The Prophet ﷺ, companions and angels are never drawn.
 - `humanizer` on all English copy. The academy speaks as "we".
 - Seerah: facts from *The Sealed Nectar*; weak reports graded on Dorar and marked or dropped; told as a series, never a sermon.
 - Verify per lesson: `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`, `npx tsx --test test/curriculum-*.test.ts`, `npx vite build`, screenshots of every build step (`scripts/curriculum/README.md`).
@@ -103,7 +103,7 @@ Tasks 4 and 8 (prompts) run while the owner decides.
 - Produces: track `literacy-b-kids` with lesson 1.
 
 - [ ] **Step 1:** MAP: the full list of Literacy B lessons from the scope in spec §4.2 (Uthmani spelling, waqf signs, mushaf symbols, letters written but not read), ordered, 8–14 lessons. Sources: `tajweed\book 1 jannat al quran tajweed.pdf` (later sections), `literacy\نور البيان`, `literacy\فتح الرحمن`; read the relevant pages as images.
-- [ ] **Step 2:** Brief for Lesson 1 (curriculum-builder §1): one driving question, stations, the wow, the game, Ahd, cliffhanger.
+- [ ] **Step 2:** Brief for Lesson 1 (WATAZAWWADO-curriculum-builder §1): one driving question, stations, the wow, the game, Ahd, cliffhanger.
 - [ ] **Step 3:** Page text + Arabic teacher notes; every Quranic word from Tanzil; ayah clips `voice: 'owner', quran: true`; other clips `voice: 'en'`.
 - [ ] **Step 4:** Motion graphics, one per page, wired with `onStage({...})` in `scenes.tsx`; add the track to `SUBJECTS`.
 - [ ] **Step 5:** Verify (Global Constraints) and fix until clean; generate the clip list into `docs/curriculum/literacy-quranic/L01-clips.md`.

@@ -2,7 +2,7 @@
 
 Owner decisions for the Teens version, collected in one place (2026-10-22). They sit on top of the general rules in
 `../RULES.md` (which win where the two disagree) and `../../../RULES.md` (platform). The story, the 40 lessons and the
-challenge games are in `MAP.md`; how every image looks is in `../style/teens.md`. Procedure: the `curriculum-builder`
+challenge games are in `MAP.md`; how every image looks is in `../style/teens.md`. Procedure: the `WATAZAWWADO-curriculum-builder`
 skill.
 
 ## 1. Why this version exists

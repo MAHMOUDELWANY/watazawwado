@@ -1,7 +1,7 @@
 # Watazawwado Content & Growth Plan (Oct 2026 – Apr 2027)
 
 > **Read first** for any social media, video, content or marketing work, together with `RULES.md` (this folder, binding)
-> and `PRODUCTION.md` (how a video is made). Procedure: the `watazawwado-content` skill. Ideas: `IDEAS.md`. Progress:
+> and `PRODUCTION.md` (how a video is made). Procedure: the `WATAZAWWADO-content` skill. Ideas: `IDEAS.md`. Progress:
 > `LOG.md`. Status legend as in the root RULES.md: **[Decided]**, **[Proposed]** (awaiting the owner), **[Open]**.
 > Written 2026-10-19 from the owner's brief: accounts exist but are empty; the owner will film educational YouTube
 > videos and Shorts; goal over 3–6 months: leads, a name in the niche, and trust.

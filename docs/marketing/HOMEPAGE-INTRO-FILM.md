@@ -120,7 +120,7 @@ ourselves and did not hang together; we never said we have our own curriculum or
 ## Version 6 (2026-11-19): made like our Shorts
 
 Owner on v5: our social videos are better; make the site film the same way, with the skill we built, and few
-pictures. So the film is now a composition in the Shorts engine (`watazawwado-video-generator` skill, Remotion
+pictures. So the film is now a composition in the Shorts engine (`WATAZAWWADO-video-generator` skill, Remotion
 project `marketing/promo-video` on the content branch, `src/RFilm.tsx`, compositions `RFilmAr` / `RFilmEn`,
 1080×1920): a hard cut per beat on the crimson / ink / teal / cream / sand / copper fields, slammed serif lines with
 one ribbon word, the 3D Zad playing a move in most beats, an open-loop sticker ("What would it be? The answer comes at
