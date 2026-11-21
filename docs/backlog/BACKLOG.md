@@ -994,6 +994,91 @@ session, not picked from here. It is listed so other sessions know about it and 
 
 ---
 
+## TS: Teacher and student management (owner request 2026-11-21)
+
+Why: the daily management between a learner and their teacher. Hiring, leave and reviews are in HR; the teacher's
+entry path is in TU; progress pages are in PR; lesson observation, coaching and complaints are in the Supervision
+domain. Teachers never see money. Web research (2026-11-21) is directional only.
+
+Order: TS-10 → TS-05 → TS-04 → TS-02 → TS-03 → TS-06 → TS-07 → TS-01 → TS-08 → TS-09.
+
+Owner decisions 2026-11-21:
+- The learner chooses the teacher; the system only orders and recommends. The admin does not assign.
+- A teacher sees their own numbers only: no money, no comparison with other teachers.
+- A family can ask to change teacher from the portal; the reason is optional.
+- Load limit: 10 teaching hours a day and a 10-minute gap between lessons, editable per teacher.
+- The checkpoint assessment is at the end of each curriculum part, not every N lessons.
+- No lesson during the teacher's prayer times: the system blocks them and the teacher cannot remove the block (TS-10).
+
+No duplication: each task first searches the existing code (`availabilityEngine.ts`, the weekly hours editor TE-03,
+the student card TE-02, PR-01 to PR-10, NX-02 homework, CRM-08 teacher load view, HR-05 leave, TU-05 new subject
+request, the classroom ratings and talk time, `crm_tasks`) and extends it.
+
+### TS-01 Teacher recommendation at booking
+- Priority P2 · Zone 🔴 (booking flow) · Size M · Status todo · Depends on the classroom ratings and TS-04
+- Do: order the teacher list for this learner and label the top ones "a good fit": subject licence, teacher gender
+  asked for, age band, overlap of free hours in the learner's time zone, load, ratings with the same age band.
+  Written weights, no machine learning. For siblings, suggest back-to-back times. The learner still chooses.
+- Done when: tests prove the order never hides a teacher and never shows one the learner may not book.
+
+### TS-02 Learning plan and pace
+- Priority P1 · Zone 🟢 · Size M · Status todo · Uses the goal recorded in CRM-16
+- Do: per learner: goal, target date, lessons per week. A forecast from the real pace ("at this pace: Juz Amma by
+  March") and what a different frequency would give (research: three or more short lessons a week work better than
+  one long one). Behind the plan: an alert to the teacher and the admin with one suggestion.
+
+### TS-03 Checkpoint assessment
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on the curriculum parts
+- Do: at the end of each curriculum part the teacher scores fixed criteria per subject; the result enters progress
+  (PR) and goes to the guardian. A weak result suggests revision lessons before the next part.
+
+### TS-04 Learner regularity record
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- Do: from existing data, as a pattern over the last 8 weeks: attendance, lateness, late cancellations, homework
+  done. Shown on the student card (TE-02) and to the admin; feeds CRM-09.
+
+### TS-05 Change-teacher request
+- Priority P1 · Zone 🔴 (bookings) · Size M · Status todo · Uses CRM-18 for the handover
+- Do: a calm button in the family portal (reason optional); the admin approves, future lessons move, the handover
+  note is written. A teacher can ask to stop teaching a learner, with a reason. Package lessons always stay with the
+  family. A report of requests per teacher and reason, to see patterns.
+
+### TS-06 "My month" for the teacher
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on the classroom ratings
+- Do: a page with the teacher's own numbers: on time, reports sent in time, homework set, lessons cancelled or
+  moved by them, absence count, connection, ratings and questionnaire averages, talk-time share. Each number says
+  how it is counted and what the standard is. No money, no ranking.
+
+### TS-07 Schedule and load guard
+- Priority P1 · Zone 🔴 (availability) · Size M · Status todo · Depends on TS-10
+- Do: hours with a booked lesson cannot be removed (the teacher uses HR-05 leave or TS-08 instead). At most 10
+  teaching hours a day, a 10-minute gap between lessons, and at most 3 hours of teaching in a row, editable per
+  teacher by the admin. The admin sees where demand is above open hours (CRM-11 unmet demand).
+- Done when: tests prove the booking engine refuses a slot that breaks a limit.
+
+### TS-08 Teacher requests inbox
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: one place for a teacher's requests, each with a status: leave (HR-05), a new subject (TU-05), an hours
+  change, a problem with a learner, a technical problem. The admin answers there; nothing by private chat.
+
+### TS-09 Announcements with acknowledgement
+- Priority P2 · Zone 🟢 · Size S · Status todo
+- Do: the admin posts an announcement to teachers; an important one stays on the teacher's home until "I have read
+  it". The admin sees who has not.
+
+### TS-10 Prayer times are never bookable
+- Priority P1 · Zone 🔴 (availability) · Size M · Status todo
+- Do: the teacher sets their city (not only the time zone: prayer times differ inside one zone). The server
+  computes the five prayer times for each date (the `adhan` library, MIT; calculation method from a country table,
+  the high-latitude rule above 48°; the teacher may pick the method and the Asr school, nothing else) and blocks 30
+  minutes from each prayer time in `availabilityEngine.ts`. The block shows in the weekly hours editor as locked.
+  Times move every day, so slots are computed per date, never stored per week. A lesson booked before this ships
+  that touches a block is kept and listed for the admin.
+- Done when: tests prove no slot overlapping a block is offered for cities in three zones, on a daylight-saving
+  change day and at a high latitude.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
