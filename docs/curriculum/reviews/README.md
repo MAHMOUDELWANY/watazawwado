@@ -9,7 +9,7 @@ verdicts, the owner's decisions and what was not checked; the English records an
 | --- | --- | --- | --- | --- | --- |
 | [2026-11-17-L01-L03](zad-adults/2026-11-17-L01-L03.run.md) | zad-adults | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 5 questions and accepts / rejects the majors by id |
 | [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 4 questions, the phone check, and accepts / rejects the majors by id |
-| [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | running | evidence packs |
+| [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | reported | owner decides course-1 (blocker) and 60 majors by id; 7 owner checks |
 | [2026-11-21-L01-L03](zad-kids/2026-11-21-L01-L03.run.md) | zad-kids | L1–L3 | lean | reported | owner accepts / rejects the blocker and 29 majors by id; 4 owner checks |
 
 States: `running` → `reported` → `decided` → `fixing` → `fixed` → re-review → `closed`.
@@ -49,3 +49,5 @@ as `known: CW-n` instead of raising them again.
   [run file](zad-adults/2026-11-17-L01-L03.run.md#owner-checks).
 - zad-kids L1–L3: one blocker (L3 shahada meaning), 29 majors and 4 owner checks (Dorar gradings, L1 painting provenance,
   Quran/hadith text licence, the "who made Allah?" answer): [run file](zad-kids/2026-11-21-L01-L03.run.md#owner-checks).
+- seerah-kids L1–L4: course-1 (cast guide Yusuf beside lines about the Prophet ﷺ as a boy on 18 pages: blocker?), 60
+  majors, gradings (Muslim 162, Tirmidhi 3620, Ibn Asakir), licences, lesson length: [run file](seerah-kids/2026-11-21-L01-L04.run.md#owner-checks).

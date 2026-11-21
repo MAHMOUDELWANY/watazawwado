@@ -1014,3 +1014,10 @@ B3–B5 → continue lesson by lesson.
   red line through «لا إله» (L3), no answer to "who made Allah?" (L2). Course: accumulation does not work yet (one-step
   chain, nothing from L1 named by L3); CW-16 … CW-21 proposed (petrol `.band-deep`, Fit shrink, "door" in every sort
   game). Records and Arabic report in `reviews/zad-kids/`.
+- **2026-11-21** — Review run seerah-kids L1–L4 (L1 full panel, L2–L4 lean, course panel): all four "Needs fixes"
+  (67.6 / 75.5 / 75.4 / 74.9), no lesson blocker, 56 lesson majors; one course blocker (course-1: the cast guide Yusuf
+  stands beside lines about the Prophet ﷺ as a boy on 18 pages, from one default in `g-sk23.tsx`). Worst content: Allah
+  and the elephants set as contestants (L1), Halimah's motive against the book (L2), an unsourced quote in the
+  Prophet's ﷺ mouth (L3), Bahira's two book signs swapped for weaker reports (L4); L1's Surat al-Fil page has no ayah
+  buttons. Accumulation does not work: 0 retrieval in 55 pages, 0 of 3 Ahd follow-ups. Records, Arabic report and
+  decisions table in `reviews/seerah-kids/`.
