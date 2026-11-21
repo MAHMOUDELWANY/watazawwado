@@ -46,6 +46,7 @@ const MessagesPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./p
 const CompanionPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/CompanionPrototype')) : null;
 const Zad3DPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/Zad3DPrototype')) : null;
 const Hoopoe3DPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/Hoopoe3DPrototype')) : null;
+const WaitingRoomPrototype = (import.meta as any).env?.DEV ? lazy(() => import('./prototypes/WaitingRoomPrototype')) : null;
 // Hidden test page the owner opens on his phone (2026-11-21): the Rive Zad next to the 3D Zad. Loads on demand only.
 const ZadRivePrototype = lazyWithReload(() => import('./prototypes/ZadRivePrototype'));
 const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
@@ -119,6 +120,7 @@ export function AppRoutes() {
           {CompanionPrototype && <Route path="/prototype/companion" element={<CompanionPrototype />} />}
           {Zad3DPrototype && <Route path="/prototype/zad3d" element={<Zad3DPrototype />} />}
           {Hoopoe3DPrototype && <Route path="/prototype/hoopoe3d" element={<Hoopoe3DPrototype />} />}
+          {WaitingRoomPrototype && <Route path="/prototype/waiting-room" element={<WaitingRoomPrototype />} />}
           <Route path="/prototype/zad-rive" element={<ZadRivePrototype />} />
           {/* Public Routes with Shared Layout */}
           <Route element={<PublicLayout />}>

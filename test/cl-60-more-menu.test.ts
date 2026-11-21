@@ -29,3 +29,12 @@ test("teacher's Zoom switch reuses an accepted incident kind (no migration)", ()
   assert.match(room, /kind: 'engine_error', detail: \{ manual: true \}/);
   assert.match(read('server/classroom/incidents.ts'), /CLIENT_INCIDENT_KINDS[^\n]*'engine_error'/);
 });
+
+test('waiting room: the homepage door, ribbon title, grouped rows, one crimson action, no green (owner-approved 2026-11-21)', () => {
+  const w = read('src/classroom/WaitingRoom.tsx');
+  for (const c of ['wait-door', 'wait-portal', 'text-ribbon', 'wait-rows', 'khatam-window']) assert.ok(w.includes(c), c);
+  assert.match(w, /page === 'devices' \? devicesPage : page === 'fix' && blocked \? fixPage : mainPage/);
+  assert.match(w, /permissionSteps\(who, t\)/);
+  assert.doesNotMatch(w, /green-|emerald-/);
+  assert.match(read('src/index.css'), /\.wait-portal \{/);
+});

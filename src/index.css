@@ -2486,3 +2486,20 @@ html:not(.dark) .room-paper {
   .room-stage-bg, .room-rise, .room-rise-sm, .room-fade, .room-notice, .room-sheet { animation: room-lights 150ms ease both; }
   .room-press:active { transform: none; }
 }
+
+/* Waiting room (owner-approved 2026-11-21): the homepage door around your camera, then grouped readiness rows. */
+.wait-slot { container-type: inline-size; }
+.wait-door { border-radius: 50% 50% var(--r-3) var(--r-3) / 12rem 12rem var(--r-3) var(--r-3); }
+@supports (width: 1cqw) { .wait-door { border-radius: 50% 50% var(--r-3) var(--r-3) / 50cqw 50cqw var(--r-3) var(--r-3); } }
+/* Portal keeps 4:5, so 40% of its height is half its width: a true semicircle top. */
+.wait-portal { position: relative; overflow: hidden; isolation: isolate; border-radius: 50% 50% var(--r-2) var(--r-2) / 40% 40% var(--r-2) var(--r-2);
+  background: linear-gradient(180deg, #A3201F 0%, #4E2219 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -28px 48px -12px rgba(0, 0, 0, 0.35); }
+.wait-portal.khatam-window::before { opacity: 0.55; }
+.wait-rows { position: relative; border-radius: 1.1rem; background: var(--surface); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-1); overflow: hidden; }
+.wait-rows > * { position: relative; }
+.wait-rows > * + *::before { content: ''; position: absolute; top: 0; inset-inline: 3.6rem 0; height: 1px; background: var(--border-subtle); }
+.wait-tint { display: grid; place-items: center; flex: none; width: 1.9rem; height: 1.9rem; border-radius: 0.55rem; color: #fff; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+.wait-ping { animation: wait-ping 1.8s ease-out infinite; }
+@keyframes wait-ping { 0% { box-shadow: 0 0 0 0 rgba(8, 125, 145, 0.5); } 70% { box-shadow: 0 0 0 10px rgba(8, 125, 145, 0); } 100% { box-shadow: 0 0 0 0 rgba(8, 125, 145, 0); } }
+@media (prefers-reduced-motion: reduce) { .wait-ping { animation: none; } }

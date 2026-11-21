@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CheckCircle2, ChevronDown, Copy, Gauge, Headphones, Info, Lock, Mic, MicOff, RefreshCw, Video, VideoOff, Volume2 } from 'lucide-react';
+import { BookOpen, ChevronLeft, Copy, Headphones, Mic, MicOff, RefreshCw, Video, VideoOff, Volume2, Wifi } from 'lucide-react';
 import { useT } from '../lib/language';
 import { cn } from '../lib/utils';
 import { detectPlatform } from '../lib/pwaInstall';
@@ -33,10 +33,11 @@ const isObserver = (r: RoomRole) => r === 'guardian_observer' || r === 'admin_ob
 const BARS = [0.35, 0.6, 0.85, 1, 0.85, 0.6, 0.35];
 
 /**
- * Classroom Task 6, redesigned (DESIGN-BRIEF 4.1): you stand at the door. Your camera in an arch with the mic and
- * camera switches on it, who the lesson is with, whether they are already in, and one Join. Device pickers wait behind
- * a disclosure and open by themselves when something is wrong. Nothing here blocks entry: a weak camera gets advice,
- * a missing one still lets the person join by voice.
+ * Classroom Task 6, owner-approved design 2026-11-21 (docs/classroom/ROOM-DESIGN.md): you stand at the homepage's door.
+ * Your camera in its crimson portal with the mic and camera switches on it, who the lesson is with, whether they are
+ * already in, a glass card of readiness rows (camera, mic, speaker, internet) and one crimson Join. Tapping a row pushes
+ * Devices or the permission steps. Nothing here blocks entry: a weak camera gets advice, a missing one still lets the
+ * person join by voice.
  */
 export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = false, iceServers = [] }: {
   role: RoomRole;
@@ -68,7 +69,8 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   const [micOff, setMicOff] = useState(false);
   const [camOff, setCamOff] = useState(false);
   const [heard, setHeard] = useState(false);
-  const [devicesOpen, setDevicesOpen] = useState(false);
+  // The setup card's pages (owner-approved 2026-11-21): main readiness rows, then Devices or the permission steps, each with Back.
+  const [page, setPage] = useState<'main' | 'devices' | 'fix'>('main');
   const [copied, setCopied] = useState(false);
   const [zadPose, setZadPose] = useState<'wave' | 'idle'>('wave');
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -151,7 +153,7 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   useEffect(() => { stream?.getAudioTracks().forEach((tr) => { tr.enabled = !micOff; }); }, [stream, micOff]);
   useEffect(() => { stream?.getVideoTracks().forEach((tr) => { tr.enabled = !camOff; }); }, [stream, camOff]);
   // Problems open the device list by themselves.
-  useEffect(() => { if (cam === 'missing' || cam === 'error') setDevicesOpen(true); }, [cam]);
+  useEffect(() => { if (cam === 'missing' || cam === 'error') setPage('devices'); }, [cam]);
   // Zad waves once, then stands still.
   useEffect(() => { const id = window.setTimeout(() => setZadPose('idle'), 2600); return () => window.clearTimeout(id); }, []);
 
@@ -224,13 +226,8 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
     onReady(s, { recitationMode: teacher && recitation, ...(speakerId ? { speakerId } : {}), micOff, cameraOff: camOff });
   };
 
+
   const heading = cn('font-editorial text-[1.75rem] leading-tight text-foreground sm:text-4xl text-balance', isAr ? 'font-bold' : 'font-medium tracking-tight');
-  const presence = info.here && (
-    <p className="inline-flex items-center gap-2 rounded-[var(--r-pill)] bg-teal/10 px-3 py-1.5 text-sm font-medium text-teal">
-      <span className="relative grid h-2.5 w-2.5 place-items-center"><span className="h-2.5 w-2.5 rounded-full bg-teal" /></span>
-      {info.here}
-    </p>
-  );
 
   if (isObserver(role)) {
     const admin = role === 'admin_observer';
@@ -240,7 +237,11 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
           <Khatam size={44} />
           <h1 className={heading}>{info.title}</h1>
           <p className="text-sm text-muted-foreground">{info.when}</p>
-          {presence}
+          {info.here && (
+            <p className="inline-flex items-center gap-2 rounded-[var(--r-pill)] bg-teal/10 px-3 py-1.5 text-sm font-medium text-teal">
+              <span className="h-2.5 w-2.5 rounded-full bg-teal" />{info.here}
+            </p>
+          )}
           <div className="grid gap-2 text-[0.95rem] leading-relaxed text-foreground">
             <p>{t("You'll watch quietly. Your camera and mic stay off.", 'هتتابع بهدوء. الكاميرا والمايك هيفضلوا مقفولين.')}</p>
             <p className="text-muted-foreground">
@@ -262,51 +263,67 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
   const hasVideo = !!stream?.getVideoTracks().length;
   const hasMic = !!stream?.getAudioTracks().length;
   const blocked = cam === 'denied' || mic === 'denied';
+  const noPicture = !hasVideo || camOff;
+  const micName = stream?.getAudioTracks()[0]?.label || t('Default microphone', 'المايك الأساسي');
+  const speakerName = speakers.find((d) => d.deviceId === speakerId)?.label || t('Default speaker', 'السماعة الأساسية');
 
+  // One crimson action per view: the Join button. Problem pills use the light crimson tint.
+  // The homepage door around your own camera. Without a picture, the crimson portal shows the khatam and a gold light.
   const preview = (
-    <div className="relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem]">
-      <div className="arch-face relative aspect-[4/5] w-full overflow-hidden bg-[#1C1714] text-[#FAF7F2] shadow-[0_30px_70px_-34px_rgba(59,34,25,0.7)] ring-1 ring-[rgba(229,169,60,0.28)] [--arch-h:11rem]">
-        {hasVideo && <video ref={videoRef} autoPlay playsInline muted className={cn('absolute inset-0 h-full w-full -scale-x-100 object-cover', camOff && 'invisible')} />}
-        {(!hasVideo || camOff) && (
-          <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(26rem_18rem_at_50%_0%,rgba(229,169,60,0.2),transparent_70%)] p-6 text-center">
-            {loading ? (slow && (
-              <div className="grid justify-items-center gap-3"><Khatam size={56} breathe /><p className="text-sm text-[#D8C6AE]">{t('Opening your camera…', 'بنفتح الكاميرا…')}</p></div>
-            )) : cam === 'denied' && !camOff ? (
-              <div className="grid justify-items-center gap-3">
-                <span className="arch-tile grid h-16 w-14 place-items-center bg-[#3B2219] text-[#F6D58E]"><Lock className="h-6 w-6" aria-hidden="true" /></span>
-                <p className="max-w-[16rem] text-[0.95rem] font-semibold">{t('Your browser is blocking the camera', 'المتصفح مانع الكاميرا')}</p>
-                <p className="max-w-[16rem] text-sm leading-relaxed text-[#D8C6AE]">{t('The steps to allow it are next to this. You can still join with your voice.', 'خطوات السماح بيها جنبك. وتقدر تدخل بصوتك برضه.')}</p>
-              </div>
-            ) : (
-              <div className="grid justify-items-center gap-3">
-                <span aria-hidden="true" className="arch-tile grid h-24 w-20 place-items-center bg-[#2E2824] font-editorial text-4xl text-[#F6D58E]">
-                  {camOff ? <VideoOff className="h-8 w-8" /> : <Video className="h-8 w-8" />}
-                </span>
-                <p className="max-w-[16rem] text-sm leading-relaxed text-[#D8C6AE]">
-                  {camOff ? t('Your camera is off. Turn it on whenever you like.', 'الكاميرا مقفولة. افتحها وقت ما تحب.')
-                    : hasMic ? t("We can't find a camera, or another app is using it. You can join with your voice.", 'ملقيناش كاميرا، أو في برنامج تاني شغّالها. تقدر تدخل بصوتك.')
-                      : t("This device can't open a camera or mic. Try another browser, or join to listen.", 'الجهاز ده مش قادر يفتح كاميرا أو مايك. جرّب متصفح تاني، أو ادخل واسمع.')}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-        {(hasVideo || hasMic) && (
-          <div className="absolute inset-x-0 bottom-4 z-[2] flex justify-center gap-3">
-            {hasMic && (
-              <button type="button" onClick={() => setMicOff((v) => !v)} aria-pressed={micOff}
-                aria-label={micOff ? t('Turn mic on', 'افتح المايك') : t('Mute', 'اقفل المايك')}
-                className={cn('room-press grid h-12 w-12 place-items-center rounded-full focus-ring', micOff ? 'bg-[#3D2A20] text-[#F2B39F] ring-1 ring-[#DA7960]/40' : 'face-scrim hover:bg-[rgba(17,15,14,0.78)]')}>
-                {micOff ? <MicOff className="h-5 w-5" aria-hidden="true" /> : <Mic className="h-5 w-5" aria-hidden="true" />}
-              </button>
-            )}
-            {hasVideo && (
-              <button type="button" onClick={() => setCamOff((v) => !v)} aria-pressed={camOff}
-                aria-label={camOff ? t('Turn camera on', 'افتح الكاميرا') : t('Turn camera off', 'اقفل الكاميرا')}
-                className={cn('room-press grid h-12 w-12 place-items-center rounded-full focus-ring', camOff ? 'bg-[#3D2A20] text-[#F2B39F] ring-1 ring-[#DA7960]/40' : 'face-scrim hover:bg-[rgba(17,15,14,0.78)]')}>
-                {camOff ? <VideoOff className="h-5 w-5" aria-hidden="true" /> : <Video className="h-5 w-5" aria-hidden="true" />}
-              </button>
-            )}
+    <div className="wait-slot relative mx-auto w-full max-w-[15.5rem] sm:max-w-[25rem]">
+      <div className="wait-door glass-2 grid gap-3 p-2 pb-3 sm:p-2.5 sm:pb-4">
+        <div className={cn('wait-portal aspect-[4/5] w-full text-[#FAF7F2]', noPicture && 'khatam-window')}>
+          {hasVideo && <video ref={videoRef} autoPlay playsInline muted className={cn('absolute inset-0 h-full w-full -scale-x-100 object-cover', camOff && 'invisible')} />}
+          {noPicture && (
+            <div className="absolute inset-0 grid place-items-center p-6 text-center">
+              {!loading && <span className="door-glow" aria-hidden="true" />}
+              {loading ? (slow && (
+                <div className="relative grid justify-items-center gap-3"><Khatam size={56} breathe /><p className="text-sm text-[#F1E3D3]">{t('Opening your camera…', 'بنفتح الكاميرا…')}</p></div>
+              )) : (
+                <div className="relative grid justify-items-center gap-2.5">
+                  <Khatam size={56} className="drop-shadow-[0_0_14px_rgba(229,169,60,0.45)]" />
+                  <p className="max-w-[16rem] text-[0.95rem] font-bold sm:text-base">
+                    {camOff ? t('Your camera is off', 'الكاميرا مقفولة')
+                      : cam === 'denied' ? t('Your browser is blocking the camera', 'المتصفح مانع الكاميرا')
+                        : hasMic ? t("We can't find a camera", 'ملقيناش كاميرا') : t("This device can't open a camera or mic", 'الجهاز ده مش قادر يفتح كاميرا أو مايك')}
+                  </p>
+                  <p className="max-w-[16rem] text-sm leading-relaxed text-[#F1E3D3]">
+                    {camOff ? t('Turn it on with the button below whenever you like.', 'افتحها من الزرار اللي تحت وقت ما تحب.')
+                      : cam === 'denied' ? t('Two steps and it works. You can still join with your voice.', 'خطوتين وتشتغل. وتقدر تدخل بصوتك برضه.')
+                        : hasMic ? t('Another app may be using it. You can join with your voice.', 'ممكن برنامج تاني شغّالها. تقدر تدخل بصوتك.')
+                          : t('Try another browser, or join to listen.', 'جرّب متصفح تاني، أو ادخل واسمع.')}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+          {(hasVideo || hasMic) && (
+            <div className="absolute inset-x-0 bottom-3 z-[2] flex justify-center gap-3 sm:bottom-5">
+              {hasMic && (
+                <button type="button" onClick={() => setMicOff((v) => !v)} aria-pressed={micOff}
+                  aria-label={micOff ? t('Turn mic on', 'افتح المايك') : t('Mute', 'اقفل المايك')}
+                  className={cn('room-press grid h-12 w-12 place-items-center rounded-full ring-1 focus-ring backdrop-blur-md', micOff ? 'bg-[#FAF7F2] text-[#C51F24] ring-transparent' : 'face-scrim ring-white/15 hover:bg-[rgba(17,15,14,0.78)]')}>
+                  {micOff ? <MicOff className="h-5 w-5" aria-hidden="true" /> : <Mic className="h-5 w-5" aria-hidden="true" />}
+                </button>
+              )}
+              {hasVideo && (
+                <button type="button" onClick={() => setCamOff((v) => !v)} aria-pressed={camOff}
+                  aria-label={camOff ? t('Turn camera on', 'افتح الكاميرا') : t('Turn camera off', 'اقفل الكاميرا')}
+                  className={cn('room-press grid h-12 w-12 place-items-center rounded-full ring-1 focus-ring backdrop-blur-md', camOff ? 'bg-[#FAF7F2] text-[#C51F24] ring-transparent' : 'face-scrim ring-white/15 hover:bg-[rgba(17,15,14,0.78)]')}>
+                  {camOff ? <VideoOff className="h-5 w-5" aria-hidden="true" /> : <Video className="h-5 w-5" aria-hidden="true" />}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        {hasMic && (
+          <div className="flex items-center justify-center gap-3 px-2" aria-label={t('Microphone level', 'مستوى صوت المايك')}>
+            <span ref={barsRef} aria-hidden="true" className="flex h-6 items-center gap-1">
+              {BARS.map((_, i) => <span key={i} className={cn('block h-6 w-1.5 origin-center rounded-full', micOff ? 'bg-sand-border' : 'bg-teal')} style={{ transform: 'scaleY(0.12)' }} />)}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              {micOff ? t('Your mic is off.', 'المايك مقفول.') : t('Say salam. The bars should move.', 'قول السلام عليكم، والخطوط هتتحرك.')}
+            </span>
           </div>
         )}
       </div>
@@ -318,68 +335,153 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
     </div>
   );
 
-  const meter = hasMic && (
-    <div className="flex items-center justify-center gap-3" aria-label={t('Microphone level', 'مستوى صوت المايك')}>
-      <span ref={barsRef} aria-hidden="true" className="flex h-7 items-center gap-1">
-        {BARS.map((_, i) => <span key={i} className="block h-7 w-1.5 origin-center rounded-full bg-teal" style={{ transform: 'scaleY(0.12)' }} />)}
-      </span>
-      <span className="text-sm text-muted-foreground">
-        {micOff ? t('Your mic is off.', 'المايك مقفول.') : t('Say salam. The bars should move.', 'قول السلام عليكم، والخطوط هتتحرك.')}
-      </span>
+  // Readiness: iOS grouped rows, brand tints only (teal, copper, gold, sand; crimson marks a problem).
+  type Row = { key: string; icon: React.ReactNode; tint: string; title: string; sub: string; end?: React.ReactNode; onClick?: () => void };
+  const ok = (text: string) => <span className="font-bold text-teal">{text}</span>;
+  const bad = (text: string) => <span className="font-bold text-crimson">{text}</span>;
+  const pill = (text: string, fix = false) => (
+    <span className={cn('inline-flex h-8 items-center rounded-[var(--r-pill)] px-3 text-[0.82rem] font-semibold', fix ? 'bg-crimson/10 text-crimson ring-1 ring-crimson/30' : 'bg-surface-subtle text-foreground ring-1 ring-border')}>{text}</span>
+  );
+  const chevron = <ChevronLeft className={cn('h-4 w-4 text-muted-foreground', !isAr && 'rotate-180')} aria-hidden="true" />;
+  const toDevices = () => setPage('devices');
+  const rows: Row[] = [
+    cam === 'denied'
+      ? { key: 'cam', icon: <VideoOff className="h-4 w-4" />, tint: 'bg-crimson', title: t('Camera', 'الكاميرا'), sub: t('Your browser is blocking it', 'المتصفح مانعها'), end: pill(t('Allow it', 'اسمح بيها'), true), onClick: () => setPage('fix') }
+      : !hasVideo
+        ? { key: 'cam', icon: <VideoOff className="h-4 w-4" />, tint: 'bg-[var(--gold-deep)]', title: t('Camera', 'الكاميرا'), sub: loading ? t('Opening…', 'بنفتحها…') : t('No camera found. You can join by voice', 'مفيش كاميرا. تقدر تدخل بصوتك'), end: chevron, onClick: toDevices }
+        : { key: 'cam', icon: camOff ? <VideoOff className="h-4 w-4" /> : <Video className="h-4 w-4" />, tint: 'bg-teal', title: t('Camera', 'الكاميرا'),
+            sub: camOff ? t('Off. Turn it on whenever you like', 'مقفولة. افتحها وقت ما تحب') : height != null && !passed720 && !kid ? t('A bit blurry: face a window', 'مش واضحة أوي: اقعد قصاد شباك') : t('Clear', 'واضحة'),
+            end: <>{!camOff && ok(t('Ready', 'جاهزة'))}{chevron}</>, onClick: toDevices },
+    mic === 'denied'
+      ? { key: 'mic', icon: <MicOff className="h-4 w-4" />, tint: 'bg-crimson', title: t('Mic', 'المايك'), sub: t('Your browser is blocking it', 'المتصفح مانعه'), end: pill(t('Allow it', 'اسمح بيه'), true), onClick: () => setPage('fix') }
+      : { key: 'mic', icon: micOff || !hasMic ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />, tint: 'bg-[var(--copper)]', title: t('Mic', 'المايك'),
+          sub: !hasMic ? (loading ? t('Opening…', 'بنفتحه…') : t('No mic found', 'مفيش مايك')) : micOff ? t("Off. You'll join muted", 'مقفول. هتدخل وانت صامت') : micName,
+          end: <>{hasMic && !micOff && (heard ? ok(t('Heard you', 'سمعناك')) : <span>{t('Say something', 'اتكلم')}</span>)}{chevron}</>, onClick: toDevices },
+    { key: 'spk', icon: <Volume2 className="h-4 w-4" />, tint: 'bg-[var(--gold-deep)]', title: t('Speaker', 'السماعة'), sub: speakerName,
+      end: speakerTested ? <>{ok(t('Played', 'اشتغلت'))}{pill(t('Again', 'تاني'))}</> : pill(t('Test', 'جرّب')), onClick: testSpeaker },
+    { key: 'net', icon: <Wifi className="h-4 w-4" />, tint: net?.network === 'poor' ? 'bg-crimson' : 'bg-[color:var(--muted-foreground)]', title: t('Internet', 'النت'),
+      sub: !net ? t('Testing…', 'بنختبر…')
+        : net.network === 'poor' ? t('Sit closer to the router. The lesson keeps your voice first', 'اقعد قريب من الراوتر. الحصة بتحافظ على الصوت الأول')
+          : net.network === 'unknown' ? t('We could not test it. You can still join', 'ما قدرناش نختبره. تقدر تدخل عادي')
+            : `${net.latencyMs != null ? `${net.latencyMs} ms` : '–'} · ${net.downKbps != null ? `${(net.downKbps / 1000).toFixed(1)} Mbps` : '–'}`,
+      end: !net ? undefined : net.network === 'good' ? ok(t('Good', 'كويس')) : net.network === 'fair' ? ok(t('OK', 'مقبول')) : net.network === 'poor' ? bad(t('Weak', 'ضعيف')) : pill(t('Test again', 'اختبر تاني')),
+      onClick: net ? () => setNetRun((n) => n + 1) : undefined },
+  ];
+
+  const rowClass = 'flex min-h-14 w-full items-center gap-3 px-3.5 py-2.5 text-start text-[0.95rem] text-foreground';
+  const back = (title: string) => (
+    <div className="flex items-center gap-2 pb-3">
+      <button type="button" onClick={() => setPage('main')} className="room-press inline-flex min-h-11 items-center gap-1 rounded-[var(--r-pill)] px-3 text-sm font-semibold text-foreground ring-1 ring-border focus-ring">
+        <ChevronLeft className={cn('h-4 w-4', isAr && 'rotate-180')} aria-hidden="true" />{t('Back', 'رجوع')}
+      </button>
+      <h2 className="text-[0.95rem] font-bold">{title}</h2>
     </div>
   );
 
-  const check = (ok: boolean, text: string) => (
-    <span className={cn('inline-flex items-center gap-1.5 rounded-[var(--r-pill)] px-3 py-1.5 text-sm font-medium', ok ? 'bg-teal/10 text-teal' : 'bg-sand-light text-muted-foreground ring-1 ring-sand-border')}>
-      {ok ? <CheckCircle2 className="h-4 w-4" aria-hidden="true" /> : <Info className="h-4 w-4" aria-hidden="true" />}{text}
-    </span>
+  const mainPage = (
+    <div className="grid gap-3">
+      <p className="px-1.5 text-[0.82rem] text-muted-foreground">{t('Your setup', 'جاهزيتك')}</p>
+      <div className="wait-rows">
+        {rows.map((r) => {
+          const inner = (
+            <>
+              <span className={cn('wait-tint', r.tint)} aria-hidden="true">{r.icon}</span>
+              <span className="grid min-w-0 gap-0.5"><span>{r.title}</span><span className="text-[0.8rem] leading-snug text-muted-foreground">{r.sub}</span></span>
+              <span className="ms-auto flex shrink-0 items-center gap-1.5 text-[0.85rem] text-muted-foreground">{r.end}</span>
+            </>
+          );
+          return r.onClick
+            ? <button key={r.key} type="button" onClick={r.onClick} className={cn(rowClass, 'transition-colors hover:bg-surface-subtle focus-ring')}>{inner}</button>
+            : <div key={r.key} className={rowClass}>{inner}</div>;
+        })}
+      </div>
+      {teacher && (
+        <div className="wait-rows">
+          <div className={rowClass}>
+            <span className="wait-tint bg-accent" aria-hidden="true"><BookOpen className="h-4 w-4" /></span>
+            <span className="grid min-w-0 flex-1 gap-0.5">
+              <Switch checked={recitation} onChange={setRecitation}
+                hint={t('Keeps the full voice for Quran recitation. Turn it off for normal talk.', 'بيحافظ على الصوت كامل وقت التلاوة. اقفله في الكلام العادي.')}>
+                {t('Recitation mode', 'وضع التلاوة')}
+              </Switch>
+            </span>
+          </div>
+          <div className={rowClass}>
+            <span className="wait-tint bg-[color:var(--muted-foreground)]" aria-hidden="true"><Headphones className="h-4 w-4" /></span>
+            <span className="grid min-w-0 gap-0.5"><span>{t('Wear your headset', 'البس السماعة')}</span><span className="text-[0.8rem] leading-snug text-muted-foreground">{t('It stops echo, and you hear every letter clearly.', 'بتمنع الصدى، وبتخليك تسمع كل حرف بوضوح.')}</span></span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 
-  const pickers = (
-    <div className="grid gap-3 rounded-[var(--r-3)] bg-surface p-4 shadow-[var(--shadow-1)] ring-1 ring-border-subtle">
-      {cams.length > 1 && (
-        <Picker icon={<Video className="h-4 w-4" />} label={t('Camera', 'الكاميرا')} value={cameraId} onChange={setCameraId}
-          options={cams.map((d, i) => [d.deviceId, label(d, i, t('Camera', 'كاميرا'))])} defaultLabel={t('Default camera', 'الكاميرا الأساسية')} />
-      )}
-      {mics.length > 1 && (
-        <Picker icon={<Mic className="h-4 w-4" />} label={t('Microphone', 'المايك')} value={micId} onChange={setMicId}
-          options={mics.map((d, i) => [d.deviceId, label(d, i, t('Microphone', 'مايك'))])} defaultLabel={t('Default microphone', 'المايك الأساسي')} />
-      )}
-      {canPickSpeaker && speakers.length > 1 && (
-        <Picker icon={<Volume2 className="h-4 w-4" />} label={t('Speaker', 'السماعة')} value={speakerId} onChange={setSpeakerId}
-          options={speakers.map((d, i) => [d.deviceId, label(d, i, t('Speaker', 'سماعة'))])} defaultLabel={t('Default speaker', 'السماعة الأساسية')} />
-      )}
-      <button type="button" onClick={testSpeaker} className="room-press inline-flex min-h-11 items-center gap-2 justify-self-start rounded-[var(--r-pill)] px-1 text-sm font-medium text-teal focus-ring">
-        <Volume2 className="h-4 w-4" aria-hidden="true" />{t('Play a test sound', 'شغّل صوت تجربة')}
-      </button>
-      <div className="grid gap-1 border-t border-border-subtle pt-3 text-sm text-muted-foreground">
-        <p className="flex items-center gap-2 font-medium text-foreground"><Gauge className="h-4 w-4" aria-hidden="true" />{t('Internet test', 'اختبار النت')}</p>
-        {net ? (
-          <p dir="ltr" className="tabular-nums">
+  const devicesPage = (
+    <div className="room-push">
+      {back(t('Devices', 'الأجهزة'))}
+      <div className="grid gap-3 rounded-[1.1rem] bg-surface p-4 shadow-[var(--shadow-1)] ring-1 ring-border-subtle">
+        {cams.length > 0 && (
+          <Picker icon={<Video className="h-4 w-4" />} label={t('Camera', 'الكاميرا')} value={cameraId} onChange={setCameraId}
+            options={cams.map((d, i) => [d.deviceId, label(d, i, t('Camera', 'كاميرا'))])} defaultLabel={t('Default camera', 'الكاميرا الأساسية')} />
+        )}
+        {mics.length > 0 && (
+          <Picker icon={<Mic className="h-4 w-4" />} label={t('Microphone', 'المايك')} value={micId} onChange={setMicId}
+            options={mics.map((d, i) => [d.deviceId, label(d, i, t('Microphone', 'مايك'))])} defaultLabel={t('Default microphone', 'المايك الأساسي')} />
+        )}
+        {canPickSpeaker && speakers.length > 1 && (
+          <Picker icon={<Volume2 className="h-4 w-4" />} label={t('Speaker', 'السماعة')} value={speakerId} onChange={setSpeakerId}
+            options={speakers.map((d, i) => [d.deviceId, label(d, i, t('Speaker', 'سماعة'))])} defaultLabel={t('Default speaker', 'السماعة الأساسية')} />
+        )}
+        {!cams.length && !mics.length && <p className="text-sm text-muted-foreground">{t('No camera or mic found on this device.', 'ملقيناش كاميرا أو مايك على الجهاز ده.')}</p>}
+        <button type="button" onClick={testSpeaker} className="room-press inline-flex min-h-11 items-center gap-2 justify-self-start rounded-[var(--r-pill)] px-1 text-sm font-medium text-teal focus-ring">
+          <Volume2 className="h-4 w-4" aria-hidden="true" />{t('Play a test sound', 'شغّل صوت تجربة')}
+        </button>
+        {net && (
+          <p dir="ltr" className="border-t border-border-subtle pt-3 text-sm tabular-nums text-muted-foreground">
             {net.latencyMs != null ? `${net.latencyMs} ms` : '–'} · {net.downKbps != null ? `${(net.downKbps / 1000).toFixed(1)} Mbps` : '–'} · {t('relay', 'السيرفر الاحتياطي')} {net.relay === 'ok' ? '✓' : net.relay === 'failed' ? '✗' : '–'}
           </p>
-        ) : <p>{t('Testing…', 'بنختبر…')}</p>}
-        <button type="button" disabled={!net} onClick={() => setNetRun((n) => n + 1)} className="room-press inline-flex min-h-11 items-center gap-2 justify-self-start rounded-[var(--r-pill)] px-1 text-sm font-medium text-teal focus-ring disabled:opacity-50">
-          <RefreshCw className="h-4 w-4" aria-hidden="true" />{t('Test again', 'اختبر تاني')}
-        </button>
+        )}
+        {kid && <p className="text-sm leading-relaxed text-muted-foreground">{t('For grown-ups: if the picture or sound is missing, check the browser lets this page use the camera and mic, then pick them here.', 'لولي الأمر: لو الصورة أو الصوت مش شغّالين، اتأكد إن المتصفح سامح للصفحة بالكاميرا والمايك، واختارهم من هنا.')}</p>}
       </div>
-      {kid && <p className="text-sm leading-relaxed text-muted-foreground">{t('For grown-ups: if the picture or sound is missing, check the browser lets this page use the camera and mic, then pick them here.', 'لولي الأمر: لو الصورة أو الصوت مش شغّالين، اتأكد إن المتصفح سامح للصفحة بالكاميرا والمايك، واختارهم من هنا.')}</p>}
     </div>
+  );
+
+  const fixPage = (
+    <div className="room-push grid gap-3">
+      {back(cam === 'denied' && mic === 'denied' ? t('Allow the camera and mic', 'نسمح بالكاميرا والمايك') : cam === 'denied' ? t("Let's turn the camera on", 'نفتح الكاميرا') : t("Let's turn the mic on", 'نفتح المايك'))}
+      <ol className="wait-rows py-1">
+        {permissionSteps(who, t).map((step, i) => (
+          <li key={step} className={cn(rowClass, 'min-h-12 text-[0.92rem] leading-relaxed')}>
+            <span className="wait-tint bg-[var(--gold-deep)] text-[0.8rem] font-bold" aria-hidden="true">{i + 1}</span>{step}
+          </li>
+        ))}
+      </ol>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="secondary" onClick={() => { setPage('main'); setAttempt((n) => n + 1); }}>
+          <RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{t('Try again', 'جرّب تاني')}
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => setPage('main')}>{t("I'll join by voice", 'هدخل بصوتي')}</Button>
+      </div>
+    </div>
+  );
+
+  const presence = (
+    <p className={cn('inline-flex min-h-11 items-center gap-2.5 justify-self-start rounded-[var(--r-pill)] px-4 text-sm font-medium', info.here ? 'bg-teal/10 text-teal' : 'bg-sand-light text-muted-foreground ring-1 ring-sand-border')}>
+      <span className={cn('h-2.5 w-2.5 shrink-0 rounded-full', info.here ? 'wait-ping bg-teal' : 'bg-muted-foreground')} aria-hidden="true" />
+      {info.here ?? (teacher ? t("Your student hasn't joined yet", 'الطالب لسه ما دخلش') : t("Your teacher hasn't joined yet", 'المعلم لسه ما دخلش'))}
+    </p>
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 pt-6 sm:pt-10 lg:min-h-full lg:content-center lg:grid-cols-[26rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-6 lg:pb-14 lg:pt-16">
+    <div className="mx-auto grid w-full max-w-5xl gap-5 px-4 pt-6 sm:pt-10 lg:min-h-full lg:content-center lg:grid-cols-[25rem_minmax(0,1fr)] lg:grid-rows-[auto_1fr] lg:gap-x-20 lg:gap-y-6 lg:pb-14 lg:pt-16">
       <header className="grid justify-items-start gap-2 lg:col-start-2 lg:row-start-1 lg:self-end">
-        <h1 className={heading}>{info.title}</h1>
+        <p className="inline-flex items-center gap-2 text-[0.85rem] font-bold text-accent"><Khatam size={18} />{t('Waiting room', 'غرفة الانتظار')}</p>
+        <h1 className={cn(heading, 'text-ribbon')}>{info.title}</h1>
         <p className="text-[0.95rem] text-muted-foreground">{info.when}</p>
         {kid && <p className="text-base text-foreground">{t('Ready? Your teacher can see you when you join.', 'جاهز؟ معلمك هيشوفك أول ما تدخل.')}</p>}
-        {presence}
+        <div className="mt-1">{presence}</div>
       </header>
 
-      <div className="grid gap-4 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:self-center">
-        {preview}
-        {meter}
-      </div>
+      <div className="lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:self-center">{preview}</div>
 
       <div className="grid content-start gap-4 lg:col-start-2 lg:row-start-2">
         {inApp && (
@@ -392,69 +494,15 @@ export function WaitingRoom({ role, ticket, bookingId, onReady, info, kid = fals
           </div>
         )}
 
-        {!loading && blocked && (
-          <div role="alert" className="grid gap-3 rounded-[var(--r-3)] bg-sand-light p-4 ring-1 ring-sand-border">
-            <p className="flex items-start gap-2 text-[0.95rem] font-semibold text-foreground">
-              <Lock className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-              {cam === 'denied' && mic === 'denied' ? t('Your browser is blocking the camera and mic', 'المتصفح مانع الكاميرا والمايك')
-                : cam === 'denied' ? t('Your browser is blocking the camera', 'المتصفح مانع الكاميرا') : t('Your browser is blocking the mic', 'المتصفح مانع المايك')}
-            </p>
-            <ol className="grid list-decimal gap-1.5 ps-5 text-sm leading-relaxed text-sand-foreground">
-              {permissionSteps(who, t).map((step) => <li key={step}>{step}</li>)}
-            </ol>
-            <Button variant="outline" size="sm" className="justify-self-start" onClick={() => setAttempt((n) => n + 1)}>
-              <RefreshCw className="me-2 h-4 w-4" aria-hidden="true" />{t('Try again', 'جرّب تاني')}
-            </Button>
-          </div>
-        )}
-
-        {!loading && (
-          <div className="flex flex-wrap gap-2">
-            {check(hasVideo, hasVideo ? t('Camera ready', 'الكاميرا جاهزة') : t('No camera', 'مفيش كاميرا'))}
-            {check(hasMic && (heard || micOff), hasMic ? (heard ? t('Sound ready', 'الصوت جاهز') : t('Say something to test', 'اتكلم علشان نجرب')) : t('No mic', 'مفيش مايك'))}
-            {net && check(net.network === 'good', net.network === 'good' ? t('Internet good', 'النت كويس') : net.network === 'fair' ? t('Internet OK', 'النت مقبول') : net.network === 'poor' ? t('Internet weak', 'النت ضعيف') : t('Internet not checked', 'ما قدرناش نختبر النت'))}
-          </div>
-        )}
-        {net && net.network !== 'good' && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {net.network === 'poor'
-              ? t('Your internet is weak right now. Sit closer to the router, or close videos and downloads on this network. The lesson keeps your voice first.', 'النت ضعيف دلوقتي. اقعد قريب من الراوتر، أو اقفل الفيديوهات والتحميلات على نفس الشبكة. الحصة بتحافظ على الصوت الأول.')
-              : net.network === 'fair' ? t('Your internet is fine for the lesson; the picture may be a little softer.', 'النت كويس للحصة؛ الصورة ممكن تبقى أقل وضوحًا شوية.')
-                : t('We could not test your internet. You can still join.', 'ما قدرناش نختبر النت. تقدر تدخل عادي.')}
-          </p>
-        )}
-        {hasVideo && height != null && !passed720 && !kid && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {t('Your camera looks a bit blurry. Sitting facing a window helps, and so does closing other apps that use the camera.', 'الكاميرا شكلها مش واضحة أوي. اقعد قصاد شباك، واقفل البرامج التانية اللي بتستخدم الكاميرا.')}
-          </p>
-        )}
-
-        {teacher && (
-          <div className="grid gap-1 rounded-[var(--r-3)] bg-sand-light p-4 ring-1 ring-sand-border">
-            <p className="flex items-start gap-2 text-sm leading-relaxed text-sand-foreground">
-              <Headphones className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-              {t('Please wear your headset. It stops echo and lets you hear every letter clearly.', 'من فضلك البس السماعة. بتمنع الصدى وبتخليك تسمع كل حرف بوضوح.')}
-            </p>
-            <Switch checked={recitation} onChange={setRecitation}
-              hint={t('Keeps the full voice for Quran recitation. Turn it off for normal talk.', 'بيحافظ على الصوت كامل وقت التلاوة. اقفله في الكلام العادي.')}>
-              {t('Recitation mode', 'وضع التلاوة')}
-            </Switch>
-          </div>
-        )}
-
-        <div className="grid gap-3">
-          <button type="button" aria-expanded={devicesOpen} onClick={() => setDevicesOpen((o) => !o)}
-            className="room-press inline-flex min-h-11 items-center gap-1.5 justify-self-start rounded-[var(--r-pill)] text-sm font-medium text-teal focus-ring">
-            {kid ? t('Need help?', 'محتاج مساعدة؟') : t('Change camera, mic or speaker', 'غيّر الكاميرا أو المايك أو السماعة')}
-            <ChevronDown className={cn('h-4 w-4 transition-transform duration-[var(--dur-ui)]', devicesOpen && 'rotate-180')} aria-hidden="true" />
-          </button>
-          {devicesOpen && <div className="room-fade">{pickers}</div>}
+        <div className="glass-2 rounded-[1.6rem] p-3" aria-live="polite">
+          {page === 'devices' ? devicesPage : page === 'fix' && blocked ? fixPage : mainPage}
         </div>
 
-        <div className="sticky bottom-0 -mx-4 bg-[linear-gradient(to_top,var(--background)_70%,transparent)] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-6 lg:static lg:mx-0 lg:bg-none lg:p-0">
-          <Button size="lg" onClick={join} isLoading={loading} disabled={loading} className="w-full lg:w-auto lg:min-w-[16rem]">
-            {t('Join the lesson', 'ادخل الحصة')}
+        <div className="sticky bottom-0 -mx-4 grid gap-2 bg-[linear-gradient(to_top,var(--background)_70%,transparent)] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-6 lg:static lg:mx-0 lg:bg-none lg:p-0">
+          <Button size="lg" onClick={join} isLoading={loading} disabled={loading} className="w-full">
+            {teacher ? t('Start the lesson', 'ابدأ الحصة') : !hasVideo && hasMic ? t('Join with your voice', 'ادخل بصوتك') : t('Join the lesson', 'ادخل الحصة')}
           </Button>
+          <p className="hidden text-center text-[0.82rem] text-muted-foreground lg:block">{t('You can change any of this in the lesson, under More.', 'تقدر تغيّر أي حاجة دي جوه الحصة من «المزيد».')}</p>
         </div>
       </div>
     </div>
