@@ -4,9 +4,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export PATH="$PATH:$HOME/.rive/bin"
-python tools/make_svg.py zad3d.svg
+python tools/make_svg.py zad3d.svg "${ZAD_STYLE:-duo}"
 rive svg zad3d.svg --out=scene.rml --artboard=Zad --force --quiet
-python tools/add_motion.py scene.rml
+python tools/add_motion.py scene.rml "${ZAD_STYLE:-duo}"
 rive . --verify
 if [ "${1:-}" = "--publish" ]; then
   rive . --publish

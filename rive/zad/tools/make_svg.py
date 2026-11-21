@@ -8,11 +8,15 @@ Ground effects (Shadow, FxDust, FxRing, confetti) stay put; the rest ride on Roo
 """
 import math, sys
 S = 200.0; CX = 300.0; GY = 560.0; CY = GY - 0.72 * S
-SHX, SHY = 0.52 * S, 0.12 * S          # shoulder offset from the body centre (add_motion.py uses the same numbers)
 f = lambda v: ('%.2f' % v).rstrip('0').rstrip('.')
 # body style; the owner is choosing between rounded redesigns (2026-11-21): v2 (sharp khatam), soft, bubble, emblem
 VAR = sys.argv[2] if len(sys.argv) > 2 else 'v2'
 ROUND = VAR != 'v2'
+DUO = VAR == 'duo'      # a chubby round body like Duolingo's mascot: face on the upper body, belly, khatam crest
+SHX, SHY = (0.56 * S, 0.15 * S) if DUO else (0.47 * S, 0.14 * S)   # shoulder from the body centre (add_motion.py: SH)
+HY = CY - 0.2 * S if DUO else CY                                   # face centre
+FR = 0.38 * S if DUO else 0.35 * S
+EK = 1.25 if DUO else 1.0                                          # eye size
 
 
 def pivot(name, px, py, inner, extra=''):
@@ -48,6 +52,15 @@ def body(r, rnd=0.12):
     if VAR == 'emblem':    # a soft rounded octagon; the khatam lives on as the gold inlay
         return khatam(r * 0.93, 0.5) if r < 0.56 else octa(r)
     return khatam(r, rnd)
+
+
+def egg(grow=0.0):
+    W, H = 0.64 * S + grow, 0.64 * S + grow
+    pts = []
+    for i in range(120):
+        t = i / 120 * 2 * math.pi
+        pts.append('%s %s' % (f(CX + W * math.cos(t) * (1 + 0.1 * math.sin(t))), f(CY + H * math.sin(t))))
+    return 'M' + ' L'.join(pts) + ' Z'
 
 
 def octa(r):
@@ -112,6 +125,8 @@ o.append('''<defs>
 <radialGradient id="eye" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#4A2A1E"/><stop offset=".55" stop-color="#1E0F0A"/><stop offset="1" stop-color="#120805"/></radialGradient>
 <radialGradient id="blush" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FF8F86" stop-opacity=".75"/><stop offset="1" stop-color="#FF8F86" stop-opacity="0"/></radialGradient>
 <radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#F6C25A" stop-opacity=".45"/><stop offset="1" stop-color="#F6C25A" stop-opacity="0"/></radialGradient>
+<radialGradient id="bodyG" cx="38%" cy="28%" r="80%"><stop offset="0" stop-color="#EC5257"/><stop offset=".55" stop-color="#C21D24"/><stop offset="1" stop-color="#7E1216"/></radialGradient>
+<radialGradient id="belly" cx="45%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF6E8"/><stop offset="1" stop-color="#EBCB9C"/></radialGradient>
 <radialGradient id="puff" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#FFF6E6"/><stop offset="1" stop-color="#E6D3B5"/></radialGradient>
 <radialGradient id="shoe" cx="38%" cy="25%" r="80%"><stop offset="0" stop-color="#9A5A40"/><stop offset=".5" stop-color="#5B2A1C"/><stop offset="1" stop-color="#3A180F"/></radialGradient>
 <linearGradient id="leg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C98560"/><stop offset=".5" stop-color="#A0603E"/><stop offset="1" stop-color="#6E3A22"/></linearGradient>
@@ -138,11 +153,11 @@ root.append('<g id="FxSpeed" opacity="0" transform="translate(%s %s)">%s</g>' % 
 
 legs = ''
 for s, name in ((-1, 'LegL'), (1, 'LegR')):
-    hx = CX + s * 0.16 * S; hy = GY - 50
+    hx = CX + s * (0.2 if DUO else 0.16) * S; hy = GY - (54 if DUO else 50)
     art = ('<rect x="-6.6" y="-4" width="13.2" height="46" rx="6.6" fill="url(#leg)"/>'
-           '<ellipse cx="%s" cy="42" rx="20" ry="11" fill="url(#shoe)" stroke="#2E130B" stroke-width="1"/>'
+           '<ellipse cx="%s" cy="42" rx="%s" ry="%s" fill="url(#shoe)" stroke="#2E130B" stroke-width="1"/>'
            '<ellipse cx="%s" cy="37.5" rx="7.5" ry="2.6" fill="#FFE2CC" opacity=".55"/>'
-           '<rect x="-9" y="31" width="18" height="5.6" rx="2.8" fill="url(#goldA)" stroke="#9A661C" stroke-width=".8"/>') % (f(s * 4), f(s * 4 - 5))
+           '<rect x="-9" y="31" width="18" height="5.6" rx="2.8" fill="url(#goldA)" stroke="#9A661C" stroke-width=".8"/>') % (f(s * (8 if DUO else 4)), f(26 if DUO else 20), f(14 if DUO else 11), f(s * 4 - 5))
     legs += '<g id="%s" transform="translate(%s %s)">%s</g>' % (name, f(hx), f(hy), art)
 
 badge = []
@@ -166,44 +181,55 @@ for i in range(0 if ROUND else 30):
     a = i / 30 * 2 * math.pi
     badge.append('<circle cx="%s" cy="%s" r="2.7" fill="#FFE7A8" stroke="#9A661C" stroke-width=".6"/>' % (f(CX + math.cos(a) * 0.398 * S), f(CY - math.sin(a) * 0.398 * S)))
 
+if DUO:
+    badge = []
+    badge.append('<path d="%s" fill="url(#goldRim)" stroke="#8A5A18" stroke-width="1.6"/>' % khatam(0.2, 0.42, CX, CY - 0.6 * S))
+    badge.append('<path d="%s" fill="url(#crimsonF)"/>' % khatam(0.12, 0.42, CX, CY - 0.6 * S))
+    badge.append('<path transform="translate(4 7)" d="%s" fill="#3A0709" opacity=".35"/>' % egg())
+    badge.append('<path d="%s" fill="url(#bodyG)" stroke="#6B0F12" stroke-width="1.8"/>' % egg())
+    badge.append('<path d="%s" fill="none" stroke="#FF9C94" stroke-opacity=".35" stroke-width="3"/>' % egg(-6))
+    badge.append('<ellipse cx="%s" cy="%s" rx="74" ry="56" fill="url(#belly)"/>' % (f(CX), f(CY + 0.36 * S)))
+    badge.append('<path d="%s" fill="url(#goldRim)" stroke="#8A5A18" stroke-width="1.2"/>' % khatam(0.1, 0.46, CX, CY + 0.4 * S))
+    badge.append('<path d="%s" fill="url(#crimson)"/>' % khatam(0.06, 0.46, CX, CY + 0.4 * S))
+    badge.append('<ellipse transform="rotate(-28 %s %s)" cx="%s" cy="%s" rx="30" ry="12" fill="url(#shine)" opacity=".45"/>' % (f(CX - 74), f(CY - 66), f(CX - 74), f(CY - 66)))
+
 # the face: a dome standing out of the badge, lit from the top left; the features slide on it to fake a head turn
-FR = 0.35 * S
-EY = CY - 0.035 * S
+EY = HY - 0.035 * S * EK
 head = []
-head.append('<circle cx="%s" cy="%s" r="%s" fill="url(#cast)"/>' % (f(CX + 5), f(CY + 11), f(FR + 9)))
-head.append('<circle cx="%s" cy="%s" r="%s" fill="url(#face)" stroke="#C9A06A" stroke-width="1"/>' % (f(CX), f(CY), f(FR)))
-head.append('<circle cx="%s" cy="%s" r="%s" fill="none" stroke="url(#bounce)" stroke-width="3"/>' % (f(CX), f(CY), f(FR - 2.5)))
-head.append('<ellipse transform="rotate(-32 %s %s)" cx="%s" cy="%s" rx="26" ry="13" fill="url(#shine)"/>' % (f(CX - 30), f(CY - 40), f(CX - 30), f(CY - 40)))
+head.append('<circle cx="%s" cy="%s" r="%s" fill="url(#cast)"/>' % (f(CX + 5), f(HY + 11), f(FR + 9)))
+head.append('<circle cx="%s" cy="%s" r="%s" fill="url(#face)" stroke="#C9A06A" stroke-width="1"/>' % (f(CX), f(HY), f(FR)))
+head.append('<circle cx="%s" cy="%s" r="%s" fill="none" stroke="url(#bounce)" stroke-width="3"/>' % (f(CX), f(HY), f(FR - 2.5)))
+head.append('<ellipse transform="rotate(-32 %s %s)" cx="%s" cy="%s" rx="26" ry="13" fill="url(#shine)"/>' % (f(CX - 30), f(HY - 40), f(CX - 30), f(HY - 40)))
 feat = []
-feat.append('<g id="Blush"><ellipse cx="%s" cy="%s" rx="17" ry="11.5" fill="url(#blush)"/><ellipse cx="%s" cy="%s" rx="17" ry="11.5" fill="url(#blush)"/></g>' % (f(CX - 42), f(CY + 15), f(CX + 42), f(CY + 15)))
-feat.append('<g id="SmileG"><path d="M%s %s Q%s %s %s %s" fill="none" stroke="#6A2219" stroke-width="3.6" stroke-linecap="round"/></g>' % (f(CX - 7), f(CY + 15.5), f(CX), f(CY + 23), f(CX + 7), f(CY + 15.5)))
-feat.append('<g id="MouthFlat" opacity="0"><path d="M%s %s Q%s %s %s %s" fill="none" stroke="#6A2219" stroke-width="3.6" stroke-linecap="round"/></g>' % (f(CX - 7), f(CY + 22), f(CX), f(CY + 16.5), f(CX + 7), f(CY + 22)))
-feat.append('<g id="MouthO" opacity="0"><ellipse cx="%s" cy="%s" rx="6.5" ry="8" fill="#6A2219"/><ellipse cx="%s" cy="%s" rx="3.6" ry="2.6" fill="#F07B73"/></g>' % (f(CX), f(CY + 20), f(CX), f(CY + 24)))
+feat.append('<g id="Blush"><ellipse cx="%s" cy="%s" rx="17" ry="11.5" fill="url(#blush)"/><ellipse cx="%s" cy="%s" rx="17" ry="11.5" fill="url(#blush)"/></g>' % (f(CX - 42), f(HY + 15), f(CX + 42), f(HY + 15)))
+feat.append('<g id="SmileG"><path d="M%s %s Q%s %s %s %s" fill="none" stroke="#6A2219" stroke-width="3.6" stroke-linecap="round"/></g>' % (f(CX - 7), f(HY + 15.5), f(CX), f(HY + 23), f(CX + 7), f(HY + 15.5)))
+feat.append('<g id="MouthFlat" opacity="0"><path d="M%s %s Q%s %s %s %s" fill="none" stroke="#6A2219" stroke-width="3.6" stroke-linecap="round"/></g>' % (f(CX - 7), f(HY + 22), f(CX), f(HY + 16.5), f(CX + 7), f(HY + 22)))
+feat.append('<g id="MouthO" opacity="0"><ellipse cx="%s" cy="%s" rx="6.5" ry="8" fill="#6A2219"/><ellipse cx="%s" cy="%s" rx="3.6" ry="2.6" fill="#F07B73"/></g>' % (f(CX), f(HY + 20), f(CX), f(HY + 24)))
 feat.append('<g id="MouthBig" opacity="0"><path d="M%s %s Q%s %s %s %s Q%s %s %s %s Q%s %s %s %s Z" fill="#6A2219" stroke="#6A2219" stroke-width="1.5" stroke-linejoin="round"/>'
             '<ellipse cx="%s" cy="%s" rx="6.5" ry="4" fill="#F07B73"/></g>' % (
-                f(CX - 12), f(CY + 13), f(CX), f(CY + 16), f(CX + 12), f(CY + 13), f(CX + 10), f(CY + 33), f(CX), f(CY + 33),
-                f(CX - 10), f(CY + 33), f(CX - 12), f(CY + 13), f(CX), f(CY + 28.5)))
+                f(CX - 12), f(HY + 13), f(CX), f(HY + 16), f(CX + 12), f(HY + 13), f(CX + 10), f(HY + 33), f(CX), f(HY + 33),
+                f(CX - 10), f(HY + 33), f(CX - 12), f(HY + 13), f(CX), f(HY + 28.5)))
 eyes = ''
 for s in (-1, 1):
-    x = CX + s * 0.105 * S
-    eyes += '<ellipse cx="%s" cy="%s" rx="12.8" ry="17.5" fill="url(#eye)"/>' % (f(x), f(EY))
+    x = CX + s * 0.105 * S * EK
+    eyes += '<ellipse cx="%s" cy="%s" rx="%s" ry="%s" fill="url(#eye)"/>' % (f(x), f(EY), f(12.8 * EK), f(17.5 * EK))
     eyes += '<circle cx="%s" cy="%s" r="4.8" fill="#fff"/><circle cx="%s" cy="%s" r="2.2" fill="#fff" opacity=".9"/>' % (f(x + 4.4), f(EY - 7.2), f(x - 4.4), f(EY + 7.6))
 feat.append(pivot('Eyes', CX, EY, eyes))
 for name, mk in (('HappyEyes', lambda x: 'M%s %s Q%s %s %s %s' % (f(x - 10.5), f(EY + 4), f(x), f(EY - 12), f(x + 10.5), f(EY + 4))),
                  ('ClosedEyes', lambda x: 'M%s %s Q%s %s %s %s' % (f(x - 10.5), f(EY - 1), f(x), f(EY + 10), f(x + 10.5), f(EY - 1)))):
     feat.append('<g id="%s" opacity="0" fill="none" stroke="#1E0F0A" stroke-width="5.4" stroke-linecap="round">%s</g>' % (
-        name, ''.join('<path d="%s"/>' % mk(CX + s * 0.105 * S) for s in (-1, 1))))
+        name, ''.join('<path d="%s"/>' % mk(CX + s * 0.105 * S * EK) for s in (-1, 1))))
 feat.append('<g id="SadBrows" opacity="0" fill="none" stroke="#1E0F0A" stroke-width="4" stroke-linecap="round">%s</g>' % ''.join(
-    '<path d="M%s %s L%s %s"/>' % (f(CX + s * 0.105 * S - s * 10), f(EY - 30), f(CX + s * 0.105 * S + s * 10), f(EY - 23)) for s in (-1, 1)))
-head.append(pivot('Features', CX, CY, ''.join(feat)))
+    '<path d="M%s %s L%s %s"/>' % (f(CX + s * 0.105 * S * EK - s * 10), f(EY - 30), f(CX + s * 0.105 * S * EK + s * 10), f(EY - 23)) for s in (-1, 1)))
+head.append(pivot('Features', CX, HY, ''.join(feat)))
 
 clap = '<path d="%s" fill="#FFF3C4"/><path d="%s" fill="#F6D58E"/>' % (spark(0, 0, 22), spark(0, 0, 13, 0.25))
 clap += ''.join('<path transform="rotate(%d)" d="M0 -30 L0 -44" stroke="#F6D58E" stroke-width="4" stroke-linecap="round"/>' % (i * 45) for i in range(8))
-torso = ''.join(badge) + pivot('Head', CX, CY, ''.join(head))
+torso = ''.join(badge) + pivot('Head', CX, HY, ''.join(head))
 for s, name in ((1, 'R'), (-1, 'L')):
     art = wing(name) if s == 1 else '<g transform="scale(-1 1)">' + wing(name) + '</g>'
     torso += '<g id="Wing%s" transform="translate(%s %s)">%s</g>' % (name, f(CX + s * SHX), f(CY + SHY), art)
-torso += '<g id="FxClap" opacity="0" transform="translate(%s %s)">%s</g>' % (f(CX), f(CY + 92), clap)
+torso += '<g id="FxClap" opacity="0" transform="translate(%s %s)">%s</g>' % (f(CX), f(CY + 58), clap)
 root.append(pivot('Squash', CX, GY, legs + pivot('Torso', CX, CY, torso)))
 
 # effects that ride with Zad

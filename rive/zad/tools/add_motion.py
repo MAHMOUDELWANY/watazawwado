@@ -42,7 +42,11 @@ for name, i in PARTS.items():
     s = s.replace('<Node %sname="%s">' % (ms[0], name), '<Node %sname="%s" id="%s">' % (ms[0], name, i))
 
 # ---------------------------------------------------------------- arms
-SH = (94.0, 28.0)        # right shoulder from the body centre (make_svg.py: SHX, SHY)
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+DUO = VAR == 'duo'
+SH = (112.0, 30.0) if DUO else (94.0, 28.0)   # right shoulder from the body centre (make_svg.py: SHX, SHY)
+# where the hands go for the poses that touch the body; the duo body has its face higher and a rounder side
+T = dict(cheek=(54, -22), chin=(20, 22), mouth=(8, -4), hips=(100, 96), heart=(16, 88), dua=(66, -52), peekL=(-70, -6)) if DUO else     dict(cheek=(50, 24), chin=(16, 52), mouth=(8, 30), hips=(116, 110), heart=(12, 96), dua=(60, -34), peekL=(-60, 6))
 L1, L2 = 56.0, 76.0      # shoulder -> wrist, wrist -> middle of the feather hand
 REST_ARM = (1.0, -0.3)   # hanging at the side, the hand flared out a little
 
@@ -232,7 +236,7 @@ P.ks('Squash', 'scaleX', [(0, 1), (10, 1.04, 'out'), (19, 0.97), (28, 1), (60, 1
 # 4 thanks: hand on the heart, a slow bow with closed eyes
 P = pose('thanks', 180)
 P.face(0); P.face(26, 'closed', 'smile', 1); P.face(148, 'happy', 'smile', 0.6); P.face(176, 'open', 'smile', 0)
-P.arms(0, 'rest', 'rest'); P.arms(16, (12, 96), ('a', 1.25, -0.1), 'out'); P.arms(150, (12, 96), ('a', 1.25, -0.1)); P.arms(176, 'rest', 'rest')
+P.arms(0, 'rest', 'rest'); P.arms(16, T['heart'], ('a', 1.25, -0.1), 'out'); P.arms(150, T['heart'], ('a', 1.25, -0.1)); P.arms(176, 'rest', 'rest')
 P.ks('Head', 'y', [(0, 0), (30, 0, 'io'), (66, 4), (120, 4, 'io'), (150, 0)])
 P.ks('Head', 'scaleY', [(0, 1), (30, 1, 'io'), (66, 0.97), (120, 0.97, 'io'), (150, 1)])
 P.ks('Features', 'y', [(0, 0), (30, 0, 'io'), (66, 8), (120, 8, 'io'), (150, 0)])
@@ -254,7 +258,7 @@ P.ks('Squash', 'scaleX', [(0, 1.03, 'sin'), (110, 1.02, 'io'), (135, 1.05, 'sin'
 P = pose('peek', 180)
 P.face(0)
 P.ks('Torso', 'rotation', [(0, -0.13, 'sin'), (90, -0.17, 'sin'), (180, -0.13)]); P.const('Torso', 'x', -12)
-P.arms(0, ('a', -0.2, -0.7), (-60, 6), 'sin'); P.arms(90, ('a', -0.28, -0.8), (-60, 6), 'sin'); P.arms(180, ('a', -0.2, -0.7), (-60, 6))
+P.arms(0, ('a', -0.2, -0.7), T['peekL'], 'sin'); P.arms(90, ('a', -0.28, -0.8), T['peekL'], 'sin'); P.arms(180, ('a', -0.2, -0.7), T['peekL'])
 P.look(0, -1, 'hold'); P.look(30, -1, 'out'); P.look(36, 1, 'hold'); P.look(84, 1, 'out'); P.look(90, -1, 'hold'); P.look(180, -1, 'hold')
 P.blink(60); P.blink(140)
 P.ks('Head', 'rotation', [(0, -0.08, 'sin'), (60, -0.12, 'sin'), (120, -0.05, 'sin'), (180, -0.08)])
@@ -273,8 +277,8 @@ P.pop('FxBurst', 8, 20, 1, 0.45, 1.2)
 # 8 think: hand on the chin, eyes up and to the side, a slow tap of the wing
 P = pose('think', 240)
 P.face(0)
-P.arms(0, (16, 52), (-20, 104)); P.arms(240, (16, 52), (-20, 104))
-w0 = arm_angles('R', (16, 52))[1]
+P.arms(0, T['chin'], (-20, 104)); P.arms(240, T['chin'], (-20, 104))
+w0 = arm_angles('R', T['chin'])[1]
 for f in range(40, 200, 40):
     P.ks('WristR', 'rotation', [(f, w0, 'out'), (f + 5, w0 - 0.25, 'in'), (f + 10, w0)])
 P.const('Head', 'rotation', 0.1); P.look(0, 0.7, 'hold'); P.look(240, 0.7)
@@ -309,7 +313,7 @@ P.ks('FxZzz', 'y', [(0, 10, 'lin'), (150, -18, 'hold'), (220, 10, 'lin'), (360, 
 # 11 shy: hands on the cheeks, two little hops, feet out of step, swaying
 P = pose('shy', 156)
 P.face(0, 'happy', 'smile', 1)
-P.arms(0, (50, 24), (-50, 24)); P.arms(156, (50, 24), (-50, 24))
+P.arms(0, T['cheek'], (-T['cheek'][0], T['cheek'][1])); P.arms(156, T['cheek'], (-T['cheek'][0], T['cheek'][1]))
 P.jump(0, h=14, crouch=5, air=14, land=10, arms=False, dust=False, stretch=0.6)
 P.jump(78, h=14, crouch=5, air=14, land=10, arms=False, dust=False, stretch=0.6)
 P.ks('Torso', 'rotation', [(0, 0, 'sin'), (39, 0.09, 'sin'), (78, 0, 'sin'), (117, -0.09, 'sin'), (156, 0)])
@@ -328,7 +332,7 @@ P.ks('FxSparkles', 'opacity', [(0, 0.4, 'sin'), (30, 1, 'sin'), (60, 0.4)]); P.k
 # 13 proud: hands on hips, chest out, chin up, rays turning
 P = pose('proud', 180)
 P.face(0, 'happy', 'smile', 0.4)
-P.arms(0, (116, 110), (-116, 110)); P.arms(180, (116, 110), (-116, 110))
+P.arms(0, T['hips'], (-T['hips'][0], T['hips'][1])); P.arms(180, T['hips'], (-T['hips'][0], T['hips'][1]))
 P.const('Squash', 'scaleX', 1.04); P.ks('Squash', 'scaleY', [(0, 1.03, 'sin'), (90, 1.05, 'sin'), (180, 1.03)])
 P.const('Torso', 'y', -4)
 P.ks('Head', 'rotation', [(0, -0.04, 'io'), (84, -0.04, 'out'), (92, 0.05), (104, -0.04), (180, -0.04)])
@@ -338,7 +342,7 @@ P.ks('FxRays', 'opacity', [(0, 0.5, 'sin'), (90, 0.8, 'sin'), (180, 0.5)]); P.ks
 # 14 dua: palms raised, eyes closed, head bowed a little, floating gently
 P = pose('dua', 240)
 P.face(0, 'closed', 'smile')
-P.arms(0, (60, -34), (-60, -34), 'sin'); P.arms(120, (62, -40), (-62, -40), 'sin'); P.arms(240, (60, -34), (-60, -34))
+P.arms(0, T['dua'], (-T['dua'][0], T['dua'][1]), 'sin'); P.arms(120, (T['dua'][0] + 2, T['dua'][1] - 6), (-T['dua'][0] - 2, T['dua'][1] - 6), 'sin'); P.arms(240, T['dua'], (-T['dua'][0], T['dua'][1]))
 P.const('Head', 'y', 3); P.const('Features', 'y', 3)
 P.ks('Root', 'y', [(0, 0, 'sin'), (120, -6, 'sin'), (240, 0)])
 P.ks('FxRays', 'opacity', [(0, 0.3, 'sin'), (120, 0.6, 'sin'), (240, 0.3)]); P.ks('FxRays', 'rotation', [(0, 0, 'lin'), (240, 0.5236)])
@@ -456,7 +460,7 @@ P.look(0, 0); P.look(4, -0.6, 'io'); P.look(16, 0); P.look(92, 0)
 P = pose('giggle', 56)
 P.face(0, 'happy', 'big', 1)
 P.sq(0, 1, 1, 'out'); P.sq(3, 1.17, 0.82, 'out'); P.sq(9, 0.92, 1.1); P.sq(15, 1.04, 0.96); P.sq(22, 1, 1)
-P.arms(0, 'rest', 'rest', 'out'); P.arms(8, (8, 30), ('a', 1.25, 0.1)); P.arms(42, (8, 30), ('a', 1.25, 0.1), 'io'); P.arms(54, 'rest', 'rest')
+P.arms(0, 'rest', 'rest', 'out'); P.arms(8, T['mouth'], ('a', 1.25, 0.1)); P.arms(42, T['mouth'], ('a', 1.25, 0.1), 'io'); P.arms(54, 'rest', 'rest')
 P.osc('Torso', 'rotation', 8, 40, 4, 0.05, -0.05, 'io'); P.k('Torso', 'rotation', 0, 0); P.k('Torso', 'rotation', 44, 0)
 P.osc('Head', 'y', 8, 40, 4, -2, 2, 'io'); P.k('Head', 'y', 0, 0); P.k('Head', 'y', 44, 0)
 
