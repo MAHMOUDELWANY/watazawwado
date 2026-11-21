@@ -8,7 +8,7 @@ verdicts, the owner's decisions and what was not checked; the English records an
 | Run file | Folder | Lessons | Mode | State | Next step |
 | --- | --- | --- | --- | --- | --- |
 | [2026-11-17-L01-L03](zad-adults/2026-11-17-L01-L03.run.md) | zad-adults | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 5 questions and accepts / rejects the majors by id |
-| [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | running | evidence packs |
+| [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 4 questions, the phone check, and accepts / rejects the majors by id |
 | [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | running | evidence packs |
 | [2026-11-21-L01-L03](zad-kids/2026-11-21-L01-L03.run.md) | zad-kids | L1–L3 | lean | running | panel |
 
@@ -33,7 +33,11 @@ as `known: CW-n` instead of raising them again.
 | CW-11 | Player toolbar stays light in dark mode | zad-adults L1 motion-defects-13 | |
 | CW-12 | Code-drawn figures: long neck, missing or one-tube arms, style changes per page | zad-adults L1 art-director-8 | |
 | CW-13 | Animated title words have no real spaces (screen readers read one word) | zad-adults L1 motion-defects-14 | |
+| CW-14 | Hadith Arabic copied from Dorar's edited text, which `sources.md` forbids | zad-adults L1 sources-copyright-3, zad-teens L1 sources-copyright-2 | |
+| CW-15 | Candidate: phone portrait, non-full screen, the slide paints black mid-lesson (DOM intact); needs a real-phone check | zad-teens L1 motion-defects-1 | |
 
 ## Waiting for the owner
+- zad-teens L1–L3: 4 decisions, the phone check, the majors by id, Dorar numbers and licences:
+  [run file](zad-teens/2026-11-21-L01-L03.run.md#owner-checks).
 - zad-adults L1–L3: the 5 decisions, the majors by id, and the owner checks (Dorar numbers, licences, two names):
   [run file](zad-adults/2026-11-17-L01-L03.run.md#owner-checks).
