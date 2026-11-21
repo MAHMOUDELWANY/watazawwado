@@ -89,3 +89,10 @@ Change next week: <one thing>
   scripts are 25-30 s. FB photo albums reach 2 people; FB reels ~200. Posting times never varied (IG/YT 18:00,
   TikTok 20:00, FB 15:00 Warsaw), so no timing conclusion yet. Zero comments so far.
 - V7/V9/V12 v3 scripts written on those findings (Notion item pages, top callout); waiting for the owner before voicing.
+- V7/V9/V12 v3 voiced (eleven_v4: mahmoud-english + mahmoud-fusha one take each, about 2,000 credits) and rebuilt in
+  `marketing/reels-v3/` (assemble.py cuts the takes on Scribe word times; film.html + scenes.js; render.mjs): dark
+  stage + warm light, key words arrive with the voice, one acting object (letter cards, mouth diagram for ك/ق, hadith
+  card, spilled cup, word crowd), Zad in every scene, espresso/crimson only. V7 37 s, V9 46 s, V12 38 s. Contact
+  sheets checked. Hosted at /social/v7r, v9r, v12r and rescheduled at the original slots (V7 22 Nov, V9 24 Nov on
+  FB/IG/YT/TikTok; V12 27 Nov FB only, Buffer at 10/10).
+
