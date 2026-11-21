@@ -1095,6 +1095,90 @@ request, the classroom ratings and talk time, `crm_tasks`) and extends it.
 
 ---
 
+## SV: Supervision (owner request 2026-11-21)
+
+Why: the quality data exists but is scattered (silent observer, ratings, questionnaires, talk time, lateness,
+connection report, NX-13). Nothing tells the supervisor whom to watch, how to score, and how to follow up. Lesson
+recording is parked, so supervision works from live observation and from the lesson file. Supervision recommends;
+decisions about a teacher belong to HR and the owner. Supervision never sees money. Research (2026-11-21):
+observation with feedback improves teaching (Kraft, Blazar and Hogan 2018, 60 causal studies), online as much as in
+person; one observation is never enough for a high-stakes decision.
+
+Order: SV-06 → SV-01 → SV-04 → SV-02 → SV-03 → SV-08 → SV-05 → SV-07 → SV-09 → SV-10.
+
+Owner decisions 2026-11-21:
+- Observation is silent, with no notice at the time. The teacher always sees the result of every observation: no
+  secret notes.
+- Frequency: 2 of the first 10 lessons in probation (HR-04), then again after 15, 30 or 90 days by the last score.
+- Feedback reaches the teacher within 48 hours.
+- No warning from a single observation: at least two signals are needed (HR-06 ladder).
+- Complaints: first reply within 24 hours, resolved within 3 working days.
+- Refunds: the supervisor recommends, the super admin executes (FN-09).
+
+No duplication: each task first searches the existing code (the silent observer and its visit log, the classroom
+timeline, ratings, questionnaires and talk time, the lateness and appeal flow, the connection report, NX-13, NX-15
+observed lessons, CRM-08, `crm_tasks`, the admin chat inbox AD-03) and extends it. The full child-protection policy
+belongs to the Compliance domain; SV-06 only provides the channel.
+
+### SV-01 Observation form
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on ST-01
+- Do: fixed criteria per subject group: preparation, explanation, correcting mistakes, learner engagement, manner
+  and patience, use of time (Quran: correction of recitation). Score 1 to 4 each, one strength, one action to
+  improve. Filled during or after a silent observation and stored in the teacher's quality record (SV-08).
+
+### SV-02 Smart observation queue
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on SV-01
+- Do: a weekly list "watch these", each with its reason and the teacher's next lessons: a teacher in probation, a
+  low rating, a complaint, a first lesson with a new learner, a family at risk (CRM-09), a teacher not observed for
+  60 days, a re-observation that is due, and a random sample. Written rules, editable by the super admin.
+
+### SV-03 Coaching cycle
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on SV-01
+- Do: observation → feedback to the teacher within 48 hours (strength and one action, linked to a University
+  unit when one fits) → the teacher acknowledges and may reply → a follow-up observation checks that action. Open
+  actions and overdue feedback are listed.
+
+### SV-04 Lesson-file flags
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on the classroom admin lesson view (BUILD-LIST 3.5)
+- Do: review without watching. Flags from the lesson data: the teacher spoke over 80% of the time, the lesson ended
+  early, no corrections recorded, slides skipped, an empty or very short report, the teacher late. A list of flagged
+  lessons for the supervisor, who marks each as fine or needing action.
+
+### SV-05 Report quality sample
+- Priority P2 · Zone 🟢 · Size S · Status todo
+- Do: a weekly sample of family summaries per teacher, plus those flagged as too short or the same text for
+  several learners. The supervisor marks good or needs work, with a note to the teacher.
+
+### SV-06 Complaints register
+- Priority P1 · Zone 🔴 (personal data, children) · Size M · Status todo
+- Do: a calm "I have a problem" button in the family portal and one for teachers. Each complaint has a category,
+  severity, owner, the linked lesson, a first-reply deadline of 24 hours and a resolution deadline of 3 working
+  days, and an outcome. Patterns per teacher. A concern about a child's safety goes to the super admin only, at
+  once, and is hidden from every other role. An open complaint feeds CRM-09 and blocks referral asks (CRM-14).
+- Done when: a restricted role gets 403 from the server on a safeguarding complaint.
+
+### SV-07 Curriculum fidelity
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on the report draft (BUILD-LIST 3.3)
+- Do: per teacher and learner, the lessons covered against the curriculum order and the learner's plan (TS-02):
+  skipped lessons, parts repeated, pace far from the plan.
+
+### SV-08 Teacher quality record
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on SV-01
+- Do: one page per teacher over time: observations and scores, open coaching actions, flags, complaints, ratings
+  and questionnaire averages, lateness, absences. It is the input to the quarterly review and the warning ladder
+  (HR-06) and shares its numbers with TS-06. Reuse the CRM-08 queries.
+
+### SV-09 Supervisor home
+- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on SV-02, SV-03, SV-06
+- Do: today's queue, feedback that is overdue, open complaints near their deadline. The super admin sees how many
+  observations and reviews each supervisor did.
+
+### SV-10 Calibration
+- Priority P3 · Zone 🟢 · Size S · Status todo · Only when there are two supervisors
+- Do: two supervisors score the same lesson and compare, to keep the scale the same.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
