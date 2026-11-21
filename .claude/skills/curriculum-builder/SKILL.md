@@ -17,6 +17,8 @@ rejected, with its fix, is in [owner-feedback.md](owner-feedback.md). Read both 
    (`docs/curriculum/style/<version>.md`).
 3. `docs/curriculum/sources.md` before researching any source.
 4. [motion-stage.md](motion-stage.md) and [owner-feedback.md](owner-feedback.md).
+5. `docs/curriculum/reviews/README.md`: open review findings and known course-wide defects for the lessons you touch.
+   Fixing accepted review findings follows `WATAZAWWADO-curriculum-review` §9 (tick each id in its run file).
 
 ## 1. Find the step
 - Named step: do it (earlier steps reviewed). Vague prompt: do PLAN §0 "Next". If the owner is still reviewing, say so.

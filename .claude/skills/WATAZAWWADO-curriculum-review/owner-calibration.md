@@ -14,6 +14,13 @@ report. Dates are the owner's.
 - The examples are starting points: experts are expected to go further.
 - No AI slop in the visuals.
 
+## Standing brief, additions (owner, 2026-11-21)
+- Every review covers several consecutive lessons, never one lesson alone, so the web between them is always judged.
+- Every review leaves Markdown files in the repo (records, the Arabic report, the run file with decisions), so any
+  later session knows exactly where the review stands. On 2026-11-21 a new session could not find the 2026-11-17
+  review because it lived on an unmerged branch and the report only as an Artifact: never again.
+- The panel works as a team, as in the Zad Adults run; improvements that give a better result are welcome.
+
 ## Fix mode
 Locked. Unlock only on the owner's written word, recorded here with the date.
 

@@ -13,6 +13,10 @@
 
 Last update: 2026-10-26. History of how we got here: §8 (progress log).
 
+**Reviews:** the state of every curriculum review (runs, verdicts, the owner's decisions, what waits for him) is in
+[`reviews/README.md`](reviews/README.md); procedure: the `WATAZAWWADO-curriculum-review` skill. Latest (2026-11-21):
+Zad Adults L1–L3 reported, all three "needs fixes", waiting for the owner's decisions.
+
 ### Zad Essentials · Kids (6–11): `zad-essentials-kids/`
 - **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
   booked students); series opening (Yusuf, Maryam, Jiddo, Mishmish) before Lesson 1.
@@ -990,3 +994,11 @@ B3–B5 → continue lesson by lesson.
   every callback is one lesson back and told, never recalled; L1's models vanish by L3; L2's hooks for L3 are dropped.
   It proposes ~20 line-level edits and a "web rule" for every later lesson (waits for the owner). Records:
   `docs/curriculum/reviews/zad-adults/2026-11-17-L03.md`, `2026-11-17-course.md`. No lesson content changed.
+- **2026-11-21 · Review skill on `main`, review state kept in the repo.** The 2026-11-15/17 review work had stayed on the
+  unmerged branch `claude/curriculum-evaluation-scale-258078`, so a new session could not find it. Its four commits are
+  now on `main`. The skill gained (owner, 2026-11-21): every run covers several consecutive lessons with the course
+  panel; a run file per run (phases, verdicts, owner decisions, owner checks, not checked) and the index
+  `docs/curriculum/reviews/README.md` (runs, states, known course-wide defects CW-1…13), committed and pushed after
+  every phase; the Arabic report also saved as Markdown (`scripts/curriculum/review-report-md.py`); tool evidence only,
+  nothing from memory; a re-review mode after fixes. The 2026-11-17 Arabic report is in the repo as
+  `reviews/zad-adults/2026-11-17-report-ar.md`. Zad Adults L1–L3 still wait for the owner's decisions.

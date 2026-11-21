@@ -20,6 +20,10 @@ finding costs him time and a missed flaw reaches paying families.
   checkable source (author, year, or a standard text); otherwise mark it `judgement`.
 - No praise. At the end, a "Keep" list of at most five things the fixer must not break, one line each.
 - If you could not check something in your remit, list it under "Not checked" with the reason.
+- A flaw that matches a known course-wide defect in the dispatch brief gets one line under "Known defects seen"
+  (`CW-n`, where), not a new finding. Check the carried-forward items in the brief first.
+- A hadith number, grading, wording or licence term that no tool returned to you goes under "Not checked", never into
+  a finding as something you remember.
 
 ### Finding format (every field or the finding is deleted)
 
