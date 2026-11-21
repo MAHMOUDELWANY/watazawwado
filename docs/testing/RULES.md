@@ -114,7 +114,7 @@ npx tsx scripts/qa/purge.ts p<N>                  # dry run; add --yes to delete
   then fix with a test that failed before the fix.
 - Redesigns and product changes: propose only; the owner picks (see `docs/backlog/REVIEW-ISSUES.md`).
 - RULES.md (root) still applies: payments gate bookings, server-side authority, migrations append-only via the
-  `new-migration` skill, tsc + tests + build before pushing to `main`.
+  `WATAZAWWADO-new-migration` skill, tsc + tests + build before pushing to `main`.
 - Shared files (`api/index.ts`, `server/`, `src/components/ui/`): keep fixes small and commit often to cut merge
   conflicts with parallel sessions; rebase on `origin/main` before each push.
 

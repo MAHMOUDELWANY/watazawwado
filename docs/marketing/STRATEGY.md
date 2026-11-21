@@ -155,7 +155,7 @@ Organic first; paid only later as retargeting of people who watched our videos (
 | 6 | Arabic for Teta | Young adults / parents | "Your grandmother speaks Arabic. Your kids don't. Let's fix one sentence today." |
 | 7 | Cover the logo | Parents | "Read any academy's homepage. Now cover the logo. Could you tell them apart?" |
 
-### Three sample scripts (STORIFY, 30–45 s; humanizer and mahmoud-voice before filming)
+### Three sample scripts (STORIFY, 30–45 s; humanizer and WATAZAWWADO-mahmoud-voice before filming)
 
 **A. "The stranger" (parents, awareness, talking to camera, home)**
 - Hook: "Quick question. Who's teaching your child the Quran? Not the academy. The person."
@@ -230,4 +230,4 @@ No numeric targets before a 2-week baseline. Logged in the Notion Weekly Numbers
 
 1. Update `PLAN.md`, `BRAND.md` §7 and the Notion Content Hub to match (with the owner's permission for Notion).
 2. Backlog: homepage copy task (§4); MK-01, MK-02, MK-03 already listed.
-3. Propose the `watazawwado-marketing` skill architecture for approval, then build it.
+3. Propose the `WATAZAWWADO-marketing` skill architecture for approval, then build it.

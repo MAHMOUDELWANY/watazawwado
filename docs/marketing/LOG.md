@@ -11,7 +11,7 @@ Change next week: <one thing>
 ```
 
 ## 2026-W43 (19–25 Oct)
-- Plan, rules, production guide, idea bank and the `watazawwado-content` skill written. Marketing skills
+- Plan, rules, production guide, idea bank and the `WATAZAWWADO-content` skill written. Marketing skills
   (coreyhaines31/marketingskills) and social-media skills (charlie947/social-media-skills) installed in
   `.claude/skills` (MIT; our `seo-audit` kept, theirs skipped). Waiting on the owner: `PLAN.md` §9 open questions.
 - Owner decisions recorded (`PLAN.md` §9): TikTok renamed @watazawwado.academy (site links updated), only Ustadh
@@ -39,7 +39,7 @@ Change next week: <one thing>
   30 days). New: hub page on the brand strategy (`BRAND.md`), Content Calendar (Status, Date, Series, Audience, Goal,
   Language, Platforms, CTA) with the first series of 16 items, 9 Nov to 5 Dec (10 "Building Watazawwado" episodes,
   6 teaching), and a new Weekly Numbers (waitlist and ZAAD comments first). All items are Ideas with a brief; full
-  scripts are written item by item with `mahmoud-voice`.
+  scripts are written item by item with `WATAZAWWADO-mahmoud-voice`.
 - 2026-11-05: Week 1 scripts written into Notion (B1 What I kept seeing as a teacher, T1 the Daad, B2 What parents told me, P1 Five minutes a day), two hooks and two wise lines each, captions per platform, pinned comment, UTM links; all four moved to Review. T1 needs a teacher to confirm the makhraj on camera; B1/B2 need the owner to confirm the stories are his own.
 - 2026-11-05: Week 2 scripts written into Notion (B3 a mentor who stays, A1 three phrases for Teta, B4 what annoyed you most, T2 the ح in al-ḥamd with Al-Fatiha 1:2 verified via quran.ai, Saheeh International); all four moved to Review.
 
@@ -78,7 +78,7 @@ Change next week: <one thing>
 ## 2026-11-21
 - Owner: carousels stay carousels in the usual template, with our nasheed added as the sound when they are posted; the
   9:16 video remakes of V6/V8/V10/V11 were not wanted and were removed. RULES §1.6 and PRODUCTION §4 updated.
-- Review of the scheduled voiced videos V7, V9, V12 against PRODUCTION §3b and mahmoud-voice: all three use the old
+- Review of the scheduled voiced videos V7, V9, V12 against PRODUCTION §3b and WATAZAWWADO-mahmoud-voice: all three use the old
   card look (caption box repeating the card, ribbon progress bar and three-hue number badges, white empty halves).
   V7 also teaches the makharij wrongly (ك "front of the tongue", ق "deep in the throat") and claims "most people fail".
 - V7, V9, V12 moved to draft on Buffer (IG/YT/TikTok) and Metricool (FB) for the rebuild.

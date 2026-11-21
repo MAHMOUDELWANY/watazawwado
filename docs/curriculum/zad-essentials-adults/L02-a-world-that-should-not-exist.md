@@ -4,7 +4,7 @@ Zad Essentials · Adults (18+) · Part 1 (From Knowing to Certainty) · 60 minut
 Status: **brief, page text and built pages done 2026-10-25 in one overnight run (owner's request: "finish everything and
 leave it ready for review")**; `reviewed: false`, teacher-only draft. Pages, their order and text live only in the code
 (`src/curriculum/content/zad-adults/l02-a-world-that-should-not-exist.ts`, RULES §1.12). Look: the motion stage
-(`.claude/skills/curriculum-builder/motion-stage.md`), the standard the owner approved on Adults Lesson 1.
+(`.claude/skills/WATAZAWWADO-curriculum-builder/motion-stage.md`), the standard the owner approved on Adults Lesson 1.
 
 ## The question that drives the lesson
 

@@ -3,7 +3,7 @@
 Owner decisions for the Adults version (2026-10-22). They sit on top of the general rules in `../RULES.md` (which win where
 the two disagree, except for the points below that the owner changed for this version) and `../../../RULES.md` (platform).
 The lessons are in `MAP.md`; the look will be in `../style/adults.md` (made before any image). Procedure: the
-`curriculum-builder` skill.
+`WATAZAWWADO-curriculum-builder` skill.
 
 ## 1. Audience and aim
 - A Muslim adult (20s–50s) with a background: grew up Muslim or among Muslims, has heard khutbahs, "knows most things".
@@ -37,7 +37,7 @@ The lessons are in `MAP.md`; the look will be in `../style/adults.md` (made befo
 ## 4. Voice
 - **More advanced English** than the Kids and Teens versions: the register of an educated adult, still clear and never
   academic for show. Ayat and hadith meanings faithful and fuller, in plain English.
-- Written the owner's way (`mahmoud-voice`): the learner is asked before being told, warm and honest, one wise line per
+- Written the owner's way (`WATAZAWWADO-mahmoud-voice`): the learner is asked before being told, warm and honest, one wise line per
   lesson. The academy speaks, not one person.
 - `humanizer` on every line so nothing reads as AI-written.
 

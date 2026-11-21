@@ -1,6 +1,6 @@
 # Audit: Zad Essentials Kids and Teens, Lessons 1–3, against the motion-stage standard (2026-10-24)
 
-Measured against `.claude/skills/curriculum-builder/owner-feedback.md` and the approved reference (Adults Lesson 1).
+Measured against `.claude/skills/WATAZAWWADO-curriculum-builder/owner-feedback.md` and the approved reference (Adults Lesson 1).
 Page numbers count from 0, as in the preview tool (`p=`). Tools: `scripts/curriculum/audit.ts` (build shape and 5-word
 repeats per page) and `scripts/curriculum/dump.ts` (page text).
 
