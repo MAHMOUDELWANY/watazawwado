@@ -74,3 +74,11 @@ Change next week: <one thing>
   out of order until `lyrics_type: custom`). The owner made the final takes in Suno from our studio brief.
 - Adopted: full AR and EN takes, 5 s stings, 30 s beds in `marketing/brand-assets/nasheed/suno/`.
 
+
+## 2026-11-21
+- V6, V8, V10, V11 remade as 9:16 videos in the §3b style with the English nasheed bed: one text layer per scene, words
+  build in on the beat, Zad in the middle band, espresso stage turning to deep crimson (two neighbouring tones). Built
+  from `marketing/carousel-video/` (film.html + scenes.js + render.mjs, `node render.mjs v6 out.mp4`); files in
+  `public/social/nasheed/` (1080x1920, 30 fps, H.264 High crf 14, AAC 192k, -15.7 LUFS). V11 hook fixed: the free
+  step is step 3 (the trial), not #4. Contact sheets checked. Not yet scheduled; the silent old-style V6/V8/V10 posts
+  (21, 23, 25 Nov) are still in Buffer/Metricool.

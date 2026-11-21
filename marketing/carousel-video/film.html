@@ -1,0 +1,109 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Carousel-as-video (2026-11-21, PRODUCTION.md §3b): one text layer per scene, words build in on the nasheed beat,
+     Zad in the middle band, an espresso stage that turns to deep crimson (two neighbouring tones, RULES §1.8).
+     Rendered frame by frame by render.mjs through window.frame(t). Copy lives in scenes.js. -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=block" rel="stylesheet">
+<style>
+@font-face { font-family: 'TSD'; src: url('../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TS'; src: url('../../public/fonts/thmanyah/thmanyahsans-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TSM'; src: url('../../public/fonts/thmanyah/thmanyahsans-Medium.woff2') format('woff2'); font-weight: 500; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #1C1411; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+.bg { position: absolute; inset: 0; }
+#bgA { background: radial-gradient(70% 45% at 50% 62%, #4A2E22 0%, #241712 55%, #140D0A 100%); }
+#bgB { background: radial-gradient(70% 45% at 50% 62%, #7A1A20 0%, #4A0F13 55%, #240709 100%); opacity: 0; }
+#light { position: absolute; left: 540px; top: 1230px; width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,214,150,.55) 0%, rgba(246,190,110,.18) 38%, transparent 68%); mix-blend-mode: screen; }
+canvas#dust { position: absolute; inset: 0; }
+#khatam { position: absolute; left: 540px; top: 1260px; width: 660px; height: 660px; margin: -330px 0 0 -330px; opacity: .35; }
+#zad { position: absolute; left: 540px; top: 1270px; width: 430px; height: 438px; margin: -219px 0 0 -215px; }
+#zad img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: drop-shadow(0 24px 30px rgba(0,0,0,.55)); }
+#logo { position: absolute; left: 90px; top: 268px; width: 84px; height: 84px; border-radius: 50%; background: rgba(250,247,242,.92); display: grid; place-items: center; }
+#logo img { width: 62px; }
+#text { position: absolute; left: 90px; width: 840px; top: 420px; height: 580px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+#kicker { font-family: 'TS', sans-serif; font-size: 30px; letter-spacing: .22em; color: #F6D58E; margin-bottom: 26px; }
+#head { font-family: 'TSD', serif; font-weight: 700; color: #FAF7F2; font-size: 108px; line-height: 1.06; text-shadow: 0 4px 30px rgba(0,0,0,.55); }
+#head.long { font-size: 88px; }
+#head span { display: inline-block; white-space: pre; }
+#head .ac { color: #F6D58E; font-style: italic; }
+#sub { font-family: 'TSM', sans-serif; font-weight: 500; color: rgba(250,247,242,.88); font-size: 44px; line-height: 1.35; margin-top: 36px; max-width: 800px; }
+#sub .ar { display: inline-block; unicode-bidi: isolate; font-family: 'Amiri', serif; font-size: 48px; color: #F6D58E; }
+#stamp { font-family: 'TSD', serif; font-weight: 700; font-size: 84px; color: #F6D58E; letter-spacing: .06em; padding: 8px 40px 14px; border: 7px solid #F6D58E; border-radius: 22px; margin-bottom: 40px; opacity: 0; display: none; }
+#grain { position: absolute; inset: 0; opacity: .06; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); }
+</style></head>
+<body><div id="stage">
+  <div class="bg" id="bgA"></div><div class="bg" id="bgB"></div>
+  <div id="light"></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <svg id="khatam" viewBox="-60 -60 120 120"><g fill="none" stroke="#F6D58E" stroke-width="1.6"><rect x="-40" y="-40" width="80" height="80"/><rect x="-40" y="-40" width="80" height="80" transform="rotate(45)"/><circle r="22" stroke-width="1"/></g></svg>
+  <div id="zad"></div>
+  <div id="logo"><img src="../../public/logo-256.png"></div>
+  <div id="text"><div id="stamp">PACKED ✓</div><div id="kicker"></div><div id="head"></div><div id="sub"></div></div>
+  <div id="grain"></div>
+</div>
+<script src="scenes.js"></script>
+<script>
+const ID = new URLSearchParams(location.search).get('v') || 'v6';
+const SC = SCENES[ID];
+const POSES = ['wave','cheer','point','think','sad','wow','proud','love','clap','dua'];
+const zad = document.getElementById('zad');
+for (const p of POSES) { const i = new Image(); i.src = '../intro-film/render/zad/' + p + '.svg'; i.dataset.p = p; zad.appendChild(i); }
+// scene timeline: first scene 3.5 s (hook), steps 3 s (6 beats at 120 bpm), last 4.5 s
+let acc = 0; SC.forEach((s, i) => { s.d = i === 0 ? 3.5 : i === SC.length - 1 ? 4.5 : 3; s.t0 = acc; acc += s.d; });
+const LENGTH = acc;
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+const outBack = (x) => { const c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+let built = -1;
+function build(i) {
+  const s = SC[i]; built = i;
+  $('kicker').textContent = s.kicker || ''; $('kicker').style.display = s.kicker ? '' : 'none';
+  const ac = new Set((s.accent || '').split(' ').filter(Boolean));
+  $('head').innerHTML = s.head.split(' ').map((w) => `<span class="${ac.has(w) ? 'ac' : ''}">${w} </span>`).join('');
+  $('head').className = s.head.length > 34 ? 'long' : '';
+  $('sub').innerHTML = s.sub || '';
+  $('stamp').style.display = s.stamp ? 'block' : 'none';
+}
+// gold dust, seeded so every render is identical
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const DUST = Array.from({ length: 46 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: 1.5 + rnd() * 3, v: 18 + rnd() * 40, ph: rnd() * 6.28 }));
+const ctx = $('dust').getContext('2d');
+window.ready = async () => { await document.fonts.ready; await Promise.all([...zad.querySelectorAll('img')].map((i) => i.decode().catch(() => {}))); return LENGTH; };
+window.frame = (t) => {
+  let i = SC.findIndex((s) => t < s.t0 + s.d); if (i < 0) i = SC.length - 1;
+  const s = SC[i], lt = t - s.t0;
+  if (built !== i) build(i);
+  // background tone: crossfade 0.6 s into this scene's tone
+  const prevTone = i > 0 ? SC[i - 1].tone || 0 : s.tone || 0, tone = s.tone || 0;
+  $('bgB').style.opacity = prevTone + (tone - prevTone) * outCubic(clamp(lt / 0.6));
+  // warm light breathes, and swells at each scene start
+  const swell = Math.exp(-lt * 2.2);
+  $('light').style.opacity = 0.65 + 0.12 * Math.sin(t * 1.6) + 0.3 * swell;
+  $('light').style.transform = `scale(${1 + 0.08 * swell})`;
+  $('khatam').style.transform = `rotate(${t * 9}deg) scale(${1 + 0.04 * Math.sin(t * 1.2) + 0.12 * (1 - outCubic(clamp(lt / 0.7)))})`;
+  // Zad: new pose pops in (spring), then a gentle bob
+  zad.querySelectorAll('img').forEach((im) => { im.style.opacity = im.dataset.p === s.pose ? 1 : 0; });
+  const pop = outBack(clamp(lt / 0.45));
+  zad.style.transform = `translateY(${Math.sin(t * 2.4) * 10}px) scale(${0.82 + 0.18 * pop}) rotate(${Math.sin(t * 1.3) * 2.5}deg)`;
+  // words: blur + scale in on the half beat; the accent word lights up once all are in
+  const spans = $('head').querySelectorAll('span'), st = 0.18, gap = 0.2, inDur = 0.45;
+  spans.forEach((sp, k) => {
+    const e = outCubic(clamp((lt - st - k * gap) / inDur));
+    sp.style.opacity = e; sp.style.transform = `translateY(${(1 - e) * 34}px) scale(${1.28 - 0.28 * e})`; sp.style.filter = `blur(${(1 - e) * 12}px)`;
+  });
+  const headDone = st + (spans.length - 1) * gap + inDur;
+  const glow = clamp((lt - headDone) / 0.4);
+  $('head').querySelectorAll('.ac').forEach((sp) => { sp.style.textShadow = `0 0 ${10 + 34 * glow}px rgba(246,213,142,${0.15 + 0.55 * glow}), 0 4px 30px rgba(0,0,0,.5)`; });
+  const ke = outCubic(clamp((lt - 0.05) / 0.4)); $('kicker').style.opacity = ke; $('kicker').style.transform = `translateY(${(1 - ke) * 16}px)`;
+  const se = outCubic(clamp((lt - headDone - 0.1) / 0.5)); $('sub').style.opacity = se; $('sub').style.transform = `translateY(${(1 - se) * 22}px)`;
+  if (s.stamp) { const p = clamp(lt / 0.5), b = outBack(p); $('stamp').style.opacity = clamp(p * 2.5); $('stamp').style.transform = `rotate(${-16 + 10 * b}deg) scale(${1.7 - 0.7 * b})`; }
+  // exit: the whole layer lifts and blurs out in the last 0.35 s (never on the last scene)
+  const x = i < SC.length - 1 ? clamp((lt - (s.d - 0.35)) / 0.35) : 0;
+  $('text').style.opacity = 1 - x; $('text').style.filter = `blur(${x * 10}px)`; $('text').style.transform = `translateY(${-x * 40}px)`;
+  ctx.clearRect(0, 0, 1080, 1920); ctx.fillStyle = '#F6D58E';
+  for (const d of DUST) { const y = ((d.y - t * d.v) % 1920 + 1920) % 1920; ctx.globalAlpha = 0.25 + 0.35 * Math.sin(t * 2 + d.ph) ** 2; ctx.beginPath(); ctx.arc(d.x + Math.sin(t + d.ph) * 14, y, d.r, 0, 6.283); ctx.fill(); }
+  ctx.globalAlpha = 1;
+};
+</script></body></html>
