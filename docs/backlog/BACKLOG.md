@@ -807,7 +807,7 @@ HR-04, HR-05, HR-06, HR-07, HR-08.
 - Priority P1 · Zone 🟢 · Size L · Status todo
 - **Owner's choice (2026-11-21): (c) Thmanyah Serif Text, bold, for headings in Arabic and English** (he saw the
   three on the real headline). He also sent Madika Arabic ExtraBold to compare; not adopted (see
-  `docs/design/TASTE.md`). First step of this task: switch `font-editorial` to Serif Text in both directions.
+  `docs/design/TASTE.md`). First step of this task: switch `font-editorial` to Serif Text in both directions. **Owner, later the same day:** the switch waits for this task (not now); Thmanyah for headlines and main readable text; Madika Arabic for small helper text only (hints, guidance, captions). Open before building: we only have the ExtraBold file, which is too heavy at small sizes, so get the Regular/Medium weights; confirm a commercial web licence; show him small text in Madika beside Thmanyah Sans at 390 and 1440 first.
 - Why: the owner saw type that does not look like Thmanyah to him and treats a broken identity rule as the biggest
   fault. Thmanyah is the only typeface, Arabic and English (`docs/design-system.md` §4).
 - Found 2026-11-21: the font files are in `public/fonts/thmanyah/` and load on production. The homepage headline
