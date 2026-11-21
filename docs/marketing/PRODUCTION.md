@@ -89,7 +89,7 @@ TikTok, carousel video and motion piece. Our cast, our palette (`RULES.md` §1.8
 | YouTube video | 1920×1080 (or 4K) | Chapters in the description |
 | YouTube thumbnail | 1280×720 | Face (or the Mushaf/letter) + 2–4 big words; readable at phone size |
 | Instagram carousel | 1080×1350 | 6–10 slides; slide 1 = hook, last = save/share + CTA |
-| Carousel as video (with our nasheed bed, `RULES.md` §1.6) | 1080×1920, 30 fps | Slides 3.8 s each, 0.5 s cross-fade, blurred background, our nasheed bed (`NASHEED.md`) fading out over the last 3 s. Encode once from the PNG slides: H.264 High, crf 14, yuv420p, bt709, AAC 192k at 48 kHz, `+faststart`. Posted as a Reel/Short/TikTok next to the silent carousel, never instead of it. |
+| Carousel sound | — | No video version (owner, 2026-11-21): the carousel is posted as photos and our nasheed is added as its sound in the platform app (`RULES.md` §1.6). |
 | Telegram / WhatsApp card | 1080×1080 | One idea, logo small |
 
 Brand: crimson, teal, copper, gold on warm paper, Islamic geometry, Thmanyah font for Latin/Arabic UI text

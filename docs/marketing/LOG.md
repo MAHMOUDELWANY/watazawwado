@@ -76,9 +76,8 @@ Change next week: <one thing>
 
 
 ## 2026-11-21
-- V6, V8, V10, V11 remade as 9:16 videos in the §3b style with the English nasheed bed: one text layer per scene, words
-  build in on the beat, Zad in the middle band, espresso stage turning to deep crimson (two neighbouring tones). Built
-  from `marketing/carousel-video/` (film.html + scenes.js + render.mjs, `node render.mjs v6 out.mp4`); files in
-  `public/social/nasheed/` (1080x1920, 30 fps, H.264 High crf 14, AAC 192k, -15.7 LUFS). V11 hook fixed: the free
-  step is step 3 (the trial), not #4. Contact sheets checked. Not yet scheduled; the silent old-style V6/V8/V10 posts
-  (21, 23, 25 Nov) are still in Buffer/Metricool.
+- Owner: carousels stay carousels in the usual template, with our nasheed added as the sound when they are posted; the
+  9:16 video remakes of V6/V8/V10/V11 were not wanted and were removed. RULES §1.6 and PRODUCTION §4 updated.
+- Review of the scheduled voiced videos V7, V9, V12 against PRODUCTION §3b and mahmoud-voice: all three use the old
+  card look (caption box repeating the card, ribbon progress bar and three-hue number badges, white empty halves).
+  V7 also teaches the makharij wrongly (ك "front of the tongue", ق "deep in the throat") and claims "most people fail".

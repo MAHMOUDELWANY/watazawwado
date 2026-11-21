@@ -24,8 +24,9 @@ date.
    ayah or hadith sung to a melody, made on a plan that allows commercial use, Arabic and English versions, plus a
    5 s sting and a 30 s bed (`NASHEED.md`). No other artist's nasheed or music (copyright). Never put any sound over recitation;
    the nasheed stops before recitation starts. It replaces the soft piano notes of 2026-11-17 (no longer used).
-   Carousels with sound are published as a 9:16 video version (platforms cannot attach our own audio to a photo
-   carousel); the silent photo carousel stays as its own post.
+   Carousels stay photo carousels in our usual carousel template; the nasheed is added as the post's sound when it
+   is published (owner, 2026-11-21, replacing the 9:16 video versions). Schedulers cannot attach audio to a photo
+   carousel through their APIs, so a carousel with sound is finished in the platform app.
 7. **Respect**: no jokes about religion, no trending audio with music (we never attach in-app trending sounds; our own nasheed is the only background sound), no trends that mock other Muslims or groups.
    Disagreements between scholars are not content.
 8. **Colour gradients** (owner, 2026-11-20, after a viewer said our colours looked like the rainbow/pride flag): no
