@@ -40,8 +40,9 @@ if (flags.includes('reduced')) media.push({ name: 'prefers-reduced-motion', valu
 if (media.length) await send('Emulation.setEmulatedMedia', { features: media });
 // Longest gap between animation frames since the last reset: a hint of jank (headless timing is rough: confirm by eye).
 await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { let last = performance.now(); window.__maxGap = 0; const f = (t) => { window.__maxGap = Math.max(window.__maxGap, t - last); last = t; requestAnimationFrame(f); }; requestAnimationFrame(f); })();` });
+const ready = async (min) => { for (let w = 0; w < 160; w++) { const c = await send("Runtime.evaluate", { expression: "document.querySelectorAll('*').length", returnByValue: true }); if (c.result?.result?.value > min) return; await sleep(250); } };
 await send('Page.navigate', { url: `http://localhost:${PORT}/scripts/curriculum/preview/slide.html?subject=${subject}&lesson=${lesson}&player` });
-await sleep(5000);
+await ready(40); await sleep(3000); // cold Vite compile can take 20 s
 if (!(await send('Runtime.evaluate', { expression: "!!document.querySelector('#root > *')" })).result.result.value) { console.error('lesson did not load: is the curriculum-preview server running?'); chrome.kill(); process.exit(1); }
 const key = async (k, code) => { for (const type of ['keyDown', 'keyUp']) await send('Input.dispatchKeyEvent', { type, key: k, code: 'Key' + k.toUpperCase(), windowsVirtualKeyCode: code }); };
 if (flags.includes('full')) { await key('f', 70); await sleep(1500); } // phones are used in the player's full-screen mode

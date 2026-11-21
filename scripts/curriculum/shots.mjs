@@ -28,9 +28,10 @@ const send = (method, params = {}) => new Promise((res) => { const n = ++id; pen
 await send('Page.enable'); await send('Runtime.enable');
 await send('Emulation.setDeviceMetricsOverride', { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
 await send('Page.addScriptToEvaluateOnNewDocument', { source: readFileSync(new URL('./clock.js', import.meta.url), 'utf8') });
+const ready = async (min) => { for (let w = 0; w < 160; w++) { const c = await send("Runtime.evaluate", { expression: "document.querySelectorAll('*').length", returnByValue: true }); if (c.result?.result?.value > min) return; await sleep(250); } };
 for (const query of queries) {
   await send('Page.navigate', { url: `http://localhost:${PORT}/scripts/curriculum/preview/slide.html?${query}` });
-  await sleep(2500); // real time for modules and fonts
+  await ready(40); await sleep(1500); // wait until the slide has rendered (a cold Vite compile can take 20 s), then fonts
   for (let i = 0; i < 120; i++) await send('Runtime.evaluate', { expression: 'window.__advance && window.__advance(50)' }); // 6 s of page time
   await sleep(150);
   const r = await send('Page.captureScreenshot', { format: 'png' });
