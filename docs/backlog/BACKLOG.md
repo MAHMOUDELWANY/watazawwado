@@ -775,6 +775,31 @@ HR-04, HR-05, HR-06, HR-07, HR-08.
   `server/routes/*` with zero behaviour change, and move one low-risk group as a pilot on a branch with all tests
   green. Review the pilot before more moves.
 
+### QA-08 Typeface review of the whole site (owner request 2026-11-21)
+- Priority P1 · Zone 🟢 · Size L · Status todo (the owner's choice below comes first)
+- Why: the owner saw type that does not look like Thmanyah to him and treats a broken identity rule as the biggest
+  fault. Thmanyah is the only typeface, Arabic and English (`docs/design-system.md` §4).
+- Found 2026-11-21: the font files are in `public/fonts/thmanyah/` and load on production. The homepage headline
+  ("Provision that lasts, for you and your family" / «زادٌ يبقى، لك ولأهل بيتك») is Thmanyah Serif Display at weight
+  800, which the browser draws with the Black (900) face because no 800 face exists; in Arabic `.font-editorial` is
+  forced to Thmanyah Sans. So it is Thmanyah, but not the style the owner knows from Thmanyah's own website.
+- Owner decision needed first: compare, side by side on the real headline in both languages, (a) Serif Display as
+  now, (b) Thmanyah Sans for headings, (c) Thmanyah Serif Text, each at the weights Thmanyah's website uses. The
+  owner picks; `docs/design-system.md` §4 and the design-system skill are updated to the choice.
+- Do, after the choice: review every surface and remove every other face: the public site and its pages, the
+  student and family portal, kid mode and the child phone, the teacher dashboard, the admin, the classroom, the
+  curriculum slides (all subjects and ages), emails, PDFs and certificates, the Zad mascot, and what is rendered
+  outside the site (Remotion videos, HTML films, carousels, published artifacts), which must embed the files.
+  Known misses: `sans-serif` in SVG text in curriculum slides (`l03.tsx`, `g-ei3.tsx`, `g-eta1.tsx`,
+  `g-eta2.tsx`), Georgia in `ZadRig.tsx`, IBM Plex in `Zad3D.tsx` and `Quad3D.tsx`, Caveat and Aref Ruqaa in
+  `TeacherStays.tsx`, the signature face `mrs-saint-delafield-sig.woff2`, the films in `marketing/`. Check that
+  every weight used has a real face (no browser-made bold), and that Arabic and English headings match in weight
+  and feel. The fallbacks Manrope and IBM Plex Sans Arabic are named in `src/index.css` but must never be what a
+  visitor sees.
+- Allowed exception: Amiri Quran for verses. Any other exception needs the owner's yes and a line in §4.
+- Done when: a test fails the build on a `font-family` or `fontFamily` that is not a Thmanyah variable or the
+  Quran face; screenshots of each surface in both languages, phone and desktop, are in the log.
+
 ---
 
 ## NX: Next level (owner request 2026-11-01)
