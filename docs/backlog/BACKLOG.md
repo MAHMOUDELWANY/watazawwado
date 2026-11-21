@@ -12,6 +12,34 @@ Binding rules: `RULES.md` and `CLAUDE.md`. Progress log: `docs/backlog/LOG.md`.
    then build.
 3. The remaining P2 tasks, then P3.
 
+### Order of the management domains (owner 2026-11-21)
+
+Domain by domain, each one finished before the next, ordered so that no domain waits for a later one. Inside a
+domain, follow that lane's own `Order:` line. One session per domain, each in its own git worktree; at most two or
+three at once, because the backend is one file (`api/index.ts`).
+
+1. **SH** System health: the provider and free-plan audit, backups and alerts. Nothing else is safe before it.
+2. **Staff: TU entry path, then ST (staff roles) with HR.** ST-01 (roles and permissions) is needed by SP, SV, FN
+   and the admin pages of every later domain.
+3. **CP** Compliance and child protection: consent and data rules that later features must respect.
+4. **CRM**: CRM-12 is needed by SP and FN.
+5. **SP** Support: the SP-01 table is the base of SV-06 and TS-08.
+6. **CL** Classroom: merge and finish the branches (`cls/ratings`, `cls/tools`, `cls/quran`); TS, SV, AC and FN read
+   its ratings, timeline and quality data.
+7. **TS** Teacher and student management.
+8. **SV** Supervision.
+9. **AC** Academic affairs.
+10. **SM** Social media management: FN reads SM-05.
+11. **FN** Finance and resources: reads HR, CRM, SM and classroom data, so it comes after them. Exception: FN-07
+    (retire the direct PayPal path) runs with domain 1, because it removes a live payment path.
+12. **UI** Whole-site interface review, with QA-08 (typeface). UI-01 (the owner's taste and the three directions)
+    starts now in its own session, because it needs the owner and blocks nothing.
+13. **OA** The Oasis.
+
+The older family-facing lanes (OPS, RN, PA, ST student, TE, AD, PU, NX, CM, MK) keep the order in points 1 to 3
+above and run between these domains when a session is free. This order was set from the lanes' `Depends on` lines,
+not from a task-by-task check; if a task still waits for a later domain, move that one task and note it here.
+
 ## How to read a task
 
 - **ID**: lane + number. Lanes: `PR` progress, `RN` retention, `CRM` admin CRM, `OPS` launch ops, `PA` parent,
@@ -776,7 +804,10 @@ HR-04, HR-05, HR-06, HR-07, HR-08.
   green. Review the pilot before more moves.
 
 ### QA-08 Typeface review of the whole site (owner request 2026-11-21)
-- Priority P1 · Zone 🟢 · Size L · Status todo (the owner's choice below comes first)
+- Priority P1 · Zone 🟢 · Size L · Status todo
+- **Owner's choice (2026-11-21): (c) Thmanyah Serif Text, bold, for headings in Arabic and English** (he saw the
+  three on the real headline). He also sent Madika Arabic ExtraBold to compare; not adopted (see
+  `docs/design/TASTE.md`). First step of this task: switch `font-editorial` to Serif Text in both directions.
 - Why: the owner saw type that does not look like Thmanyah to him and treats a broken identity rule as the biggest
   fault. Thmanyah is the only typeface, Arabic and English (`docs/design-system.md` §4).
 - Found 2026-11-21: the font files are in `public/fonts/thmanyah/` and load on production. The homepage headline
@@ -799,6 +830,56 @@ HR-04, HR-05, HR-06, HR-07, HR-08.
 - Allowed exception: Amiri Quran for verses. Any other exception needs the owner's yes and a line in §4.
 - Done when: a test fails the build on a `font-family` or `fontFamily` that is not a Thmanyah variable or the
   Quran face; screenshots of each surface in both languages, phone and desktop, are in the log.
+
+---
+
+## UI: Whole-site interface review (owner request 2026-11-21)
+
+The owner is not happy with how the site looks. Everything designed before the Mobbin subscription is reviewed
+again, account type by account type, on phone (390), tablet (768) and desktop (1440), Arabic and English, light and
+dark. Every task follows "Before any design" in `docs/design-system.md` (10+ Mobbin references, three prototypes,
+the owner picks, `docs/design/TASTE.md` updated). Identity never changes: our palette, Thmanyah, our motifs.
+No duplication: improve the existing screens and `src/components/ui/*`; no second component set.
+
+Order: UI-01 → UI-02 → UI-03 → UI-04 → UI-05 → UI-06 → UI-07 → UI-08.
+
+### UI-01 The owner's taste and one direction for the whole site
+- Priority P1 · Zone 🟢 · Size L · Status todo
+- Do: research on Mobbin (10+ apps and sites: learning, family, premium consumer, Arabic or RTL where it exists);
+  show the owner three really different directions on two real screens (the homepage and the family portal home),
+  phone and desktop; record what he picks and rejects, with the design term and a plain explanation, in
+  `docs/design/TASTE.md`; update `docs/design-system.md` and the `WATAZAWWADO-design-system` skill to the choice.
+- Done when: the owner has picked a direction and TASTE.md has at least ten entries.
+
+### UI-02 Public site and the sign-up and booking journey
+- Priority P1 · Zone 🟢 · Size L · Status todo · Depends on UI-01
+- Do: homepage, subject pages, teachers, pricing, legal, sign-in, onboarding, trial booking and checkout (layout
+  only; no change to payment logic). Done when: the owner approves screenshots of each page at the three sizes.
+
+### UI-03 Adult learner and guardian portal
+- Priority P1 · Zone 🟢 · Size L · Status todo · Depends on UI-01
+- Do: every page of `src/student` for the `student` and `parent` roles. Done when: as UI-02.
+
+### UI-04 Kid mode and the child phone
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on UI-03
+- Do: the child views, with the one Kids cast. Done when: as UI-02.
+
+### UI-05 Teacher dashboard
+- Priority P1 · Zone 🟢 · Size L · Status todo · Depends on UI-01
+- Do: every page of `src/dashboard` for the `teacher` role. Done when: as UI-02.
+
+### UI-06 Staff pages (supervision, support, HR)
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on UI-05 and the SP, SV, HR lanes
+- Do: the pages those lanes build. Done when: as UI-02.
+
+### UI-07 Super admin
+- Priority P2 · Zone 🟢 · Size L · Status todo · Depends on UI-05
+- Do: CRM, finance, reports, settings. Operate mode: dense and scannable. Done when: as UI-02.
+
+### UI-08 Classroom, emails and PDFs
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on UI-01
+- Do: the room follows `docs/classroom/ROOM-DESIGN.md` (already approved; only gaps); email templates,
+  certificates and reports. Done when: as UI-02.
 
 ---
 
