@@ -81,3 +81,11 @@ Change next week: <one thing>
 - Review of the scheduled voiced videos V7, V9, V12 against PRODUCTION §3b and mahmoud-voice: all three use the old
   card look (caption box repeating the card, ribbon progress bar and three-hue number badges, white empty halves).
   V7 also teaches the makharij wrongly (ك "front of the tongue", ق "deep in the throat") and claims "most people fail".
+- V7, V9, V12 moved to draft on Buffer (IG/YT/TikTok) and Metricool (FB) for the rebuild.
+- Numbers 16-20 Nov (Buffer + Metricool; tiny samples, V5 not counted yet): best were V2 "the first letter of Arabic"
+  (YT 450, TikTok 267, FB 201, IG 129 views, IG avg 7 s) and the V1 TikTok photo carousel (459 views, avg 5.5 s).
+  V4 "Would you hand your child to a stranger?" was weakest (FB 40, TikTok 72), so warning hooks lose to "a word you
+  already say + one sound flips the meaning + a test at the end". Average watch 2-7 s on 45-60 s videos: rebuilt
+  scripts are 25-30 s. FB photo albums reach 2 people; FB reels ~200. Posting times never varied (IG/YT 18:00,
+  TikTok 20:00, FB 15:00 Warsaw), so no timing conclusion yet. Zero comments so far.
+- V7/V9/V12 v3 scripts written on those findings (Notion item pages, top callout); waiting for the owner before voicing.
