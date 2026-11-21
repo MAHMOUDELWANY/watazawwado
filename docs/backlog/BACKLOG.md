@@ -1179,6 +1179,83 @@ belongs to the Compliance domain; SV-06 only provides the channel.
 
 ---
 
+## AC: Academic affairs (owner request 2026-11-21)
+
+Why: writing the curriculum has its own track and the owner's review (`docs/curriculum`). This lane manages the
+curriculum as a product: is the level right, which lesson is weak, what is ready, when a subject may open for
+booking. Approval of curriculum changes stays with the owner. Research (2026-11-21, directional): no placement test
+is exact and teacher judgement after the first lessons corrects it; lessons improve through a loop of performance
+data and feedback; mastery before advancing helps moderately, so the gate is soft.
+
+Order: AC-01 → AC-02 → AC-04 → AC-09 → AC-06 → AC-03 → AC-05 → AC-08 → AC-07 → AC-10.
+
+Owner decisions 2026-11-21:
+- Level correction: the teacher decides within the first 3 lessons; the family is told the reason.
+- Mastery: a soft gate. The teacher may advance with a written reason.
+- Eid: the first day of each Eid is closed for everyone; the other days are the teacher's choice.
+- Verified certificate: yes, showing the first name and the level only, with the family's consent (CM-01).
+- No subject is sold before it passes the opening gate (AC-09).
+
+No duplication: each task first searches the existing code (the placement tests, the curriculum catalog and its
+`reviewed` flag, slide and timeline events of the classroom, the mistake bank and `quran_marks`, NX-01 review,
+NX-04 certificates, NX-08 seasonal programs, TS-02, TS-03, SV-07) and extends it.
+
+### AC-01 Level correction in the first 3 lessons
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- Do: after each of the first 3 lessons the teacher confirms with one tap: level is right, higher, or lower (a
+  reason is required to change). The learner's place moves and the family is told why. A report of how often each
+  placement test was corrected and in which direction, to fix the test.
+
+### AC-02 Teacher feedback on lessons
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: a "problem here" button on any slide (error, unclear, too long, too hard, sound) and one tap after teaching
+  a lesson: too easy, right, too hard, and whether the time was enough. A review queue per lesson for the
+  curriculum work; the teacher sees when their note was handled.
+
+### AC-03 Lesson analytics
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on AC-02 and the classroom timeline
+- Do: per lesson: times taught, real time against planned time, red understanding checks, the mistakes that repeat
+  across learners (mistake bank, `quran_marks`), checkpoint items most often failed (flag items passed by over 80%
+  or under 30%), teacher feedback. A ranked list "lessons to revise".
+
+### AC-04 Curriculum readiness map
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: per track and level: lessons planned, built, reviewed by the owner, voiced. For each unbuilt lesson, how many
+  learners will reach it and when, so the next lesson to build is clear. This is the source for FN-13 and FN-14.
+
+### AC-05 Lesson versions
+- Priority P2 · Zone 🟢 · Size S · Status todo
+- Do: a change to a lesson that was already taught gets a version number and a short change note; teachers who
+  teach it are notified. A learner's finished lessons stay finished.
+
+### AC-06 Mastery rule
+- Priority P1 · Zone 🟢 · Size S · Status todo · Depends on TS-03
+- Do: the checkpoint result suggests "continue" or "revise first" with the weak criteria listed. The teacher may
+  continue anyway with a written reason, which the supervisor can see (SV-08).
+
+### AC-07 Academic calendar
+- Priority P2 · Zone 🔴 (availability) · Size M · Status todo · Uses the block mechanism of TS-10
+- Do: one calendar of seasons and programs (Ramadan, summer, school start, exam weeks, NX-08 programs) and closed
+  days (the first day of each Eid for everyone). CRM-17 seasons and the SM content calendar read from it.
+
+### AC-08 Level standard and verified certificate
+- Priority P2 · Zone 🔴 (public page, children's data) · Size M · Status todo · Extends NX-04
+- Do: a level is complete when all its lessons are done and its checkpoint is passed. The certificate carries a
+  link to a public page that confirms it (first name and level only, shown only with consent).
+
+### AC-09 Subject opening gate
+- Priority P1 · Zone 🔴 (booking) · Size S · Status todo
+- Do: a checklist per subject: map written, a set number of lessons reviewed, placement test, the teacher course
+  in the University (TU-04), at least one licensed teacher, price band. The subject cannot be booked until every
+  item is ticked; the server enforces it.
+
+### AC-10 Learning results report
+- Priority P3 · Zone 🟢 · Size M · Status todo · Depends on TS-02 and TS-03
+- Do: per subject and age band: average pace, checkpoint pass rate, time to finish a level, review retention
+  (NX-01). Real numbers only, usable in marketing once the sample is large enough to be honest.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no

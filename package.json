@@ -18,13 +18,14 @@
     "qa:purge": "tsx scripts/qa/purge.ts"
   },
   "dependencies": {
-    "@mediapipe/tasks-vision": "0.10.17",
     "@excalidraw/excalidraw": "0.18.1",
     "@google/genai": "^2.4.0",
     "@heroui/react": "^3.2.6",
     "@heroui/styles": "^3.2.6",
+    "@mediapipe/tasks-vision": "0.10.17",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
+    "@rive-app/react-canvas-lite": "^4.40.0",
     "@supabase/supabase-js": "^2.116.0",
     "@tailwindcss/vite": "^4.1.14",
     "@types/luxon": "^3.7.5",
