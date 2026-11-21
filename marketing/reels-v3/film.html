@@ -1,0 +1,218 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Reels v3 (2026-11-21, PRODUCTION.md §3b): dark stage + one warm light, one text layer (the key words, arriving with
+     the voice from <id>.timeline.json), one object that acts out the line, Zad in every scene. Espresso -> deep
+     crimson only (RULES §1.8). Rendered frame by frame by render.mjs via window.frame(t). Scenes in scenes.js. -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=block" rel="stylesheet">
+<style>
+@font-face { font-family: 'TSD'; src: url('../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TS'; src: url('../../public/fonts/thmanyah/thmanyahsans-Bold.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'TSM'; src: url('../../public/fonts/thmanyah/thmanyahsans-Medium.woff2') format('woff2'); font-weight: 500; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #140D0A; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; color: #FAF7F2; }
+.bg { position: absolute; inset: 0; }
+#bgA { background: radial-gradient(75% 50% at 50% 55%, #3A2419 0%, #1E130E 55%, #0F0907 100%); }
+#bgB { background: radial-gradient(75% 50% at 50% 55%, #6E161C 0%, #3E0C10 55%, #1C0507 100%); opacity: 0; }
+#beam { position: absolute; left: 540px; top: -200px; width: 700px; height: 2000px; margin-left: -350px; background: linear-gradient(180deg, rgba(255,214,150,.0), rgba(255,214,150,.13) 40%, rgba(255,214,150,.0)); clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%); mix-blend-mode: screen; }
+#glow { position: absolute; left: 540px; top: 1180px; width: 1000px; height: 1000px; margin: -500px 0 0 -500px; border-radius: 50%; background: radial-gradient(circle, rgba(255,210,140,.42), rgba(246,190,110,.12) 40%, transparent 68%); mix-blend-mode: screen; }
+canvas#dust { position: absolute; inset: 0; }
+#logo { position: absolute; left: 90px; top: 268px; width: 76px; height: 76px; border-radius: 50%; background: rgba(250,247,242,.92); display: grid; place-items: center; }
+#logo img { width: 56px; }
+#layer { position: absolute; inset: 0; }
+.kicker { position: absolute; left: 90px; width: 840px; top: 420px; text-align: center; font-family: 'TS'; font-size: 30px; letter-spacing: .22em; color: #F6D58E; }
+.big { position: absolute; left: 90px; width: 840px; top: 470px; text-align: center; font-family: 'TSD'; font-weight: 700; font-size: 104px; line-height: 1.06; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+.big.m { font-size: 86px; } .big.s { font-size: 70px; }
+.big span { display: inline-block; white-space: pre; }
+.big .ac { color: #F6D58E; font-style: italic; }
+.sub { position: absolute; left: 110px; width: 800px; text-align: center; font-family: 'TSM'; font-size: 42px; line-height: 1.35; color: rgba(250,247,242,.88); }
+.src { position: absolute; left: 90px; width: 840px; text-align: center; font-family: 'TS'; font-size: 26px; letter-spacing: .12em; color: #F6D58E; opacity: .85; }
+.card { position: absolute; left: 540px; top: 1010px; width: 560px; height: 330px; margin-left: -280px; border-radius: 34px; background: #FAF3E6; color: #2A1A14; box-shadow: 0 40px 80px rgba(0,0,0,.55), 0 0 0 6px rgba(246,213,142,.55); display: grid; place-items: center; text-align: center; }
+.card .w { font-family: 'Amiri'; font-weight: 700; font-size: 150px; line-height: 1; color: #A0161E; }
+.card .l { font-family: 'TSM'; font-size: 38px; color: #6B4A3A; margin-top: -10px; }
+.hadith { position: absolute; left: 100px; width: 880px; top: 560px; text-align: center; }
+.hadith .ar { font-family: 'Amiri'; font-weight: 700; font-size: 66px; line-height: 1.8; color: #F6D58E; direction: rtl; }
+.hadith .ar span, .hadith .en span { display: inline-block; white-space: pre; }
+.hadith .en { font-family: 'TSD'; font-size: 48px; line-height: 1.3; margin-top: 30px; }
+.pill { position: absolute; left: 270px; width: 540px; height: 110px; border-radius: 60px; font-family: 'TSD'; font-size: 54px; display: grid; place-items: center; background: rgba(250,247,242,.08); box-shadow: inset 0 0 0 4px rgba(250,247,242,.35); }
+.pill.win { background: #1F8A8A; box-shadow: inset 0 0 0 4px #7FD6D2, 0 0 60px rgba(127,214,210,.5); }
+.stamp { position: absolute; left: 540px; top: 560px; transform-origin: center; font-family: 'TSD'; font-size: 84px; color: #F6D58E; letter-spacing: .06em; padding: 8px 40px 14px; border: 7px solid #F6D58E; border-radius: 22px; white-space: nowrap; }
+#zad { position: absolute; width: 300px; height: 305px; }
+#zad img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: drop-shadow(0 24px 30px rgba(0,0,0,.55)); }
+#grain { position: absolute; inset: 0; opacity: .06; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); }
+</style></head>
+<body><div id="stage">
+  <div class="bg" id="bgA"></div><div class="bg" id="bgB"></div>
+  <div id="beam"></div><div id="glow"></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <div id="layer"></div>
+  <div id="zad"></div>
+  <div id="logo"><img src="../../public/logo-256.png"></div>
+  <div id="grain"></div>
+</div>
+<script src="scenes.js"></script>
+<script>
+const ID = new URLSearchParams(location.search).get('v') || 'v7';
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const back = (x) => { x = clamp(x); const c = 1.5; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const norm = (s) => s.toLowerCase().replace(/[^\p{L}\p{N}']/gu, '').replace(/[ً-ْ]/g, '');
+let TL, SC, LENGTH;
+const POSES = ['wave','cheer','point','think','sad','wow','proud','love','clap','dua'];
+const zad = $('zad');
+for (const p of POSES) { const i = new Image(); i.src = '../intro-film/render/zad/' + p + '.svg'; i.dataset.p = p; zad.appendChild(i); }
+
+// time of the first spoken word in pieces [a,b] that matches `w` (after `after`)
+function when(sc, w, after = -1) {
+  const n = norm(w); if (!n) return null;
+  const hit = TL.words.find((x) => x.w && x.p >= sc.p[0] && x.p <= sc.p[1] && x.s > after && norm(x.w) === n);
+  return hit ? hit.s : null;
+}
+function tokens(sc, text, start) {
+  // *word* = accent; each token appears when it is spoken, else shortly after the previous one
+  let last = start - 0.12;
+  return text.split(' ').map((raw) => {
+    const ac = raw.startsWith('*'), w = raw.replace(/\*/g, '');
+    const s = when(sc, w, last - 0.05); last = s ?? last + 0.12;
+    return { w, ac, s: last };
+  });
+}
+function at(sc, key, fallback) { if (typeof key === 'number') return sc.t0 + key; const s = key ? when(sc, key) : null; return s ?? fallback; }
+
+window.ready = async () => {
+  TL = await (await fetch(ID + '.timeline.json')).json();
+  SC = SCENES[ID]; LENGTH = TL.length;
+  const ps = {}; TL.words.filter((x) => x.piece_start !== undefined).forEach((x) => (ps[x.p] = x.piece_start));
+  SC.forEach((sc, i) => { sc.t0 = i === 0 ? 0 : ps[sc.p[0]] - 0.12; });
+  SC.forEach((sc, i) => { sc.t1 = i < SC.length - 1 ? SC[i + 1].t0 : LENGTH; });
+  for (const sc of SC) for (const it of sc.items) {
+    if (it.t === 'big' || it.t === 'hadith') {
+      it.toks = tokens(sc, it.text || '', at(sc, it.from, sc.t0 + 0.1));
+      if (it.t === 'hadith') { it.arToks = it.ar.split(' ').map((w, k, all) => ({ w, s: null })); it.enToks = tokens(sc, it.en, at(sc, it.enFrom, sc.t0 + 1)); }
+    }
+  }
+  await document.fonts.ready;
+  await Promise.all([...zad.querySelectorAll('img')].map((i) => i.decode().catch(() => {})));
+  return LENGTH;
+};
+
+let built = -1;
+function build(i) {
+  built = i; const sc = SC[i], L = $('layer'); L.innerHTML = '';
+  for (const it of sc.items) {
+    const d = document.createElement('div'); it.el = d;
+    if (it.t === 'kicker') { d.className = 'kicker'; d.textContent = it.text; }
+    if (it.t === 'big') { d.className = 'big ' + (it.size || ''); if (it.top) d.style.top = it.top + 'px'; d.innerHTML = it.toks.map((k) => `<span class="${k.ac ? 'ac' : ''}">${k.w} </span>`).join(''); }
+    if (it.t === 'sub') { d.className = 'sub'; d.style.top = (it.top || 900) + 'px'; d.innerHTML = it.text; }
+    if (it.t === 'src') { d.className = 'src'; d.style.top = (it.top || 1000) + 'px'; d.textContent = it.text; }
+    if (it.t === 'card') { d.className = 'card'; if (it.top) d.style.top = it.top + 'px'; d.innerHTML = `<div><div class="w">${it.ar}</div><div class="l">${it.label || ''}</div></div>`; }
+    if (it.t === 'hadith') { d.className = 'hadith'; if (it.top) d.style.top = it.top + 'px'; d.innerHTML = `<div class="ar">${it.arToks.map((k) => `<span>${k.w} </span>`).join('')}</div><div class="en">${it.enToks.map((k) => `<span>${k.w} </span>`).join('')}</div>`; }
+    if (it.t === 'pill') { d.className = 'pill'; d.style.top = it.top + 'px'; d.textContent = it.text; }
+    if (it.t === 'stamp') { d.className = 'stamp'; d.textContent = it.text || 'PACKED ✓'; }
+    if (it.t === 'svg') { d.style.cssText = 'position:absolute;inset:0'; d.innerHTML = OBJECTS[it.name]; }
+    L.appendChild(d);
+  }
+}
+
+// objects that act out the line (inline SVG, animated in frame())
+const OBJECTS = {
+  mouth: `<svg viewBox="0 0 1080 1920" style="position:absolute;inset:0"><g transform="translate(600 1060)" fill="none" stroke-linecap="round">
+    <path d="M-300 -40 C-220 -170 60 -200 210 -110 C 260 -80 290 -30 300 30" stroke="#FAF7F2" stroke-width="10" opacity=".85"/>
+    <path d="M300 30 L300 260" stroke="#FAF7F2" stroke-width="10" opacity=".45"/>
+    <path d="M-300 120 C-200 30 40 0 180 60 C 230 85 250 140 240 200" stroke="#E06A6E" stroke-width="44" opacity=".95"/>
+    <text x="-300" y="-80" fill="#FAF7F2" opacity=".6" font-family="TS" font-size="28" stroke="none">LIPS</text>
+    <text x="250" y="320" fill="#FAF7F2" opacity=".6" font-family="TS" font-size="28" stroke="none" text-anchor="end">THROAT</text>
+    <circle id="dot" r="30" fill="#F6D58E" stroke="none"/><circle id="ring" r="30" stroke="#F6D58E" stroke-width="4"/></g></svg>`,
+  cup: `<svg viewBox="0 0 1080 1920" style="position:absolute;inset:0"><g id="cup" transform="translate(540 1230)">
+    <ellipse id="spill" cx="40" cy="120" rx="10" ry="4" fill="#F3E3C8" opacity=".9"/>
+    <g id="mug"><path d="M-110 -120 L110 -120 L90 110 L-90 110 Z" fill="#A0161E"/><path d="M110 -70 C175 -70 175 50 100 50" stroke="#A0161E" stroke-width="26" fill="none"/><ellipse cx="0" cy="-120" rx="110" ry="22" fill="#7E1216"/></g></g></svg>`,
+  crowd: `<svg viewBox="0 0 1080 1920" style="position:absolute;inset:0" font-family="Amiri" font-weight="700"><g id="crowd"></g></svg>`,
+};
+const CROWD = ['قَالَ','ٱلنَّاسِ','كِتَٰبٌ','نُورٌ','يَوْمَ','ٱلْأَرْضِ','قُلْ','عِلْمٌ','سَمَآءٍ','رَبِّ','قَلْبٌ','هُدًى','ٱللَّهِ','مَآءً','شَيْءٍ','حَقٌّ'];
+
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const DUST = Array.from({ length: 50 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: 1.5 + rnd() * 3, v: 16 + rnd() * 38, ph: rnd() * 6.28 }));
+const CROWDPOS = CROWD.map(() => ({ x: 160 + rnd() * 760, y: 980 + rnd() * 460, r: (rnd() - .5) * 20 }));
+const ctx = $('dust').getContext('2d');
+
+window.frame = (t) => {
+  let i = SC.findIndex((s) => t < s.t1); if (i < 0) i = SC.length - 1;
+  const sc = SC[i], lt = t - sc.t0;
+  if (built !== i) build(i);
+  const prev = i > 0 ? SC[i - 1].bg || 0 : sc.bg || 0;
+  $('bgB').style.opacity = prev + ((sc.bg || 0) - prev) * ease(lt / 0.6);
+  const swell = Math.exp(-lt * 2.4);
+  $('glow').style.opacity = 0.7 + 0.1 * Math.sin(t * 1.5) + 0.3 * swell;
+  $('beam').style.opacity = sc.beam ? 0.9 : 0.25;
+  // Zad: pops into each new pose
+  zad.querySelectorAll('img').forEach((im) => (im.style.opacity = im.dataset.p === sc.pose ? 1 : 0));
+  const zc = sc.zad === 'center' ? { x: 540, y: 1210, w: 420 } : sc.zad === 'right' ? { x: 860, y: 1400, w: 240 } : { x: 230, y: 1360, w: 270 };
+  zad.style.left = zc.x - zc.w / 2 + 'px'; zad.style.top = zc.y - zc.w / 2 + 'px'; zad.style.width = zc.w + 'px'; zad.style.height = zc.w * 1.02 + 'px';
+  zad.style.transform = `translateY(${Math.sin(t * 2.3) * 9}px) scale(${0.8 + 0.2 * back(lt / 0.45)}) rotate(${Math.sin(t * 1.2) * 2.5}deg)`;
+
+  for (const it of sc.items) {
+    const d = it.el; if (!d) continue;
+    const show = (s, dur = 0.4) => ease((t - s) / dur);
+    if (it.t === 'big') {
+      const spans = d.querySelectorAll('span'); let last = 0;
+      it.toks.forEach((k, j) => { const e = show(k.s - 0.06, 0.38); last = Math.max(last, k.s); const sp = spans[j];
+        sp.style.opacity = e; sp.style.transform = `translateY(${(1 - e) * 30}px) scale(${1.25 - 0.25 * e})`; sp.style.filter = `blur(${(1 - e) * 10}px)`; });
+      const g = clamp((t - last - 0.4) / 0.4);
+      d.querySelectorAll('.ac').forEach((sp) => (sp.style.textShadow = `0 0 ${10 + 36 * g}px rgba(246,213,142,${0.15 + 0.55 * g}), 0 4px 30px rgba(0,0,0,.5)`));
+      if (it.until) { const u = at(sc, it.until, 1e9); const o = 1 - clamp((t - u) / 0.25); d.style.opacity = o; d.style.filter = `blur(${(1 - o) * 8}px)`; }
+    }
+    if (it.t === 'kicker' || it.t === 'sub' || it.t === 'src' || it.t === 'pill') {
+      const s = at(sc, it.at, sc.t0 + (it.t === 'kicker' ? 0.05 : 0.6)); const e = show(s, 0.45);
+      d.style.opacity = e; d.style.transform = `translateY(${(1 - e) * 20}px)`;
+      if (it.until) { const u = at(sc, it.until, 1e9); d.style.opacity = e * (1 - clamp((t - u) / 0.25)); }
+      if (it.t === 'pill' && it.winAt) { const w = at(sc, it.winAt, 1e9); d.classList.toggle('win', t >= w); }
+      if (it.strike) { const w = at(sc, it.strike, 1e9); const p = clamp((t - w) / 0.3); d.style.textDecoration = p > 0 ? 'line-through' : 'none'; d.style.opacity = e * (1 - 0.5 * p); }
+    }
+    if (it.t === 'card') {
+      const s = at(sc, it.at, sc.t0 + 0.1), b = back((t - s) / 0.5);
+      let rot = -8 + 6 * b, flip = 1;
+      if (it.flipTo) { const f = at(sc, it.flipAt, 1e9), p = clamp((t - f) / 0.35);
+        flip = Math.abs(Math.cos(p * Math.PI)); if (p >= 0.5 && !d.dataset.f) { d.dataset.f = 1; d.querySelector('.w').textContent = it.flipTo; d.querySelector('.l').textContent = it.flipLabel || ''; } }
+      d.style.opacity = clamp((t - s) / 0.2); d.style.transform = `rotate(${rot}deg) scale(${(0.7 + 0.3 * b)}) scaleX(${Math.max(0.02, flip)})`;
+      const l = d.querySelector('.l'); if (it.labelAt) l.style.opacity = clamp((t - at(sc, it.labelAt, 1e9)) / 0.3);
+    }
+    if (it.t === 'hadith') {
+      const ar = d.querySelectorAll('.ar span'), arS = at(sc, it.arFrom, sc.t0 + 0.3), arE = at(sc, it.arTo, arS + 6);
+      ar.forEach((sp, j) => { const s = arS + (arE - arS) * j / ar.length; const e = show(s, 0.4); sp.style.opacity = 0.15 + 0.85 * e; sp.style.textShadow = `0 0 ${24 * e}px rgba(246,213,142,${0.45 * e})`; });
+      const en = d.querySelectorAll('.en span'); it.enToks.forEach((k, j) => { const e = show(k.s - 0.05, 0.35); en[j].style.opacity = e; en[j].style.filter = `blur(${(1 - e) * 6}px)`; });
+      d.style.opacity = clamp((t - sc.t0) / 0.5);
+    }
+    if (it.t === 'stamp') { const s = at(sc, it.at, sc.t0 + 0.1), b = back((t - s) / 0.5); d.style.opacity = clamp((t - s) * 4); d.style.transform = `translateX(-50%) rotate(${-16 + 10 * b}deg) scale(${1.7 - 0.7 * b})`; }
+    if (it.t === 'svg' && it.name === 'mouth') {
+      // ك sits at the soft palate just behind the hard palate; ق further back, at the uvula
+      const K = { x: 150, y: -110 }, Q = { x: 250, y: -60 };
+      const m = at(sc, it.moveAt, 1e9), p = ease((t - m) / 0.6), a = it.from === 'q' ? Q : K, b = it.to === 'q' ? Q : (it.to === 'k' ? K : a);
+      let pt = { x: a.x + (b.x - a.x) * p, y: a.y + (b.y - a.y) * p };
+      if (it.bounce) { const k1 = at(sc, it.bounce[0], 1e9), q1 = at(sc, it.bounce[1], 1e9); pt = t < q1 ? K : Q; if (t < k1) pt = K; }
+      const dot = d.querySelector('#dot'), ring = d.querySelector('#ring'), pulse = (t * 1.6) % 1;
+      dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y); ring.setAttribute('cx', pt.x); ring.setAttribute('cy', pt.y);
+      ring.setAttribute('r', 30 + 50 * pulse); ring.setAttribute('opacity', 1 - pulse);
+      d.style.opacity = clamp((t - sc.t0) / 0.4);
+    }
+    if (it.t === 'svg' && it.name === 'cup') {
+      const s = at(sc, it.tipAt, sc.t0 + 0.3), p = ease((t - s) / 0.7);
+      d.querySelector('#mug').setAttribute('transform', `rotate(${-95 * p} 90 110)`);
+      const sp = d.querySelector('#spill'); sp.setAttribute('rx', 10 + 230 * ease((t - s - 0.4) / 0.9)); sp.setAttribute('ry', 4 + 28 * ease((t - s - 0.4) / 0.9)); sp.setAttribute('cx', 40 - 120 * p);
+      d.style.opacity = clamp((t - sc.t0) / 0.3);
+    }
+    if (it.t === 'svg' && it.name === 'crowd') {
+      const g = d.querySelector('#crowd'); if (!g.childElementCount) g.innerHTML = CROWD.map((w, k) => `<text x="${CROWDPOS[k].x}" y="${CROWDPOS[k].y}" font-size="64" text-anchor="middle" transform="rotate(${CROWDPOS[k].r} ${CROWDPOS[k].x} ${CROWDPOS[k].y})">${w}</text>`).join('') + `<text id="friend" x="560" y="1230" font-size="120" text-anchor="middle">رَحْمَةً</text>`;
+      const f = at(sc, it.lightAt, sc.t0 + 1), p = ease((t - f) / 0.5);
+      g.querySelectorAll('text').forEach((el) => { if (el.id !== 'friend') { el.setAttribute('fill', '#FAF7F2'); el.setAttribute('opacity', 0.35 - 0.2 * p); } });
+      const fr = g.querySelector('#friend'); fr.setAttribute('fill', p > 0 ? '#F6D58E' : '#FAF7F2'); fr.setAttribute('opacity', 0.35 + 0.65 * p); fr.style.filter = `drop-shadow(0 0 ${30 * p}px rgba(246,213,142,.8))`;
+      d.style.opacity = clamp((t - sc.t0) / 0.4);
+    }
+  }
+  // scene exit: lift + blur in the last 0.25 s (not the last scene)
+  const x = i < SC.length - 1 ? clamp((t - (sc.t1 - 0.25)) / 0.25) : 0;
+  $('layer').style.opacity = 1 - x; $('layer').style.filter = `blur(${x * 8}px)`; $('layer').style.transform = `translateY(${-x * 30}px)`;
+  ctx.clearRect(0, 0, 1080, 1920); ctx.fillStyle = '#F6D58E';
+  for (const p of DUST) { const y = ((p.y - t * p.v) % 1920 + 1920) % 1920; ctx.globalAlpha = 0.2 + 0.35 * Math.sin(t * 2 + p.ph) ** 2; ctx.beginPath(); ctx.arc(p.x + Math.sin(t + p.ph) * 14, y, p.r, 0, 6.283); ctx.fill(); }
+  ctx.globalAlpha = 1;
+};
+</script></body></html>
