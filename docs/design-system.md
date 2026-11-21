@@ -54,7 +54,9 @@ Arches (our signature, use them for things that "contain" a person or a place):
 
 ## 4. Type (Thmanyah)
 
-- Display: `font-editorial` (Thmanyah Serif Display). Body: Thmanyah Sans (the default).
+- Headings: Thmanyah Serif Text, bold, in Arabic and English (owner's choice 2026-11-21, after a side-by-side on the
+  homepage headline; replaces Serif Display, and Sans for Arabic headings). Until QA-08 lands, `font-editorial` still
+  draws Serif Display. Body: Thmanyah Sans (the default).
 - Arabic headings use `font-bold`. English headings use `font-medium tracking-tight`.
 
 | Step | Size (mobile → desktop) | Line height | Use |
@@ -69,6 +71,20 @@ Arches (our signature, use them for things that "contain" a person or a place):
 | Micro | 0.78rem | 1.4 | Pills, tab bar labels (never smaller) |
 
 Lines stay under about 70 characters (`max-w-xl`/`max-w-2xl`). No all-caps labels and no eyebrows above every heading. Quranic verses use Amiri Quran (loaded per page for those letters only). Every English page that shows a verse shows its meaning under it.
+
+## Before any design (owner, 2026-11-21; whole site, every surface)
+
+1. **Research first, on Mobbin** (the connector; the owner subscribes since 2026-11): at least 10 apps or sites for
+   the same kind of screen, phone and web, whole flows (`search_flows`) and not single screens. Add other sources
+   (the inspiration folder, UXKIN, HeroUI) on top, never instead.
+2. **File the references the same day** in `docs/design/INSPIRATION.md`, each with what exactly we take from it.
+3. **Identity is fixed.** A reference gives structure, hierarchy and motion; never its colours or type.
+4. **Three prototypes, really different** (layout or idea, not three colours of one idea), at 390, 768 and 1440, in
+   Arabic and English. Recommend one; the owner picks; only then build.
+5. **Learn his taste.** After every pick, add to `docs/design/TASTE.md` what he chose, what he rejected and why, with
+   the design term and a plain explanation (he is not a designer and cannot name things). Read TASTE.md before any
+   prototype, so a rejected idea is never shown twice. When a pattern repeats three times, move it into the
+   `WATAZAWWADO-design-system` skill as a rule.
 
 ## 5. Spacing and layout
 

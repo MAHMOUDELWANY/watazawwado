@@ -3,8 +3,9 @@
 The owner's references for the site and the installed app. When the owner says "like the liquid button" or "like
 Sparkle", this file says what is meant. Contact sheets (12 frames per video, left to right, top to bottom) are in
 `docs/design/inspiration/`. Some are to copy as they are and some only to learn from; each row says which (owner, 2026-11-02). Unless a row says copy: our identity (ribbon gradient,
-arch, khatam, Thmanyah/editorial type, espresso and cream) stays. Paid libraries (Mobbin, UXKIN) are not on our
-plan; the research below comes from these files, public docs and the iOS web-app community.
+arch, khatam, Thmanyah/editorial type, espresso and cream) stays. Mobbin is on our plan since 2026-11 (the connector);
+from 2026-11-21 every design starts with at least 10 Mobbin references filed here (`docs/design-system.md`,
+"Before any design"). The older research below came from these files, public docs and the iOS web-app community.
 
 ## The references
 
