@@ -1347,6 +1347,103 @@ SV-06 and TS-08 are built on the SP-01 table.
 
 ---
 
+## CP: Compliance and child protection (owner request 2026-11-21)
+
+Why: our learners include children of families in the West, taught 1-on-1 online by an adult: the highest-risk
+setting in every safeguarding guide. This lane is a practical plan from official sources, not legal advice; the
+open legal questions are listed in CP-11 for a lawyer. Sources (2026-11-21): the amended US COPPA Rule (compliance
+date 22 April 2026: a written retention policy, no indefinite storage of children's data); the UK Children's Code
+(15 standards: best interests of the child, high privacy by default, data minimisation, easy tools to report and
+delete); GDPR Article 8 (consent age 13 to 16 by country, reasonable effort to verify the parent); NSPCC guidance
+for tutors (a written policy before starting, a named safeguarding lead, vetting).
+
+Order: CP-01 → CP-02 → CP-03 → CP-04 → CP-07 → CP-05 → CP-06 → CP-08 → CP-09 → CP-10 → CP-11.
+
+Owner decisions 2026-11-21:
+- Safeguarding lead: the owner, with a female deputy for concerns about girls.
+- Vetting is required for every teacher before any lesson with a learner under 18, renewed every 2 years, and
+  applies to current teachers too.
+- On a safeguarding report the teacher is paused from lessons with minors at once until the review ends: a
+  precaution, not a verdict, and the teacher agreement says so.
+- A guardian can always read their child's conversation with the teacher.
+- Under 13: no account of their own (as now). 13 to 17: the account belongs to the guardian.
+- Retention: lesson files and audio are deleted 12 months after the learner's last lesson. The rule "accounts are
+  never deleted automatically" stays.
+- Lawyer: one fixed-fee session after CP-01 to CP-07 are drafted.
+
+No duplication: each task first searches the existing code and documents (the teacher's safeguarding declaration
+in HR-01, CM-01 consent, ST-06 privacy requests, NX-16 child devices, the guardian observer and the observer visit
+log, NX-03 30-day deletion, SV-06, the terms consent records, the legal pages and their "Children & safeguarding"
+section, `chat_threads`) and extends it.
+
+### CP-01 Safeguarding policy and its lead
+- Priority P1 · Zone 🔴 (legal, public content) · Size M · Status todo
+- Do: a public page in Arabic and English: the policy, the safeguarding lead and the deputy and how to reach them
+  directly, how to raise a concern and what happens next. A teacher code of conduct: no contact outside the
+  platform, no personal accounts, no gifts, camera and setting rules, and what to do when a child tells the teacher
+  about harm (report to the lead, do not investigate). Signed with the teacher agreement (TU-02) and taught in the
+  University.
+
+### CP-02 Teacher vetting record
+- Priority P1 · Zone 🔴 (personal data, bookings) · Size M · Status todo · Extends HR-01 and HR-03
+- Do: identity check, a criminal record certificate from the country of residence, two references, each with its
+  date and renewal date; documents stored privately, visible to the super admin and HR only. The server refuses a
+  booking of a learner under 18 with a teacher whose vetting is incomplete or expired.
+- Done when: tests prove the refusal, and that an adult learner can still book.
+
+### CP-03 Safeguarding case handling
+- Priority P1 · Zone 🔴 (children, personal data) · Size M · Status todo · Depends on SV-06
+- Do: a case file only the super admin and the deputy can open: steps taken, times, who was told, the decision.
+  One action pauses the teacher from lessons with minors and moves or cancels the affected lessons with a neutral
+  message to families. Recording a lesson is allowed only for a formal case, logged, and the teacher is told.
+
+### CP-04 Communication boundary
+- Priority P1 · Zone 🔴 (children, messaging) · Size M · Status todo
+- Do: all teacher and child contact stays in the platform. A message between a teacher and a minor that contains a
+  phone number, a link or a social handle is flagged to the safeguarding lead. The guardian can read the child's
+  conversation at any time, and the child and the teacher are told so.
+
+### CP-05 Consent ledger
+- Priority P1 · Zone 🔴 (legal) · Size M · Status todo · Extends CM-01
+- Do: per child: who consented, when, to what, and to which version of the terms and the privacy policy. A changed
+  version asks for consent again. Age rules enforced by the server (under 13, 13 to 17).
+
+### CP-06 Data map and retention schedule
+- Priority P1 · Zone 🔴 (personal data, deletion) · Size M · Status todo
+- Do: a written document: each kind of data, why it is kept, for how long. A scheduled job deletes lesson files
+  and audio 12 months after the learner's last lesson (NX-03 keeps its 30 days). Every run is logged.
+- Done when: tests prove nothing of an active learner is deleted.
+
+### CP-07 Third-party register
+- Priority P1 · Zone 🔴 (personal data) · Size M · Status todo
+- Do: first, check what is sent to Gemini (the family-summary draft, the learning guide, the intake chat) and
+  remove children's names and identifying details from it. Then a register of every service that touches
+  children's data (Supabase, Vercel, Cloudflare, Brevo, Gemini, Stripe and any other found), what it receives,
+  where it is stored, and its data processing agreement.
+
+### CP-08 Privacy by default for children
+- Priority P2 · Zone 🔴 (children) · Size M · Status todo
+- Do: child pages and the child phone carry no tracking beyond what the lesson needs; a simple page for the child
+  "what we know about you"; a written impact assessment (DPIA) kept with the policies.
+
+### CP-09 Rights requests
+- Priority P2 · Zone 🔴 (personal data) · Size S · Status todo · Extends ST-06
+- Do: export of a family's data on request, and each deletion or access request tracked against its one-month
+  deadline in the support inbox (SP-01).
+
+### CP-10 Access log and breach plan
+- Priority P2 · Zone 🔴 (auth) · Size M · Status todo · Depends on ST-01
+- Do: a log of which staff account opened which child's record; two-step sign-in for the super admin and staff
+  roles; a written breach plan (who does what, the 72-hour notice in the EU and UK).
+
+### CP-11 Quarterly review and the lawyer's questions
+- Priority P2 · Zone 🟢 · Size S · Status todo · After CP-01 to CP-07
+- Do: a checklist reviewed every 3 months (vetting renewals, open cases, retention runs, the register). Questions
+  for the lawyer, not decided here: does COPPA apply to us; do we need a representative in the EU or the UK; which
+  country's law governs the contract; is our way of verifying the guardian enough.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
