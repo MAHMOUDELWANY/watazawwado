@@ -9,6 +9,7 @@ verdicts, the owner's decisions and what was not checked; the English records an
 | --- | --- | --- | --- | --- | --- |
 | [2026-11-17-L01-L03](zad-adults/2026-11-17-L01-L03.run.md) | zad-adults | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 5 questions and accepts / rejects the majors by id |
 | [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | running | evidence packs |
+| [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | running | evidence packs |
 
 States: `running` → `reported` → `decided` → `fixing` → `fixed` → re-review → `closed`.
 
