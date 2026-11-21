@@ -29,6 +29,12 @@ Owner: v1 "can't move", the clap hands never met. v2 rebuilt the rig in `rive/za
 - **25 moves** (98 KB): the 16 poses plus hop (travels across the page), enter, exit, dance, spin, fly, yes, oops, giggle.
 - Test page `/prototype/zad-rive` has a stage: "hop" carries him across and turns him at the edges.
 
+**Flat body (2026-11-21, owner: "the moves are good, the look isn't").** Rebuilt the way Duolingo's mascot is built,
+in our colours: one crimson silhouette with two ear bumps and the gold khatam crest between them, flat colours (no
+gloss), big white eyes in a face mask, wings as broad flaps with gold tips, gold feet, a small gold khatam on the chest.
+Three takes in `docs/design/zad-rive/flat-options-2026-11-21.png`: A `flat` (cream mask, live), B `mono` (light crimson
+mask), C `chub` (round, no ears). Switch with `ZAD_STYLE=mono bash tools/build.sh --publish`.
+
 Still open from the plan below: real bones on the feather hands (step 3), state-machine triggers and site placement
 (step 5), replacing the 3D Zad (step 6).
 

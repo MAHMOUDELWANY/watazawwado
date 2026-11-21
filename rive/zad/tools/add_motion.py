@@ -42,13 +42,16 @@ for name, i in PARTS.items():
     s = s.replace('<Node %sname="%s">' % (ms[0], name), '<Node %sname="%s" id="%s">' % (ms[0], name, i))
 
 # ---------------------------------------------------------------- arms
-VAR = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'flat'
 DUO = VAR == 'duo'
-SH = (112.0, 30.0) if DUO else (94.0, 28.0)   # right shoulder from the body centre (make_svg.py: SHX, SHY)
+FLAT = VAR in ('flat', 'mono', 'chub')
+SH = (112.0, 30.0) if DUO else (114.0, 16.0) if FLAT else (94.0, 28.0)   # right shoulder from the body centre (make_svg.py: SHX, SHY)
 # where the hands go for the poses that touch the body; the duo body has its face higher and a rounder side
 T = dict(cheek=(54, -22), chin=(20, 22), mouth=(8, -4), hips=(100, 96), heart=(16, 88), dua=(66, -52), peekL=(-70, -6)) if DUO else     dict(cheek=(50, 24), chin=(16, 52), mouth=(8, 30), hips=(116, 110), heart=(12, 96), dua=(60, -34), peekL=(-60, 6))
+if FLAT:  # eyes at (±50, -58), mouth at -6, chest khatam at +60
+    T = dict(cheek=(70, -16), chin=(20, 14), mouth=(8, -4), hips=(124, 72), heart=(10, 54), dua=(60, 18), peekL=(-50, -52))
 L1, L2 = 56.0, 76.0      # shoulder -> wrist, wrist -> middle of the feather hand
-REST_ARM = (1.0, -0.3)   # hanging at the side, the hand flared out a little
+REST_ARM = (1.32, -0.22) if FLAT else (1.0, -0.3)   # hanging at the side, the hand flared out a little
 
 
 def norm(a, lo):
@@ -193,8 +196,8 @@ P.ks('Torso', 'rotation', [(0, 0, 'sin'), (90, 0.025, 'sin'), (130, 0, 'sin'), (
 P.look(0, 0); P.look(64, 0, 'out'); P.look(70, 1, 'hold'); P.look(108, 1, 'out'); P.look(116, 0, 'hold')
 P.look(150, 0, 'out'); P.look(156, -1, 'hold'); P.look(188, -1, 'out'); P.look(196, 0, 'hold')
 P.blink(40); P.blink(128); P.blink(140)
-P.arms(0, 'rest', 'rest', 'sin'); P.arms(60, ('a', 0.9, -0.38), ('a', 0.9, -0.38), 'sin'); P.arms(120, 'rest', 'rest', 'sin')
-P.arms(204, 'rest', 'rest', 'out'); P.arms(210, ('a', 0.75, -0.75), ('a', 0.75, -0.75)); P.arms(228, 'rest', 'rest')
+P.arms(0, 'rest', 'rest', 'sin'); P.arms(60, ('a', REST_ARM[0] - 0.1, REST_ARM[1] - 0.08), ('a', REST_ARM[0] - 0.1, REST_ARM[1] - 0.08), 'sin'); P.arms(120, 'rest', 'rest', 'sin')
+P.arms(204, 'rest', 'rest', 'out'); P.arms(210, ('a', REST_ARM[0] - 0.25, -0.75), ('a', REST_ARM[0] - 0.25, -0.75)); P.arms(228, 'rest', 'rest')
 P.face(0); P.face(204, 'happy', 'smile'); P.face(230)
 
 # 1 wave: hand up, the hand waves from the wrist a beat after the arm

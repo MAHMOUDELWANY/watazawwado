@@ -10,11 +10,14 @@ import math, sys
 S = 200.0; CX = 300.0; GY = 560.0; CY = GY - 0.72 * S
 f = lambda v: ('%.2f' % v).rstrip('0').rstrip('.')
 # body style; the owner is choosing between rounded redesigns (2026-11-21): v2 (sharp khatam), soft, bubble, emblem
-VAR = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'flat'
 ROUND = VAR != 'v2'
 DUO = VAR == 'duo'      # a chubby round body like Duolingo's mascot: face on the upper body, belly, khatam crest
-SHX, SHY = (0.56 * S, 0.15 * S) if DUO else (0.47 * S, 0.14 * S)   # shoulder from the body centre (add_motion.py: SH)
-HY = CY - 0.2 * S if DUO else CY                                   # face centre
+# flat, built the way Duolingo's mascot is built (owner, 2026-11-21): one silhouette, flat colours, big eyes in a face
+# mask, wings that are part of the body. flat = ear bumps + cream mask, mono = ear bumps + light crimson mask, chub = round
+FLAT = VAR in ('flat', 'mono', 'chub')
+SHX, SHY = (0.56 * S, 0.15 * S) if DUO else (114.0, 16.0) if FLAT else (0.47 * S, 0.14 * S)   # shoulder from the body centre (add_motion.py: SH)
+HY = CY - 0.2 * S if DUO else CY - 40 if FLAT else CY              # face centre
 FR = 0.38 * S if DUO else 0.35 * S
 EK = 1.25 if DUO else 1.0                                          # eye size
 
@@ -222,6 +225,74 @@ for name, mk in (('HappyEyes', lambda x: 'M%s %s Q%s %s %s %s' % (f(x - 10.5), f
 feat.append('<g id="SadBrows" opacity="0" fill="none" stroke="#1E0F0A" stroke-width="4" stroke-linecap="round">%s</g>' % ''.join(
     '<path d="M%s %s L%s %s"/>' % (f(CX + s * 0.105 * S * EK - s * 10), f(EY - 30), f(CX + s * 0.105 * S * EK + s * 10), f(EY - 23)) for s in (-1, 1)))
 head.append(pivot('Features', CX, HY, ''.join(feat)))
+
+if FLAT:
+    RED, WINGC, EDGE, GOLD, GOLDD = '#C8232A', '#B71F26', '#8E161B', '#F2B640', '#C98A24'
+    MASK = '#E2474D' if VAR == 'mono' else '#FBEBD3'
+    INK = '#3A1410'
+    legs = ''
+    for s, name in ((-1, 'LegL'), (1, 'LegR')):
+        legs += ('<g id="%s" transform="translate(%s %s)"><ellipse cx="%s" cy="14" rx="27" ry="13" fill="%s" stroke="%s" stroke-width="2"/>'
+                 '<ellipse cx="%s" cy="8.5" rx="10" ry="3.5" fill="#FFE29A" opacity=".8"/></g>') % (
+            name, f(CX + s * 40), f(GY - 24), f(s * 4), GOLD, GOLDD, f(s * 4 - 6))
+    if VAR == 'chub':   # a round body, a little wider at the bottom
+        pts = []
+        for i in range(120):
+            t = i / 120 * 2 * math.pi
+            c, sn = math.cos(t), math.sin(t)
+            r = (abs(c) ** 2.6 + abs(sn) ** 2.6) ** (-1 / 2.6)
+            pts.append('%s %s' % (f(CX + 134 * r * c * (1 + 0.05 * sn)), f(CY - 4 + 130 * r * sn)))
+        silhouette = 'M' + ' L'.join(pts) + ' Z'
+    else:               # two ear bumps on top, the khatam crest sitting in the dip between them
+        P = lambda dx, dy: '%s %s' % (f(CX + dx), f(CY + dy))
+        silhouette = ('M%s C%s, %s, %s C%s, %s, %s C%s, %s, %s C%s, %s, %s C%s, %s, %s C%s, %s, %s C%s, %s, %s C%s, %s, %s Z' % (
+            P(-130, -70), P(-132, -128), P(-118, -150), P(-88, -150), P(-58, -150), P(-34, -128), P(0, -128),
+            P(34, -128), P(58, -150), P(88, -150), P(118, -150), P(132, -128), P(130, -70),
+            P(128, -10), P(140, 40), P(120, 80), P(96, 122), P(48, 126), P(0, 126),
+            P(-48, 126), P(-96, 122), P(-120, 80), P(-140, 40), P(-128, -10), P(-130, -70)))
+    badge = ['<path d="%s" fill="%s" stroke="%s" stroke-width="2"/>' % (khatam(0.15, 0.4, CX, CY - 140), GOLD, GOLDD),
+             '<path d="%s" fill="%s"/>' % (khatam(0.08, 0.4, CX, CY - 140), '#D9962B'),
+             '<path d="%s" fill="%s"/>' % (silhouette, RED),
+             '<path d="%s" fill="%s" stroke="%s" stroke-width="1.6"/>' % (khatam(0.1, 0.4, CX, CY + 60), GOLD, GOLDD),
+             '<path d="%s" fill="%s"/>' % (khatam(0.055, 0.4, CX, CY + 60), RED)]
+    EY, EX = CY - 58, 50
+    head = ['<circle cx="%s" cy="%s" r="56" fill="%s"/>' % (f(CX + s * EX), f(EY), MASK) for s in (-1, 1)]
+    head.append('<ellipse cx="%s" cy="%s" rx="56" ry="46" fill="%s"/>' % (f(CX), f(EY + 16), MASK))
+    rim = '#E8C9A0' if MASK != '#E2474D' else '#C93A40'
+    feat = ['<g id="Blush">%s</g>' % ''.join('<ellipse cx="%s" cy="%s" rx="14" ry="8.5" fill="#FF8A80" opacity=".6"/>' % (f(CX + s * 76), f(EY + 42)) for s in (-1, 1))]
+    MB, K = EY + 52, 1.35
+    m = lambda dx, dy: '%s %s' % (f(CX + dx * K), f(MB + dy * K))
+    feat.append('<g id="SmileG"><path d="M%s Q%s %s" fill="none" stroke="%s" stroke-width="4.6" stroke-linecap="round"/></g>' % (m(-7, 0), m(0, 7.5), m(7, 0), INK))
+    feat.append('<g id="MouthFlat" opacity="0"><path d="M%s Q%s %s" fill="none" stroke="%s" stroke-width="4.6" stroke-linecap="round"/></g>' % (m(-7, 6.5), m(0, 1), m(7, 6.5), INK))
+    feat.append('<g id="MouthO" opacity="0"><ellipse cx="%s" cy="%s" rx="%s" ry="%s" fill="%s"/><ellipse cx="%s" cy="%s" rx="%s" ry="%s" fill="#F07B73"/></g>' % (
+        f(CX), f(MB + 4.5 * K), f(6.5 * K), f(8 * K), INK, f(CX), f(MB + 8.5 * K), f(3.6 * K), f(2.6 * K)))
+    feat.append('<g id="MouthBig" opacity="0"><path d="M%s Q%s %s Q%s %s Q%s %s Z" fill="%s" stroke="%s" stroke-width="1.5" stroke-linejoin="round"/>'
+                '<ellipse cx="%s" cy="%s" rx="%s" ry="%s" fill="#F07B73"/></g>' % (
+                    m(-12, -2.5), m(0, 0.5), m(12, -2.5), m(10, 17.5), m(0, 17.5), m(-10, 17.5), m(-12, -2.5), INK, INK,
+                    f(CX), f(MB + 13 * K), f(6.5 * K), f(4 * K)))
+    eyes = ''
+    for s in (-1, 1):
+        x = CX + s * EX; px = x - s * 5
+        eyes += '<ellipse cx="%s" cy="%s" rx="37" ry="41" fill="#fff" stroke="%s" stroke-width="2"/>' % (f(x), f(EY), rim)
+        eyes += '<ellipse cx="%s" cy="%s" rx="18" ry="24" fill="%s"/>' % (f(px), f(EY + 5), INK)
+        eyes += '<circle cx="%s" cy="%s" r="7" fill="#fff"/><circle cx="%s" cy="%s" r="3" fill="#fff" opacity=".9"/>' % (f(px - 6), f(EY - 4), f(px + 6), f(EY + 15))
+    feat.append(pivot('Eyes', CX, EY, eyes))
+    for name, mk in (('HappyEyes', lambda x: 'M%s %s Q%s %s %s %s' % (f(x - 24), f(EY + 8), f(x), f(EY - 22), f(x + 24), f(EY + 8))),
+                     ('ClosedEyes', lambda x: 'M%s %s Q%s %s %s %s' % (f(x - 24), f(EY), f(x), f(EY + 18), f(x + 24), f(EY)))):
+        feat.append('<g id="%s" opacity="0" fill="none" stroke="%s" stroke-width="8" stroke-linecap="round">%s</g>' % (
+            name, INK, ''.join('<path d="%s"/>' % mk(CX + s * EX) for s in (-1, 1))))
+    feat.append('<g id="SadBrows" opacity="0" fill="none" stroke="%s" stroke-width="6" stroke-linecap="round">%s</g>' % (INK, ''.join(
+        '<path d="M%s %s L%s %s"/>' % (f(CX + s * EX - s * 20), f(EY - 50), f(CX + s * EX + s * 18), f(EY - 40)) for s in (-1, 1))))
+    head.append(pivot('Features', CX, HY, ''.join(feat)))
+
+    def wing(side):
+        """A soft wing pointing right from the shoulder: the flap (his arm) and a paddle with gold tips (his hand)."""
+        hand = ('<path d="M-6 -22 C22 -32 66 -28 86 -12 C96 -4 96 4 86 12 C66 28 22 32 -6 22 Z" fill="%s" stroke="%s" stroke-width="2"/>' % (WINGC, EDGE)
+                + ''.join('<circle cx="%s" cy="%s" r="10" fill="%s" stroke="%s" stroke-width="1.6"/>' % (x, y, GOLD, GOLDD) for x, y in ((80, -15), (91, 0), (80, 15))))
+        o = '<g id="Wrist%s" transform="translate(56 0)">%s</g>' % (side, hand)
+        o += '<path d="M-20 -27 C8 -36 50 -24 66 -10 C73 -2 73 2 66 10 C50 24 8 36 -20 27 Z" fill="%s" stroke="%s" stroke-width="2"/>' % (WINGC, EDGE)
+        o += '<path d="M2 -12 Q30 -18 52 -8" fill="none" stroke="#E2474D" stroke-width="3" stroke-linecap="round"/>'
+        return o
 
 clap = '<path d="%s" fill="#FFF3C4"/><path d="%s" fill="#F6D58E"/>' % (spark(0, 0, 22), spark(0, 0, 13, 0.25))
 clap += ''.join('<path transform="rotate(%d)" d="M0 -30 L0 -44" stroke="#F6D58E" stroke-width="4" stroke-linecap="round"/>' % (i * 45) for i in range(8))
