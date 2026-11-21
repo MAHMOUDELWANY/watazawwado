@@ -35,6 +35,14 @@ gloss), big white eyes in a face mask, wings as broad flaps with gold tips, gold
 Three takes in `docs/design/zad-rive/flat-options-2026-11-21.png`: A `flat` (cream mask, live), B `mono` (light crimson
 mask), C `chub` (round, no ears). Switch with `ZAD_STYLE=mono bash tools/build.sh --publish`.
 
+**One-piece body (2026-11-21, owner: "the arms look like blocks; one body, one piece; use Rive's premium features").**
+`ZAD_STYLE=one` (the default): `tools/skin_body.py` draws the body and both wings as a single skinned path (300
+vertices) bent by bones: BodyBone (Torso), HeadBone (the top of the body leans with the head), ArmR/ArmL + WristR/WristL
+(the keyed wing angles). Weights blend from body to wing at the armpit, so the wing grows out of the body like rubber. A
+slightly darker skinned flap keeps a wing readable when it crosses the body; gold feather tips ride the wrist bones.
+Mobbin references used: Duolingo (wings are body flaps), Deepstash's flame (arms taper out of the same shape), Me+'s
+ghost (one blob). Preview: `docs/design/zad-rive/one-piece-2026-11-21.png`. The build needs no extra Python packages.
+
 Still open from the plan below: real bones on the feather hands (step 3), state-machine triggers and site placement
 (step 5), replacing the 3D Zad (step 6).
 

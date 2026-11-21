@@ -10,12 +10,13 @@ import math, sys
 S = 200.0; CX = 300.0; GY = 560.0; CY = GY - 0.72 * S
 f = lambda v: ('%.2f' % v).rstrip('0').rstrip('.')
 # body style; the owner is choosing between rounded redesigns (2026-11-21): v2 (sharp khatam), soft, bubble, emblem
-VAR = sys.argv[2] if len(sys.argv) > 2 else 'flat'
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'one'
 ROUND = VAR != 'v2'
 DUO = VAR == 'duo'      # a chubby round body like Duolingo's mascot: face on the upper body, belly, khatam crest
 # flat, built the way Duolingo's mascot is built (owner, 2026-11-21): one silhouette, flat colours, big eyes in a face
 # mask, wings that are part of the body. flat = ear bumps + cream mask, mono = ear bumps + light crimson mask, chub = round
-FLAT = VAR in ('flat', 'mono', 'chub')
+FLAT = VAR in ('flat', 'mono', 'chub', 'one')
+ONE = VAR == 'one'   # one skinned body: the wings are part of the outline (tools/skin_body.py draws it)
 SHX, SHY = (0.56 * S, 0.15 * S) if DUO else (114.0, 16.0) if FLAT else (0.47 * S, 0.14 * S)   # shoulder from the body centre (add_motion.py: SH)
 HY = CY - 0.2 * S if DUO else CY - 40 if FLAT else CY              # face centre
 FR = 0.38 * S if DUO else 0.35 * S
@@ -250,13 +251,15 @@ if FLAT:
             P(34, -128), P(58, -150), P(88, -150), P(118, -150), P(132, -128), P(130, -70),
             P(128, -10), P(140, 40), P(120, 80), P(96, 122), P(48, 126), P(0, 126),
             P(-48, 126), P(-96, 122), P(-120, 80), P(-140, 40), P(-128, -10), P(-130, -70)))
-    badge = ['<path d="%s" fill="%s" stroke="%s" stroke-width="2"/>' % (khatam(0.15, 0.4, CX, CY - 140), GOLD, GOLDD),
-             '<path d="%s" fill="%s"/>' % (khatam(0.08, 0.4, CX, CY - 140), '#D9962B'),
+    crest = ['<path d="%s" fill="%s" stroke="%s" stroke-width="2"/>' % (khatam(0.15, 0.4, CX, CY - 140), GOLD, GOLDD),
+             '<path d="%s" fill="%s"/>' % (khatam(0.08, 0.4, CX, CY - 140), '#D9962B')]
+    badge = ([] if ONE else crest) + [
+             '<g id="BodySlot"><rect x="%s" y="%s" width=".01" height=".01" fill="none"/></g>' % (f(CX), f(CY)) if ONE else
              '<path d="%s" fill="%s"/>' % (silhouette, RED),
              '<path d="%s" fill="%s" stroke="%s" stroke-width="1.6"/>' % (khatam(0.1, 0.4, CX, CY + 60), GOLD, GOLDD),
              '<path d="%s" fill="%s"/>' % (khatam(0.055, 0.4, CX, CY + 60), RED)]
     EY, EX = CY - 58, 50
-    head = ['<circle cx="%s" cy="%s" r="56" fill="%s"/>' % (f(CX + s * EX), f(EY), MASK) for s in (-1, 1)]
+    head = (crest if ONE else []) + ['<circle cx="%s" cy="%s" r="56" fill="%s"/>' % (f(CX + s * EX), f(EY), MASK) for s in (-1, 1)]
     head.append('<ellipse cx="%s" cy="%s" rx="56" ry="46" fill="%s"/>' % (f(CX), f(EY + 16), MASK))
     rim = '#E8C9A0' if MASK != '#E2474D' else '#C93A40'
     feat = ['<g id="Blush">%s</g>' % ''.join('<ellipse cx="%s" cy="%s" rx="14" ry="8.5" fill="#FF8A80" opacity=".6"/>' % (f(CX + s * 76), f(EY + 42)) for s in (-1, 1))]
@@ -289,6 +292,9 @@ if FLAT:
         """A soft wing pointing right from the shoulder: the flap (his arm) and a paddle with gold tips (his hand)."""
         hand = ('<path d="M-6 -22 C22 -32 66 -28 86 -12 C96 -4 96 4 86 12 C66 28 22 32 -6 22 Z" fill="%s" stroke="%s" stroke-width="2"/>' % (WINGC, EDGE)
                 + ''.join('<circle cx="%s" cy="%s" r="10" fill="%s" stroke="%s" stroke-width="1.6"/>' % (x, y, GOLD, GOLDD) for x, y in ((80, -15), (91, 0), (80, 15))))
+        if ONE:   # only the gold feather tips: the arm itself is part of the skinned body
+            return '<g id="Wrist%s" transform="translate(56 0)">%s</g>' % (side, ''.join(
+                '<circle cx="%s" cy="%s" r="10" fill="%s" stroke="%s" stroke-width="1.6"/>' % (x, y, GOLD, GOLDD) for x, y in ((76, -15), (86, 0), (76, 15))))
         o = '<g id="Wrist%s" transform="translate(56 0)">%s</g>' % (side, hand)
         o += '<path d="M-20 -27 C8 -36 50 -24 66 -10 C73 -2 73 2 66 10 C50 24 8 36 -20 27 Z" fill="%s" stroke="%s" stroke-width="2"/>' % (WINGC, EDGE)
         o += '<path d="M2 -12 Q30 -18 52 -8" fill="none" stroke="#E2474D" stroke-width="3" stroke-linecap="round"/>'

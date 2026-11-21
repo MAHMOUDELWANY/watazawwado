@@ -42,16 +42,16 @@ for name, i in PARTS.items():
     s = s.replace('<Node %sname="%s">' % (ms[0], name), '<Node %sname="%s" id="%s">' % (ms[0], name, i))
 
 # ---------------------------------------------------------------- arms
-VAR = sys.argv[2] if len(sys.argv) > 2 else 'flat'
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'one'
 DUO = VAR == 'duo'
-FLAT = VAR in ('flat', 'mono', 'chub')
+FLAT = VAR in ('flat', 'mono', 'chub', 'one')
 SH = (112.0, 30.0) if DUO else (114.0, 16.0) if FLAT else (94.0, 28.0)   # right shoulder from the body centre (make_svg.py: SHX, SHY)
 # where the hands go for the poses that touch the body; the duo body has its face higher and a rounder side
 T = dict(cheek=(54, -22), chin=(20, 22), mouth=(8, -4), hips=(100, 96), heart=(16, 88), dua=(66, -52), peekL=(-70, -6)) if DUO else     dict(cheek=(50, 24), chin=(16, 52), mouth=(8, 30), hips=(116, 110), heart=(12, 96), dua=(60, -34), peekL=(-60, 6))
 if FLAT:  # eyes at (±50, -58), mouth at -6, chest khatam at +60
     T = dict(cheek=(70, -16), chin=(20, 14), mouth=(8, -4), hips=(124, 72), heart=(10, 54), dua=(60, 18), peekL=(-50, -52))
 L1, L2 = 56.0, 76.0      # shoulder -> wrist, wrist -> middle of the feather hand
-REST_ARM = (1.32, -0.22) if FLAT else (1.0, -0.3)   # hanging at the side, the hand flared out a little
+REST_ARM = (0.95, -0.25) if VAR == 'one' else (1.32, -0.22) if FLAT else (1.0, -0.3)   # hanging at the side, the hand flared out a little
 
 
 def norm(a, lo):
