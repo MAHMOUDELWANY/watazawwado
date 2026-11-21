@@ -11,6 +11,7 @@ verdicts, the owner's decisions and what was not checked; the English records an
 | [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 4 questions, the phone check, and accepts / rejects the majors by id |
 | [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | reported | owner decides course-1 (blocker) and 60 majors by id; 7 owner checks |
 | [2026-11-21-L01-L03](zad-kids/2026-11-21-L01-L03.run.md) | zad-kids | L1–L3 | lean | reported | owner accepts / rejects the blocker and 29 majors by id; 4 owner checks |
+| [2026-11-21-L01-L04](seerah-teens/2026-11-21-L01-L04.run.md) | seerah-teens | L1–L4 | L1 full, L2–L4 lean | running | evidence packs |
 
 States: `running` → `reported` → `decided` → `fixing` → `fixed` → re-review → `closed`.
 
