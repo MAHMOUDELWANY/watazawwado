@@ -933,18 +933,23 @@ Order: FN-01 → FN-07 → FN-02 → FN-03 → FN-08 → FN-04, then FN-09 and F
 
 Owner decisions 2026-11-20:
 - Reports are in USD. A transfer or cost in another currency is stored with its own amount and the rate of its day.
-- Refunds go back to the original card or PayPal account from the Refund button; a manual transfer stays only for
-  cases where that is not possible (RULES.md §5).
+- Refunds go back to the original payment method through Stripe from the Refund button; a manual transfer stays only
+  for cases where that is not possible (RULES.md §5).
+- Stripe is the only payment provider (owner 2026-11-21). PayPal is offered only as a payment method inside Stripe
+  checkout, so all money arrives in Stripe and FN-01 covers all of it. There is no separate PayPal account to sync.
 - There is no accountant yet: FN-10 exports a general CSV, adjusted when one is hired. Tax and legal invoice rules
   are not decided here.
 
-No duplication: each task first searches the existing code (Payroll page, Refund button, Stripe and PayPal webhooks,
+No duplication: each task first searches the existing code (Payroll page, Refund button, Stripe webhooks,
 `payments` and package tables, discount and referral credit code, `docs/business/LEDGER.md`) and extends it.
 
-### FN-07 PayPal money sync
-- Priority P1 · Zone 🔴 (money) · Size M · Status todo · Depends on FN-01
-- Do: import PayPal transactions (gross, fee, net, currency) into the same table and daily job as FN-01, so profit
-  covers both providers. Needs PayPal reporting access on the owner's account (owner adds any key in Vercel).
+### FN-07 Retire the direct PayPal path
+- Priority P1 · Zone 🔴 (money) · Size S · Status todo
+- Do: find any direct PayPal code left from before PayPal moved inside Stripe (checkout button, server routes,
+  webhook, env names, legal and help text). Confirm no learner can reach it, then remove it, and make docs and
+  CLAUDE.md say Stripe only. Check that a PayPal payment made through Stripe checkout confirms the booking and
+  refunds like a card payment.
+- Done when: no direct PayPal route answers in production, and the payment tests pass.
 
 ### FN-08 Money received but not yet earned
 - Priority P1 · Zone 🔴 (money) · Size S · Status todo
@@ -954,7 +959,7 @@ No duplication: each task first searches the existing code (Payroll page, Refund
 
 ### FN-09 Refund and dispute register
 - Priority P1 · Zone 🔴 (money) · Size M · Status todo
-- Do: the Refund button refunds through Stripe or PayPal to the original method (manual transfer as the fallback,
+- Do: the Refund button refunds through Stripe to the original method (manual transfer as the fallback,
   recorded with method and reference). A list of open refund and withdrawal requests with days left of the 14.
   A Stripe dispute (chargeback) alerts the super admin at once and shows its deadline, amount and fee.
 - Done when: tests prove a refund reverses the lesson or credits once only, and never refunds more than was paid.
