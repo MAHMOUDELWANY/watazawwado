@@ -56,7 +56,7 @@ Arches (our signature, use them for things that "contain" a person or a place):
 
 - Headings: Thmanyah Serif Text, bold, in Arabic and English (owner's choice 2026-11-21, after a side-by-side on the
   homepage headline; replaces Serif Display, and Sans for Arabic headings). Until QA-08 lands, `font-editorial` still
-  draws Serif Display. Body: Thmanyah Sans (the default). Small helper text (hints, guidance, captions): the owner asked for Madika Arabic (2026-11-21); not live until QA-08 settles its weights and licence.
+  draws Serif Display. Body: Thmanyah Sans (the default). Small helper text (hints, guidance, captions) is Thmanyah Sans too (owner 2026-11-21, after a side-by-side with Madika and three free rounded faces).
 - Arabic headings use `font-bold`. English headings use `font-medium tracking-tight`.
 
 | Step | Size (mobile → desktop) | Line height | Use |
