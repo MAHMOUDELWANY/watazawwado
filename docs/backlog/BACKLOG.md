@@ -1576,8 +1576,16 @@ Adults want a purpose behind the effort. A version for children is not decided.
   - Proof for every gift: the charity's receipt or certificate, shown to the learner.
   - A community grove with real totals only, first names with consent (CM-01), no ranking.
   - The teacher of the learner is named in the gift too.
-- Open owner decisions: the amount per tree (olive tree programs cost roughly $10 to $20 a tree, 2026-11-21); the
-  charity partners; whether the tree may be drawn in green (the palette has no green); a version for children.
+- Owner decisions 2026-11-21: Claude's proposals above are accepted. The real trees are planted in Egypt, with a
+  local tree-planting association as a partner (cheaper than Europe, and such groups exist). The Oasis is an
+  environment, not identity: its trees and land are drawn in natural colours, green included; this is the one
+  exception to "no green", and the controls, type and frames around it stay in our palette and Thmanyah. It is
+  made for adults: calm and real, not a children's game. The children's version waits until the adult one is live.
+- Design references (Mobbin, 2026-11-21): Forest (one tree in a round frame with a progress ring; an isometric
+  plot that fills with the trees earned; a species picker; planting together in a room) and Tolan (a soft 3D
+  landscape). Take the structure, not the look: prototype 2 to 3 looks first (owner's standing rule).
+- Still open: the amount per tree (decided when learner numbers are known; Claude proposes a figure from Egyptian
+  prices then) and the partner associations.
 - For a lawyer (CP-11): how we may describe the giving in marketing, and any limits on giving to Gaza relief from
   where the trader is registered.
 - Wording of any hadith or ayah about planting or charity goes through `WATAZAWWADO-islamic-content-check`.
