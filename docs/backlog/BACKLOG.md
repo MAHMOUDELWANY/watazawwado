@@ -1444,6 +1444,146 @@ section, `chat_threads`) and extends it.
 
 ---
 
+## SH: System health (owner request 2026-11-21)
+
+Why: OPS-01 to OPS-04 and QA-01 exist (error monitoring, health page, uptime and cron heartbeat, runbook, money
+smoke tests). This lane covers what would stop the academy or lose data. Checked 2026-11-21: the Supabase
+organisation is on the free plan (no point-in-time recovery; Supabase advises free projects to keep their own
+exports). Vercel's fair use guidelines restrict the Hobby plan to non-commercial use; our Vercel plan was not
+verified. The list of risks is not complete: SH-01 is the real audit.
+
+Order: SH-01 → SH-02 → SH-12 → SH-11 → SH-03 → SH-05 → SH-04 → SH-07 → SH-13 → SH-14 → SH-06 → SH-15 → SH-10 →
+SH-09 → SH-08.
+
+Owner decisions 2026-11-21:
+- Vercel: if we are on Hobby, move to Pro (about $20 a month) on the day real payments open, not before.
+- Supabase: our own free backup now; move to Pro (about $25 a month) when monthly revenue covers it, with a rule
+  in the advisor (FN-05) to remind the owner.
+- Backups live outside Supabase in private storage, encrypted, kept 30 days. A restore test every 3 months.
+- A release is held while a lesson is live or starts within 15 minutes.
+- Alerts: push and email for urgent ones, a daily digest for the rest.
+
+No duplication: each task first searches the existing code (OPS-01 to OPS-04, the health page, the cron heartbeat,
+QA-01, `e2e/`, the Stripe webhook handlers, `vercel.json`, the security-audit skill) and extends it.
+
+### SH-01 Provider audit
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: one table of every service we depend on (Vercel, Supabase, Cloudflare, Stripe, Brevo, Gemini, Zoom, Google
+  Calendar, the domain and DNS, GitHub, the cron service, any other found): our plan, its limits, its terms on
+  commercial use and on what it does with our data (Gemini's free tier in particular, with CP-07), the region
+  where data is stored, the cost at 50 and at 200 learners, and what happens to us if it stops. Confirm the Vercel
+  plan and whether the Zoom fallback account cuts a lesson at 40 minutes. Every risk found becomes a task or a
+  recorded decision. Feeds FN-02 and FN-13.
+
+### SH-02 Backups we own
+- Priority P1 · Zone 🔴 (all data) · Size M · Status todo
+- Do: a nightly export of the database and the storage buckets, encrypted, to private storage outside Supabase,
+  kept 30 days, with an alert when a night is missed. A written restore procedure.
+- Done when: a restore into a fresh project was done and checked once, and the next test date is recorded.
+
+### SH-03 Check after every release
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: after each production release an automatic check, run once from the release pipeline (never a polling loop
+  from the owner's network): an API route answers, sign-in, the slot list, creating a checkout session in test
+  mode, entering the room. A failure alerts at once with the rollback step. The classroom is also checked on iPhone
+  Safari before a classroom release.
+
+### SH-04 Register of scheduled jobs
+- Priority P1 · Zone 🟢 · Size S · Status todo · Extends OPS-03
+- Do: every scheduled job (reminders, RN and CRM sends, the retention deletion, the Stripe catch-up, backups, the
+  integrity check) is listed with its heartbeat; a job that did not run alerts. A new job cannot ship without its
+  entry.
+
+### SH-05 Alerts and incident record
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: priorities for alerts (payment, sign-in or the room down: push and email now; the rest in a daily digest).
+  Each incident gets a record: start, end, families and lessons affected, the lessons returned (SP-03), the cause
+  and one fix. Drives the site banner of SP-08.
+
+### SH-06 Release safety
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: a release waits while a lesson is live or starts within 15 minutes. One documented step returns production to
+  the previous version. Red-zone changes ship behind a switch that the super admin can turn off.
+
+### SH-07 Limits watch
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on SH-01
+- Do: for each limit found in SH-01 (database size, storage, emails per day, room minutes, Gemini requests,
+  function usage) the share used, with an alert at 70%. Brevo's daily email limit first, because the CRM and
+  support lanes add automatic emails. Feeds the advisor: "upgrade X now, it costs Y a month".
+
+### SH-08 Performance budget
+- Priority P3 · Zone 🟢 · Size S · Status todo
+- Do: targets for page speed on a phone, the time to enter the room and API response time; an alert when a release
+  makes one worse.
+
+### SH-09 Monthly security hygiene
+- Priority P2 · Zone 🔴 (security) · Size S · Status todo
+- Do: a monthly run: dependency updates, the Supabase security advisors, a check of RLS on new tables, key rotation
+  dates. Findings become tasks.
+
+### SH-10 Disaster plan
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on SH-01
+- Do: per provider, what we do when it is down. Recovery of the owner's accounts (two-step backup codes, a second
+  owner where the service allows). A document that lets the academy keep running when the owner is not available.
+  Stripe is the only way money comes in: write what we do if the account is paused for review.
+
+### SH-11 Nightly integrity check
+- Priority P1 · Zone 🔴 (money, bookings) · Size M · Status todo
+- Do: every night the system checks rules that must always hold and alerts on any break: no confirmed paid booking
+  without a verified payment; a package balance equals bought minus used; no teacher booked twice at one time; no
+  lesson inside a prayer block (TS-10); no minor with a teacher whose vetting is incomplete (CP-02); no lesson
+  returned twice; booked times still correct across a daylight-saving change in either time zone.
+- Done when: each rule has a test that plants a broken record and sees the alert.
+
+### SH-12 Email reaches the inbox
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- Do: check and fix SPF, DKIM and DMARC for the sending domain; watch bounces and spam complaints from Brevo; a
+  monthly inbox test to Gmail, Outlook and iCloud. Without this the CRM and support emails are wasted.
+
+### SH-13 Spending caps
+- Priority P1 · Zone 🟢 · Size S · Status todo · Depends on SH-01
+- Do: a spending limit and a billing alert on every usage-priced service, so a bug cannot produce a large bill.
+  The monthly total goes to FN-02.
+
+### SH-14 Abuse protection
+- Priority P2 · Zone 🔴 (auth, bookings) · Size M · Status todo
+- Do: rate limits on sign-up, sign-in and the public forms; bot protection on sign-up; detection of many accounts
+  taking free trials from one device or payment method; limits on the AI helper per account.
+
+### SH-15 Move the project out of OneDrive
+- Priority P2 · Zone 🟢 · Size S · Status todo · Needs the owner at his computer
+- Do: the working copy lives in a OneDrive folder, which has already caused build failures. Move it to a normal
+  folder, with the owner, after everything is pushed; update the paths in the handoff documents.
+
+---
+
+## OA: The Oasis: a learning tree and real giving (owner idea 2026-11-21)
+
+Owner's idea, recorded so it is not lost; not designed yet. For adult learners and guardians: a tree in their
+"oasis" grows through their learning. When it reaches its full size the academy gives in their name, from its
+own money: either a donation to Gaza relief or a real fruit-bearing tree planted. Shown in the community.
+Adults want a purpose behind the effort. A version for children is not decided.
+
+### OA-01 The Oasis
+- Priority P2 · Zone 🔴 (money, public claims) · Size L · Status todo (open owner decisions below; `brainstorming` first)
+- Do, as proposed by Claude and to be confirmed:
+  - The tree grows only from real learning (lessons done, checkpoints passed) and is full when a curriculum level
+    is complete (AC-08). It never shrinks or wilts: no guilt, no daily streaks.
+  - At full size the learner chooses: a donation to Gaza relief or a planted tree, and may dedicate it to someone.
+  - The academy gives from its own revenue through a registered charity; it does not collect donations. The money
+    comes from a "giving" bucket of the monthly split (FN-04). If the bucket is empty the gift waits in a queue
+    and the learner is told the honest date.
+  - Proof for every gift: the charity's receipt or certificate, shown to the learner.
+  - A community grove with real totals only, first names with consent (CM-01), no ranking.
+  - The teacher of the learner is named in the gift too.
+- Open owner decisions: the amount per tree (olive tree programs cost roughly $10 to $20 a tree, 2026-11-21); the
+  charity partners; whether the tree may be drawn in green (the palette has no green); a version for children.
+- For a lawyer (CP-11): how we may describe the giving in marketing, and any limits on giving to Gaza relief from
+  where the trader is registered.
+- Wording of any hadith or ayah about planting or charity goes through `WATAZAWWADO-islamic-content-check`.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
