@@ -1256,6 +1256,97 @@ NX-04 certificates, NX-08 seasonal programs, TS-02, TS-03, SV-07) and extends it
 
 ---
 
+## SP: Support (owner request 2026-11-21)
+
+Why: the owner treats support as a core of the brand. Supervision is about the quality of teaching; support solves
+a family's or a teacher's problem (sign-in, booking, payment, technical). One person does both for now, in one
+system: support is a separate permission in the ST-01 sets, given to the `supervision` role at the start, so the
+two can be split later without new code. Complaints (SV-06) and teacher requests (TS-08) are categories in the
+same inbox, not separate systems. Research (2026-11-21, directional): one bad experience loses many customers;
+low effort for the customer matters more than delight; a good recovery restores satisfaction but does not reliably
+raise loyalty, so prevention comes first; a bot that does not hand over to a person is the most hated pattern.
+
+Order: SP-01 → SP-03 → SP-02 → SP-06 → SP-05 → SP-04 → SP-08 → SP-09 → SP-10 → SP-07.
+
+Owner decisions 2026-11-21:
+- Support is done by the supervision account with its own permission. Refunds go to the super admin (FN-09).
+- Reply times: a lesson emergency gets the automatic fix at once and a person within 15 minutes in coverage hours;
+  everything else gets a first reply within 12 hours.
+- Coverage hours: the owner sets them (not set yet); outside them the system answers with the honest expected time.
+- Goodwill: one make-up lesson per family per 3 months without asking the owner.
+- The AI helper answers from the help articles only, and "talk to a person" is always visible.
+- Channels: the portal and email are official; WhatsApp is manual and logged (CRM-12); no phone support.
+
+Not built, on purpose: a bot that blocks the way to a person; hiding the contact route; closing a ticket without the
+customer's confirmation; a discount as an apology; phone support.
+
+No duplication: each task first searches the existing code (the admin chat inbox AD-03 and `chat_threads`, the
+family timeline CRM-01, `crm_tasks`, `notification_events`, push notifications NX-09, the classroom fix-it pages
+and Zoom fallback, the PU-03 FAQ, the Gemini learning guide, self-service privacy requests ST-06) and extends it.
+SV-06 and TS-08 are built on the SP-01 table.
+
+### SP-01 One inbox
+- Priority P1 · Zone 🔴 (personal data, new role permission) · Size L · Status todo · Depends on ST-01
+- Do: every request in one list: the portal help button, email, the existing chat, complaints, teacher requests.
+  Each has a category, priority, owner, status, deadline, and the linked family, lesson or payment, with the family
+  timeline beside it so nobody asks the customer twice. The customer sees the status of their request in the
+  portal and confirms it is solved before it closes.
+- Done when: a role without the support permission gets 403 from the server; a safeguarding complaint stays hidden
+  from the support permission (SV-06).
+
+### SP-02 Help that knows the context
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on SP-01
+- Do: the help button knows the page and shows the fix for that page first (cannot join, payment, booking,
+  balance). A request attaches by itself: browser, device, the last error, the booking or payment id.
+
+### SP-03 Lesson emergency
+- Priority P1 · Zone 🔴 (credits, room) · Size M · Status todo · Depends on SP-01
+- Do: during a lesson window a "problem now" button for the family and the teacher: the fix-it steps and the
+  fallback link at once, an urgent push to the person on duty, and when the verdict is "incident on our side" the
+  lesson returns to the balance by the existing rule (with TS-11).
+- Done when: tests prove the urgent alert is sent once per lesson and the lesson is never returned twice.
+
+### SP-04 Help centre
+- Priority P2 · Zone 🟢 · Size M · Status todo · Extends PU-03
+- Do: searchable articles in Arabic and English, written from real requests, each with "did this solve it?".
+  The AI helper answers only from these articles, says so when it does not know, and always shows "talk to a
+  person", which opens SP-01 with the conversation attached.
+
+### SP-05 Saved replies and drafts
+- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on SP-01
+- Do: saved replies for repeated requests in both languages, and a Gemini draft in the family's language that the
+  person edits and sends. Nothing is sent without a person. Copy follows the brand voice.
+
+### SP-06 Service standards and hours
+- Priority P1 · Zone 🟢 · Size S · Status todo · Depends on SP-01
+- Do: reply deadlines by priority (owner decisions above) and coverage hours set by the super admin. The customer
+  is told the honest expected time when they send a request ("it is night for our team; we reply by ..."). Requests
+  near their deadline are highlighted.
+
+### SP-07 Every request is a defect
+- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on SP-10
+- Do: a monthly list of the top 10 request reasons. Each one gets a decision recorded beside it: a self-service
+  button, a fix at the root, or a help article. The count per reason is followed month to month.
+
+### SP-08 Proactive support
+- Priority P2 · Zone 🔴 (new sends) · Size M · Status todo · Depends on SP-01 and CRM-12
+- Do: the system opens the request before the customer writes: repeated failed joins, a failed payment, a room
+  error. The family is told when the teacher is running late. A site banner during an incident. These messages
+  are transactional and pass the contact cap.
+
+### SP-09 Goodwill within limits
+- Priority P2 · Zone 🔴 (credits) · Size S · Status todo · Depends on SP-01
+- Do: the support permission may grant one make-up lesson per family per 3 months, with a reason; the server
+  enforces the limit and every grant is logged and shown to the super admin. No discounts.
+- Done when: tests prove the second grant inside 3 months is refused for the support permission.
+
+### SP-10 Support measures
+- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on SP-01
+- Do: one tap after a solved request: "was it easy to get this solved?". First-reply time, time to solve, reopened
+  requests, requests per 100 lessons, reasons. An open request or a bad answer feeds CRM-09.
+
+---
+
 ## FN: Admin finance and business advisor (owner request 2026-11-17)
 
 Why: the owner funds the academy himself and wants every number visible on the platform, with plain advice, so no
