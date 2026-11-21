@@ -10,7 +10,7 @@ verdicts, the owner's decisions and what was not checked; the English records an
 | [2026-11-17-L01-L03](zad-adults/2026-11-17-L01-L03.run.md) | zad-adults | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 5 questions and accepts / rejects the majors by id |
 | [2026-11-21-L01-L03](zad-teens/2026-11-21-L01-L03.run.md) | zad-teens | L1–L3 | L1 full, L2–L3 lean | reported | owner answers the 4 questions, the phone check, and accepts / rejects the majors by id |
 | [2026-11-21-L01-L04](seerah-kids/2026-11-21-L01-L04.run.md) | seerah-kids | L1–L4 | L1 full, L2–L4 lean | running | evidence packs |
-| [2026-11-21-L01-L03](zad-kids/2026-11-21-L01-L03.run.md) | zad-kids | L1–L3 | lean | running | panel |
+| [2026-11-21-L01-L03](zad-kids/2026-11-21-L01-L03.run.md) | zad-kids | L1–L3 | lean | reported | owner accepts / rejects the blocker and 29 majors by id; 4 owner checks |
 
 States: `running` → `reported` → `decided` → `fixing` → `fixed` → re-review → `closed`.
 
@@ -35,9 +35,17 @@ as `known: CW-n` instead of raising them again.
 | CW-13 | Animated title words have no real spaces (screen readers read one word) | zad-adults L1 motion-defects-14 | |
 | CW-14 | Hadith Arabic copied from Dorar's edited text, which `sources.md` forbids | zad-adults L1 sources-copyright-3, zad-teens L1 sources-copyright-2 | |
 | CW-15 | Candidate: phone portrait, non-full screen, the slide paints black mid-lesson (DOM intact); needs a real-phone check | zad-teens L1 motion-defects-1 | |
+| CW-16 | Curriculum dark surface `.band-deep` is petrol green (#05363F→#0A5866): phone full-screen backdrop and every recall/question page (`src/index.css`, `LessonPlayer.tsx`, `Slide.tsx`) | zad-kids L1 art-director-6, course | |
+| CW-17 | Text column auto-fits down (to ~55%) when the "Think first" card appears, so every line jumps and shrinks (`Slide.tsx` Fit, `motion/Stage.tsx`) | zad-kids L1 motion-defects-1, course | |
+| CW-18 | Every sort game says "door" whatever its bins are (`Slide.tsx` SortGame) | zad-kids course | |
+| CW-19 | Painted evidence pages drop the English meaning after the first step (`Slide.tsx` Manuscript) | zad-kids L1 learning-scientist-1, course | |
+| CW-20 | Notes and tools drawer handles sit on the slide edge (`LessonPlayer.tsx` Drawer) | zad-kids course | |
+| CW-21 | Candidate: slides stay cream in dark mode; needs an owner rule first | zad-kids course | |
 
 ## Waiting for the owner
 - zad-teens L1–L3: 4 decisions, the phone check, the majors by id, Dorar numbers and licences:
   [run file](zad-teens/2026-11-21-L01-L03.run.md#owner-checks).
 - zad-adults L1–L3: the 5 decisions, the majors by id, and the owner checks (Dorar numbers, licences, two names):
   [run file](zad-adults/2026-11-17-L01-L03.run.md#owner-checks).
+- zad-kids L1–L3: one blocker (L3 shahada meaning), 29 majors and 4 owner checks (Dorar gradings, L1 painting provenance,
+  Quran/hadith text licence, the "who made Allah?" answer): [run file](zad-kids/2026-11-21-L01-L03.run.md#owner-checks).

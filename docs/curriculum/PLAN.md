@@ -1008,3 +1008,9 @@ B3–B5 → continue lesson by lesson.
   teach (L1), "desire = shirk" card (L3). Course: a chain held by the Why List, no recall from memory. Records and
   Arabic report in `reviews/zad-teens/`. Also fixed: review screenshots now wait for the slide to render (`shots.mjs`,
   `review-run.mjs`), and `review-merge.py` reads the expert from the finding id.
+- 2026-11-21 · Curriculum review, Zad Kids L1–L3 (lean on all three, owner offline): all "Needs fixes"; L1 73.9, L2 76.0,
+  L3 67.1. One blocker: L3 p6 tag "no one else is worshipped" drops «بحق». Majors (29): "three questions" in the Jibril
+  hadith (L1) and in the ayah (L2), the white-clothes clue scored wrong (L1), English meaning vanishes after one step,
+  red line through «لا إله» (L3), no answer to "who made Allah?" (L2). Course: accumulation does not work yet (one-step
+  chain, nothing from L1 named by L3); CW-16 … CW-21 proposed (petrol `.band-deep`, Fit shrink, "door" in every sort
+  game). Records and Arabic report in `reviews/zad-kids/`.
