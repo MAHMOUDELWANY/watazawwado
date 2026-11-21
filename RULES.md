@@ -34,6 +34,9 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided] Free trial — one per new student.** Default 30 minutes, maximum 45 minutes (master spec §9). **[Clarified 2026-11-07]** "Student" means each learner: every child in a family account gets their own free trial; the 5-lost-trials limit below stays per account.
 - **[Decided] Free trial rescheduling.** A trial can be rescheduled **once**, and only **at least 1 hour before** the lesson. Missing the trial (no-show), or cancelling it, means the student must wait **48 hours** before booking again.
 - **[Decided 2026-10-14] Free-trial limit.** After **5** cancelled or missed trials, the account can no longer book free trials; paid lessons stay open. Accounts are never deleted automatically (confirmed by the owner 2026-10-14).
+- **[Decided 2026-11-21] Second trial with a different teacher.** When a learner attended the free trial and did not continue because of the teacher, the admin may grant one more free trial with a different teacher: once per learner, by admin approval, never automatic. Takes effect when backlog CRM-15 is built.
+- **[Decided 2026-11-21] Pause or lighten.** A family may pause for up to **4 weeks**, once per **6 months**, with a return date; paid lessons are kept. A lighter schedule (shorter or fewer lessons) is offered beside it. Takes effect when backlog CRM-17 is built.
+- **[Decided 2026-11-21] Contact limits.** Automatic messages go by email only; WhatsApp stays manual. No more than one non-transactional message per family per week. No automatic discount to keep a family, and no win-back discount.
 - **[Decided 2026-10-14] Cancelling and rescheduling (all lessons):**
   - cancel up to **3 hours** before (a free trial: up to 1 hour before);
   - reschedule up to **1 hour** before, self-service; the new time is on **another day, tomorrow or later** (student's time zone), never the same day;

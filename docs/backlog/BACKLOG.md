@@ -249,6 +249,121 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
 - Do: per teacher: active students, lessons this week, hours offered vs booked, lessons moved by the teacher (with
   reasons), notes completion rate after lessons (PR-06). Admin only; teachers never see money.
 
+### Additions and order (owner 2026-11-21)
+
+Why: CRM-01 to CRM-08 record what happened. These tasks make the CRM act before a family is lost and at the moments
+a family is ready for more. The map follows the journey: before sign-up, the trial, the first 30 days, the steady
+learner, after leaving. Web research (2026-11-21) is directional only (adjacent platforms and vendor numbers, no
+published data for 1-on-1 tutoring); our own cohort table (CRM-19) is the reference.
+
+Order: CRM-10 → CRM-12 → CRM-15 → CRM-16 → CRM-11 → CRM-17 → CRM-18 → CRM-09 → CRM-19 → CRM-14 → CRM-13 → CRM-20.
+
+Owner decisions 2026-11-21:
+- Automatic messages go by email only. WhatsApp stays manual, one tap with a prefilled text.
+- Signed up but no trial booked: 3 emails in 7 days (day 1, 3, 7), then stop.
+- A loss reason is required when a family is marked lost.
+- A second free trial with a different teacher: once per learner, approved by the admin, never automatic (RULES.md §2).
+- Pause: up to 4 weeks, once per 6 months, paid lessons are kept. "Lighten" (shorter or fewer lessons) is offered
+  beside it (RULES.md §2).
+- Win-back: one message 60 days after leaving, no discount.
+- A new inquiry gets an instant automatic reply with the booking link; a person answers within one working hour.
+
+Not built, on purpose: an automatic discount to stop a family leaving; countdowns or pressure; automatic WhatsApp
+broadcasts; AI text sent without admin approval; machine-learning scores (too little data); teachers selling or
+seeing conversion as money; a card required before the free trial; failed-payment recovery (packages are prepaid).
+
+Shared rules for all tasks below:
+- Rules with written thresholds that show their number, editable by the super admin (same form as FN-05). Gemini
+  may draft a message; the admin approves every send.
+- Contact cap (built in CRM-12): one non-transactional message per family per week across every automation, sent
+  in the family's daytime, respecting RN-07 preferences.
+- No duplication: each task first searches the existing code (`leads`, `server/leadTransitions.ts`, `crm_notes`,
+  `crm_tags`, `crm_tasks`, `notification_events`, RN-02 to RN-07 jobs, the classroom ratings, talk time and
+  understanding check, `src/lib/leadSource.ts`, referral code) and extends it.
+
+### CRM-09 Family health and the next action
+- Priority P1 · Zone 🟢 · Size L · Status todo · Depends on CRM-10, CRM-12, CRM-16
+- Do: the stage is computed, not typed: new, first month, steady, at risk, paused, lost. A health level per family
+  with its reasons, from existing data: no next lesson booked 48 hours after a lesson, absences, cancellations,
+  lessons moved by the teacher, a low rating or questionnaire, low learner talk time, a red understanding check,
+  the parent has not opened a report for 3 weeks, a package at 0 for 7 days, a gap between lessons, a goal date in
+  2 weeks. An "at risk" list, worst first. One "next action" card per family; the admin records what was done and
+  the result.
+- Done when: a report shows, per action type, how many families were still active 30 days later.
+
+### CRM-10 Loss and exit reason
+- Priority P1 · Zone 🟢 · Size S · Status todo
+- Do: moving a family to lost requires a reason (price, times, teacher, level, goal reached, not interested, other
+  with text). One exit question by email to the family. A monthly report of reasons by subject, teacher and channel.
+
+### CRM-11 Before the trial: follow-up and unmet demand
+- Priority P1 · Zone 🔴 (new scheduled send) · Size M · Status todo · Depends on CRM-12
+- Do: signed up with no trial booked: 3 emails in 7 days, then stop. A referred lead is marked priority and gets a
+  same-day task. A new inquiry (site form or SM-08) gets the instant reply, and an alert when no person has
+  answered within one working hour. Record every slot search that returned nothing (subject, teacher gender asked,
+  weekday, hour, time zone): an "unmet demand" report for HR and FN-14.
+- Done when: tests prove the sequence stops on booking, on opt-out and after the third email.
+
+### CRM-12 Contact log and contact cap
+- Priority P1 · Zone 🔴 (touches every send) · Size M · Status todo
+- Do: every message the system sends appears in the family timeline (CRM-01). A "log a call or WhatsApp" button
+  with its outcome. The contact cap above, enforced in one place that every non-transactional send goes through.
+- Done when: tests prove a second non-transactional message in the same week is held, and transactional ones pass.
+
+### CRM-13 Segments and one-off sends
+- Priority P2 · Zone 🔴 (bulk send) · Size M · Status todo · Depends on CRM-12
+- Do: saved filters (subject, age band, stage, package state, tag, channel) and one email to a segment, with a
+  preview of who receives it, through the contact cap and the preferences.
+
+### CRM-14 Referrals, siblings and the right moment to ask
+- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on CRM-12
+- Do: a board of who invited whom and the credit used. Families with one child enrolled and the "sibling likely"
+  tag. A learner in one subject who fits a second. Ask for a referral or a testimonial only at a good moment (a
+  finished part or level, a 5 rating, an academy survey of 9 or 10) and never from a family at risk or with an open
+  complaint. A shareable certificate at a finished part or level.
+
+### CRM-15 Saving the trial
+- Priority P1 · Zone 🔴 (new scheduled send) · Size M · Status todo · Depends on CRM-12
+- Do: a "confirm you are coming" button in a reminder 3 hours before the trial; unconfirmed trials are flagged for
+  the admin. After a missed trial and the 48-hour wait, one email with a one-tap rebook; a second miss creates a
+  task for a person. After an attended trial with no purchase, one question "what stopped you?" (price, times,
+  teacher, level). The admin can grant the second trial with a different teacher. The next lesson can be booked from
+  the trial's end screen. Trial-to-paid conversion per teacher, admin only, as a count.
+
+### CRM-16 First-month watch
+- Priority P1 · Zone 🟢 · Size M · Status todo
+- Do: for the first 30 days after the first paid lesson: the lesson end screen offers the next booking (with RN-04);
+  no next lesson 48 hours after a lesson creates a task from week one; a check-in task after lesson 2; an alert when
+  the parent has not opened the first report. The parent portal always shows, without asking: current level, latest
+  progress, the next milestone, and "next lesson we will…" after each lesson. The family's goal and its date are
+  recorded at the start; 2 weeks before the date the admin gets a task to propose the next goal. For a young child
+  the admin sees a suggestion for shorter, more frequent lessons (a suggestion, not a rule).
+- First: check what PR and PA tasks already show the parent, and extend those pages.
+
+### CRM-17 Pause or lighten instead of leaving
+- Priority P1 · Zone 🔴 (packages and bookings) · Size M · Status todo
+- Do: a family can pause with a return date under the rule above, or lighten. A reminder one week before the return
+  with a one-tap booking. A calendar of seasons (Ramadan, summer, exam weeks, school start) creates tasks ahead for
+  families that paused or left in that season before.
+- Done when: a paused family is never counted as retained; the report shows how many paused and how many came back.
+
+### CRM-18 Teacher change handover
+- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on the HR lane (leave and exit notice)
+- Do: when a teacher leaves, takes leave or is replaced: the list of affected families, a required handover note
+  per learner (level, last lesson, mistake bank, what works with this learner), an introduction of the new teacher
+  to the family, and a task per family until the first lesson with the new teacher is rated.
+
+### CRM-19 Cohort retention table
+- Priority P2 · Zone 🟢 · Size M · Status todo
+- Do: by month of first paid lesson, the share still active after 1, 2, 3 and 6 months, split by channel, teacher,
+  subject and age band. Trial no-show rate and trial-to-paid rate by month. Our targets are set after 3 months of
+  data, not from outside benchmarks.
+
+### CRM-20 Win-back
+- Priority P3 · Zone 🔴 (new scheduled send) · Size S · Status todo · Depends on CRM-10, CRM-12
+- Do: one message 60 days after leaving, worded from the loss reason, no discount; and one before the season in
+  which the family first joined. Never to a family that asked not to be contacted.
+
 ---
 
 ## OPS: Launch operations (free tools only)
