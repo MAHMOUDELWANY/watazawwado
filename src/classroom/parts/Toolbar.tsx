@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AudioWaveform, Ellipsis, Hand, LogOut, Mic, MicOff, MonitorPlay, PhoneOff, Presentation, Users, Video, VideoOff, Volume2, VolumeX, X } from 'lucide-react';
 import { useT } from '../../lib/language';
 import { cn } from '../../lib/utils';
 import FocusTrap from '../../components/FocusTrap';
-import { ReactionSheet, type ReactionKind } from './Reactions';
+import { REACTION_SHOW_MS, ReactionSheet, type ReactionKind } from './Reactions';
 
 export type LayoutMode = 'conversation' | 'content' | 'screen';
 export type BarKind = 'teacher' | 'learner' | 'kid' | 'observer';
@@ -73,7 +73,7 @@ export function LayoutSwitch({ mode, onChange, screenAvailable, wide = false }: 
  * four big labelled controls; observers get sound and a quiet Leave.
  */
 export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, recitation = false, onRecitation, layout, onLayout,
-  sharing = false, shareSlot, toolsSlot, moreItems, onReact, selfHidden = false, onToggleSelf, soundOff = false, onSound, onLeave, leaveLabel }: {
+  sharing = false, shareSlot, toolsSlot, renderMore, onReact, soundOff = false, onSound, onLeave, leaveLabel }: {
   kind: BarKind;
   muted: boolean;
   cameraOff: boolean;
@@ -89,11 +89,9 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
   shareSlot?: React.ReactNode;
   /** 2.10: the teacher's tools button, or the learner's text-size and colours button (shown on every screen size). */
   toolsSlot?: React.ReactNode;
-  /** 2.12: extra rows in the "More" sheet (background blur). */
-  moreItems?: React.ReactNode;
+  /** The More menu (parts/MoreMenu), given the close function and, for phones, the bar's own controls. */
+  renderMore?: (close: () => void, barSlot: React.ReactNode) => React.ReactNode;
   onReact?: (kind: ReactionKind) => void;
-  selfHidden?: boolean;
-  onToggleSelf?: () => void;
   soundOff?: boolean;
   onSound?: () => void;
   onLeave: () => void;
@@ -105,6 +103,9 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
   const observer = kind === 'observer';
   const teacher = kind === 'teacher';
   const close = () => setSheet(null);
+  // Learner: the hand stays lit while the teacher sees it (the reaction shows for REACTION_SHOW_MS on their side).
+  const [handLit, setHandLit] = useState(false);
+  useEffect(() => { if (!handLit) return; const id = window.setTimeout(() => setHandLit(false), REACTION_SHOW_MS); return () => window.clearTimeout(id); }, [handLit]);
 
   const mic = (
     <BarButton kid={kid} tone={muted ? 'off' : 'idle'} aria-pressed={muted} aria-keyshortcuts="M" onClick={onMute}
@@ -133,53 +134,40 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
     </BarButton>
   );
 
+  // Adult learner: raise hand sits on the bar; the other teaching signals live in More.
+  const hand = onReact && !kid && (
+    <BarButton tone={handLit ? 'on' : 'idle'} aria-pressed={handLit} onClick={() => { onReact('hand'); setHandLit(true); }}
+      label={handLit ? t('Your hand is up', 'إيدك مرفوعة') : t('Raise my hand', 'ارفع إيدك')} word={handLit ? t('Hand up', 'مرفوعة') : undefined}
+      className={handLit ? 'bg-[linear-gradient(180deg,#F6D58E,#E5A93C)] text-[#2A1A10]' : undefined}>
+      <Hand className={cn('h-5 w-5', handLit && 'fill-current')} aria-hidden="true" />
+    </BarButton>
+  );
+
   return (
     <div className="relative mx-auto w-full max-w-max">
-      {sheet && (
+      {sheet === 'react' && onReact && (
         <FocusTrap onEscape={close}>
-          <div role="dialog" aria-label={sheet === 'more' ? t('More', 'المزيد') : kid ? t('I need…', 'محتاج…') : t('Reactions', 'تفاعل')}
-            className={cn('room-sheet glass-3 absolute bottom-full start-1/2 z-30 mb-3 -translate-x-1/2 rtl:translate-x-1/2 rounded-[var(--r-4)] p-2',
+          <div role="dialog" aria-label={kid ? t('I need…', 'محتاج…') : t('Reactions', 'تفاعل')}
+            className={cn('room-sheet room-glass absolute bottom-full start-1/2 z-30 mb-3 -translate-x-1/2 rtl:translate-x-1/2 rounded-[var(--r-4)] p-2',
               kid ? 'w-[min(26rem,calc(100vw-1.5rem))]' : 'w-[min(20rem,calc(100vw-1.5rem))]')}>
-            {sheet === 'react' && onReact && <ReactionSheet kid={kid} onSend={(k) => { onReact(k); close(); }} />}
-            {sheet === 'more' && (
-              <div className="grid gap-1 text-sm text-foreground">
-                {teacher && onLayout && layout && (
-                  <div className="grid gap-2 p-1 sm:hidden">
-                    <LayoutSwitch mode={layout} onChange={(m) => { onLayout(m); close(); }} screenAvailable={sharing} wide />
-                  </div>
-                )}
-                {teacher && onRecitation && (
-                  <button type="button" role="switch" aria-checked={recitation} onClick={onRecitation}
-                    className="room-press flex min-h-12 items-center gap-3 rounded-[var(--r-2)] px-3 text-start hover:bg-white/[0.08] focus-ring sm:hidden">
-                    <AudioWaveform className="h-5 w-5 shrink-0 text-[#F0B54A]" aria-hidden="true" />
-                    <span className="flex-1 font-medium">{t('Recitation mode', 'وضع التلاوة')}</span>
-                    <span className={cn('text-[0.78rem] font-semibold', recitation ? 'text-teal' : 'text-muted-foreground')}>{recitation ? t('On', 'شغّال') : t('Off', 'مقفول')}</span>
-                  </button>
-                )}
-                {onToggleSelf && (
-                  <button type="button" role="switch" aria-checked={selfHidden} onClick={() => { onToggleSelf(); close(); }}
-                    className="room-press flex min-h-12 items-center gap-3 rounded-[var(--r-2)] px-3 text-start hover:bg-white/[0.08] focus-ring">
-                    <Users className="h-5 w-5 shrink-0 text-[#F0B54A]" aria-hidden="true" />
-                    <span className="grid flex-1">
-                      <span className="font-medium">{selfHidden ? t('Show my picture', 'اظهر صورتي') : t('Hide my picture', 'اخفي صورتي')}</span>
-                      <span className="text-[0.78rem] text-muted-foreground">{t('Only on your screen. The others still see you.', 'عندك إنت بس. الباقيين لسه شايفينك.')}</span>
-                    </span>
-                  </button>
-                )}
-                {moreItems}
-                {teacher && (
-                  <p className="hidden px-3 py-2 text-[0.78rem] leading-relaxed text-muted-foreground sm:block">
-                    {t('Keys: M mutes. 1, 2 and 3 switch the layout.', 'الأزرار: M يقفل المايك. 1 و2 و3 يغيّروا الشكل.')}
-                  </p>
-                )}
-              </div>
-            )}
+            <ReactionSheet kid={kid} onSend={(k) => { onReact(k); close(); }} />
           </div>
         </FocusTrap>
       )}
+      {sheet === 'more' && renderMore?.(close, (
+        <div className="grid grid-cols-4 px-2 pb-1 sm:hidden">
+          {[mic, cam || null, hand || null].filter(Boolean).map((el, i) => <span key={i} className="grid justify-items-center">{el}</span>)}
+          <span className="grid justify-items-center">
+            <button type="button" onClick={() => { close(); onLeave(); }} aria-label={leaveLabel}
+              className="room-press grid h-12 w-12 place-items-center rounded-full bg-crimson text-white focus-ring">
+              {teacher ? <PhoneOff className="h-5 w-5" aria-hidden="true" /> : <LogOut className="h-5 w-5 rtl:-scale-x-100" aria-hidden="true" />}
+            </button>
+          </span>
+        </div>
+      ))}
 
       <nav aria-label={t('Lesson controls', 'أدوات الحصة')}
-        className={cn('glass-3 flex items-center rounded-[var(--r-pill)]', kid ? 'gap-1 rounded-[1.75rem] p-1.5' : 'gap-1 p-1.5')}>
+        className={cn('room-glass flex items-center rounded-[var(--r-pill)]', kid ? 'gap-1 rounded-[1.75rem] p-1.5' : 'gap-1 p-1.5')}>
         {observer ? (
           onSound && (
             <BarButton tone={soundOff ? 'off' : 'idle'} aria-pressed={soundOff} onClick={onSound}
@@ -200,7 +188,8 @@ export function Toolbar({ kind, muted, cameraOff, hasCamera, onMute, onCamera, r
                 {shareSlot}
               </span>
             )}
-            {onReact && (
+            {hand}
+            {onReact && kid && (
               <BarButton kid={kid} aria-expanded={sheet === 'react'} aria-haspopup="dialog" tone={sheet === 'react' ? 'on' : 'idle'}
                 label={kid ? t('I need…', 'محتاج…') : t('Reactions', 'تفاعل')} word={kid ? t('I need…', 'محتاج…') : undefined}
                 onClick={() => setSheet((s) => (s === 'react' ? null : 'react'))}>
