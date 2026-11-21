@@ -1,0 +1,183 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Reel engine v5 (2026-11-21), built on the dense Faris analysis (docs/design/inspiration/social-video/faris-analysis.md):
+     few stages that keep building instead of many cuts; the spoken line is the only text, word by word; in-place swaps;
+     a cast pose per verb; background mood follows meaning (sand / crimson / espresso / gold, our palette only);
+     blur transitions, no flashes. Everything is on one absolute timeline (scenes5.js, seconds of <id>.voice.wav).
+     render.mjs: FILM=film5.html. -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=block" rel="stylesheet">
+<style>
+@font-face { font-family: 'TSB'; src: url('../../public/fonts/thmanyah/thmanyahsans-Black.woff2') format('woff2'); font-weight: 900; }
+@font-face { font-family: 'TSM'; src: url('../../public/fonts/thmanyah/thmanyahsans-Medium.woff2') format('woff2'); font-weight: 500; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #140D0A; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+.mood { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+.mood i { position: absolute; border-radius: 50%; filter: blur(90px); }
+#sand { background: radial-gradient(90% 60% at 50% 45%, #F7EEE1 0%, #EADBC5 100%); }
+#gold { background: radial-gradient(80% 55% at 50% 48%, #FFF4D9 0%, #F2DDB3 100%); }
+#crimson { background: radial-gradient(80% 55% at 50% 50%, #6E161C 0%, #3E0C10 55%, #1C0507 100%); }
+#espresso { background: radial-gradient(80% 55% at 50% 50%, #3A2419 0%, #1E130E 55%, #0F0907 100%); }
+#wrap { position: absolute; inset: 0; z-index: 5; transform-origin: 540px 960px; }
+#world { position: absolute; inset: 0; transform-origin: 540px 1000px; }
+#ui { position: absolute; inset: 0; }
+.it { position: absolute; display: none; }
+.img { transform-origin: center; }
+.img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.img.cut { filter: drop-shadow(0 30px 40px rgba(40,10,5,.35)); }
+.img.polaroid { background: #FBF5EA; box-shadow: 0 34px 70px rgba(30,10,5,.45); box-sizing: border-box; }
+.img.polaroid img { inset: 20px 20px 66px; width: calc(100% - 40px); height: calc(100% - 86px); object-fit: cover; background: #1C120D; }
+.img.polaroid::before { content: ''; position: absolute; left: 50%; top: -20px; width: 150px; height: 42px; margin-left: -75px; background: rgba(246,213,142,.8); transform: rotate(-3deg); z-index: 2; }
+.img .cap { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-family: 'TSM'; font-size: 34px; color: #5A3A2C; }
+.cast { transform-origin: bottom center; filter: drop-shadow(0 26px 34px rgba(30,10,5,.45)); }
+.cast img { position: absolute; bottom: 0; height: 100%; }
+.words { left: 70px; width: 940px; text-align: center; font-family: 'TSB'; font-weight: 900; font-size: 92px; line-height: 1.05; }
+.words .ln { display: block; }
+.words span { display: inline-block; white-space: pre; transform-origin: 50% 80%; }
+.words .ac { font-size: 1.6em; line-height: .95; }
+.ar { left: 0; width: 1080px; text-align: center; font-family: 'Amiri'; font-weight: 700; font-size: 250px; line-height: 1.25; }
+.mag { width: 330px; height: 330px; margin: -165px 0 0 -165px; border-radius: 50%; border: 12px solid #F6D58E; box-shadow: 0 0 0 6px rgba(60,20,10,.35), 0 0 70px rgba(246,213,142,.6); background-repeat: no-repeat; background-color: #F3E7D5; overflow: hidden; }
+.mag::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 6px solid #A8232B; box-shadow: 0 0 18px #F6D58E; }
+.mag .lab { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-family: 'Amiri'; font-weight: 700; font-size: 68px; color: #FFF; text-shadow: 0 0 16px #3E0C10, 0 0 8px #3E0C10; }
+.scan { height: 10px; background: linear-gradient(90deg, transparent, #F6D58E, transparent); box-shadow: 0 0 30px #F6D58E; }
+.bars { inset: 0; } .bars::before, .bars::after { content: ''; position: absolute; left: 0; right: 0; height: var(--h, 0px); background: #050302; } .bars::before { top: 0; } .bars::after { bottom: 0; }
+.stamp { left: 540px; font-family: 'TSB'; font-size: 88px; letter-spacing: .06em; color: #A8232B; padding: 4px 38px 10px; border: 9px solid #A8232B; border-radius: 20px; white-space: nowrap; background: rgba(255,248,230,.6); }
+.ring { width: 150px; height: 150px; }
+.zad img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; filter: drop-shadow(0 20px 26px rgba(0,0,0,.4)); }
+#logo { position: absolute; z-index: 7; left: 90px; top: 268px; width: 76px; height: 76px; border-radius: 50%; background: rgba(250,247,242,.92); display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0,0,0,.2); }
+#logo img { width: 56px; }
+canvas#dust { position: absolute; inset: 0; z-index: 4; }
+#grain { position: absolute; inset: 0; z-index: 8; opacity: .08; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E"); }
+#vig { position: absolute; inset: 0; z-index: 6; background: radial-gradient(95% 75% at 50% 50%, transparent 55%, rgba(30,8,6,.45) 100%); }
+</style></head>
+<body><div id="stage">
+  <div class="mood" id="sand"><i style="width:900px;height:900px;left:-380px;top:-260px;background:rgba(122,30,36,.42)"></i><i style="width:800px;height:800px;right:-360px;bottom:-200px;background:rgba(181,101,58,.30)"></i></div>
+  <div class="mood" id="gold"><i style="width:1000px;height:1000px;left:40px;top:300px;background:rgba(246,213,142,.75)"></i><i style="width:700px;height:700px;right:-300px;top:-200px;background:rgba(181,101,58,.28)"></i></div>
+  <div class="mood" id="crimson"><i style="width:900px;height:900px;left:-300px;top:-200px;background:rgba(246,213,142,.10)"></i></div>
+  <div class="mood" id="espresso"><i style="width:900px;height:900px;right:-300px;bottom:-100px;background:rgba(181,101,58,.20)"></i></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <div id="wrap"><div id="world"></div><div id="ui"></div></div>
+  <div id="vig"></div>
+  <div id="logo"><img src="../../public/logo-256.png"></div>
+  <div id="grain"></div>
+</div>
+<script src="scenes5.js"></script>
+<script>
+const ID = new URLSearchParams(location.search).get('v') || 'v7';
+const $ = (id) => document.getElementById(id);
+const clamp = (x) => Math.max(0, Math.min(1, x));
+const ease = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const inout = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = (x) => { x = clamp(x); const c = 1.5; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const LIGHT = { sand: 1, gold: 1 };
+const INK = { light: ['#4A0F16', '#A8232B'], dark: ['#FAF7F2', '#F6D58E'] };
+let R, LENGTH;
+const moodAt = (t) => { let m = R.moods[0][1]; for (const [s, k] of R.moods) if (t >= s) m = k; return m; };
+const zadSrc = (p) => '../intro-film/render/zad/' + p + '.svg';
+
+function el(it) {
+  const d = document.createElement('div'); d.className = 'it ' + it.t; it.el = d;
+  const ink = INK[LIGHT[moodAt(it.s + 0.01)] ? 'light' : 'dark'];
+  if (it.t === 'img') { d.classList.add(it.frame || 'cut'); const h = it.h || it.w; Object.assign(d.style, { left: it.x - it.w / 2 + 'px', top: it.y - h / 2 + 'px', width: it.w + 'px', height: h + 'px' });
+    d.innerHTML = `<img src="${it.src}">` + (it.swapTo ? `<img src="${it.swapTo[1]}" style="opacity:0">` : '') + (it.cap ? `<div class="cap">${it.cap}</div>` : ''); }
+  if (it.t === 'cast') { d.style.height = it.h + 'px'; d.style.width = it.h * 0.7 + 'px'; d.style.bottom = (it.bottom ?? 300) + 'px'; d.style[it.side === 'r' ? 'right' : 'left'] = (it.edge ?? 0) + 'px';
+    d.innerHTML = it.poses.map(([, p]) => `<img src="../../public/curriculum/zad-teens/characters/${p}.webp" style="${it.side === 'r' ? 'right' : 'left'}:0;${it.flip ? 'transform:scaleX(-1);' : ''}opacity:0">`).join(''); }
+  if (it.t === 'words') { d.style.top = it.y + 'px'; d.style.color = ink[0]; if (it.size) d.style.fontSize = it.size + 'px';
+    it.toks = []; d.innerHTML = it.text.split(' / ').map((ln) => '<span class="ln">' + ln.split(' ').map((raw) => { const [w, s] = raw.split('@'); const ac = w.startsWith('*'); it.toks.push(+s); const txt = w.replace(/\*/g, '').replace(/_/g, ' ');
+      return `<span class="${ac ? 'ac' : ''}" style="${ac ? 'color:' + ink[1] + ';' : ''}">${txt} </span>`; }).join('') + '</span>').join('');
+    if (ink === INK.dark) d.querySelectorAll('.ac').forEach((s) => (s.style.textShadow = '0 0 36px rgba(246,213,142,.55), 0 8px 30px rgba(0,0,0,.6)'));
+    else d.querySelectorAll('.ac').forEach((s) => (s.style.textShadow = '0 10px 34px rgba(168,35,43,.25)')); }
+  if (it.t === 'ar') { d.style.top = it.y + 'px'; it.light = ink === INK.light; d.style.color = it.light ? '#8E1B22' : '#F6D58E'; }
+  if (it.t === 'mag') { d.innerHTML = '<div class="lab"></div>'; }
+  if (it.t === 'stamp') { d.style.top = it.y + 'px'; d.textContent = it.text; }
+  if (it.t === 'ring') { d.style.left = it.x - 75 + 'px'; d.style.top = it.y - 75 + 'px'; d.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(250,247,242,.2)" stroke-width="7"/><circle class="arc" cx="50" cy="50" r="44" fill="none" stroke="#F6D58E" stroke-width="7" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="276.5"/></svg>`; }
+  if (it.t === 'zad') { Object.assign(d.style, { left: it.x - it.w / 2 + 'px', top: it.y - it.w / 2 + 'px', width: it.w + 'px', height: it.w * 1.02 + 'px' }); d.innerHTML = it.poses.map(([, p]) => `<img src="${zadSrc(p)}">`).join(''); }
+  ($(['img', 'cast', 'mag', 'scan', 'ring', 'zad'].includes(it.t) ? 'world' : 'ui')).appendChild(d);
+}
+
+window.ready = async () => {
+  R = REELS[ID]; LENGTH = R.length || (await (await fetch(ID + '.timeline.json')).json()).length;
+  R.items.forEach((it) => { it.e = it.e ?? R.cuts.concat([LENGTH]).find((c) => c > it.s + 0.01); el(it); });
+  await Promise.all([...document.images].map((im) => (im.complete ? im.decode() : new Promise((r) => (im.onload = im.onerror = r))).catch(() => {})));
+  await document.fonts.ready; return LENGTH;
+};
+
+const imgOf = (id) => R.items.find((x) => x.id === id);
+const pos = (img, u, v) => { const h = img.h || img.w; return { x: img.x - img.w / 2 + img.w * u, y: img.y - h / 2 + h * v }; };
+const cur = (list, t) => { let k = 0; list.forEach((x, j) => { if (t >= x[0]) k = j; }); return k; };
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const DUST = Array.from({ length: 50 }, () => ({ x: rnd() * 1080, y: rnd() * 1920, r: 1.2 + rnd() * 3, v: 12 + rnd() * 36, ph: rnd() * 6.28 }));
+const ctx = $('dust').getContext('2d');
+
+window.frame = (t) => {
+  // background mood (cross-fade 0.6 s), blobs drift
+  const mi = cur(R.moods, t), mNow = R.moods[mi][1], mPrev = mi ? R.moods[mi - 1][1] : mNow, mk = ease((t - R.moods[mi][0]) / 0.6);
+  for (const m of ['sand', 'gold', 'crimson', 'espresso']) $(m).style.opacity = m === mNow ? (m === mPrev ? 1 : mk) : m === mPrev ? 1 : 0;
+  $(mNow).style.zIndex = 1; $(mPrev).style.zIndex = mNow === mPrev ? 1 : 0;
+  document.querySelectorAll('.mood i').forEach((b, j) => (b.style.transform = `translate(${Math.sin(t * .17 + j) * 80}px, ${Math.cos(t * .13 + j * 2) * 70}px)`));
+  // camera: absolute keyframes [t, scale, x, y, rot], smooth between keys; equal times = a cut
+  const C = R.cam; let a = C[0], b = C[0]; for (let j = 0; j < C.length - 1; j++) if (t >= C[j][0]) { a = C[j]; b = C[j + 1]; }
+  const k = b[0] > a[0] ? inout((t - a[0]) / (b[0] - a[0])) : 1, cam = [1, 2, 3, 4].map((j) => a[j] + (b[j] - a[j]) * k);
+  $('world').style.transform = `translate(${cam[1]}px, ${cam[2]}px) scale(${cam[0]}) rotate(${cam[3]}deg)`;
+  $('ui').style.transform = `translate(${cam[1] * .25}px, ${cam[2] * .25}px)`;
+  // stage change: blur out, cut, blur in
+  let bl = 0; for (const c of R.cuts) bl = Math.max(bl, t < c ? clamp((t - (c - 0.22)) / 0.22) : 1 - clamp((t - c) / 0.28));
+  $('wrap').style.filter = bl > 0.01 ? `blur(${bl * 26}px)` : ''; $('wrap').style.transform = `scale(${1 + 0.05 * bl})`;
+
+  for (const it of R.items) {
+    const d = it.el, on = t >= it.s - 0.001 && t < it.e + (it.t === 'cast' ? .4 : .25); d.style.display = on ? 'block' : 'none'; if (!on) continue;
+    const lt = t - it.s, out = clamp((t - it.e) / 0.22);
+    if (it.t === 'img') {
+      const e = back(lt / 0.55), o = clamp(lt / 0.15);
+      let flip = 1; if (it.flipAt) { const p = clamp((t - it.flipAt) / 0.4); flip = Math.abs(Math.cos(p * Math.PI)); const im = d.querySelector('img'); const want = p >= .5 ? it.flipTo : it.src; if (!im.src.endsWith(want.replace('../', ''))) { im.src = want; const cp = d.querySelector('.cap'); if (cp) cp.textContent = p >= .5 ? it.flipCap : it.cap; } }
+      if (it.swapTo) { const p = ease((t - it.swapTo[0]) / 0.35), ims = d.querySelectorAll('img'); ims[0].style.opacity = 1 - p; ims[1].style.opacity = p; ims[0].style.filter = `blur(${p * 12}px)`; ims[1].style.filter = `blur(${(1 - p) * 12}px)`; }
+      const gray = it.grayAt ? clamp((t - it.grayAt) / 0.4) : 0, glow = it.glowAt ? clamp((t - it.glowAt) / 0.4) : 0;
+      const zoomOut = it.exit === 'zoom' ? ease((t - it.e) / 0.3) : 0;
+      const enter = it.enter === 'drop' ? `translateY(${(1 - e) * -320}px) rotate(${(it.rot || 0) * e}deg)` : `rotate(${it.rot || 0}deg) scale(${0.82 + 0.18 * e})`;
+      const kb = 1 + (it.kb ?? 0.06) * clamp(lt / Math.max(1, it.e - it.s));
+      const fl = it.float ? Math.sin(t * 1.8 + it.x) * 10 : 0;
+      d.style.opacity = o * (1 - (it.exit === 'zoom' ? zoomOut : out)) * (1 - gray * .45);
+      d.style.transform = `translateY(${fl - gray * 40}px) ${enter} scale(${kb * (1 + glow * .08 + zoomOut * .7) * (1 - gray * .25)}) scaleX(${Math.max(.02, flip)})`;
+      const f = []; if (lt < .3) f.push(`blur(${(1 - lt / .3) * 14}px)`); if (gray) f.push(`grayscale(${gray})`); if (zoomOut) f.push(`blur(${zoomOut * 18}px)`);
+      if (glow) f.push(`drop-shadow(0 0 ${70 * glow}px rgba(246,213,142,${.9 * glow}))`);
+      d.style.filter = f.join(' ') + (it.frame === 'polaroid' || !f.length ? '' : ' drop-shadow(0 30px 40px rgba(40,10,5,.35))');
+    }
+    if (it.t === 'cast') {
+      const e = back(lt / 0.6), dir = it.side === 'r' ? 1 : -1, x = ease((t - it.e) / 0.4);
+      const pi = cur(it.poses, t), ps = it.poses[pi][0], pop = pi ? Math.sin(Math.PI * clamp((t - ps) / 0.28)) : 0;
+      d.querySelectorAll('img').forEach((im, j) => (im.style.opacity = j === pi ? clamp((t - ps) / 0.1) || (pi === 0 ? 1 : 0) : j === pi - 1 ? 1 - clamp((t - ps) / 0.1) : 0));
+      d.style.opacity = clamp(lt / 0.15);
+      d.style.transform = `translateX(${((1 - e) + x) * 560 * dir}px) scale(${(0.9 + 0.1 * e) * (1 + 0.05 * pop)}, ${(0.9 + 0.1 * e) * (1 - 0.03 * pop)}) rotate(${Math.sin(t * 1.5) * 1}deg)`;
+    }
+    if (it.t === 'words') {
+      d.querySelectorAll('.ln > span').forEach((sp, j) => { const s = it.toks[j], e = back((t - s + .03) / .4), o = clamp((t - s + .03) / .12);
+        sp.style.opacity = o; sp.style.transform = `translateY(${(1 - e) * 46}px) scale(${0.82 + 0.18 * e})`; sp.style.filter = o < 1 || t - s < .28 ? `blur(${(1 - clamp((t - s + .03) / .28)) * 14}px)` : ''; });
+      d.style.opacity = 1 - out; d.style.transform = `translateY(${-out * 50}px)`; d.style.filter = out ? `blur(${out * 12}px)` : '';
+    }
+    if (it.t === 'ar') {
+      const list = [[it.s, it.text]].concat(it.swap || []), si = cur(list, t), s = list[si][0], txt = list[si][1];
+      if (d.textContent !== txt) d.textContent = txt;
+      it.light = !!LIGHT[moodAt(t)]; d.style.color = it.light ? '#8E1B22' : '#F6D58E';
+      const e = back((t - s) / .45), o = clamp((t - s) / .12);
+      d.style.opacity = o * (1 - out); d.style.transform = `scale(${1.5 - 0.5 * e})`; d.style.filter = `blur(${(1 - clamp((t - s) / .3)) * 16 + out * 12}px)`;
+      const g = 30 + 20 * Math.sin(t * 3); d.style.textShadow = it.light ? `0 0 ${g}px rgba(246,213,142,.9), 0 14px 40px rgba(120,20,25,.25)` : `0 0 ${g + 10}px rgba(246,213,142,.6), 0 10px 40px rgba(0,0,0,.7)`;
+    }
+    if (it.t === 'mag') {
+      const img = imgOf(it.on), pts = it.points, pi = cur(pts, t), c = pts[pi], p = pts[Math.max(0, pi - 1)], m = pi ? inout((t - c[0]) / .6) : 1;
+      const u = p[1] + (c[1] - p[1]) * m, v = p[2] + (c[2] - p[2]) * m, P = pos(img, u, v), Z = it.zoom || 2.4, W = img.w * Z, H = (img.h || img.w) * Z, e = back(lt / .5);
+      d.style.opacity = clamp(lt / .15) * (1 - out); d.style.left = P.x + 'px'; d.style.top = P.y + 'px'; d.style.transform = `scale(${e * (1 - out * .3)})`;
+      d.style.backgroundImage = `url(${img.src})`; d.style.backgroundSize = `${W}px ${H}px`; d.style.backgroundPosition = `${165 - u * W}px ${165 - v * H}px`;
+      d.querySelector('.lab').textContent = c[3] || '';
+    }
+    if (it.t === 'scan') { const img = imgOf(it.on), p = clamp(lt / .9), a = pos(img, 0, 0); Object.assign(d.style, { left: a.x + 'px', width: img.w + 'px', top: a.y + (img.h || img.w) * (0.15 + 0.6 * p) + 'px', opacity: p < 1 ? 1 : 0 }); }
+    if (it.t === 'bars') { d.style.display = 'block'; d.style.setProperty('--h', 230 * ease(lt / .4) * (1 - ease((t - it.e) / .35)) + 'px'); if (t > it.e + .36) d.style.display = 'none'; }
+    if (it.t === 'stamp') { const b = back(lt / .45); d.style.opacity = clamp(lt * 5) * (1 - out); d.style.transform = `translateX(-50%) rotate(${(it.rot ?? -8) * b - 14 * (1 - b)}deg) scale(${2.2 - 1.2 * b})`; }
+    if (it.t === 'ring') { const p = clamp(lt / it.dur); d.querySelector('.arc').setAttribute('stroke-dashoffset', 276.5 * p); d.style.opacity = clamp(lt / .2) * (1 - out); }
+    if (it.t === 'zad') { const pi = cur(it.poses, t); d.querySelectorAll('img').forEach((im, j) => (im.style.opacity = j === pi ? 1 : 0));
+      d.style.opacity = clamp(lt / .15) * (1 - out); d.style.transform = `translateY(${Math.sin(t * 2.4) * 8 + (it.peek ? (1 - back(lt / .5)) * 260 : 0)}px) scale(${it.peek ? 1 : 0.6 + 0.4 * back(lt / .5)})`; }
+  }
+  const dark = !LIGHT[mNow]; ctx.clearRect(0, 0, 1080, 1920); ctx.fillStyle = dark ? '#F6D58E' : '#B5653A';
+  for (const p of DUST) { const y = ((p.y - t * p.v) % 1920 + 1920) % 1920; ctx.globalAlpha = (dark ? .15 : .08) + (dark ? .3 : .12) * Math.sin(t * 2 + p.ph) ** 2; ctx.beginPath(); ctx.arc(p.x + Math.sin(t + p.ph) * 14, y, p.r, 0, 6.283); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  return Promise.all([...document.images].filter((im) => !im.complete || !im.naturalWidth).map((im) => im.decode().catch(() => {})));
+};
+</script></body></html>

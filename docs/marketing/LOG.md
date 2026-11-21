@@ -97,3 +97,10 @@ Change next week: <one thing>
   FB/IG/YT/TikTok; V12 27 Nov FB only, Buffer at 10/10).
 
 - Owner rated the v3 reels 2/10 (no own images, no cast, little motion); V7/V9/V12 back to draft everywhere. V7 sample v4 built (`marketing/reels-v3/film4.html` + `scenes4.js`): Meshy art in the curriculum style (heart, dog, mouth cross-section, 27 Meshy credits), Teens cast cut-outs (Noor, Hamza, Zayn), camera push per scene, 3D kinetic titles with glow, polaroid flip, magnifier on the mouth for ك then ق, scan line, letterbox test with timer, stamps. Only V7 rendered: /social/v7s/v7.mp4. V9/V12 wait for the owner verdict.
+
+- Faris reels analysed densely (`docs/design/inspiration/social-video/faris-analysis.md`). V7 sample v5 built on those
+  rules (`marketing/reels-v3/film5.html` + `scenes5.js`, one absolute timeline): 4 cuts instead of 9, the spoken line
+  is the only text (word by word, key word big), in-place swaps (heart → dog, قَلْب → كَلْب, كَ → قَ), a cast pose per
+  verb (Noor stand → surprised, think → surprised, happy; Hamza explain; Zayn point → think), background mood follows
+  meaning (sand, gold, espresso, crimson), blur transitions, no flashes. Art keyed to cut-outs (`art/*/cut.png`).
+  Hosted at /social/v7s5/v7.mp4. No new Meshy or ElevenLabs credits. V9/V12 wait for the owner's verdict.
