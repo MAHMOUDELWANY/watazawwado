@@ -10,6 +10,9 @@ import math, sys
 S = 200.0; CX = 300.0; GY = 560.0; CY = GY - 0.72 * S
 SHX, SHY = 0.52 * S, 0.12 * S          # shoulder offset from the body centre (add_motion.py uses the same numbers)
 f = lambda v: ('%.2f' % v).rstrip('0').rstrip('.')
+# body style; the owner is choosing between rounded redesigns (2026-11-21): v2 (sharp khatam), soft, bubble, emblem
+VAR = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+ROUND = VAR != 'v2'
 
 
 def pivot(name, px, py, inner, extra=''):
@@ -32,7 +35,36 @@ def khatam(r, rnd=0.12, cx=CX, cy=CY):
     return d + 'Z'
 
 
+def body(r, rnd=0.12):
+    if VAR == 'soft':      # the khatam, every corner rounded deep
+        return khatam(r, 0.46)
+    if VAR == 'bubble':    # a round body with eight soft bumps
+        pts = []
+        for i in range(96):
+            a = i / 96 * 2 * math.pi + math.pi / 2
+            rr = r * S * (0.95 + 0.05 * math.cos(8 * (a - math.pi / 2)))
+            pts.append('%s %s' % (f(CX + math.cos(a) * rr), f(CY - math.sin(a) * rr)))
+        return 'M' + ' L'.join(pts) + ' Z'
+    if VAR == 'emblem':    # a soft rounded octagon; the khatam lives on as the gold inlay
+        return khatam(r * 0.93, 0.5) if r < 0.56 else octa(r)
+    return khatam(r, rnd)
+
+
+def octa(r):
+    pts = [(CX + math.cos(i / 8 * 2 * math.pi + math.pi / 8) * r * S * 0.97, CY - math.sin(i / 8 * 2 * math.pi + math.pi / 8) * r * S * 0.97) for i in range(8)]
+    d = ''
+    for i in range(8):
+        a, b, c = pts[(i + 7) % 8], pts[i], pts[(i + 1) % 8]
+        m1 = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2); m2 = ((b[0] + c[0]) / 2, (b[1] + c[1]) / 2)
+        if i == 0: d += 'M%s %s ' % (f(m1[0]), f(m1[1]))
+        d += 'Q%s %s %s %s ' % (f(b[0]), f(b[1]), f(m2[0]), f(m2[1]))
+    return d + 'Z'
+
+
 def feather(l, w):
+    if ROUND:  # a fat leaf with a round tip
+        return 'M0 %s C%s %s %s %s %s 0 C%s %s %s %s 0 %s Z' % (
+            f(-w * .35), f(l * .3), f(-w * 1.2), f(l * 1.02), f(-w * 1.05), f(l), f(l * .98), f(w * 1.0), f(l * .3), f(w * 1.1), f(w * .35))
     return 'M0 0 Q%s %s %s %s Q%s %s 0 0 Z' % (f(l * .45), f(-w), f(l), f(-w * .2), f(l * .5), f(w * .9))
 
 
@@ -45,8 +77,9 @@ def gold_feather(rot, l, w, fill):
 def wing(side):
     """An arm built pointing right from the shoulder: a crimson covert (the arm) and a gold feather fan (the hand)."""
     hand = ''
-    for i, (a, l) in enumerate(((0.46, 62), (0.16, 78), (-0.15, 86), (-0.46, 72))):
-        hand += gold_feather(math.degrees(a), l, 15 - i * 0.6, 'goldB' if i % 2 else 'goldA')
+    fan = ((0.5, 66, 19), (0.0, 84, 21), (-0.5, 74, 19)) if ROUND else ((0.46, 62, 15), (0.16, 78, 14.4), (-0.15, 86, 13.8), (-0.46, 72, 13.2))
+    for i, (a, l, w) in enumerate(fan):
+        hand += gold_feather(math.degrees(a), l, w, 'goldB' if i % 2 else 'goldA')
     hand += '<circle r="8.5" fill="url(#goldBall)" stroke="#9A661C" stroke-width="1.1"/><circle cx="-2" cy="-2.6" r="2.3" fill="#FFF8DC"/>'
     o = gold_feather(14, 60, 12, 'goldB')
     o += '<g id="Wrist%s" transform="translate(56 0)">%s</g>' % (side, hand)
@@ -113,23 +146,23 @@ for s, name in ((-1, 'LegL'), (1, 'LegR')):
     legs += '<g id="%s" transform="translate(%s %s)">%s</g>' % (name, f(hx), f(hy), art)
 
 badge = []
-badge.append('<path transform="translate(3 6)" d="%s" fill="#5A3A12" opacity=".55"/>' % khatam(0.7, 0.14))
-badge.append('<path d="%s" fill="url(#goldRim)" stroke="#8A5A18" stroke-width="1.6" stroke-linejoin="round"/>' % khatam(0.7, 0.14))
-badge.append('<path d="%s" fill="none" stroke="#FFF8DC" stroke-opacity=".75" stroke-width="2"/>' % khatam(0.675, 0.14))
-badge.append('<path d="%s" fill="url(#crimson)" stroke="#6B0F12" stroke-width="1.6" stroke-linejoin="round"/>' % khatam(0.62))
-badge.append('<path d="%s" fill="none" stroke="#FFB4AC" stroke-opacity=".55" stroke-width="2.2"/>' % khatam(0.595))
-badge.append('<path d="%s" fill="url(#deep)"/>' % khatam(0.52, 0.1))
-badge.append('<path d="%s" fill="none" stroke="#8A5A18" stroke-width="6.4" stroke-linejoin="round"/>' % khatam(0.52, 0.1))
-badge.append('<path d="%s" fill="none" stroke="url(#goldRing)" stroke-width="4.6" stroke-linejoin="round"/>' % khatam(0.52, 0.1))
-badge.append('<path d="%s" fill="none" stroke="#FFF8DC" stroke-opacity=".7" stroke-width="1.2"/>' % khatam(0.524, 0.1))
-for i in range(8):
+badge.append('<path transform="translate(3 6)" d="%s" fill="#5A3A12" opacity=".55"/>' % body(0.7, 0.14))
+badge.append('<path d="%s" fill="url(#goldRim)" stroke="#8A5A18" stroke-width="1.6" stroke-linejoin="round"/>' % body(0.7, 0.14))
+badge.append('<path d="%s" fill="none" stroke="#FFF8DC" stroke-opacity=".75" stroke-width="2"/>' % body(0.675, 0.14))
+badge.append('<path d="%s" fill="url(#crimson)" stroke="#6B0F12" stroke-width="1.6" stroke-linejoin="round"/>' % body(0.62))
+badge.append('<path d="%s" fill="none" stroke="#FFB4AC" stroke-opacity=".55" stroke-width="2.2"/>' % body(0.595))
+badge.append('<path d="%s" fill="url(#deep)"/>' % body(0.52, 0.1))
+badge.append('<path d="%s" fill="none" stroke="#8A5A18" stroke-width="6.4" stroke-linejoin="round"/>' % body(0.52, 0.1))
+badge.append('<path d="%s" fill="none" stroke="url(#goldRing)" stroke-width="4.6" stroke-linejoin="round"/>' % body(0.52, 0.1))
+badge.append('<path d="%s" fill="none" stroke="#FFF8DC" stroke-opacity=".7" stroke-width="1.2"/>' % body(0.524, 0.1))
+for i in range(0 if ROUND else 8):
     a = i / 8 * 2 * math.pi + math.pi / 2
     x = CX + math.cos(a) * 0.585 * S; y = CY - math.sin(a) * 0.585 * S
     badge.append('<circle cx="%s" cy="%s" r="5" fill="url(#goldBall)" stroke="#8A5A18" stroke-width=".8"/><circle cx="%s" cy="%s" r="1.3" fill="#FFFBE8"/>' % (f(x), f(y), f(x - 1.4), f(y - 1.6)))
 badge.append('<circle cx="%s" cy="%s" r="%s" fill="#3A0709" opacity=".45"/>' % (f(CX + 1.5), f(CY + 3), f(0.385 * S)))
 badge.append('<circle cx="%s" cy="%s" r="%s" fill="none" stroke="url(#goldRing)" stroke-width="13"/>' % (f(CX), f(CY), f(0.362 * S)))
 badge.append('<circle cx="%s" cy="%s" r="%s" fill="none" stroke="#8A5A18" stroke-width="1.2"/>' % (f(CX), f(CY), f(0.362 * S + 6.5)))
-for i in range(30):
+for i in range(0 if ROUND else 30):
     a = i / 30 * 2 * math.pi
     badge.append('<circle cx="%s" cy="%s" r="2.7" fill="#FFE7A8" stroke="#9A661C" stroke-width=".6"/>' % (f(CX + math.cos(a) * 0.398 * S), f(CY - math.sin(a) * 0.398 * S)))
 
