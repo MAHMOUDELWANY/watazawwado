@@ -96,3 +96,4 @@ Change next week: <one thing>
   sheets checked. Hosted at /social/v7r, v9r, v12r and rescheduled at the original slots (V7 22 Nov, V9 24 Nov on
   FB/IG/YT/TikTok; V12 27 Nov FB only, Buffer at 10/10).
 
+- Owner rated the v3 reels 2/10 (no own images, no cast, little motion); V7/V9/V12 back to draft everywhere. V7 sample v4 built (`marketing/reels-v3/film4.html` + `scenes4.js`): Meshy art in the curriculum style (heart, dog, mouth cross-section, 27 Meshy credits), Teens cast cut-outs (Noor, Hamza, Zayn), camera push per scene, 3D kinetic titles with glow, polaroid flip, magnifier on the mouth for ك then ق, scan line, letterbox test with timer, stamps. Only V7 rendered: /social/v7s/v7.mp4. V9/V12 wait for the owner verdict.
