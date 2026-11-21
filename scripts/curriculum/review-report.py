@@ -126,7 +126,7 @@ for key, (d, data, ar) in lessons.items():
              f'<p>{E(chair["lessons"][key]["verdict_line"])}</p></div>')
 h.append('</div>' + ''.join(f'<p>{E(x)}</p>' for x in chair['summary']) + '</section>')
 
-h.append('<section><h2>أهم ما يجب إصلاحه</h2><p class="muted">مرتبة بالأولوية عبر الدرسين. كل بطاقة كاملة بدليلها، والباقي داخل قسم كل درس.</p>')
+h.append('<section><h2>أهم ما يجب إصلاحه</h2><p class="muted">مرتبة بالأولوية عبر الدروس. كل بطاقة كاملة بدليلها، والباقي داخل قسم كل درس.</p>')
 h += [cards[(str(t['lesson']), t['id'])] for t in chair['top'] if (str(t['lesson']), t['id']) in cards]
 h.append('</section>')
 
@@ -142,7 +142,7 @@ if os.path.exists(cpath):  # course panel: accumulation across lessons
     h.append(f'<details><summary>باقي ملاحظات المادة ({len(rest)})</summary><div class="inner">' + ''.join(rest) + '</div></details>')
     h.append('<details><summary>جدول الروابط بين الدروس</summary><div class="inner">' + tbl(c['ledger_rows']) + f'<p>{T(c["ledger_totals"])}</p><h3>روابط كان يجب أن توجد ولا توجد</h3>' + lst(c['missing']) + '<h3>الخيوط</h3>' + tbl(c['threads']) + '</div></details>')
     d = c['design']
-    h.append('<details open><summary>أصغر مجموعة تغييرات تجعل الدروس تراكمية</summary><div class="inner">' + ''.join(f'<h3>الدرس {k[1]}</h3>' + lst(d[k]) for k in ('L1', 'L2', 'L3') if d.get(k)) + '<h3>قاعدة الشبكة لكل درس قادم</h3>' + lst(d.get('rule', [])) + '</div></details>')
+    h.append('<details open><summary>أصغر مجموعة تغييرات تجعل الدروس تراكمية</summary><div class="inner">' + ''.join(f'<h3>الدرس {k[1:]}</h3>' + lst(d[k]) for k in sorted((k for k in d if k[:1] == 'L' and k[1:].isdigit()), key=lambda k: int(k[1:])) if d.get(k)) + '<h3>قاعدة الشبكة لكل درس قادم</h3>' + lst(d.get('rule', [])) + '</div></details>')
     h.append('<details><summary>يُحفظ · لم يُفحص</summary><div class="inner">' + lst(c.get('keep', [])) + lst(c.get('not_checked', [])) + '</div></details></section>')
 if chair.get('course'):
     h.append('<section><h2>ملاحظات الرئيس وقرارات تنتظرك</h2>' + ''.join(f'<div class="callout"><h3>{E(x["title"])}</h3><p>{T(x["body"])}</p></div>' for x in chair['course']) + '</section>')
